@@ -1,40 +1,13 @@
 /*
   Pageviews Comparison tool
 
-  Forked by MusikAnimal from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
+  Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
 
   Copyright 2016 MusikAnimal
   Redistributed under the MIT License: https://opensource.org/licenses/MIT
 */
 
-const config = {
-  // For more information on the list of all Wikimedia languages and projects, see:
-  // https://www.mediawiki.org/wiki/Extension:SiteMatrix
-  // https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2
-  colors: ['#bccbda', '#e0ad91', '#c1aa78', '#8da075', '#998a6f', '#F24236', '#F5F749', '#EFBDEB', '#2E86AB', '#565554'],
-  projectInput: '.aqs-project-input',
-  dateRangeSelector: '.aqs-date-range-selector',
-  articleSelector: '.aqs-article-selector',
-  chart: '.aqs-chart',
-  minDate: moment('2015-10-01'),
-  maxDate: moment().subtract(1, 'days'),
-  timestampFormat: 'YYYYMMDD00',
-  daysAgo: 20
-};
-
 let normalized = false;
-
-function getProject() {
-  let project = $(config.projectInput).val();
-  // Get the first 2 characters from the project code to get the language
-  return project.replace(/.org$/, '');
-}
-
-function getPageURL(page) {
-  return `//${getProject()}.org/wiki/${page}`;
-}
-// must be exported to global scope for Chart template
-window.getPageURL = getPageURL;
 
 function setupProjectInput() {
   $(config.projectInput).on('change', function () {
@@ -83,7 +56,7 @@ function setupArticleSelector () {
     // This ajax call queries the Mediawiki API for article name
     // suggestions given the search term inputed in the selector.
     ajax: {
-      url: 'https://' + getProject() + '.org/w/api.php',
+      url: 'https://' + pv.getProject() + '.org/w/api.php',
       dataType: 'jsonp',
       delay: 200,
       jsonpCallback: 'articleSuggestionCallback',
@@ -179,7 +152,7 @@ function updateChart () {
     const uriEncodedArticle = encodeURIComponent(article);
     // Url to query the API.
     const url = (
-      `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${getProject()}` +
+      `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${pv.getProject()}` +
       `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
       `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
     );
@@ -323,10 +296,10 @@ function popParams() {
     setArticleSelectorDefaults(params.pages);
   } else {
     if(normalized) {
-      params.pages = underscorePageNames(params.pages);
+      params.pages = pv.underscorePageNames(params.pages);
       setArticleSelectorDefaults(params.pages);
     } else {
-      normalizePageNames(params.pages).then(function(data) {
+      pv.normalizePageNames(params.pages).then(function(data) {
         normalized = true;
 
         if(data.query.normalized) {
@@ -342,23 +315,10 @@ function popParams() {
           });
         }
 
-        setArticleSelectorDefaults(underscorePageNames(params.pages));
+        setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
       });
     }
   }
-}
-
-function normalizePageNames(pages) {
-  return $.ajax({
-    url: `https://${getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
-    dataType: 'jsonp'
-  });
-}
-
-function underscorePageNames(pages) {
-  return pages.map((page)=> {
-    return decodeURIComponent(page.replace(/ /g, '_'));
-  });
 }
 
 function numDaysInRange() {

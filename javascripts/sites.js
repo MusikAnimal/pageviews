@@ -1,4 +1,4 @@
-sites = [
+const sites = [
   'aa.wikipedia.org',
   'aa.wiktionary.org',
   'aa.wikibooks.org',

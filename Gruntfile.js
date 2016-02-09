@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
@@ -17,17 +16,17 @@ module.exports = function(grunt) {
         tasks: ['sass']
       }
     },
-    browserify: {
+    babel: {
       options: {
-        transform: [
-          ['babelify', {presets: ['es2015']} ]
-        ],
+        presets: ['es2015']
       },
-      dist: {
+      pageviews: {
         files: {
-          'public/application.js': ['javascripts/application.js']
+          'public/application.js': ['javascripts/application.js'],
+          'public/helpers.js' : ['javascripts/helpers.js'],
+          'public/config.js': ['javascripts/config.js']
         }
-      }
+      },
     },
     sass: {
       dist: {
@@ -51,12 +50,14 @@ module.exports = function(grunt) {
       js: {
         src: [
           'javascripts/vendor/jquery.min.js',
+          'javascripts/vendor/moment.min.js',
           'javascripts/vendor/bootstrap.min.js',
           'javascripts/vendor/select2.min.js',
-          'javascripts/vendor/moment.min.js',
           'javascripts/vendor/daterangepicker.min.js',
           'javascripts/vendor/Chart.min.js',
           'javascripts/sites.js',
+          'public/config.js',
+          'public/helpers.js',
           'public/application.js'
         ],
         dest: 'public/application.js'
@@ -83,6 +84,15 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('production', ['browserify:dist', 'sass', 'concat', 'uglify:all']);
-  grunt.registerTask('default', ['browserify:dist', 'sass', 'concat']);
+  grunt.registerTask('haml', 'compile haml into html', function() {
+    var exec = require('child_process').exec;
+    var cmd = 'haml index.haml public/index.html';
+
+    exec(cmd, function(error, stdout, stderr) {
+      // command output is in stdout
+    });
+  });
+
+  grunt.registerTask('production', ['babel', 'sass', 'concat', 'uglify:all', 'haml']);
+  grunt.registerTask('default', ['babel', 'sass', 'concat', 'haml']);
 };
