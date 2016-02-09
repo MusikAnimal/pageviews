@@ -451,6 +451,10 @@ $(document).ready(function() {
 
   // temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews
   if(document.location.search.includes("redirected=true")) {
+    if (window.history && window.history.replaceState) {
+      let newURL = document.location.href.replace(document.location.search, '');
+      window.history.replaceState({}, 'Pageview comparsion', newURL);
+    }
     pv.addSiteNotice('info',
       "Please update your links to point to " +
         "<a class='alert-link' href='https://tools.wmflabs.org/musikanimal/pageviews'>tools.wmflabs.org/pageviews</a>",
