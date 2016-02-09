@@ -1,9 +1,9 @@
 {
-  "name": "MAPageViews",
+  "name": "PageViews",
   "version": "1.0.0",
-  "description": "MusikAnimal's Pageviews Analysis",
+  "description": "Pageviews Analysis",
   "repository": "github.com/MusikAnimal/pageviews",
-  "author": "MusikAnimal",
+  "author": "MusikAnimal, Marcel Ruiz Forns",
   "license": "MIT",
   "dependencies": {
     "babelify": "^7.2.0",
