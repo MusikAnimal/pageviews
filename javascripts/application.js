@@ -112,7 +112,7 @@ function resetArticleSelector () {
   updateChart();
 }
 
-function setArticleSelectorDefaults (defaults) {
+function setArticleSelectorDefaults(defaults) {
   // Caveat: This method only works with single-word article names.
   const articleSelectorQuery = config.articleSelector;
   defaults.forEach(function (elem) {
@@ -124,7 +124,15 @@ function setArticleSelectorDefaults (defaults) {
   articleSelector.select2('close');
 }
 
-function updateChart () {
+function destroyChart() {
+  // Destroy previous chart, if needed.
+  if(config.articleComparisonChart) {
+    config.articleComparisonChart.destroy();
+    delete config.articleComparisonChart;
+  }
+}
+
+function updateChart() {
   pushParams();
   // Collect parameters from inputs.
   const dateRangeSelector = $(config.dateRangeSelector),
@@ -132,11 +140,7 @@ function updateChart () {
     endDate = dateRangeSelector.data('daterangepicker').endDate,
     articles = $(config.articleSelector).select2('val') || [];
 
-  // Destroy previous chart, if needed.
-  if(config.articleComparisonChart) {
-    config.articleComparisonChart.destroy();
-    delete config.articleComparisonChart;
-  }
+  destroyChart();
 
   if(articles.length) {
     $(".chart-container").addClass("loading");
@@ -208,6 +212,7 @@ function updateChart () {
           $(".chart-container").append("<canvas class='aqs-chart'>");
           const context = $(config.chart)[0].getContext('2d');
           config.articleComparisonChart = new Chart(context).Line(lineData, options);
+          pv.clearSiteNotices();
           $("#chart-legend").html(config.articleComparisonChart.generateLegend());
           $('.data-links').show();
         }
@@ -288,6 +293,16 @@ function popParams() {
   $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
   $('#platform-select').val(params.platform || 'all-access');
   $('#agent-select').val(params.agent || 'user');
+
+  if(startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
+    pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters", true);
+    pv.resetView();
+    return;
+  } else if(startDate > endDate) {
+    pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters", true);
+    pv.resetView();
+    return;
+  }
 
   resetArticleSelector();
 
@@ -433,6 +448,15 @@ $(document).ready(function() {
     daterangepicker.setEndDate(moment());
     e.preventDefault();
   });
+
+  // temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews
+  if(document.location.search.includes("redirected=true")) {
+    pv.addSiteNotice('info',
+      "Please update your links to point to " +
+        "<a class='alert-link' href='https://tools.wmflabs.org/musikanimal/pageviews'>tools.wmflabs.org/pageviews</a>",
+      "Pageviews Analysis has moved!"
+    );
+  }
 
   setupListeners();
 });

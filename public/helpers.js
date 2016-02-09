@@ -1,6 +1,19 @@
 'use strict';
 
 var pv = {
+  addSiteNotice: function addSiteNotice(level, message, title, autodismiss) {
+    title = title ? '<strong>' + title + ':</strong> ' : '';
+    autodismiss = autodismiss ? ' autodismiss' : '';
+    $(".site-notice").append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
+    $(".site-notice-wrapper").show();
+  },
+  clearSiteNotices: function clearSiteNotices() {
+    $(".site-notice .autodismiss").remove();
+
+    if (!$(".site-notice .alert").length) {
+      $(".site-notice-wrapper").hide();
+    }
+  },
   getPageURL: function getPageURL(page) {
     return '//' + pv.getProject() + '.org/wiki/' + page;
   },
@@ -14,6 +27,11 @@ var pv = {
       url: 'https://' + pv.getProject() + '.org/w/api.php?action=query&prop=info&format=json&titles=' + pages.join('|'),
       dataType: 'jsonp'
     });
+  },
+  resetView: function resetView() {
+    $(".chart-container").html("");
+    $(".chart-container").removeClass("loading");
+    resetArticleSelector();
   },
   underscorePageNames: function underscorePageNames(pages) {
     return pages.map(function (page) {
