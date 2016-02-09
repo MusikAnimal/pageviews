@@ -419,7 +419,7 @@ $(document).ready(function() {
 
   // simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
   $.ajax({
-    url: "https://tools.wmflabs.org/musikanimal/api/uses",
+    url: "//tools.wmflabs.org/musikanimal/api/uses",
     method: 'PATCH',
     data : {
       tool: 'pageviews',
