@@ -457,7 +457,7 @@ $(document).ready(function() {
     }
     pv.addSiteNotice('info',
       "Please update your links to point to " +
-        "<a class='alert-link' href='https://tools.wmflabs.org/musikanimal/pageviews'>tools.wmflabs.org/pageviews</a>",
+        "<a class='alert-link' href='https://tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>",
       "Pageviews Analysis has moved!"
     );
   }
