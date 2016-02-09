@@ -295,11 +295,11 @@ function popParams() {
   $('#agent-select').val(params.agent || 'user');
 
   if(startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
-    pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters", true);
+    pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters!", true);
     pv.resetView();
     return;
   } else if(startDate > endDate) {
-    pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters", true);
+    pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters!", true);
     pv.resetView();
     return;
   }

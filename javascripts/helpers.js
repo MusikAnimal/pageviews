@@ -1,6 +1,6 @@
 const pv = {
   addSiteNotice(level, message, title, autodismiss) {
-    title = title ? `<strong>${title}:</strong> ` : '';
+    title = title ? `<strong>${title}</strong> ` : '';
     autodismiss = autodismiss ? ` autodismiss` : '';
     $(".site-notice").append(
       `<div class='alert alert-${level}${autodismiss}'>${title}${message}</div>`
