@@ -1,0 +1,22 @@
+{
+  "name": "MAPageViews",
+  "version": "1.0.0",
+  "description": "MusikAnimal's Pageviews Analysis",
+  "repository": "github.com/MusikAnimal/pageviews",
+  "author": "MusikAnimal",
+  "license": "MIT",
+  "dependencies": {
+    "babelify": "^7.2.0",
+    "babel-preset-es2015": "*",
+    "eslint": "*",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-contrib-concat": "*",
+    "grunt-babel": "*",
+    "grunt-browserify": "4.0.1",
+    "grunt-contrib-uglify": "0.9.2",
+    "grunt-contrib-sass": "0.9.2",
+    "jquery": "2.1.1",
+    "underscore": "1.8.3"
+  },
+  "engine": "node >= 0.10.0"
+}

@@ -1,0 +1,111 @@
+<!-- Pageviews Comparison tool -->
+<!-- Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf -->
+<!-- Copyright 2016 MusikAnimal -->
+<!-- Redistributed under the MIT License: https://opensource.org/licenses/MIT -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta content='yes' name='apple-mobile-web-app-capable'>
+    <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' name='viewport'>
+    <title>Pageviews Analysis</title>
+    <link href='application.css' rel='stylesheet'>
+    <script src='application.js'></script>
+  </head>
+  <body>
+    <div class='container'>
+      <div class='col-lg-offset-2'>
+        <!-- Header -->
+        <header class='row aqs-row'>
+          <div class='col-lg-10 text-center'>
+            <h4>
+              <strong>
+                Pageviews Analysis
+              </strong>
+            </h4>
+          </div>
+        </header>
+        <div class='row aqs-row options'>
+          <!-- Date range selector -->
+          <div class='col-lg-4'>
+            <label for='range-input'>Dates</label>
+            <span class='date-latest'>
+              Latest
+              <a data-value='10' href='#'>10</a>
+              <a data-value='20' href='#'>20</a>
+              <a data-value='30' href='#'>30</a>
+              <a data-value='60' href='#'>60</a>
+              <a data-value='90' href='#'>90</a>
+              days
+            </span>
+            <input class='form-control aqs-date-range-selector' id='range-input'>
+          </div>
+          <!-- Project selector -->
+          <div class='col-lg-2'>
+            <label for='project-input'>Project</label>
+            <input class='form-control aqs-project-input' id='project-input' placeholder='en.wikipedia.org'>
+          </div>
+          <!-- Advanced options -->
+          <div class='col-lg-2'>
+            <label for='platform-select'>Platform</label>
+            <select class='form-control' id='platform-select'>
+              <option value='all-access'>All</option>
+              <option value='desktop'>Desktop</option>
+              <option value='mobile-app'>Mobile app</option>
+              <option value='mobile-web'>Mobile web</option>
+            </select>
+          </div>
+          <div class='col-lg-2'>
+            <label for='agent-select'>Agent</label>
+            <select class='form-control' id='agent-select'>
+              <option value='all-agents'>All</option>
+              <option selected='selected' value='user'>User</option>
+              <option value='spider'>Spider</option>
+              <option value='bot'>Bot</option>
+            </select>
+          </div>
+        </div>
+        <!-- Article selector -->
+        <div class='row aqs-row'>
+          <div class='col-lg-10'>
+            <label for='article-input'>Pages</label>
+            <select class='aqs-article-selector col-lg-12' id='article-input' multiple='multiple'></select>
+          </div>
+        </div>
+        <!-- Chart -->
+        <div class='chart-container col-lg-10 loading'>
+          <div class='ad-block-notice text-center'>
+            Chart not appearing? Please ensure you have all ad blockers disabled or have
+            <span class='mono'>/pageviews/*</span>
+            whitelisted.
+          </div>
+          <canvas class='aqs-chart'></canvas>
+        </div>
+        <!-- Legend -->
+        <div class='col-lg-10' id='chart-legend'></div>
+        <!-- Other links -->
+        <div class='col-lg-10 data-links'>
+          Download as
+          <a class='download-csv' href='#'>CSV</a>
+          &middot;
+          <a class='download-json' href='#'>JSON</a>
+        </div>
+        <footer class='col-lg-10'>
+          <span>
+            Brought to you by
+            <a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>
+            and
+            <a href='https://wikimediafoundation.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>.
+          </span>
+          <span class='nowrap'>
+            Hosted with
+            <span class='heart'>&hearts;</span>
+            on
+            <a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>Tool Labs</a>.
+          </span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

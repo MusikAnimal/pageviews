@@ -1,0 +1,140 @@
+/*
+  Pageviews Comparison tool
+
+  Forked by MusikAnimal from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
+
+  Copyright 2016 MusikAnimal
+  Redistributed under the MIT License: https://opensource.org/licenses/MIT
+*/
+
+body {
+  overflow-x: hidden;
+}
+
+/* Add legend colors to article tags */
+.select2-selection__choice:nth-of-type(1) { background: #bccbda !important; }
+.select2-selection__choice:nth-of-type(2) { background: #e0ad91 !important; }
+.select2-selection__choice:nth-of-type(3) { background: #c1aa78 !important; }
+.select2-selection__choice:nth-of-type(4) { background: #8da075 !important; }
+.select2-selection__choice:nth-of-type(5) { background: #998a6f !important; }
+.select2-selection__choice:nth-of-type(6) { background: #F24236 !important; }
+.select2-selection__choice:nth-of-type(7) { background: #F5F749 !important; }
+.select2-selection__choice:nth-of-type(8) { background: #EFBDEB !important; }
+.select2-selection__choice:nth-of-type(9) { background: #2E86AB !important; }
+.select2-selection__choice:nth-of-type(10) { background: #565554 !important; }
+
+/* Fix chart position */
+.aqs-chart {
+  margin-left: -12px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default .select2-selection--multiple,
+.select2-dropdown
+ {
+  border-color: #ccc;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+
+.date-latest {
+  float: right;
+}
+
+.options select {
+  display: block;
+  width: 100%;
+}
+
+/* Improve vertical spacing */
+.aqs-row {
+  padding-bottom: 10px;
+}
+
+/* Avoid select2 collapsing with narrow screens */
+.aqs-article-selector {
+  width: 100% !important;
+}
+
+.line-legend {
+  display: inline-block;
+  padding: 0;
+  margin: 0 0 0 10px;
+  list-style: none;
+
+  li {
+    display: inline-block;
+    margin-bottom: 3px;
+    margin-right: 15px;
+  }
+
+  .indic {
+    border-radius: 3px;
+    display: inline-block;
+    padding: 0 5px;
+  }
+}
+
+header {
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+footer {
+  display: block;
+  font-family: sans-serif;
+  margin: 40px 0 20px;
+  text-align: center;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.heart {
+  color: #fe875e;
+}
+
+.ad-block-notice {
+  margin-top: 20px;
+}
+
+.mono {
+  font-family: Consolas, Lucida Console, monospace;
+}
+
+.data-links {
+  margin-top: 20px;
+}
+
+.loading::after {
+  border: 3px solid #ccc;
+  border-radius: 50%;
+  border-top-color: transparent;
+  bottom: 0;
+  content: '';
+  left: 0;
+  margin: auto;
+  height: 60px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60px;
+  animation-duration: .75s;
+  animation-name: spin;
+  animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

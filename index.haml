@@ -1,0 +1,97 @@
+/ Pageviews Comparison tool
+/ Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
+/ Copyright 2016 MusikAnimal
+/ Redistributed under the MIT License: https://opensource.org/licenses/MIT
+!!!
+%html
+  %head
+    %meta{charset: "utf-8"}
+    %meta{content: 'yes', name: 'apple-mobile-web-app-capable'}
+    %meta{content: 'black-translucent', name: 'apple-mobile-web-app-status-bar-style'}
+    %meta{content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0', name: 'viewport'}
+    %title Pageviews Analysis
+    %link{rel: "stylesheet", href: "application.css"}
+    %script{src: "application.js"}
+
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong
+                Pageviews Analysis
+
+        %div.row.aqs-row.options
+          / Date range selector
+          %div.col-lg-4
+            %label{for: "range-input"} Dates
+            %span.date-latest
+              Latest
+              %a{href: '#', "data-value": '10'} 10
+              %a{href: '#', "data-value": '20'} 20
+              %a{href: '#', "data-value": '30'} 30
+              %a{href: '#', "data-value": '60'} 60
+              %a{href: '#', "data-value": '90'} 90
+              days
+            %input#range-input.form-control.aqs-date-range-selector
+
+          /  Project selector
+          .col-lg-2
+            %label{for: "project-input"} Project
+            %input#project-input.form-control.aqs-project-input{placeholder: "en.wikipedia.org"}/
+
+          / Advanced options
+          .col-lg-2
+            %label{for: "platform-select"} Platform
+            %select#platform-select.form-control
+              %option{value: "all-access"} All
+              %option{value: "desktop"} Desktop
+              %option{value: "mobile-app"} Mobile app
+              %option{value: "mobile-web"} Mobile web
+          .col-lg-2
+            %label{for: "agent-select"} Agent
+            %select#agent-select.form-control
+              %option{value: "all-agents"} All
+              %option{selected: "selected", value: "user"} User
+              %option{value: "spider"} Spider
+              %option{value: "bot"} Bot
+
+        / Article selector
+        .row.aqs-row
+          .col-lg-10
+            %label{for: "article-input"} Pages
+            %select#article-input.aqs-article-selector.col-lg-12{:multiple => "multiple"}
+
+        / Chart
+        .chart-container.col-lg-10.loading
+          .ad-block-notice.text-center
+            Chart not appearing? Please ensure you have all ad blockers disabled or have
+            %span.mono /pageviews/*
+            whitelisted.
+          %canvas.aqs-chart
+
+        / Legend
+        #chart-legend.col-lg-10
+
+        / Other links
+        .col-lg-10.data-links
+          Download as
+          %a.download-csv{href: "#"} CSV
+          \&middot;
+          %a.download-json{href: "#"} JSON
+
+        %footer.col-lg-10
+          %span
+            Brought to you by
+            %a{href: "https://en.wikipedia.org/wiki/User:MusikAnimal"} MusikAnimal
+            and
+            = succeed "." do
+              %a{href: "https://wikimediafoundation.org/wiki/User:Mforns_(WMF)"} Marcel Ruiz Forns
+          %span.nowrap
+            Hosted with
+            %span.heart &hearts;
+            on
+            = succeed "." do
+              %a{href: "https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs"} Tool Labs
