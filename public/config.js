@@ -32,7 +32,9 @@ var config = {
     },
     Bar: {
       opts: {
-        legendTemplate: templates.linearLegend
+        legendTemplate: templates.linearLegend,
+        barValueSpacing: 0,
+        barDatasetSpacing: 0
       },
       dataset: function dataset(color) {
         return {
