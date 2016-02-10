@@ -1,1 +1,13 @@
 $red: #fe875e;
+$gray: #ccc;
+$link: #337ab7;
+$tag-colors: (
+  #bccbda, #e0ad91, #c1aa78, #8da075, #998a6f, #F24236, #F5F749, #EFBDEB, #2E86AB, #565554
+);
+
+@mixin prefix ($prop, $val) {
+  @each $pre in -webkit-, -moz-, -ms-, -o- {
+    #{$pre}#{$prop}: #{$val};
+  }
+  #{$prop}: #{$val};
+}

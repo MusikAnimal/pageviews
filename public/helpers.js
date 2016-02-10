@@ -33,6 +33,9 @@ var pv = {
     $(".chart-container").removeClass("loading");
     resetArticleSelector();
   },
+  rgba: function rgba(value, alpha) {
+    return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
+  },
   underscorePageNames: function underscorePageNames(pages) {
     return pages.map(function (page) {
       return decodeURIComponent(page.replace(/ /g, '_'));
@@ -42,3 +45,4 @@ var pv = {
 
 // must be exported to global scope for Chart template rendering
 window.getPageURL = pv.getPageURL;
+window.rgba = pv.rgba;

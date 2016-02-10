@@ -1,8 +1,17 @@
 const config = {
-  // For more information on the list of all Wikimedia languages and projects, see:
-  // https://www.mediawiki.org/wiki/Extension:SiteMatrix
-  // https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2
-  colors: ['#bccbda', '#e0ad91', '#c1aa78', '#8da075', '#998a6f', '#F24236', '#F5F749', '#EFBDEB', '#2E86AB', '#565554'],
+  colors: [
+    'rgba(188, 203, 218, 1)',
+    'rgba(224, 173, 145, 1)',
+    'rgba(193, 170, 120, 1)',
+    'rgba(141, 160, 117, 1)',
+    'rgba(153, 138, 111, 1)',
+    'rgba(242, 66, 54, 1)',
+    'rgba(245, 247, 73, 1)',
+    'rgba(239, 189, 235, 1)',
+    'rgba(46, 134, 171, 1)',
+    'rgba(86, 85, 84, 1)'
+  ],
+  chartType: localStorage['pageviews-chart-preference'] || 'Line',
   projectInput: '.aqs-project-input',
   dateRangeSelector: '.aqs-date-range-selector',
   articleSelector: '.aqs-article-selector',
@@ -10,5 +19,90 @@ const config = {
   minDate: moment('2015-10-01'),
   maxDate: moment().subtract(1, 'days'),
   timestampFormat: 'YYYYMMDD00',
-  daysAgo: 20
+  daysAgo: 20,
+  linearCharts: ['Line', 'Bar', 'Radar'],
+  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
+  chartConfig: {
+    Line: {
+      opts: {
+        bezierCurve: false,
+        legendTemplate: templates.linearLegend
+      },
+      dataset(color) {
+        return {
+          fillColor: 'rgba(0,0,0,0)',
+          strokeColor: color,
+          pointColor: color,
+          pointStrokeColor: '#fff',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: color,
+        };
+      }
+    },
+    Bar: {
+      opts: {
+        legendTemplate: templates.linearLegend
+      },
+      dataset(color) {
+        return {
+          fillColor: rgba(color, .5),
+          strokeColor: rgba(color, .8),
+          highlightFill: rgba(color, .75),
+          highlightStroke: color
+        };
+      }
+    },
+    Pie: {
+      opts: {
+        legendTemplate: templates.circularLegend
+      },
+      dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    Doughnut: {
+      opts: {
+        legendTemplate: templates.circularLegend
+      },
+      dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    PolarArea: {
+      opts: {
+        legendTemplate: templates.circularLegend
+      },
+      dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    Radar: {
+      opts: {
+        legendTemplate: templates.linearLegend
+      },
+      dataset(color) {
+        return {
+          fillColor: rgba(color, 0.1),
+          strokeColor: color,
+          pointColor: color,
+          pointStrokeColor: '#fff',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: color
+        };
+      }
+    }
+  },
+  globalChartOpts: {
+    animation: true,
+    animationEasing: "easeInOutQuart"
+  }
 };

@@ -39,6 +39,10 @@ const pv = {
     resetArticleSelector();
   },
 
+  rgba(value, alpha) {
+    return value.replace(/,\s*\d\)/, `, ${alpha})`);
+  },
+
   underscorePageNames(pages) {
     return pages.map((page)=> {
       return decodeURIComponent(page.replace(/ /g, '_'));
@@ -48,3 +52,4 @@ const pv = {
 
 // must be exported to global scope for Chart template rendering
 window.getPageURL = pv.getPageURL;
+window.rgba = pv.rgba;

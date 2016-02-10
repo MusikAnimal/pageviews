@@ -22,7 +22,10 @@ function setupProjectInput() {
 
 function validateProject() {
   const project = $(config.projectInput).val();
-  if(sites.indexOf(project) === -1) {
+  if(sites.includes(project)) {
+    $(".validate").remove();
+    $(".select2-selection--multiple").removeClass('disabled');
+  } else {
     writeMessage(
       "<a href='//" + project + "'>" + project + "</a> is not a " +
       "<a href='https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
@@ -31,9 +34,6 @@ function validateProject() {
     resetArticleSelector();
     $(".select2-selection--multiple").addClass('disabled');
     return true;
-  } else {
-    $(".validate").remove();
-    $(".select2-selection--multiple").removeClass('disabled');
   }
 }
 
@@ -93,6 +93,13 @@ function setupListeners() {
   $('.download-csv').on('click', exportCSV);
   $('.download-json').on('click', exportJSON);
   $('#platform-select, #agent-select').on('change', updateChart);
+
+  $('.modal-chart-type a').on('click', function() {
+    config.chartType = $(this).data('type');
+    localStorage['pageviews-chart-preference'] = config.chartType;
+    updateChart();
+  });
+
   // window.onpopstate = popParams();
 }
 
@@ -122,110 +129,6 @@ function setArticleSelectorDefaults(defaults) {
   const articleSelector = $(articleSelectorQuery);
   articleSelector.select2('val', defaults);
   articleSelector.select2('close');
-}
-
-function destroyChart() {
-  // Destroy previous chart, if needed.
-  if(config.articleComparisonChart) {
-    config.articleComparisonChart.destroy();
-    delete config.articleComparisonChart;
-  }
-}
-
-function updateChart() {
-  pushParams();
-  // Collect parameters from inputs.
-  const dateRangeSelector = $(config.dateRangeSelector),
-    startDate = dateRangeSelector.data('daterangepicker').startDate,
-    endDate = dateRangeSelector.data('daterangepicker').endDate,
-    articles = $(config.articleSelector).select2('val') || [];
-
-  destroyChart();
-
-  if(articles.length) {
-    $(".chart-container").addClass("loading");
-  } else {
-    $("#chart-legend").html("");
-  }
-
-  // Asynchronously collect the data from Analytics Query Service API,
-  // process it to Chart.js format and initialize the chart.
-  let labels = []; // Labels (dates) for the x-axis.
-  let datasets = []; // Data for each article timeseries.
-  articles.forEach(function (article, index) {
-    const uriEncodedArticle = encodeURIComponent(article);
-    // Url to query the API.
-    const url = (
-      `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${pv.getProject()}` +
-      `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
-      `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
-    );
-
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      success: (data)=> {
-        fillInNulls(data, startDate, endDate);
-
-        // Get the labels from the first call.
-        if (labels.length === 0) {
-          labels = data.items.map(function (elem) {
-            return moment(elem.timestamp, config.timestampFormat).format('YYYY-MM-DD');
-          });
-        }
-
-        // Build the article's dataset.
-        let values = data.items.map(function (elem) { return elem.views; });
-        let color = config.colors[index];
-        datasets.push({
-          label: article.replace(/_/g, ' '),
-          fillColor: 'rgba(0,0,0,0)',
-          strokeColor: color,
-          pointColor: color,
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          data: values,
-          sum: values.reduce(function(a, b){return a+b;})
-        });
-
-        window.chartData = datasets;
-
-        const template = "<b>Totals:</b><ul class=\"<%=name.toLowerCase()%>-legend\">" +
-          "<% for (var i=0; i<datasets.length; i++){%>" +
-            "<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">" +
-            "<a href='<%= getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " +
-            "<%= chartData[i].sum %> (<%= Math.round(chartData[i].sum / numDaysInRange()) %>/day)</li><%}%></ul>";
-
-        // When all article datasets have been collected,
-        // initialize the chart.
-        if (datasets.length === articles.length) {
-          $(".chart-container").removeClass("loading");
-          const lineData = {labels: labels, datasets: datasets};
-          const options = {
-            animation: true,
-            animationEasing: "easeInOutQuart",
-            bezierCurve: false,
-            legendTemplate : template
-          };
-          $(".chart-container").html("");
-          $(".chart-container").append("<canvas class='aqs-chart'>");
-          const context = $(config.chart)[0].getContext('2d');
-          config.articleComparisonChart = new Chart(context).Line(lineData, options);
-          pv.clearSiteNotices();
-          $("#chart-legend").html(config.articleComparisonChart.generateLegend());
-          $('.data-links').show();
-        }
-      },
-      error: (data)=> {
-        if(data.status === 404) {
-          $(".chart-container").html("");
-          $(".chart-container").removeClass("loading");
-          writeMessage("No data found for the page <a href='" + getPageURL(article) + "'>" + article + "</a>");
-        }
-      }
-    });
-  });
 }
 
 // Fills in null values to a timeseries, see:

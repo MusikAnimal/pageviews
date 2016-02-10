@@ -24,11 +24,25 @@ module.exports = function(grunt) {
         files: {
           'public/application.js': ['javascripts/application.js'],
           'public/helpers.js' : ['javascripts/helpers.js'],
-          'public/config.js': ['javascripts/config.js']
+          'public/templates.js': ['javascripts/templates.js'],
+          'public/config.js': ['javascripts/config.js'],
+          'public/chart.js': ['javascripts/chart.js']
         }
       },
     },
     sass: {
+      local: {
+        options: {
+          sourcemap: 'none'
+        },
+        files: [{
+          expand: true,
+          cwd: 'stylesheets',
+          src: ['application.scss'],
+          dest: 'public',
+          ext: '.css'
+        }]
+      },
       dist: {
         options: {
           style: 'compressed',
@@ -56,8 +70,10 @@ module.exports = function(grunt) {
           'javascripts/vendor/daterangepicker.min.js',
           'javascripts/vendor/Chart.min.js',
           'javascripts/sites.js',
+          'public/templates.js',
           'public/config.js',
           'public/helpers.js',
+          'public/chart.js',
           'public/application.js'
         ],
         dest: 'public/application.js'
@@ -94,5 +110,5 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('production', ['babel', 'sass', 'concat', 'uglify:all', 'haml']);
-  grunt.registerTask('default', ['babel', 'sass', 'concat', 'haml']);
+  grunt.registerTask('default', ['babel', 'sass:local', 'concat', 'haml']);
 };
