@@ -8,6 +8,31 @@ function destroyChart() {
   }
 }
 
+// Fills in null values to a timeseries, see:
+// https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+function fillInNulls(data, startDate, endDate) {
+  // Extract the dates that are already in the timeseries
+  var alreadyThere = {};
+  data.items.forEach(function (elem) {
+    var date = moment(elem.timestamp, config.timestampFormat);
+    alreadyThere[date] = elem;
+  });
+  data.items = [];
+  // Reconstruct the timeseries adding nulls
+  // for the dates that are not in the timeseries
+  // FIXME: use this implementation for getDateHeadings()
+  for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+    if (alreadyThere[date]) {
+      data.items.push(alreadyThere[date]);
+    } else if (date !== endDate) {
+      data.items.push({
+        timestamp: date.format(config.timestampFormat),
+        views: 0
+      });
+    }
+  }
+}
+
 function getLinearData(data, article, index) {
   var values = data.items.map(function (elem) {
     return elem.views;

@@ -26,6 +26,7 @@ const config = {
     Line: {
       opts: {
         bezierCurve: false,
+        pointHitDetectionRadius : 3,
         legendTemplate: templates.linearLegend
       },
       dataset(color) {
