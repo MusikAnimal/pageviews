@@ -6,17 +6,25 @@
   Copyright 2016 MusikAnimal
   Redistributed under the MIT License: https://opensource.org/licenses/MIT
 */
+'use strict';
 
 let normalized = false;
 
-// String.includes function polyfill
+// Array.includes function polyfill
 // to add compatibility with older browsers
+// This is not a full implementation, just a shorthand to indexOf !== -1
+if ( !Array.prototype.includes ) {
+  Array.prototype.includes = function(search) {
+    return this.indexOf(search) !== -1;
+  };
+}
+
+// String.includes function polyfill
 if ( !String.prototype.includes ) {
   String.prototype.includes = function(search, start) {
-    'use strict';
     if (typeof start !== 'number') {
       start = 0;
-    } 
+    }
 
     if (start + search.length > this.length) {
       return false;
