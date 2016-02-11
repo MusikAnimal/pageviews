@@ -25,6 +25,7 @@ module.exports = function(grunt) {
           'public/application.js': ['javascripts/application.js'],
           'public/helpers.js' : ['javascripts/helpers.js'],
           'public/templates.js': ['javascripts/templates.js'],
+          'public/sites.js': ['javascripts/sites.js'],
           'public/config.js': ['javascripts/config.js'],
           'public/chart.js': ['javascripts/chart.js']
         }
@@ -97,7 +98,7 @@ module.exports = function(grunt) {
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
-            'javascripts/sites.js',
+            'public/sites.js',
             'public/templates.js',
             'public/config.js',
             'public/helpers.js',
