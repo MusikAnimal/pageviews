@@ -26,6 +26,15 @@ const pv = {
     return project.replace(/.org$/, '');
   },
 
+  /**
+   * Check if Intl is supported
+   *
+   * @returns {boolean} whether the browser (presumably) supports date locale operations
+   */
+  localeSupported() {
+    return typeof Intl === "object";
+  },
+
   normalizePageNames(pages) {
     return $.ajax({
       url: `https://${pv.getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
