@@ -20,6 +20,8 @@ This guide mostly assumes you're using OSX or Linux. If that's the case, you can
 
 ## Compilation
 
+This first time around you'll need to install all node pacakges and dependencies with `npm install`.
+
 ### Local
 Run `grunt pageviews` for the main pageviews app, `grunt top` for the top pages app, or just `grunt` to compile everything.
 
