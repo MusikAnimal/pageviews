@@ -29,9 +29,18 @@ module.exports = function(grunt) {
           'public/chart.js': ['javascripts/chart.js']
         }
       },
+      // top: {
+      //   files: {
+      //     'public/top/application.js': ['javascripts/top/application.js'],
+      //     'public/helpers.js' : ['javascripts/helpers.js'],
+      //     'public/templates.js': ['javascripts/templates.js'],
+      //     'public/config.js': ['javascripts/config.js'],
+      //     'public/chart.js': ['javascripts/chart.js']
+      //   }
+      // }
     },
     sass: {
-      local: {
+      pageviews: {
         options: {
           sourcemap: 'none'
         },
@@ -43,6 +52,18 @@ module.exports = function(grunt) {
           ext: '.css'
         }]
       },
+      // top: {
+      //   options: {
+      //     sourcemap: 'none'
+      //   },
+      //   files: [{
+      //     expand: true,
+      //     cwd: 'stylesheets/top',
+      //     src: ['application.scss'],
+      //     dest: 'public/top',
+      //     ext: '.css'
+      //   }]
+      // },
       dist: {
         options: {
           style: 'compressed',
@@ -54,6 +75,12 @@ module.exports = function(grunt) {
           src: ['application.scss'],
           dest: 'public',
           ext: '.css'
+        }, {
+          expand: true,
+          cwd: 'stylesheets/top',
+          src: ['application.scss'],
+          dest: 'public/top',
+          ext: '.css'
         }]
       }
     },
@@ -61,32 +88,48 @@ module.exports = function(grunt) {
       options: {
         separator: '\n'
       },
-      js: {
-        src: [
-          'javascripts/vendor/jquery.min.js',
-          'javascripts/vendor/moment.min.js',
-          'javascripts/vendor/bootstrap.min.js',
-          'javascripts/vendor/select2.min.js',
-          'javascripts/vendor/daterangepicker.min.js',
-          'javascripts/vendor/Chart.min.js',
-          'javascripts/sites.js',
-          'public/templates.js',
-          'public/config.js',
-          'public/helpers.js',
-          'public/chart.js',
-          'public/application.js'
-        ],
-        dest: 'public/application.js'
+      pageviews: {
+        files: {
+          'public/application.js': [
+            'vendor/javascripts/jquery.min.js',
+            'vendor/javascripts/moment.min.js',
+            'vendor/javascripts/bootstrap.min.js',
+            'vendor/javascripts/select2.min.js',
+            'vendor/javascripts/daterangepicker.min.js',
+            'vendor/javascripts/Chart.min.js',
+            'javascripts/sites.js',
+            'public/templates.js',
+            'public/config.js',
+            'public/helpers.js',
+            'public/chart.js',
+            'public/application.js'
+          ],
+          'public/application.css': [
+            'vendor/stylesheets/bootstrap.min.css',
+            'vendor/stylesheets/select2.min.css',
+            'vendor/stylesheets/daterangepicker.min.css',
+            'public/application.css'
+          ]
+        }
       },
-      css: {
-        src: [
-          'stylesheets/vendor/bootstrap.min.css',
-          'stylesheets/vendor/select2.min.css',
-          'stylesheets/vendor/daterangepicker.min.css',
-          'public/application.css'
-        ],
-        dest: 'public/application.css'
-      }
+      // top: {
+      //   files: {
+      //     'public/top/application.js': [
+      //       'vendor/javascripts/jquery.min.js',
+      //       'vendor/javascripts/moment.min.js',
+      //       'vendor/javascripts/bootstrap.min.js',
+      //       'vendor/javascripts/select2.min.js', // may not need
+      //       'vendor/javascripts/daterangepicker.min.js',
+      //       'vendor/javascripts/Chart.min.js',
+      //       'javascripts/sites.js',
+      //       'public/templates.js',
+      //       'public/config.js',
+      //       'public/helpers.js',
+      //       'public/chart.js',
+      //       'public/top/application.js'
+      //     ]
+      //   }
+      // }
     },
     uglify: {
       options: {
@@ -94,7 +137,8 @@ module.exports = function(grunt) {
       },
       all: {
         files: {
-          'public/application.js': ['public/application.js']
+          'public/application.js': ['public/application.js'],
+          // 'public/top/application.js': ['public/top/application.js']
         }
       }
     }
@@ -102,13 +146,15 @@ module.exports = function(grunt) {
 
   grunt.registerTask('haml', 'compile haml into html', function() {
     var exec = require('child_process').exec;
-    var cmd = 'haml index.haml public/index.html';
-
+    var cmd = 'haml views/index.haml public/index.html';
     exec(cmd, function(error, stdout, stderr) {
       // command output is in stdout
     });
   });
 
-  grunt.registerTask('production', ['babel', 'sass', 'concat', 'uglify:all', 'haml']);
-  grunt.registerTask('default', ['babel', 'sass:local', 'concat', 'haml']);
+  grunt.registerTask('production', ['babel', 'sass:dist', 'concat', 'uglify:all']);
+
+  grunt.registerTask('pageviews', ['babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
+  grunt.registerTask('default', ['babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
+  grunt.registerTask('haml', ['haml']);
 };
