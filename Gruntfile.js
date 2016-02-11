@@ -98,6 +98,7 @@ module.exports = function(grunt) {
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
+            'javascripts/polyfills.js',
             'public/sites.js',
             'public/templates.js',
             'public/config.js',

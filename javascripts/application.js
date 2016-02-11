@@ -10,30 +10,6 @@
 
 let normalized = false;
 
-// Array.includes function polyfill
-// to add compatibility with older browsers
-// This is not a full implementation, just a shorthand to indexOf !== -1
-if ( !Array.prototype.includes ) {
-  Array.prototype.includes = function(search) {
-    return this.indexOf(search) !== -1;
-  };
-}
-
-// String.includes function polyfill
-if ( !String.prototype.includes ) {
-  String.prototype.includes = function(search, start) {
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search,start) !== -1;
-    }
-  };
-}
-
 function setupProjectInput() {
   $(config.projectInput).on('change', function () {
     if(!this.value) {
