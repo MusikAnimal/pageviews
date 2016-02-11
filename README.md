@@ -2,7 +2,7 @@
 A pageviews analysis tool for Wikimedia Foundation wikis
 
 ## Dependencies
-This guide mostly assumes you're using OSX or Linux. If that's the case, you can probably jump to step #2
+This guide mostly assumes you're using OSX or Linux. If that's the case, you can probably already have Ruby. Try in your terminal with `ruby -v`
 
 1. [Ruby](https://www.ruby-lang.org/en/)
 
