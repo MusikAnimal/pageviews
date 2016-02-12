@@ -97,6 +97,7 @@ var config = {
   },
   globalChartOpts: {
     animation: true,
-    animationEasing: "easeInOutQuart"
+    animationEasing: "easeInOutQuart",
+    animationSteps: 30
   }
 };
