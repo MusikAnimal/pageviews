@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var pv = {
   addSiteNotice: function addSiteNotice(level, message, title, autodismiss) {
     title = title ? '<strong>' + title + '</strong> ' : '';
@@ -21,6 +23,16 @@ var pv = {
     var project = $(config.projectInput).val();
     // Get the first 2 characters from the project code to get the language
     return project.replace(/.org$/, '');
+  },
+
+
+  /**
+   * Check if Intl is supported
+   *
+   * @returns {boolean} whether the browser (presumably) supports date locale operations
+   */
+  localeSupported: function localeSupported() {
+    return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === "object";
   },
   normalizePageNames: function normalizePageNames(pages) {
     return $.ajax({

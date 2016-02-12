@@ -1,9 +1,11 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('gruntify-eslint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-scss-lint');
 
   grunt.initConfig({
     watch: {
@@ -16,6 +18,16 @@ module.exports = function(grunt) {
         tasks: ['sass']
       }
     },
+    eslint: {
+      src: ['javascripts/application.js']
+    },
+    scsslint: {
+      options: {
+        conifg: '.scss-lint.yml',
+        colorizeOutput: true
+      },
+      allFiles: ['stylesheets/*.scss']
+    },
     babel: {
       options: {
         presets: ['es2015']
@@ -25,7 +37,7 @@ module.exports = function(grunt) {
           'public/application.js': ['javascripts/application.js'],
           'public/helpers.js' : ['javascripts/helpers.js'],
           'public/templates.js': ['javascripts/templates.js'],
-          'public/sites.js': ['javascripts/sites.js'],
+          'public/site_map.js': ['javascripts/site_map.js'],
           'public/config.js': ['javascripts/config.js'],
           'public/chart.js': ['javascripts/chart.js']
         }
@@ -99,7 +111,7 @@ module.exports = function(grunt) {
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
             'javascripts/polyfills.js',
-            'public/sites.js',
+            'public/site_map.js',
             'public/templates.js',
             'public/config.js',
             'public/helpers.js',
@@ -123,7 +135,7 @@ module.exports = function(grunt) {
       //       'vendor/javascripts/select2.min.js', // may not need
       //       'vendor/javascripts/daterangepicker.min.js',
       //       'vendor/javascripts/Chart.min.js',
-      //       'javascripts/sites.js',
+      //       'javascripts/site_map.js',
       //       'public/templates.js',
       //       'public/config.js',
       //       'public/helpers.js',
@@ -146,7 +158,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('haml', 'compile haml into html', function() {
+  grunt.registerTask('hamlify', 'compile haml into html', function() {
     var exec = require('child_process').exec;
     var cmd = 'haml views/index.haml public/index.html';
     exec(cmd, function(error, stdout, stderr) {
@@ -156,7 +168,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('production', ['babel', 'sass:dist', 'concat', 'uglify:all']);
 
-  grunt.registerTask('pageviews', ['babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
-  grunt.registerTask('default', ['babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
-  grunt.registerTask('haml', ['haml']);
+  grunt.registerTask('pageviews', ['eslint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
+  grunt.registerTask('default', ['eslint', 'babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
+  grunt.registerTask('lint', ['eslint', 'scsslint']);
+  grunt.registerTask('haml', ['hamlify']);
 };
