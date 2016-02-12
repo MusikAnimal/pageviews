@@ -1,5 +1,3 @@
-'use strict';
-
 // Array.includes function polyfill
 // to add compatibility with older browsers
 // This is not a full implementation, just a shorthand to indexOf !== -1

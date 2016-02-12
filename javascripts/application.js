@@ -6,7 +6,6 @@
   Copyright 2016 MusikAnimal
   Redistributed under the MIT License: https://opensource.org/licenses/MIT
 */
-'use strict';
 
 let normalized = false;
 
@@ -23,7 +22,7 @@ function setupProjectInput() {
 
 function validateProject() {
   const project = $(config.projectInput).val();
-  if(sites.includes(project)) {
+  if(siteDomains.includes(project)) {
     $(".validate").remove();
     $(".select2-selection--multiple").removeClass('disabled');
   } else {
