@@ -62,21 +62,20 @@ function setupArticleSelector () {
       jsonpCallback: 'articleSuggestionCallback',
       data: function (search) {
         return {
-          'action': 'query',
-          'list': 'prefixsearch',
+          'action': 'opensearch',
           'format': 'json',
-          'pssearch': search.term || '',
-          'cirrusUseCompletionSuggester': 'yes'
+          'search': search.term || '',
+          'redirects': 'return'
         };
       },
       processResults: function (data) {
         // Processes Mediawiki API results into Select2 format.
         let results = [];
-        if (data && data.query && data.query.prefixsearch.length) {
-          results = data.query.prefixsearch.map(function (elem) {
+        if (data && data[1].length) {
+          results = data[1].map(function (elem) {
             return {
-              id: elem.title.replace(/ /g, '_'),
-              text: elem.title
+              id: elem.replace(/ /g, '_'),
+              text: elem
             };
           });
         }
