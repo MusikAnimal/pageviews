@@ -22,7 +22,7 @@
     "underscore": "1.8.3"
   },
   "scripts": {
-    "test": "grunt lint --verbose && BABEL_JEST_STAGE=0 jest"
+    "test": "BABEL_JEST_STAGE=0 jest"
   },
   "jest": {
     "testPathDirs": [
