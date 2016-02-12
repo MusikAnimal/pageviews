@@ -1,6 +1,8 @@
 # Pageviews Analysis
 A pageviews analysis tool for Wikimedia Foundation wikis
 
+![Build status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)
+
 ## Dependencies
 This guide mostly assumes you're using OSX or Linux. If that's the case, you can probably already have Ruby. Try in your terminal with `ruby -v`. If you are only updating the JavaScript (where all the logic lives), you don't need Ruby, Haml, or Sass. Even for Haml and Sass, you could update the source and use an online converter to update the compiled version, then just run `grunt concat` to correctly concatenate those files for production use.
 
