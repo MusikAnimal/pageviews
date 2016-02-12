@@ -206,6 +206,10 @@ function popParams() {
         });
       }
 
+      if(params.pages.length === 1) {
+        config.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
+      }
+
       setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
     });
   }
