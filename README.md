@@ -41,4 +41,4 @@ at that. Other browsers will still function without the styling. Use [Bootstrap]
 
 ## Tests
 
-...to come, hopefully. Likely will use [Jest](https://facebook.github.io/jest/)
+Run with `npm test`. For JavaScript unit testing, we are using [Jest](https://facebook.github.io/jest/). Only critical functionality need be tested. Linters are also ran with the test. If for some reason you need a particular linter rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring))
