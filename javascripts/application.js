@@ -187,30 +187,28 @@ function popParams() {
   if(!params.pages || params.pages.length === 1 && !params.pages[0]) {
     params.pages = ['Cat', 'Dog'];
     setArticleSelectorDefaults(params.pages);
+  } else if(normalized) {
+    params.pages = pv.underscorePageNames(params.pages);
+    setArticleSelectorDefaults(params.pages);
   } else {
-    if(normalized) {
-      params.pages = pv.underscorePageNames(params.pages);
-      setArticleSelectorDefaults(params.pages);
-    } else {
-      pv.normalizePageNames(params.pages).then(function(data) {
-        normalized = true;
+    pv.normalizePageNames(params.pages).then(function(data) {
+      normalized = true;
 
-        if(data.query.normalized) {
-          data.query.normalized.forEach(function(normalPage) {
-            // do it this way to preserve ordering of pages
-            params.pages = params.pages.map((page)=> {
-              if(normalPage.from === page) {
-                return normalPage.to;
-              } else {
-                return page;
-              }
-            });
+      if(data.query.normalized) {
+        data.query.normalized.forEach(function(normalPage) {
+          // do it this way to preserve ordering of pages
+          params.pages = params.pages.map((page)=> {
+            if(normalPage.from === page) {
+              return normalPage.to;
+            } else {
+              return page;
+            }
           });
-        }
+        });
+      }
 
-        setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
-      });
-    }
+      setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
+    });
   }
 }
 

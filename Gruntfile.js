@@ -166,10 +166,10 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('production', ['babel', 'sass:dist', 'concat', 'uglify:all']);
+  grunt.registerTask('production', ['eslint', 'scsslint', 'babel', 'sass:dist', 'concat', 'uglify:all']);
 
-  grunt.registerTask('pageviews', ['eslint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
-  grunt.registerTask('default', ['eslint', 'babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
+  grunt.registerTask('pageviews', ['eslint', 'scsslint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
+  grunt.registerTask('default', ['eslint', 'scsslint', 'babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
   grunt.registerTask('haml', ['hamlify']);
 };
