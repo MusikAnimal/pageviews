@@ -295,6 +295,16 @@ const pv = {
     return pages.map((page)=> {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
+  },
+
+  writeMessage(message, className, clear) {
+    if(clear) {
+      $(".chart-container").removeClass("loading");
+      $(".chart-container").html("");
+    }
+    $(".chart-container").append(
+      `<p class='${className || ''}'>${message}</p>`
+    );
   }
 };
 

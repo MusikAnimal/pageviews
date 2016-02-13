@@ -26,7 +26,7 @@ function validateProject() {
     $(".validate").remove();
     $(".select2-selection--multiple").removeClass('disabled');
   } else {
-    writeMessage(
+    pv.writeMessage(
       "<a href='//" + project + "'>" + project + "</a> is not a " +
       "<a href='https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
       'validate', true
@@ -129,16 +129,6 @@ function setArticleSelectorDefaults(defaults) {
   const articleSelector = $(articleSelectorQuery);
   articleSelector.select2('val', defaults);
   articleSelector.select2('close');
-}
-
-function writeMessage(message, className, clear) {
-  if(clear) {
-    $(".chart-container").removeClass("loading");
-    $(".chart-container").html("");
-  }
-  $(".chart-container").append(
-    `<p class='${className || ''}'>${message}</p>`
-  );
 }
 
 function pushParams() {

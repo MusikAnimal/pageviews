@@ -136,9 +136,7 @@ function updateChart() {
       },
       error: (data)=> {
         if(data.status === 404) {
-          $(".chart-container").html("");
-          $(".chart-container").removeClass("loading");
-          writeMessage("No data found for the page <a href='" + getPageURL(article) + "'>" + article + "</a>");
+          pv.writeMessage("No data found for the page <a href='" + getPageURL(article) + "'>" + article + "</a>");
         }
       }
     });

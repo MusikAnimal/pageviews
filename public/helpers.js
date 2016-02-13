@@ -298,6 +298,13 @@ var pv = {
     return pages.map(function (page) {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
+  },
+  writeMessage: function writeMessage(message, className, clear) {
+    if (clear) {
+      $(".chart-container").removeClass("loading");
+      $(".chart-container").html("");
+    }
+    $(".chart-container").append('<p class=\'' + (className || '') + '\'>' + message + '</p>');
   }
 };
 
