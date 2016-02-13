@@ -162,7 +162,8 @@ module.exports = function(grunt) {
     var exec = require('child_process').exec;
     var cmds = [
       'haml views/index.haml public/index.html',
-      'haml views/faq/index.haml public/faq/index.html'
+      'haml views/faq/index.haml public/faq/index.html',
+      'haml views/url_structure/index.haml public/url_structure/index.html'
     ];
     cmds.forEach(function(cmd) {
       exec(cmd, function(error, stdout, stderr) {
