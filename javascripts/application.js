@@ -40,6 +40,7 @@ function validateProject() {
 function setupDateRangeSelector() {
   const dateRangeSelector = $(config.dateRangeSelector);
   dateRangeSelector.daterangepicker({
+    locale: { format: pv.getLocaleDateString() },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
     maxDate: config.maxDate
@@ -264,7 +265,7 @@ function exportCSV(e) {
   chartData.forEach((page, index)=> {
     let dataString = [
       '"' + page.label.replace(/"/g, '""').replace(/'/g, "''") + '"',
-      page.strokeColor,
+      '"' + page.strokeColor + '"',
       page.sum,
       Math.round(page.sum / numDaysInRange())
     ].concat(sanitizeData(page.data)).join(',');

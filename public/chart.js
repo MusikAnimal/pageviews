@@ -8,9 +8,9 @@ function destroyChart() {
   }
 }
 
-// Fills in null values to a timeseries, see:
+// Fills in zero value to a timeseries, see:
 // https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
-function fillInNulls(data, startDate, endDate) {
+function fillInZeros(data, startDate, endDate) {
   // Extract the dates that are already in the timeseries
   var alreadyThere = {};
   data.items.forEach(function (elem) {
@@ -18,7 +18,7 @@ function fillInNulls(data, startDate, endDate) {
     alreadyThere[date] = elem;
   });
   data.items = [];
-  // Reconstruct the timeseries adding nulls
+  // Reconstruct the timeseries adding zeros
   // for the dates that are not in the timeseries
   // FIXME: use this implementation for getDateHeadings()
   for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
@@ -91,12 +91,12 @@ function updateChart() {
       url: url,
       dataType: 'json',
       success: function success(data) {
-        fillInNulls(data, startDate, endDate);
+        fillInZeros(data, startDate, endDate);
 
         // Get the labels from the first call.
         if (labels.length === 0) {
           labels = data.items.map(function (elem) {
-            return moment(elem.timestamp, config.timestampFormat).format('YYYY-MM-DD');
+            return moment(elem.timestamp, config.timestampFormat).format(pv.getLocaleDateString());
           });
         }
 
