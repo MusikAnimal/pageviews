@@ -160,16 +160,21 @@ module.exports = function(grunt) {
 
   grunt.registerTask('hamlify', 'compile haml into html', function() {
     var exec = require('child_process').exec;
-    var cmd = 'haml views/index.haml public/index.html';
-    exec(cmd, function(error, stdout, stderr) {
-      // command output is in stdout
+    var cmds = [
+      'haml views/index.haml public/index.html',
+      'haml views/faq/index.haml public/faq/index.html'
+    ];
+    cmds.forEach(function(cmd) {
+      exec(cmd, function(error, stdout, stderr) {
+        console.log(cmd);
+        // command output is in stdout
+      });
     });
   });
 
-  grunt.registerTask('production', ['eslint', 'scsslint', 'babel', 'sass:dist', 'concat', 'uglify:all']);
-
-  grunt.registerTask('pageviews', ['eslint', 'scsslint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews']);
-  grunt.registerTask('default', ['eslint', 'scsslint', 'babel:pageviews', 'babel:top', 'sass:pageviews', 'sass:top', 'concat:pageviews']);
+  grunt.registerTask('production', ['lint', 'babel', 'sass:dist', 'concat', 'uglify:all', 'haml']);
+  grunt.registerTask('pageviews', ['lint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
+  grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
   grunt.registerTask('haml', ['hamlify']);
 };
