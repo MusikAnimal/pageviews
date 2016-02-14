@@ -1,12 +1,8 @@
 !!!
 %html
   %head
-    %meta{charset: "utf-8"}
-    %meta{content: 'yes', name: 'apple-mobile-web-app-capable'}
-    %meta{content: 'black-translucent', name: 'apple-mobile-web-app-status-bar-style'}
-    %meta{content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0', name: 'viewport'}
+    = Haml::Engine.new(File.read(Dir.pwd + '/views/_head.haml')).render
     %title Pageviews Analysis – URL Structure
-    %link{rel: "stylesheet", href: "../application.css"}
   %body
     %div.container
       %div.col-lg-offset-2
@@ -59,20 +55,4 @@
           %hr
           %a{href: "/pageviews"} Return to Pageviews Analysis
 
-        %footer.col-lg-10
-          %span
-            Brought to you by
-            %a{href: "https://en.wikipedia.org/wiki/User:MusikAnimal"} MusikAnimal
-            and
-            = succeed "." do
-              %a{href: "https://wikimediafoundation.org/wiki/User:Mforns_(WMF)"} Marcel Ruiz Forns
-          %span.nowrap
-            Hosted with
-            %span.heart &hearts;
-            on
-            = succeed "." do
-              %a{href: "https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs"} Tool Labs
-          %div
-            %a{href: "https://github.com/MusikAnimal/pageviews"} View source
-            &middot;
-            %a{href: "https://github.com/MusikAnimal/pageviews/issues"} Report an issue
+        = Haml::Engine.new(File.read(Dir.pwd + '/views/_footer.haml')).render

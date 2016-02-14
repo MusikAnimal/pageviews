@@ -1,0 +1,42 @@
+%footer.col-lg-10
+  %span
+    Brought to you by
+    %a{href: "https://en.wikipedia.org/wiki/User:MusikAnimal"} MusikAnimal
+    and
+    = succeed "." do
+      %a{href: "https://wikimediafoundation.org/wiki/User:Mforns_(WMF)"} Marcel Ruiz Forns
+  %span.nowrap
+    Hosted with
+    %span.heart &hearts;
+    on
+    = succeed "." do
+      %a{href: "https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs"} Tool Labs
+  %div
+    %a{href: "/pageviews/faq"} FAQ
+    &middot;
+    %a{href: "#", "data-toggle": "modal", "data-target": "#disclaimer-modal"} Disclaimer
+    &middot;
+    %a{href: "/pageviews/url_structure"} URL Structure
+    &middot;
+    %a{href: "https://github.com/MusikAnimal/pageviews"} View source
+    &middot;
+    %a{href: "https://github.com/MusikAnimal/pageviews/issues"} Report an issue
+
+#disclaimer-modal.modal.fade{role: "dialog", tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"ariahidden": "true"} &times;
+        %h4.modal-title Disclaimer
+      .modal-body
+        %div
+          Pageviews Analysis fetches data via the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a>.
+          This API is still listed to be in an
+          %b <a href="https://www.mediawiki.org/wiki/API_versioning#Experimental">experimental phase</a>.
+          This means functionality <i>could</i> <b>break at any time without warning</b>. The
+          <a href="https://en.wikipedia.org/wiki/User:MusikAnimal">maintainer</a> of Pageviews Anaylsis will work to stay
+          up-to-date with API changes, but no promises can be made that the tool will indefinitely be stable until the API
+          is released as stable.
+      .modal-footer
+        %button.btn.btn-primary{"data-dismiss": "modal", type: "button"} OK
