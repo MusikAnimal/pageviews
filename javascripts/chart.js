@@ -147,6 +147,8 @@ function updateChart() {
         }
       }
     }).always((data)=> {
+      if(!data.items) return;
+
       /** Get the labels from the first call. */
       if(labels.length === 0) {
         labels = data.items.map((elem)=> {
