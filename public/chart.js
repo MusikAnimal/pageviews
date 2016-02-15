@@ -2,9 +2,9 @@
 
 function destroyChart() {
   /** Destroy previous chart, if needed. */
-  if (config.articleComparisonChart) {
-    config.articleComparisonChart.destroy();
-    delete config.articleComparisonChart;
+  if (session.chartObj) {
+    session.chartObj.destroy();
+    delete session.chartObj;
   }
 }
 
@@ -61,7 +61,7 @@ function getLinearData(data, article, index) {
     sum: values.reduce(function (a, b) {
       return a + b;
     })
-  }, config.chartConfig[config.chartType].dataset(color));
+  }, config.chartConfig[session.chartType].dataset(color));
 }
 
 /*
@@ -84,25 +84,34 @@ function getCircularData(data, article, index) {
     value: values.reduce(function (a, b) {
       return a + b;
     })
-  }, config.chartConfig[config.chartType].dataset(color));
+  }, config.chartConfig[session.chartType].dataset(color));
 }
 
 function updateChart() {
+  var articles = $(config.articleSelector).select2('val') || [];
+
+  if (!articles.length) {
+    $("#chart-legend").html("");
+    return;
+  }
+
   pushParams();
+
+  /** prevent duplicate querying due to conflicting listeners */
+  if (location.hash === session.params && session.prevChartType === session.chartType) {
+    return;
+  }
+  session.params = location.hash;
+  session.prevChartType = session.chartType;
+
   /** Collect parameters from inputs. */
   var dateRangeSelector = $(config.dateRangeSelector),
       startDate = dateRangeSelector.data('daterangepicker').startDate,
       endDate = dateRangeSelector.data('daterangepicker').endDate;
-  var articles = $(config.articleSelector).select2('val') || [];
 
   destroyChart();
   $(".message-container").html("");
-
-  if (articles.length) {
-    $(".chart-container").addClass("loading");
-  } else {
-    $("#chart-legend").html("");
-  }
+  $(".chart-container").addClass("loading");
 
   // Asynchronously collect the data from Analytics Query Service API,
   // process it to Chart.js format and initialize the chart.
@@ -120,7 +129,7 @@ function updateChart() {
       fillInZeros(data, startDate, endDate);
 
       /** Build the article's dataset. */
-      if (config.linearCharts.includes(config.chartType)) {
+      if (config.linearCharts.includes(session.chartType)) {
         datasets.push(getLinearData(data, article, index));
       } else {
         datasets.push(getCircularData(data, article, index));
@@ -150,21 +159,21 @@ function updateChart() {
       /** When all article datasets have been collected, initialize the chart. */
       if (datasets.length === articles.length) {
         $(".chart-container").removeClass("loading");
-        var options = Object.assign({}, config.chartConfig[config.chartType].opts, config.globalChartOpts);
+        var options = Object.assign({}, config.chartConfig[session.chartType].opts, config.globalChartOpts);
         var linearData = { labels: labels, datasets: datasets };
 
         $(".chart-container").html("");
         $(".chart-container").append("<canvas class='aqs-chart'>");
         var context = $(config.chart)[0].getContext('2d');
 
-        if (config.linearCharts.includes(config.chartType)) {
-          config.articleComparisonChart = new Chart(context)[config.chartType](linearData, options);
+        if (config.linearCharts.includes(session.chartType)) {
+          session.chartObj = new Chart(context)[session.chartType](linearData, options);
         } else {
-          config.articleComparisonChart = new Chart(context)[config.chartType](datasets, options);
+          session.chartObj = new Chart(context)[session.chartType](datasets, options);
         }
 
         pv.clearSiteNotices();
-        $("#chart-legend").html(config.articleComparisonChart.generateLegend());
+        $("#chart-legend").html(session.chartObj.generateLegend());
         $('.data-links').show();
       }
     });

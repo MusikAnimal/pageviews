@@ -1,0 +1,51 @@
+#chart-type-modal.modal.fade{role: "dialog", tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"ariahidden": "true"} &times;
+        %h4.modal-title Chart types
+      .modal-body
+        %div
+          %strong Articles by daily pageviews
+          - ['Line', 'Bar', 'Radar'].each do |type|
+            %span.modal-chart-type
+              %a{href: "#", "data-type": "#{type}", "data-dismiss": "modal"}
+                %img{src: "images/#{type.downcase}-chart-small.jpg"}
+                = type
+        %hr
+        %div
+          %strong Articles by total number of pageviews
+          - ['Pie', 'Doughnut', 'Polar Area'].each do |type|
+            %span.modal-chart-type
+              %a{href: "#", "data-type": "#{type.sub(/ /,'')}", "data-dismiss": "modal"}
+                %img{src: "images/#{type.downcase.sub(/ /,'')}-chart-small.jpg"}
+                = type
+      .modal-footer
+        %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel
+
+/ #settings-modal.modal.fade{role: "dialog", tabindex: "-1"}
+/   .modal-dialog{role: "document"}
+/     .modal-content
+/       .modal-header
+/         %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"}
+/           %span{"ariahidden": "true"} &times;
+/         %h4.modal-title Settings
+/       .modal-body
+/         %p
+/           Your settings will be remembered on the same browser and computer.
+/         %div.checkbox
+/           %label
+/             %input.js-option-num-formatting{type: "checkbox"}
+/             Remove numerical formatting
+/         %div.checkbox
+/           %label
+/             %input.js-option-canonical-namespace{type: "checkbox"}
+/             Remove canonical namespace from page labels
+/         %div.checkbox
+/           %label
+/             %input{type: "checkbox"}
+
+/       .modal-footer
+/         %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel
+/         %button.btn.btn-primary{"data-dismiss": "modal", type: "button"} Save

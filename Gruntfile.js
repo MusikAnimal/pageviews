@@ -39,6 +39,7 @@ module.exports = function(grunt) {
           'public/templates.js': ['javascripts/templates.js'],
           'public/site_map.js': ['javascripts/site_map.js'],
           'public/config.js': ['javascripts/config.js'],
+          'public/session.js': ['javascripts/session.js'],
           'public/chart.js': ['javascripts/chart.js']
         }
       },
@@ -114,6 +115,7 @@ module.exports = function(grunt) {
             'public/site_map.js',
             'public/templates.js',
             'public/config.js',
+            'public/session.js',
             'public/helpers.js',
             'public/chart.js',
             'public/application.js'

@@ -46,7 +46,7 @@ function setupDateRangeSelector() {
     maxDate: config.maxDate
   });
   dateRangeSelector.on('change', ()=> {
-    if(config.chartType === 'Line') {
+    if(session.chartType === 'Line') {
       if(numDaysInRange() > 50) {
         Chart.defaults.Line.pointHitDetectionRadius = 3;
       } else if(numDaysInRange() > 30) {
@@ -109,8 +109,8 @@ function setupListeners() {
   $('#platform-select, #agent-select').on('change', updateChart);
 
   $('.modal-chart-type a').on('click', function() {
-    config.chartType = $(this).data('type');
-    localStorage['pageviews-chart-preference'] = config.chartType;
+    session.chartType = $(this).data('type');
+    localStorage['pageviews-chart-preference'] = session.chartType;
     updateChart();
   });
 
@@ -212,7 +212,7 @@ function popParams() {
       }
 
       if(params.pages.length === 1) {
-        config.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
+        session.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
       }
 
       setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
