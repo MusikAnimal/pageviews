@@ -4,3 +4,5 @@ let session = {
   params: null,
   prevChartType: null
 };
+
+module.exports = session;

@@ -894,4 +894,5 @@ const siteMap = {
   "wikimaniateamwiki": "wikimaniateam.wikimedia.org",
   "zerowiki": "zero.wikimedia.org"
 };
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
+
+module.exports = siteMap;

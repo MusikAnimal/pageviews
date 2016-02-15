@@ -27,7 +27,7 @@ const pv = {
    * @returns {string} URL for the page
    */
   getPageURL(page) {
-    return `//${pv.getProject()}.org/wiki/${page}`;
+    return `//${pv.getProject()}.org/wiki/${page.replace(/ /g, '_')}`;
   },
 
   /**
@@ -36,7 +36,7 @@ const pv = {
    * @returns {boolean} lang.projectname
    */
   getProject() {
-    const project = $(config.projectInput).val();
+    const project = $('.aqs-project-input').val();
     // Get the first 2 characters from the project code to get the language
     return project.replace(/.org$/, '');
   },
@@ -266,6 +266,12 @@ const pv = {
     return typeof Intl === "object";
   },
 
+  /**
+   * Localize Number object with delimiters
+   *
+   * @param {Number} value - the Number, e.g. 1234567
+   * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
+   */
   n(value) {
     return (new Number(value)).toLocaleString();
   },
@@ -283,13 +289,13 @@ const pv = {
     });
   },
 
-  resetView() {
-    $(".chart-container").html("");
-    $(".chart-container").removeClass("loading");
-    $(".message-container").html("");
-    resetArticleSelector();
-  },
-
+  /**
+   * Change alpha level of an rgba value
+   *
+   * @param {string} value - rgba value
+   * @param {float|string} alpha - transparency as float value
+   * @returns {string} rgba value
+   */
   rgba(value, alpha) {
     return value.replace(/,\s*\d\)/, `, ${alpha})`);
   },
@@ -304,18 +310,10 @@ const pv = {
     return pages.map((page)=> {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
-  },
-
-  writeMessage(message, clear) {
-    if(clear) {
-      pv.clearMessages();
-    }
-    $(".message-container").append(
-      `<p class='error-message'>${message}</p>`
-    );
   }
 };
 
 // must be exported to global scope for Chart template rendering
-window.getPageURL = pv.getPageURL;
-window.rgba = pv.rgba;
+window.pv = pv;
+
+module.exports = pv;

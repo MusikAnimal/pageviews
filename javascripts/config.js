@@ -1,3 +1,6 @@
+const templates = require('./templates');
+const pv = require('./shared/helpers');
+
 const config = {
   articleSelector: '.aqs-article-selector',
   chart: '.aqs-chart',
@@ -26,10 +29,10 @@ const config = {
       },
       dataset(color) {
         return {
-          fillColor: rgba(color, .5),
-          highlightFill: rgba(color, .75),
+          fillColor: pv.rgba(color, .5),
+          highlightFill: pv.rgba(color, .75),
           highlightStroke: color,
-          strokeColor: rgba(color, .8)
+          strokeColor: pv.rgba(color, .8)
         };
       }
     },
@@ -40,7 +43,7 @@ const config = {
       dataset(color) {
         return {
           color: color,
-          highlight: rgba(color, 0.8)
+          highlight: pv.rgba(color, 0.8)
         };
       }
     },
@@ -51,7 +54,7 @@ const config = {
       dataset(color) {
         return {
           color: color,
-          highlight: rgba(color, 0.8)
+          highlight: pv.rgba(color, 0.8)
         };
       }
     },
@@ -62,7 +65,7 @@ const config = {
       dataset(color) {
         return {
           color: color,
-          highlight: rgba(color, 0.8)
+          highlight: pv.rgba(color, 0.8)
         };
       }
     },
@@ -72,7 +75,7 @@ const config = {
       },
       dataset(color) {
         return {
-          fillColor: rgba(color, 0.1),
+          fillColor: pv.rgba(color, 0.1),
           pointColor: color,
           pointStrokeColor: '#fff',
           pointHighlightFill: '#fff',
@@ -112,3 +115,5 @@ const config = {
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };
+
+module.exports = config;

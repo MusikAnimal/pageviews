@@ -1,10 +1,11 @@
 module.exports = function(grunt) {
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('gruntify-eslint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-babel');
+  // grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-scss-lint');
 
   grunt.initConfig({
@@ -28,19 +29,16 @@ module.exports = function(grunt) {
       },
       allFiles: ['stylesheets/*.scss']
     },
-    babel: {
-      options: {
-        presets: ['es2015']
-      },
+    browserify: {
       pageviews: {
+        options: {
+          transform: [['babelify', { presets: ['es2015'] }]]
+        },
         files: {
-          'public/application.js': ['javascripts/application.js'],
-          'public/helpers.js' : ['javascripts/helpers.js'],
-          'public/templates.js': ['javascripts/templates.js'],
-          'public/site_map.js': ['javascripts/site_map.js'],
-          'public/config.js': ['javascripts/config.js'],
-          'public/session.js': ['javascripts/session.js'],
-          'public/chart.js': ['javascripts/chart.js']
+          'public/application.js': [
+            'javascripts/**/*.js',
+            '!javascripts/**/*_test.js'
+          ]
         }
       },
       // top: {
@@ -104,6 +102,7 @@ module.exports = function(grunt) {
       },
       pageviews: {
         files: {
+          // order matters here
           'public/application.js': [
             'vendor/javascripts/jquery.min.js',
             'vendor/javascripts/moment.min.js',
@@ -111,13 +110,6 @@ module.exports = function(grunt) {
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
-            'javascripts/polyfills.js',
-            'public/site_map.js',
-            'public/templates.js',
-            'public/config.js',
-            'public/session.js',
-            'public/helpers.js',
-            'public/chart.js',
             'public/application.js'
           ],
           'public/application.css': [
@@ -175,8 +167,8 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('production', ['lint', 'babel', 'sass:dist', 'concat', 'uglify:all', 'haml']);
-  grunt.registerTask('pageviews', ['lint', 'babel:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
+  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify:all', 'haml']);
+  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
   grunt.registerTask('haml', ['hamlify']);

@@ -5,7 +5,8 @@
   "repository": "github.com/MusikAnimal/pageviews",
   "author": "MusikAnimal, Marcel Ruiz Forns",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
+    "babelify": "7.2.0",
     "babel-preset-es2015": "*",
     "eslint": "*",
     "grunt-contrib-concat": "*",
