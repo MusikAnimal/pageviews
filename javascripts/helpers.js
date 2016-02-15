@@ -262,6 +262,10 @@ const pv = {
     return typeof Intl === "object";
   },
 
+  n(value) {
+    return (new Number(value)).toLocaleString();
+  },
+
   /**
    * Make request to API in order to get normalized page names. E.g. masculine versus feminine namespaces on dewiki
    *
@@ -278,6 +282,7 @@ const pv = {
   resetView() {
     $(".chart-container").html("");
     $(".chart-container").removeClass("loading");
+    $(".message-container").html("");
     resetArticleSelector();
   },
 
@@ -297,13 +302,12 @@ const pv = {
     });
   },
 
-  writeMessage(message, className, clear) {
+  writeMessage(message, clear) {
     if(clear) {
-      $(".chart-container").removeClass("loading");
-      $(".chart-container").html("");
+      $(".message-container").html("");
     }
-    $(".chart-container").append(
-      `<p class='${className || ''}'>${message}</p>`
+    $(".message-container").append(
+      `<p class='error-message'>${message}</p>`
     );
   }
 };

@@ -68,11 +68,14 @@
 
         / Chart
         .chart-container.col-lg-10.loading
-          .ad-block-notice.text-center
+          / inline styles since the ad blocker might block loading of assets
+          .ad-block-notice.text-center{style: "font-weight:bold; color:#fe875e"}
             Chart not appearing? Please ensure you have all ad blockers disabled or have
-            %span.mono /pageviews/*
+            %span{style: "font-family: Consolas, Lucida Console, monospace;"} /pageviews/*
             whitelisted.
           %canvas.aqs-chart
+
+        .message-container.col-lg-10
 
         / Legend
         #chart-legend.col-lg-10

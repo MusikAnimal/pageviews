@@ -10,7 +10,7 @@
 let normalized = false;
 
 function setupProjectInput() {
-  $(config.projectInput).on('change', function () {
+  $(config.projectInput).on('change', function() {
     if(!this.value) {
       this.value = 'en.wikipedia.org';
       return;
@@ -27,7 +27,7 @@ function validateProject() {
     $(".select2-selection--multiple").removeClass('disabled');
   } else {
     pv.writeMessage(
-      "<a href='//" + project + "'>" + project + "</a> is not a " +
+      `<a href='//${project}'>${project}</a> is not a ` +
       "<a href='https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
       'validate', true
     );
@@ -45,10 +45,24 @@ function setupDateRangeSelector() {
     minDate: config.minDate,
     maxDate: config.maxDate
   });
-  dateRangeSelector.on('change', updateChart);
+  dateRangeSelector.on('change', ()=> {
+    if(config.chartType === 'Line') {
+      if(numDaysInRange() > 50) {
+        Chart.defaults.Line.pointHitDetectionRadius = 3;
+      } else if(numDaysInRange() > 30) {
+        Chart.defaults.Line.pointHitDetectionRadius = 5;
+      } else if(numDaysInRange() > 20) {
+        Chart.defaults.Line.pointHitDetectionRadius = 10;
+      } else {
+        Chart.defaults.Line.pointHitDetectionRadius = 20;
+      }
+    }
+
+    updateChart();
+  });
 }
 
-function setupArticleSelector () {
+function setupArticleSelector() {
   const articleSelector = $(config.articleSelector);
 
   articleSelector.select2({
@@ -69,10 +83,10 @@ function setupArticleSelector () {
           'redirects': 'return'
         };
       },
-      processResults: function (data) {
+      processResults: function(data) {
         // Processes Mediawiki API results into Select2 format.
         let results = [];
-        if (data && data[1].length) {
+        if(data && data[1].length) {
           results = data[1].map(function (elem) {
             return {
               id: elem.replace(/ /g, '_'),
@@ -106,9 +120,9 @@ function setupListeners() {
 // Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
 // caused by race conditions between consecutive ajax calls. They are actually
 // not critical and can be avoided with this empty function.
-function articleSuggestionCallback (data) {}
+function articleSuggestionCallback(data) {}
 
-function resetArticleSelector () {
+function resetArticleSelector() {
   const articleSelector = $(config.articleSelector);
   articleSelector.off('change');
   articleSelector.select2('val', null);
@@ -122,7 +136,7 @@ function resetArticleSelector () {
 function setArticleSelectorDefaults(defaults) {
   // Caveat: This method only works with single-word article names.
   const articleSelectorQuery = config.articleSelector;
-  defaults.forEach(function (elem) {
+  defaults.forEach((elem)=> {
     const escapedText = $('<div>').text(elem).html();
     $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
   });
@@ -143,7 +157,7 @@ function pushParams() {
     agent: $('#agent-select').val()
   }) + '&pages=' + pages.join('|');
 
-  if (window.history && window.history.replaceState) {
+  if(window.history && window.history.replaceState) {
     window.history.replaceState({}, 'Pageview comparsion', "#" + state);
   }
 }
@@ -181,7 +195,7 @@ function popParams() {
     params.pages = pv.underscorePageNames(params.pages);
     setArticleSelectorDefaults(params.pages);
   } else {
-    pv.normalizePageNames(params.pages).then(function(data) {
+    pv.normalizePageNames(params.pages).then((data)=> {
       normalized = true;
 
       if(data.query.normalized) {
@@ -228,7 +242,7 @@ function parseHashParams() {
     chunks = uri.split('&');
   let params = {};
 
-  for(let i=0; i < chunks.length ; i++) {
+  for(let i=0; i<chunks.length ; i++) {
     let chunk = chunks[i].split('=');
 
     if(chunk[0] === 'pages') {
@@ -273,7 +287,7 @@ function exportJSON(e) {
 
   let data = [];
 
-  chartData.forEach(function(page, index) {
+  chartData.forEach((page, index)=> {
     let entry = {
       page: page.label.replace(/"/g, "\"").replace(/'/g, "\'"),
       color: page.strokeColor,
@@ -282,7 +296,7 @@ function exportJSON(e) {
     };
     page.data = sanitizeData(page.data);
 
-    getDateHeadings().forEach(function(heading, index) {
+    getDateHeadings().forEach((heading, index)=> {
       entry[heading.replace(/\\/,'')] = page.data[index];
     });
 
@@ -294,7 +308,7 @@ function exportJSON(e) {
   window.open(encodedUri);
 }
 
-$(document).ready(function() {
+$(document).ready(()=> {
   $.extend(Chart.defaults.global, {animation: false, responsive: true});
 
   setupProjectInput();
@@ -321,7 +335,7 @@ $(document).ready(function() {
 
   // temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews
   if(document.location.search.includes("redirected=true")) {
-    if (window.history && window.history.replaceState) {
+    if(window.history && window.history.replaceState) {
       let newURL = document.location.href.replace(document.location.search, '');
       window.history.replaceState({}, 'Pageview comparsion', newURL);
     }

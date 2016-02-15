@@ -82,13 +82,15 @@
         </div>
         <!-- Chart -->
         <div class='chart-container col-lg-10 loading'>
-          <div class='ad-block-notice text-center'>
+          <!-- inline styles since the ad blocker might block loading of assets -->
+          <div class='ad-block-notice text-center' style='font-weight:bold; color:#fe875e'>
             Chart not appearing? Please ensure you have all ad blockers disabled or have
-            <span class='mono'>/pageviews/*</span>
+            <span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>
             whitelisted.
           </div>
           <canvas class='aqs-chart'></canvas>
         </div>
+        <div class='message-container col-lg-10'></div>
         <!-- Legend -->
         <div class='col-lg-10' id='chart-legend'></div>
         <!-- Other links -->

@@ -264,6 +264,9 @@ var pv = {
   localeSupported: function localeSupported() {
     return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === "object";
   },
+  n: function n(value) {
+    return new Number(value).toLocaleString();
+  },
 
 
   /**
@@ -281,6 +284,7 @@ var pv = {
   resetView: function resetView() {
     $(".chart-container").html("");
     $(".chart-container").removeClass("loading");
+    $(".message-container").html("");
     resetArticleSelector();
   },
   rgba: function rgba(value, alpha) {
@@ -299,12 +303,11 @@ var pv = {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
   },
-  writeMessage: function writeMessage(message, className, clear) {
+  writeMessage: function writeMessage(message, clear) {
     if (clear) {
-      $(".chart-container").removeClass("loading");
-      $(".chart-container").html("");
+      $(".message-container").html("");
     }
-    $(".chart-container").append('<p class=\'' + (className || '') + '\'>' + message + '</p>');
+    $(".message-container").append('<p class=\'error-message\'>' + message + '</p>');
   }
 };
 

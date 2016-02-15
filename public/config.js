@@ -17,7 +17,6 @@ var config = {
     Line: {
       opts: {
         bezierCurve: false,
-        pointHitDetectionRadius: 3,
         legendTemplate: templates.linearLegend
       },
       dataset: function dataset(color) {
@@ -98,6 +97,9 @@ var config = {
   globalChartOpts: {
     animation: true,
     animationEasing: "easeInOutQuart",
-    animationSteps: 30
+    animationSteps: 30,
+    scaleLabel: "<%= pv.n(value) %>",
+    tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= pv.n(value) %>",
+    multiTooltipTemplate: "<%= pv.n(value) %>"
   }
 };

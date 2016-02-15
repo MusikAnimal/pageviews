@@ -1,17 +1,24 @@
 function destroyChart() {
-  // Destroy previous chart, if needed.
+  /** Destroy previous chart, if needed. */
   if(config.articleComparisonChart) {
     config.articleComparisonChart.destroy();
     delete config.articleComparisonChart;
   }
 }
 
-// Fills in zero value to a timeseries, see:
-// https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+/**
+ * Fills in zero value to a timeseries, see:
+ * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+ *
+ * @param {object} data fetched from API
+ * @param {moment} startDate - start date of range to filter through
+ * @param {moment} endDate - end date of range
+ * @returns {object} dataset with zeros where nulls where
+ */
 function fillInZeros(data, startDate, endDate) {
   // Extract the dates that are already in the timeseries
   let alreadyThere = {};
-  data.items.forEach(function (elem) {
+  data.items.forEach((elem)=> {
     let date = moment(elem.timestamp, config.timestampFormat);
     alreadyThere[date] = elem;
   });
@@ -31,28 +38,46 @@ function fillInZeros(data, startDate, endDate) {
   }
 }
 
+/*
+ * Get data formatted for a linear chart (Line, Bar, Radar)
+ *
+ * @param {object} data - data just before we are ready to render the chart
+ * @param {string} article - title of page
+ * @param {integer} index - where we are in the list of pages to show
+ *    used for colour selection
+ * @returns {object} - ready for chart rendering
+ */
 function getLinearData(data, article, index) {
-  const values = data.items.map(function (elem) { return elem.views; }),
-    color = config.colors[index];
+  const values = data.items.map((elem)=> elem.views),
+    color = config.colors[index % 10];
 
   return Object.assign(
     {
       label: article.replace(/_/g, ' '),
       data: values,
-      sum: values.reduce(function(a, b){return a+b;})
+      sum: values.reduce((a, b)=> a+b)
     },
     config.chartConfig[config.chartType].dataset(color)
   );
 }
 
+/*
+ * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
+ *
+ * @param {object} data - data just before we are ready to render the chart
+ * @param {string} article - title of page
+ * @param {integer} index - where we are in the list of pages to show
+ *    used for colour selection
+ * @returns {object} - ready for chart rendering
+ */
 function getCircularData(data, article, index) {
-  const values = data.items.map(function (elem) { return elem.views; }),
+  const values = data.items.map((elem)=> elem.views),
     color = config.colors[index];
 
   return Object.assign(
     {
       label: article.replace(/_/g, ' '),
-      value: values.reduce(function(a, b){return a+b;})
+      value: values.reduce((a, b)=> a+b)
     },
     config.chartConfig[config.chartType].dataset(color)
   );
@@ -60,13 +85,14 @@ function getCircularData(data, article, index) {
 
 function updateChart() {
   pushParams();
-  // Collect parameters from inputs.
+  /** Collect parameters from inputs. */
   const dateRangeSelector = $(config.dateRangeSelector),
     startDate = dateRangeSelector.data('daterangepicker').startDate,
-    endDate = dateRangeSelector.data('daterangepicker').endDate,
-    articles = $(config.articleSelector).select2('val') || [];
+    endDate = dateRangeSelector.data('daterangepicker').endDate;
+  let articles = $(config.articleSelector).select2('val') || [];
 
   destroyChart();
+  $(".message-container").html("");
 
   if(articles.length) {
     $(".chart-container").addClass("loading");
@@ -78,9 +104,9 @@ function updateChart() {
   // process it to Chart.js format and initialize the chart.
   let labels = []; // Labels (dates) for the x-axis.
   let datasets = []; // Data for each article timeseries.
-  articles.forEach(function (article, index) {
+  articles.forEach((article, index)=> {
     const uriEncodedArticle = encodeURIComponent(article);
-    // Url to query the API.
+    /** Url to query the API. */
     const url = (
       `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${pv.getProject()}` +
       `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
@@ -89,55 +115,58 @@ function updateChart() {
 
     $.ajax({
       url: url,
-      dataType: 'json',
-      success: (data)=> {
-        fillInZeros(data, startDate, endDate);
+      dataType: 'json'
+    }).success((data)=> {
+      fillInZeros(data, startDate, endDate);
 
-        // Get the labels from the first call.
-        if (labels.length === 0) {
-          labels = data.items.map(function (elem) {
-            return moment(elem.timestamp, config.timestampFormat).format(pv.getLocaleDateString());
-          });
-        }
+      /** Build the article's dataset. */
+      if(config.linearCharts.includes(config.chartType)) {
+        datasets.push(getLinearData(data, article, index));
+      } else {
+        datasets.push(getCircularData(data, article, index));
+      }
 
-        // Build the article's dataset.
-        if(config.linearCharts.includes(config.chartType)) {
-          datasets.push(getLinearData(data, article, index));
-        } else {
-          datasets.push(getCircularData(data, article, index));
-        }
+      window.chartData = datasets;
+    }).fail((data)=> {
+      if(data.status === 404) {
+        pv.writeMessage("No data found for the page <a href='" + getPageURL(article) + "'>" + article + "</a>", true);
+        articles = articles.filter((el) => el !== article);
 
-        window.chartData = datasets;
-
-        // When all article datasets have been collected,
-        // initialize the chart.
-        if (datasets.length === articles.length) {
-          $(".chart-container").removeClass("loading");
-          const options = Object.assign({},
-            config.chartConfig[config.chartType].opts,
-            config.globalChartOpts
-          );
-          const linearData = {labels: labels, datasets: datasets};
-
+        if(!articles.length) {
           $(".chart-container").html("");
-          $(".chart-container").append("<canvas class='aqs-chart'>");
-          const context = $(config.chart)[0].getContext('2d');
-
-          if(config.linearCharts.includes(config.chartType)) {
-            config.articleComparisonChart = new Chart(context)[config.chartType](linearData, options);
-          } else {
-            config.articleComparisonChart = new Chart(context)[config.chartType](datasets, options);
-          }
-
-          pv.clearSiteNotices();
-          $("#chart-legend").html(config.articleComparisonChart.generateLegend());
-          $('.data-links').show();
+          $(".chart-container").removeClass("loading");
         }
-      },
-      error: (data)=> {
-        if(data.status === 404) {
-          pv.writeMessage("No data found for the page <a href='" + getPageURL(article) + "'>" + article + "</a>");
+      }
+    }).always((data)=> {
+      /** Get the labels from the first call. */
+      if(labels.length === 0) {
+        labels = data.items.map((elem)=> {
+          return moment(elem.timestamp, config.timestampFormat).format(pv.getLocaleDateString());
+        });
+      }
+
+      /** When all article datasets have been collected, initialize the chart. */
+      if(datasets.length === articles.length) {
+        $(".chart-container").removeClass("loading");
+        const options = Object.assign({},
+          config.chartConfig[config.chartType].opts,
+          config.globalChartOpts
+        );
+        const linearData = {labels: labels, datasets: datasets};
+
+        $(".chart-container").html("");
+        $(".chart-container").append("<canvas class='aqs-chart'>");
+        const context = $(config.chart)[0].getContext('2d');
+
+        if(config.linearCharts.includes(config.chartType)) {
+          config.articleComparisonChart = new Chart(context)[config.chartType](linearData, options);
+        } else {
+          config.articleComparisonChart = new Chart(context)[config.chartType](datasets, options);
         }
+
+        pv.clearSiteNotices();
+        $("#chart-legend").html(config.articleComparisonChart.generateLegend());
+        $('.data-links').show();
       }
     });
   });
