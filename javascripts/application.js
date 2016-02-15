@@ -16,7 +16,7 @@ function setupProjectInput() {
       return;
     }
     if(validateProject()) return;
-    resetArticleSelector(); // This will call updateChart() itself.
+    pv.resetView();
   });
 }
 
@@ -26,12 +26,12 @@ function validateProject() {
     $(".validate").remove();
     $(".select2-selection--multiple").removeClass('disabled');
   } else {
+    pv.resetView();
     pv.writeMessage(
       `<a href='//${project}'>${project}</a> is not a ` +
       "<a href='https://en.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
       'validate', true
     );
-    resetArticleSelector();
     $(".select2-selection--multiple").addClass('disabled');
     return true;
   }

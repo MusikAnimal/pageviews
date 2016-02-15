@@ -9,6 +9,9 @@ var pv = {
     $(".site-notice").append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
     $(".site-notice-wrapper").show();
   },
+  clearMessages: function clearMessages() {
+    $(".message-container").html("");
+  },
   clearSiteNotices: function clearSiteNotices() {
     $(".site-notice .autodismiss").remove();
 
@@ -305,7 +308,7 @@ var pv = {
   },
   writeMessage: function writeMessage(message, clear) {
     if (clear) {
-      $(".message-container").html("");
+      pv.clearMessages();
     }
     $(".message-container").append('<p class=\'error-message\'>' + message + '</p>');
   }

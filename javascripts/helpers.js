@@ -8,6 +8,10 @@ const pv = {
     $(".site-notice-wrapper").show();
   },
 
+  clearMessages() {
+    $(".message-container").html("");
+  },
+
   clearSiteNotices() {
     $(".site-notice .autodismiss").remove();
 
@@ -304,7 +308,7 @@ const pv = {
 
   writeMessage(message, clear) {
     if(clear) {
-      $(".message-container").html("");
+      pv.clearMessages();
     }
     $(".message-container").append(
       `<p class='error-message'>${message}</p>`
