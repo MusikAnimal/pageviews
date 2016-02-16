@@ -10,6 +10,7 @@
 const config = require('./config');
 const siteMap = require('./shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
+const pv = require('./shared/helpers');
 let session = require('./session');
 let normalized = false;
 
@@ -65,6 +66,13 @@ function setupDateRangeSelector() {
     minDate: config.minDate,
     maxDate: config.maxDate
   });
+
+  $('.daterangepicker').append(
+    "<div class='daterange-notice'>" +
+    "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." +
+    "</div>"
+  );
+
   dateRangeSelector.on('change', ()=> {
     if(session.chartType === 'Line') {
       if(numDaysInRange() > 50) {
@@ -218,18 +226,7 @@ function popParams() {
     pv.normalizePageNames(params.pages).then((data)=> {
       normalized = true;
 
-      if(data.query.normalized) {
-        data.query.normalized.forEach(function(normalPage) {
-          // do it this way to preserve ordering of pages
-          params.pages = params.pages.map((page)=> {
-            if(normalPage.from === page) {
-              return normalPage.to;
-            } else {
-              return page;
-            }
-          });
-        });
-      }
+      params.pages = data;
 
       if(params.pages.length === 1) {
         session.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
@@ -275,6 +272,7 @@ function parseHashParams() {
   return params;
 }
 
+// FIXME: shouldn't need this anymore
 function sanitizeData(data) {
   return data.map((entry)=> {
     return entry || 0;
@@ -327,47 +325,6 @@ function exportJSON(e) {
     encodedUri = encodeURI(jsonContent);
   window.open(encodedUri);
 }
-
-$(document).ready(()=> {
-  $.extend(Chart.defaults.global, {animation: false, responsive: true});
-
-  setupProjectInput();
-  setupDateRangeSelector();
-  setupArticleSelector();
-  popParams();
-
-  // simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-  $.ajax({
-    url: "//tools.wmflabs.org/musikanimal/api/uses",
-    method: 'PATCH',
-    data : {
-      tool: 'pageviews',
-      type: 'form'
-    }
-  });
-
-  $('.date-latest a').on('click', function(e) {
-    let daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
-    daterangepicker.setStartDate(moment().subtract($(this).data('value'), 'days'));
-    daterangepicker.setEndDate(moment());
-    e.preventDefault();
-  });
-
-  // temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews
-  if(document.location.search.includes("redirected=true")) {
-    if(window.history && window.history.replaceState) {
-      let newURL = document.location.href.replace(document.location.search, '');
-      window.history.replaceState({}, 'Pageview comparsion', newURL);
-    }
-    pv.addSiteNotice('info',
-      "Please update your links to point to " +
-        "<a class='alert-link' href='https://tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>",
-      "Pageviews Analysis has moved!"
-    );
-  }
-
-  setupListeners();
-});
 
 function destroyChart() {
   /** Destroy previous chart, if needed. */
@@ -554,3 +511,43 @@ function updateChart() {
   });
 }
 
+$(document).ready(()=> {
+  $.extend(Chart.defaults.global, {animation: false, responsive: true});
+
+  setupProjectInput();
+  setupDateRangeSelector();
+  setupArticleSelector();
+  popParams();
+
+  // simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
+  $.ajax({
+    url: "//tools.wmflabs.org/musikanimal/api/uses",
+    method: 'PATCH',
+    data : {
+      tool: 'pageviews',
+      type: 'form'
+    }
+  });
+
+  $('.date-latest a').on('click', function(e) {
+    let daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
+    daterangepicker.setStartDate(moment().subtract($(this).data('value'), 'days'));
+    daterangepicker.setEndDate(moment());
+    e.preventDefault();
+  });
+
+  // temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews
+  if(document.location.search.includes("redirected=true")) {
+    if(window.history && window.history.replaceState) {
+      let newURL = document.location.href.replace(document.location.search, '');
+      window.history.replaceState({}, 'Pageview comparsion', newURL);
+    }
+    pv.addSiteNotice('info',
+      "Please update your links to point to " +
+        "<a class='alert-link' href='https://tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>",
+      "Pageviews Analysis has moved!"
+    );
+  }
+
+  setupListeners();
+});

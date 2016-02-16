@@ -283,9 +283,25 @@ const pv = {
    * @returns {Deferred} promise with data fetched from API
    */
   normalizePageNames(pages) {
+    let dfd = $.Deferred();
+
     return $.ajax({
       url: `https://${pv.getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
       dataType: 'jsonp'
+    }).then((data)=> {
+      if(data.query.normalized) {
+        data.query.normalized.forEach((normalPage)=> {
+          // do it this way to preserve ordering of pages
+          pages = pages.map((page)=> {
+            if (normalPage.from === page) {
+              return normalPage.to;
+            } else {
+              return page;
+            }
+          });
+        });
+      }
+      return dfd.resolve(pages);
     });
   },
 

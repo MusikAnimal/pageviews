@@ -23,3 +23,11 @@ describe('underscorePageNames', ()=> {
     )).toBe(true);
   });
 });
+
+describe('normalizePageNames', ()=> {
+  it('normalizes page names based on API response', ()=> {
+    pv.normalizePageNames(['Benutzerin:MusikAnimal', 'Hasil_Adkins']).then((data) => {
+      expect(_.isEqual(data, ['Benutzer:MusikAnimal', 'Hasil Adkins']));
+    });
+  });
+});
