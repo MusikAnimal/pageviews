@@ -30,7 +30,7 @@ function articleSuggestionCallback(data) {}
  * @returns {null} nothing
  */
 function destroyChart() {
-  if(session.chartObj) {
+  if (session.chartObj) {
     session.chartObj.destroy();
     delete session.chartObj;
   }
@@ -91,6 +91,22 @@ function exportJSON() {
 }
 
 /**
+ * Fill in values within settings modal with what's in the session object
+ * @returns {null} nothing
+ */
+function fillInSettings() {
+  $.each($("#settings-modal input"), function() {
+    let name = $(this).prop("name");
+
+    if ($(this).prop('type') === 'checkbox') {
+      $(this).prop('checked', session[name] === 'true');
+    } else {
+      $(this).prop('checked', session[name] === $(this).val());
+    }
+  });
+}
+
+/**
  * Fills in zero value to a timeseries, see:
  * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
  *
@@ -109,8 +125,8 @@ function fillInZeros(data, startDate, endDate) {
   data.items = [];
 
   /** Reconstruct with zeros instead of nulls */
-  for(let date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
-    if(alreadyThere[date]) {
+  for (let date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+    if (alreadyThere[date]) {
       data.items.push(alreadyThere[date]);
     } else if (date !== endDate) {
       data.items.push({
@@ -120,6 +136,21 @@ function fillInZeros(data, startDate, endDate) {
     }
   }
 }
+
+/**
+ * Format number based on current settings, e.g. localize with comma delimeters
+ * @param {number|string} num - number to format
+ * @returns {string} formatted number
+ */
+function formatNumber(num) {
+  if (session.numericalFormatting === 'true') {
+    return pv.n(num);
+  } else {
+    return num;
+  }
+}
+/** need to export to global for chart templating */
+window.formatNumber = formatNumber;
 
 /**
  * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
@@ -132,7 +163,7 @@ function fillInZeros(data, startDate, endDate) {
  */
 function getCircularData(data, article, index) {
   const values = data.items.map((elem)=> elem.views),
-    color = session.colors[index];
+    color = session.colors()[index];
 
   return Object.assign(
     {
@@ -144,14 +175,26 @@ function getCircularData(data, article, index) {
 }
 
 /**
+ * Get date format to use based on settings
+ * @returns {string} date format to passed to parser
+ */
+function getDateFormat() {
+  if (session.localizeDateFormat === 'true') {
+    return pv.getLocaleDateString();
+  } else {
+    return config.defaults.dateFormat;
+  }
+}
+
+/**
  * Gets the date headings as strings - i18n compliant
  * @returns {Array} the date headings as strings
  */
 function getDateHeadings() {
   const daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
     dateHeadings = [];
-  for(let date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
-    dateHeadings.push(date.format(pv.getLocaleDateString()));
+  for (let date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
+    dateHeadings.push(date.format(getDateFormat()));
   }
   return dateHeadings;
 }
@@ -167,7 +210,7 @@ function getDateHeadings() {
  */
 function getLinearData(data, article, index) {
   const values = data.items.map((elem)=> elem.views),
-    color = session.colors[index % 10];
+    color = session.colors()[index % 10];
 
   return Object.assign(
     {
@@ -177,6 +220,30 @@ function getLinearData(data, article, index) {
     },
     config.chartConfig[session.chartType].dataset(color)
   );
+}
+
+/**
+ * Construct query for API based on what type of search we're doing
+ * @param {Object} query - as returned from Select2 input
+ * @returns {Object} query params to be handed off to API
+ */
+function getSearchParams(query) {
+  if (session.autocomplete === 'autocomplete') {
+    return {
+      'action': 'opensearch',
+      'format': 'json',
+      'search': query || '',
+      'redirects': 'return'
+    };
+  } else if (session.autocomplete === 'autocomplete_redirects') {
+    return {
+      'action': 'query',
+      'list': 'prefixsearch',
+      'format': 'json',
+      'pssearch': query || '',
+      'cirrusUseCompletionSuggester': 'yes'
+    };
+  }
 }
 
 /**
@@ -200,10 +267,10 @@ function parseHashParams() {
     chunks = uri.split('&');
   let params = {};
 
-  for(let i=0; i<chunks.length ; i++) {
+  for (let i=0; i<chunks.length ; i++) {
     let chunk = chunks[i].split('=');
 
-    if(chunk[0] === 'pages') {
+    if (chunk[0] === 'pages') {
       params.pages = chunk[1].split('|');
     } else {
       params[chunk[0]] = chunk[1];
@@ -221,8 +288,8 @@ function parseHashParams() {
 function popParams() {
   let params = parseHashParams();
 
-  $(config.projectInput).val(params.project || config.defaultProject);
-  if(validateProject()) return;
+  $(config.projectInput).val(params.project || config.defaults.project);
+  if (validateProject()) return;
 
   const startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
     endDate = moment(params.end || Date.now());
@@ -232,11 +299,11 @@ function popParams() {
   $('#platform-select').val(params.platform || 'all-access');
   $('#agent-select').val(params.agent || 'user');
 
-  if(startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
+  if (startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
     pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters!", true);
     resetView();
     return;
-  } else if(startDate > endDate) {
+  } else if (startDate > endDate) {
     pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters!", true);
     resetView();
     return;
@@ -244,10 +311,10 @@ function popParams() {
 
   resetArticleSelector();
 
-  if(!params.pages || params.pages.length === 1 && !params.pages[0]) {
+  if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
     params.pages = ['Cat', 'Dog'];
     setArticleSelectorDefaults(params.pages);
-  } else if(normalized) {
+  } else if (normalized) {
     params.pages = pv.underscorePageNames(params.pages);
     setArticleSelectorDefaults(params.pages);
   } else {
@@ -256,13 +323,44 @@ function popParams() {
 
       params.pages = data;
 
-      if(params.pages.length === 1) {
+      if (params.pages.length === 1) {
         session.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
       }
 
       setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
     });
   }
+}
+
+/**
+ * Processes Mediawiki API results into Select2 format based on settings
+ * @param {Object} data - data as received from the API
+ * @returns {Object} data ready to handed over to Select2
+ */
+function processSearchResults(data) {
+  let results = [];
+
+  if (session.autocomplete === 'autocomplete') {
+    if (data && data[1].length) {
+      results = data[1].map((elem)=> {
+        return {
+          id: elem.replace(/ /g, '_'),
+          text: elem
+        };
+      });
+    }
+  } else if (session.autocomplete === 'autocomplete_redirects') {
+    if (data && data.query && data.query.prefixsearch.length) {
+      results = data.query.prefixsearch.map(function (elem) {
+        return {
+          id: elem.title.replace(/ /g, '_'),
+          text: elem.title
+        };
+      });
+    }
+  }
+
+  return {results: results};
 }
 
 /**
@@ -282,7 +380,7 @@ function pushParams() {
     agent: $('#agent-select').val()
   }) + '&pages=' + pages.join('|');
 
-  if(window.history && window.history.replaceState) {
+  if (window.history && window.history.replaceState) {
     window.history.replaceState({}, 'Pageview comparsion', "#" + state);
   }
 
@@ -337,26 +435,9 @@ function setupArticleSelector() {
       delay: 200,
       jsonpCallback: 'articleSuggestionCallback',
       data: (search)=> {
-        return {
-          'action': 'opensearch',
-          'format': 'json',
-          'search': search.term || '',
-          'redirects': 'return'
-        };
+        return getSearchParams(search.term);
       },
-      processResults: function(data) {
-        /** Processes Mediawiki API results into Select2 format. */
-        let results = [];
-        if(data && data[1].length) {
-          results = data[1].map((elem)=> {
-            return {
-              id: elem.replace(/ /g, '_'),
-              text: elem
-            };
-          });
-        }
-        return {results: results};
-      },
+      processResults: processSearchResults,
       cache: true
     }
   });
@@ -391,7 +472,7 @@ function setArticleSelectorDefaults(pages) {
 function setupDateRangeSelector() {
   const dateRangeSelector = $(config.dateRangeSelector);
   dateRangeSelector.daterangepicker({
-    locale: { format: pv.getLocaleDateString() },
+    locale: { format: getDateFormat() },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
     maxDate: config.maxDate
@@ -406,12 +487,12 @@ function setupDateRangeSelector() {
 
   dateRangeSelector.on('change', ()=> {
     /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
-    if(session.chartType === 'Line') {
-      if(numDaysInRange() > 50) {
+    if (session.chartType === 'Line') {
+      if (numDaysInRange() > 50) {
         Chart.defaults.Line.pointHitDetectionRadius = 3;
-      } else if(numDaysInRange() > 30) {
+      } else if (numDaysInRange() > 30) {
         Chart.defaults.Line.pointHitDetectionRadius = 5;
-      } else if(numDaysInRange() > 20) {
+      } else if (numDaysInRange() > 20) {
         Chart.defaults.Line.pointHitDetectionRadius = 10;
       } else {
         Chart.defaults.Line.pointHitDetectionRadius = 20;
@@ -457,25 +538,85 @@ function setupListeners() {
  */
 function setupProjectInput() {
   $(config.projectInput).on('change', function() {
-    if(!this.value) {
-      this.value = config.defaultProject;
+    if (!this.value) {
+      this.value = config.defaults.project;
       return;
     }
-    if(validateProject()) return;
+    if (validateProject()) return;
     resetView();
   });
+}
+
+/**
+ * Set values of form based on localStorage or defaults, add listeners
+ * @returns {null} nothing
+ */
+function setupSettingsModal() {
+  /** first build color palette options */
+  let markup = "";
+  Object.keys(config.colors).forEach((key)=> {
+    let palette = config.colors[key];
+    markup += "<div class='radio'><label class='color-label'>" +
+      `<input type='radio' name='colorPalette' value=${key} />`;
+    palette.forEach((color)=> {
+      markup += `<span class='color-tile' style='background:${color}'></span>`;
+    });
+    markup += "</label></div>";
+  });
+  $(".palette-list").append(markup);
+
+  /** fill in values, everything is either a checkbox or radio */
+  fillInSettings();
+
+  /** add listener */
+  $('.save-settings-btn').on('click', saveSettings);
+  $('.cancel-settings-btn').on('click', fillInSettings);
+}
+
+/**
+ * Save a particular setting to session and localStorage
+ *
+ * @param {string} key - settings key
+ * @param {string|boolean} value - value to save
+ * @returns {null} nothing
+ */
+function saveSetting(key, value) {
+  session[key] = value;
+  localStorage[`pageviews-settings-${key}`] = value;
+}
+
+/**
+ * Save the selected settings within the settings modal
+ * Prefer this implementation over a large library like serializeObject or serializeJSON
+ * @returns {null} nothing
+ */
+function saveSettings() {
+  $.each($("#settings-modal input"), function() {
+    if (this.type === 'checkbox') {
+      saveSetting(this.name, this.checked ? 'true' : 'false');
+    } else if (this.checked) {
+      saveSetting(this.name, this.value);
+    }
+  });
+
+  let daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
+  daterangepicker.locale.format = getDateFormat();
+  daterangepicker.updateElement();
+
+  updateChart(true);
 }
 
 /**
  * The mother of all functions, where all the chart logic lives
  * Really needs to be broken out into several functions
  *
+ * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
  * @returns {null} - nothin
  */
-function updateChart() {
+function updateChart(force) {
   let articles = $(config.articleSelector).select2('val') || [];
 
-  if(!articles.length) {
+  if (!articles.length) {
     $("#chart-legend").html("");
     return;
   }
@@ -483,7 +624,7 @@ function updateChart() {
   pushParams();
 
   /** prevent duplicate querying due to conflicting listeners */
-  if(location.hash === session.params && session.prevChartType === session.chartType) {
+  if (!force && location.hash === session.params && session.prevChartType === session.chartType) {
     return;
   }
   session.params = location.hash;
@@ -520,7 +661,7 @@ function updateChart() {
       fillInZeros(data, startDate, endDate);
 
       /** Build the article's dataset. */
-      if(config.linearCharts.includes(session.chartType)) {
+      if (config.linearCharts.includes(session.chartType)) {
         datasets.push(getLinearData(data, article, index));
       } else {
         datasets.push(getCircularData(data, article, index));
@@ -528,25 +669,25 @@ function updateChart() {
 
       window.chartData = datasets;
     }).fail((data)=> {
-      if(data.status === 404) {
+      if (data.status === 404) {
         writeMessage(`No data found for the page <a href='${pv.getPageURL(article)}'>${article}</a>`, true);
         articles = articles.filter((el) => el !== article);
 
-        if(!articles.length) {
+        if (!articles.length) {
           $(".chart-container").html("");
           $(".chart-container").removeClass("loading");
         }
       }
     }).always((data)=> {
       /** Get the labels from the first call. */
-      if(labels.length === 0 && data.items) {
+      if (labels.length === 0 && data.items) {
         labels = data.items.map((elem)=> {
-          return moment(elem.timestamp, config.timestampFormat).format(pv.getLocaleDateString());
+          return moment(elem.timestamp, config.timestampFormat).format(getDateFormat());
         });
       }
 
       /** When all article datasets have been collected, initialize the chart. */
-      if(articles.length && datasets.length === articles.length) {
+      if (articles.length && datasets.length === articles.length) {
         $(".chart-container").removeClass("loading");
         const options = Object.assign({},
           config.chartConfig[session.chartType].opts,
@@ -558,7 +699,7 @@ function updateChart() {
         $(".chart-container").append("<canvas class='aqs-chart'>");
         const context = $(config.chart)[0].getContext('2d');
 
-        if(config.linearCharts.includes(session.chartType)) {
+        if (config.linearCharts.includes(session.chartType)) {
           session.chartObj = new Chart(context)[session.chartType](linearData, options);
         } else {
           session.chartObj = new Chart(context)[session.chartType](datasets, options);
@@ -578,7 +719,7 @@ function updateChart() {
  */
 function validateProject() {
   const project = $(config.projectInput).val();
-  if(siteDomains.includes(project)) {
+  if (siteDomains.includes(project)) {
     $(".validate").remove();
     $(".select2-selection--multiple").removeClass('disabled');
   } else {
@@ -600,7 +741,7 @@ function validateProject() {
  * @returns {jQuery} - jQuery object of message container
  */
 function writeMessage(message, clear) {
-  if(clear) {
+  if (clear) {
     pv.clearMessages();
   }
   return $(".message-container").append(
@@ -614,6 +755,7 @@ $(document).ready(()=> {
   setupProjectInput();
   setupDateRangeSelector();
   setupArticleSelector();
+  setupSettingsModal();
   popParams();
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
@@ -627,8 +769,8 @@ $(document).ready(()=> {
   });
 
   /** temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews */
-  if(document.location.search.includes("redirected=true")) {
-    if(window.history && window.history.replaceState) {
+  if (document.location.search.includes("redirected=true")) {
+    if (window.history && window.history.replaceState) {
       let newURL = document.location.href.replace(document.location.search, '');
       window.history.replaceState({}, 'Pageview comparsion', newURL);
     }
@@ -640,4 +782,6 @@ $(document).ready(()=> {
   }
 
   setupListeners();
+
+  pv.splash();
 });

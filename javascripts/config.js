@@ -91,16 +91,24 @@ const config = {
     '2': ['rgba(166, 206, 227, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(31, 119, 180, 1)', 'rgba(51, 160, 44, 1)', 'rgba(227, 26, 28, 1)', 'rgba(255, 127, 0, 1)', 'rgba(106, 61, 154, 1)']
   },
   daysAgo: 20,
-  defaultChart: 'Line',
-  defaultProject: 'en.wikipedia.org',
+  defaults: {
+    autocomplete: 'autocomplete',
+    chartType: 'Line',
+    colorPalette: '1',
+    dateFormat: 'YYYY-MM-DD',
+    localizeDateFormat: true,
+    numericalFormatting: true,
+    project: 'en.wikipedia.org',
+    num_formatting: true
+  },
   dateRangeSelector: '.aqs-date-range-selector',
   globalChartOpts: {
     animation: true,
     animationEasing: "easeInOutQuart",
     animationSteps: 30,
-    multiTooltipTemplate: "<%= pv.n(value) %>",
-    scaleLabel: "<%= pv.n(value) %>",
-    tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= pv.n(value) %>"
+    multiTooltipTemplate: "<%= formatNumber(value) %>",
+    scaleLabel: "<%= formatNumber(value) %>",
+    tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>"
   },
   linearCharts: ['Line', 'Bar', 'Radar'],
   minDate: moment('2015-10-01'),
