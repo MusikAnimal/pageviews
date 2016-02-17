@@ -20,7 +20,7 @@ module.exports = function(grunt) {
       }
     },
     eslint: {
-      src: ['javascripts/application.js']
+      src: ['javascripts/**/*.js']
     },
     scsslint: {
       options: {
