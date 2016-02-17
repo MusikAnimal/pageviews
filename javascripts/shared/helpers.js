@@ -1,3 +1,5 @@
+const $ = require('jquery');
+
 const pv = {
   addSiteNotice(level, message, title, autodismiss) {
     title = title ? `<strong>${title}</strong> ` : '';
@@ -267,6 +269,28 @@ const pv = {
   },
 
   /**
+   * Map normalized pages from API into a string of page names
+   * Used in normalizePageNames()
+   *
+   * @param {array} pages - array of page names
+   * @param {array} normalizedPages - array of normalized mappings returned by the API
+   * @returns {array} pages with the new normalized names, if given
+   */
+  mapNormalizedPageNames(pages, normalizedPages) {
+    normalizedPages.forEach((normalPage)=> {
+      /** do it this way to preserve ordering of pages */
+      pages = pages.map((page)=> {
+        if (normalPage.from === page) {
+          return normalPage.to;
+        } else {
+          return page;
+        }
+      });
+    });
+    return pages;
+  },
+
+  /**
    * Localize Number object with delimiters
    *
    * @param {Number} value - the Number, e.g. 1234567
@@ -290,16 +314,7 @@ const pv = {
       dataType: 'jsonp'
     }).then((data)=> {
       if(data.query.normalized) {
-        data.query.normalized.forEach((normalPage)=> {
-          // do it this way to preserve ordering of pages
-          pages = pages.map((page)=> {
-            if (normalPage.from === page) {
-              return normalPage.to;
-            } else {
-              return page;
-            }
-          });
-        });
+        pages = this.mapNormalizedPageNames(pages, data.query.normalized);
       }
       return dfd.resolve(pages);
     });
