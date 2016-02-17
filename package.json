@@ -24,7 +24,7 @@
     "underscore": "*"
   },
   "scripts": {
-    "test": "jest"
+    "test": "grunt lint && jest"
   },
   "jest": {
     "preprocessCachingDisabled": true,
