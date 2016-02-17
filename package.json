@@ -24,7 +24,7 @@
     "underscore": "*"
   },
   "scripts": {
-    "test": "eslint -c .eslintrc javascripts/ && jest"
+    "test": "grunt lint && jest"
   },
   "jest": {
     "preprocessCachingDisabled": true,
