@@ -1,6 +1,18 @@
 $red: #fe875e;
 $gray: #ccc;
 $link: #337ab7;
+
+// $color1: #a6cee3;
+// $color2: #b2df8a;
+// $color3: #fb9a99;
+// $color4: #fdbf6f;
+// $color5: #cab2d6;
+// $color6: #1f77b4;
+// $color7: #33a02c;
+// $color8: #e31a1c;
+// $color9: #ff7f00;
+// $color10: #6a3d9a;
+
 $color1: #bccbda;
 $color2: #e0ad91;
 $color3: #c1aa78;
@@ -14,10 +26,3 @@ $color10: #565554;
 
 // until SASS implements interpolation in names of variables
 $tag-colors: ($color1 $color2 $color3 $color4 $color5 $color6 $color7 $color8 $color9 $color10);
-
-@mixin prefix ($prop, $val) {
-  @each $pre in -webkit-, -moz-, -ms-, -o- {
-    #{$pre}#{$prop}: #{$val};
-  }
-  #{$prop}: #{$val};
-}

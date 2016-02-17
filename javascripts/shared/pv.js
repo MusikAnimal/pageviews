@@ -1,5 +1,3 @@
-const $ = require('jquery');
-
 const pv = {
   addSiteNotice(level, message, title, autodismiss) {
     title = title ? `<strong>${title}</strong> ` : '';

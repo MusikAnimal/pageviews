@@ -34,17 +34,41 @@
 /       .modal-body
 /         %p
 /           Your settings will be remembered on the same browser and computer.
-/         %div.checkbox
-/           %label
-/             %input.js-option-num-formatting{type: "checkbox"}
-/             Remove numerical formatting
-/         %div.checkbox
-/           %label
-/             %input.js-option-canonical-namespace{type: "checkbox"}
-/             Remove canonical namespace from page labels
-/         %div.checkbox
-/           %label
-/             %input{type: "checkbox"}
+
+/         %fieldset
+/           Basic settings:
+/           %div.checkbox
+/             %label
+/               %input.js-option-num-formatting{type: "checkbox"}
+/               Remove numerical formatting
+/           / %div.checkbox
+/           /   %label
+/           /     %input.js-option-canonical-namespace{type: "checkbox"}
+/           /     Remove canonical namespace from page labels
+
+/         %fieldset
+/           Autocomplete options when searching for pages:
+/           %div.radio
+/             %label
+/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
+/               Autocomplete
+/           %div.radio
+/             %label
+/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
+/               Autocomplete including redirects
+/           %div.radio
+/             %label
+/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
+/               No autocomplete
+
+/         %fieldset
+/           Color options:
+/           %div.radio
+/             %label
+/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
+/           %div.radio
+/             %label
+/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
 
 /       .modal-footer
 /         %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel

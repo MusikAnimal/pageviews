@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
-  // grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-scss-lint');
 
   grunt.initConfig({
@@ -41,15 +40,6 @@ module.exports = function(grunt) {
           ]
         }
       },
-      // top: {
-      //   files: {
-      //     'public/top/application.js': ['javascripts/top/application.js'],
-      //     'public/helpers.js' : ['javascripts/helpers.js'],
-      //     'public/templates.js': ['javascripts/templates.js'],
-      //     'public/config.js': ['javascripts/config.js'],
-      //     'public/chart.js': ['javascripts/chart.js']
-      //   }
-      // }
     },
     sass: {
       pageviews: {
@@ -64,18 +54,6 @@ module.exports = function(grunt) {
           ext: '.css'
         }]
       },
-      // top: {
-      //   options: {
-      //     sourcemap: 'none'
-      //   },
-      //   files: [{
-      //     expand: true,
-      //     cwd: 'stylesheets/top',
-      //     src: ['application.scss'],
-      //     dest: 'public/top',
-      //     ext: '.css'
-      //   }]
-      // },
       dist: {
         options: {
           style: 'compressed',
@@ -119,25 +97,7 @@ module.exports = function(grunt) {
             'public/application.css'
           ]
         }
-      },
-      // top: {
-      //   files: {
-      //     'public/top/application.js': [
-      //       'vendor/javascripts/jquery.min.js',
-      //       'vendor/javascripts/moment.min.js',
-      //       'vendor/javascripts/bootstrap.min.js',
-      //       'vendor/javascripts/select2.min.js', // may not need
-      //       'vendor/javascripts/daterangepicker.min.js',
-      //       'vendor/javascripts/Chart.min.js',
-      //       'javascripts/site_map.js',
-      //       'public/templates.js',
-      //       'public/config.js',
-      //       'public/helpers.js',
-      //       'public/chart.js',
-      //       'public/top/application.js'
-      //     ]
-      //   }
-      // }
+      }
     },
     uglify: {
       options: {
@@ -145,8 +105,7 @@ module.exports = function(grunt) {
       },
       all: {
         files: {
-          'public/application.js': ['public/application.js'],
-          // 'public/top/application.js': ['public/top/application.js']
+          'public/application.js': ['public/application.js']
         }
       }
     }

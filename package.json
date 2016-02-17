@@ -18,28 +18,12 @@
     "grunt-contrib-sass": "0.9.2",
     "grunt-scss-lint": "*",
     "gruntify-eslint": "*",
-    "jest-cli": "*",
     "jquery": "2.1.1",
     "moment": "2.11.2",
     "underscore": "*"
   },
   "scripts": {
-    "test": "eslint -c .eslintrc javascripts/ && jest"
-  },
-  "jest": {
-    "preprocessCachingDisabled": true,
-    "scriptPreprocessor": "./jest-preprocessor.js",
-    "testPathDirs": [
-      "./javascripts/"
-    ],
-    "testPathIgnorePatterns": [
-      "node_modules",
-      "mock_objects"
-    ],
-    "unmockedModulePathPatterns": [
-      "./node_modules/",
-      "mock_objects"
-    ]
+    "test": "eslint -c .eslintrc javascripts/"
   },
   "engine": "node >= 4.3.0"
 }
