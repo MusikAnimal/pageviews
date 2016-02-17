@@ -161,16 +161,33 @@ function resetArticleSelector() {
   updateChart();
 }
 
-function setArticleSelectorDefaults(defaults) {
-  // Caveat: This method only works with single-word article names.
+/**
+ * Directly set articles in article selector
+ * Also removes underscores from visible values in UI
+ *
+ * @param {array} pages - page titles
+ * @returns {array} - untouched array of pages
+ */
+function setArticleSelectorDefaults(pages) {
   const articleSelectorQuery = config.articleSelector;
-  defaults.forEach((elem)=> {
-    const escapedText = $('<div>').text(elem).html();
+  pages.forEach((page)=> {
+    const escapedText = $('<div>').text(page).html();
     $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
   });
   const articleSelector = $(articleSelectorQuery);
-  articleSelector.select2('val', defaults);
+  articleSelector.select2('val', pages);
   articleSelector.select2('close');
+
+  /** hack in removal of underscores in Select2 entries */
+  pages.forEach((page)=> {
+    if(/_/.test(page)) { // slight performance improvement
+      $(`.select2-selection__choice[title=\"${page}\"]`).text(
+        $(`.select2-selection__choice[title=\"${page}\"]`).text().replace(/_/g, ' ')
+      );
+    }
+  });
+
+  return pages;
 }
 
 function pushParams() {
