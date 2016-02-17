@@ -25,10 +25,10 @@ This guide mostly assumes you're using OSX or Linux. If that's the case, you can
 This first time around you'll need to install all node pacakges and dependencies with `npm install`.
 
 ### Local
-Run `grunt pageviews` for the main pageviews app, `grunt top` for the top pages app, or just `grunt` to compile everything.
+Run `grunt pageviews` for the main pageviews app. To save time, you can run `grunt haml` to just compile the HAML files, or `grunt sass` to compile the SCSS.
 
 ### Production
-Before pushing to master remember to run `grunt production` so the assets are minified.
+Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
 
 ## Implementation approach
 
@@ -39,8 +39,12 @@ something, add it to `/javascript/shared/polyfills.js`. Don't use jQuery utiliti
 For CSS don't worry about adding vendor prefixes to anything in the CSS3 spec. If it works in Chrome and Firefox, leave it
 at that. Other browsers will still function without the styling. Use [Bootstrap](http://getbootstrap.com/) classes where possible.
 
+[Browserify](http://browserify.org/) is used to help follow a module pattern. You'll need to `require('./file_name')` any file that is a dependency.
+
+[JSDoc](http://usejsdoc.org/) is preferred comment format. Try to document each function you create. The linters will complain if you don't!
+
 ## Tests
 
-Run with `npm test`. For JavaScript unit testing, we are using [Jest](https://facebook.github.io/jest/). Only critical functionality need be tested.
+Right now all we have for tests are the linters... you can run those with `grunt lint` or `npm test`. They will be ran automatically when you push or create a pull request. If for some reason you need a particular linter rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
 
-Linters will at some point also be ran when pushing to the repo or making a pull request. Please make sure they pass locally with `grunt lint`. If for some reason you need a particular linter rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring))
+Moving forward we'll look into integration/automated testing, as unit tests don't seem to be the most fitting for this application.
