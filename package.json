@@ -7,7 +7,7 @@
   "license": "MIT",
   "devDependencies": {
     "babelify": "7.2.0",
-    "babel-core": "*",
+    "babel-core": "5.5.7",
     "babel-preset-es2015": "*",
     "eslint": "*",
     "grunt-contrib-concat": "*",
