@@ -100,6 +100,7 @@ const config = {
   ],
   daysAgo: 20,
   defaultChart: 'Line',
+  defaultProject: 'en.wikipedia.org',
   dateRangeSelector: '.aqs-date-range-selector',
   globalChartOpts: {
     animation: true,

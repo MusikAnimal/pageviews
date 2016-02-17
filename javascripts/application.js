@@ -103,7 +103,7 @@ function setupArticleSelector() {
       dataType: 'jsonp',
       delay: 200,
       jsonpCallback: 'articleSuggestionCallback',
-      data: function (search) {
+      data: (search)=> {
         return {
           'action': 'opensearch',
           'format': 'json',
@@ -115,7 +115,7 @@ function setupArticleSelector() {
         // Processes Mediawiki API results into Select2 format.
         let results = [];
         if(data && data[1].length) {
-          results = data[1].map(function (elem) {
+          results = data[1].map((elem)=> {
             return {
               id: elem.replace(/ /g, '_'),
               text: elem
@@ -128,7 +128,19 @@ function setupArticleSelector() {
     }
   });
 
-  articleSelector.on('change', updateChart);
+  articleSelector.on('change', function() {
+    /** hack in removal of underscores in Select2 entries */
+    // FIXME!
+    // $(this).val().forEach((page)=> {
+    //   if(/_/.test(page)) { // slight performance improvement
+    //     let normalizedPage = page.replace(/_/g, ' ');
+    //     $(`.select2-selection__choice[title=\"${page}\"]`).html(
+    //       $(`.select2-selection__choice[title=\"${page}\"]`).html().replace(page, normalizedPage)
+    //     );
+    //   }
+    // });
+    updateChart();
+  });
 }
 
 function setupListeners() {
@@ -178,15 +190,6 @@ function setArticleSelectorDefaults(pages) {
   articleSelector.select2('val', pages);
   articleSelector.select2('close');
 
-  /** hack in removal of underscores in Select2 entries */
-  pages.forEach((page)=> {
-    if(/_/.test(page)) { // slight performance improvement
-      $(`.select2-selection__choice[title=\"${page}\"]`).text(
-        $(`.select2-selection__choice[title=\"${page}\"]`).text().replace(/_/g, ' ')
-      );
-    }
-  });
-
   return pages;
 }
 
@@ -210,7 +213,7 @@ function pushParams() {
 function popParams() {
   let params = parseHashParams();
 
-  $(config.projectInput).val(params.project || 'en.wikipedia.org');
+  $(config.projectInput).val(params.project || config.defaultProject);
   if(validateProject()) return;
 
   const startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
@@ -483,7 +486,7 @@ function updateChart() {
       window.chartData = datasets;
     }).fail((data)=> {
       if(data.status === 404) {
-        writeMessage("No data found for the page <a href='" + pv.getPageURL(article) + "'>" + article + "</a>", true);
+        writeMessage(`No data found for the page <a href='${pv.getPageURL(article)}'>${article}</a>`, true);
         articles = articles.filter((el) => el !== article);
 
         if(!articles.length) {
@@ -492,17 +495,15 @@ function updateChart() {
         }
       }
     }).always((data)=> {
-      if(!data.items) return;
-
       /** Get the labels from the first call. */
-      if(labels.length === 0) {
+      if(labels.length === 0 && data.items) {
         labels = data.items.map((elem)=> {
           return moment(elem.timestamp, config.timestampFormat).format(pv.getLocaleDateString());
         });
       }
 
       /** When all article datasets have been collected, initialize the chart. */
-      if(datasets.length === articles.length) {
+      if(articles.length && datasets.length === articles.length) {
         $(".chart-container").removeClass("loading");
         const options = Object.assign({},
           config.chartConfig[session.chartType].opts,
