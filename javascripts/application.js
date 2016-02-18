@@ -447,6 +447,7 @@ function setupArticleSelector() {
   articleSelector.select2({
     placeholder: 'Type article names...',
     maximumSelectionLength: 10,
+    minimumInputLength: 1,
     /**
      * This ajax call queries the Mediawiki API for article name
      * suggestions given the search term inputed in the selector.
