@@ -97,10 +97,9 @@ const config = {
     chartType: 'Line',
     colorPalette: '1',
     dateFormat: 'YYYY-MM-DD',
-    localizeDateFormat: true,
-    numericalFormatting: true,
-    project: 'en.wikipedia.org',
-    num_formatting: true
+    localizeDateFormat: 'true',
+    numericalFormatting: 'true',
+    project: 'en.wikipedia.org'
   },
   dateRangeSelector: '.aqs-date-range-selector',
   globalChartOpts: {
