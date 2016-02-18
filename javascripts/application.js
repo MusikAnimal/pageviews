@@ -42,21 +42,36 @@ function destroyChart() {
  * @returns {string} CSV content
  */
 function exportCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,Page,Color,Sum,Daily average,";
+  let csvContent = "data:text/csv;charset=utf-8,Date,";
+  let titles = [];
   let dataRows = [];
+  let dates = getDateHeadings(false);
 
-  chartData.forEach((page, index)=> {
-    let dataString = [
-      '"' + page.label.replace(/"/g, '""').replace(/'/g, "''") + '"',
-      '"' + page.strokeColor + '"',
-      page.sum,
-      Math.round(page.sum / numDaysInRange())
-    ].concat(page.data).join(',');
-    dataRows.push(dataString);
+  // Begin constructing the dataRows array by populating it with the dates
+  dates.forEach((date, index)=> {
+    dataRows[index] = [date];
   });
 
-  csvContent = csvContent + getDateHeadings().join(',') + '\n' + dataRows.join('\n');
+  chartData.forEach((page)=> {
+    // Build an array of page titles for use in the CSV header
+    let pageTitle = '"' + page.label.replace(/"/g, '""') + '"';
+    titles.push(pageTitle);
 
+    // Populate the dataRows array with the data for this page
+    dates.forEach((date, index)=> {
+      dataRows[index].push(page.data[index]);
+    });
+  });
+
+  // Finish the CSV header
+  csvContent = csvContent + titles.join(',') + '\n';
+
+  // Add the rows to the CSV
+  dataRows.forEach((data)=> {
+    csvContent += data.join(',') + '\n';
+  });
+
+  // Output the CSV file to the browser
   const encodedUri = encodeURI(csvContent);
   window.open(encodedUri);
 }
@@ -76,7 +91,7 @@ function exportJSON() {
       daily_average: Math.round(page.sum / numDaysInRange())
     };
 
-    getDateHeadings().forEach((heading, index)=> {
+    getDateHeadings(false).forEach((heading, index)=> {
       entry[heading.replace(/\\/,'')] = page.data[index];
     });
 
@@ -188,13 +203,19 @@ function getDateFormat() {
 
 /**
  * Gets the date headings as strings - i18n compliant
+ * @param {boolean} localized - whether the dates should be localized per browser language
  * @returns {Array} the date headings as strings
  */
-function getDateHeadings() {
+function getDateHeadings(localized) {
   const daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
     dateHeadings = [];
+
   for (let date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
-    dateHeadings.push(date.format(getDateFormat()));
+    if (localized) {
+      dateHeadings.push(date.format(getDateFormat()));
+    } else {
+      dateHeadings.push(date.format("YYYY-MM-DD"));
+    }
   }
   return dateHeadings;
 }
