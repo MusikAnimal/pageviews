@@ -1,0 +1,71 @@
+@import '../shared';
+@import '../mixins';
+
+.chart-container {
+  margin-top: 10px;
+  padding: 0;
+}
+
+.topview-entry {
+  display: flex;
+  margin-bottom: 20px;
+  overflow: hidden;
+  padding: 10px;
+  position: relative;
+  white-space: nowrap;
+
+  &:hover {
+    .topview-entry--rank {
+      visibility: hidden;
+    }
+
+    .topview-entry--remove {
+      display: block;
+    }
+  }
+}
+
+.topview-entry--remove {
+  @include center('vertical');
+  cursor: pointer;
+  display: none;
+  left: 8px;
+}
+
+.topview-entry--rank {
+  float: left;
+  font-weight: bold;
+  margin-right: 8px;
+
+  &::after {
+    content: '.';
+  }
+}
+
+.topview-entry--label {
+  // flex: 1 0 auto;
+}
+
+.topview-entry--leader {
+  // flex: 0 1 auto;
+
+  &::after {
+    $dots: ' .';
+
+    @for $i from 1 to 100 {
+      $dots: $dots + ' .';
+    }
+
+    content: $dots;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.topview-entry--views {
+  // flex: 1 0 auto;
+  // background: white;
+  padding-right: 10px;
+  position: absolute;
+  right: 0;
+}
