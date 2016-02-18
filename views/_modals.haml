@@ -36,19 +36,19 @@
           Your settings will be remembered on the same browser and computer.
 
         %fieldset.radio-list
-          Autocomplete options when searching for pages:
+          Search method:
           %div.radio
             %label
               %input{type: "radio", name: "autocomplete", value: "autocomplete"}
-              Autocomplete
+              Autocompletion (<a href="https://www.mediawiki.org/wiki/API:Prefixsearch">prefixsearch</a>)
           %div.radio
             %label
               %input{type: "radio", name: "autocomplete", value: "autocomplete_redirects"}
-              Autocomplete including redirects
+              Autocompletion including redirects (<a href="https://www.mediawiki.org/wiki/API:Opensearch">opensearch</a>)
           %div.radio
             %label
               %input{type: "radio", name: "autocomplete", value: "no_autocomplete"}
-              No autocomplete
+              No autocompletion
 
         %fieldset.radio-list.palette-list
           Color options:

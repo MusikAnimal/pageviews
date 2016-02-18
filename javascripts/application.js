@@ -11,7 +11,8 @@ const config = require('./config');
 const siteMap = require('./shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const pv = require('./shared/pv');
-let session = require('./session');
+let session = require('./session'),
+  colorsStyleEl;
 
 /** let's us know if the page names have been normalized via the API yet */
 let normalized = false;
@@ -24,6 +25,7 @@ let normalized = false;
  * @returns {null} nothing
  */
 function articleSuggestionCallback(data) {}
+window.articleSuggestionCallback = articleSuggestionCallback;
 
 /**
  * Destroy previous chart, if needed.
@@ -251,18 +253,18 @@ function getLinearData(data, article, index) {
 function getSearchParams(query) {
   if (session.autocomplete === 'autocomplete') {
     return {
-      'action': 'opensearch',
-      'format': 'json',
-      'search': query || '',
-      'redirects': 'return'
-    };
-  } else if (session.autocomplete === 'autocomplete_redirects') {
-    return {
       'action': 'query',
       'list': 'prefixsearch',
       'format': 'json',
       'pssearch': query || '',
       'cirrusUseCompletionSuggester': 'yes'
+    };
+  } else if (session.autocomplete === 'autocomplete_redirects') {
+    return {
+      'action': 'opensearch',
+      'format': 'json',
+      'search': query || '',
+      'redirects': 'return'
     };
   }
 }
@@ -362,20 +364,20 @@ function processSearchResults(data) {
   let results = [];
 
   if (session.autocomplete === 'autocomplete') {
-    if (data && data[1].length) {
-      results = data[1].map((elem)=> {
-        return {
-          id: elem.replace(/ /g, '_'),
-          text: elem
-        };
-      });
-    }
-  } else if (session.autocomplete === 'autocomplete_redirects') {
     if (data && data.query && data.query.prefixsearch.length) {
       results = data.query.prefixsearch.map(function (elem) {
         return {
           id: elem.title.replace(/ /g, '_'),
           text: elem.title
+        };
+      });
+    }
+  } else if (session.autocomplete === 'autocomplete_redirects') {
+    if (data && data[1].length) {
+      results = data[1].map((elem)=> {
+        return {
+          id: elem.replace(/ /g, '_'),
+          text: elem
         };
       });
     }
@@ -464,6 +466,29 @@ function setupArticleSelector() {
   });
 
   articleSelector.on('change', updateChart);
+}
+
+/**
+ * Setup colors for Select2 entries so we can dynamically change them
+ * This is a necessary evil, as we have to mark them as !important
+ *   and since there are any number of entires, we need to use nth-child selectors
+ * @returns {CSSStylesheet} our new stylesheet
+ */
+function setupSelect2Colors() {
+  /** first delete old stylesheet, if present */
+  if (colorsStyleEl) colorsStyleEl.remove(); // FIXME: requires polyfill
+
+  /** create new stylesheet */
+  colorsStyleEl = document.createElement('style');
+  colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
+  document.head.appendChild(colorsStyleEl);
+
+  /** add color rules */
+  session.colors().forEach((color, index)=> {
+    colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
+  });
+
+  return colorsStyleEl.sheet;
 }
 
 /**
@@ -624,6 +649,7 @@ function saveSettings() {
   daterangepicker.locale.format = getDateFormat();
   daterangepicker.updateElement();
 
+  setupSelect2Colors();
   updateChart(true);
 }
 
@@ -777,11 +803,12 @@ $(document).ready(()=> {
   setupDateRangeSelector();
   setupArticleSelector();
   setupSettingsModal();
+  setupSelect2Colors();
   popParams();
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
   $.ajax({
-    url: "https://tools.wmflabs.org/musikanimal/api/uses",
+    url: "//tools.wmflabs.org/musikanimal/api/uses",
     method: 'PATCH',
     data : {
       tool: 'pageviews',

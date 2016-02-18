@@ -45,3 +45,10 @@ if (typeof Object.assign !== 'function') {
     };
   })();
 }
+
+// ChildNode.remove
+if (!('remove' in Element.prototype)) {
+  Element.prototype.remove = function() {
+    this.parentNode.removeChild(this);
+  };
+}
