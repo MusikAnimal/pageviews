@@ -24,52 +24,50 @@
       .modal-footer
         %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel
 
-/ #settings-modal.modal.fade{role: "dialog", tabindex: "-1"}
-/   .modal-dialog{role: "document"}
-/     .modal-content
-/       .modal-header
-/         %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"}
-/           %span{"ariahidden": "true"} &times;
-/         %h4.modal-title Settings
-/       .modal-body
-/         %p
-/           Your settings will be remembered on the same browser and computer.
+#settings-modal.modal.fade{role: "dialog", tabindex: "-1"}
+  .modal-dialog{role: "document"}
+    .modal-content
+      .modal-header
+        %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"}
+          %span{"ariahidden": "true"} &times;
+        %h4.modal-title Settings
+      %form.modal-body
+        %p
+          Your settings will be remembered on the same browser and computer.
 
-/         %fieldset
-/           Basic settings:
-/           %div.checkbox
-/             %label
-/               %input.js-option-num-formatting{type: "checkbox"}
-/               Remove numerical formatting
-/           / %div.checkbox
-/           /   %label
-/           /     %input.js-option-canonical-namespace{type: "checkbox"}
-/           /     Remove canonical namespace from page labels
+        %fieldset.radio-list
+          Search method:
+          %div.radio
+            %label
+              %input{type: "radio", name: "autocomplete", value: "autocomplete"}
+              Autocompletion (<a href="https://www.mediawiki.org/wiki/API:Prefixsearch" target="_blank">prefixsearch</a>)
+          %div.radio
+            %label
+              %input{type: "radio", name: "autocomplete", value: "autocomplete_redirects"}
+              Autocompletion including redirects (<a href="https://www.mediawiki.org/wiki/API:Opensearch" target="_blank">opensearch</a>)
+          / %div.radio
+          /   %label
+          /     %input{type: "radio", name: "autocomplete", value: "no_autocomplete"}
+          /     No autocompletion
 
-/         %fieldset
-/           Autocomplete options when searching for pages:
-/           %div.radio
-/             %label
-/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
-/               Autocomplete
-/           %div.radio
-/             %label
-/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
-/               Autocomplete including redirects
-/           %div.radio
-/             %label
-/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
-/               No autocomplete
+        %fieldset.radio-list.palette-list
+          Color scheme:
 
-/         %fieldset
-/           Color options:
-/           %div.radio
-/             %label
-/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
-/           %div.radio
-/             %label
-/               %input{type: "radio", name: "autocomplete", value: "Autocomplete"}
+        %fieldset
+          Other options:
+          %div.checkbox
+            %label
+              %input{type: "checkbox", name: "numericalFormatting", value: true}
+              Format numerical data
+          %div.checkbox
+            %label
+              %input{type: "checkbox", name: "localizeDateFormat", value: true}
+              Localize date format
+          / %div.checkbox
+          /   %label
+          /     %input.js-option-canonical-namespace{type: "checkbox"}
+          /     Remove canonical namespace from page labels
 
-/       .modal-footer
-/         %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel
-/         %button.btn.btn-primary{"data-dismiss": "modal", type: "button"} Save
+      .modal-footer
+        %button.btn.btn-default.cancel-settings-btn{"data-dismiss": "modal", type: "button"} Cancel
+        %button.btn.btn-primary.save-settings-btn{"data-dismiss": "modal", type: "button"} Save

@@ -97,8 +97,8 @@
         <div class='col-lg-10 data-links'>
           <a data-target='#chart-type-modal' data-toggle='modal' href='#'>Change chart type</a>
           &bullet;
-          <!-- %a{href: "#", "data-toggle": "modal", "data-target": "#settings-modal"} Settings -->
-          <!-- &bullet; -->
+          <a data-target='#settings-modal' data-toggle='modal' href='#'>Settings</a>
+          &bullet;
           Download as
           <a class='download-csv' href='#'>CSV</a>
           &middot;
@@ -215,51 +215,68 @@
             </div>
           </div>
         </div>
-        <!-- #settings-modal.modal.fade{role: "dialog", tabindex: "-1"} -->
-        <!-- .modal-dialog{role: "document"} -->
-        <!-- .modal-content -->
-        <!-- .modal-header -->
-        <!-- %button.close{"arialabel": "Close", "data-dismiss": "modal", type: "button"} -->
-        <!-- %span{"ariahidden": "true"} &times; -->
-        <!-- %h4.modal-title Settings -->
-        <!-- .modal-body -->
-        <!-- %p -->
-        <!-- Your settings will be remembered on the same browser and computer. -->
-        <!-- %fieldset -->
-        <!-- Basic settings: -->
-        <!-- %div.checkbox -->
-        <!-- %label -->
-        <!-- %input.js-option-num-formatting{type: "checkbox"} -->
-        <!-- Remove numerical formatting -->
-        <!-- / %div.checkbox -->
-        <!-- /   %label -->
-        <!-- /     %input.js-option-canonical-namespace{type: "checkbox"} -->
-        <!-- /     Remove canonical namespace from page labels -->
-        <!-- %fieldset -->
-        <!-- Autocomplete options when searching for pages: -->
-        <!-- %div.radio -->
-        <!-- %label -->
-        <!-- %input{type: "radio", name: "autocomplete", value: "Autocomplete"} -->
-        <!-- Autocomplete -->
-        <!-- %div.radio -->
-        <!-- %label -->
-        <!-- %input{type: "radio", name: "autocomplete", value: "Autocomplete"} -->
-        <!-- Autocomplete including redirects -->
-        <!-- %div.radio -->
-        <!-- %label -->
-        <!-- %input{type: "radio", name: "autocomplete", value: "Autocomplete"} -->
-        <!-- No autocomplete -->
-        <!-- %fieldset -->
-        <!-- Color options: -->
-        <!-- %div.radio -->
-        <!-- %label -->
-        <!-- %input{type: "radio", name: "autocomplete", value: "Autocomplete"} -->
-        <!-- %div.radio -->
-        <!-- %label -->
-        <!-- %input{type: "radio", name: "autocomplete", value: "Autocomplete"} -->
-        <!-- .modal-footer -->
-        <!-- %button.btn.btn-default{"data-dismiss": "modal", type: "button"} Cancel -->
-        <!-- %button.btn.btn-primary{"data-dismiss": "modal", type: "button"} Save -->
+        <div class='modal fade' id='settings-modal' role='dialog' tabindex='-1'>
+          <div class='modal-dialog' role='document'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <button arialabel='Close' class='close' data-dismiss='modal' type='button'>
+                  <span ariahidden='true'>&times;</span>
+                </button>
+                <h4 class='modal-title'>Settings</h4>
+              </div>
+              <form class='modal-body'>
+                <p>
+                  Your settings will be remembered on the same browser and computer.
+                </p>
+                <fieldset class='radio-list'>
+                  Search method:
+                  <div class='radio'>
+                    <label>
+                      <input name='autocomplete' type='radio' value='autocomplete'>
+                      Autocompletion (<a href="https://www.mediawiki.org/wiki/API:Prefixsearch" target="_blank">prefixsearch</a>)
+                    </label>
+                  </div>
+                  <div class='radio'>
+                    <label>
+                      <input name='autocomplete' type='radio' value='autocomplete_redirects'>
+                      Autocompletion including redirects (<a href="https://www.mediawiki.org/wiki/API:Opensearch" target="_blank">opensearch</a>)
+                    </label>
+                  </div>
+                  <!-- %div.radio -->
+                  <!-- %label -->
+                  <!-- %input{type: "radio", name: "autocomplete", value: "no_autocomplete"} -->
+                  <!-- No autocompletion -->
+                </fieldset>
+                <fieldset class='radio-list palette-list'>
+                  Color scheme:
+                </fieldset>
+                <fieldset>
+                  Other options:
+                  <div class='checkbox'>
+                    <label>
+                      <input name='numericalFormatting' type='checkbox' value>
+                      Format numerical data
+                    </label>
+                  </div>
+                  <div class='checkbox'>
+                    <label>
+                      <input name='localizeDateFormat' type='checkbox' value>
+                      Localize date format
+                    </label>
+                  </div>
+                  <!-- %div.checkbox -->
+                  <!-- %label -->
+                  <!-- %input.js-option-canonical-namespace{type: "checkbox"} -->
+                  <!-- Remove canonical namespace from page labels -->
+                </fieldset>
+              </form>
+              <div class='modal-footer'>
+                <button class='btn btn-default cancel-settings-btn' data-dismiss='modal' type='button'>Cancel</button>
+                <button class='btn btn-primary save-settings-btn' data-dismiss='modal' type='button'>Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
