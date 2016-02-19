@@ -27,7 +27,7 @@ const pv = {
    * @returns {string} URL for the page
    */
   getPageURL(page) {
-    return `//${pv.getProject()}.org/wiki/${page.replace(/ /g, '_')}`;
+    return `//${pv.getProject()}.org/wiki/${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
   },
 
   /**

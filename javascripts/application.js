@@ -423,7 +423,6 @@ function resetArticleSelector() {
   articleSelector.select2('destroy');
   $('.data-links').hide();
   setupArticleSelector();
-  updateChart();
 }
 
 /**
@@ -433,68 +432,60 @@ function resetArticleSelector() {
 function resetView() {
   $(".chart-container").html("");
   $(".chart-container").removeClass("loading");
+  $("#chart-legend").html("");
   $(".message-container").html("");
   resetArticleSelector();
 }
 
 /**
- * Sets up the article selector and adds listener to update chart
- * @returns {null} - nothing
+ * Save a particular setting to session and localStorage
+ *
+ * @param {string} key - settings key
+ * @param {string|boolean} value - value to save
+ * @returns {null} nothing
  */
-function setupArticleSelector() {
-  const articleSelector = $(config.articleSelector);
-
-  articleSelector.select2({
-    placeholder: 'Type article names...',
-    maximumSelectionLength: 10,
-    minimumInputLength: 1,
-    /**
-     * This ajax call queries the Mediawiki API for article name
-     * suggestions given the search term inputed in the selector.
-     * We ultimately want to make the endpoint configurable based on whether they want redirects
-     */
-    ajax: {
-      url: 'https://' + pv.getProject() + '.org/w/api.php',
-      dataType: 'jsonp',
-      delay: 200,
-      jsonpCallback: 'articleSuggestionCallback',
-      data: (search)=> {
-        return getSearchParams(search.term);
-      },
-      processResults: processSearchResults,
-      cache: true
-    }
-  });
-
-  articleSelector.on('change', updateChart);
+function saveSetting(key, value) {
+  session[key] = value;
+  localStorage[`pageviews-settings-${key}`] = value;
 }
 
 /**
- * Setup colors for Select2 entries so we can dynamically change them
- * This is a necessary evil, as we have to mark them as !important
- *   and since there are any number of entires, we need to use nth-child selectors
- * @returns {CSSStylesheet} our new stylesheet
+ * Save the selected settings within the settings modal
+ * Prefer this implementation over a large library like serializeObject or serializeJSON
+ * @returns {null} nothing
  */
-function setupSelect2Colors() {
-  /** first delete old stylesheet, if present */
-  if (colorsStyleEl) colorsStyleEl.remove(); // FIXME: requires polyfill
+function saveSettings() {
+  /** track if we're changing to no_autocomplete mode */
+  const wasAutocomplete = session.autocomplete === 'no_autocomplete';
 
-  /** create new stylesheet */
-  colorsStyleEl = document.createElement('style');
-  colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
-  document.head.appendChild(colorsStyleEl);
-
-  /** add color rules */
-  session.colors().forEach((color, index)=> {
-    colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
+  $.each($("#settings-modal input"), function() {
+    if (this.type === 'checkbox') {
+      saveSetting(this.name, this.checked ? 'true' : 'false');
+    } else if (this.checked) {
+      saveSetting(this.name, this.value);
+    }
   });
 
-  return colorsStyleEl.sheet;
+  let daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
+  daterangepicker.locale.format = getDateFormat();
+  daterangepicker.updateElement();
+  setupSelect2Colors();
+
+  /**
+   * If we changed to/from no_autocomplete we have to reset the article selector entirely
+   *   as setArticleSelectorDefaults is super buggy due to Select2 constraints
+   * So let's only reset if we have to
+   */
+  if (session.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
+    resetArticleSelector();
+  }
+
+  updateChart(true);
 }
 
 /**
  * Directly set articles in article selector
- * Also removes underscores from visible values in UI
+ * Currently is not able to remove underscore from page names
  *
  * @param {array} pages - page titles
  * @returns {array} - untouched array of pages
@@ -510,6 +501,48 @@ function setArticleSelectorDefaults(pages) {
   articleSelector.select2('close');
 
   return pages;
+}
+
+/**
+ * Sets up the article selector and adds listener to update chart
+ * @returns {null} - nothing
+ */
+function setupArticleSelector() {
+  const articleSelector = $(config.articleSelector);
+
+  let params = {
+    ajax: getArticleSelectorAjax(),
+    tags: session.autocomplete === 'no_autocomplete',
+    placeholder: 'Type article names...',
+    maximumSelectionLength: 10,
+    minimumInputLength: 1
+  };
+
+  articleSelector.select2(params);
+  articleSelector.on('change', updateChart);
+}
+
+function getArticleSelectorAjax() {
+  if (session.autocomplete !== 'no_autocomplete') {
+    /**
+     * This ajax call queries the Mediawiki API for article name
+     * suggestions given the search term inputed in the selector.
+     * We ultimately want to make the endpoint configurable based on whether they want redirects
+     */
+    return {
+      url: `https://${pv.getProject()}.org/w/api.php`,
+      dataType: 'jsonp',
+      delay: 200,
+      jsonpCallback: 'articleSuggestionCallback',
+      data: (search)=> {
+        return getSearchParams(search.term);
+      },
+      processResults: processSearchResults,
+      cache: true
+    };
+  } else {
+    return null;
+  }
 }
 
 /**
@@ -595,6 +628,29 @@ function setupProjectInput() {
 }
 
 /**
+ * Setup colors for Select2 entries so we can dynamically change them
+ * This is a necessary evil, as we have to mark them as !important
+ *   and since there are any number of entires, we need to use nth-child selectors
+ * @returns {CSSStylesheet} our new stylesheet
+ */
+function setupSelect2Colors() {
+  /** first delete old stylesheet, if present */
+  if (colorsStyleEl) colorsStyleEl.remove();
+
+  /** create new stylesheet */
+  colorsStyleEl = document.createElement('style');
+  colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
+  document.head.appendChild(colorsStyleEl);
+
+  /** add color rules */
+  session.colors().forEach((color, index)=> {
+    colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
+  });
+
+  return colorsStyleEl.sheet;
+}
+
+/**
  * Set values of form based on localStorage or defaults, add listeners
  * @returns {null} nothing
  */
@@ -621,40 +677,6 @@ function setupSettingsModal() {
 }
 
 /**
- * Save a particular setting to session and localStorage
- *
- * @param {string} key - settings key
- * @param {string|boolean} value - value to save
- * @returns {null} nothing
- */
-function saveSetting(key, value) {
-  session[key] = value;
-  localStorage[`pageviews-settings-${key}`] = value;
-}
-
-/**
- * Save the selected settings within the settings modal
- * Prefer this implementation over a large library like serializeObject or serializeJSON
- * @returns {null} nothing
- */
-function saveSettings() {
-  $.each($("#settings-modal input"), function() {
-    if (this.type === 'checkbox') {
-      saveSetting(this.name, this.checked ? 'true' : 'false');
-    } else if (this.checked) {
-      saveSetting(this.name, this.value);
-    }
-  });
-
-  let daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
-  daterangepicker.locale.format = getDateFormat();
-  daterangepicker.updateElement();
-
-  setupSelect2Colors();
-  updateChart(true);
-}
-
-/**
  * The mother of all functions, where all the chart logic lives
  * Really needs to be broken out into several functions
  *
@@ -664,17 +686,18 @@ function saveSettings() {
 function updateChart(force) {
   let articles = $(config.articleSelector).select2('val') || [];
 
-  if (!articles.length) {
-    $("#chart-legend").html("");
-    return;
-  }
-
   pushParams();
 
   /** prevent duplicate querying due to conflicting listeners */
   if (!force && location.hash === session.params && session.prevChartType === session.chartType) {
     return;
   }
+
+  if (!articles.length) {
+    resetView();
+    return;
+  }
+
   session.params = location.hash;
   session.prevChartType = session.chartType;
 
