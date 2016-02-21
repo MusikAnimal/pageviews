@@ -2,6 +2,7 @@
 %html
   %head
     = Haml::Engine.new(File.read(Dir.pwd + '/views/_head.haml')).render
+    %script{src: "/pageviews/application.js"}
     %title Pageviews Analysis – FAQ
   %body
     %div.container

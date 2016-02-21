@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         conifg: '.scss-lint.yml',
         colorizeOutput: true
       },
-      allFiles: ['stylesheets/*.scss']
+      allFiles: ['stylesheets/**/*.scss']
     },
     browserify: {
       pageviews: {
@@ -41,8 +41,8 @@ module.exports = function(grunt) {
         },
         files: {
           'public/application.js': [
-            'javascripts/**/*.js',
-            '!javascripts/**/*_test.js'
+            'javascripts/shared/*.js',
+            'javascripts/application.js'
           ]
         }
       },
@@ -52,6 +52,7 @@ module.exports = function(grunt) {
         },
         files: {
           'public/topviews/application.js': [
+            'javascripts/shared/*.js',
             'javascripts/topviews/*.js'
           ]
         }
@@ -67,6 +68,18 @@ module.exports = function(grunt) {
           cwd: 'stylesheets',
           src: ['application.scss'],
           dest: 'public',
+          ext: '.css'
+        }]
+      },
+      topviews: {
+        options: {
+          sourcemap: 'none'
+        },
+        files: [{
+          expand: true,
+          cwd: 'stylesheets/topviews',
+          src: ['application.scss'],
+          dest: 'public/topviews',
           ext: '.css'
         }]
       },
@@ -114,16 +127,16 @@ module.exports = function(grunt) {
       topviews: {
         files: {
           // order matters here
-          'public/application.js': coreJSDependencies.concat([
+          'public/topviews/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'public/topviews/application.js'
           ]),
-          'public/application.css': [
+          'public/topviews/application.css': [
             'vendor/stylesheets/bootstrap.min.css',
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
-            'public/application.css'
+            'public/topviews/application.css'
           ]
         }
       }
@@ -158,7 +171,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
   grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
-  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'concat:topviews', 'haml']);
+  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
   grunt.registerTask('haml', ['hamlify']);

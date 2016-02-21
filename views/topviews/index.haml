@@ -20,21 +20,21 @@
         %div.row.aqs-row.options
           / Date range selector
           %div.col-lg-4
-            %label{for: "range-input"} Dates
-            %span.date-latest
-              Latest
-              %a{href: '#', "data-value": '10'} 10
-              %a{href: '#', "data-value": '20'} 20
-              %a{href: '#', "data-value": '30'} 30
-              %a{href: '#', "data-value": '60'} 60
-              %a{href: '#', "data-value": '90'} 90
-              days
+            %label{for: "range-input"} Date
             %input#range-input.form-control.aqs-date-range-selector
 
           /  Project selector
           .col-lg-3
             %label{for: "project-input"} Project
             %input#project-input.form-control.aqs-project-input{placeholder: "en.wikipedia.org"}/
+
+          / .col-lg-3
+          /   %label{for: "platform-select"} Namespace
+          /   %select#platform-select.form-control
+          /     %option{value: "all"} All
+          /     %option{value: "1"} Main
+          /     %option{value: "2"} Mobile app
+          /     %option{value: "3"} Mobile web
 
           / Advanced options
           .col-lg-3
@@ -56,27 +56,10 @@
 
         / Other links
         .col-lg-10.data-links
-          %a{href: "#", "data-toggle": "modal", "data-target": "#chart-type-modal"} Change chart type
-          &bullet;
+          %hr
           Download as
           %a.download-csv{href: "#"} CSV
           \&middot;
           %a.download-json{href: "#"} JSON
 
-        %footer.col-lg-10
-          %span
-            Brought to you by
-            %a{href: "https://en.wikipedia.org/wiki/User:MusikAnimal"} MusikAnimal
-            and
-            = succeed "." do
-              %a{href: "https://wikimediafoundation.org/wiki/User:Mforns_(WMF)"} Marcel Ruiz Forns
-          %span.nowrap
-            Hosted with
-            %span.heart &hearts;
-            on
-            = succeed "." do
-              %a{href: "https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs"} Tool Labs
-          %div
-            %a{href: "https://github.com/MusikAnimal/pageviews"} View source
-            &middot;
-            %a{href: "https://github.com/MusikAnimal/pageviews/issues"} Report an issue
+        = Haml::Engine.new(File.read(Dir.pwd + '/views/_footer.haml')).render

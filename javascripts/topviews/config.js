@@ -4,8 +4,11 @@ const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
-    excludedPages: ['Main Page', 'Special:Search']
+    excludedPages: ['Main Page', 'Special:Search'],
+    localizeDateFormat: 'true'
   },
+  localizeDateFormat: 'true',
+  pageSize: 20,
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };

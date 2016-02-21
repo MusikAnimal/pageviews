@@ -1,0 +1,13 @@
+@mixin center($direction, $position: 'absolute') {
+  position: unquote($position);
+
+  @if($direction == 'vertical') {
+    top: 50%;
+    transform: translateY(-50%);
+  } @else if($direction == 'horizontal') {
+    left: 50%;
+    transform: translateX(-50%);
+  } @else {
+    transform: translate(-50%, -50%);
+  }
+}
