@@ -1599,33 +1599,13 @@ function setupDateRangeSelector() {
     locale: { format: getDateFormat() },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
-    maxDate: config.maxDate,
-    singleDatePicker: true
+    maxDate: config.maxDate
   });
 
   /** so people know why they can't query data older than October 2015 */
-  // $('.daterangepicker').append(
-  //   "<div class='daterange-notice'>" +
-  //   "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." +
-  //   "</div>"
-  // );
+  $('.daterangepicker').append("<div class='daterange-notice'>" + "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." + "</div>");
 
-  // dateRangeSelector.on('change', ()=> {
-  //   /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
-  //   if (session.chartType === 'Line') {
-  //     if (numDaysInRange() > 50) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 3;
-  //     } else if (numDaysInRange() > 30) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 5;
-  //     } else if (numDaysInRange() > 20) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 10;
-  //     } else {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 20;
-  //     }
-  //   }
-
-  //   updateChart();
-  // });
+  // dateRangeSelector.on('change', updateChart);
 }
 
 /**
@@ -1705,6 +1685,8 @@ var config = {
     localizeDateFormat: 'true'
   },
   localizeDateFormat: 'true',
+  minDate: moment('2015-10-01'),
+  maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'

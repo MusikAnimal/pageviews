@@ -8,6 +8,8 @@ const config = {
     localizeDateFormat: 'true'
   },
   localizeDateFormat: 'true',
+  minDate: moment('2015-10-01'),
+  maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'

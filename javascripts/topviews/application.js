@@ -35,6 +35,79 @@ function getDateFormat() {
   }
 }
 
+/*
+ * Generate key/value pairs of URL hash params
+ * @returns {Object} key/value pairs representation of URL hash
+ */
+function parseHashParams() {
+  const uri = decodeURI(location.hash.slice(1)),
+    chunks = uri.split('&');
+  let params = {};
+
+  for (let i=0; i<chunks.length ; i++) {
+    let chunk = chunks[i].split('=');
+
+    if (chunk[0] === 'excludes') {
+      params.excudes = chunk[1].split('|');
+    } else {
+      params[chunk[0]] = chunk[1];
+    }
+  }
+
+  return params;
+}
+
+/**
+ * Parses the URL hash and sets all the inputs accordingly
+ * Should only be called on initial page load, until we decide to support pop states (probably never)
+ * @returns {null} nothing
+ */
+function popParams() {
+  let params = parseHashParams();
+
+  $(config.projectInput).val(params.project || config.defaults.project);
+  if (validateProject()) return;
+
+  const startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
+    endDate = moment(params.end || Date.now());
+
+  $(config.dateRangeSelector).data('daterangepicker').setStartDate(startDate);
+  $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
+  $('#platform-select').val(params.platform || 'all-access');
+
+  if (startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
+    pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters!", true);
+    resetView();
+    return;
+  } else if (startDate > endDate) {
+    pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters!", true);
+    resetView();
+    return;
+  }
+
+  resetArticleSelector();
+
+  // if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
+  //   params.excludes = config.defaults.excludedPages;
+  //   setArticleSelectorDefaults(params.excludes);
+  // } else if (normalized) {
+  //   params.pages = pv.underscorePageNames(params.pages);
+  //   setArticleSelectorDefaults(params.pages);
+  // } else {
+  //   pv.normalizePageNames(params.pages).then((data)=> {
+  //     normalized = true;
+
+  //     params.pages = data;
+
+  //     if (params.pages.length === 1) {
+  //       session.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
+  //     }
+
+  //     setArticleSelectorDefaults(pv.underscorePageNames(params.pages));
+  //   });
+  // }
+}
+
 /**
  * Removes all article selector related stuff then adds it back
  * Also calls updateChart
@@ -101,33 +174,17 @@ function setupDateRangeSelector() {
     locale: { format: getDateFormat() },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
-    maxDate: config.maxDate,
-    singleDatePicker: true
+    maxDate: config.maxDate
   });
 
   /** so people know why they can't query data older than October 2015 */
-  // $('.daterangepicker').append(
-  //   "<div class='daterange-notice'>" +
-  //   "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." +
-  //   "</div>"
-  // );
+  $('.daterangepicker').append(
+    "<div class='daterange-notice'>" +
+    "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." +
+    "</div>"
+  );
 
-  // dateRangeSelector.on('change', ()=> {
-  //   /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
-  //   if (session.chartType === 'Line') {
-  //     if (numDaysInRange() > 50) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 3;
-  //     } else if (numDaysInRange() > 30) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 5;
-  //     } else if (numDaysInRange() > 20) {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 10;
-  //     } else {
-  //       Chart.defaults.Line.pointHitDetectionRadius = 20;
-  //     }
-  //   }
-
-  //   updateChart();
-  // });
+  // dateRangeSelector.on('change', updateChart);
 }
 
 /**
