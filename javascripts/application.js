@@ -44,7 +44,7 @@ function destroyChart() {
  * @returns {string} CSV content
  */
 function exportCSV() {
-  let csvContent = "data:text/csv;charset=utf-8,Date,";
+  let csvContent = 'data:text/csv;charset=utf-8,Date,';
   let titles = [];
   let dataRows = [];
   let dates = getDateHeadings(false);
@@ -87,7 +87,7 @@ function exportJSON() {
 
   chartData.forEach((page, index)=> {
     let entry = {
-      page: page.label.replace(/"/g, "\"").replace(/'/g, "\'"),
+      page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
       color: page.strokeColor,
       sum: page.sum,
       daily_average: Math.round(page.sum / numDaysInRange())
@@ -100,7 +100,7 @@ function exportJSON() {
     data.push(entry);
   });
 
-  const jsonContent = "data:text/json;charset=utf-8," + JSON.stringify(data),
+  const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
     encodedUri = encodeURI(jsonContent);
   window.open(encodedUri);
 
@@ -112,8 +112,8 @@ function exportJSON() {
  * @returns {null} nothing
  */
 function fillInSettings() {
-  $.each($("#settings-modal input"), function() {
-    let name = $(this).prop("name");
+  $.each($('#settings-modal input'), function() {
+    let name = $(this).prop('name');
 
     if ($(this).prop('type') === 'checkbox') {
       $(this).prop('checked', session[name] === 'true');
@@ -216,7 +216,7 @@ function getDateHeadings(localized) {
     if (localized) {
       dateHeadings.push(date.format(getDateFormat()));
     } else {
-      dateHeadings.push(date.format("YYYY-MM-DD"));
+      dateHeadings.push(date.format('YYYY-MM-DD'));
     }
   }
   return dateHeadings;
@@ -322,12 +322,12 @@ function popParams() {
   $('#platform-select').val(params.platform || 'all-access');
   $('#agent-select').val(params.agent || 'user');
 
-  if (startDate < moment("2015-10-01") || endDate < moment("2015-10-01")) {
-    pv.addSiteNotice('danger', "Pageviews API does not contain data older than October 2015. Sorry.", "Invalid parameters!", true);
+  if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
+    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than October 2015. Sorry.', 'Invalid parameters!', true);
     resetView();
     return;
   } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', "Start date must be older than the end date.", "Invalid parameters!", true);
+    pv.addSiteNotice('warning', 'Start date must be older than the end date.', 'Invalid parameters!', true);
     resetView();
     return;
   }
@@ -396,15 +396,15 @@ function pushParams() {
     pages = $(config.articleSelector).select2('val') || [];
 
   const state = $.param({
-    start: daterangepicker.startDate.format("YYYY-MM-DD"),
-    end: daterangepicker.endDate.format("YYYY-MM-DD"),
+    start: daterangepicker.startDate.format('YYYY-MM-DD'),
+    end: daterangepicker.endDate.format('YYYY-MM-DD'),
     project: $(config.projectInput).val(),
     platform: $('#platform-select').val(),
     agent: $('#agent-select').val()
   }) + '&pages=' + pages.join('|');
 
   if (window.history && window.history.replaceState) {
-    window.history.replaceState({}, 'Pageview comparsion', "#" + state);
+    window.history.replaceState({}, 'Pageviews comparsion', '#' + state);
   }
 
   return state;
@@ -430,10 +430,10 @@ function resetArticleSelector() {
  * @returns {null} nothing
  */
 function resetView() {
-  $(".chart-container").html("");
-  $(".chart-container").removeClass("loading");
-  $("#chart-legend").html("");
-  $(".message-container").html("");
+  $('.chart-container').html('');
+  $('.chart-container').removeClass('loading');
+  $('#chart-legend').html('');
+  $('.message-container').html('');
   resetArticleSelector();
 }
 
@@ -458,7 +458,7 @@ function saveSettings() {
   /** track if we're changing to no_autocomplete mode */
   const wasAutocomplete = session.autocomplete === 'no_autocomplete';
 
-  $.each($("#settings-modal input"), function() {
+  $.each($('#settings-modal input'), function() {
     if (this.type === 'checkbox') {
       saveSetting(this.name, this.checked ? 'true' : 'false');
     } else if (this.checked) {
@@ -560,9 +560,9 @@ function setupDateRangeSelector() {
 
   /** so people know why they can't query data older than October 2015 */
   $('.daterangepicker').append(
-    "<div class='daterange-notice'>" +
-    "Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>." +
-    "</div>"
+    `<div class='daterange-notice'>
+     Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>.
+     </div>`
   );
 
   dateRangeSelector.on('change', ()=> {
@@ -656,17 +656,17 @@ function setupSelect2Colors() {
  */
 function setupSettingsModal() {
   /** first build color palette options */
-  let markup = "";
+  let markup = '';
   Object.keys(config.colors).forEach((key)=> {
     let palette = config.colors[key];
-    markup += "<div class='radio'><label class='color-label'>" +
-      `<input type='radio' name='colorPalette' value=${key} />`;
+    markup += `<div class='radio'><label class='color-label'>
+      <input type='radio' name='colorPalette' value=${key} />`;
     palette.forEach((color)=> {
       markup += `<span class='color-tile' style='background:${color}'></span>`;
     });
-    markup += "</label></div>";
+    markup += '</label></div>';
   });
-  $(".palette-list").append(markup);
+  $('.palette-list').append(markup);
 
   /** fill in values, everything is either a checkbox or radio */
   fillInSettings();
@@ -707,8 +707,8 @@ function updateChart(force) {
     endDate = dateRangeSelector.data('daterangepicker').endDate;
 
   destroyChart();
-  $(".message-container").html("");
-  $(".chart-container").addClass("loading");
+  $('.message-container').html('');
+  $('.chart-container').addClass('loading');
 
   /**
    * Asynchronously collect the data from Analytics Query Service API,
@@ -745,8 +745,8 @@ function updateChart(force) {
         articles = articles.filter((el) => el !== article);
 
         if (!articles.length) {
-          $(".chart-container").html("");
-          $(".chart-container").removeClass("loading");
+          $('.chart-container').html('');
+          $('.chart-container').removeClass('loading');
         }
       }
     }).always((data)=> {
@@ -759,15 +759,15 @@ function updateChart(force) {
 
       /** When all article datasets have been collected, initialize the chart. */
       if (articles.length && datasets.length === articles.length) {
-        $(".chart-container").removeClass("loading");
+        $('.chart-container').removeClass('loading');
         const options = Object.assign({},
           config.chartConfig[session.chartType].opts,
           config.globalChartOpts
         );
         const linearData = {labels: labels, datasets: datasets};
 
-        $(".chart-container").html("");
-        $(".chart-container").append("<canvas class='aqs-chart'>");
+        $('.chart-container').html('');
+        $('.chart-container').append("<canvas class='aqs-chart'>");
         const context = $(config.chart)[0].getContext('2d');
 
         if (config.linearCharts.includes(session.chartType)) {
@@ -777,7 +777,7 @@ function updateChart(force) {
         }
 
         pv.clearSiteNotices();
-        $("#chart-legend").html(session.chartObj.generateLegend());
+        $('#chart-legend').html(session.chartObj.generateLegend());
         $('.data-links').show();
       }
     });
@@ -791,16 +791,16 @@ function updateChart(force) {
 function validateProject() {
   const project = $(config.projectInput).val();
   if (siteDomains.includes(project)) {
-    $(".validate").remove();
-    $(".select2-selection--multiple").removeClass('disabled');
+    $('.validate').remove();
+    $('.select2-selection--multiple').removeClass('disabled');
   } else {
     resetView();
     writeMessage(
-      `<a href='//${project}'>${project}</a> is not a ` +
-      "<a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
-      'validate', true
+      `<a href='//${project}'>${project}</a> is not a
+       <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>
+       validate`, true
     );
-    $(".select2-selection--multiple").addClass('disabled');
+    $('.select2-selection--multiple').addClass('disabled');
     return true;
   }
 }
@@ -815,7 +815,7 @@ function writeMessage(message, clear) {
   if (clear) {
     pv.clearMessages();
   }
-  return $(".message-container").append(
+  return $('.message-container').append(
     `<p class='error-message'>${message}</p>`
   );
 }
@@ -832,7 +832,7 @@ $(document).ready(()=> {
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
   $.ajax({
-    url: "//tools.wmflabs.org/musikanimal/api/uses",
+    url: '//tools.wmflabs.org/musikanimal/api/uses',
     method: 'PATCH',
     data : {
       tool: 'pageviews',
@@ -841,15 +841,15 @@ $(document).ready(()=> {
   });
 
   /** temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews */
-  if (document.location.search.includes("redirected=true")) {
+  if (document.location.search.includes('redirected=true')) {
     if (window.history && window.history.replaceState) {
       let newURL = document.location.href.replace(document.location.search, '');
-      window.history.replaceState({}, 'Pageview comparsion', newURL);
+      window.history.replaceState({}, 'Pageviews comparsion', newURL);
     }
     pv.addSiteNotice('info',
-      "Please update your links to point to " +
-        "<a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>",
-      "Pageviews Analysis has moved!"
+      `Please update your links to point to
+       <a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>
+       Pageviews Analysis has moved!`
     );
   }
 

@@ -3,9 +3,11 @@ const pv = require('../shared/pv');
 const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
+  daysAgo: 20,
   defaults: {
-    excludedPages: ['Main Page', 'Special:Search'],
-    localizeDateFormat: 'true'
+    excludes: ['Main Page', 'Special:Search'],
+    localizeDateFormat: 'true',
+    project: 'en.wikipedia.org'
   },
   localizeDateFormat: 'true',
   minDate: moment('2015-10-01'),
