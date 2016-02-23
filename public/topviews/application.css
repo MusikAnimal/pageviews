@@ -18,6 +18,12 @@ a:focus {
   color: #337ab7;
   text-decoration: none; }
 
+.daterange-notice {
+  clear: both;
+  font-size: 12px;
+  margin-left: 5px;
+  margin-top: 6px; }
+
 .options select {
   display: block;
   width: 100%; }
@@ -107,7 +113,7 @@ footer {
   transform: translateY(-50%);
   cursor: pointer;
   display: none;
-  left: 8px; }
+  left: 10px; }
 
 .topview-entry--rank {
   float: left;
