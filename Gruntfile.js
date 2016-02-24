@@ -126,7 +126,7 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify:all', 'haml']);
+  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
   grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);

@@ -7,7 +7,9 @@
 //  Redistributed under the MIT License: https://opensource.org/licenses/MIT
 //
 
-@import 'colors';
+$red: #fe875e;
+$gray: #ccc;
+$link: #337ab7;
 
 body {
   overflow-x: hidden;
@@ -16,14 +18,6 @@ body {
 a:focus {
   color: $link;
   text-decoration: none;
-}
-
-// Add legend colors to article tags
-@for $i from 1 through length($tag-colors) {
-  .select2-selection__choice:nth-of-type(#{$i}) {
-    // scss-lint:disable ImportantRule
-    background: nth($tag-colors, $i) !important;
-  }
 }
 
 // Fix chart position
@@ -189,4 +183,14 @@ footer {
   font-size: 12px;
   margin-left: 5px;
   margin-top: 6px;
+}
+
+.color-label {
+  width: 100%;
+}
+
+.color-tile {
+  display: inline-block;
+  height: 20px;
+  width: 10%;
 }

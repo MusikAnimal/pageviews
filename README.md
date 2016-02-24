@@ -27,6 +27,8 @@ This first time around you'll need to install all node pacakges and dependencies
 ### Local
 Run `grunt pageviews` for the main pageviews app. To save time, you can run `grunt haml` to just compile the HAML files, or `grunt sass` to compile the SCSS.
 
+If you're only working with the JavaScript, and don't want to deal with Ruby dependencies (HAML, SASS), just run `grunt browserify`. Then when you're done with your work run `grunt concat` and `grunt uglify` to make your code production-ready.
+
 ### Production
 Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
 
@@ -37,11 +39,13 @@ where possible, and compiled to ES5 with [Babel](https://babeljs.io/) when you r
 something, add it to `/javascript/shared/polyfills.js`. Don't use jQuery utilities when native JavaScript can do it.
 
 For CSS don't worry about adding vendor prefixes to anything in the CSS3 spec. If it works in Chrome and Firefox, leave it
-at that. Other browsers will still function without the styling. Use [Bootstrap](http://getbootstrap.com/) classes where possible.
+at that. Other browsers will still function without the styling. Use [Bootstrap](http://getbootstrap.com/) classes if possible.
 
 [Browserify](http://browserify.org/) is used to help follow a module pattern. You'll need to `require('./file_name')` any file that is a dependency.
 
-[JSDoc](http://usejsdoc.org/) is preferred comment format. Try to document each function you create. The linters will complain if you don't!
+[JSDoc](http://usejsdoc.org/) is the preferred comment format. Try to document each function you create. The linters will complain if you don't!
+
+IE9 and below are not supported.
 
 ## Tests
 

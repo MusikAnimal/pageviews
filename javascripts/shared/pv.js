@@ -15,7 +15,7 @@ const pv = {
   clearSiteNotices() {
     $(".site-notice .autodismiss").remove();
 
-    if(!$(".site-notice .alert").length) {
+    if (!$(".site-notice .alert").length) {
       $(".site-notice-wrapper").hide();
     }
   },
@@ -27,7 +27,7 @@ const pv = {
    * @returns {string} URL for the page
    */
   getPageURL(page) {
-    return `//${pv.getProject()}.org/wiki/${page.replace(/ /g, '_')}`;
+    return `//${pv.getProject()}.org/wiki/${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
   },
 
   /**
@@ -311,7 +311,7 @@ const pv = {
       url: `https://${pv.getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
       dataType: 'jsonp'
     }).then((data)=> {
-      if(data.query.normalized) {
+      if (data.query.normalized) {
         pages = this.mapNormalizedPageNames(pages, data.query.normalized);
       }
       return dfd.resolve(pages);
@@ -327,6 +327,25 @@ const pv = {
    */
   rgba(value, alpha) {
     return value.replace(/,\s*\d\)/, `, ${alpha})`);
+  },
+
+  /**
+   * Splash in console, just for fun
+   * @returns {String} output
+   */
+  splash() {
+    console.log('      ___            __ _                     _                             ');
+    console.log('     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ');
+    console.log('     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ');
+    console.log('    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ');
+    console.log('  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ');
+    console.log('  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ');
+    console.log('              ___                     _  _     _               _            ');
+    console.log('      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ');
+    console.log('     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ');
+    console.log('    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ');
+    console.log('   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ');
+    console.log('  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ');
   },
 
   /**
