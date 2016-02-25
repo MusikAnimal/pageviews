@@ -12,6 +12,9 @@ module.exports = function(grunt) {
     'vendor/javascripts/moment.min.js',
     'vendor/javascripts/bootstrap.min.js'
   ];
+  const coreCSSDependencies = [
+    'vendor/stylesheets/bootstrap.min.css'
+  ];
 
   grunt.initConfig({
     watch: {
@@ -83,6 +86,24 @@ module.exports = function(grunt) {
           ext: '.css'
         }]
       },
+      other: {
+        options: {
+          sourcemap: 'none'
+        },
+        files: [{
+          expand: true,
+          cwd: 'stylesheets/url_structure',
+          src: ['application.scss'],
+          dest: 'public/url_structure',
+          ext: '.css'
+        }, {
+          expand: true,
+          cwd: 'stylesheets/faq',
+          src: ['application.scss'],
+          dest: 'public/faq',
+          ext: '.css'
+        }]
+      },
       dist: {
         options: {
           style: 'compressed',
@@ -116,12 +137,11 @@ module.exports = function(grunt) {
             'vendor/javascripts/Chart.min.js',
             'public/application.js'
           ]),
-          'public/application.css': [
-            'vendor/stylesheets/bootstrap.min.css',
+          'public/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
             'public/application.css'
-          ]
+          ])
         }
       },
       topviews: {
@@ -132,12 +152,23 @@ module.exports = function(grunt) {
             'vendor/javascripts/daterangepicker.min.js',
             'public/topviews/application.js'
           ]),
-          'public/topviews/application.css': [
-            'vendor/stylesheets/bootstrap.min.css',
+          'public/topviews/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
             'public/topviews/application.css'
-          ]
+          ])
+        }
+      },
+      other: {
+        files: {
+          'public/faq/application.js': coreJSDependencies,
+          'public/faq/application.css': coreCSSDependencies.concat([
+            'public/faq/application.css'
+          ]),
+          'public/url_structure/application.js': coreJSDependencies,
+          'public/url_structure/application.css': coreCSSDependencies.concat([
+            'public/url_structure/application.css'
+          ])
         }
       }
     },

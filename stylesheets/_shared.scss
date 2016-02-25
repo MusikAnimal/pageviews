@@ -12,8 +12,14 @@ body {
 }
 
 // Avoid select2 collapsing with narrow screens
-.aqs-article-selector {
-  width: 100%;
+// scss-lint:disable ImportantRule
+.aqs-article-selector,
+.select2-container {
+  width: 100% !important;
+}
+
+.chart-container {
+  min-height: 100px;
 }
 
 a:focus {

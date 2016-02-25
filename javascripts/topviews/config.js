@@ -3,9 +3,9 @@ const pv = require('../shared/pv');
 const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  daysAgo: 20,
+  daysAgo: 7,
   defaults: {
-    excludes: ['Main Page', 'Special:Search'],
+    excludes: [],
     localizeDateFormat: 'true',
     project: 'en.wikipedia.org'
   },
