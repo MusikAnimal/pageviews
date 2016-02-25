@@ -47,25 +47,26 @@
 }
 
 .topview-entry--leader {
+  background: url('/pageviews/images/dot.gif') repeat-x bottom;
+  height: 16px;
+  width: 100%;
   // flex: 0 1 auto;
 
-  &::after {
-    $dots: ' .';
+  // &::after {
+  //   $dots: '.';
 
-    @for $i from 1 to 100 {
-      $dots: $dots + ' .';
-    }
+  //   @for $i from 1 to 100 {
+  //     $dots: $dots + ' .';
+  //   }
 
-    content: $dots;
-    overflow: hidden;
-    white-space: nowrap;
-  }
+  //   content: $dots;
+  //   margin-left: 3px;
+  //   overflow: hidden;
+  //   white-space: nowrap;
+  // }
 }
 
 .topview-entry--views {
   // flex: 1 0 auto;
   // background: white;
-  padding-right: 10px;
-  position: absolute;
-  right: 0;
 }

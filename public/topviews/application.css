@@ -11,8 +11,12 @@ body {
 .aqs-row {
   padding-bottom: 10px; }
 
-.aqs-article-selector {
-  width: 100%; }
+.aqs-article-selector,
+.select2-container {
+  width: 100% !important; }
+
+.chart-container {
+  min-height: 100px; }
 
 a:focus {
   color: #337ab7;
@@ -122,12 +126,7 @@ footer {
   .topview-entry--rank::after {
     content: '.'; }
 
-.topview-entry--leader::after {
-  content: " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .";
-  overflow: hidden;
-  white-space: nowrap; }
-
-.topview-entry--views {
-  padding-right: 10px;
-  position: absolute;
-  right: 0; }
+.topview-entry--leader {
+  background: url("/pageviews/images/dot.gif") repeat-x bottom;
+  height: 16px;
+  width: 100%; }

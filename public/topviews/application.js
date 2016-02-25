@@ -1506,21 +1506,22 @@ var session = require('./session');
 window.session = session;
 
 function drawData() {
-  var offset = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+  var startIndex = arguments.length <= 0 || arguments[0] === undefined ? session.offset : arguments[0];
 
-  var count = offset,
-      index = offset;
+  $('.chart-container').removeClass('loading');
 
-  while (count < config.pageSize) {
-    var item = session.pageData[index++ + offset];
+  var count = startIndex,
+      index = startIndex;
 
-    if (session.excludes.includes(item.article.replace(/_/g, ' '))) continue;
+  while (count < config.pageSize + session.offset) {
+    var item = session.pageData[index++ + session.offset];
+
+    if (session.excludes.includes(item.article)) continue;
     if (!session.max) session.max = item.views;
 
     var width = 100 * (item.views / session.max);
 
-    // FIXME: loop only through first 100, then add "show more" link
-    $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(to right, #EEE ' + width + '%, transparent ' + width + '%)\'>\n       <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n       <span class=\'topview-entry--rank\'>' + ++count + '</span>\n       <a class=\'topview-entry--label\' href="https://en.wikipedia.org/wiki/' + item.article + '" target="_blank">' + item.article.replace(/_/g, ' ') + '</a>\n       <span class=\'topview-entry--leader\'></span>\n       <a class=\'topview-entry--views\' href=\'' + getPageviewsURL(item.article) + '\'>' + pv.n(item.views) + '</a></div>');
+    $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(to right, #EEE ' + width + '%, transparent ' + width + '%)\'>\n       <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n       <span class=\'topview-entry--rank\'>' + ++count + '</span>\n       <a class=\'topview-entry--label\' href="https://en.wikipedia.org/wiki/' + item.article + '" target="_blank">' + item.article + '</a>\n       <span class=\'topview-entry--leader\'></span>\n       <a class=\'topview-entry--views\' href=\'' + getPageviewsURL(item.article) + '\'>' + pv.n(item.views) + '</a></div>');
   }
 
   pushParams();
@@ -1528,6 +1529,7 @@ function drawData() {
   $('.topview-entry--remove').off('click').on('click', function () {
     session.excludes.push(session.pageNames[$(this).data('article-id')]);
     setArticleSelectorDefaults(session.excludes);
+    pushParams();
   });
 }
 
@@ -1543,13 +1545,42 @@ function getDateFormat() {
   }
 }
 
+/**
+ * Gets the date headings as strings - i18n compliant
+ * @param {boolean} localized - whether the dates should be localized per browser language
+ * @returns {Array} the date headings as strings
+ */
+function getDateHeadings(localized) {
+  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
+      dateHeadings = [];
+
+  for (var date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
+    if (localized) {
+      dateHeadings.push(date.format(getDateFormat()));
+    } else {
+      dateHeadings.push(date.format('YYYY-MM-DD'));
+    }
+  }
+  return dateHeadings;
+}
+
 function getPageviewsURL(article) {
-  var startDate = $(config.dateRangeSelector).data('daterangepicker').startDate.format('YYYY-MM-DD'),
-      endDate = $(config.dateRangeSelector).data('daterangepicker').endDate.format('YYYY-MM-DD'),
+  var startDate = $(config.dateRangeSelector).data('daterangepicker').startDate.subtract(3, 'days').format('YYYY-MM-DD'),
+      endDate = $(config.dateRangeSelector).data('daterangepicker').endDate.add(3, 'days').format('YYYY-MM-DD'),
       platform = $('#platform-select').val(),
       project = $(config.projectInput).val();
 
   return '/pageviews#start=' + startDate + '&end=' + endDate + '&project=' + project + '&platform=' + platform + '&pages=' + article;
+}
+
+/**
+ * Compute how many days are in the selected date range
+ *
+ * @returns {integer} number of days
+ */
+function numDaysInRange() {
+  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
+  return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 
 /*
@@ -1565,7 +1596,7 @@ function parseHashParams() {
     var chunk = chunks[i].split('=');
 
     if (chunk[0] === 'excludes') {
-      params.excudes = chunk[1].split('|');
+      params.excludes = chunk[1].split('|');
     } else {
       params[chunk[0]] = chunk[1];
     }
@@ -1605,11 +1636,14 @@ function popParams() {
   if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
     session.excludes = config.defaults.excludes;
   } else {
-    session.excludes = params.excludes;
+    session.excludes = params.excludes.map(function (exclude) {
+      return exclude.replace(/_/g, ' ');
+    });
   }
 
   initData().then(function () {
     setupArticleSelector(session.excludes);
+    setupListeners();
     drawData();
   });
 }
@@ -1617,7 +1651,7 @@ function popParams() {
 /**
  * Replaces history state with new URL hash representing current user input
  * Called whenever we go to update the chart
- * @returns {string} the new hash param string
+ * @returns {string|false} the new hash param string or false if nothing has changed
  */
 function pushParams() {
   var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
@@ -1629,8 +1663,14 @@ function pushParams() {
     platform: $('#platform-select').val()
   }) + ('&excludes=' + pv.underscorePageNames(session.excludes).join('|'));
 
+  session.params = '#' + state;
+
+  if (location.hash === session.params) {
+    return false;
+  }
+
   if (window.history && window.history.replaceState) {
-    window.history.replaceState({}, 'Topviews comparsion', '#' + state);
+    window.history.replaceState({}, 'Topviews comparsion', session.params);
   }
 
   return state;
@@ -1654,10 +1694,16 @@ function resetArticleSelector() {
  * @returns {null} nothing
  */
 function resetView() {
+  var clearSelector = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+  session.max = null;
+  session.offset = 0;
+  session.pageData = [];
+  session.pageNames = [];
   $('.chart-container').html('');
   $('.chart-container').removeClass('loading');
   $('.message-container').html('');
-  resetArticleSelector();
+  if (clearSelector) resetArticleSelector();
 }
 
 /**
@@ -1675,14 +1721,13 @@ function setupArticleSelector(excludes) {
     placeholder: 'Type page names to exclude from view...'
   });
 
-  if (excludes) setArticleSelectorDefaults(excludes);
+  if (excludes.length) setArticleSelectorDefaults(excludes);
 
   articleSelector.on('change', function () {
     session.excludes = $(this).val() || [];
     session.max = null;
-    session.offset = 0;
     $('.chart-container').html('');
-    drawData();
+    drawData(0);
     $(this).select2().trigger('close');
   });
 }
@@ -1712,9 +1757,28 @@ function setupDateRangeSelector() {
   });
 
   /** so people know why they can't query data older than October 2015 */
-  $('.daterangepicker').append('<div class=\'daterange-notice\'>\n     Pageviews Analysis provides data from October 2015 forward. For older data, try <a href=\'http://stats.grok.se\' target=\'_blank\'>stats.grok.se</a>.\n     </div>');
+  $('.daterangepicker').append('<div class=\'daterange-notice\'>\n     Topviews Analysis provides data from October 2015 forward. For older data, try <a href=\'http://stats.grok.se\' target=\'_blank\'>stats.grok.se</a>.\n     </div>');
+}
 
-  // dateRangeSelector.on('change', initData);
+function setupListeners() {
+  $(config.dateRangeSelector).on('change', applyChanges);
+  $('#platform-select').on('change', applyChanges);
+  $('a[href="#"]').on('click', function (e) {
+    return e.preventDefault();
+  });
+  $('.expand-chart').on('click', function () {
+    session.offset += config.pageSize;
+    drawData();
+  });
+}
+
+function applyChanges() {
+  if (!pushParams()) return;
+
+  resetView(false);
+  initData().then(function () {
+    drawData();
+  });
 }
 
 /**
@@ -1736,24 +1800,56 @@ function setupProjectInput() {
  * @returns {Deferred} promise with data fetched from API
  */
 function initData() {
+  var _$;
+
+  $('.chart-container').addClass('loading');
+
   /** Collect parameters from inputs. */
   var dateRangeSelector = $(config.dateRangeSelector),
-      startDate = dateRangeSelector.data('daterangepicker').startDate;
-  // endDate = dateRangeSelector.data('daterangepicker').endDate,
-  // exclusions = session.excludes || [];
+      startDate = dateRangeSelector.data('daterangepicker').startDate,
+      endDate = dateRangeSelector.data('daterangepicker').endDate,
+      access = $('#platform-select').val();
 
-  var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/' + startDate.format('YYYY/MM/DD');
+  var promises = [];
+
+  for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+    promises.push($.ajax({
+      url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + pv.getProject() + '/' + access + '/' + date.format('YYYY/MM/DD'),
+      dataType: 'json'
+    }));
+  }
 
   var dfd = $.Deferred();
 
-  return $.ajax({
-    url: url,
-    dataType: 'json'
-  }).success(function (data) {
-    /** first import all data */
-    data.items[0].articles.forEach(function (item) {
-      session.pageData.push(item);
-      session.pageNames.push(item.article.replace(/_/g, ' '));
+  return (_$ = $).when.apply(_$, promises).then(function () {
+    for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
+      data[_key] = arguments[_key];
+    }
+
+    if (promises.length === 1) data = [data];
+
+    /** import data and do summations */
+    data.forEach(function (day) {
+      day[0].items[0].articles.forEach(function (item, index) {
+        if (session.pageData[index]) {
+          session.pageData[index].views += item.views;
+        } else {
+          session.pageData[index] = {
+            article: item.article.replace(/_/g, ' '),
+            views: item.views
+          };
+        }
+      });
+    });
+
+    /** sort given new view counts */
+    session.pageData = session.pageData.sort(function (a, b) {
+      return b.views - a.views;
+    });
+
+    /** ...and build the pageNames array for Select2 */
+    session.pageNames = session.pageData.map(function (value) {
+      return value.article.replace(/_/g, ' ');
     });
 
     return dfd.resolve(session.pageData);
@@ -1814,9 +1910,9 @@ var pv = require('../shared/pv');
 var config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  daysAgo: 20,
+  daysAgo: 7,
   defaults: {
-    excludes: ['Main Page', 'Special:Search'],
+    excludes: [],
     localizeDateFormat: 'true',
     project: 'en.wikipedia.org'
   },
