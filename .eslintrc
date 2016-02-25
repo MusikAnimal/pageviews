@@ -154,7 +154,7 @@
     "operator-linebreak": 0,
     "padded-blocks": 0,
     "quote-props": 0,
-    "quotes": [0, "double"],
+    "quotes": [1, "single", "avoid-escape"],
     "radix": 0,
     "require-yield": 0,
     "semi": [2, "always"],
