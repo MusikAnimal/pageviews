@@ -4,11 +4,9 @@ A pageviews analysis tool for Wikimedia Foundation wikis
 [![Build Status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)](https://travis-ci.org/MusikAnimal/pageviews)
 
 ## Dependencies
-This guide mostly assumes you're using OSX or Linux. If that's the case, you can probably already have Ruby. Try in your terminal with `ruby -v`. If you are only updating the JavaScript (where all the logic lives), you don't need Ruby, Haml, or Sass. Even for Haml and Sass, you could update the source and use an online converter to update the compiled version, then just run `grunt concat` to correctly concatenate those files for production use.
+This guide mostly assumes you're using OSX or Linux. If that's the case, you can probably already have Ruby. Try in your terminal with `ruby -v`. If you are only updating the JavaScript (where all the logic lives), you don't need Ruby or Sass. Even for Sass, you could update the source and use an online converter to update the compiled version, then just run `grunt concat` to correctly concatenate those files for production use.
 
 1. [Ruby](https://www.ruby-lang.org/en/)
-
-1. [Haml](http://haml.info/)
 
 1. [Sass](http://sass-lang.com/)
 
@@ -22,12 +20,12 @@ This guide mostly assumes you're using OSX or Linux. If that's the case, you can
 
 ## Compilation
 
-This first time around you'll need to install all node pacakges and dependencies with `npm install`.
+This first time around you'll need to install all node pacakges and dependencies with `npm install`. You'll also need to install [Composer](https://getcomposer.org/) and run `composer update`.
 
 ### Local
-Run `grunt pageviews` for the main pageviews app. To save time, you can run `grunt haml` to just compile the HAML files, or `grunt sass` to compile the SCSS.
+Run `grunt pageviews` for the main pageviews app. To save time, you can run `grunt sass` to just compile the SCSS.
 
-If you're only working with the JavaScript, and don't want to deal with Ruby dependencies (HAML, SASS), just run `grunt browserify`. Then when you're done with your work run `grunt concat` and `grunt uglify` to make your code production-ready.
+If you're only working with the JavaScript, and don't want to deal with Ruby dependencies (SASS), just run `grunt browserify`. Then when you're done with your work run `grunt concat` and `grunt uglify` to make your code production-ready.
 
 ### Production
 Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
