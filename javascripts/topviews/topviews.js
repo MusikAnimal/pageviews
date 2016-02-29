@@ -8,13 +8,13 @@ window.session = session;
 /**
  * Apply user input by updating the URL hash and view, if needed
  * @param {boolean} force - apply all user options even if we've detected nothing has changed
- * @returns {null} nothing
+ * @returns {Deferred} deferred object from initData
  */
 function applyChanges(force) {
   if (!pushParams() && force !== true) return;
 
   resetView(false);
-  initData().then(()=> {
+  return initData().then(()=> {
     drawData();
   });
 }
@@ -211,7 +211,8 @@ function pushParams() {
 function resetArticleSelector() {
   const articleSelector = $(config.articleSelector);
   articleSelector.off('change');
-  articleSelector.select2('val', null);
+  articleSelector.val(null);
+  articleSelector.html('');
   articleSelector.select2('data', null);
   articleSelector.select2('destroy');
   setupArticleSelector();
@@ -226,6 +227,7 @@ function resetView(clearSelector = true) {
   session.offset = 0;
   session.pageData = [];
   session.pageNames = [];
+  session.excludes = [];
   $('.chart-container').removeClass('loading').html('');
   $('.message-container').html('');
   if (clearSelector) resetArticleSelector();
@@ -263,7 +265,7 @@ function setupArticleSelector(excludes = session.excludes) {
  * @returns {array} - untouched array of pages
  */
 function setArticleSelectorDefaults(pages) {
-  $(config.articleSelector).select2().val(pages).trigger('change');
+  $(config.articleSelector).val(pages).trigger('change');
   return pages;
 }
 
@@ -313,7 +315,8 @@ function setupProjectInput() {
       return;
     }
     if (validateProject()) return;
-    applyChanges(true);
+    resetView(false);
+    applyChanges(true).then(resetArticleSelector);
   });
 }
 
