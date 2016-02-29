@@ -1932,6 +1932,16 @@ $(document).ready(function () {
   setupProjectInput();
   setupDateRangeSelector();
   popParams();
+
+  /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
+  $.ajax({
+    url: '//tools.wmflabs.org/musikanimal/api/uses',
+    method: 'PATCH',
+    data: {
+      tool: 'topviews',
+      type: 'form'
+    }
+  });
 });
 
 },{"../shared/pv":3,"../shared/site_map":4,"./config":6,"./session":7}]},{},[2,3,4,8]);
