@@ -782,7 +782,7 @@ function updateChart(force) {
         /** FIXME: remove once bug is fixed */
         if (/[^a-zA-Z0-9-\s]/.test(articles.join(''))) {
           writeMessage(
-            `<strong>NOTICE:</strong> One or more page titles contains special characters.
+            `<strong>NOTICE:</strong> One or more page titles contain special characters.
              There is currently a bug in the pageviews API that may cause inaccurate data to be reported.
              The WMF Analytics team is aware of the issue and are
              <a href='https://phabricator.wikimedia.org/T128295'>working to resolve</a> it.`
