@@ -119,4 +119,9 @@ footer {
 
 .error-message {
   color: $red;
+  margin-bottom: 12px;
+
+  ul {
+    margin: 0;
+  }
 }

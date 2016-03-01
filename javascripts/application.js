@@ -716,6 +716,8 @@ function updateChart(force) {
    */
   let labels = []; // Labels (dates) for the x-axis.
   let datasets = []; // Data for each article timeseries.
+  let specialTitles = []; // FIXME: remove after bug is resolved
+  const specialRegex = /[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/;
   articles.forEach((article, index)=> {
     const uriEncodedArticle = encodeURIComponent(article);
     /** Url to query the API. */
@@ -736,6 +738,11 @@ function updateChart(force) {
         datasets.push(getLinearData(data, article, index));
       } else {
         datasets.push(getCircularData(data, article, index));
+      }
+
+      /** FIXME: remove once bug is fixed */
+      if (specialRegex.test(article)) {
+        specialTitles.push(article);
       }
 
       window.chartData = datasets;
@@ -780,12 +787,15 @@ function updateChart(force) {
         $('.data-links').show();
 
         /** FIXME: remove once bug is fixed */
-        if (/[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/.test(articles.join(''))) {
+        if (specialTitles.length && endDate >= moment('2016-02-24')) {
+          let titlesMarkup = specialTitles.map((title)=> {
+            return `<li>${title.replace(/_/g, ' ')}</li>`;
+          });
           writeMessage(
-            `<strong>NOTICE:</strong> One or more page titles contain special characters.
-             There is currently a bug in the pageviews API that may cause inaccurate data to be reported.
-             The WMF Analytics team is aware of the issue and are
-             <a href='https://phabricator.wikimedia.org/T128295'>working to resolve</a> it.`
+            `<strong>NOTICE:</strong> The following articles may have inaccurate data as of <strong>24 February</strong>:
+             <ul style='font-weight:bold'>${titlesMarkup}</ul>
+             This is due to a <a style='font-weight:bold' href='https://phabricator.wikimedia.org/T128295'>bug</a> in the Wikimedia API.
+             The Analytics Team is working to resolve the issue.`
           );
         }
       }
@@ -825,7 +835,7 @@ function writeMessage(message, clear) {
     pv.clearMessages();
   }
   return $('.message-container').append(
-    `<p class='error-message'>${message}</p>`
+    `<div class='error-message'>${message}</div>`
   );
 }
 
