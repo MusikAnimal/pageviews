@@ -25,7 +25,7 @@ This guide mostly assumes you're using OSX or Linux. The setup process may diffe
 
   The linters are not necessary, but preferred so your code maintains a consistent style.
 
-This first time around you'll need to install all node pacakges and dependencies with `npm install`.
+This first time around you'll need to install all node pacakges and dependencies with `npm install`. You'll also need to install [Composer](https://getcomposer.org/) and run `composer update`.
 
 ## Implementation approach
 This app aims to be a part of the future and not linger in the past. JavaScript is written in [ES6](http://es6-features.org/)

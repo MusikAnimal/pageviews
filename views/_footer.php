@@ -1,27 +1,29 @@
 <footer class="col-lg-10">
   <span>
-    Brought to you by
-    <a href="https://en.wikipedia.org/wiki/User:MusikAnimal">MusikAnimal</a>,
-    <a href="https://en.wikipedia.org/wiki/User:Kaldari">Kaldari</a>
-    and
-    <a href="https://wikimediafoundation.org/wiki/User:Mforns_(WMF)">Marcel Ruiz Forns</a>.
+  	<?php
+			$MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
+			$Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
+			$MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
+			echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );
+		?>
   </span>
   <span class="nowrap">
-    Hosted with
-    <span class="heart">&hearts;</span>
-    on
-    <a href="https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs">Tool Labs</a>.
+  	<?php
+			$heart = "<span class='heart'>&hearts;</span>";
+			$host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
+			echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );
+		?>
   </span>
   <div>
-    <a href="/<?php echo $app; ?>/faq">FAQ</a>
+    <a href="/<?php echo $app; ?>/faq"><?= $I18N->msg( 'faq' ) ?></a>
     &middot;
-    <a href="#" data-toggle="modal" data-target="#disclaimer-modal">Disclaimer</a>
+    <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?= $I18N->msg( 'disclaimer' ) ?></a>
     &middot;
-    <a href="/<?php echo $app; ?>/url_structure">URL Structure</a>
+    <a href="/<?php echo $app; ?>/url_structure"><?= $I18N->msg( 'url-structure' ) ?></a>
     &middot;
-    <a href="https://github.com/MusikAnimal/pageviews">View source</a>
+    <a href="https://github.com/MusikAnimal/pageviews"><?= $I18N->msg( 'view-source' ) ?></a>
     &middot;
-    <a href="https://github.com/MusikAnimal/pageviews/issues">Report an issue</a>
+    <a href="https://github.com/MusikAnimal/pageviews/issues"><?= $I18N->msg( 'report-issue' ) ?></a>
   </div>
 </footer>
 
@@ -32,18 +34,17 @@
         <button class="close" arialabel="Close" data-dismiss="modal" type="button">
           <span ariahidden="true">&times;</span>
         </button>
-        <h4 class="modal-title">Disclaimer</h4>
+        <h4 class="modal-title"><?= $I18N->msg( 'disclaimer' ) ?></h4>
       </div>
       <div class="modal-body">
-        Data is fetched from the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a>.
-        This API is still listed to be in an
-        <b><a href="https://www.mediawiki.org/wiki/API_versioning#Experimental">experimental phase</a></b>.
-        This means functionality <i>could</i> <b>break at any time without warning</b>. The
-        maintainers will work to stay up-to-date with API changes, but no promises can be made
-        that the tool will indefinitely be stable until the API is released as stable.
+        <?php
+					$api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
+					$maintainer = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>" . $I18N->msg( 'maintainer' ) . "</a>";
+					echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );
+				?>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal" type="button">OK</button>
+        <button class="btn btn-primary" data-dismiss="modal" type="button"><?= $I18N->msg( 'ok' ) ?></button>
       </div>
     </div>
   </div>

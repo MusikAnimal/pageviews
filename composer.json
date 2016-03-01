@@ -1,0 +1,5 @@
+{
+    "require": {
+        "Krinkle/intuition": "^0.2.2"
+    }
+}
