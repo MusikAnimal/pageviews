@@ -790,7 +790,7 @@ function updateChart(force) {
         if (specialTitles.length && endDate >= moment('2016-02-24')) {
           let titlesMarkup = specialTitles.map((title)=> {
             return `<li>${title.replace(/_/g, ' ')}</li>`;
-          });
+          }).join('');
           writeMessage(
             `<strong>NOTICE:</strong> The following articles may have inaccurate data as of <strong>24 February</strong>:
              <ul style='font-weight:bold'>${titlesMarkup}</ul>
