@@ -787,12 +787,17 @@ function updateChart(force) {
         $('.data-links').show();
 
         /** FIXME: remove once bug is fixed */
-        if (specialTitles.length && endDate >= moment('2016-02-24')) {
+        const bugStart = moment('2016-02-23').format(pv.getLocaleDateString()),
+          bugEnd = moment('2016-02-29').format(pv.getLocaleDateString());
+        let inRange = (startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days')) ||
+          (endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days'));
+
+        if (specialTitles.length && inRange) {
           let titlesMarkup = specialTitles.map((title)=> {
             return `<li>${title.replace(/_/g, ' ')}</li>`;
           }).join('');
           writeMessage(
-            `<strong>NOTICE:</strong> The following articles may have inaccurate data as of <strong>24 February</strong>:
+            `<strong>NOTICE:</strong> The following articles may have inaccurate between <strong>${bugStart}</strong> and <strong>${bugEnd}</strong>:
              <ul style='font-weight:bold'>${titlesMarkup}</ul>
              This is due to a <a style='font-weight:bold' href='https://phabricator.wikimedia.org/T128295'>bug</a> in the Wikimedia API.
              The Analytics Team is working to resolve the issue.`
