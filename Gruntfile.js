@@ -43,7 +43,7 @@ module.exports = function(grunt) {
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
-          'public/pageviews.js': [
+          'public_html/pageviews.js': [
             'javascripts/shared/*.js',
             'javascripts/pageviews.js'
           ]
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
-          'public/topviews/topviews.js': [
+          'public_html/topviews/topviews.js': [
             'javascripts/shared/*.js',
             'javascripts/topviews/topviews.js'
           ]
@@ -68,9 +68,9 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: [{
-          'public/pageviews.css': 'stylesheets/pageviews.scss',
-          'public/faq.css': 'stylesheets/faq.scss',
-          'public/url_structure.css': 'stylesheets/url_structure.scss'
+          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
+          'public_html/faq.css': 'stylesheets/faq.scss',
+          'public_html/url_structure.css': 'stylesheets/url_structure.scss'
         }]
       },
       topviews: {
@@ -79,9 +79,9 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: [{
-          'public/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
-          'public/topviews/faq.css': 'stylesheets/topviews/faq.scss',
-          'public/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
+          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
+          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
+          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
         }]
       },
       dist: {
@@ -90,12 +90,12 @@ module.exports = function(grunt) {
           sourcemap: 'none'
         },
         files: [{
-          'public/pageviews.css': 'stylesheets/pageviews.scss',
-          'public/faq.css': 'stylesheets/faq.scss',
-          'public/url_structure.css': 'stylesheets/url_structure.scss',
-          'public/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
-          'public/topviews/faq.css': 'stylesheets/topviews/faq.scss',
-          'public/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
+          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
+          'public_html/faq.css': 'stylesheets/faq.scss',
+          'public_html/url_structure.css': 'stylesheets/url_structure.scss',
+          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
+          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
+          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
         }]
       }
     },
@@ -106,47 +106,47 @@ module.exports = function(grunt) {
       pageviews: {
         files: {
           // order matters here
-          'public/application.js': coreJSDependencies.concat([
+          'public_html/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
-            'public/pageviews.js'
+            'public_html/pageviews.js'
           ]),
-          'public/application.css': coreCSSDependencies.concat([
+          'public_html/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
-            'public/pageviews.css'
+            'public_html/pageviews.css'
           ]),
-          'public/faq/application.js': coreJSDependencies,
-          'public/faq/application.css': coreCSSDependencies.concat([
-            'public/faq.css'
+          'public_html/faq/application.js': coreJSDependencies,
+          'public_html/faq/application.css': coreCSSDependencies.concat([
+            'public_html/faq.css'
           ]),
-          'public/url_structure/application.js': coreJSDependencies,
-          'public/url_structure/application.css': coreCSSDependencies.concat([
-            'public/url_structure.css'
+          'public_html/url_structure/application.js': coreJSDependencies,
+          'public_html/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/url_structure.css'
           ])
         }
       },
       topviews: {
         files: {
           // order matters here
-          'public/topviews/application.js': coreJSDependencies.concat([
+          'public_html/topviews/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
-            'public/topviews/topviews.js'
+            'public_html/topviews/topviews.js'
           ]),
-          'public/topviews/application.css': coreCSSDependencies.concat([
+          'public_html/topviews/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
-            'public/topviews/topviews.css'
+            'public_html/topviews/topviews.css'
           ]),
-          'public/topviews/faq/application.js': coreJSDependencies,
-          'public/topviews/faq/application.css': coreCSSDependencies.concat([
-            'public/topviews/faq.css'
+          'public_html/topviews/faq/application.js': coreJSDependencies,
+          'public_html/topviews/faq/application.css': coreCSSDependencies.concat([
+            'public_html/topviews/faq.css'
           ]),
-          'public/topviews/url_structure/application.js': coreJSDependencies,
-          'public/topviews/url_structure/application.css': coreCSSDependencies.concat([
-            'public/topviews/url_structure.css'
+          'public_html/topviews/url_structure/application.js': coreJSDependencies,
+          'public_html/topviews/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/topviews/url_structure.css'
           ])
         }
       }
@@ -157,28 +157,28 @@ module.exports = function(grunt) {
       },
       all: {
         files: {
-          'public/application.js': ['public/application.js'],
-          'public/faq/application.js': ['public/faq/application.js'],
-          'public/url_structure/application.js': ['public/url_structure/application.js'],
+          'public_html/application.js': ['public_html/application.js'],
+          'public_html/faq/application.js': ['public_html/faq/application.js'],
+          'public_html/url_structure/application.js': ['public_html/url_structure/application.js'],
 
-          'public/topviews/application.js': ['public/topviews/application.js'],
-          'public/topviews/faq/application.js': ['public/topviews/faq/application.js'],
-          'public/topviews/url_structure/application.js': ['public/topviews/url_structure/application.js']
+          'public_html/topviews/application.js': ['public_html/topviews/application.js'],
+          'public_html/topviews/faq/application.js': ['public_html/topviews/faq/application.js'],
+          'public_html/topviews/url_structure/application.js': ['public_html/topviews/url_structure/application.js']
         }
       }
     }
   });
 
-  grunt.registerTask('views', 'copy views to public', function() {
+  grunt.registerTask('views', 'copy views to public_html', function() {
     // FIXME: rewrite to programmatically copy files
     var exec = require('child_process').exec;
     var cmds = [
-      'cp views/index.php public/index.php',
-      'cp views/faq.php public/faq/index.php',
-      'cp views/url_structure.php public/url_structure/index.php',
-      'cp views/topviews/index.php public/topviews/index.php',
-      'cp views/topviews/faq.php public/topviews/faq/index.php',
-      'cp views/topviews/url_structure.php public/topviews/url_structure/index.php'
+      'cp views/index.php public_html/index.php',
+      'cp views/faq.php public_html/faq/index.php',
+      'cp views/url_structure.php public_html/url_structure/index.php',
+      'cp views/topviews/index.php public_html/topviews/index.php',
+      'cp views/topviews/faq.php public_html/topviews/faq/index.php',
+      'cp views/topviews/url_structure.php public_html/topviews/url_structure/index.php'
     ];
     cmds.forEach(function(cmd) {
       exec(cmd, function(error, stdout, stderr) {
