@@ -776,9 +776,18 @@ function updateChart(force) {
           session.chartObj = new Chart(context)[session.chartType](datasets, options);
         }
 
-        pv.clearSiteNotices();
         $('#chart-legend').html(session.chartObj.generateLegend());
         $('.data-links').show();
+
+        /** FIXME: remove once bug is fixed */
+        if (/[^a-zA-Z0-9-\s]/.test(articles.join(''))) {
+          writeMessage(
+            `<strong>NOTICE:</strong> One or more page titles contains special characters.
+             There is currently a bug in the pageviews API that may cause inaccurate data to be reported.
+             The WMF Analytics team is aware of the issue and are
+             <a href='https://phabricator.wikimedia.org/T128295'>working to resolve</a> it.`
+          );
+        }
       }
     });
   });
@@ -848,8 +857,8 @@ $(document).ready(()=> {
     }
     pv.addSiteNotice('info',
       `Please update your links to point to
-       <a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>
-       Pageviews Analysis has moved!`
+       <a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>`,
+       'Pageviews Analysis has moved!'
     );
   }
 
