@@ -323,11 +323,11 @@ function popParams() {
   $('#agent-select').val(params.agent || 'user');
 
   if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
-    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than October 2015. Sorry.', 'Invalid parameters!', true);
+    pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
     resetView();
     return;
   } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', 'Start date must be older than the end date.', 'Invalid parameters!', true);
+    pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
     resetView();
     return;
   }
@@ -513,7 +513,7 @@ function setupArticleSelector() {
   let params = {
     ajax: getArticleSelectorAjax(),
     tags: session.autocomplete === 'no_autocomplete',
-    placeholder: 'Type article names...',
+    placeholder: i18nMessages.articlePlaceholder,
     maximumSelectionLength: 10,
     minimumInputLength: 1
   };
@@ -552,7 +552,11 @@ function getArticleSelectorAjax() {
 function setupDateRangeSelector() {
   const dateRangeSelector = $(config.dateRangeSelector);
   dateRangeSelector.daterangepicker({
-    locale: { format: getDateFormat() },
+    locale: {
+      format: getDateFormat(),
+      applyLabel: i18nMessages.apply,
+      cancelLabel: i18nMessages.cancel
+    },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
     maxDate: config.maxDate
@@ -560,9 +564,9 @@ function setupDateRangeSelector() {
 
   /** so people know why they can't query data older than October 2015 */
   $('.daterangepicker').append(
-    `<div class='daterange-notice'>
-     Pageviews Analysis provides data from October 2015 forward. For older data, try <a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>.
-     </div>`
+    $( '<div>' )
+      .addClass( 'daterange-notice' )
+      .html( i18nMessages.dateNotice )
   );
 
   dateRangeSelector.on('change', ()=> {

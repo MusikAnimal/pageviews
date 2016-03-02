@@ -57,5 +57,13 @@
 	"format-numbers": "Label for option to format numerical data according to the user's language, for example, '1,234' instead of '1234'",
 	"localize-dates": "Label for option to format dates according to the user's language, for example, '5/23/2015' instead of 2015-05-23",
 	"cancel": "Label for button\n{{Identical|Cancel}}",
-	"save": "Label for button\n{{Identical|Save}}"
+	"save": "Label for button\n{{Identical|Save}}",
+	"apply": "Label for button",
+	"article-placeholder": "Placeholder text for the form input where the user enters the names of the articles they want to view statistics for",
+	"date-notice": "Notice informing the user that the tool does not have data older than October 2015. $1 is the name of the tool. $2 is a link to another website.",
+	"invalid-params": "Generic part of error message. Should include punctuation at the end.",
+	"date-error-1": "Error message",
+	"date-error-2": "Error message",
+	"totals": "Label for the total number of pageviews",
+	"day": "Used in the context of number of pageviews per day"
 }

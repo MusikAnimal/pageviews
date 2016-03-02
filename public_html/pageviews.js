@@ -454,11 +454,11 @@ function popParams() {
   $('#agent-select').val(params.agent || 'user');
 
   if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
-    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than October 2015. Sorry.', 'Invalid parameters!', true);
+    pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
     resetView();
     return;
   } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', 'Start date must be older than the end date.', 'Invalid parameters!', true);
+    pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
     resetView();
     return;
   }
@@ -644,7 +644,7 @@ function setupArticleSelector() {
   var params = {
     ajax: getArticleSelectorAjax(),
     tags: session.autocomplete === 'no_autocomplete',
-    placeholder: 'Type article names...',
+    placeholder: i18nMessages.articlePlaceholder,
     maximumSelectionLength: 10,
     minimumInputLength: 1
   };
@@ -683,14 +683,18 @@ function getArticleSelectorAjax() {
 function setupDateRangeSelector() {
   var dateRangeSelector = $(config.dateRangeSelector);
   dateRangeSelector.daterangepicker({
-    locale: { format: getDateFormat() },
+    locale: {
+      format: getDateFormat(),
+      applyLabel: i18nMessages.apply,
+      cancelLabel: i18nMessages.cancel
+    },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
     maxDate: config.maxDate
   });
 
   /** so people know why they can't query data older than October 2015 */
-  $('.daterangepicker').append('<div class=\'daterange-notice\'>\n     Pageviews Analysis provides data from October 2015 forward. For older data, try <a href=\'http://stats.grok.se\' target=\'_blank\'>stats.grok.se</a>.\n     </div>');
+  $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
 
   dateRangeSelector.on('change', function () {
     /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
@@ -2334,8 +2338,8 @@ module.exports = siteMap;
 'use strict';
 
 var templates = {
-  linearLegend: '<b>Totals:</b> <% var total = chartData.reduce(function(a,b){ return a + b.sum }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/day)</li><% } %>' + '<% for (var i=0; i<datasets.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">' + "<a href='<%= pv.getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " + '<%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/day)</li><%}%></ul>',
-  circularLegend: '<b>Totals:</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/day)</li><% } %>' + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= pv.getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + '<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/day)</li><%}%></ul>'
+  linearLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.sum }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>' + '<% for (var i=0; i<datasets.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">' + "<a href='<%= pv.getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " + '<%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>',
+  circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>' + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= pv.getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + '<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>'
 };
 
 module.exports = templates;

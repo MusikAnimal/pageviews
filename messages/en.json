@@ -57,5 +57,13 @@
 	"format-numbers": "Format numerical data",
 	"localize-dates": "Localize date format",
 	"cancel": "Cancel",
-	"save": "Save"
+	"save": "Save",
+	"apply": "Apply",
+	"article-placeholder": "Type article names...",
+	"date-notice": "$1 provides data from October 2015 forward. For older data, try $2.",
+	"invalid-params": "Invalid parameters!",
+	"param-error-1": "Pageviews API does not contain data older than October 2015. Sorry.",
+	"param-error-2": "Start date must be older than the end date.",
+	"totals": "Totals:",
+	"day": "day"
 }
