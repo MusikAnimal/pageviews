@@ -27,6 +27,8 @@ This guide mostly assumes you're using OSX or Linux. The setup process may diffe
 
 This first time around you'll need to install all node pacakges and dependencies with `npm install`. You'll also need to install [Composer](https://getcomposer.org/) and run `composer update`.
 
+Once all of your dependencies are installed, set your project root path in `config.sample.php` and rename the file `config.php`.
+
 ## Implementation approach
 This app aims to be a part of the future and not linger in the past. JavaScript is written in [ES6](http://es6-features.org/)
 where possible, and compiled to ES5 with [Babel](https://babeljs.io/) when you run Grunt. If you _need_ to add a polyfill for
