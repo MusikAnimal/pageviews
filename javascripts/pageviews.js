@@ -555,7 +555,30 @@ function setupDateRangeSelector() {
     locale: {
       format: getDateFormat(),
       applyLabel: i18nMessages.apply,
-      cancelLabel: i18nMessages.cancel
+      cancelLabel: i18nMessages.cancel,
+      daysOfWeek: [
+        i18nMessages.su,
+        i18nMessages.mo,
+        i18nMessages.tu,
+        i18nMessages.we,
+        i18nMessages.th,
+        i18nMessages.fr,
+        i18nMessages.sa
+      ],
+      monthNames: [
+        i18nMessages.january,
+        i18nMessages.february,
+        i18nMessages.march,
+        i18nMessages.april,
+        i18nMessages.may,
+        i18nMessages.june,
+        i18nMessages.july,
+        i18nMessages.august,
+        i18nMessages.september,
+        i18nMessages.october,
+        i18nMessages.november,
+        i18nMessages.december
+      ],
     },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
