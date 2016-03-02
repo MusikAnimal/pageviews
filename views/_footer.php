@@ -1,18 +1,18 @@
 <footer class="col-lg-10">
   <span>
-  	<?php
-			$MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
-			$Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
-			$MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
-			echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );
-		?>
+    <?php
+      $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
+      $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
+      $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
+      echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );
+    ?>
   </span>
   <span class="nowrap">
-  	<?php
-			$heart = "<span class='heart'>&hearts;</span>";
-			$host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
-			echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );
-		?>
+    <?php
+      $heart = "<span class='heart'>&hearts;</span>";
+      $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
+      echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );
+    ?>
   </span>
   <div>
     <a href="/<?php echo $app; ?>/faq"><?= $I18N->msg( 'faq' ) ?></a>
@@ -38,10 +38,10 @@
       </div>
       <div class="modal-body">
         <?php
-					$api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
-					$maintainer = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>" . $I18N->msg( 'maintainer' ) . "</a>";
-					echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );
-				?>
+          $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
+          $maintainer = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>" . $I18N->msg( 'maintainer' ) . "</a>";
+          echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );
+        ?>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal" type="button"><?= $I18N->msg( 'ok' ) ?></button>

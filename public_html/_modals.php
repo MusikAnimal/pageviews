@@ -77,8 +77,8 @@
             <label>
               <input name='autocomplete' type='radio' value='autocomplete'>
               <?php
-              	$prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>";
-              	echo $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );
+                $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>";
+                echo $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );
               ?>
             </label>
           </div>
@@ -86,7 +86,7 @@
             <label>
               <input name='autocomplete' type='radio' value='autocomplete_redirects'>
               <?php
-              	$opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>";
+                $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>";
                 echo $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );
               ?>
             </label>
