@@ -743,6 +743,8 @@ function updateChart(force) {
    */
   let labels = []; // Labels (dates) for the x-axis.
   let datasets = []; // Data for each article timeseries.
+  let specialTitles = []; // FIXME: remove after bug is resolved
+  const specialRegex = /[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/;
   articles.forEach((article, index)=> {
     const uriEncodedArticle = encodeURIComponent(article);
     /** Url to query the API. */
@@ -763,6 +765,11 @@ function updateChart(force) {
         datasets.push(getLinearData(data, article, index));
       } else {
         datasets.push(getCircularData(data, article, index));
+      }
+
+      /** FIXME: remove once bug is fixed */
+      if (specialRegex.test(article)) {
+        specialTitles.push(article);
       }
 
       window.chartData = datasets;
@@ -803,9 +810,27 @@ function updateChart(force) {
           session.chartObj = new Chart(context)[session.chartType](datasets, options);
         }
 
-        pv.clearSiteNotices();
         $('#chart-legend').html(session.chartObj.generateLegend());
         $('.data-links').show();
+
+        /** FIXME: remove once bug is fixed */
+        const bugStart = moment('2016-02-23').format(pv.getLocaleDateString()),
+          bugEnd = moment('2016-02-29').format(pv.getLocaleDateString());
+        let inRange = (startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days')) ||
+          (endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days')) ||
+          (startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days'));
+
+        if (specialTitles.length && inRange) {
+          let titlesMarkup = specialTitles.map((title)=> {
+            return `<li>${title.replace(/_/g, ' ')}</li>`;
+          }).join('');
+          writeMessage(
+            `<strong>NOTICE:</strong> The following articles may have inaccurate between <strong>${bugStart}</strong> and <strong>${bugEnd}</strong>:
+             <ul style='font-weight:bold'>${titlesMarkup}</ul>
+             This is due to a <a style='font-weight:bold' href='https://phabricator.wikimedia.org/T128295'>bug</a> in the Wikimedia API.
+             The Analytics Team is working to resolve the issue.`
+          );
+        }
       }
     });
   });
@@ -843,7 +868,7 @@ function writeMessage(message, clear) {
     pv.clearMessages();
   }
   return $('.message-container').append(
-    `<p class='error-message'>${message}</p>`
+    `<div class='error-message'>${message}</div>`
   );
 }
 
@@ -875,8 +900,8 @@ $(document).ready(()=> {
     }
     pv.addSiteNotice('info',
       `Please update your links to point to
-       <a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>
-       Pageviews Analysis has moved!`
+       <a class='alert-link' href='//tools.wmflabs.org/pageviews'>tools.wmflabs.org/pageviews</a>`,
+       'Pageviews Analysis has moved!'
     );
   }
 
