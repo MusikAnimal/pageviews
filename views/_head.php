@@ -31,7 +31,13 @@ var i18nMessages = {
   september: "<?= $I18N->msg( 'september' ) ?>",
   october: "<?= $I18N->msg( 'october' ) ?>",
   november: "<?= $I18N->msg( 'november' ) ?>",
-  december: "<?= $I18N->msg( 'december' ) ?>"
+  december: "<?= $I18N->msg( 'december' ) ?>",
+  select2MinChars: "<?= $I18N->msg( 'select2-min-chars', array( 'variables' => array( 'replace me' ) ) ) ?>",
+  select2MaxChars: "<?= $I18N->msg( 'select2-max-chars', array( 'variables' => array( 'replace me' ) ) ) ?>",
+  select2Loading: "<?= $I18N->msg( 'select2-loading' ) ?>",
+  select2MaxItems: "<?= $I18N->msg( 'select2-max-items', array( 'variables' => array( 'replace me' ) ) ) ?>",
+  select2NoResults: "<?= $I18N->msg( 'select2-no-results' ) ?>",
+  select2Searching: "<?= $I18N->msg( 'select2-searching' ) ?>"
 };
 </script>
 <script src="application.js"></script>
