@@ -1,3 +1,9 @@
+<?php
+  require_once __DIR__ . '/../config.php';
+  require_once ROOTDIR . '/vendor/autoload.php';
+  $I18N = new Intuition( 'pageviews' );
+  $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
+?>
 <meta charset="utf-8"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -40,5 +46,6 @@ var i18nMessages = {
   select2Searching: "<?= $I18N->msg( 'select2-searching' ) ?>"
 };
 </script>
+
 <script src="application.js"></script>
 <link href="application.css" rel="stylesheet"></link>

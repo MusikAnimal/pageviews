@@ -1,5 +1,4 @@
-<?php
-/**
+<!--
  * Pageviews Comparison tool
  *
  * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d
@@ -7,13 +6,7 @@
  *
  * Copyright 2016 MusikAnimal
  * Redistributed under the MIT License: https://opensource.org/licenses/MIT
- */
-
-require_once __DIR__ . '/../config.php';
-require_once ROOTDIR . '/vendor/autoload.php';
-$I18N = new Intuition( 'pageviews' );
-$I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
-?>
+ *-->
 <!DOCTYPE html>
 <html>
   <head>
