@@ -173,12 +173,7 @@ module.exports = function(grunt) {
     // FIXME: rewrite to programmatically copy files
     var exec = require('child_process').exec;
     var cmds = [
-      'cp views/index.php public_html/index.php',
-      'cp views/faq.php public_html/faq/index.php',
-      'cp views/url_structure.php public_html/url_structure/index.php',
-      'cp views/topviews/index.php public_html/topviews/index.php',
-      'cp views/topviews/faq.php public_html/topviews/faq/index.php',
-      'cp views/topviews/url_structure.php public_html/topviews/url_structure/index.php'
+      'cp -R views/ public_html/'
     ];
     cmds.forEach(function(cmd) {
       exec(cmd, function(error, stdout, stderr) {

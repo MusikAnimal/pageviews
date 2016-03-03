@@ -6,7 +6,7 @@
  *
  * Copyright 2016 MusikAnimal
  * Redistributed under the MIT License: https://opensource.org/licenses/MIT
- *-->
+-->
 <!DOCTYPE html>
 <html>
   <head>
