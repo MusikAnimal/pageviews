@@ -1,6 +1,6 @@
 <?php
   require_once __DIR__ . '/../config.php';
-  require_once ROOTDIR . '/vendor/autoload.php';
+  require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
   $I18N = new Intuition( 'pageviews' );
   $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
 ?>
