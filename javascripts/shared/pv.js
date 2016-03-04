@@ -275,9 +275,9 @@ const pv = {
    * @returns {array} pages with the new normalized names, if given
    */
   mapNormalizedPageNames(pages, normalizedPages) {
-    normalizedPages.forEach((normalPage)=> {
+    normalizedPages.forEach(normalPage => {
       /** do it this way to preserve ordering of pages */
-      pages = pages.map((page)=> {
+      pages = pages.map(page => {
         if (normalPage.from === page) {
           return normalPage.to;
         } else {
@@ -310,7 +310,7 @@ const pv = {
     return $.ajax({
       url: `https://${pv.getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
       dataType: 'jsonp'
-    }).then((data)=> {
+    }).then(data => {
       if (data.query.normalized) {
         pages = this.mapNormalizedPageNames(pages, data.query.normalized);
       }
@@ -355,7 +355,7 @@ const pv = {
    * @returns {array} page names with underscores
    */
   underscorePageNames(pages) {
-    return pages.map((page)=> {
+    return pages.map(page => {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
   }

@@ -101,6 +101,9 @@ module.exports = function(grunt) {
       }
     },
     haml: {
+      options: {
+        enableDynamicAttributes: false
+      },
       compile: {
         files: {
           'public_html/index.php' : 'views/index.haml',
@@ -182,24 +185,10 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('views', 'copy views to public_html', function() {
-    // FIXME: rewrite to programmatically copy files
-    var exec = require('child_process').exec;
-    var cmds = [
-      'cp -R views/ public_html/'
-    ];
-    cmds.forEach(function(cmd) {
-      exec(cmd, function(error, stdout, stderr) {
-        console.log(cmd);
-        // command output is in stdout
-      });
-    });
-  });
-
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
-  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'views']);
-  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'views']);
-  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'views']);
+  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
+  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
+  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
 };

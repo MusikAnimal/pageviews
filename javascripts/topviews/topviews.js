@@ -14,7 +14,7 @@ function applyChanges(force) {
   if (!pushParams() && force !== true) return;
 
   resetView(false);
-  return initData().then(()=> {
+  return initData().then(() => {
     drawData();
   });
 }
@@ -166,10 +166,10 @@ function popParams() {
   if (!params.excludes || (params.excludes.length === 1 && !params.excludes[0])) {
     session.excludes = config.defaults.excludes;
   } else {
-    session.excludes = params.excludes.map((exclude)=> exclude.replace(/_/g, ' '));
+    session.excludes = params.excludes.map(exclude => exclude.replace(/_/g, ' '));
   }
 
-  initData().then(()=> {
+  initData().then(() => {
     setupArticleSelector(session.excludes);
     setupListeners();
     drawData();
@@ -297,8 +297,8 @@ function setupDateRangeSelector() {
 function setupListeners() {
   $(config.dateRangeSelector).on('change', applyChanges);
   $('#platform-select').on('change', applyChanges);
-  $('a[href="#"]').on('click', (e)=> e.preventDefault());
-  $('.expand-chart').on('click', ()=> {
+  $('a[href="#"]').on('click', e => e.preventDefault());
+  $('.expand-chart').on('click', () => {
     session.offset += config.pageSize;
     drawData();
   });
@@ -344,12 +344,12 @@ function initData() {
 
   let dfd = $.Deferred();
 
-  return $.when(...promises).then((...data)=> {
+  return $.when(...promises).then((...data) => {
     if (promises.length === 1) data = [data];
 
     /** import data and do summations */
-    data.forEach((day)=> {
-      day[0].items[0].articles.forEach((item, index)=> {
+    data.forEach(day => {
+      day[0].items[0].articles.forEach((item, index) => {
         if (session.pageData[index]) {
           session.pageData[index].views += item.views;
         } else {
@@ -362,7 +362,7 @@ function initData() {
     });
 
     /** sort given new view counts */
-    session.pageData = session.pageData.sort((a, b)=> b.views - a.views);
+    session.pageData = session.pageData.sort((a, b) => b.views - a.views);
 
     /** ...and build the pageNames array for Select2 */
     session.pageNames = session.pageData.map(value => value.article.replace(/_/g, ' '));
@@ -406,7 +406,7 @@ function writeMessage(message, clear) {
   );
 }
 
-$(document).ready(()=> {
+$(document).ready(() => {
   setupProjectInput();
   setupDateRangeSelector();
   popParams();

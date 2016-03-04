@@ -50,17 +50,17 @@ function exportCSV() {
   let dates = getDateHeadings(false);
 
   // Begin constructing the dataRows array by populating it with the dates
-  dates.forEach((date, index)=> {
+  dates.forEach((date, index) => {
     dataRows[index] = [date];
   });
 
-  chartData.forEach((page)=> {
+  chartData.forEach(page => {
     // Build an array of page titles for use in the CSV header
     let pageTitle = '"' + page.label.replace(/"/g, '""') + '"';
     titles.push(pageTitle);
 
     // Populate the dataRows array with the data for this page
-    dates.forEach((date, index)=> {
+    dates.forEach((date, index) => {
       dataRows[index].push(page.data[index]);
     });
   });
@@ -69,7 +69,7 @@ function exportCSV() {
   csvContent = csvContent + titles.join(',') + '\n';
 
   // Add the rows to the CSV
-  dataRows.forEach((data)=> {
+  dataRows.forEach(data => {
     csvContent += data.join(',') + '\n';
   });
 
@@ -85,7 +85,7 @@ function exportCSV() {
 function exportJSON() {
   let data = [];
 
-  chartData.forEach((page, index)=> {
+  chartData.forEach((page, index) => {
     let entry = {
       page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
       color: page.strokeColor,
@@ -93,7 +93,7 @@ function exportJSON() {
       daily_average: Math.round(page.sum / numDaysInRange())
     };
 
-    getDateHeadings(false).forEach((heading, index)=> {
+    getDateHeadings(false).forEach((heading, index) => {
       entry[heading.replace(/\\/,'')] = page.data[index];
     });
 
@@ -135,7 +135,7 @@ function fillInSettings() {
 function fillInZeros(data, startDate, endDate) {
   /** Extract the dates that are already in the timeseries */
   let alreadyThere = {};
-  data.items.forEach((elem)=> {
+  data.items.forEach(elem => {
     let date = moment(elem.timestamp, config.timestampFormat);
     alreadyThere[date] = elem;
   });
@@ -179,13 +179,13 @@ window.formatNumber = formatNumber;
  * @returns {object} - ready for chart rendering
  */
 function getCircularData(data, article, index) {
-  const values = data.items.map((elem)=> elem.views),
+  const values = data.items.map(elem => elem.views),
     color = session.colors()[index];
 
   return Object.assign(
     {
       label: article.replace(/_/g, ' '),
-      value: values.reduce((a, b)=> a+b)
+      value: values.reduce((a, b) => a+b)
     },
     config.chartConfig[session.chartType].dataset(color)
   );
@@ -232,14 +232,14 @@ function getDateHeadings(localized) {
  * @returns {object} - ready for chart rendering
  */
 function getLinearData(data, article, index) {
-  const values = data.items.map((elem)=> elem.views),
+  const values = data.items.map(elem => elem.views),
     color = session.colors()[index % 10];
 
   return Object.assign(
     {
       label: article.replace(/_/g, ' '),
       data: values,
-      sum: values.reduce((a, b)=> a+b)
+      sum: values.reduce((a, b) => a+b)
     },
     config.chartConfig[session.chartType].dataset(color)
   );
@@ -341,7 +341,7 @@ function popParams() {
     params.pages = pv.underscorePageNames(params.pages);
     setArticleSelectorDefaults(params.pages);
   } else {
-    pv.normalizePageNames(params.pages).then((data)=> {
+    pv.normalizePageNames(params.pages).then(data => {
       normalized = true;
 
       params.pages = data;
@@ -374,7 +374,7 @@ function processSearchResults(data) {
     }
   } else if (session.autocomplete === 'autocomplete_redirects') {
     if (data && data[1].length) {
-      results = data[1].map((elem)=> {
+      results = data[1].map(elem => {
         return {
           id: elem.replace(/ /g, '_'),
           text: elem
@@ -492,7 +492,7 @@ function saveSettings() {
  */
 function setArticleSelectorDefaults(pages) {
   const articleSelectorQuery = config.articleSelector;
-  pages.forEach((page)=> {
+  pages.forEach(page => {
     const escapedText = $('<div>').text(page).html();
     $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
   });
@@ -534,9 +534,7 @@ function getArticleSelectorAjax() {
       dataType: 'jsonp',
       delay: 200,
       jsonpCallback: 'articleSuggestionCallback',
-      data: (search)=> {
-        return getSearchParams(search.term);
-      },
+      data: search => getSearchParams(search.term),
       processResults: processSearchResults,
       cache: true
     };
@@ -592,7 +590,7 @@ function setupDateRangeSelector() {
       .html( i18nMessages.dateNotice )
   );
 
-  dateRangeSelector.on('change', ()=> {
+  dateRangeSelector.on('change', () => {
     /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
     if (session.chartType === 'Line') {
       if (numDaysInRange() > 50) {
@@ -634,7 +632,7 @@ function setupListeners() {
   });
 
   /** prevent browser's default behaviour for any link with href="#" */
-  $('a[href=\'#\'').on('click', (e)=> e.preventDefault());
+  $('a[href=\'#\'').on('click', e => e.preventDefault());
 
   // window.onpopstate = popParams();
 }
@@ -670,7 +668,7 @@ function setupSelect2Colors() {
   document.head.appendChild(colorsStyleEl);
 
   /** add color rules */
-  session.colors().forEach((color, index)=> {
+  session.colors().forEach((color, index) => {
     colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
   });
 
@@ -684,11 +682,11 @@ function setupSelect2Colors() {
 function setupSettingsModal() {
   /** first build color palette options */
   let markup = '';
-  Object.keys(config.colors).forEach((key)=> {
+  Object.keys(config.colors).forEach(key => {
     let palette = config.colors[key];
     markup += `<div class='radio'><label class='color-label'>
       <input type='radio' name='colorPalette' value=${key} />`;
-    palette.forEach((color)=> {
+    palette.forEach(color => {
       markup += `<span class='color-tile' style='background:${color}'></span>`;
     });
     markup += '</label></div>';
@@ -730,8 +728,8 @@ function updateChart(force) {
 
   /** Collect parameters from inputs. */
   const dateRangeSelector = $(config.dateRangeSelector),
-    startDate = dateRangeSelector.data('daterangepicker').startDate,
-    endDate = dateRangeSelector.data('daterangepicker').endDate;
+    startDate = dateRangeSelector.data('daterangepicker').startDate.startOf('day'),
+    endDate = dateRangeSelector.data('daterangepicker').endDate.startOf('day');
 
   destroyChart();
   $('.message-container').html('');
@@ -745,7 +743,7 @@ function updateChart(force) {
   let datasets = []; // Data for each article timeseries.
   let specialTitles = []; // FIXME: remove after bug is resolved
   const specialRegex = /[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/;
-  articles.forEach((article, index)=> {
+  articles.forEach((article, index) => {
     const uriEncodedArticle = encodeURIComponent(article);
     /** Url to query the API. */
     const url = (
@@ -757,7 +755,7 @@ function updateChart(force) {
     $.ajax({
       url: url,
       dataType: 'json'
-    }).success((data)=> {
+    }).success(data => {
       fillInZeros(data, startDate, endDate);
 
       /** Build the article's dataset. */
@@ -773,20 +771,20 @@ function updateChart(force) {
       }
 
       window.chartData = datasets;
-    }).fail((data)=> {
+    }).fail(data => {
       if (data.status === 404) {
         writeMessage(`No data found for the page <a href='${pv.getPageURL(article)}'>${article}</a>`, true);
-        articles = articles.filter((el) => el !== article);
+        articles = articles.filter(el => el !== article);
 
         if (!articles.length) {
           $('.chart-container').html('');
           $('.chart-container').removeClass('loading');
         }
       }
-    }).always((data)=> {
+    }).always(data => {
       /** Get the labels from the first call. */
       if (labels.length === 0 && data.items) {
-        labels = data.items.map((elem)=> {
+        labels = data.items.map(elem => {
           return moment(elem.timestamp, config.timestampFormat).format(getDateFormat());
         });
       }
@@ -821,7 +819,7 @@ function updateChart(force) {
           (startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days'));
 
         if (specialTitles.length && inRange) {
-          let titlesMarkup = specialTitles.map((title)=> {
+          let titlesMarkup = specialTitles.map(title => {
             return `<li>${title.replace(/_/g, ' ')}</li>`;
           }).join('');
           writeMessage(
@@ -872,7 +870,7 @@ function writeMessage(message, clear) {
   );
 }
 
-$(document).ready(()=> {
+$(document).ready(() => {
   $.extend(Chart.defaults.global, {animation: false, responsive: true});
 
   setupProjectInput();

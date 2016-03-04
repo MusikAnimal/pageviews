@@ -1,4 +1,6 @@
-language: node_js
+language: php
+php:
+  - 5.5
 node_js:
   - 4.3.0
 before_install: npm install -g grunt-cli

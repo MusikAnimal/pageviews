@@ -33,11 +33,13 @@
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
             <span class="date-latest">
-              <?php $days = array(10, 20, 30, 60, 90); ?>
               <!-- FIXME: make this use $I18N, I couldn't figure it out :( -->
+              <?php $days = array(10, 20, 30, 60, 90); ?>
+              Latest
               <?php foreach($days as $day) { ?>
                 <?php echo " <a data-value='{$day}' href='#'>{$day}</a>"; ?>
               <?php } ?>
+              days
             </span>
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>

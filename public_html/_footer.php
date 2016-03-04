@@ -11,7 +11,7 @@
     <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );; ?>
   </span>
   <div>
-    <a href="/{$app}/faq">
+    <a href="/<?php echo $app; ?>/faq">
       <?php echo $I18N->msg( 'faq' ); ?>
     </a>
     &middot;
@@ -19,7 +19,7 @@
       <?php echo $I18N->msg( 'disclaimer' ); ?>
     </a>
     &middot;
-    <a href="/{$app}/url_structure">
+    <a href="/<?php echo $app; ?>/url_structure">
       <?php echo $I18N->msg( 'url-structure' ); ?>
     </a>
     &middot;
@@ -45,7 +45,7 @@
       </div>
       <div class="modal-body">
         <?php $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>"; ?>
-        <?php $maintainer = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>" . $I18N->msg( 'maintainer' ) . "</a>"; ?>
+        <?php $maintainer = "maintainers"; ?>
         <?php echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );; ?>
       </div>
       <div class="modal-footer">

@@ -107,8 +107,10 @@
     "no-with": 0,
     "no-wrap-func": 0,
 
-    "array-bracket-spacing": [0, "never"],
     "accessor-pairs": 0,
+    "array-bracket-spacing": [0, "never"],
+    "arrow-spacing": 2,
+    "arrow-parens": [2, "as-needed"],
     "block-scoped-var": 0,
     "brace-style": [0, "1tbs"],
     "callback-return": 0,

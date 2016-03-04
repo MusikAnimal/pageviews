@@ -18,7 +18,7 @@
     "grunt-browserify": "4.0.1",
     "grunt-contrib-uglify": "0.9.2",
     "grunt-contrib-sass": "0.9.2",
-    "grunt-haml-php": "*",
+    "grunt-haml-php": "0.5.0",
     "grunt-scss-lint": "*",
     "gruntify-eslint": "*",
     "jquery": "2.1.1",

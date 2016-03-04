@@ -837,8 +837,8 @@ function updateChart(force) {
 
   /** Collect parameters from inputs. */
   var dateRangeSelector = $(config.dateRangeSelector),
-      startDate = dateRangeSelector.data('daterangepicker').startDate,
-      endDate = dateRangeSelector.data('daterangepicker').endDate;
+      startDate = dateRangeSelector.data('daterangepicker').startDate.startOf('day'),
+      endDate = dateRangeSelector.data('daterangepicker').endDate.startOf('day');
 
   destroyChart();
   $('.message-container').html('');
