@@ -114,8 +114,8 @@ var config = {
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
   },
   linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-10-01'),
-  maxDate: moment().subtract(1, 'days'),
+  minDate: moment('2015-10-01').startOf('day'),
+  maxDate: moment().subtract(1, 'days').startOf('day'),
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };

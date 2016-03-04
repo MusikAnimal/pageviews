@@ -114,8 +114,8 @@ var config = {
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
   },
   linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-10-01'),
-  maxDate: moment().subtract(1, 'days'),
+  minDate: moment('2015-10-01').startOf('day'),
+  maxDate: moment().subtract(1, 'days').startOf('day'),
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };
@@ -271,13 +271,14 @@ function fillInZeros(data, startDate, endDate) {
   data.items = [];
 
   /** Reconstruct with zeros instead of nulls */
-  for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+  for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
     if (alreadyThere[date]) {
       data.items.push(alreadyThere[date]);
-    } else if (date !== endDate) {
+    } else {
+      var edgeCase = endDate.isSame(config.maxDate) || endDate.isSame(config.maxDate.subtract(1, 'days'));
       data.items.push({
         timestamp: date.format(config.timestampFormat),
-        views: 0
+        views: edgeCase ? null : 0
       });
     }
   }
@@ -916,15 +917,15 @@ function updateChart(force) {
         $('.data-links').show();
 
         /** FIXME: remove once bug is fixed */
-        var bugStart = moment('2016-02-23').format(pv.getLocaleDateString()),
-            bugEnd = moment('2016-02-29').format(pv.getLocaleDateString());
+        var bugStart = moment('2016-02-23'),
+            bugEnd = moment('2016-02-29');
         var inRange = startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days') || endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days') || startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days');
 
         if (specialTitles.length && inRange) {
           var titlesMarkup = specialTitles.map(function (title) {
             return '<li>' + title.replace(/_/g, ' ') + '</li>';
           }).join('');
-          writeMessage('<strong>NOTICE:</strong> The following articles may have inaccurate between <strong>' + bugStart + '</strong> and <strong>' + bugEnd + '</strong>:\n             <ul style=\'font-weight:bold\'>' + titlesMarkup + '</ul>\n             This is due to a <a style=\'font-weight:bold\' href=\'https://phabricator.wikimedia.org/T128295\'>bug</a> in the Wikimedia API.\n             The Analytics Team is working to resolve the issue.');
+          writeMessage('<strong>NOTICE:</strong> The following articles may have inaccurate between\n             <strong>' + bugStart.format(pv.getLocaleDateString()) + '</strong> and <strong>' + bugEnd.format(pv.getLocaleDateString()) + '</strong>:\n             <ul style=\'font-weight:bold\'>' + titlesMarkup + '</ul>\n             This is due to a <a style=\'font-weight:bold\' href=\'https://phabricator.wikimedia.org/T128295\'>bug</a> in the Wikimedia API.\n             The Analytics Team is working to resolve the issue.');
         }
       }
     });

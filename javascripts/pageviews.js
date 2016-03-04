@@ -142,13 +142,14 @@ function fillInZeros(data, startDate, endDate) {
   data.items = [];
 
   /** Reconstruct with zeros instead of nulls */
-  for (let date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+  for (let date = moment(startDate); date <= endDate; date.add(1, 'd')) {
     if (alreadyThere[date]) {
       data.items.push(alreadyThere[date]);
-    } else if (date !== endDate) {
+    } else {
+      let edgeCase = endDate.isSame(config.maxDate) || endDate.isSame(config.maxDate.subtract(1, 'days'));
       data.items.push({
         timestamp: date.format(config.timestampFormat),
-        views: 0
+        views: edgeCase ? null : 0
       });
     }
   }
@@ -812,8 +813,8 @@ function updateChart(force) {
         $('.data-links').show();
 
         /** FIXME: remove once bug is fixed */
-        const bugStart = moment('2016-02-23').format(pv.getLocaleDateString()),
-          bugEnd = moment('2016-02-29').format(pv.getLocaleDateString());
+        const bugStart = moment('2016-02-23'),
+          bugEnd = moment('2016-02-29');
         let inRange = (startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days')) ||
           (endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days')) ||
           (startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days'));
@@ -823,7 +824,8 @@ function updateChart(force) {
             return `<li>${title.replace(/_/g, ' ')}</li>`;
           }).join('');
           writeMessage(
-            `<strong>NOTICE:</strong> The following articles may have inaccurate between <strong>${bugStart}</strong> and <strong>${bugEnd}</strong>:
+            `<strong>NOTICE:</strong> The following articles may have inaccurate between
+             <strong>${bugStart.format(pv.getLocaleDateString())}</strong> and <strong>${bugEnd.format(pv.getLocaleDateString())}</strong>:
              <ul style='font-weight:bold'>${titlesMarkup}</ul>
              This is due to a <a style='font-weight:bold' href='https://phabricator.wikimedia.org/T128295'>bug</a> in the Wikimedia API.
              The Analytics Team is working to resolve the issue.`
