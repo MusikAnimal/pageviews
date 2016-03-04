@@ -4,3 +4,8 @@ tmp/
 *.js.map
 *.scssc
 node_modules/
+config.php
+composer.lock
+vendor/composer
+vendor/krinkle
+vendor/autoload.php

@@ -43,9 +43,9 @@ module.exports = function(grunt) {
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
-          'public/application.js': [
+          'public_html/pageviews.js': [
             'javascripts/shared/*.js',
-            'javascripts/application.js'
+            'javascripts/pageviews.js'
           ]
         }
       },
@@ -54,9 +54,9 @@ module.exports = function(grunt) {
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
-          'public/topviews/application.js': [
+          'public_html/topviews/topviews.js': [
             'javascripts/shared/*.js',
-            'javascripts/topviews/*.js'
+            'javascripts/topviews/topviews.js'
           ]
         }
       }
@@ -64,44 +64,24 @@ module.exports = function(grunt) {
     sass: {
       pageviews: {
         options: {
-          sourcemap: 'none'
+          sourcemap: 'none',
+          style: 'expanded'
         },
         files: [{
-          expand: true,
-          cwd: 'stylesheets',
-          src: ['application.scss'],
-          dest: 'public',
-          ext: '.css'
+          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
+          'public_html/faq.css': 'stylesheets/faq.scss',
+          'public_html/url_structure.css': 'stylesheets/url_structure.scss'
         }]
       },
       topviews: {
         options: {
-          sourcemap: 'none'
+          sourcemap: 'none',
+          style: 'expanded'
         },
         files: [{
-          expand: true,
-          cwd: 'stylesheets/topviews',
-          src: ['application.scss'],
-          dest: 'public/topviews',
-          ext: '.css'
-        }]
-      },
-      other: {
-        options: {
-          sourcemap: 'none'
-        },
-        files: [{
-          expand: true,
-          cwd: 'stylesheets/url_structure',
-          src: ['application.scss'],
-          dest: 'public/url_structure',
-          ext: '.css'
-        }, {
-          expand: true,
-          cwd: 'stylesheets/faq',
-          src: ['application.scss'],
-          dest: 'public/faq',
-          ext: '.css'
+          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
+          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
+          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
         }]
       },
       dist: {
@@ -110,17 +90,12 @@ module.exports = function(grunt) {
           sourcemap: 'none'
         },
         files: [{
-          expand: true,
-          cwd: 'stylesheets',
-          src: ['application.scss'],
-          dest: 'public',
-          ext: '.css'
-        }, {
-          expand: true,
-          cwd: 'stylesheets/topviews',
-          src: ['application.scss'],
-          dest: 'public/topviews',
-          ext: '.css'
+          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
+          'public_html/faq.css': 'stylesheets/faq.scss',
+          'public_html/url_structure.css': 'stylesheets/url_structure.scss',
+          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
+          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
+          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
         }]
       }
     },
@@ -131,43 +106,47 @@ module.exports = function(grunt) {
       pageviews: {
         files: {
           // order matters here
-          'public/application.js': coreJSDependencies.concat([
+          'public_html/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/Chart.min.js',
-            'public/application.js'
+            'public_html/pageviews.js'
           ]),
-          'public/application.css': coreCSSDependencies.concat([
+          'public_html/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
-            'public/application.css'
+            'public_html/pageviews.css'
+          ]),
+          'public_html/faq/application.js': coreJSDependencies,
+          'public_html/faq/application.css': coreCSSDependencies.concat([
+            'public_html/faq.css'
+          ]),
+          'public_html/url_structure/application.js': coreJSDependencies,
+          'public_html/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/url_structure.css'
           ])
         }
       },
       topviews: {
         files: {
           // order matters here
-          'public/topviews/application.js': coreJSDependencies.concat([
+          'public_html/topviews/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
             'vendor/javascripts/daterangepicker.min.js',
-            'public/topviews/application.js'
+            'public_html/topviews/topviews.js'
           ]),
-          'public/topviews/application.css': coreCSSDependencies.concat([
+          'public_html/topviews/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
             'vendor/stylesheets/daterangepicker.min.css',
-            'public/topviews/application.css'
-          ])
-        }
-      },
-      other: {
-        files: {
-          'public/faq/application.js': coreJSDependencies,
-          'public/faq/application.css': coreCSSDependencies.concat([
-            'public/faq/application.css'
+            'public_html/topviews/topviews.css'
           ]),
-          'public/url_structure/application.js': coreJSDependencies,
-          'public/url_structure/application.css': coreCSSDependencies.concat([
-            'public/url_structure/application.css'
+          'public_html/topviews/faq/application.js': coreJSDependencies,
+          'public_html/topviews/faq/application.css': coreCSSDependencies.concat([
+            'public_html/topviews/faq.css'
+          ]),
+          'public_html/topviews/url_structure/application.js': coreJSDependencies,
+          'public_html/topviews/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/topviews/url_structure.css'
           ])
         }
       }
@@ -178,19 +157,23 @@ module.exports = function(grunt) {
       },
       all: {
         files: {
-          'public/application.js': ['public/application.js']
+          'public_html/application.js': ['public_html/application.js'],
+          'public_html/faq/application.js': ['public_html/faq/application.js'],
+          'public_html/url_structure/application.js': ['public_html/url_structure/application.js'],
+
+          'public_html/topviews/application.js': ['public_html/topviews/application.js'],
+          'public_html/topviews/faq/application.js': ['public_html/topviews/faq/application.js'],
+          'public_html/topviews/url_structure/application.js': ['public_html/topviews/url_structure/application.js']
         }
       }
     }
   });
 
-  grunt.registerTask('hamlify', 'compile haml into html', function() {
+  grunt.registerTask('views', 'copy views to public_html', function() {
+    // FIXME: rewrite to programmatically copy files
     var exec = require('child_process').exec;
     var cmds = [
-      'haml views/index.haml public/index.html',
-      'haml views/faq/index.haml public/faq/index.html',
-      'haml views/url_structure/index.haml public/url_structure/index.html',
-      'haml views/topviews/index.haml public/topviews/index.html'
+      'cp -R views/ public_html/'
     ];
     cmds.forEach(function(cmd) {
       exec(cmd, function(error, stdout, stderr) {
@@ -200,10 +183,10 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
-  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
-  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
+  grunt.registerTask('sass_all', ['sass:dist', 'concat']);
+  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'views']);
+  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'views']);
+  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'views']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
-  grunt.registerTask('haml', ['hamlify']);
 };

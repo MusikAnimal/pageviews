@@ -1,5 +1,4 @@
 // Array.includes function polyfill
-// to add compatibility with older browsers
 // This is not a full implementation, just a shorthand to indexOf !== -1
 if ( !Array.prototype.includes ) {
   Array.prototype.includes = function(search) {
