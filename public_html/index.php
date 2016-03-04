@@ -1,117 +1,136 @@
-<!--
- * Pageviews Comparison tool
- *
- * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d
- * courtesy of marcelrf
- *
- * Copyright 2016 MusikAnimal
- * Redistributed under the MIT License: https://opensource.org/licenses/MIT
--->
+<!-- Pageviews Comparison tool -->
+<!-- Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d -->
+<!-- courtesy of marcelrf -->
+<!-- Copyright 2016 MusikAnimal -->
+<!-- Redistributed under the MIT License: https://opensource.org/licenses/MIT -->
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '_head.php' ?>
-    <title><?= $I18N->msg( 'title' ) ?></title>
+    <?php include '_head.php'; ?>
+    <title><?php echo $I18N->msg( 'title' ); ?></title>
   </head>
   <body>
-    <div class='container'>
-      <div class='col-lg-offset-2'>
+    <div class="container">
+      <div class="col-lg-offset-2">
         <!-- Header -->
-        <header class='row aqs-row'>
-          <div class='col-lg-10 text-center'>
+        <header class="row aqs-row">
+          <div class="col-lg-10 text-center">
             <h4>
               <strong>
-                <?= $I18N->msg( 'title' ) ?>
+                <?php echo $I18N->msg( 'title' ); ?>
               </strong>
             </h4>
           </div>
         </header>
         <!-- Site notice -->
-        <div class='col-lg-10 text-center site-notice-wrapper'>
-          <div class='site-notice'></div>
+        <div class="col-lg-10 text-center site-notice-wrapper">
+          <div class="site-notice"></div>
         </div>
-        <div class='row aqs-row options'>
+        <div class="row aqs-row options">
           <!-- Date range selector -->
-          <div class='col-lg-4 col-sm-4'>
-            <label for='range-input'><?= $I18N->msg( 'dates' ) ?></label>
-            <span class='date-latest'>
-              <?php
-                $datelinks = "<a data-value='10' href='#'>10</a>"
-                  . " <a data-value='20' href='#'>20</a>"
-                  . " <a data-value='30' href='#'>30</a>"
-                  . " <a data-value='60' href='#'>60</a>"
-                  . " <a data-value='90' href='#'>90</a>";
-                echo $I18N->msg( 'latest-days', array( 'variables' => array( $datelinks ) ) );
-              ?>
+          <div class="col-lg-4 col-sm-4">
+            <label for="range-input">
+              <?php echo $I18N->msg( 'dates' ); ?>
+            </label>
+            <span class="date-latest">
+              <?php $days = array(10, 20, 30, 60, 90); ?>
+              <!-- FIXME: make this use $I18N, I couldn't figure it out :( -->
+              <?php foreach($days as $day) { ?>
+                <?php echo " <a data-value='{$day}' href='#'>{$day}</a>"; ?>
+              <?php } ?>
             </span>
-            <input class='form-control aqs-date-range-selector' id='range-input'>
+            <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
-          <div class='col-lg-2 col-sm-3'>
-            <label for='project-input'><?= $I18N->msg( 'project' ) ?></label>
-            <input class='form-control aqs-project-input' id='project-input' placeholder='en.wikipedia.org'>
+          <div class="col-lg-2 col-sm-3">
+            <label for="project-input">
+              <?php echo $I18N->msg( 'project' ); ?>
+            </label>
+            <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
           <!-- Advanced options -->
-          <div class='col-lg-2 col-sm-3'>
-            <label for='platform-select'><?= $I18N->msg( 'platform' ) ?></label>
-            <select class='form-control' id='platform-select'>
-              <option value='all-access'><?= $I18N->msg( 'all' ) ?></option>
-              <option value='desktop'><?= $I18N->msg( 'desktop' ) ?></option>
-              <option value='mobile-app'><?= $I18N->msg( 'mobile-app' ) ?></option>
-              <option value='mobile-web'><?= $I18N->msg( 'mobile-web' ) ?></option>
+          <div class="col-lg-2 col-sm-3">
+            <label for="platform-select">
+              <?php echo $I18N->msg( 'platform' ); ?>
+            </label>
+            <select class="form-control" id="platform-select">
+              <option value="all-access">
+                <?php echo $I18N->msg( 'all' ); ?>
+              </option>
+              <option value="desktop">
+                <?php echo $I18N->msg( 'desktop' ); ?>
+              </option>
+              <option value="mobile-app">
+                <?php echo $I18N->msg( 'mobile-app' ); ?>
+              </option>
+              <option value="mobile-web">
+                <?php echo $I18N->msg( 'mobile-web' ); ?>
+              </option>
             </select>
           </div>
-          <div class='col-lg-2 col-sm-2'>
-            <label for='agent-select'><?= $I18N->msg( 'agent' ) ?></label>
-            <select class='form-control' id='agent-select'>
-              <option value='all-agents'><?= $I18N->msg( 'all' ) ?></option>
-              <option selected='selected' value='user'><?= $I18N->msg( 'user' ) ?></option>
-              <option value='spider'><?= $I18N->msg( 'spider' ) ?></option>
-              <option value='bot'><?= $I18N->msg( 'bot' ) ?></option>
+          <div class="col-lg-2 col-sm-2">
+            <label for="agent-select">
+              <?php echo $I18N->msg( 'agent' ); ?>
+            </label>
+            <select class="form-control" id="agent-select">
+              <option value="all-agents">
+                <?php echo $I18N->msg( 'all' ); ?>
+              </option>
+              <option selected="selected" value="user">
+                <?php echo $I18N->msg( 'user' ); ?>
+              </option>
+              <option value="spider">
+                <?php echo $I18N->msg( 'spider' ); ?>
+              </option>
+              <option value="bot">
+                <?php echo $I18N->msg( 'bot' ); ?>
+              </option>
             </select>
           </div>
         </div>
         <!-- Article selector -->
-        <div class='row aqs-row'>
-          <div class='col-lg-10'>
-            <label for='article-input'><?= $I18N->msg( 'pages' ) ?></label>
+        <div class="row aqs-row">
+          <div class="col-lg-10">
+            <label for="article-input">
+              <?php echo $I18N->msg( 'pages' ); ?>
+            </label>
             <!-- Button trigger modal -->
             <!-- %a.pull-right{href: "#", "data-toggle": "modal", "data-target": "#import-modal"} -->
             <!-- Import -->
-            <select class='aqs-article-selector col-lg-12' id='article-input' multiple='multiple'></select>
+            <select class="aqs-article-selector col-lg-12" id="article-input" multiple="multiple"></select>
           </div>
         </div>
         <!-- Chart -->
-        <div class='chart-container col-lg-10 loading'>
+        <div class="chart-container col-lg-10 loading">
           <!-- inline styles since the ad blocker might block loading of assets -->
-          <div class='ad-block-notice text-center'>
-            <?php
-              $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>";
-              echo $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) );
-            ?>
+          <div class="ad-block-notice text-center">
+            <?php $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>"; ?>
+            <?php echo $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) ); ?>
           </div>
-          <canvas class='aqs-chart'></canvas>
+          <canvas class="aqs-chart"></canvas>
         </div>
-        <div class='message-container col-lg-10'></div>
+        <div class="message-container col-lg-10"></div>
         <!-- Legend -->
-        <div class='col-lg-10' id='chart-legend'></div>
+        <div class="col-lg-10" id="chart-legend"></div>
         <!-- Other links -->
-        <div class='col-lg-10 data-links'>
-          <a data-target='#chart-type-modal' data-toggle='modal' href='#'><?= $I18N->msg( 'change-chart' ) ?></a>
+        <div class="col-lg-10 data-links">
+          <a data-target="#chart-type-modal" data-toggle="modal" href="#">
+            <?php echo $I18N->msg( 'change-chart' ); ?>
+          </a>
           &bullet;
-          <a data-target='#settings-modal' data-toggle='modal' href='#'><?= $I18N->msg( 'settings' ) ?></a>
+          <a data-target="#settings-modal" data-toggle="modal" href="#">
+            <?php echo $I18N->msg( 'settings' ); ?>
+          </a>
           &bullet;
-          <?php
-            $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>";
-            echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) );
-          ?>
+          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
+          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) ); ?>
           &middot;
-          <a class='download-json' href='#'><?= $I18N->msg( 'json' ) ?></a>
+          <a class="download-json" href="#">
+            <?php echo $I18N->msg( 'json' ); ?>
+          </a>
         </div>
-        <?php
-          $app = "pageviews";
-          include "_footer.php";
-        ?>
+        <?php $app = "pageviews"; ?>
+        <?php include "_footer.php"; ?>
       </div>
       <?php include "_modals.php"; ?>
     </div>

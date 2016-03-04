@@ -1,0 +1,45 @@
+%footer.col-lg-10
+  %span
+    - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
+    - $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
+    - $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
+    = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );
+
+  %span.nowrap
+    - $heart = "<span class='heart'>&hearts;</span>";
+    - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
+    = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );
+
+  %div
+    %a(href="/{$app}/faq")
+      = $I18N->msg( 'faq' )
+    &middot;
+    %a(href="#" data-toggle="modal" data-target="#disclaimer-modal")
+      = $I18N->msg( 'disclaimer' )
+    &middot;
+    %a(href="/{$app}/url_structure")
+      = $I18N->msg( 'url-structure' )
+    &middot;
+    %a(href="https://github.com/MusikAnimal/pageviews")
+      = $I18N->msg( 'view-source' )
+    &middot;
+    %a(href="https://github.com/MusikAnimal/pageviews/issues")
+      = $I18N->msg( 'report-issue' )
+
+%div#disclaimer-modal.modal.fade(role="dialog" tabindex="-1")
+  %div.modal-dialog(role="document")
+    %div.modal-content
+      %div.modal-header
+        %button.close(arialabel="Close" data-dismiss="modal" type="button")
+          %span(ariahidden="true") &times;
+        %h4.modal-title
+          = $I18N->msg( 'disclaimer' )
+
+      %div.modal-body
+        - $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
+        - $maintainer = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>" . $I18N->msg( 'maintainer' ) . "</a>";
+        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );
+
+      %div.modal-footer
+        %button.btn.btn-primary(data-dismiss="modal" type="button")
+          = $I18N->msg( 'ok' )

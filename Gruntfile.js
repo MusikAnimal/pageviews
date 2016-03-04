@@ -6,6 +6,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-scss-lint');
+  grunt.loadNpmTasks('grunt-haml-php');
 
   const coreJSDependencies = [
     'vendor/javascripts/jquery.min.js',
@@ -97,6 +98,18 @@ module.exports = function(grunt) {
           'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
           'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
         }]
+      }
+    },
+    haml: {
+      compile: {
+        files: {
+          'public_html/index.php' : 'views/index.haml',
+          'public_html/_head.php' : 'views/_head.haml',
+          'public_html/_footer.php' : 'views/_footer.haml',
+          'public_html/_modals.php' : 'views/_modals.haml',
+          'public_html/faq/index.php' : 'views/faq.haml',
+          'public_html/url_structure/index.php' : 'views/url_structure.haml'
+        }
       }
     },
     concat: {

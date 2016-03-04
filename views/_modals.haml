@@ -1,0 +1,98 @@
+%div.modal.fade#chart-type-modal(role="dialog" tabindex="-1")
+  %div.modal-dialog(role="document")
+    %div.modal-content
+      %div.modal-header
+        %button.close(arialabel="Close" data-dismiss="modal" type="button")
+          %span(ariahidden="true") &times;
+        %h4.modal-title
+          = $I18N->msg( 'chart-types' )
+
+      %div.modal-body
+        %div
+          %strong
+            = $I18N->msg( 'daily-pageviews' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="Line" href="#")
+              %img(src="images/line-chart-small.jpg")
+              = $I18N->msg( 'line' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="Bar" href="#")
+              %img(src="images/bar-chart-small.jpg")
+              = $I18N->msg( 'bar' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="Radar" href="#")
+              %img(src="images/radar-chart-small.jpg")
+              = $I18N->msg( 'radar' )
+
+        %hr
+        %div
+          %strong
+            = $I18N->msg( 'total-pageviews' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="Pie" href="#")
+              %img(src="images/pie-chart-small.jpg")
+              = $I18N->msg( 'pie' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="Doughnut" href="#")
+              %img(src="images/doughnut-chart-small.jpg")
+              = $I18N->msg( 'doughnut' )
+          %span.modal-chart-type
+            %a(data-dismiss="modal" data-type="PolarArea" href="#")
+              %img(src="images/polararea-chart-small.jpg")
+              = $I18N->msg( 'polar-area' )
+
+      %div.modal-footer
+        %button.btn.btn-default(data-dismiss="modal" type="button")
+          = $I18N->msg( 'cancel' )
+
+%div.modal.fade#settings-modal(role="dialog" tabindex="-1")
+  %div.modal-dialog(role="document")
+    %div.modal-content
+      %div.modal-header
+        %button(arialabel="Close" class="close" data-dismiss="modal" type="button")
+          %span(ariahidden="true") &times;
+        %h4.modal-title
+          = $I18N->msg( 'settings' )
+
+      %form.modal-body
+        %p
+          = $I18N->msg( 'settings-notice' )
+        %fieldset.radio-list
+          = $I18N->msg( 'search-method' )
+          %div.radio
+            %label
+              %input(name="autocomplete" type="radio" value="autocomplete")
+              - $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>";
+              = $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );
+
+          %div.radio
+            %label
+              %input(name="autocomplete" type="radio" value="autocomplete_redirects")
+              - $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>";
+              = $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );
+
+          %div.radio
+            %label
+              %input(name="autocomplete" type="radio" value="no_autocomplete")
+              = $I18N->msg( 'no-autocompletion' )
+
+        %fieldset.radio-list.palette-list
+          = $I18N->msg( 'color-scheme' )
+
+        %fieldset
+          = $I18N->msg( 'other-options' )
+          %div.checkbox
+            %label
+              %input(name="numericalFormatting" type="checkbox")
+              = $I18N->msg( 'format-numbers' )
+
+          %div.checkbox
+            %label
+              %input(name="localizeDateFormat" type="checkbox")
+              = $I18N->msg( 'localize-dates' )
+
+      %div.modal-footer
+        %button.btn.btn-default.cancel-settings-btn(data-dismiss="modal" type="button")
+          = $I18N->msg( 'cancel' )
+        %button.btn.btn-primary.save-settings-btn(data-dismiss="modal" type="button")
+          = $I18N->msg( 'save' )
