@@ -61,11 +61,11 @@ Because of implications with concatenation, each SCSS file is first compiled int
 
 Each page has it's own `.scss` file that imports dependencies.
 
-#### Views
-The views within `/views` and `/public_html` are identical. It's simply for structural aesthetics that we work outside `public_html` and let the Grunt task copy over the views. `grunt watch` can be configured to do this whenever you hit save on any view (same is true of JavaScript and Sass).
+#### Haml
+The views within `/views` are written in [Haml](https://github.com/arnaud-lb/MtHaml) and compiled to PHP files in `/public_html`. `grunt watch` can be configured to do this whenever you hit save on any view (same is true of JavaScript and Sass).
 
 ### Local
-Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews. To save time, you can run `grunt views` to copy the views, or `grunt sass` to compile the SCSS.
+Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews. To save time, you can run `grunt haml` to just compile the views, or `grunt sass` to compile the SCSS.
 
 If you're only working with the JavaScript, just run `grunt browserify`. Then when you're done with your work run `grunt concat` and `grunt uglify` to make your code production-ready.
 
