@@ -52,7 +52,6 @@
 	"autocompletion-redirects": "Label for autocompletion with redirects search option. $1 is a link to documentation.",
 	"opensearch": "{{Optional}}\nLink to documentation about opensearch (https://www.mediawiki.org/wiki/API:Opensearch)",
 	"no-autocompletion": "Label for option to disable autocompletion when searching",
-	"color-scheme": "Label for color scheme options",
 	"other-options": "Label for miscellaneous options in the settings interface",
 	"format-numbers": "Label for option to format numerical data according to the user's language, for example, '1,234' instead of '1234'",
 	"localize-dates": "Label for option to format dates according to the user's language, for example, '5/23/2015' instead of 2015-05-23",

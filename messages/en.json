@@ -52,7 +52,6 @@
 	"autocompletion-redirects": "Autocompletion including redirects ($1)",
 	"opensearch": "opensearch",
 	"no-autocompletion": "No autocompletion",
-	"color-scheme": "Color scheme:",
 	"other-options": "Other options:",
 	"format-numbers": "Format numerical data",
 	"localize-dates": "Localize date format",

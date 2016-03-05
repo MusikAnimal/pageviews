@@ -89,16 +89,11 @@ var config = {
     }
   },
   circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
-  colors: {
-    '1': ['rgba(188, 203, 218, 1)', 'rgba(224, 173, 145, 1)', 'rgba(193, 170, 120, 1)', 'rgba(141, 160, 117, 1)', 'rgba(153, 138, 111, 1)', 'rgba(242, 66, 54, 1)', 'rgba(245, 247, 73, 1)', 'rgba(239, 189, 235, 1)', 'rgba(46, 134, 171, 1)', 'rgba(86, 85, 84, 1)'],
-    '2': ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 248, 164, 1)', 'rgba(217, 217, 217, 1)'],
-    '3': ['rgba(141, 211, 199, 1)', 'rgba(255, 255, 179, 1)', 'rgba(190, 186, 218, 1)', 'rgba(251, 128, 114, 1)', 'rgba(128, 177, 211, 1)', 'rgba(253, 180, 98, 1)', 'rgba(179, 222, 105, 1)', 'rgba(252, 205, 229, 1)', 'rgba(217, 217, 217, 1)', 'rgba(188, 128, 189, 1)']
-  },
+  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
   daysAgo: 20,
   defaults: {
     autocomplete: 'autocomplete',
     chartType: 'Line',
-    colorPalette: '1',
     dateFormat: 'YYYY-MM-DD',
     localizeDateFormat: 'true',
     numericalFormatting: 'true',
@@ -312,7 +307,7 @@ function getCircularData(data, article, index) {
   var values = data.items.map(function (elem) {
     return elem.views;
   }),
-      color = session.colors()[index];
+      color = config.colors[index];
 
   return Object.assign({
     label: article.replace(/_/g, ' '),
@@ -366,7 +361,7 @@ function getLinearData(data, article, index) {
   var values = data.items.map(function (elem) {
     return elem.views;
   }),
-      color = session.colors()[index % 10];
+      color = config.colors[index % 10];
 
   return Object.assign({
     label: article.replace(/_/g, ' '),
@@ -779,7 +774,7 @@ function setupSelect2Colors() {
   document.head.appendChild(colorsStyleEl);
 
   /** add color rules */
-  session.colors().forEach(function (color, index) {
+  config.colors.forEach(function (color, index) {
     colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
   });
 
@@ -791,18 +786,6 @@ function setupSelect2Colors() {
  * @returns {null} nothing
  */
 function setupSettingsModal() {
-  /** first build color palette options */
-  var markup = '';
-  Object.keys(config.colors).forEach(function (key) {
-    var palette = config.colors[key];
-    markup += '<div class=\'radio\'><label class=\'color-label\'>\n      <input type=\'radio\' name=\'colorPalette\' value=' + key + ' />';
-    palette.forEach(function (color) {
-      markup += '<span class=\'color-tile\' style=\'background:' + color + '\'></span>';
-    });
-    markup += '</label></div>';
-  });
-  $('.palette-list').append(markup);
-
   /** fill in values, everything is either a checkbox or radio */
   fillInSettings();
 
@@ -1005,10 +988,6 @@ var session = {
   autocomplete: localStorage['pageviews-settings-autocomplete'] || config.defaults.autocomplete,
   chartObj: null,
   chartType: localStorage['pageviews-chart-preference'] || config.defaults.chartType,
-  colors: function colors() {
-    return config.colors[session.colorPalette];
-  },
-  colorPalette: localStorage['pageviews-settings-colorPalette'] || config.defaults.colorPalette,
   localizeDateFormat: localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat,
   numericalFormatting: localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting,
   params: null,

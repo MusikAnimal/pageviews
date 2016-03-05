@@ -104,9 +104,6 @@
             </label>
           </div>
         </fieldset>
-        <fieldset class="radio-list palette-list">
-          <?php echo $I18N->msg( 'color-scheme' ); ?>
-        </fieldset>
         <fieldset>
           <?php echo $I18N->msg( 'other-options' ); ?>
           <div class="checkbox">

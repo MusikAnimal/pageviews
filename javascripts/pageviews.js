@@ -181,7 +181,7 @@ window.formatNumber = formatNumber;
  */
 function getCircularData(data, article, index) {
   const values = data.items.map(elem => elem.views),
-    color = session.colors()[index];
+    color = config.colors[index];
 
   return Object.assign(
     {
@@ -234,7 +234,7 @@ function getDateHeadings(localized) {
  */
 function getLinearData(data, article, index) {
   const values = data.items.map(elem => elem.views),
-    color = session.colors()[index % 10];
+    color = config.colors[index % 10];
 
   return Object.assign(
     {
@@ -669,7 +669,7 @@ function setupSelect2Colors() {
   document.head.appendChild(colorsStyleEl);
 
   /** add color rules */
-  session.colors().forEach((color, index) => {
+  config.colors.forEach((color, index) => {
     colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
   });
 
@@ -681,19 +681,6 @@ function setupSelect2Colors() {
  * @returns {null} nothing
  */
 function setupSettingsModal() {
-  /** first build color palette options */
-  let markup = '';
-  Object.keys(config.colors).forEach(key => {
-    let palette = config.colors[key];
-    markup += `<div class='radio'><label class='color-label'>
-      <input type='radio' name='colorPalette' value=${key} />`;
-    palette.forEach(color => {
-      markup += `<span class='color-tile' style='background:${color}'></span>`;
-    });
-    markup += '</label></div>';
-  });
-  $('.palette-list').append(markup);
-
   /** fill in values, everything is either a checkbox or radio */
   fillInSettings();
 
