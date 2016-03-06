@@ -729,7 +729,7 @@ function updateChart(force) {
    */
   let labels = []; // Labels (dates) for the x-axis.
   let datasets = []; // Data for each article timeseries.
-  let specialTitles = []; // FIXME: remove after bug is resolved
+  let specialTitles = []; // FIXME: remove after bug is resolved, see https://phabricator.wikimedia.org/T128295
   const specialRegex = /[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/;
   articles.forEach((article, index) => {
     const uriEncodedArticle = encodeURIComponent(article);
@@ -753,7 +753,8 @@ function updateChart(force) {
         datasets.push(getCircularData(data, article, index));
       }
 
-      /** FIXME: remove once bug is fixed */
+      /** FIXME: remove once bug is fixed, see https://phabricator.wikimedia.org/T128295 */
+      /** keep track of which articles contain special characters */
       if (specialRegex.test(article)) {
         specialTitles.push(article);
       }
@@ -799,12 +800,13 @@ function updateChart(force) {
         $('#chart-legend').html(session.chartObj.generateLegend());
         $('.data-links').show();
 
-        /** FIXME: remove once bug is fixed */
+        /** FIXME: remove once bug is fixed, see https://phabricator.wikimedia.org/T128295 */
+        /** determine if we're quierying for an affected article within the affected range */
         const bugStart = moment('2016-02-23'),
           bugEnd = moment('2016-02-29');
-        let inRange = (startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days')) ||
-          (endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days')) ||
-          (startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days'));
+        let inRange = (startDate >= bugStart && startDate <= moment(bugEnd).add(1, 'days')) ||
+          (endDate >= bugStart && endDate <= moment(bugEnd).add(1, 'days')) ||
+          (startDate <= bugStart && endDate >= moment(bugEnd).add(1, 'days'));
 
         if (specialTitles.length && inRange) {
           let titlesMarkup = specialTitles.map(title => {
