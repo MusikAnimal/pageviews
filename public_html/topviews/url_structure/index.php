@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '../../_head.php' ?>
+    <?php include "../../_head.php"; ?>
     <title>Topviews Analysis – URL Structure</title>
   </head>
   <body>
-    <div class='container'>
-      <div class='col-lg-offset-2'>
+    <div class="container">
+      <div class="col-lg-offset-2">
         <!-- Header -->
-        <header class='row aqs-row'>
-          <div class='col-lg-10 text-center'>
+        <header class="row aqs-row">
+          <div class="col-lg-10 text-center">
             <h4>
-              <strong>
-                Topviews Analysis – URL Structure
-              </strong>
+              <strong>Topviews Analysis – URL Structure</strong>
             </h4>
           </div>
         </header>
-        <div class='col-lg-10'>
+        <div class="col-lg-10">
           To show the default list of top viewed pages on your wiki, use:
           <pre>//tools.wmflabs.org/topviews#project=en.wikipedia.org</pre>
           replacing <code>en.wikipedia.org</code> with a valid <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>. You can also use <code>excludes</code> to exclude certain pages from view, such as the Main Page.
-          <p class='intro'>
+          <p class="intro">
             Topviews Analysis uses the JavaScript <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> to construct the URL parameters. This means instead of <code>?</code> all parameters follow a hashmark <code>#</code>
           </p>
         </div>
-        <div class='col-lg-10'>
+        <div class="col-lg-10">
           <h3>
             Parameters
             <small>Can be used in any order</small>
           </h3>
           <hr>
-          <dl class='dl-horizontal'>
+          <dl class="dl-horizontal">
             <dt>project</dt>
             <dd>
               <code>en.wikipedia.org</code>
@@ -57,14 +55,12 @@
             </dd>
           </dl>
         </div>
-        <div class='col-lg-10 text-center'>
+        <div class="col-lg-10 text-center">
           <hr>
-          <a href='/topviews'>Return to Topviews Analysis</a>
+          <a href="/topviews">Return to Topviews Analysis</a>
         </div>
-        <?php
-          $app = "topviews";
-          include "../../_footer.php";
-        ?>
+        <?php $app = "topviews"; ?>
+        <?php include "../../_footer.php"; ?>
       </div>
     </div>
   </body>

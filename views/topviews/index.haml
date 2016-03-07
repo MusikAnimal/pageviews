@@ -1,0 +1,75 @@
+/ Pageviews Comparison tool
+/
+/ Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d
+/ courtesy of marcelrf
+/
+/ Copyright 2016 MusikAnimal
+/ Redistributed under the MIT License: https://opensource.org/licenses/MIT
+!!!
+%html
+  %head
+    - include "../_head.php"
+    %title Topviews Analysis
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong Topviews Analysis
+
+        / Site notice
+        %div.col-lg-10.text-center.site-notice-wrapper
+          %div.site-notice
+
+        %div.row.aqs-row.options
+          / Date range selector
+          %div.col-lg-4.col-sm-4
+            %label(for="range-input") Date
+            %input.form-control.aqs-date-range-selector#range-input
+
+          / Project selector
+          %div.col-lg-3.col-sm-4
+            %label(for="project-input") Project
+            %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
+
+          / .col-lg-3
+          / %label{for: "platform-select"} Namespace
+          / %select#platform-select.form-control
+          / %option{value: "all"} All
+          / %option{value: "1"} Main
+          / %option{value: "2"} Mobile app
+          / %option{value: "3"} Mobile web
+          / Advanced options
+          %div.col-lg-3.col-sm-4
+            %label(for="platform-select") Platform
+            %select.form-control#platform-select
+              %option(value="all-access") All
+              %option(value="desktop") Desktop
+              %option(value="mobile-app") Mobile app
+              %option(value="mobile-web") Mobile web
+
+        / Article selector
+        %div.row.aqs-row
+          %div.col-lg-10
+            %label(for="article-input") Excluded pages
+            %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
+
+        / Chart
+        %div.chart-container.col-lg-10
+        %div.col-lg-10.text-center
+          %a.expand-chart(href="#") Show more
+
+        %div.message-container.col-lg-10
+
+        / Other links
+        %div.col-lg-10.data-links
+          %hr
+          / Download as
+          / %a.download-csv{href: "#"} CSV
+          / \&middot;
+          / %a.download-json{href: "#"} JSON
+
+        - $app = "topviews";
+        - include "../_footer.php"

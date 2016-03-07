@@ -1,0 +1,37 @@
+!!!
+%html
+  %head
+    - include "../../_head.php"
+    %title Topviews Analysis - FAQ
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong Topviews Analysis – FAQ
+
+        %div.col-lg-10
+          %ul.list-group
+            %li.list-group-item
+              %p
+                %strong Why can't I view data older than October 2015?
+              %p
+                The Wikimedia pageviews API was introduced in August 2015, but data really only became reliable until October of that year. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Topviews Anaylsis tool, and beyond the control of the maintainers. There is talk that the Wikimedia Foundation will backfill historical data, but it's unclear when this will happen.
+            %li.list-group-item
+              %p
+                %strong Why do I need to disable my ad blocker?
+              %p
+                There are no ads being served. It's actually the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a> that the ad blockers are complaining about, not the tool itself. It is unclear why this happens. Investigation pending.
+            %li.list-group-item
+              %p
+                %strong I have a feature request or bug to report
+              %p
+                Please review the requests listed on <a href="https://github.com/MusikAnimal/pageviews/issues">GitHub</a>. If you have a new request, creating a new issue there is preferred, but you may also contact the developer directly on <a href="https://en.wikipedia.org/wiki/User_talk:MusikAnimal">Wikipedia</a>.
+
+        %div.col-lg-10.text-center
+          %a(href="/topviews") Return to Topviews Analysis
+
+        - $app = "topviews";
+        - include "../../_footer.php";

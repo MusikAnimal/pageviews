@@ -111,7 +111,11 @@ module.exports = function(grunt) {
           'public_html/_footer.php' : 'views/_footer.haml',
           'public_html/_modals.php' : 'views/_modals.haml',
           'public_html/faq/index.php' : 'views/faq.haml',
-          'public_html/url_structure/index.php' : 'views/url_structure.haml'
+          'public_html/url_structure/index.php' : 'views/url_structure.haml',
+
+          'public_html/topviews/index.php' : 'views/topviews/index.haml',
+          'public_html/topviews/faq/index.php' : 'views/topviews/faq.haml',
+          'public_html/topviews/url_structure/index.php' : 'views/topviews/url_structure.haml'
         }
       }
     },
