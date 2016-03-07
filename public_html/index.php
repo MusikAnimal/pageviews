@@ -1,4 +1,4 @@
-<!-- Pageviews Comparison tool -->
+<!-- Pageviews Analysis tool -->
 <!-- Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d -->
 <!-- courtesy of marcelrf -->
 <!-- Copyright 2016 MusikAnimal -->

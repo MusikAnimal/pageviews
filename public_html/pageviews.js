@@ -121,7 +121,7 @@ module.exports = config;
 'use strict';
 
 /*
- * Pageviews Comparison tool
+ * Pageviews Analysis tool
  *
  * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
  *
@@ -834,8 +834,6 @@ function updateChart(force) {
    */
   var labels = []; // Labels (dates) for the x-axis.
   var datasets = []; // Data for each article timeseries.
-  var specialTitles = []; // FIXME: remove after bug is resolved
-  var specialRegex = /[^a-zA-Z0-9-\s\(\)_\!\?,'"\$\+\/\\\[\]\.\*&:]/;
   articles.forEach(function (article, index) {
     var uriEncodedArticle = encodeURIComponent(article);
     /** Url to query the API. */
@@ -852,11 +850,6 @@ function updateChart(force) {
         datasets.push(getLinearData(data, article, index));
       } else {
         datasets.push(getCircularData(data, article, index));
-      }
-
-      /** FIXME: remove once bug is fixed */
-      if (specialRegex.test(article)) {
-        specialTitles.push(article);
       }
 
       window.chartData = datasets;
@@ -898,18 +891,6 @@ function updateChart(force) {
 
         $('#chart-legend').html(session.chartObj.generateLegend());
         $('.data-links').show();
-
-        /** FIXME: remove once bug is fixed */
-        var bugStart = moment('2016-02-23'),
-            bugEnd = moment('2016-02-29');
-        var inRange = startDate >= moment(bugStart) && startDate <= moment(bugEnd).add(1, 'days') || endDate >= moment(bugStart) && endDate <= moment(bugEnd).add(1, 'days') || startDate <= moment(bugStart) && endDate >= moment(bugEnd).add(1, 'days');
-
-        if (specialTitles.length && inRange) {
-          var titlesMarkup = specialTitles.map(function (title) {
-            return '<li>' + title.replace(/_/g, ' ') + '</li>';
-          }).join('');
-          writeMessage('<strong>NOTICE:</strong> The following articles may have inaccurate between\n             <strong>' + bugStart.format(pv.getLocaleDateString()) + '</strong> and <strong>' + bugEnd.format(pv.getLocaleDateString()) + '</strong>:\n             <ul style=\'font-weight:bold\'>' + titlesMarkup + '</ul>\n             This is due to a <a style=\'font-weight:bold\' href=\'https://phabricator.wikimedia.org/T128295\'>bug</a> in the Wikimedia API.\n             The Analytics Team is working to resolve the issue.');
-        }
       }
     });
   });
