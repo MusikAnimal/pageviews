@@ -3,5 +3,8 @@ php:
   - 5.5
 node_js:
   - 4.3.0
-before_install: npm install -g grunt-cli
-intall: npm install
+before_script:
+  - npm install -g grunt-cli
+  - npm install
+script:
+  - eslint -c .eslintrc javascripts/
