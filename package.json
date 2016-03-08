@@ -23,6 +23,7 @@
     "gruntify-eslint": "*",
     "jquery": "2.1.1",
     "moment": "2.11.2",
+    "nightwatch": "*",
     "underscore": "*"
   },
   "scripts": {
