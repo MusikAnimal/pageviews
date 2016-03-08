@@ -809,8 +809,8 @@ function validateProject() {
     resetView();
     writeMessage(
       `<a href='//${project}'>${project}</a> is not a
-       <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>
-       validate`, true
+       <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>`,
+       true
     );
     $('.select2-selection--multiple').addClass('disabled');
     return true;
