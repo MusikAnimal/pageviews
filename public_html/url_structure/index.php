@@ -53,6 +53,10 @@
             </dd>
             <dt>platform</dt>
             <dd>
+              One of <code>all-access</code> (default), <code>desktop</code>, <code>mobile-app</code> or <code>mobile-web</code>
+            </dd>
+            <dt>agent</dt>
+            <dd>
               One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
             </dd>
           </dl>
