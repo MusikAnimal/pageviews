@@ -907,7 +907,7 @@ function validateProject() {
     $('.select2-selection--multiple').removeClass('disabled');
   } else {
     resetView();
-    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>\n       validate', true);
+    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', true);
     $('.select2-selection--multiple').addClass('disabled');
     return true;
   }
@@ -938,12 +938,8 @@ $(document).ready(function () {
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
   $.ajax({
-    url: '//tools.wmflabs.org/musikanimal/api/uses',
-    method: 'PATCH',
-    data: {
-      tool: 'pageviews',
-      type: 'form'
-    }
+    url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + pv.getProject(),
+    method: 'PATCH'
   });
 
   /** temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews */
