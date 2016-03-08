@@ -1,125 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var templates = require('./templates');
-var pv = require('./shared/pv');
-
-var config = {
-  articleSelector: '.aqs-article-selector',
-  chart: '.aqs-chart',
-  chartConfig: {
-    Line: {
-      opts: {
-        bezierCurve: false,
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: 'rgba(0,0,0,0)',
-          pointColor: color,
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          pointStrokeColor: '#fff',
-          strokeColor: color
-        };
-      }
-    },
-    Bar: {
-      opts: {
-        barDatasetSpacing: 0,
-        barValueSpacing: 0,
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: pv.rgba(color, .5),
-          highlightFill: pv.rgba(color, .75),
-          highlightStroke: color,
-          strokeColor: pv.rgba(color, .8)
-        };
-      }
-    },
-    Pie: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    Doughnut: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    PolarArea: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    Radar: {
-      opts: {
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: pv.rgba(color, 0.1),
-          pointColor: color,
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          strokeColor: color
-        };
-      }
-    }
-  },
-  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
-  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-  daysAgo: 20,
-  defaults: {
-    autocomplete: 'autocomplete',
-    chartType: 'Line',
-    dateFormat: 'YYYY-MM-DD',
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true',
-    project: 'en.wikipedia.org'
-  },
-  dateRangeSelector: '.aqs-date-range-selector',
-  globalChartOpts: {
-    animation: true,
-    animationEasing: 'easeInOutQuart',
-    animationSteps: 30,
-    multiTooltipTemplate: '<%= formatNumber(value) %>',
-    scaleLabel: '<%= formatNumber(value) %>',
-    tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
-  },
-  linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-10-01').startOf('day'),
-  maxDate: moment().subtract(1, 'days').startOf('day'),
-  projectInput: '.aqs-project-input',
-  timestampFormat: 'YYYYMMDD00'
-};
-
-module.exports = config;
-
-},{"./shared/pv":3,"./templates":5}],2:[function(require,module,exports){
-'use strict';
-
 // Array.includes function polyfill
 // This is not a full implementation, just a shorthand to indexOf !== -1
 if (!Array.prototype.includes) {
@@ -174,7 +55,7 @@ if (!('remove' in Element.prototype)) {
   };
 }
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -553,7 +434,7 @@ window.pv = pv;
 
 module.exports = pv;
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var siteMap = {
@@ -1455,17 +1336,7 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}],5:[function(require,module,exports){
-'use strict';
-
-var templates = {
-  linearLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.sum }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>' + '<% for (var i=0; i<datasets.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">' + "<a href='<%= pv.getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " + '<%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>',
-  circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + '<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>' + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= pv.getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + '<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>'
-};
-
-module.exports = templates;
-
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 var pv = require('../shared/pv');
@@ -1477,22 +1348,21 @@ var config = {
   defaults: {
     excludes: [],
     localizeDateFormat: 'true',
+    numericalFormatting: 'true',
     project: 'en.wikipedia.org'
   },
-  localizeDateFormat: 'true',
   minDate: moment('2015-10-01'),
   maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };
-
 module.exports = config;
 
-},{"../shared/pv":3}],7:[function(require,module,exports){
+},{"../shared/pv":2}],5:[function(require,module,exports){
 'use strict';
 
-var config = require('../config');
+var config = require('./config');
 
 var session = {
   excludes: [],
@@ -1507,7 +1377,7 @@ var session = {
 
 module.exports = session;
 
-},{"../config":1}],8:[function(require,module,exports){
+},{"./config":4}],6:[function(require,module,exports){
 'use strict';
 
 var config = require('./config');
@@ -1939,4 +1809,4 @@ $(document).ready(function () {
   });
 });
 
-},{"../shared/pv":3,"../shared/site_map":4,"./config":6,"./session":7}]},{},[2,3,4,8]);
+},{"../shared/pv":2,"../shared/site_map":3,"./config":4,"./session":5}]},{},[1,2,3,6]);
