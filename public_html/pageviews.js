@@ -104,6 +104,13 @@ var config = {
     animation: true,
     animationEasing: 'easeInOutQuart',
     animationSteps: 30,
+    labelsFilter: function labelsFilter(value, index, labels) {
+      if (labels.length >= 60) {
+        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
+      } else {
+        return false;
+      }
+    },
     multiTooltipTemplate: '<%= formatNumber(value) %>',
     scaleLabel: '<%= formatNumber(value) %>',
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
@@ -114,7 +121,6 @@ var config = {
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };
-
 module.exports = config;
 
 },{"./shared/pv":5,"./templates":7}],2:[function(require,module,exports){
