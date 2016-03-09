@@ -844,12 +844,8 @@ $(document).ready(() => {
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
   $.ajax({
-    url: '//tools.wmflabs.org/musikanimal/api/uses',
-    method: 'PATCH',
-    data : {
-      tool: 'pageviews',
-      type: 'form'
-    }
+    url: `//tools.wmflabs.org/musikanimal/api/pv_uses/${pv.getProject()}`,
+    method: 'PATCH'
   });
 
   /** temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews */
