@@ -913,7 +913,7 @@ function validateProject() {
     $('.select2-selection--multiple').removeClass('disabled');
   } else {
     resetView();
-    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>\n       validate', true);
+    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', true);
     $('.select2-selection--multiple').addClass('disabled');
     return true;
   }
