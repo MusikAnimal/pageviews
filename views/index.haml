@@ -108,6 +108,20 @@
           %a.download-json(href="#")
             = $I18N->msg( 'json' )
 
+          / Language selector
+          %span.btn-group.dropup.lang-group.pull-right
+            %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+              = $I18N->getLangName()
+              %span.caret
+            %ul.dropdown-menu
+              %li
+                %a(href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews")
+                  Help translate
+              %li.divider(role="separator")
+              - foreach (array_unique($langs) as $lang => $langName)
+                %li
+                  %a.lang-link(href="#" data-lang="#{$lang}")= $langName
+
         - $app = "pageviews"
         - include "_footer.php"
 

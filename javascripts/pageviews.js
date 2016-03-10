@@ -632,6 +632,13 @@ function setupListeners() {
     daterangepicker.setEndDate(moment());
   });
 
+  /** language selector */
+  $('.lang-link').on('click', () => {
+    document.cookie.setItem(
+      'TsIntuition_userlang', $(this).data('lang'), 2592000
+    );
+  });
+
   /** prevent browser's default behaviour for any link with href="#" */
   $('a[href=\'#\'').on('click', e => e.preventDefault());
 
