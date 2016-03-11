@@ -638,8 +638,11 @@ function setupListeners() {
 
   /** language selector */
   $('.lang-link').on('click', function() {
-    let expiry = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
-    document.cookie = `TsIntuition_userlang=${$(this).data('lang')}; expires=${expiry}; path=/`;
+    const expiryGMT = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
+    document.cookie = `TsIntuition_userlang=${$(this).data('lang')}; expires=${expiryGMT}; path=/`;
+
+    const expiryUnix = Math.floor(Date.now() / 1000) + (config.cookieExpiry * 24 * 60 * 60);
+    document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
     location.reload();
   });
 

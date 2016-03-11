@@ -90,7 +90,7 @@ var config = {
   },
   circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
   colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-  cookieExpiry: 21, // num days
+  cookieExpiry: 30, // num days
   daysAgo: 20,
   defaults: {
     autocomplete: 'autocomplete',
@@ -748,8 +748,11 @@ function setupListeners() {
 
   /** language selector */
   $('.lang-link').on('click', function () {
-    var expiry = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
-    document.cookie = 'TsIntuition_userlang=' + $(this).data('lang') + '; expires=' + expiry + '; path=/';
+    var expiryGMT = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
+    document.cookie = 'TsIntuition_userlang=' + $(this).data('lang') + '; expires=' + expiryGMT + '; path=/';
+
+    var expiryUnix = Math.floor(Date.now() / 1000) + config.cookieExpiry * 24 * 60 * 60;
+    document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
     location.reload();
   });
 
