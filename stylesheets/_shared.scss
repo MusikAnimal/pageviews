@@ -27,6 +27,16 @@ a:focus {
   text-decoration: none;
 }
 
+.daterangepicker {
+  .calendar {
+    display: block !important;
+  }
+
+  .ranges {
+    float: right !important;
+  }
+}
+
 .daterange-notice {
   clear: both;
   font-size: 12px;

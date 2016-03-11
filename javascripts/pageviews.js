@@ -12,7 +12,7 @@ const siteMap = require('./shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const pv = require('./shared/pv');
 let session = require('./session'),
-  colorsStyleEl;
+  colorsStyleEl, daterangepicker;
 
 /** let's us know if the page names have been normalized via the API yet */
 let normalized = false;
@@ -210,8 +210,7 @@ function getDateFormat() {
  * @returns {Array} the date headings as strings
  */
 function getDateHeadings(localized) {
-  const daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
-    dateHeadings = [];
+  const dateHeadings = [];
 
   for (let date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
     if (localized) {
@@ -276,7 +275,6 @@ function getSearchParams(query) {
  * @returns {integer} number of days
  */
 function numDaysInRange() {
-  const daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
   return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 /** must be global for use in Chart templates */
@@ -310,28 +308,47 @@ function parseHashParams() {
  * @returns {null} nothing
  */
 function popParams() {
-  let params = parseHashParams();
+  let startDate, endDate, params = parseHashParams();
 
   $(config.projectInput).val(params.project || config.defaults.project);
   if (validateProject()) return;
 
-  const startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
+  /**
+   * sets date range based on start/end params, or uses defaults
+   * @return {null} nothing
+   */
+  const setDefaultDateRange = () => {
+    startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
     endDate = moment(params.end || Date.now());
+    if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
+      pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+      resetView();
+      return;
+    } else if (startDate > endDate) {
+      pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+      resetView();
+      return;
+    }
+    /** directly assign startDate before calling setEndDate so events will be fired once */
+    daterangepicker.startDate = startDate;
+    daterangepicker.setEndDate(endDate);
+  };
 
-  $(config.dateRangeSelector).data('daterangepicker').setStartDate(startDate);
-  $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
+  /**
+   * Check if we're using a valid range, and if so ignore any start/end dates.
+   * If an invalid range, throw and error and use default dates.
+   */
+  if (params.range) {
+    if (!setSpecialRange(params.range)) {
+      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+      setDefaultDateRange();
+    }
+  } else {
+    setDefaultDateRange();
+  }
+
   $('#platform-select').val(params.platform || 'all-access');
   $('#agent-select').val(params.agent || 'user');
-
-  if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
-    pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
-    resetView();
-    return;
-  } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
-    resetView();
-    return;
-  }
 
   resetArticleSelector();
 
@@ -393,19 +410,28 @@ function processSearchResults(data) {
  * @returns {string} the new hash param string
  */
 function pushParams() {
-  const daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
-    pages = $(config.articleSelector).select2('val') || [];
+  const pages = $(config.articleSelector).select2('val') || [];
 
-  const state = $.param({
-    start: daterangepicker.startDate.format('YYYY-MM-DD'),
-    end: daterangepicker.endDate.format('YYYY-MM-DD'),
+  let state = {
     project: $(config.projectInput).val(),
     platform: $('#platform-select').val(),
     agent: $('#agent-select').val()
-  }) + '&pages=' + pages.join('|');
+  };
+
+  /**
+   * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+   * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+   *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+   */
+  if (session.specialRange) {
+    state.range = session.specialRange.range;
+  } else {
+    state.start = daterangepicker.startDate.format('YYYY-MM-DD');
+    state.end = daterangepicker.endDate.format('YYYY-MM-DD');
+  }
 
   if (window.history && window.history.replaceState) {
-    window.history.replaceState({}, 'Pageviews comparsion', '#' + state);
+    window.history.replaceState({}, 'Pageviews comparsion', `#${$.param(state)}&pages=${pages.join('|')}`);
   }
 
   return state;
@@ -467,7 +493,6 @@ function saveSettings() {
     }
   });
 
-  let daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
   daterangepicker.locale.format = getDateFormat();
   daterangepicker.updateElement();
   setupSelect2Colors();
@@ -505,6 +530,40 @@ function setArticleSelectorDefaults(pages) {
 }
 
 /**
+ * Sets the daterange picker values and session.specialRange based on provided special range key
+ * WARNING: not to be called on daterange picker GUI events (e.g. special range buttons)
+ *
+ * @param {string} type - one of special ranges defined in config.specialRanges,
+ *   including dynamic latest range, such as `latest-15` for latest 15 days
+ * @returns {object|null} updated session.specialRange object or null if type was invalid
+ */
+function setSpecialRange(type) {
+  const rangeIndex = Object.keys(config.specialRanges).indexOf(type);
+  let startDate, endDate;
+
+  if (type.includes('latest-')) {
+    const offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+    [startDate, endDate] = config.specialRanges.latest(offset);
+  } else if (rangeIndex >= 0) {
+    [startDate, endDate] = config.specialRanges[type];
+    $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
+  } else {
+    return;
+  }
+
+  session.specialRange = {
+    range: type,
+    value: `${startDate.format(getDateFormat())} - ${endDate.format(getDateFormat())}`
+  };
+
+  /** directly assign startDate then use setEndDate so that the events will be fired once */
+  daterangepicker.startDate = startDate;
+  daterangepicker.setEndDate(endDate);
+
+  return session.specialRange;
+}
+
+/**
  * Sets up the article selector and adds listener to update chart
  * @returns {null} - nothing
  */
@@ -523,6 +582,10 @@ function setupArticleSelector() {
   articleSelector.on('change', updateChart);
 }
 
+/**
+ * Get ajax parameters to be used in setupArticleSelector, based on session.autocomplete
+ * @return {object|null} to be passed in as the value for `ajax` in setupArticleSelector
+ */
 function getArticleSelectorAjax() {
   if (session.autocomplete !== 'no_autocomplete') {
     /**
@@ -545,16 +608,42 @@ function getArticleSelectorAjax() {
 }
 
 /**
+ * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
+ * @returns {null} nothing
+ */
+function setChartPointDetectionRadius() {
+  if (session.chartType !== 'Line') return;
+
+  if (numDaysInRange() > 50) {
+    Chart.defaults.Line.pointHitDetectionRadius = 3;
+  } else if (numDaysInRange() > 30) {
+    Chart.defaults.Line.pointHitDetectionRadius = 5;
+  } else if (numDaysInRange() > 20) {
+    Chart.defaults.Line.pointHitDetectionRadius = 10;
+  } else {
+    Chart.defaults.Line.pointHitDetectionRadius = 20;
+  }
+}
+
+/**
  * sets up the daterange selector and adds listeners
  * @returns {null} - nothing
  */
 function setupDateRangeSelector() {
   const dateRangeSelector = $(config.dateRangeSelector);
+
+  /** transform config.specialRanges to have i18n as keys */
+  let ranges = {};
+  Object.keys(config.specialRanges).forEach(key => {
+    ranges[i18nMessages[key]] = config.specialRanges[key];
+  });
+
   dateRangeSelector.daterangepicker({
     locale: {
       format: getDateFormat(),
       applyLabel: i18nMessages.apply,
       cancelLabel: i18nMessages.cancel,
+      customRangeLabel: i18nMessages.customRange,
       daysOfWeek: [
         i18nMessages.su,
         i18nMessages.mo,
@@ -577,35 +666,62 @@ function setupDateRangeSelector() {
         i18nMessages.october,
         i18nMessages.november,
         i18nMessages.december
-      ],
+      ]
     },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
-    maxDate: config.maxDate
+    maxDate: config.maxDate,
+    ranges: ranges
   });
+
+  daterangepicker = dateRangeSelector.data('daterangepicker');
 
   /** so people know why they can't query data older than October 2015 */
   $('.daterangepicker').append(
-    $( '<div>' )
-      .addClass( 'daterange-notice' )
-      .html( i18nMessages.dateNotice )
+    $('<div>')
+      .addClass('daterange-notice')
+      .html(i18nMessages.dateNotice)
   );
 
-  dateRangeSelector.on('change', () => {
-    /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
-    if (session.chartType === 'Line') {
-      if (numDaysInRange() > 50) {
-        Chart.defaults.Line.pointHitDetectionRadius = 3;
-      } else if (numDaysInRange() > 30) {
-        Chart.defaults.Line.pointHitDetectionRadius = 5;
-      } else if (numDaysInRange() > 20) {
-        Chart.defaults.Line.pointHitDetectionRadius = 10;
-      } else {
-        Chart.defaults.Line.pointHitDetectionRadius = 20;
-      }
-    }
+  /**
+   * The special date range options (buttons the right side of the daterange picker)
+   *
+   * WARNING: we're unable to add class names or data attrs to the range options,
+   * so checking which was clicked is hardcoded based on the index of the LI,
+   * as defined in config.specialRanges
+   */
+  $('.daterangepicker .ranges li').on('click', e => {
+    const index = $('.daterangepicker .ranges li').index(e.target),
+      container = daterangepicker.container,
+      inputs = container.find('.daterangepicker_input input');
+    session.specialRange = {
+      range: Object.keys(config.specialRanges)[index],
+      value: `${inputs[0].value} - ${inputs[1].value}`
+    };
+  });
 
+  /** the "Latest N days" links */
+  $('.date-latest a').on('click', function(e) {
+    setSpecialRange(`latest-${$(this).data('value')}`);
+  });
+
+  dateRangeSelector.on('apply.daterangepicker', (e, action) => {
+    if (action.chosenLabel === 'Custom range') {
+      session.specialRange = null;
+
+      /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+      daterangepicker.updateElement();
+    }
+  });
+
+  dateRangeSelector.on('change', e => {
+    setChartPointDetectionRadius();
     updateChart();
+
+    /** clear out specialRange if it doesn't match our input */
+    if (session.specialRange && session.specialRange.value !== e.target.value) {
+      session.specialRange = null;
+    }
   });
 }
 
@@ -623,13 +739,6 @@ function setupListeners() {
     session.chartType = $(this).data('type');
     localStorage['pageviews-chart-preference'] = session.chartType;
     updateChart();
-  });
-
-  /** the "Latest N days" links */
-  $('.date-latest a').on('click', function() {
-    let daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
-    daterangepicker.setStartDate(moment().subtract($(this).data('value'), 'days'));
-    daterangepicker.setEndDate(moment());
   });
 
   /** prevent browser's default behaviour for any link with href="#" */
@@ -715,9 +824,8 @@ function updateChart(force) {
   session.prevChartType = session.chartType;
 
   /** Collect parameters from inputs. */
-  const dateRangeSelector = $(config.dateRangeSelector),
-    startDate = dateRangeSelector.data('daterangepicker').startDate.startOf('day'),
-    endDate = dateRangeSelector.data('daterangepicker').endDate.startOf('day');
+  const startDate = daterangepicker.startDate.startOf('day'),
+    endDate = daterangepicker.endDate.startOf('day');
 
   destroyChart();
   $('.message-container').html('');

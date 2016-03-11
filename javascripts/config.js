@@ -116,6 +116,14 @@ const config = {
   minDate: moment('2015-10-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
   projectInput: '.aqs-project-input',
+  specialRanges: {
+    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    latest(offset) {
+      return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
+    }
+  },
   timestampFormat: 'YYYYMMDD00'
 };
 module.exports = config;
