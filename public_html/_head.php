@@ -1,9 +1,33 @@
-<?php require_once __DIR__ . '/../config.php'; ?>
-<?php require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php'; ?>
-<?php $I18N = new Intuition( 'pageviews' ); ?>
-<?php $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' ); ?>
-<?php $langs = $I18N->getAvailableLangs(); ?>
-<?php $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English'; ?>
+<?php
+   // Return all languages available
+   function getAvailableLangs() {
+     global $I18N;
+  
+     $messageFiles = glob( ROOTDIR . '/messages/*.json' );
+  
+     $languages = array_values( array_unique( array_map(
+       function ( $filename ) {
+         return basename( $filename, '.json' );
+       },
+       $messageFiles
+     ) ) );
+  
+     $availableLanguages = array();
+     foreach ( $languages as $lang ) {
+       $availableLanguages[$lang] = $I18N->getLangName( $lang );
+     }
+     ksort( $availableLanguages );
+     return $availableLanguages;
+   }
+  
+   require_once __DIR__ . '/../config.php';
+   require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
+   $I18N = new Intuition( 'pageviews' );
+   $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
+   $langs = getAvailableLangs();
+   $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English';
+  
+?>
 <meta charset="utf-8">
 <meta content="yes" name="apple-mobile-web-app-capable">
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
