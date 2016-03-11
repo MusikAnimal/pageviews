@@ -933,6 +933,13 @@ function writeMessage(message, clear) {
 }
 
 $(document).ready(function () {
+  /** assume query params are supposed to be hash params */
+  if (document.location.search && !document.location.hash) {
+    return document.location.href = document.location.href.replace('?', '#');
+  } else if (document.location.search) {
+    return document.location.href = document.location.href.replace(/\?.*/, '');
+  }
+
   $.extend(Chart.defaults.global, { animation: false, responsive: true });
 
   setupProjectInput();
