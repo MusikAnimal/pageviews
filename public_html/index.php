@@ -133,7 +133,7 @@
           <!-- Language selector -->
           <span class="btn-group dropup lang-group pull-right">
             <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <?php echo $I18N->getLangName(); ?>
+              <?php echo $currentLang; ?>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">

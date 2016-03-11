@@ -3,6 +3,7 @@
 - $I18N = new Intuition( 'pageviews' )
 - $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' )
 - $langs = $I18N->getAvailableLangs()
+- $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English'
 
 %meta(charset="utf-8")
 %meta(content="yes" name="apple-mobile-web-app-capable")

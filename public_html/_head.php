@@ -3,6 +3,7 @@
 <?php $I18N = new Intuition( 'pageviews' ); ?>
 <?php $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' ); ?>
 <?php $langs = $I18N->getAvailableLangs(); ?>
+<?php $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English'; ?>
 <meta charset="utf-8">
 <meta content="yes" name="apple-mobile-web-app-capable">
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
