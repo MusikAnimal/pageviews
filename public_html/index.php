@@ -139,7 +139,7 @@
             <ul class="dropdown-menu">
               <li>
                 <a href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">
-                  Help translate
+                  <?php echo $I18N->msg( 'help-translate' ); ?>
                 </a>
               </li>
               <li class="divider" role="separator"></li>

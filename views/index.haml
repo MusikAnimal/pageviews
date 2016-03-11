@@ -116,7 +116,7 @@
             %ul.dropdown-menu
               %li
                 %a(href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews")
-                  Help translate
+                  = $I18N->msg( 'help-translate' )
               %li.divider(role="separator")
               - foreach (array_unique($langs) as $lang => $langName)
                 %li

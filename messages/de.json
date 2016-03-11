@@ -89,5 +89,6 @@
   "select2-loading": "Loading more results…",
   "select2-max-items": "You can only select $1 item",
   "select2-no-results": "No results found",
-  "select2-searching": "Searching…"
+  "select2-searching": "Searching…",
+  "help-translate": "Help translate"
 }
