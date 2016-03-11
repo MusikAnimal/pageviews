@@ -1488,7 +1488,7 @@ function numDaysInRange() {
   return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 
-/*
+/**
  * Generate key/value pairs of URL hash params
  * @returns {Object} key/value pairs representation of URL hash
  */
