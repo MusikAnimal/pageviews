@@ -53,7 +53,15 @@
 }
 
 .data-links {
+  height: 30px;
+  line-height: 30px;
   margin-top: 20px;
+  position: relative;
+}
+
+.lang-group .dropdown-menu {
+  max-height: 194px;
+  overflow-y: scroll;
 }
 
 .agents-ul {

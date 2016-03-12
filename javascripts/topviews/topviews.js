@@ -113,7 +113,7 @@ function numDaysInRange() {
   return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 
-/*
+/**
  * Generate key/value pairs of URL hash params
  * @returns {Object} key/value pairs representation of URL hash
  */
@@ -122,7 +122,7 @@ function parseHashParams() {
     chunks = uri.split('&');
   let params = {};
 
-  for (let i=0; i<chunks.length ; i++) {
+  for (let i = 0; i < chunks.length; i++) {
     let chunk = chunks[i].split('=');
 
     if (chunk[0] === 'excludes') {
@@ -415,7 +415,7 @@ $(document).ready(() => {
   $.ajax({
     url: '//tools.wmflabs.org/musikanimal/api/uses',
     method: 'PATCH',
-    data : {
+    data: {
       tool: 'topviews',
       type: 'form'
     }

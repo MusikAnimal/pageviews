@@ -89,5 +89,6 @@
 	"select2-loading": "Notice telling the user that more results are loading",
 	"select2-max-items": "Notice telling the user that they can't select any more items. $1 is a number.",
 	"select2-no-results": "Notice telling the user that no results were found",
-	"select2-searching": "Displayed while a search is occurring"
+	"select2-searching": "Displayed while a search is occurring",
+	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate"
 }

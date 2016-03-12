@@ -186,7 +186,7 @@ function getCircularData(data, article, index) {
   return Object.assign(
     {
       label: article.replace(/_/g, ' '),
-      value: values.reduce((a, b) => a+b)
+      value: values.reduce((a, b) => a + b)
     },
     config.chartConfig[session.chartType].dataset(color)
   );
@@ -240,7 +240,7 @@ function getLinearData(data, article, index) {
     {
       label: article.replace(/_/g, ' '),
       data: values,
-      sum: values.reduce((a, b) => a+b)
+      sum: values.reduce((a, b) => a + b)
     },
     config.chartConfig[session.chartType].dataset(color)
   );
@@ -282,7 +282,7 @@ function numDaysInRange() {
 /** must be global for use in Chart templates */
 window.numDaysInRange = numDaysInRange;
 
-/*
+/**
  * Generate key/value pairs of URL hash params
  * @returns {Object} key/value pairs representation of URL hash
  */
@@ -291,7 +291,7 @@ function parseHashParams() {
     chunks = uri.split('&');
   let params = {};
 
-  for (let i=0; i<chunks.length ; i++) {
+  for (let i = 0; i < chunks.length; i++) {
     let chunk = chunks[i].split('=');
 
     if (chunk[0] === 'pages') {
@@ -366,7 +366,7 @@ function processSearchResults(data) {
 
   if (session.autocomplete === 'autocomplete') {
     if (data && data.query && data.query.prefixsearch.length) {
-      results = data.query.prefixsearch.map(function (elem) {
+      results = data.query.prefixsearch.map(function(elem) {
         return {
           id: elem.title.replace(/ /g, '_'),
           text: elem.title
@@ -523,6 +523,10 @@ function setupArticleSelector() {
   articleSelector.on('change', updateChart);
 }
 
+/**
+ * Returns the AJAX options based on search type
+ * @returns {object} options to be passed to $.ajax
+ */
 function getArticleSelectorAjax() {
   if (session.autocomplete !== 'no_autocomplete') {
     /**
@@ -630,6 +634,16 @@ function setupListeners() {
     let daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
     daterangepicker.setStartDate(moment().subtract($(this).data('value'), 'days'));
     daterangepicker.setEndDate(moment());
+  });
+
+  /** language selector */
+  $('.lang-link').on('click', function() {
+    const expiryGMT = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
+    document.cookie = `TsIntuition_userlang=${$(this).data('lang')}; expires=${expiryGMT}; path=/`;
+
+    const expiryUnix = Math.floor(Date.now() / 1000) + (config.cookieExpiry * 24 * 60 * 60);
+    document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
+    location.reload();
   });
 
   /** prevent browser's default behaviour for any link with href="#" */
