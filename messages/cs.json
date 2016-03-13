@@ -84,5 +84,6 @@
 	"select2-loading": "Načítání dalších výsledků...",
 	"select2-max-items": "Můžete vybrat pouze $1 položek",
 	"select2-no-results": "Nenalezeny žádné výsledky",
-	"select2-searching": "Hledání..."
+	"select2-searching": "Hledání...",
+	"help-translate": "Pomozte s překladem"
 }
