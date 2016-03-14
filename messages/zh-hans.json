@@ -89,5 +89,6 @@
 	"select2-loading": "正在加载更多结果…",
 	"select2-max-items": "您只可以选择$1个项目",
 	"select2-no-results": "找不到结果",
-	"select2-searching": "正在搜索…"
+	"select2-searching": "正在搜索…",
+	"help-translate": "帮助翻译"
 }
