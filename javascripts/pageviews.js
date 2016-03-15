@@ -314,10 +314,15 @@ function popParams() {
   if (validateProject()) return;
 
   /**
-   * sets date range based on start/end params, or uses defaults
-   * @return {null} nothing
+   * Check if we're using a valid range, and if so ignore any start/end dates.
+   * If an invalid range, throw and error and use default dates.
    */
-  const setDefaultDateRange = () => {
+  if (params.range) {
+    if (!setSpecialRange(params.range)) {
+      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+      setSpecialRange('latest');
+    }
+  } else if (params.start) {
     startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
     endDate = moment(params.end || Date.now());
     if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
@@ -332,19 +337,8 @@ function popParams() {
     /** directly assign startDate before calling setEndDate so events will be fired once */
     daterangepicker.startDate = startDate;
     daterangepicker.setEndDate(endDate);
-  };
-
-  /**
-   * Check if we're using a valid range, and if so ignore any start/end dates.
-   * If an invalid range, throw and error and use default dates.
-   */
-  if (params.range) {
-    if (!setSpecialRange(params.range)) {
-      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-      setDefaultDateRange();
-    }
   } else {
-    setDefaultDateRange();
+    setSpecialRange('latest');
   }
 
   $('#platform-select').val(params.platform || 'all-access');
@@ -545,7 +539,8 @@ function setSpecialRange(type) {
     const offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
     [startDate, endDate] = config.specialRanges.latest(offset);
   } else if (rangeIndex >= 0) {
-    [startDate, endDate] = config.specialRanges[type];
+    /** treat 'latest' as a function */
+    [startDate, endDate] = type === 'latest' ? config.specialRanges.latest() : config.specialRanges[type];
     $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
   } else {
     return;

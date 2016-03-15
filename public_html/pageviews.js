@@ -124,7 +124,9 @@ var config = {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
     'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
     'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    latest: function latest(offset) {
+    latest: function latest() {
+      var offset = arguments.length <= 0 || arguments[0] === undefined ? config.daysAgo : arguments[0];
+
       return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
     }
   },
@@ -460,10 +462,15 @@ function popParams() {
   if (validateProject()) return;
 
   /**
-   * sets date range based on start/end params, or uses defaults
-   * @return {null} nothing
+   * Check if we're using a valid range, and if so ignore any start/end dates.
+   * If an invalid range, throw and error and use default dates.
    */
-  var setDefaultDateRange = function setDefaultDateRange() {
+  if (params.range) {
+    if (!setSpecialRange(params.range)) {
+      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+      setSpecialRange('latest');
+    }
+  } else if (params.start) {
     startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
     endDate = moment(params.end || Date.now());
     if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
@@ -478,19 +485,8 @@ function popParams() {
     /** directly assign startDate before calling setEndDate so events will be fired once */
     daterangepicker.startDate = startDate;
     daterangepicker.setEndDate(endDate);
-  };
-
-  /**
-   * Check if we're using a valid range, and if so ignore any start/end dates.
-   * If an invalid range, throw and error and use default dates.
-   */
-  if (params.range) {
-    if (!setSpecialRange(params.range)) {
-      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-      setDefaultDateRange();
-    }
   } else {
-    setDefaultDateRange();
+    setSpecialRange('latest');
   }
 
   $('#platform-select').val(params.platform || 'all-access');
@@ -698,10 +694,14 @@ function setSpecialRange(type) {
     startDate = _config$specialRanges2[0];
     endDate = _config$specialRanges2[1];
   } else if (rangeIndex >= 0) {
-    var _config$specialRanges3 = _slicedToArray(config.specialRanges[type], 2);
+    var _ref = type === 'latest' ? config.specialRanges.latest() : config.specialRanges[type];
+    /** treat 'latest' as a function */
 
-    startDate = _config$specialRanges3[0];
-    endDate = _config$specialRanges3[1];
+
+    var _ref2 = _slicedToArray(_ref, 2);
+
+    startDate = _ref2[0];
+    endDate = _ref2[1];
 
     $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
   } else {

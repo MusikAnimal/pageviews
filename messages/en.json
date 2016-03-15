@@ -67,7 +67,7 @@
 	"invalid-params": "Invalid parameters!",
 	"param-error-1": "Pageviews API does not contain data older than October 2015. Sorry.",
 	"param-error-2": "Start date must be older than the end date.",
-	"param-error-3": "Invalid <code>range</code>, using default dates instead. See the <a href='/pageviews/url_structure'>documentation</a> for more information.",
+	"param-error-3": "Invalid <code>range</code>, using default range instead. See the <a href='/pageviews/url_structure'>documentation</a> for more information.",
 	"totals": "Totals:",
 	"day": "day",
 	"su": "Su",
