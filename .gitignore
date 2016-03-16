@@ -9,3 +9,5 @@ composer.lock
 vendor/composer
 vendor/krinkle
 vendor/autoload.php
+reports/
+*.jar

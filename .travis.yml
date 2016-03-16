@@ -1,10 +1,22 @@
 language: php
 php:
   - 5.5
-node_js:
-  - 4.3.0
 before_script:
+  - nvm install 5.6.0
+  - nvm use 5.6.0
   - npm install -g grunt-cli
   - npm install
+  - sudo apt-get install apache2
+  - sudo a2enmod actions
+  - sudo a2enmod rewrite
+  - echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
+  - echo "$(curl -fsSL https://gist.github.com/roderik/16d751c979fdeb5a14e3/raw/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+  - echo "$(curl -fsSL https://gist.github.com/roderik/2eb301570ed4a1f4c33d/raw/gistfile1.txt)" | sed -e "s,PATH,`pwd`/public_html,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - sudo service apache2 restart
 script:
   - eslint -c .eslintrc javascripts/
+  - ./nightwatch --env saucelabs
+addons:
+  sauce_connect:
+    username: "MusikAnimal"
+    access_key: "71bb4995-3679-4b53-89d3-9d1516da1089"
