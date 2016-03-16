@@ -74,6 +74,7 @@
           <!-- \&middot; -->
           <!-- %a.download-json{href: "#"} JSON -->
         </div>
+        <?php $app = "topviews"; ?>
         <?php include "../_footer.php"; ?>
       </div>
     </div>

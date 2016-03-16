@@ -11,7 +11,7 @@
     <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );; ?>
   </span>
   <div>
-    <a href="faq/">
+    <a href="/<?php echo $app; ?>/faq">
       <?php echo $I18N->msg( 'faq' ); ?>
     </a>
     &middot;
@@ -19,7 +19,7 @@
       <?php echo $I18N->msg( 'disclaimer' ); ?>
     </a>
     &middot;
-    <a href="url_structure/">
+    <a href="/<?php echo $app; ?>/url_structure">
       <?php echo $I18N->msg( 'url-structure' ); ?>
     </a>
     &middot;

@@ -152,6 +152,7 @@
             </ul>
           </span>
         </div>
+        <?php $app = "pageviews"; ?>
         <?php include "_footer.php"; ?>
       </div>
       <?php include "_modals.php"; ?>
