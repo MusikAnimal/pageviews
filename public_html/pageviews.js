@@ -90,6 +90,7 @@ var config = {
   },
   circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
   colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
+  cookieExpiry: 30, // num days
   daysAgo: 20,
   defaults: {
     autocomplete: 'autocomplete',
@@ -104,6 +105,13 @@ var config = {
     animation: true,
     animationEasing: 'easeInOutQuart',
     animationSteps: 30,
+    labelsFilter: function labelsFilter(value, index, labels) {
+      if (labels.length >= 60) {
+        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
+      } else {
+        return false;
+      }
+    },
     multiTooltipTemplate: '<%= formatNumber(value) %>',
     scaleLabel: '<%= formatNumber(value) %>',
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
@@ -112,13 +120,24 @@ var config = {
   minDate: moment('2015-10-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
   projectInput: '.aqs-project-input',
+  specialRanges: {
+    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    latest: function latest() {
+      var offset = arguments.length <= 0 || arguments[0] === undefined ? config.daysAgo : arguments[0];
+
+      return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
+    }
+  },
   timestampFormat: 'YYYYMMDD00'
 };
-
 module.exports = config;
 
 },{"./shared/pv":5,"./templates":7}],2:[function(require,module,exports){
 'use strict';
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 /*
  * Pageviews Analysis tool
@@ -136,7 +155,8 @@ var siteDomains = Object.keys(siteMap).map(function (key) {
 });
 var pv = require('./shared/pv');
 var session = require('./session'),
-    colorsStyleEl = undefined;
+    colorsStyleEl = undefined,
+    daterangepicker = undefined;
 
 /** let's us know if the page names have been normalized via the API yet */
 var normalized = false;
@@ -335,8 +355,7 @@ function getDateFormat() {
  * @returns {Array} the date headings as strings
  */
 function getDateHeadings(localized) {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
-      dateHeadings = [];
+  var dateHeadings = [];
 
   for (var date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
     if (localized) {
@@ -402,13 +421,12 @@ function getSearchParams(query) {
  * @returns {integer} number of days
  */
 function numDaysInRange() {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
   return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 /** must be global for use in Chart templates */
 window.numDaysInRange = numDaysInRange;
 
-/*
+/**
  * Generate key/value pairs of URL hash params
  * @returns {Object} key/value pairs representation of URL hash
  */
@@ -436,28 +454,43 @@ function parseHashParams() {
  * @returns {null} nothing
  */
 function popParams() {
-  var params = parseHashParams();
+  var startDate = undefined,
+      endDate = undefined,
+      params = parseHashParams();
 
   $(config.projectInput).val(params.project || config.defaults.project);
   if (validateProject()) return;
 
-  var startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
-      endDate = moment(params.end || Date.now());
+  /**
+   * Check if we're using a valid range, and if so ignore any start/end dates.
+   * If an invalid range, throw and error and use default dates.
+   */
+  if (params.range) {
+    if (!setSpecialRange(params.range)) {
+      pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+      setSpecialRange('latest');
+    }
+  } else if (params.start) {
+    startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
+    endDate = moment(params.end || Date.now());
+    if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+      pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+      resetView();
+      return;
+    } else if (startDate > endDate) {
+      pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+      resetView();
+      return;
+    }
+    /** directly assign startDate before calling setEndDate so events will be fired once */
+    daterangepicker.startDate = startDate;
+    daterangepicker.setEndDate(endDate);
+  } else {
+    setSpecialRange('latest');
+  }
 
-  $(config.dateRangeSelector).data('daterangepicker').setStartDate(startDate);
-  $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
   $('#platform-select').val(params.platform || 'all-access');
   $('#agent-select').val(params.agent || 'user');
-
-  if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
-    pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
-    resetView();
-    return;
-  } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
-    resetView();
-    return;
-  }
 
   resetArticleSelector();
 
@@ -519,19 +552,28 @@ function processSearchResults(data) {
  * @returns {string} the new hash param string
  */
 function pushParams() {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
-      pages = $(config.articleSelector).select2('val') || [];
+  var pages = $(config.articleSelector).select2('val') || [];
 
-  var state = $.param({
-    start: daterangepicker.startDate.format('YYYY-MM-DD'),
-    end: daterangepicker.endDate.format('YYYY-MM-DD'),
+  var state = {
     project: $(config.projectInput).val(),
     platform: $('#platform-select').val(),
     agent: $('#agent-select').val()
-  }) + '&pages=' + pages.join('|');
+  };
+
+  /**
+   * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+   * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+   *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+   */
+  if (session.specialRange) {
+    state.range = session.specialRange.range;
+  } else {
+    state.start = daterangepicker.startDate.format('YYYY-MM-DD');
+    state.end = daterangepicker.endDate.format('YYYY-MM-DD');
+  }
 
   if (window.history && window.history.replaceState) {
-    window.history.replaceState({}, 'Pageviews comparsion', '#' + state);
+    window.history.replaceState({}, 'Pageviews comparsion', '#' + $.param(state) + '&pages=' + pages.join('|'));
   }
 
   return state;
@@ -593,7 +635,6 @@ function saveSettings() {
     }
   });
 
-  var daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
   daterangepicker.locale.format = getDateFormat();
   daterangepicker.updateElement();
   setupSelect2Colors();
@@ -631,6 +672,55 @@ function setArticleSelectorDefaults(pages) {
 }
 
 /**
+ * Sets the daterange picker values and session.specialRange based on provided special range key
+ * WARNING: not to be called on daterange picker GUI events (e.g. special range buttons)
+ *
+ * @param {string} type - one of special ranges defined in config.specialRanges,
+ *   including dynamic latest range, such as `latest-15` for latest 15 days
+ * @returns {object|null} updated session.specialRange object or null if type was invalid
+ */
+function setSpecialRange(type) {
+  var rangeIndex = Object.keys(config.specialRanges).indexOf(type);
+  var startDate = undefined,
+      endDate = undefined;
+
+  if (type.includes('latest-')) {
+    var offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+
+    var _config$specialRanges = config.specialRanges.latest(offset);
+
+    var _config$specialRanges2 = _slicedToArray(_config$specialRanges, 2);
+
+    startDate = _config$specialRanges2[0];
+    endDate = _config$specialRanges2[1];
+  } else if (rangeIndex >= 0) {
+    var _ref = type === 'latest' ? config.specialRanges.latest() : config.specialRanges[type];
+    /** treat 'latest' as a function */
+
+
+    var _ref2 = _slicedToArray(_ref, 2);
+
+    startDate = _ref2[0];
+    endDate = _ref2[1];
+
+    $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
+  } else {
+    return;
+  }
+
+  session.specialRange = {
+    range: type,
+    value: startDate.format(getDateFormat()) + ' - ' + endDate.format(getDateFormat())
+  };
+
+  /** directly assign startDate then use setEndDate so that the events will be fired once */
+  daterangepicker.startDate = startDate;
+  daterangepicker.setEndDate(endDate);
+
+  return session.specialRange;
+}
+
+/**
  * Sets up the article selector and adds listener to update chart
  * @returns {null} - nothing
  */
@@ -649,6 +739,10 @@ function setupArticleSelector() {
   articleSelector.on('change', updateChart);
 }
 
+/**
+ * Get ajax parameters to be used in setupArticleSelector, based on session.autocomplete
+ * @return {object|null} to be passed in as the value for `ajax` in setupArticleSelector
+ */
 function getArticleSelectorAjax() {
   if (session.autocomplete !== 'no_autocomplete') {
     /**
@@ -673,42 +767,95 @@ function getArticleSelectorAjax() {
 }
 
 /**
+ * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
+ * @returns {null} nothing
+ */
+function setChartPointDetectionRadius() {
+  if (session.chartType !== 'Line') return;
+
+  if (numDaysInRange() > 50) {
+    Chart.defaults.Line.pointHitDetectionRadius = 3;
+  } else if (numDaysInRange() > 30) {
+    Chart.defaults.Line.pointHitDetectionRadius = 5;
+  } else if (numDaysInRange() > 20) {
+    Chart.defaults.Line.pointHitDetectionRadius = 10;
+  } else {
+    Chart.defaults.Line.pointHitDetectionRadius = 20;
+  }
+}
+
+/**
  * sets up the daterange selector and adds listeners
  * @returns {null} - nothing
  */
 function setupDateRangeSelector() {
   var dateRangeSelector = $(config.dateRangeSelector);
+
+  /** transform config.specialRanges to have i18n as keys */
+  var ranges = {};
+  Object.keys(config.specialRanges).forEach(function (key) {
+    ranges[i18nMessages[key]] = config.specialRanges[key];
+  });
+
   dateRangeSelector.daterangepicker({
     locale: {
       format: getDateFormat(),
       applyLabel: i18nMessages.apply,
       cancelLabel: i18nMessages.cancel,
+      customRangeLabel: i18nMessages.customRange,
       daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
       monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
     },
     startDate: moment().subtract(config.daysAgo, 'days'),
     minDate: config.minDate,
-    maxDate: config.maxDate
+    maxDate: config.maxDate,
+    ranges: ranges
   });
 
-  /** so people know why they can't query data older than October 2015 */
+  daterangepicker = dateRangeSelector.data('daterangepicker');
+
+  /** so people know why they can't query data older than August 2015 */
   $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
 
-  dateRangeSelector.on('change', function () {
-    /** Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is */
-    if (session.chartType === 'Line') {
-      if (numDaysInRange() > 50) {
-        Chart.defaults.Line.pointHitDetectionRadius = 3;
-      } else if (numDaysInRange() > 30) {
-        Chart.defaults.Line.pointHitDetectionRadius = 5;
-      } else if (numDaysInRange() > 20) {
-        Chart.defaults.Line.pointHitDetectionRadius = 10;
-      } else {
-        Chart.defaults.Line.pointHitDetectionRadius = 20;
-      }
-    }
+  /**
+   * The special date range options (buttons the right side of the daterange picker)
+   *
+   * WARNING: we're unable to add class names or data attrs to the range options,
+   * so checking which was clicked is hardcoded based on the index of the LI,
+   * as defined in config.specialRanges
+   */
+  $('.daterangepicker .ranges li').on('click', function (e) {
+    var index = $('.daterangepicker .ranges li').index(e.target),
+        container = daterangepicker.container,
+        inputs = container.find('.daterangepicker_input input');
+    session.specialRange = {
+      range: Object.keys(config.specialRanges)[index],
+      value: inputs[0].value + ' - ' + inputs[1].value
+    };
+  });
 
+  /** the "Latest N days" links */
+  $('.date-latest a').on('click', function (e) {
+    setSpecialRange('latest-' + $(this).data('value'));
+  });
+
+  dateRangeSelector.on('apply.daterangepicker', function (e, action) {
+    if (action.chosenLabel === i18nMessages.customRange) {
+      session.specialRange = null;
+
+      /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+      daterangepicker.updateElement();
+    }
+  });
+
+  dateRangeSelector.on('change', function (e) {
+    setChartPointDetectionRadius();
     updateChart();
+
+    /** clear out specialRange if it doesn't match our input */
+    if (session.specialRange && session.specialRange.value !== e.target.value) {
+      session.specialRange = null;
+    }
   });
 }
 
@@ -728,11 +875,14 @@ function setupListeners() {
     updateChart();
   });
 
-  /** the "Latest N days" links */
-  $('.date-latest a').on('click', function () {
-    var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
-    daterangepicker.setStartDate(moment().subtract($(this).data('value'), 'days'));
-    daterangepicker.setEndDate(moment());
+  /** language selector */
+  $('.lang-link').on('click', function () {
+    var expiryGMT = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
+    document.cookie = 'TsIntuition_userlang=' + $(this).data('lang') + '; expires=' + expiryGMT + '; path=/';
+
+    var expiryUnix = Math.floor(Date.now() / 1000) + config.cookieExpiry * 24 * 60 * 60;
+    document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
+    location.reload();
   });
 
   /** prevent browser's default behaviour for any link with href="#" */
@@ -820,9 +970,8 @@ function updateChart(force) {
   session.prevChartType = session.chartType;
 
   /** Collect parameters from inputs. */
-  var dateRangeSelector = $(config.dateRangeSelector),
-      startDate = dateRangeSelector.data('daterangepicker').startDate.startOf('day'),
-      endDate = dateRangeSelector.data('daterangepicker').endDate.startOf('day');
+  var startDate = daterangepicker.startDate.startOf('day'),
+      endDate = daterangepicker.endDate.startOf('day');
 
   destroyChart();
   $('.message-container').html('');
@@ -907,7 +1056,7 @@ function validateProject() {
     $('.select2-selection--multiple').removeClass('disabled');
   } else {
     resetView();
-    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>\n       validate', true);
+    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', true);
     $('.select2-selection--multiple').addClass('disabled');
     return true;
   }
@@ -927,6 +1076,13 @@ function writeMessage(message, clear) {
 }
 
 $(document).ready(function () {
+  /** assume query params are supposed to be hash params */
+  if (document.location.search && !document.location.hash) {
+    return document.location.href = document.location.href.replace('?', '#');
+  } else if (document.location.search) {
+    return document.location.href = document.location.href.replace(/\?.*/, '');
+  }
+
   $.extend(Chart.defaults.global, { animation: false, responsive: true });
 
   setupProjectInput();
@@ -938,12 +1094,8 @@ $(document).ready(function () {
 
   /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
   $.ajax({
-    url: '//tools.wmflabs.org/musikanimal/api/uses',
-    method: 'PATCH',
-    data: {
-      tool: 'pageviews',
-      type: 'form'
-    }
+    url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + pv.getProject(),
+    method: 'PATCH'
   });
 
   /** temporary redirect notice from when tool was moved from /musikanimal/pageviews to /pageviews */
@@ -972,7 +1124,8 @@ var session = {
   localizeDateFormat: localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat,
   numericalFormatting: localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting,
   params: null,
-  prevChartType: null
+  prevChartType: null,
+  specialRange: null
 };
 
 module.exports = session;

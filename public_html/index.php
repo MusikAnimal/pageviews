@@ -33,13 +33,14 @@
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
             <span class="date-latest">
-              <!-- FIXME: make this use $I18N, I couldn't figure it out :( -->
-              <?php $days = array(10, 20, 30, 60, 90); ?>
-              Latest
-              <?php foreach($days as $day) { ?>
-                <?php echo " <a data-value='{$day}' href='#'>{$day}</a>"; ?>
-              <?php } ?>
-              days
+              <?php
+                $days = array(10, 20, 30, 60, 90);
+                $dayLinks = '';
+                foreach ( $days as $day ) {
+                  $dayLinks .= " <a data-value='{$day}' href='#'>{$day}</a>";
+                }
+              ?>
+              <?php echo $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) ); ?>
             </span>
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
@@ -130,6 +131,26 @@
           <a class="download-json" href="#">
             <?php echo $I18N->msg( 'json' ); ?>
           </a>
+          <!-- Language selector -->
+          <span class="btn-group dropup lang-group pull-right">
+            <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?php echo $currentLang; ?>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">
+                  <?php echo $I18N->msg( 'help-translate' ); ?>
+                </a>
+              </li>
+              <li class="divider" role="separator"></li>
+              <?php foreach (array_unique($langs) as $lang => $langName) { ?>
+                <li>
+                  <a class="lang-link" href="#" data-lang="<?php echo $lang; ?>"><?php echo $langName; ?></a>
+                </li>
+              <?php } ?>
+            </ul>
+          </span>
         </div>
         <?php $app = "pageviews"; ?>
         <?php include "_footer.php"; ?>

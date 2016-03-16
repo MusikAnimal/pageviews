@@ -36,15 +36,32 @@
               Escaped page names separated by a pipe <code>|</code> such as <code>Cat|Dog</code> (default)
               %br
               For linking to the current page on wiki, use <code>{{FULLPAGENAMEE}}</code>
+            %dt range
+            %dd
+              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              %ul.special-ranges
+                %li
+                  %code latest
+                  (default) The last 20 days of data
+                %li
+                  %code latest-<i>N</i>
+                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                %li
+                  %code last-week
+                %li
+                  %code this-month
+                %li
+                  %code last-month
             %dt start
             %dd
-              Start date in the format <code>YYYY-MM-DD</code>, defaults to 20 days ago
-              %br
-              Omit this parameter and the <code>end</code> parameter to show the most recent data
+              Start date in the format <code>YYYY-MM-DD</code>
             %dt end
             %dd
               End date in the format <code>YYYY-MM-DD</code>, defaults to previous day
             %dt platform
+            %dd
+              One of <code>all-access</code> (default), <code>desktop</code>, <code>mobile-app</code> or <code>mobile-web</code>
+            %dt agent
             %dd
               One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
 

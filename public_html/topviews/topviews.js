@@ -1488,7 +1488,7 @@ function numDaysInRange() {
   return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
 }
 
-/*
+/**
  * Generate key/value pairs of URL hash params
  * @returns {Object} key/value pairs representation of URL hash
  */
@@ -1528,8 +1528,8 @@ function popParams() {
   $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
   $('#platform-select').val(params.platform || 'all-access');
 
-  if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
-    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than October 2015. Sorry.', 'Invalid parameters!', true);
+  if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than August 2015. Sorry.', 'Invalid parameters!', true);
     resetView();
     return;
   } else if (startDate > endDate) {

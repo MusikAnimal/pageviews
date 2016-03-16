@@ -1,7 +1,33 @@
-<?php require_once __DIR__ . '/../config.php'; ?>
-<?php require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php'; ?>
-<?php $I18N = new Intuition( 'pageviews' ); ?>
-<?php $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' ); ?>
+<?php
+   // Return all languages available
+   function getAvailableLangs() {
+     global $I18N;
+  
+     $messageFiles = glob( ROOTDIR . '/messages/*.json' );
+  
+     $languages = array_values( array_unique( array_map(
+       function ( $filename ) {
+         return basename( $filename, '.json' );
+       },
+       $messageFiles
+     ) ) );
+  
+     $availableLanguages = array();
+     foreach ( $languages as $lang ) {
+       $availableLanguages[$lang] = $I18N->getLangName( $lang );
+     }
+     ksort( $availableLanguages );
+     return $availableLanguages;
+   }
+  
+   require_once __DIR__ . '/../config.php';
+   require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
+   $I18N = new Intuition( 'pageviews' );
+   $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
+   $langs = getAvailableLangs();
+   $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English';
+  
+?>
 <meta charset="utf-8">
 <meta content="yes" name="apple-mobile-web-app-capable">
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
@@ -11,11 +37,16 @@
    var i18nMessages = {
      apply: "<?php echo $I18N->msg( 'apply' ); ?>",
      cancel: "<?php echo $I18N->msg( 'cancel' ); ?>",
+     customRange: "<?php echo $I18N->msg( 'custom-range' ); ?>",
+     'last-week': "<?php echo $I18N->msg( 'last-week' ); ?>",
+     'this-month': "<?php echo $I18N->msg( 'this-month' ); ?>",
+     'last-month': "<?php echo $I18N->msg( 'last-month' ); ?>",
      articlePlaceholder: "<?php echo $I18N->msg( 'article-placeholder' ); ?>",
      dateNotice: "<?php echo $I18N->msg( 'date-notice', array( 'variables' => array( $I18N->msg( 'title' ), "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>" ) ) ); ?>",
      invalidParams: "<?php echo $I18N->msg( 'invalid-params' ); ?>",
      paramError1: "<?php echo $I18N->msg( 'param-error-1' ); ?>",
-     paramError1: "<?php echo $I18N->msg( 'param-error-2' ); ?>",
+     paramError2: "<?php echo $I18N->msg( 'param-error-2' ); ?>",
+     paramError3: "<?php echo $I18N->msg( 'param-error-3' ); ?>",
      totals: "<?php echo $I18N->msg( 'totals' ); ?>",
      day:  "<?php echo $I18N->msg( 'day' ); ?>",
      su: "<?php echo $I18N->msg( 'su' ); ?>",

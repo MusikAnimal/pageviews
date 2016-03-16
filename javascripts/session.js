@@ -7,7 +7,8 @@ let session = {
   localizeDateFormat: localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat,
   numericalFormatting: localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting,
   params: null,
-  prevChartType: null
+  prevChartType: null,
+  specialRange: null
 };
 
 module.exports = session;

@@ -4,9 +4,13 @@
 			"Kaldari"
 		]
 	},
-	"title": "Pageviews analysis",
+	"title": "Pageviews Analysis",
 	"dates": "Dates",
 	"latest-days": "Latest $1 days",
+	"last-week": "Last week",
+	"this-month": "This month",
+	"last-month": "Last month",
+	"custom-range": "Custom range",
 	"project": "Project",
 	"platform": "Platform",
 	"all": "All",
@@ -59,10 +63,11 @@
 	"save": "Save",
 	"apply": "Apply",
 	"article-placeholder": "Type page names...",
-	"date-notice": "$1 provides data from October 2015 forward. For older data, try $2.",
+	"date-notice": "$1 provides data from August 2015 forward. For older data, try $2.",
 	"invalid-params": "Invalid parameters!",
-	"param-error-1": "Pageviews API does not contain data older than October 2015. Sorry.",
+	"param-error-1": "Pageviews API does not contain data older than August 2015. Sorry.",
 	"param-error-2": "Start date must be older than the end date.",
+	"param-error-3": "Invalid <code>range</code>, using default range instead. See the <a href='/pageviews/url_structure'>documentation</a> for more information.",
 	"totals": "Totals:",
 	"day": "day",
 	"su": "Su",
@@ -89,5 +94,6 @@
 	"select2-loading": "Loading more results…",
 	"select2-max-items": "You can only select $1 item",
 	"select2-no-results": "No results found",
-	"select2-searching": "Searching…"
+	"select2-searching": "Searching…",
+	"help-translate": "Help translate"
 }

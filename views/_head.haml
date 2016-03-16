@@ -1,7 +1,31 @@
-- require_once __DIR__ . '/../config.php';
-- require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
-- $I18N = new Intuition( 'pageviews' );
-- $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
+:php
+  // Return all languages available
+  function getAvailableLangs() {
+    global $I18N;
+
+    $messageFiles = glob( ROOTDIR . '/messages/*.json' );
+
+    $languages = array_values( array_unique( array_map(
+      function ( $filename ) {
+        return basename( $filename, '.json' );
+      },
+      $messageFiles
+    ) ) );
+
+    $availableLanguages = array();
+    foreach ( $languages as $lang ) {
+      $availableLanguages[$lang] = $I18N->getLangName( $lang );
+    }
+    ksort( $availableLanguages );
+    return $availableLanguages;
+  }
+
+  require_once __DIR__ . '/../config.php';
+  require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
+  $I18N = new Intuition( 'pageviews' );
+  $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
+  $langs = getAvailableLangs();
+  $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English';
 
 %meta(charset="utf-8")
 %meta(content="yes" name="apple-mobile-web-app-capable")
@@ -11,11 +35,16 @@
   var i18nMessages = {
     apply: "#{$I18N->msg( 'apply' )}",
     cancel: "#{$I18N->msg( 'cancel' )}",
+    customRange: "#{$I18N->msg( 'custom-range' )}",
+    'last-week': "#{$I18N->msg( 'last-week' )}",
+    'this-month': "#{$I18N->msg( 'this-month' )}",
+    'last-month': "#{$I18N->msg( 'last-month' )}",
     articlePlaceholder: "#{$I18N->msg( 'article-placeholder' )}",
     dateNotice: "#{$I18N->msg( 'date-notice', array( 'variables' => array( $I18N->msg( 'title' ), "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>" ) ) )}",
     invalidParams: "#{$I18N->msg( 'invalid-params' )}",
     paramError1: "#{$I18N->msg( 'param-error-1' )}",
-    paramError1: "#{$I18N->msg( 'param-error-2' )}",
+    paramError2: "#{$I18N->msg( 'param-error-2' )}",
+    paramError3: "#{$I18N->msg( 'param-error-3' )}",
     totals: "#{$I18N->msg( 'totals' )}",
     day:  "#{$I18N->msg( 'day' )}",
     su: "#{$I18N->msg( 'su' )}",

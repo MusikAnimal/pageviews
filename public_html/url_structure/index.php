@@ -41,17 +41,42 @@
               <br>
               For linking to the current page on wiki, use <code>{{FULLPAGENAMEE}}</code>
             </dd>
+            <dt>range</dt>
+            <dd>
+              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              <ul class="special-ranges">
+                <li>
+                  <code>latest</code>
+                  (default) The last 20 days of data
+                </li>
+                <li>
+                  <code>latest-<i>N</i></code>
+                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                </li>
+                <li>
+                  <code>last-week</code>
+                </li>
+                <li>
+                  <code>this-month</code>
+                </li>
+                <li>
+                  <code>last-month</code>
+                </li>
+              </ul>
+            </dd>
             <dt>start</dt>
             <dd>
-              Start date in the format <code>YYYY-MM-DD</code>, defaults to 20 days ago
-              <br>
-              Omit this parameter and the <code>end</code> parameter to show the most recent data
+              Start date in the format <code>YYYY-MM-DD</code>
             </dd>
             <dt>end</dt>
             <dd>
               End date in the format <code>YYYY-MM-DD</code>, defaults to previous day
             </dd>
             <dt>platform</dt>
+            <dd>
+              One of <code>all-access</code> (default), <code>desktop</code>, <code>mobile-app</code> or <code>mobile-web</code>
+            </dd>
+            <dt>agent</dt>
             <dd>
               One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
             </dd>

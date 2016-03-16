@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"Arystanbek"
+		]
+	},
+	"dates": "Ай-күні",
+	"project": "Жоба",
+	"all": "Барлығы",
+	"mobile-app": "Мобиль қосымша",
+	"user": "Қатысушы",
+	"bot": "Бот",
+	"pages": "Беттер",
+	"settings": "Баптаулар",
+	"download": "$1 түрінде түсіріп алу",
+	"csv": "CSV",
+	"json": "JSON",
+	"faq": "ЖҚС",
+	"view-source": "Қайнарын қарау",
+	"ok": "OK",
+	"cancel": "Қажет емес",
+	"save": "Сақтау",
+	"apply": "Қолдану",
+	"totals": "Барлығы",
+	"day": "күн",
+	"january": "Қаңтар",
+	"february": "Ақпан",
+	"march": "Наурыз",
+	"april": "Сәуір",
+	"may": "Мамыр",
+	"june": "Маусым",
+	"july": "Шілде",
+	"august": "Тамыз",
+	"september": "Қыркүйек",
+	"october": "Қазан",
+	"november": "Қараша",
+	"december": "Желтоқсан",
+	"select2-no-results": "Ешбір нәтиже табылмады"
+}
