@@ -30,12 +30,13 @@
             %label(for="range-input")
               = $I18N->msg( 'dates' )
             %span.date-latest
-              / FIXME: make this use $I18N, I couldn't figure it out :(
-              - $days = array(10, 20, 30, 60, 90)
-              Latest
-              - foreach($days as $day)
-                = " <a data-value='{$day}' href='#'>{$day}</a>"
-              days
+              :php
+                $days = array(10, 20, 30, 60, 90);
+                $dayLinks = '';
+                foreach ( $days as $day ) {
+                  $dayLinks .= " <a data-value='{$day}' href='#'>{$day}</a>";
+                }
+              = $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) )
             %input.form-control.aqs-date-range-selector#range-input
 
           / Project selector
