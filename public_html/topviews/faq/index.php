@@ -19,10 +19,10 @@
           <ul class="list-group">
             <li class="list-group-item">
               <p>
-                <strong>Why can't I view data older than October 2015?</strong>
+                <strong>Why can't I view data older than August 2015?</strong>
               </p>
               <p>
-                The Wikimedia pageviews API was introduced in August 2015, but data really only became reliable until October of that year. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Topviews Anaylsis tool, and beyond the control of the maintainers. There is talk that the Wikimedia Foundation will backfill historical data, but it's unclear when this will happen.
+                The Wikimedia pageviews API was introduced in August 2015 and does not include data from before that time. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Topviews Anaylsis tool, and beyond the control of the maintainers.
               </p>
             </li>
             <li class="list-group-item">
@@ -30,7 +30,7 @@
                 <strong>Why do I need to disable my ad blocker?</strong>
               </p>
               <p>
-                There are no ads being served. It's actually the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a> that the ad blockers are complaining about, not the tool itself. It is unclear why this happens. Investigation pending.
+                There are no ads being served. It's actually the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a> that the ad blockers are complaining about. This is due to the fact that the URL for the API request includes the string "/pageviews/", which is blacklisted by the <a href="https://easylist-downloads.adblockplus.org/easyprivacy.txt">EasyPrivacy list</a>. If your ad blocker allows you to control which lists you are subscribed to, removing the subscription to EasyPrivacy should also solve the issue.
               </p>
             </li>
             <li class="list-group-item">

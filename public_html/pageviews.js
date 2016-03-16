@@ -473,7 +473,7 @@ function popParams() {
   } else if (params.start) {
     startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
     endDate = moment(params.end || Date.now());
-    if (startDate < moment('2015-10-01') || endDate < moment('2015-10-01')) {
+    if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
       pv.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
       resetView();
       return;
@@ -814,7 +814,7 @@ function setupDateRangeSelector() {
 
   daterangepicker = dateRangeSelector.data('daterangepicker');
 
-  /** so people know why they can't query data older than October 2015 */
+  /** so people know why they can't query data older than August 2015 */
   $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
 
   /**
