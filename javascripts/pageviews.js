@@ -320,7 +320,7 @@ function popParams() {
   if (params.range) {
     if (!setSpecialRange(params.range)) {
       pv.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-      setSpecialRange('latest');
+      setSpecialRange('latest-20');
     }
   } else if (params.start) {
     startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
@@ -338,7 +338,7 @@ function popParams() {
     daterangepicker.startDate = startDate;
     daterangepicker.setEndDate(endDate);
   } else {
-    setSpecialRange('latest');
+    setSpecialRange('latest-20');
   }
 
   $('#platform-select').val(params.platform || 'all-access');

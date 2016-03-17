@@ -1351,7 +1351,7 @@ var config = {
     numericalFormatting: 'true',
     project: 'en.wikipedia.org'
   },
-  minDate: moment('2015-10-01'),
+  minDate: moment('2015-08-01'),
   maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',

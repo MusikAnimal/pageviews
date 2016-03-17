@@ -191,8 +191,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
   grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
-  grunt.registerTask('pageviews', ['lint', 'browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
-  grunt.registerTask('topviews', ['lint', 'browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
+  grunt.registerTask('pageviews', ['browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
+  grunt.registerTask('topviews', ['browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
 };
