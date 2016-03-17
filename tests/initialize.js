@@ -2,9 +2,9 @@ const moment = require('moment');
 const _ = require('underscore');
 
 module.exports = {
-  'Page loads with defaults when given no params' : function (client) {
+  'Page loads with defaults when given no params': function(client) {
     client
-      .url('http://localhost/pageviews')
+      .url('http://localhost/pageviews/index')
       .waitForElementPresent('canvas', 10000);
 
     const startDate = moment().subtract(20, 'days').format('M/D/YYYY'),
@@ -19,9 +19,9 @@ module.exports = {
     client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b.*\bDog\b/);
     client.end();
   },
-  'Page loads with values and text matching given params' : function(client) {
+  'Page loads with values and text matching given params': function(client) {
     client
-      .url('http://localhost/pageviews#start=2016-01-01&end=2016-01-10&project=en.wikivoyage.org&pages=Europe|Asia&platform=desktop&agent=spider')
+      .url('http://localhost/pageviews/index#start=2016-01-01&end=2016-01-10&project=en.wikivoyage.org&pages=Europe|Asia&platform=desktop&agent=spider')
       .waitForElementPresent('canvas', 10000);
 
     client.expect.element('#range-input').to.have.value.that.equals('1/1/2016 - 1/10/2016');
