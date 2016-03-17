@@ -11,11 +11,13 @@ before_script:
   - sudo a2enmod rewrite
   - echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
   - echo "$(curl -fsSL https://gist.github.com/roderik/16d751c979fdeb5a14e3/raw/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/roderik/2eb301570ed4a1f4c33d/raw/gistfile1.txt)" | sed -e "s,PATH,`pwd`/public_html,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - echo "$(curl -fsSL https://gist.github.com/MusikAnimal/c2a2f79b6976e7ddd909/raw/gistfile1.txt)" | sed -e "s,PATH,`pwd`/public_html,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - echo "$(curl -fsSL https://gist.github.com/MusikAnimal/ccdf098e2a9a163481d5/raw/config.php)" >> /home/travis/build/MusikAnimal/pageviews/config.php
+  - composer install
   - sudo service apache2 restart
 script:
-  - eslint -c .eslintrc javascripts/
   - ./nightwatch --env saucelabs
+  - eslint -c .eslintrc javascripts/
 addons:
   sauce_connect:
     username: "MusikAnimal"

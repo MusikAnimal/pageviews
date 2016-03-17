@@ -1,7 +1,7 @@
 module.exports = {
-  'Invalid project shows error and disables form' : function (browser) {
+  'Invalid project shows error and disables form': function(browser) {
     browser
-      .url('http://localhost/pageviews')
+      .url('http://localhost/pageviews/index')
       .waitForElementVisible('body', 1000)
       .setValue('.aqs-project-input', ['en.nonexistent.org', browser.Keys.TAB])
       .pause(1000)

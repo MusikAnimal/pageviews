@@ -34,7 +34,7 @@
       }
     },
     "saucelabs" : {
-      "launch_url" : "http://127.0.0.1/pageviews",
+      "launch_url" : "http://localhost/pageviews",
       "selenium_host": "ondemand.saucelabs.com",
       "selenium_port": 80,
       "username": "MusikAnimal",
@@ -43,8 +43,9 @@
       "silent": true,
       "output" : true,
       "desiredCapabilities": {
-        "name": "test-example",
-        "browserName": "firefox"
+        "browserName": "firefox",
+        "name":"[${TRAVIS_REPO_SLUG}]:(${TRAVIS_BRANCH})-${TRAVIS_BUILD_NUMBER}",
+        "tunnel_identifier": "${TRAVIS_JOB_NUMBER}"
       },
       "selenium" : {
         "start_process" : false
