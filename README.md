@@ -73,6 +73,19 @@ If you're only working with the JavaScript, just run `grunt browserify`. Then wh
 Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
 
 ## Tests
-Right now all we have for tests are the linters... you can run those with `grunt lint` or `npm test`. They will be ran automatically when you push or create a pull request. If for some reason you need a particular linter rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
+Tests will be ran automatically when you push or create a pull request.
 
-Moving forward we'll look into integration/automated testing, as unit tests don't seem to be the most fitting for this application.
+### Acceptance
+#### Local
+Prerequisites:
+* [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Selenium Standalone Server](http://www.seleniumhq.org/download/)
+* [Firefox](http://www.mozilla.org/firefox-download)
+
+Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch tests/my_test.js`.
+
+#### Sauce Labs
+You can alternatively run tests remotely on Sauce Labs. The only prerequisite for this is [Sauce Connect](https://wiki.saucelabs.com/display/DOCS/Setting+Up+Sauce+Connect). After extracting the Sauce Connect files onto your machine, go to the install directory and run `bin/sc -u YOUR_USERNAME -k YOUR_ACCESS_KEY` to establish the connection, then in the application root run `./nightwatch --env saucelabs`
+
+### Linters
+The styling of all ES6 and SCSS is enforced with linters. You can run these locally with `grunt lint`, and will also be ran when you run `grunt production`. If for some reason you need a particular rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
