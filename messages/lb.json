@@ -5,6 +5,7 @@
 		]
 	},
 	"dates": "Datumen",
+	"latest-days": "Lescht $1 Deeg",
 	"project": "Projet",
 	"all": "All",
 	"user": "Benotzer",
@@ -21,8 +22,10 @@
 	"line": "Linn",
 	"radar": "Radar",
 	"polar-area": "Polar Géigend",
+	"settings-notice": "Är Astellunge ginn am selwechte Browser um selwechte Computer gespäichert.",
 	"search-method": "Sichmethod:",
 	"other-options": "Aner Optiounen:",
+	"localize-dates": "Datumsformat lokaliséieren",
 	"cancel": "Ofbriechen",
 	"save": "Späicheren",
 	"article-placeholder": "Tippt Säitennimm...",

@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"Ainali"
 		]
 	},
 	"title": "Sidvisningsanalys",
@@ -23,6 +24,7 @@
 	"download": "Ladda ned som $1",
 	"csv": "CSV",
 	"json": "JSON",
+	"credits": "Tillhandahålls av $1, $2 och $3.",
 	"hosted": "Drivs med $1 på $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "Vanliga frågor",
@@ -31,6 +33,9 @@
 	"view-source": "Visa källkod",
 	"report-issue": "Rapportera ett problem",
 	"chart-error": "Visas inte diagrammet? Se till att du har inaktiverat alla annonsblockerare eller vitlistat $1.",
+	"disclaimer-text": "Data hämtas från $1. Detta API är fortfarande angivet som <b>experimentellt</b>. Detta innebär att funktionalitet <i>kan</i> <b>sluta fungera när som helst utan förvarning</b>. Den $2 för sidvisningsanalysen kommer att arbeta för att vara uppdaterad med API-förändringar, men inga löften kan göras för att verktyget alltid kommer att vara stabilt innan API:et är markerat som stabilt.",
+	"rest-api": "Wikimedia REST API",
+	"maintainer": "ansvariga",
 	"ok": "OK",
 	"chart-types": "Diagramtyper",
 	"daily-pageviews": "Sidor efter dagliga sidvisningar",
@@ -54,8 +59,10 @@
 	"cancel": "Avbryt",
 	"save": "Spara",
 	"apply": "Verkställ",
-	"date-notice": "$1 tillhandahåller data från oktober 2015 framåt. Kolla på $1 för äldre data.",
+	"article-placeholder": "Skriv sidnamn...",
+	"date-notice": "$1 tillhandahåller data från oktober 2015 framåt. Kolla på $2 för äldre data.",
 	"invalid-params": "Ogiltiga parametrar!",
+	"param-error-1": "Sidvisnings-API:et har ingen data som är äldre än oktober 2015. Förlåt.",
 	"param-error-2": "Startdatumet måste vara äldre än slutdatumet.",
 	"totals": "Totalt:",
 	"day": "dag",
@@ -83,5 +90,6 @@
 	"select2-loading": "Läser in fler resultat...",
 	"select2-max-items": "Du kan endast markera $1 element",
 	"select2-no-results": "Inga resultat hittades",
-	"select2-searching": "Söker..."
+	"select2-searching": "Söker...",
+	"help-translate": "Hjälp till att översätta"
 }

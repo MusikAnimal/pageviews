@@ -89,5 +89,6 @@
 	"select2-loading": "Вчитувам повеќе исход",
 	"select2-max-items": "Можете да одберете само $1 ставка",
 	"select2-no-results": "Не пронајдов ништо",
-	"select2-searching": "Пребарувам..."
+	"select2-searching": "Пребарувам...",
+	"help-translate": "Помогнете со преводот"
 }

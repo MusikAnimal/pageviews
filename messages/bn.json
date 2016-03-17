@@ -88,5 +88,6 @@
 	"select2-loading": "আরো ফলাফল লোড হচ্ছে...",
 	"select2-max-items": "আপনি কেবল $1টি আইটেম নির্বাচন করতে পারবেন",
 	"select2-no-results": "কোনো ফলাফল পাওয়া যায়নি",
-	"select2-searching": "অনুসন্ধান হচ্ছে..."
+	"select2-searching": "অনুসন্ধান হচ্ছে...",
+	"help-translate": "অনুবাদে সাহায্য করুন"
 }
