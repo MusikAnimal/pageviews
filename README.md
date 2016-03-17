@@ -76,7 +76,6 @@ Before making a pull request or pushing to master, remember to run `grunt produc
 Tests will be ran automatically when you push or create a pull request.
 
 ### Acceptance
-#### Local
 Prerequisites:
 * [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Selenium Standalone Server](http://www.seleniumhq.org/download/)
@@ -84,8 +83,7 @@ Prerequisites:
 
 Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch tests/my_test.js`.
 
-#### Sauce Labs
-You can alternatively run tests remotely on Sauce Labs. The only prerequisite for this is [Sauce Connect](https://wiki.saucelabs.com/display/DOCS/Setting+Up+Sauce+Connect). After extracting the Sauce Connect files onto your machine, go to the install directory and run `bin/sc -u YOUR_USERNAME -k YOUR_ACCESS_KEY` to establish the connection, then in the application root run `./nightwatch --env saucelabs`
+These tests are ran when you push or make or a pull request. If it fails, check the build and there will be a link to a video of the test, along with the output of the logs.
 
 ### Linters
 The styling of all ES6 and SCSS is enforced with linters. You can run these locally with `grunt lint`, and will also be ran when you run `grunt production`. If for some reason you need a particular rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
