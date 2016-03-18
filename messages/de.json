@@ -67,7 +67,7 @@
 	"invalid-params": "Ungültige Parameter!",
 	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als Oktober 2015.",
 	"param-error-2": "Das Startdatum muss älter sein als das Enddatum.",
-	"param-error-3": "Ungültiger <code>range</code>. Verwende stattdessen den Standardbereich. Siehe die <a href=\"/pageviews/url_structure\">Dokumentation</a> für weitere Informationen.",
+	"param-error-3": "Ungültiger <code>range</code>. Verwende stattdessen den Standardbereich. Siehe die <a href='/pageviews/url_structure'>Dokumentation</a> für weitere Informationen.",
 	"totals": "Summen:",
 	"day": "Tag",
 	"su": "So",
