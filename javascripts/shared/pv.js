@@ -1,4 +1,4 @@
-const pv = {
+class Pv {
   addSiteNotice(level, message, title, autodismiss) {
     title = title ? `<strong>${title}</strong> ` : '';
     autodismiss = autodismiss ? ' autodismiss' : '';
@@ -6,11 +6,11 @@ const pv = {
       `<div class='alert alert-${level}${autodismiss}'>${title}${message}</div>`
     );
     $('.site-notice-wrapper').show();
-  },
+  }
 
   clearMessages() {
     $('.message-container').html('');
-  },
+  }
 
   clearSiteNotices() {
     $('.site-notice .autodismiss').remove();
@@ -18,7 +18,32 @@ const pv = {
     if (!$('.site-notice .alert').length) {
       $('.site-notice-wrapper').hide();
     }
-  },
+  }
+
+  /**
+   * Get date format to use based on settings
+   * @returns {string} date format to passed to parser
+   */
+  get dateFormat() {
+    if (this.localizeDateFormat === 'true') {
+      return this.getLocaleDateString();
+    } else {
+      return this.config.defaults.dateFormat;
+    }
+  }
+
+  /**
+   * Format number based on current settings, e.g. localize with comma delimeters
+   * @param {number|string} num - number to format
+   * @returns {string} formatted number
+   */
+  formatNumber(num) {
+    if (this.numericalFormatting === 'true') {
+      return this.n(num);
+    } else {
+      return num;
+    }
+  }
 
   /**
    * Get the wiki URL given the page name
@@ -27,19 +52,19 @@ const pv = {
    * @returns {string} URL for the page
    */
   getPageURL(page) {
-    return `//${pv.getProject()}.org/wiki/${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
-  },
+    return `//${this.project}.org/wiki/${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
+  }
 
   /**
    * Get the project name (without the .org)
    *
    * @returns {boolean} lang.projectname
    */
-  getProject() {
+  get project() {
     const project = $('.aqs-project-input').val();
     // Get the first 2 characters from the project code to get the language
     return project.replace(/.org$/, '');
-  },
+  }
 
   getLocaleDateString() {
     const formats = {
@@ -255,7 +280,7 @@ const pv = {
       'es-US': 'M/D/YYYY'
     };
     return formats[navigator.language] || 'YYYY-MM-DD';
-  },
+  }
 
   /**
    * Check if Intl is supported
@@ -264,7 +289,7 @@ const pv = {
    */
   localeSupported() {
     return typeof Intl === 'object';
-  },
+  }
 
   /**
    * Map normalized pages from API into a string of page names
@@ -286,7 +311,7 @@ const pv = {
       });
     });
     return pages;
-  },
+  }
 
   /**
    * Localize Number object with delimiters
@@ -296,7 +321,7 @@ const pv = {
    */
   n(value) {
     return (new Number(value)).toLocaleString();
-  },
+  }
 
   /**
    * Make request to API in order to get normalized page names. E.g. masculine versus feminine namespaces on dewiki
@@ -308,7 +333,7 @@ const pv = {
     let dfd = $.Deferred();
 
     return $.ajax({
-      url: `https://${pv.getProject()}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
+      url: `https://${this.project}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
       dataType: 'jsonp'
     }).then(data => {
       if (data.query.normalized) {
@@ -316,7 +341,7 @@ const pv = {
       }
       return dfd.resolve(pages);
     });
-  },
+  }
 
   /**
    * Change alpha level of an rgba value
@@ -325,9 +350,44 @@ const pv = {
    * @param {float|string} alpha - transparency as float value
    * @returns {string} rgba value
    */
-  rgba(value, alpha) {
+  static rgba(value, alpha) {
     return value.replace(/,\s*\d\)/, `, ${alpha})`);
-  },
+  }
+
+  /**
+   * Sets the daterange picker values and this.specialRange based on provided special range key
+   * WARNING: not to be called on daterange picker GUI events (e.g. special range buttons)
+   *
+   * @param {string} type - one of special ranges defined in config.specialRanges,
+   *   including dynamic latest range, such as `latest-15` for latest 15 days
+   * @returns {object|null} updated this.specialRange object or null if type was invalid
+   */
+  setSpecialRange(type) {
+    const rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
+    let startDate, endDate;
+
+    if (type.includes('latest-')) {
+      const offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+      [startDate, endDate] = this.config.specialRanges.latest(offset);
+    } else if (rangeIndex >= 0) {
+      /** treat 'latest' as a function */
+      [startDate, endDate] = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+      $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
+    } else {
+      return;
+    }
+
+    this.specialRange = {
+      range: type,
+      value: `${startDate.format(this.dateFormat)} - ${endDate.format(this.dateFormat)}`
+    };
+
+    /** directly assign startDate then use setEndDate so that the events will be fired once */
+    this.daterangepicker.startDate = startDate;
+    this.daterangepicker.setEndDate(endDate);
+
+    return this.specialRange;
+  }
 
   /**
    * Splash in console, just for fun
@@ -346,7 +406,7 @@ const pv = {
     console.log('    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ');
     console.log('   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ');
     console.log('  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ');
-  },
+  }
 
   /**
    * Replace spaces with underscores
@@ -359,9 +419,6 @@ const pv = {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
   }
-};
+}
 
-// must be exported to global scope for Chart template rendering
-window.pv = pv;
-
-module.exports = pv;
+module.exports = Pv;

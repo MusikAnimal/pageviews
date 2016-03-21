@@ -12,11 +12,11 @@
           %strong
             = $I18N->msg( 'daily-pageviews' )
           %span.modal-chart-type
-            %a(data-dismiss="modal" data-type="Line" href="#")
+            %a.js-test-line-chart(data-dismiss="modal" data-type="Line" href="#")
               %img(src="images/line-chart-small.jpg")
               = $I18N->msg( 'line' )
           %span.modal-chart-type
-            %a(data-dismiss="modal" data-type="Bar" href="#")
+            %a.js-test-bar-chart(data-dismiss="modal" data-type="Bar" href="#")
               %img(src="images/bar-chart-small.jpg")
               = $I18N->msg( 'bar' )
           %span.modal-chart-type
@@ -29,7 +29,7 @@
           %strong
             = $I18N->msg( 'total-pageviews' )
           %span.modal-chart-type
-            %a(data-dismiss="modal" data-type="Pie" href="#")
+            %a.js-test-pie-chart(data-dismiss="modal" data-type="Pie" href="#")
               %img(src="images/pie-chart-small.jpg")
               = $I18N->msg( 'pie' )
           %span.modal-chart-type
@@ -61,13 +61,13 @@
           = $I18N->msg( 'search-method' )
           %div.radio
             %label
-              %input(name="autocomplete" type="radio" value="autocomplete")
+              %input.js-test-prefixsearch(name="autocomplete" type="radio" value="autocomplete")
               - $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>";
               = $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );
 
           %div.radio
             %label
-              %input(name="autocomplete" type="radio" value="autocomplete_redirects")
+              %input.js-test-opensearch(name="autocomplete" type="radio" value="autocomplete_redirects")
               - $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>";
               = $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );
 
@@ -80,12 +80,12 @@
           = $I18N->msg( 'other-options' )
           %div.checkbox
             %label
-              %input(name="numericalFormatting" type="checkbox")
+              %input.js-test-format-numbers(name="numericalFormatting" type="checkbox")
               = $I18N->msg( 'format-numbers' )
 
           %div.checkbox
             %label
-              %input(name="localizeDateFormat" type="checkbox")
+              %input.js-test-localize-dates(name="localizeDateFormat" type="checkbox")
               = $I18N->msg( 'localize-dates' )
 
       %div.modal-footer

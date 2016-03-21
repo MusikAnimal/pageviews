@@ -1,5 +1,5 @@
 module.exports = {
-  'Invalid project shows error and disables form': function(browser) {
+  'Invalid project shows error and disables form': browser => {
     browser
       .url('http://localhost/pageviews/index')
       .waitForElementVisible('body', 1000)

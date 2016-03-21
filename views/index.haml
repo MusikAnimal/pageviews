@@ -97,10 +97,10 @@
 
         / Other links
         %div.col-lg-10.data-links
-          %a(data-target="#chart-type-modal" data-toggle="modal" href="#")
+          %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")
             = $I18N->msg( 'change-chart' )
           &bullet;
-          %a(data-target="#settings-modal" data-toggle="modal" href="#")
+          %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")
             = $I18N->msg( 'settings' )
           &bullet;
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"

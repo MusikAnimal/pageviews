@@ -32,6 +32,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable">
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport">
+<link rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="/pageviews/images/favicon.ico?v=2">
 <script type="text/javascript">
 //<![CDATA[
    var i18nMessages = {
@@ -75,7 +76,6 @@
      select2NoResults: "<?php echo $I18N->msg( 'select2-no-results' ); ?>",
      select2Searching: "<?php echo $I18N->msg( 'select2-searching' ); ?>"
    };
-  
   
 //]]>
 </script>

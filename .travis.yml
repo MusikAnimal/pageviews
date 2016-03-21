@@ -22,3 +22,6 @@ addons:
   sauce_connect:
     username: "MusikAnimal"
     access_key: "71bb4995-3679-4b53-89d3-9d1516da1089"
+branches:
+  only:
+    - master
