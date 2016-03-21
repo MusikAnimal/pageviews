@@ -117,11 +117,11 @@
         <div class="col-lg-10" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-10 data-links">
-          <a data-target="#chart-type-modal" data-toggle="modal" href="#">
+          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#">
             <?php echo $I18N->msg( 'change-chart' ); ?>
           </a>
           &bullet;
-          <a data-target="#settings-modal" data-toggle="modal" href="#">
+          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#">
             <?php echo $I18N->msg( 'settings' ); ?>
           </a>
           &bullet;

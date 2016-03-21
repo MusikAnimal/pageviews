@@ -15,13 +15,13 @@
             <?php echo $I18N->msg( 'daily-pageviews' ); ?>
           </strong>
           <span class="modal-chart-type">
-            <a data-dismiss="modal" data-type="Line" href="#">
+            <a class="js-test-line-chart" data-dismiss="modal" data-type="Line" href="#">
               <img src="images/line-chart-small.jpg">
               <?php echo $I18N->msg( 'line' ); ?>
             </a>
           </span>
           <span class="modal-chart-type">
-            <a data-dismiss="modal" data-type="Bar" href="#">
+            <a class="js-test-bar-chart" data-dismiss="modal" data-type="Bar" href="#">
               <img src="images/bar-chart-small.jpg">
               <?php echo $I18N->msg( 'bar' ); ?>
             </a>
@@ -39,7 +39,7 @@
             <?php echo $I18N->msg( 'total-pageviews' ); ?>
           </strong>
           <span class="modal-chart-type">
-            <a data-dismiss="modal" data-type="Pie" href="#">
+            <a class="js-test-pie-chart" data-dismiss="modal" data-type="Pie" href="#">
               <img src="images/pie-chart-small.jpg">
               <?php echo $I18N->msg( 'pie' ); ?>
             </a>
@@ -85,14 +85,14 @@
           <?php echo $I18N->msg( 'search-method' ); ?>
           <div class="radio">
             <label>
-              <input name="autocomplete" type="radio" value="autocomplete">
+              <input class="js-test-prefixsearch" name="autocomplete" type="radio" value="autocomplete">
               <?php $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>"; ?>
               <?php echo $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );; ?>
             </label>
           </div>
           <div class="radio">
             <label>
-              <input name="autocomplete" type="radio" value="autocomplete_redirects">
+              <input class="js-test-opensearch" name="autocomplete" type="radio" value="autocomplete_redirects">
               <?php $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>"; ?>
               <?php echo $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );; ?>
             </label>
@@ -108,13 +108,13 @@
           <?php echo $I18N->msg( 'other-options' ); ?>
           <div class="checkbox">
             <label>
-              <input name="numericalFormatting" type="checkbox">
+              <input class="js-test-format-numbers" name="numericalFormatting" type="checkbox">
               <?php echo $I18N->msg( 'format-numbers' ); ?>
             </label>
           </div>
           <div class="checkbox">
             <label>
-              <input name="localizeDateFormat" type="checkbox">
+              <input class="js-test-localize-dates" name="localizeDateFormat" type="checkbox">
               <?php echo $I18N->msg( 'localize-dates' ); ?>
             </label>
           </div>

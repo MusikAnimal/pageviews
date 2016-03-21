@@ -2,7 +2,7 @@ const moment = require('moment');
 const _ = require('underscore');
 
 module.exports = {
-  'Page loads with defaults when given no params': function(client) {
+  'Page loads with defaults when given no params': client => {
     client
       .url('http://localhost/pageviews/index')
       .waitForElementPresent('canvas', 10000);
@@ -11,7 +11,14 @@ module.exports = {
       endDate = moment().subtract(1, 'days').format('M/D/YYYY'),
       dateStr = `${startDate} - ${endDate}`;
 
-    client.expect.element('#range-input').to.have.value.that.equals(dateStr);
+    /** also including moment() - 21 days due to timezone anolomy of node vs selenium driver */
+    const startDate2 = moment().subtract(21, 'days').format('M/D/YYYY'),
+      endDate2 = moment().subtract(2, 'days').format('M/D/YYYY'),
+      dateStr2 = `${startDate2} - ${endDate2}`;
+
+    const dateRegex = new RegExp(`${dateStr}|${dateStr2}`);
+
+    client.expect.element('#range-input').to.have.value.that.match(dateRegex);
     client.expect.element('.aqs-project-input').to.have.value.that.equals('en.wikipedia.org');
     client.expect.element('#platform-select').to.have.value.that.equals('all-access');
     client.expect.element('#agent-select').to.have.value.that.equals('user');
@@ -19,7 +26,7 @@ module.exports = {
     client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b.*\bDog\b/);
     client.end();
   },
-  'Page loads with values and text matching given params': function(client) {
+  'Page loads with values and text matching given params': client => {
     client
       .url('http://localhost/pageviews/index#start=2016-01-01&end=2016-01-10&project=en.wikivoyage.org&pages=Europe|Asia&platform=desktop&agent=spider')
       .waitForElementPresent('canvas', 10000);
