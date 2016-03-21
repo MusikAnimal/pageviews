@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Metalhead64"
+			"Metalhead64",
+			"FriedhelmW"
 		]
 	},
 	"title": "Pageviews Analysis",
-	"dates": "Daten",
+	"dates": "Zeitraum",
 	"latest-days": "Letzte $1 Tage",
 	"last-week": "Letzte Woche",
 	"this-month": "Dieser Monat",
@@ -63,9 +64,9 @@
 	"save": "Speichern",
 	"apply": "Anwenden",
 	"article-placeholder": "Seitennamen eingeben …",
-	"date-notice": "$1 bietet Daten ab Oktober 2015. Für ältere Daten versuche bitte $2.",
+	"date-notice": "$1 bietet Daten ab August 2015. Für ältere Daten versuche bitte $2.",
 	"invalid-params": "Ungültige Parameter!",
-	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als Oktober 2015.",
+	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als August 2015.",
 	"param-error-2": "Das Startdatum muss älter sein als das Enddatum.",
 	"param-error-3": "Ungültiger <code>range</code>. Verwende stattdessen den Standardbereich. Siehe die <a href='/pageviews/url_structure'>Dokumentation</a> für weitere Informationen.",
 	"totals": "Summen:",
