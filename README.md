@@ -81,7 +81,7 @@ Prerequisites:
 * [Selenium Standalone Server](http://www.seleniumhq.org/download/)
 * [Firefox](http://www.mozilla.org/firefox-download)
 
-Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch tests/my_test.js`.
+Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch --test tests/my_test.js`.
 
 These tests are ran when you push or make or a pull request. If it fails, check the build and there will be a link to a video of the test, along with the output of the logs.
 
