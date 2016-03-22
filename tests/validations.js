@@ -5,7 +5,7 @@ module.exports = {
       .waitForElementVisible('body', 1000);
 
     // apparently the only way to clear the value (clearValue does not work in FF)
-    client.setValue('.aqs-project-input', [client.Keys.CONTROL, client.Keys.SHIFT, 'a', client.Keys.BACKSPACE])
+    client.setValue('.aqs-project-input', [client.Keys.SHIFT, client.Keys.HOME, client.Keys.BACKSPACE])
       .setValue('.aqs-project-input', ['en.nonexistent.org', client.Keys.TAB])
       .pause(500)
       .assert.containsText('.error-message', 'en.nonexistent.org')
