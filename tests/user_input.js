@@ -104,12 +104,10 @@ module.exports = {
   },
   'Changing the project clears out the chart and article selector': client => {
     client.click('#project-input');
-
-    // clear the value since clearValue doesn't work in FF :/
-    client.setValue('.aqs-project-input', [client.Keys.SHIFT, client.Keys.HOME, client.Keys.BACKSPACE]);
-
-    client.setValue('#project-input', ['de.wikipedia.org', client.Keys.TAB]);
-    client.expect.element('.aqs-chart').to.not.be.present.after(500);
+    client.execute('return $(".aqs-project-input").val("")');
+    client.setValue('#project-input', ['de.wikipedia.org']);
+    client.execute('return $(".aqs-project-input").trigger("change")');
+    client.expect.element('.aqs-chart').to.not.be.present.after(1000);
     client.execute('return $(".aqs-article-selector").val()', [], response => {
       client.expect(response.value).to.equal(null);
     });

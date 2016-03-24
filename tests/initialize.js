@@ -7,16 +7,18 @@ module.exports = {
       .url('http://localhost/pageviews/index')
       .waitForElementPresent('canvas', 10000);
 
+    /** starting zeros are included in case it's a one-digit month, and IE decides to add the leading zero */
     const startDate = moment().subtract(20, 'days').format('M/D/YYYY'),
       endDate = moment().subtract(1, 'days').format('M/D/YYYY'),
-      dateStr = `${startDate} - ${endDate}`;
+      dateStr = `0?${startDate} - 0?${endDate}`;
 
     /** also including moment() - 21 days due to timezone anolomy of node vs selenium driver */
     const startDate2 = moment().subtract(21, 'days').format('M/D/YYYY'),
       endDate2 = moment().subtract(2, 'days').format('M/D/YYYY'),
-      dateStr2 = `${startDate2} - ${endDate2}`;
+      dateStr2 = `0?${startDate2} - 0?${endDate2}`;
 
-    const dateRegex = new RegExp(`${dateStr}|${dateStr2}`);
+    /** replace \/ with \/0? to allow for leading zeros */
+    const dateRegex = new RegExp(`${dateStr.replace(/\//g, '\/0?')}|${dateStr2.replace(/\//g, '\/0?')}`);
 
     client.expect.element('#range-input').to.have.value.that.match(dateRegex);
     client.expect.element('.aqs-project-input').to.have.value.that.equals('en.wikipedia.org');
@@ -31,7 +33,7 @@ module.exports = {
       .url('http://localhost/pageviews/index#start=2016-01-01&end=2016-01-10&project=en.wikivoyage.org&pages=Europe|Asia&platform=desktop&agent=spider')
       .waitForElementPresent('canvas', 10000);
 
-    client.expect.element('#range-input').to.have.value.that.equals('1/1/2016 - 1/10/2016');
+    client.expect.element('#range-input').to.have.value.that.matches(/0?1\/0?1\/2016 - 0?1\/10\/2016/);
     client.expect.element('.aqs-project-input').to.have.value.that.equals('en.wikivoyage.org');
     client.expect.element('#platform-select').to.have.value.that.equals('desktop');
     client.expect.element('#agent-select').to.have.value.that.equals('spider');
