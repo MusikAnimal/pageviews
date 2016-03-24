@@ -1,11 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"Stryn"
+			"Stryn",
+			"Mikahama"
 		]
 	},
 	"dates": "Päivät",
 	"latest-days": "Viimeiset $1 päivää",
+	"last-week": "Viime viikko",
+	"this-month": "Tässä kuussa",
+	"last-month": "Viime kuussa",
 	"project": "Projekti",
 	"platform": "Alusta",
 	"all": "Kaikki",
