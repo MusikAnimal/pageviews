@@ -28,6 +28,18 @@ class PageViews extends Pv {
     this.config = config;
     this.colorsStyleEl = undefined;
 
+    /**
+     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
+     * caused by race conditions between consecutive ajax calls. They are actually
+     * not critical and can be avoided with this empty function.
+     */
+    window.articleSuggestionCallback = $.noop;
+
+    /** need to export to global for chart templating */
+    window.formatNumber = this.formatNumber.bind(this);
+    window.getPageURL = this.getPageURL.bind(this);
+    window.numDaysInRange = this.numDaysInRange.bind(this);
+
     this.setupProjectInput();
     this.setupDateRangeSelector();
     this.setupArticleSelector();
@@ -45,18 +57,6 @@ class PageViews extends Pv {
 
       this.splash();
     }
-
-    /**
-     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
-     * caused by race conditions between consecutive ajax calls. They are actually
-     * not critical and can be avoided with this empty function.
-     */
-    window.articleSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.formatNumber = this.formatNumber.bind(this);
-    window.getPageURL = this.getPageURL.bind(this);
-    window.numDaysInRange = this.numDaysInRange.bind(this);
   }
 
   get daterangepicker() {

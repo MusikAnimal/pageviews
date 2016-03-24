@@ -181,6 +181,18 @@ var PageViews = function (_Pv) {
     _this.config = config;
     _this.colorsStyleEl = undefined;
 
+    /**
+     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
+     * caused by race conditions between consecutive ajax calls. They are actually
+     * not critical and can be avoided with this empty function.
+     */
+    window.articleSuggestionCallback = $.noop;
+
+    /** need to export to global for chart templating */
+    window.formatNumber = _this.formatNumber.bind(_this);
+    window.getPageURL = _this.getPageURL.bind(_this);
+    window.numDaysInRange = _this.numDaysInRange.bind(_this);
+
     _this.setupProjectInput();
     _this.setupDateRangeSelector();
     _this.setupArticleSelector();
@@ -198,18 +210,6 @@ var PageViews = function (_Pv) {
 
       _this.splash();
     }
-
-    /**
-     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
-     * caused by race conditions between consecutive ajax calls. They are actually
-     * not critical and can be avoided with this empty function.
-     */
-    window.articleSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.formatNumber = _this.formatNumber.bind(_this);
-    window.getPageURL = _this.getPageURL.bind(_this);
-    window.numDaysInRange = _this.numDaysInRange.bind(_this);
     return _this;
   }
 
