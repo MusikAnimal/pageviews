@@ -715,7 +715,7 @@ class PageViews extends Pv {
     });
 
     /** prevent browser's default behaviour for any link with href="#" */
-    $('a[href=\'#\'').on('click', e => e.preventDefault());
+    $('a[href=\'#\']').on('click', e => e.preventDefault());
 
     // window.onpopstate = popParams();
   }
