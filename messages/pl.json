@@ -2,13 +2,17 @@
 	"@metadata": {
 		"authors": [
 			"Chrumps",
-			"Peter Bowman"
+			"Peter Bowman",
+			"Mateon1"
 		]
 	},
+	"title": "Analiza liczby odsłon",
 	"dates": "Zakres dat",
 	"latest-days": "Ostatnie $1 dni",
 	"last-week": "Ostatni tydzień",
+	"this-month": "W tym miesiącu",
 	"last-month": "Ostatni miesiąc",
+	"custom-range": "Konfigurowalny zakres",
 	"project": "Projekt",
 	"platform": "Platforma",
 	"all": "Wszystkie",
@@ -31,7 +35,7 @@
 	"view-source": "Kod źródłowy",
 	"report-issue": "Zgłoś problem",
 	"chart-error": "Wykres się nie wyświetla? Upewnij się, że wszystkie wtyczki do blokowania reklam są wyłączone oraz że $1 jest na liście dozwolonych adresów.",
-	"ok": "Zgoda",
+	"ok": "OK",
 	"chart-types": "Rodzaje wykresów",
 	"daily-pageviews": "Strony według dziennych odsłon",
 	"line": "Liniowy",
@@ -78,6 +82,7 @@
 	"november": "Listopad",
 	"december": "Grudzień",
 	"select2-min-chars": "Wpisz $1 lub więcej znaków",
+	"select2-max-chars": "Proszę usunąć $1 znak(i/ów)",
 	"select2-loading": "Trwa ładowanie wyników...",
 	"select2-no-results": "Brak wyników",
 	"select2-searching": "Wyszukiwanie...",

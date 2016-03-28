@@ -63,6 +63,7 @@
 	"invalid-params": "Neplatné parametry!",
 	"param-error-1": "API zobrazení stránek neobsahuje data starší než srpen 2015. Omlouváme se.",
 	"param-error-2": "Datum začátku musí být dřívější než datum konce.",
+	"param-error-3": "Neplatný parametr <code>range</code>, je použit výchozí rozsah. Pro více informací navštivte <a href='/pageviews/url_structure'>dokumentaci</a>.",
 	"totals": "Součty:",
 	"day": "den",
 	"su": "Ne",
