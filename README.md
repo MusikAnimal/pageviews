@@ -52,7 +52,7 @@ All assets and views are ultimated placed in `public_html`. With the exception o
 The repo currently contains two (and eventually three) separate applications, that share code with each other. The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). Partials of any kind are prepended with underscores (e.g. `_footer.php`).
 
 #### JavaScripts
-Each app has it's own `config.js` and `session.js`. Config are constants for application-wide use, and session are application-wide variables. When these files are compiled, they are concatenated into a single `application.js` that lives within the directory for that app inside `public_html`.
+Each app has it's own `config.js`, which are constants for application-wide use. When the JS files are compiled, they are concatenated into a single `application.js` that lives within the directory for that app inside `public_html`. If you compile for non-production source maps will be included.
 
 Shared JavaScript goes in the `/shared` directory and will be automatically included in each `application.js`.
 
@@ -65,9 +65,7 @@ Each page has it's own `.scss` file that imports dependencies.
 The views within `/views` are written in [Haml](https://github.com/arnaud-lb/MtHaml) and compiled to PHP files in `/public_html`. `grunt watch` can be configured to do this whenever you hit save on any view (same is true of JavaScript and Sass).
 
 ### Local
-Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews. To save time, you can run `grunt haml` to just compile the views, or `grunt sass` to compile the SCSS.
-
-If you're only working with the JavaScript, just run `grunt browserify`. Then when you're done with your work run `grunt concat` and `grunt uglify` to make your code production-ready.
+Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews. To save time, you can run `grunt browserify` to compile only the JavaScript, `grunt haml` for the views, or `grunt sass` for the SASS.
 
 ### Production
 Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
@@ -83,7 +81,7 @@ Prerequisites:
 
 Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch --test tests/my_test.js`.
 
-These tests are ran when you push or make or a pull request. If it fails, check the build and there will be a link to a video of the test, along with the output of the logs.
+If a test fails when you push to remote, check the build and there will be a link to a video of the test, along with the output of the logs.
 
 ### Linters
 The styling of all ES6 and SCSS is enforced with linters. You can run these locally with `grunt lint`, and will also be ran when you run `grunt production`. If for some reason you need a particular rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
