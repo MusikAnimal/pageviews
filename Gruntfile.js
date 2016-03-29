@@ -41,6 +41,7 @@ module.exports = function(grunt) {
     browserify: {
       pageviews: {
         options: {
+          browserifyOptions: { debug: true },
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
@@ -52,6 +53,7 @@ module.exports = function(grunt) {
       },
       topviews: {
         options: {
+          browserifyOptions: { debug: true },
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
@@ -190,9 +192,15 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
-  grunt.registerTask('production', ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml']);
   grunt.registerTask('pageviews', ['browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
   grunt.registerTask('topviews', ['browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
+
+  grunt.registerTask('production', () => {
+    const tasks = ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml'];
+    grunt.config.set('browserify.pageviews.options.browserifyOptions.debug', false);
+    grunt.config.set('browserify.topviews.options.browserifyOptions.debug', false);
+    grunt.task.run(tasks);
+  });
 };
