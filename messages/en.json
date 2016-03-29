@@ -95,5 +95,7 @@
 	"select2-max-items": "You can only select $1 item",
 	"select2-no-results": "No results found",
 	"select2-searching": "Searching…",
-	"help-translate": "Help translate"
+	"help-translate": "Help translate",
+	"api-error": "There was a problem loading data from the API.",
+	"api-error-contact": "Please report this issue to the maintainers."
 }
