@@ -36,6 +36,8 @@
 <script type="text/javascript">
 //<![CDATA[
    var i18nMessages = {
+     apiError: "<?php echo $I18N->msg( 'api-error' ); ?>",
+     apiErrorContact: "<?php echo $I18N->msg( 'api-error-contact' ); ?>",
      apply: "<?php echo $I18N->msg( 'apply' ); ?>",
      cancel: "<?php echo $I18N->msg( 'cancel' ); ?>",
      customRange: "<?php echo $I18N->msg( 'custom-range' ); ?>",

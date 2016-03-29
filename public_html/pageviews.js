@@ -1044,6 +1044,7 @@ var PageViews = function (_Pv) {
 
       var labels = []; // Labels (dates) for the x-axis.
       var datasets = []; // Data for each article timeseries
+      var errors = []; // Queue up errors to show after all requests have been made
 
       /**
        * Asynchronously collect the data from Analytics Query Service API,
@@ -1079,6 +1080,8 @@ var PageViews = function (_Pv) {
               $('.chart-container').html('');
               $('.chart-container').removeClass('loading');
             }
+          } else {
+            errors.push(data.responseJSON.detail[0]);
           }
         }).always(function (data) {
           /** Get the labels from the first call. */
@@ -1114,6 +1117,13 @@ var PageViews = function (_Pv) {
               $('#chart-legend').html(_this11.chartObj.generateLegend());
               $('.data-links').show();
             })();
+          } else if (errors.length && datasets.length + errors.length === articles.length) {
+            /** something went wrong */
+            $('.chart-container').removeClass('loading');
+            var errorMessages = Array.from(new Set(errors)).map(function (error) {
+              return '<li>' + error + '</li>';
+            }).join('');
+            _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
           }
         });
       });

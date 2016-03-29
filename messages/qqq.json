@@ -99,5 +99,7 @@
 	"select2-max-items": "Notice telling the user that they can't select any more items. $1 is a number.",
 	"select2-no-results": "Notice telling the user that no results were found",
 	"select2-searching": "Displayed while a search is occurring",
-	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate"
+	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
+	"api-error": "General message saying something went wrong with the API",
+	"api-error-contact": "Message to contact the maintainers about the API error"
 }
