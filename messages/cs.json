@@ -91,5 +91,7 @@
 	"select2-max-items": "Můžete vybrat pouze $1 položek",
 	"select2-no-results": "Nenalezeny žádné výsledky",
 	"select2-searching": "Hledání...",
-	"help-translate": "Pomozte s překladem"
+	"help-translate": "Pomozte s překladem",
+	"api-error": "Nastal problém s načítáním dat z API.",
+	"api-error-contact": "Prosíme, nahlaste tento problém správcům."
 }

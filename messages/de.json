@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Metalhead64",
-			"FriedhelmW"
+			"FriedhelmW",
+			"Inkowik"
 		]
 	},
 	"title": "Pageviews Analysis",
@@ -28,7 +29,7 @@
 	"download": "Als $1 herunterladen",
 	"csv": "CSV",
 	"json": "JSON",
-	"credits": "Zu dir gebracht von $1, $2 und $3.",
+	"credits": "Bereitgestellt von $1, $2 und $3.",
 	"hosted": "Gehostet mit $1 auf $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "Häufig gestellte Fragen",
@@ -37,7 +38,7 @@
 	"view-source": "Quellcode ansehen",
 	"report-issue": "Ein Problem melden",
 	"chart-error": "Ist das Diagramm nicht sichtbar? Stelle bitte sicher, dass alle Werbeblocker deaktiviert sind oder $1 weißgelistet ist.",
-	"disclaimer-text": "Die Daten werden von der $1 abgerufen. Diese API ist als <b>experimentell</b> gelistet. Das bedeutet, dass die Funktion <b>jederzeit ohne Warnung defekt sein</b> <i>könnte</i>. Die $2 von Pageviews Analysis arbeiten daran, um mit API-Änderungen auf dem Laufenden zu bleiben, aber es können keine Versprechen gemacht werden, dass das Werkzeug unbegrenzt stabil läuft, bis die API ebenfalls als stabil veröffentlicht wurde.",
+	"disclaimer-text": "Die Daten werden von der $1 abgerufen. Diese API ist als <b>experimentell</b> gelistet. Das bedeutet, dass die Funktion <b>jederzeit ohne Warnung defekt sein</b> <i>könnte</i>. Die $2 von Pageviews Analysis arbeiten daran, mit API-Änderungen auf dem Laufenden zu bleiben, aber es können keine Versprechen gemacht werden, dass das Werkzeug unbegrenzt stabil läuft, bis die API ebenfalls als stabil veröffentlicht wurde.",
 	"rest-api": "Wikimedia-REST-API",
 	"maintainer": "Instandhalter",
 	"ok": "Okay",
@@ -66,7 +67,7 @@
 	"article-placeholder": "Seitennamen eingeben …",
 	"date-notice": "$1 bietet Daten ab August 2015. Für ältere Daten versuche bitte $2.",
 	"invalid-params": "Ungültige Parameter!",
-	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als August 2015.",
+	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als aus dem August 2015.",
 	"param-error-2": "Das Startdatum muss älter sein als das Enddatum.",
 	"param-error-3": "Ungültiger <code>range</code>. Verwende stattdessen den Standardbereich. Siehe die <a href='/pageviews/url_structure'>Dokumentation</a> für weitere Informationen.",
 	"totals": "Summen:",
@@ -96,5 +97,7 @@
 	"select2-max-items": "Du kannst nur $1 Objekte auswählen",
 	"select2-no-results": "Keine Ergebnisse gefunden",
 	"select2-searching": "Suchen …",
-	"help-translate": "Hilf beim Übersetzen"
+	"help-translate": "Hilf beim Übersetzen",
+	"api-error": "Es gab ein Problem beim Laden der Daten von der API.",
+	"api-error-contact": "Berichte bitte dieses Problem an die Instandhalter."
 }

@@ -96,5 +96,7 @@
 	"select2-max-items": "Du kan endast markera $1 element",
 	"select2-no-results": "Inga resultat hittades",
 	"select2-searching": "Söker...",
-	"help-translate": "Hjälp till att översätta"
+	"help-translate": "Hjälp till att översätta",
+	"api-error": "Ett problem uppstod när data skulle läsas in från API.",
+	"api-error-contact": "Rapportera detta fel till utvecklarna."
 }

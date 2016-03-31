@@ -95,5 +95,7 @@
 	"select2-max-items": "您只可以选择$1个项目",
 	"select2-no-results": "找不到结果",
 	"select2-searching": "正在搜索…",
-	"help-translate": "帮助翻译"
+	"help-translate": "帮助翻译",
+	"api-error": "从API载入数据时出现问题。",
+	"api-error-contact": "请将此问题报告给维护人员。"
 }

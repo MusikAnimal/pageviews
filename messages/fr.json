@@ -101,5 +101,7 @@
 	"select2-max-items": "Vous ne pouvez sélectionner que $1 élément",
 	"select2-no-results": "Aucun résultat trouvé",
 	"select2-searching": "Recherche en cours...",
-	"help-translate": "Aider à traduire"
+	"help-translate": "Aider à traduire",
+	"api-error": "Il y a eu un problème au chargement des données depuis l’API.",
+	"api-error-contact": "Veuillez signaler ce problème aux mainteneurs."
 }
