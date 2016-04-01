@@ -8,6 +8,10 @@
 	"title": "Sidvisningsanalys",
 	"dates": "Datum",
 	"latest-days": "Senaste $1 dagarna",
+	"last-week": "Senaste veckan",
+	"this-month": "Denna månad",
+	"last-month": "Senaste månaden",
+	"custom-range": "Anpassat intervall",
 	"project": "Projekt",
 	"platform": "Plattform",
 	"all": "Alla",
@@ -60,10 +64,11 @@
 	"save": "Spara",
 	"apply": "Verkställ",
 	"article-placeholder": "Skriv sidnamn...",
-	"date-notice": "$1 tillhandahåller data från oktober 2015 framåt. Kolla på $2 för äldre data.",
+	"date-notice": "$1 tillhandahåller data från augusti 2015 framåt. Kolla på $2 för äldre data.",
 	"invalid-params": "Ogiltiga parametrar!",
-	"param-error-1": "Sidvisnings-API:et har ingen data som är äldre än oktober 2015. Förlåt.",
+	"param-error-1": "Sidvisnings-API:et har ingen data som är äldre än augusti 2015. Förlåt.",
 	"param-error-2": "Startdatumet måste vara äldre än slutdatumet.",
+	"param-error-3": "Ogiltigt <code>intervall</code>, standardintervallet används istället. Se <a href='/pageviews/url_structure'>dokumentationen</a> för mer information.",
 	"totals": "Totalt:",
 	"day": "dag",
 	"su": "Sö",
@@ -91,5 +96,7 @@
 	"select2-max-items": "Du kan endast markera $1 element",
 	"select2-no-results": "Inga resultat hittades",
 	"select2-searching": "Söker...",
-	"help-translate": "Hjälp till att översätta"
+	"help-translate": "Hjälp till att översätta",
+	"api-error": "Ett problem uppstod när data skulle läsas in från API.",
+	"api-error-contact": "Rapportera detta fel till utvecklarna."
 }

@@ -28,6 +28,18 @@ class PageViews extends Pv {
     this.config = config;
     this.colorsStyleEl = undefined;
 
+    /**
+     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
+     * caused by race conditions between consecutive ajax calls. They are actually
+     * not critical and can be avoided with this empty function.
+     */
+    window.articleSuggestionCallback = $.noop;
+
+    /** need to export to global for chart templating */
+    window.formatNumber = this.formatNumber.bind(this);
+    window.getPageURL = this.getPageURL.bind(this);
+    window.numDaysInRange = this.numDaysInRange.bind(this);
+
     this.setupProjectInput();
     this.setupDateRangeSelector();
     this.setupArticleSelector();
@@ -45,18 +57,6 @@ class PageViews extends Pv {
 
       this.splash();
     }
-
-    /**
-     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
-     * caused by race conditions between consecutive ajax calls. They are actually
-     * not critical and can be avoided with this empty function.
-     */
-    window.articleSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.formatNumber = this.formatNumber.bind(this);
-    window.getPageURL = this.getPageURL.bind(this);
-    window.numDaysInRange = this.numDaysInRange.bind(this);
   }
 
   /**
@@ -700,7 +700,7 @@ class PageViews extends Pv {
     });
 
     /** prevent browser's default behaviour for any link with href="#" */
-    $('a[href=\'#\'').on('click', e => e.preventDefault());
+    $('a[href=\'#\']').on('click', e => e.preventDefault());
 
     // window.onpopstate = popParams();
   }
@@ -791,6 +791,7 @@ class PageViews extends Pv {
 
     let labels = []; // Labels (dates) for the x-axis.
     let datasets = []; // Data for each article timeseries
+    let errors = []; // Queue up errors to show after all requests have been made
 
     /**
      * Asynchronously collect the data from Analytics Query Service API,
@@ -828,6 +829,8 @@ class PageViews extends Pv {
             $('.chart-container').html('');
             $('.chart-container').removeClass('loading');
           }
+        } else {
+          errors.push(data.responseJSON.detail[0]);
         }
       }).always(data => {
         /** Get the labels from the first call. */
@@ -864,6 +867,13 @@ class PageViews extends Pv {
 
           $('#chart-legend').html(this.chartObj.generateLegend());
           $('.data-links').show();
+        } else if (errors.length && datasets.length + errors.length === articles.length) {
+          /** something went wrong */
+          $('.chart-container').removeClass('loading');
+          const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
+          this.writeMessage(
+            `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`
+          );
         }
       });
     });

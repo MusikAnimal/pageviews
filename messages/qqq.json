@@ -37,7 +37,7 @@
 	"faq": "Link to frequently asked questions.\n{{Identical|FAQ}}",
 	"disclaimer": "Link to disclaimer.\n{{Identical|Disclaimer}}",
 	"url-structure": "Link to documentation about the URL structure used by the tool",
-	"view-source": "Link to the source code for the tool",
+	"view-source": "Link to the source code for the tool\n{{Identical|View source}}",
 	"report-issue": "Link to report an issue or bug with the tool",
 	"chart-error": "Error message. $1 is the URL of the pageviews tool.",
 	"disclaimer-text": "Disclaimer text. $1 is a link to the API. $2 is a link to the maintainer.",
@@ -99,5 +99,7 @@
 	"select2-max-items": "Notice telling the user that they can't select any more items. $1 is a number.",
 	"select2-no-results": "Notice telling the user that no results were found",
 	"select2-searching": "Displayed while a search is occurring",
-	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate"
+	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
+	"api-error": "General message saying something went wrong with the API",
+	"api-error-contact": "Message to contact the maintainers about the API error"
 }

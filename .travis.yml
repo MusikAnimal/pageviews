@@ -16,7 +16,7 @@ before_script:
   - composer install
   - sudo service apache2 restart
 script:
-  - ./nightwatch --env saucelabs
+  - ./nightwatch --env saucelabs,saucelabs_safari,saucelabs_ie10
   - eslint -c .eslintrc javascripts/
 addons:
   sauce_connect:

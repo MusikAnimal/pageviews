@@ -1,11 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"Stryn"
+			"Stryn",
+			"Mikahama"
 		]
 	},
 	"dates": "Päivät",
 	"latest-days": "Viimeiset $1 päivää",
+	"last-week": "Viime viikko",
+	"this-month": "Tässä kuussa",
+	"last-month": "Viime kuussa",
 	"project": "Projekti",
 	"platform": "Alusta",
 	"all": "Kaikki",
@@ -25,6 +29,21 @@
 	"url-structure": "URL-rakenne",
 	"view-source": "Näytä lähdekoodi",
 	"report-issue": "Ilmoita ongelmasta",
+	"rest-api": "Wikimedia REST API",
+	"ok": "OK",
+	"chart-types": "Kaaviotyypit",
+	"doughnut": "Rinkiläkaavio",
+	"prefixsearch": "etuliitehaku",
+	"cancel": "Peruuta",
+	"save": "Tallenna",
+	"day": "päivä",
+	"su": "Su",
+	"mo": "Ma",
+	"tu": "Ti",
+	"we": "Ke",
+	"th": "To",
+	"fr": "Pe",
+	"sa": "La",
 	"january": "Tammikuu",
 	"february": "Helmikuu",
 	"march": "Maaliskuu",
@@ -40,5 +59,6 @@
 	"select2-loading": "Ladataan lisää tuloksia…",
 	"select2-max-items": "Voit valita vain $1 kohdetta",
 	"select2-no-results": "Tuloksia ei löytynyt",
-	"select2-searching": "Haetaan…"
+	"select2-searching": "Haetaan…",
+	"help-translate": "Auttaa kääntämään"
 }

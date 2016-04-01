@@ -65,9 +65,9 @@
 	"save": "Guardar",
 	"apply": "Aplicar",
 	"article-placeholder": "Escribe nombres de páginas...",
-	"date-notice": "$1 suministra datos desde octubre del 2015 en adelante. Para datos anteriores, prueba $2.",
+	"date-notice": "$1 suministra datos desde agosto del 2015 en adelante. Para datos anteriores, prueba $2.",
 	"invalid-params": "¡Parámetros incorrectos!",
-	"param-error-1": "La API no contiene datos anteriores a octubre de 2015. Disculpa.",
+	"param-error-1": "La API no contiene datos anteriores a agosto de 2015. Disculpa.",
 	"param-error-2": "La fecha inicial debe ser anterior a la fecha final.",
 	"param-error-3": "<code>range</code> incorrecto. Se utiliza el intervalo predeterminado en su lugar. Consulta la <a href='/pageviews/url_structure'>documentación</a> para obtener más información.",
 	"totals": "Totales:",
@@ -97,5 +97,7 @@
 	"select2-max-items": "Sólo puedes seleccionar $1 elemento",
 	"select2-no-results": "No se han encontrado resultados",
 	"select2-searching": "Buscando...",
-	"help-translate": "Ayúdanos a traducir"
+	"help-translate": "Ayúdanos a traducir",
+	"api-error": "Hubo un problema al cargar los datos de la API.",
+	"api-error-contact": "Informa este problema al personal de mantenimiento."
 }

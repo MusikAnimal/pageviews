@@ -5,6 +5,9 @@
 			"Ridmevo"
 		]
 	},
+	"last-week": "先週",
+	"this-month": "今月",
+	"last-month": "先月",
 	"project": "プロジェクト",
 	"platform": "プラットフォーム",
 	"all": "すべて",
@@ -22,8 +25,11 @@
 	"report-issue": "問題の報告",
 	"ok": "OK",
 	"daily-pageviews": "ページの日別ページビュー",
+	"line": "行",
+	"bar": "バー",
 	"pie": "パイ",
 	"settings-notice": "設定は同一のブラウザーとコンピューターに保存されます。",
+	"search-method": "探索方法:",
 	"cancel": "キャンセル",
 	"save": "保存",
 	"apply": "適用",

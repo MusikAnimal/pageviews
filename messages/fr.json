@@ -6,10 +6,11 @@
 			"Wladek92",
 			"MusikAnimal",
 			"C13m3n7",
-			"Gomoko"
+			"Gomoko",
+			"TradFr"
 		]
 	},
-	"title": "Analyses de Pageviews",
+	"title": "Analyse des pages vues",
 	"dates": "Dates",
 	"latest-days": "Derniers $1 jours",
 	"last-week": "Semaine dernière",
@@ -68,9 +69,9 @@
 	"save": "Enregistrer",
 	"apply": "Appliquer",
 	"article-placeholder": "Tapez le nom des pages ...",
-	"date-notice": "$1 fournit des données à partir d'octobre 2015 et après. Pour les données plus anciennes, essayez $2.",
+	"date-notice": "$1 fournit des données à partir de août 2015 et après. Pour les données plus anciennes, essayez $2.",
 	"invalid-params": "Paramètres invalides.",
-	"param-error-1": "L'API Pageviews ne contient pas les données d'avant octobre 2015. Désolé.",
+	"param-error-1": "L'API Pageviews ne contient pas les données d'avant août  2015. Désolé.",
 	"param-error-2": "La date de début doit être plus ancienne que la date de fin.",
 	"param-error-3": "<code>range</code> non valide, utilsiation de la plage par défaut à la place. Voyez la <a href='/pageviews/url_structure'>documentation</a> pour plus d’information.",
 	"totals": "Totaux :",
@@ -100,5 +101,7 @@
 	"select2-max-items": "Vous ne pouvez sélectionner que $1 élément",
 	"select2-no-results": "Aucun résultat trouvé",
 	"select2-searching": "Recherche en cours...",
-	"help-translate": "Aider à traduire"
+	"help-translate": "Aider à traduire",
+	"api-error": "Il y a eu un problème au chargement des données depuis l’API.",
+	"api-error-contact": "Veuillez signaler ce problème aux mainteneurs."
 }
