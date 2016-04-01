@@ -37,7 +37,31 @@
             </dd>
             <dt>excludes</dt>
             <dd>
-              Any pages to exclude from the view, such as false-positives or irrelevant pages like the Main Page.
+              Escaped page names to exclude from the view separated by a pipe <code>|</code>, such as false-positives or irrelevant pages. For example <code>Main_page|Special:Search</code>
+            </dd>
+            <dt>range</dt>
+            <dd>
+              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              <ul class="special-ranges">
+                <li>
+                  <code>last-week</code>
+                  (default)
+                </li>
+                <li>
+                  <code>this-month</code>
+                </li>
+                <li>
+                  <code>last-month</code>
+                </li>
+                <li>
+                  <code>latest</code>
+                  The last 20 days of data
+                </li>
+                <li>
+                  <code>latest-<i>N</i></code>
+                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                </li>
+              </ul>
             </dd>
             <dt>start</dt>
             <dd>

@@ -180,10 +180,10 @@ class TopViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-        this.setSpecialRange('latest-20');
+        this.setSpecialRange(config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
         this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
@@ -198,7 +198,7 @@ class TopViews extends Pv {
       daterangepicker.startDate = startDate;
       daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange('latest-20');
+      this.setSpecialRange(config.defaults.dateRange);
     }
 
     $('#platform-select').val(params.platform || 'all-access');
@@ -377,7 +377,7 @@ class TopViews extends Pv {
           i18nMessages.december
         ]
       },
-      startDate: moment().subtract(config.daysAgo, 'days'),
+      startDate: moment().subtract(config.defaults.daysAgo, 'days'),
       minDate: config.minDate,
       maxDate: config.maxDate,
       ranges: ranges

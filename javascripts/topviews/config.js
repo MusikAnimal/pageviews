@@ -3,8 +3,10 @@ const pv = require('../shared/pv');
 const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  daysAgo: 7,
   defaults: {
+    dateFormat: 'YYYY-MM-DD',
+    dateRange: 'last-week',
+    daysAgo: 7,
     excludes: [],
     localizeDateFormat: 'true',
     numericalFormatting: 'true',

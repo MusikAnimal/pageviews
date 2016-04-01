@@ -97,5 +97,8 @@
 	"select2-searching": "Searching…",
 	"help-translate": "Help translate",
 	"api-error": "There was a problem loading data from the API.",
-	"api-error-contact": "Please report this issue to the maintainers."
+	"api-error-contact": "Please report this issue to the maintainers.",
+	"topviews-title": "Topviews Analysis",
+	"excluded-pages": "Excluded pages",
+	"show-more": "Show more"
 }
