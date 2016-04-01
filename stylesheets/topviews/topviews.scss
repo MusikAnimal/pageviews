@@ -61,3 +61,17 @@ $gray: #ccc;
     display: none;
   }
 }
+
+// prevent Select2 from opening/closing
+.select2-selection {
+  border-radius: 4px !important;
+  pointer-events: none;
+}
+
+.select2-selection__choice__remove {
+  pointer-events: visible;
+}
+
+.select2-dropdown--below {
+  display: none;
+}

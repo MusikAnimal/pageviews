@@ -33,6 +33,14 @@ class Pv {
   }
 
   /**
+   * Get the daterangepicker instance. Plain and simple.
+   * @return {Object} daterange picker
+   */
+  get daterangepicker() {
+    return $(this.config.dateRangeSelector).data('daterangepicker');
+  }
+
+  /**
    * Format number based on current settings, e.g. localize with comma delimeters
    * @param {number|string} num - number to format
    * @returns {string} formatted number
@@ -344,6 +352,14 @@ class Pv {
   }
 
   /**
+   * Compute how many days are in the selected date range
+   * @returns {integer} number of days
+   */
+  numDaysInRange() {
+    return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+  }
+
+  /**
    * Change alpha level of an rgba value
    *
    * @param {string} value - rgba value
@@ -418,6 +434,21 @@ class Pv {
     return pages.map(page => {
       return decodeURIComponent(page.replace(/ /g, '_'));
     });
+  }
+
+  /**
+   * Writes message just below the chart
+   * @param {string} message - message to write
+   * @param {boolean} clear - whether to clear any existing messages
+   * @returns {jQuery} - jQuery object of message container
+   */
+  writeMessage(message, clear) {
+    if (clear) {
+      this.clearMessages();
+    }
+    return $('.message-container').append(
+      `<div class='error-message'>${message}</div>`
+    );
   }
 }
 

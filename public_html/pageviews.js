@@ -213,14 +213,14 @@ var PageViews = function (_Pv) {
     return _this;
   }
 
+  /**
+   * Destroy previous chart, if needed.
+   * @returns {null} nothing
+   */
+
+
   _createClass(PageViews, [{
     key: 'destroyChart',
-
-
-    /**
-     * Destroy previous chart, if needed.
-     * @returns {null} nothing
-     */
     value: function destroyChart() {
       if (this.chartObj) {
         this.chartObj.destroy();
@@ -458,18 +458,6 @@ var PageViews = function (_Pv) {
           'redirects': 'return'
         };
       }
-    }
-
-    /**
-     * Compute how many days are in the selected date range
-     *
-     * @returns {integer} number of days
-     */
-
-  }, {
-    key: 'numDaysInRange',
-    value: function numDaysInRange() {
-      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
     }
 
     /**
@@ -736,14 +724,12 @@ var PageViews = function (_Pv) {
   }, {
     key: 'setArticleSelectorDefaults',
     value: function setArticleSelectorDefaults(pages) {
-      var articleSelectorQuery = config.articleSelector;
       pages.forEach(function (page) {
         var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
+        $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
       });
-      var articleSelector = $(articleSelectorQuery);
-      articleSelector.select2('val', pages);
-      articleSelector.select2('close');
+      $(config.articleSelector).select2('val', pages);
+      $(config.articleSelector).select2('close');
 
       return pages;
     }
@@ -1137,27 +1123,6 @@ var PageViews = function (_Pv) {
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
-    }
-
-    /**
-     * Writes message just below the chart
-     * @param {string} message - message to write
-     * @param {boolean} clear - whether to clear any existing messages
-     * @returns {jQuery} - jQuery object of message container
-     */
-
-  }, {
-    key: 'writeMessage',
-    value: function writeMessage(message, clear) {
-      if (clear) {
-        this.clearMessages();
-      }
-      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
-    }
-  }, {
-    key: 'daterangepicker',
-    get: function get() {
-      return $(config.dateRangeSelector).data('daterangepicker');
     }
   }]);
 
@@ -1608,6 +1573,17 @@ var Pv = function () {
     }
 
     /**
+     * Compute how many days are in the selected date range
+     * @returns {integer} number of days
+     */
+
+  }, {
+    key: 'numDaysInRange',
+    value: function numDaysInRange() {
+      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+    }
+
+    /**
      * Change alpha level of an rgba value
      *
      * @param {string} value - rgba value
@@ -1704,6 +1680,22 @@ var Pv = function () {
         return decodeURIComponent(page.replace(/ /g, '_'));
       });
     }
+
+    /**
+     * Writes message just below the chart
+     * @param {string} message - message to write
+     * @param {boolean} clear - whether to clear any existing messages
+     * @returns {jQuery} - jQuery object of message container
+     */
+
+  }, {
+    key: 'writeMessage',
+    value: function writeMessage(message, clear) {
+      if (clear) {
+        this.clearMessages();
+      }
+      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
+    }
   }, {
     key: 'dateFormat',
     get: function get() {
@@ -1712,6 +1704,17 @@ var Pv = function () {
       } else {
         return this.config.defaults.dateFormat;
       }
+    }
+
+    /**
+     * Get the daterangepicker instance. Plain and simple.
+     * @return {Object} daterange picker
+     */
+
+  }, {
+    key: 'daterangepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('daterangepicker');
     }
   }, {
     key: 'project',
