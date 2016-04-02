@@ -59,10 +59,6 @@ class PageViews extends Pv {
     }
   }
 
-  get daterangepicker() {
-    return $(config.dateRangeSelector).data('daterangepicker');
-  }
-
   /**
    * Destroy previous chart, if needed.
    * @returns {null} nothing
@@ -277,15 +273,6 @@ class PageViews extends Pv {
   }
 
   /**
-   * Compute how many days are in the selected date range
-   *
-   * @returns {integer} number of days
-   */
-  numDaysInRange() {
-    return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
-  }
-
-  /**
    * Generate key/value pairs of URL hash params
    * @returns {Object} key/value pairs representation of URL hash
    */
@@ -325,10 +312,10 @@ class PageViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-        this.setSpecialRange('latest-20');
+        this.setSpecialRange(config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
         this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
@@ -343,7 +330,7 @@ class PageViews extends Pv {
       this.daterangepicker.startDate = startDate;
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange('latest-20');
+      this.setSpecialRange(config.defaults.dateRange);
     }
 
     $('#platform-select').val(params.platform || 'all-access');
@@ -516,14 +503,12 @@ class PageViews extends Pv {
    * @returns {array} - untouched array of pages
    */
   setArticleSelectorDefaults(pages) {
-    const articleSelectorQuery = config.articleSelector;
     pages.forEach(page => {
       const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
+      $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
     });
-    const articleSelector = $(articleSelectorQuery);
-    articleSelector.select2('val', pages);
-    articleSelector.select2('close');
+    $(config.articleSelector).select2('val', pages);
+    $(config.articleSelector).select2('close');
 
     return pages;
   }
@@ -633,7 +618,7 @@ class PageViews extends Pv {
           i18nMessages.december
         ]
       },
-      startDate: moment().subtract(config.daysAgo, 'days'),
+      startDate: moment().subtract(config.defaults.daysAgo, 'days'),
       minDate: config.minDate,
       maxDate: config.maxDate,
       ranges: ranges
@@ -913,21 +898,6 @@ class PageViews extends Pv {
       $('.select2-selection--multiple').addClass('disabled');
       return true;
     }
-  }
-
-  /**
-   * Writes message just below the chart
-   * @param {string} message - message to write
-   * @param {boolean} clear - whether to clear any existing messages
-   * @returns {jQuery} - jQuery object of message container
-   */
-  writeMessage(message, clear) {
-    if (clear) {
-      this.clearMessages();
-    }
-    return $('.message-container').append(
-      `<div class='error-message'>${message}</div>`
-    );
   }
 }
 

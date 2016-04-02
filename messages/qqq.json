@@ -101,5 +101,8 @@
 	"select2-searching": "Displayed while a search is occurring",
 	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
 	"api-error": "General message saying something went wrong with the API",
-	"api-error-contact": "Message to contact the maintainers about the API error"
+	"api-error-contact": "Message to contact the maintainers about the API error",
+	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page.",
+	"excluded-pages": "Pages that are excluded from the Topviews list",
+	"show-more": "Link to reveal more of the Topviews data"
 }

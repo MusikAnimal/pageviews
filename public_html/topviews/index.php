@@ -7,7 +7,7 @@
 <html>
   <head>
     <?php include "../_head.php"; ?>
-    <title>Topviews Analysis</title>
+    <title><?php echo $I18N->msg( 'topviews-title' ); ?></title>
   </head>
   <body>
     <div class="container">
@@ -16,7 +16,9 @@
         <header class="row aqs-row">
           <div class="col-lg-10 text-center">
             <h4>
-              <strong>Topviews Analysis</strong>
+              <strong>
+                <?php echo $I18N->msg( 'topviews-title' ); ?>
+              </strong>
             </h4>
           </div>
         </header>
@@ -27,12 +29,16 @@
         <div class="row aqs-row options">
           <!-- Date range selector -->
           <div class="col-lg-4 col-sm-4">
-            <label for="range-input">Date</label>
+            <label for="range-input">
+              <?php echo $I18N->msg( 'dates' ); ?>
+            </label>
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
           <div class="col-lg-3 col-sm-4">
-            <label for="project-input">Project</label>
+            <label for="project-input">
+              <?php echo $I18N->msg( 'project' ); ?>
+            </label>
             <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
           <!-- .col-lg-3 -->
@@ -44,26 +50,40 @@
           <!-- %option{value: "3"} Mobile web -->
           <!-- Advanced options -->
           <div class="col-lg-3 col-sm-4">
-            <label for="platform-select">Platform</label>
+            <label for="platform-select">
+              <?php echo $I18N->msg( 'platform' ); ?>
+            </label>
             <select class="form-control" id="platform-select">
-              <option value="all-access">All</option>
-              <option value="desktop">Desktop</option>
-              <option value="mobile-app">Mobile app</option>
-              <option value="mobile-web">Mobile web</option>
+              <option value="all-access">
+                <?php echo $I18N->msg( 'all' ); ?>
+              </option>
+              <option value="desktop">
+                <?php echo $I18N->msg( 'desktop' ); ?>
+              </option>
+              <option value="mobile-app">
+                <?php echo $I18N->msg( 'mobile-app' ); ?>
+              </option>
+              <option value="mobile-web">
+                <?php echo $I18N->msg( 'mobile-web' ); ?>
+              </option>
             </select>
           </div>
         </div>
         <!-- Article selector -->
         <div class="row aqs-row">
           <div class="col-lg-10">
-            <label for="article-input">Excluded pages</label>
+            <label for="article-input">
+              <?php echo $I18N->msg( 'excluded-pages' ); ?>
+            </label>
             <select class="aqs-article-selector col-lg-12" id="article-input" multiple="multiple"></select>
           </div>
         </div>
         <!-- Chart -->
         <div class="chart-container col-lg-10"></div>
         <div class="col-lg-10 text-center">
-          <a class="expand-chart" href="#">Show more</a>
+          <a class="expand-chart" href="#">
+            <?php echo $I18N->msg( 'show-more' ); ?>
+          </a>
         </div>
         <div class="message-container col-lg-10"></div>
         <!-- Other links -->

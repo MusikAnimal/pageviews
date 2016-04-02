@@ -91,11 +91,12 @@ var config = {
   circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
   colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
   cookieExpiry: 30, // num days
-  daysAgo: 20,
   defaults: {
     autocomplete: 'autocomplete',
     chartType: 'Line',
     dateFormat: 'YYYY-MM-DD',
+    dateRange: 'latest-20',
+    daysAgo: 20,
     localizeDateFormat: 'true',
     numericalFormatting: 'true',
     project: 'en.wikipedia.org'
@@ -213,14 +214,14 @@ var PageViews = function (_Pv) {
     return _this;
   }
 
+  /**
+   * Destroy previous chart, if needed.
+   * @returns {null} nothing
+   */
+
+
   _createClass(PageViews, [{
     key: 'destroyChart',
-
-
-    /**
-     * Destroy previous chart, if needed.
-     * @returns {null} nothing
-     */
     value: function destroyChart() {
       if (this.chartObj) {
         this.chartObj.destroy();
@@ -461,18 +462,6 @@ var PageViews = function (_Pv) {
     }
 
     /**
-     * Compute how many days are in the selected date range
-     *
-     * @returns {integer} number of days
-     */
-
-  }, {
-    key: 'numDaysInRange',
-    value: function numDaysInRange() {
-      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
-    }
-
-    /**
      * Generate key/value pairs of URL hash params
      * @returns {Object} key/value pairs representation of URL hash
      */
@@ -522,10 +511,10 @@ var PageViews = function (_Pv) {
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
           this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
-          this.setSpecialRange('latest-20');
+          this.setSpecialRange(config.defaults.dateRange);
         }
       } else if (params.start) {
-        startDate = moment(params.start || moment().subtract(config.daysAgo, 'days'));
+        startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
           this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
@@ -540,7 +529,7 @@ var PageViews = function (_Pv) {
         this.daterangepicker.startDate = startDate;
         this.daterangepicker.setEndDate(endDate);
       } else {
-        this.setSpecialRange('latest-20');
+        this.setSpecialRange(config.defaults.dateRange);
       }
 
       $('#platform-select').val(params.platform || 'all-access');
@@ -736,14 +725,12 @@ var PageViews = function (_Pv) {
   }, {
     key: 'setArticleSelectorDefaults',
     value: function setArticleSelectorDefaults(pages) {
-      var articleSelectorQuery = config.articleSelector;
       pages.forEach(function (page) {
         var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(articleSelectorQuery);
+        $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
       });
-      var articleSelector = $(articleSelectorQuery);
-      articleSelector.select2('val', pages);
-      articleSelector.select2('close');
+      $(config.articleSelector).select2('val', pages);
+      $(config.articleSelector).select2('close');
 
       return pages;
     }
@@ -850,7 +837,7 @@ var PageViews = function (_Pv) {
           daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
           monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
         },
-        startDate: moment().subtract(config.daysAgo, 'days'),
+        startDate: moment().subtract(config.defaults.daysAgo, 'days'),
         minDate: config.minDate,
         maxDate: config.maxDate,
         ranges: ranges
@@ -1147,27 +1134,6 @@ var PageViews = function (_Pv) {
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
-    }
-
-    /**
-     * Writes message just below the chart
-     * @param {string} message - message to write
-     * @param {boolean} clear - whether to clear any existing messages
-     * @returns {jQuery} - jQuery object of message container
-     */
-
-  }, {
-    key: 'writeMessage',
-    value: function writeMessage(message, clear) {
-      if (clear) {
-        this.clearMessages();
-      }
-      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
-    }
-  }, {
-    key: 'daterangepicker',
-    get: function get() {
-      return $(config.dateRangeSelector).data('daterangepicker');
     }
   }]);
 
@@ -1619,6 +1585,17 @@ var Pv = function () {
     }
 
     /**
+     * Compute how many days are in the selected date range
+     * @returns {integer} number of days
+     */
+
+  }, {
+    key: 'numDaysInRange',
+    value: function numDaysInRange() {
+      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+    }
+
+    /**
      * Change alpha level of an rgba value
      *
      * @param {string} value - rgba value
@@ -1715,6 +1692,22 @@ var Pv = function () {
         return decodeURIComponent(page.replace(/ /g, '_'));
       });
     }
+
+    /**
+     * Writes message just below the chart
+     * @param {string} message - message to write
+     * @param {boolean} clear - whether to clear any existing messages
+     * @returns {jQuery} - jQuery object of message container
+     */
+
+  }, {
+    key: 'writeMessage',
+    value: function writeMessage(message, clear) {
+      if (clear) {
+        this.clearMessages();
+      }
+      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
+    }
   }, {
     key: 'dateFormat',
     get: function get() {
@@ -1723,6 +1716,17 @@ var Pv = function () {
       } else {
         return this.config.defaults.dateFormat;
       }
+    }
+
+    /**
+     * Get the daterangepicker instance. Plain and simple.
+     * @return {Object} daterange picker
+     */
+
+  }, {
+    key: 'daterangepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('daterangepicker');
     }
   }, {
     key: 'project',

@@ -61,3 +61,19 @@ $gray: #ccc;
     display: none;
   }
 }
+
+// prevent Select2 from opening/closing
+.select2-selection {
+  // scss-lint:disable ImportantRule
+  border-radius: 4px !important;
+  pointer-events: none;
+}
+
+// scss-lint:disable SelectorFormat
+.select2-selection__choice__remove {
+  pointer-events: visible;
+}
+
+.select2-dropdown--below {
+  display: none;
+}

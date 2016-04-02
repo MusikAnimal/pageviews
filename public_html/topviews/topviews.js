@@ -58,381 +58,539 @@ if (!('remove' in Element.prototype)) {
 },{}],2:[function(require,module,exports){
 'use strict';
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var pv = {
-  addSiteNotice: function addSiteNotice(level, message, title, autodismiss) {
-    title = title ? '<strong>' + title + '</strong> ' : '';
-    autodismiss = autodismiss ? ' autodismiss' : '';
-    $('.site-notice').append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
-    $('.site-notice-wrapper').show();
-  },
-  clearMessages: function clearMessages() {
-    $('.message-container').html('');
-  },
-  clearSiteNotices: function clearSiteNotices() {
-    $('.site-notice .autodismiss').remove();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    if (!$('.site-notice .alert').length) {
-      $('.site-notice-wrapper').hide();
-    }
-  },
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
-  /**
-   * Get the wiki URL given the page name
-   *
-   * @param {string} page name
-   * @returns {string} URL for the page
-   */
-  getPageURL: function getPageURL(page) {
-    return '//' + pv.getProject() + '.org/wiki/' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
-  },
-
-
-  /**
-   * Get the project name (without the .org)
-   *
-   * @returns {boolean} lang.projectname
-   */
-  getProject: function getProject() {
-    var project = $('.aqs-project-input').val();
-    // Get the first 2 characters from the project code to get the language
-    return project.replace(/.org$/, '');
-  },
-  getLocaleDateString: function getLocaleDateString() {
-    var formats = {
-      'ar-SA': 'DD/MM/YY',
-      'bg-BG': 'DD.M.YYYY',
-      'ca-ES': 'DD/MM/YYYY',
-      'zh-TW': 'YYYY/M/d',
-      'cs-CZ': 'D.M.YYYY',
-      'da-DK': 'DD-MM-YYYY',
-      'de-DE': 'DD.MM.YYYY',
-      'el-GR': 'D/M/YYYY',
-      'en-US': 'M/D/YYYY',
-      'fi-FI': 'D.M.YYYY',
-      'fr-FR': 'DD/MM/YYYY',
-      'he-IL': 'DD/MM/YYYY',
-      'hu-HU': 'YYYY. MM. DD.',
-      'is-IS': 'D.M.YYYY',
-      'it-IT': 'DD/MM/YYYY',
-      'ja-JP': 'YYYY/MM/DD',
-      'ko-KR': 'YYYY-MM-DD',
-      'nl-NL': 'D-M-YYYY',
-      'nb-NO': 'DD.MM.YYYY',
-      'pl-PL': 'YYYY-MM-DD',
-      'pt-BR': 'D/M/YYYY',
-      'ro-RO': 'DD.MM.YYYY',
-      'ru-RU': 'DD.MM.YYYY',
-      'hr-HR': 'D.M.YYYY',
-      'sk-SK': 'D. M. YYYY',
-      'sq-AL': 'YYYY-MM-DD',
-      'sv-SE': 'YYYY-MM-DD',
-      'th-TH': 'D/M/YYYY',
-      'tr-TR': 'DD.MM.YYYY',
-      'ur-PK': 'DD/MM/YYYY',
-      'id-ID': 'DD/MM/YYYY',
-      'uk-UA': 'DD.MM.YYYY',
-      'be-BY': 'DD.MM.YYYY',
-      'sl-SI': 'D.M.YYYY',
-      'et-EE': 'D.MM.YYYY',
-      'lv-LV': 'YYYY.MM.DD.',
-      'lt-LT': 'YYYY.MM.DD',
-      'fa-IR': 'MM/DD/YYYY',
-      'vi-VN': 'DD/MM/YYYY',
-      'hy-AM': 'DD.MM.YYYY',
-      'az-Latn-AZ': 'DD.MM.YYYY',
-      'eu-ES': 'YYYY/MM/DD',
-      'mk-MK': 'DD.MM.YYYY',
-      'af-ZA': 'YYYY/MM/DD',
-      'ka-GE': 'DD.MM.YYYY',
-      'fo-FO': 'DD-MM-YYYY',
-      'hi-IN': 'DD-MM-YYYY',
-      'ms-MY': 'DD/MM/YYYY',
-      'kk-KZ': 'DD.MM.YYYY',
-      'ky-KG': 'DD.MM.YY',
-      'sw-KE': 'M/d/YYYY',
-      'uz-Latn-UZ': 'DD/MM YYYY',
-      'tt-RU': 'DD.MM.YYYY',
-      'pa-IN': 'DD-MM-YY',
-      'gu-IN': 'DD-MM-YY',
-      'ta-IN': 'DD-MM-YYYY',
-      'te-IN': 'DD-MM-YY',
-      'kn-IN': 'DD-MM-YY',
-      'mr-IN': 'DD-MM-YYYY',
-      'sa-IN': 'DD-MM-YYYY',
-      'mn-MN': 'YY.MM.DD',
-      'gl-ES': 'DD/MM/YY',
-      'kok-IN': 'DD-MM-YYYY',
-      'syr-SY': 'DD/MM/YYYY',
-      'dv-MV': 'DD/MM/YY',
-      'ar-IQ': 'DD/MM/YYYY',
-      'zh-CN': 'YYYY/M/D',
-      'de-CH': 'DD.MM.YYYY',
-      'en-GB': 'DD/MM/YYYY',
-      'es-MX': 'DD/MM/YYYY',
-      'fr-BE': 'D/MM/YYYY',
-      'it-CH': 'DD.MM.YYYY',
-      'nl-BE': 'D/MM/YYYY',
-      'nn-NO': 'DD.MM.YYYY',
-      'pt-PT': 'DD-MM-YYYY',
-      'sr-Latn-CS': 'D.M.YYYY',
-      'sv-FI': 'D.M.YYYY',
-      'az-Cyrl-AZ': 'DD.MM.YYYY',
-      'ms-BN': 'DD/MM/YYYY',
-      'uz-Cyrl-UZ': 'DD.MM.YYYY',
-      'ar-EG': 'DD/MM/YYYY',
-      'zh-HK': 'D/M/YYYY',
-      'de-AT': 'DD.MM.YYYY',
-      'en-AU': 'D/MM/YYYY',
-      'es-ES': 'DD/MM/YYYY',
-      'fr-CA': 'YYYY-MM-DD',
-      'sr-Cyrl-CS': 'D.M.YYYY',
-      'ar-LY': 'DD/MM/YYYY',
-      'zh-SG': 'D/M/YYYY',
-      'de-LU': 'DD.MM.YYYY',
-      'en-CA': 'DD/MM/YYYY',
-      'es-GT': 'DD/MM/YYYY',
-      'fr-CH': 'DD.MM.YYYY',
-      'ar-DZ': 'DD-MM-YYYY',
-      'zh-MO': 'D/M/YYYY',
-      'de-LI': 'DD.MM.YYYY',
-      'en-NZ': 'D/MM/YYYY',
-      'es-CR': 'DD/MM/YYYY',
-      'fr-LU': 'DD/MM/YYYY',
-      'ar-MA': 'DD-MM-YYYY',
-      'en-IE': 'DD/MM/YYYY',
-      'es-PA': 'MM/DD/YYYY',
-      'fr-MC': 'DD/MM/YYYY',
-      'ar-TN': 'DD-MM-YYYY',
-      'en-ZA': 'YYYY/MM/DD',
-      'es-DO': 'DD/MM/YYYY',
-      'ar-OM': 'DD/MM/YYYY',
-      'en-JM': 'DD/MM/YYYY',
-      'es-VE': 'DD/MM/YYYY',
-      'ar-YE': 'DD/MM/YYYY',
-      'en-029': 'MM/DD/YYYY',
-      'es-CO': 'DD/MM/YYYY',
-      'ar-SY': 'DD/MM/YYYY',
-      'en-BZ': 'DD/MM/YYYY',
-      'es-PE': 'DD/MM/YYYY',
-      'ar-JO': 'DD/MM/YYYY',
-      'en-TT': 'DD/MM/YYYY',
-      'es-AR': 'DD/MM/YYYY',
-      'ar-LB': 'DD/MM/YYYY',
-      'en-ZW': 'M/D/YYYY',
-      'es-EC': 'DD/MM/YYYY',
-      'ar-KW': 'DD/MM/YYYY',
-      'en-PH': 'M/D/YYYY',
-      'es-CL': 'DD-MM-YYYY',
-      'ar-AE': 'DD/MM/YYYY',
-      'es-UY': 'DD/MM/YYYY',
-      'ar-BH': 'DD/MM/YYYY',
-      'es-PY': 'DD/MM/YYYY',
-      'ar-QA': 'DD/MM/YYYY',
-      'es-BO': 'DD/MM/YYYY',
-      'es-SV': 'DD/MM/YYYY',
-      'es-HN': 'DD/MM/YYYY',
-      'es-NI': 'DD/MM/YYYY',
-      'es-PR': 'DD/MM/YYYY',
-      'am-ET': 'D/M/YYYY',
-      'tzm-Latn-DZ': 'DD-MM-YYYY',
-      'iu-Latn-CA': 'D/MM/YYYY',
-      'sma-NO': 'DD.MM.YYYY',
-      'mn-Mong-CN': 'YYYY/M/d',
-      'gd-GB': 'DD/MM/YYYY',
-      'en-MY': 'D/M/YYYY',
-      'prs-AF': 'DD/MM/YY',
-      'bn-BD': 'DD-MM-YY',
-      'wo-SN': 'DD/MM/YYYY',
-      'rw-RW': 'M/D/YYYY',
-      'qut-GT': 'DD/MM/YYYY',
-      'sah-RU': 'MM.DD.YYYY',
-      'gsw-FR': 'DD/MM/YYYY',
-      'co-FR': 'DD/MM/YYYY',
-      'oc-FR': 'DD/MM/YYYY',
-      'mi-NZ': 'DD/MM/YYYY',
-      'ga-IE': 'DD/MM/YYYY',
-      'se-SE': 'YYYY-MM-DD',
-      'br-FR': 'DD/MM/YYYY',
-      'smn-FI': 'D.M.YYYY',
-      'moh-CA': 'M/D/YYYY',
-      'arn-CL': 'DD-MM-YYYY',
-      'ii-CN': 'YYYY/M/D',
-      'dsb-DE': 'D. M. YYYY',
-      'ig-NG': 'D/M/YYYY',
-      'kl-GL': 'DD-MM-YYYY',
-      'lb-LU': 'DD/MM/YYYY',
-      'ba-RU': 'DD.MM.YY',
-      'nso-ZA': 'YYYY/MM/DD',
-      'quz-BO': 'DD/MM/YYYY',
-      'yo-NG': 'D/M/YYYY',
-      'ha-Latn-NG': 'D/M/YYYY',
-      'fil-PH': 'M/D/YYYY',
-      'ps-AF': 'DD/MM/YY',
-      'fy-NL': 'D-M-YYYY',
-      'ne-NP': 'M/D/YYYY',
-      'se-NO': 'DD.MM.YYYY',
-      'iu-Cans-CA': 'D/M/YYYY',
-      'sr-Latn-RS': 'D.M.YYYY',
-      'si-LK': 'YYYY-MM-DD',
-      'sr-Cyrl-RS': 'D.M.YYYY',
-      'lo-LA': 'DD/MM/YYYY',
-      'km-KH': 'YYYY-MM-DD',
-      'cy-GB': 'DD/MM/YYYY',
-      'bo-CN': 'YYYY/M/D',
-      'sms-FI': 'D.M.YYYY',
-      'as-IN': 'DD-MM-YYYY',
-      'ml-IN': 'DD-MM-YY',
-      'en-IN': 'DD-MM-YYYY',
-      'or-IN': 'DD-MM-YY',
-      'bn-IN': 'DD-MM-YY',
-      'tk-TM': 'DD.MM.YY',
-      'bs-Latn-BA': 'D.M.YYYY',
-      'mt-MT': 'DD/MM/YYYY',
-      'sr-Cyrl-ME': 'D.M.YYYY',
-      'se-FI': 'D.M.YYYY',
-      'zu-ZA': 'YYYY/MM/DD',
-      'xh-ZA': 'YYYY/MM/DD',
-      'tn-ZA': 'YYYY/MM/DD',
-      'hsb-DE': 'D. M. YYYY',
-      'bs-Cyrl-BA': 'D.M.YYYY',
-      'tg-Cyrl-TJ': 'DD.MM.yy',
-      'sr-Latn-BA': 'D.M.YYYY',
-      'smj-NO': 'DD.MM.YYYY',
-      'rm-CH': 'DD/MM/YYYY',
-      'smj-SE': 'YYYY-MM-DD',
-      'quz-EC': 'DD/MM/YYYY',
-      'quz-PE': 'DD/MM/YYYY',
-      'hr-BA': 'D.M.YYYY.',
-      'sr-Latn-ME': 'D.M.YYYY',
-      'sma-SE': 'YYYY-MM-DD',
-      'en-SG': 'D/M/YYYY',
-      'ug-CN': 'YYYY-M-D',
-      'sr-Cyrl-BA': 'D.M.YYYY',
-      'es-US': 'M/D/YYYY'
-    };
-    return formats[navigator.language] || 'YYYY-MM-DD';
-  },
-
-
-  /**
-   * Check if Intl is supported
-   *
-   * @returns {boolean} whether the browser (presumably) supports date locale operations
-   */
-  localeSupported: function localeSupported() {
-    return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === 'object';
-  },
-
-
-  /**
-   * Map normalized pages from API into a string of page names
-   * Used in normalizePageNames()
-   *
-   * @param {array} pages - array of page names
-   * @param {array} normalizedPages - array of normalized mappings returned by the API
-   * @returns {array} pages with the new normalized names, if given
-   */
-  mapNormalizedPageNames: function mapNormalizedPageNames(pages, normalizedPages) {
-    normalizedPages.forEach(function (normalPage) {
-      /** do it this way to preserve ordering of pages */
-      pages = pages.map(function (page) {
-        if (normalPage.from === page) {
-          return normalPage.to;
-        } else {
-          return page;
-        }
-      });
-    });
-    return pages;
-  },
-
-
-  /**
-   * Localize Number object with delimiters
-   *
-   * @param {Number} value - the Number, e.g. 1234567
-   * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
-   */
-  n: function n(value) {
-    return new Number(value).toLocaleString();
-  },
-
-
-  /**
-   * Make request to API in order to get normalized page names. E.g. masculine versus feminine namespaces on dewiki
-   *
-   * @param {array} pages - array of page names
-   * @returns {Deferred} promise with data fetched from API
-   */
-  normalizePageNames: function normalizePageNames(pages) {
-    var _this = this;
-
-    var dfd = $.Deferred();
-
-    return $.ajax({
-      url: 'https://' + pv.getProject() + '.org/w/api.php?action=query&prop=info&format=json&titles=' + pages.join('|'),
-      dataType: 'jsonp'
-    }).then(function (data) {
-      if (data.query.normalized) {
-        pages = _this.mapNormalizedPageNames(pages, data.query.normalized);
-      }
-      return dfd.resolve(pages);
-    });
-  },
-
-
-  /**
-   * Change alpha level of an rgba value
-   *
-   * @param {string} value - rgba value
-   * @param {float|string} alpha - transparency as float value
-   * @returns {string} rgba value
-   */
-  rgba: function rgba(value, alpha) {
-    return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
-  },
-
-
-  /**
-   * Splash in console, just for fun
-   * @returns {String} output
-   */
-  splash: function splash() {
-    console.log('      ___            __ _                     _                             ');
-    console.log('     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ');
-    console.log('     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ');
-    console.log('    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ');
-    console.log('  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ');
-    console.log('  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ');
-    console.log('              ___                     _  _     _               _            ');
-    console.log('      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ');
-    console.log('     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ');
-    console.log('    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ');
-    console.log('   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ');
-    console.log('  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ');
-  },
-
-
-  /**
-   * Replace spaces with underscores
-   *
-   * @param {array} pages - array of page names
-   * @returns {array} page names with underscores
-   */
-  underscorePageNames: function underscorePageNames(pages) {
-    return pages.map(function (page) {
-      return decodeURIComponent(page.replace(/ /g, '_'));
-    });
+var Pv = function () {
+  function Pv() {
+    _classCallCheck(this, Pv);
   }
-};
 
-// must be exported to global scope for Chart template rendering
-window.pv = pv;
+  _createClass(Pv, [{
+    key: 'addSiteNotice',
+    value: function addSiteNotice(level, message, title, autodismiss) {
+      title = title ? '<strong>' + title + '</strong> ' : '';
+      autodismiss = autodismiss ? ' autodismiss' : '';
+      $('.site-notice').append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
+      $('.site-notice-wrapper').show();
+    }
+  }, {
+    key: 'clearMessages',
+    value: function clearMessages() {
+      $('.message-container').html('');
+    }
+  }, {
+    key: 'clearSiteNotices',
+    value: function clearSiteNotices() {
+      $('.site-notice .autodismiss').remove();
 
-module.exports = pv;
+      if (!$('.site-notice .alert').length) {
+        $('.site-notice-wrapper').hide();
+      }
+    }
+
+    /**
+     * Get date format to use based on settings
+     * @returns {string} date format to passed to parser
+     */
+
+  }, {
+    key: 'formatNumber',
+
+
+    /**
+     * Format number based on current settings, e.g. localize with comma delimeters
+     * @param {number|string} num - number to format
+     * @returns {string} formatted number
+     */
+    value: function formatNumber(num) {
+      if (this.numericalFormatting === 'true') {
+        return this.n(num);
+      } else {
+        return num;
+      }
+    }
+
+    /**
+     * Get the wiki URL given the page name
+     *
+     * @param {string} page name
+     * @returns {string} URL for the page
+     */
+
+  }, {
+    key: 'getPageURL',
+    value: function getPageURL(page) {
+      return '//' + this.project + '.org/wiki/' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+    }
+
+    /**
+     * Get the project name (without the .org)
+     *
+     * @returns {boolean} lang.projectname
+     */
+
+  }, {
+    key: 'getLocaleDateString',
+    value: function getLocaleDateString() {
+      var formats = {
+        'ar-sa': 'DD/MM/YY',
+        'bg-bg': 'DD.M.YYYY',
+        'ca-es': 'DD/MM/YYYY',
+        'zh-tw': 'YYYY/M/d',
+        'cs-cz': 'D.M.YYYY',
+        'da-dk': 'DD-MM-YYYY',
+        'de-de': 'DD.MM.YYYY',
+        'el-gr': 'D/M/YYYY',
+        'en-us': 'M/D/YYYY',
+        'fi-fi': 'D.M.YYYY',
+        'fr-fr': 'DD/MM/YYYY',
+        'he-il': 'DD/MM/YYYY',
+        'hu-hu': 'YYYY. MM. DD.',
+        'is-is': 'D.M.YYYY',
+        'it-it': 'DD/MM/YYYY',
+        'ja-jp': 'YYYY/MM/DD',
+        'ko-kr': 'YYYY-MM-DD',
+        'nl-nl': 'D-M-YYYY',
+        'nb-no': 'DD.MM.YYYY',
+        'pl-pl': 'YYYY-MM-DD',
+        'pt-br': 'D/M/YYYY',
+        'ro-ro': 'DD.MM.YYYY',
+        'ru-ru': 'DD.MM.YYYY',
+        'hr-hr': 'D.M.YYYY',
+        'sk-sk': 'D. M. YYYY',
+        'sq-al': 'YYYY-MM-DD',
+        'sv-se': 'YYYY-MM-DD',
+        'th-th': 'D/M/YYYY',
+        'tr-tr': 'DD.MM.YYYY',
+        'ur-pk': 'DD/MM/YYYY',
+        'id-id': 'DD/MM/YYYY',
+        'uk-ua': 'DD.MM.YYYY',
+        'be-by': 'DD.MM.YYYY',
+        'sl-si': 'D.M.YYYY',
+        'et-ee': 'D.MM.YYYY',
+        'lv-lv': 'YYYY.MM.DD.',
+        'lt-lt': 'YYYY.MM.DD',
+        'fa-ir': 'MM/DD/YYYY',
+        'vi-vn': 'DD/MM/YYYY',
+        'hy-am': 'DD.MM.YYYY',
+        'az-latn-az': 'DD.MM.YYYY',
+        'eu-es': 'YYYY/MM/DD',
+        'mk-mk': 'DD.MM.YYYY',
+        'af-za': 'YYYY/MM/DD',
+        'ka-ge': 'DD.MM.YYYY',
+        'fo-fo': 'DD-MM-YYYY',
+        'hi-in': 'DD-MM-YYYY',
+        'ms-my': 'DD/MM/YYYY',
+        'kk-kz': 'DD.MM.YYYY',
+        'ky-kg': 'DD.MM.YY',
+        'sw-ke': 'M/d/YYYY',
+        'uz-latn-uz': 'DD/MM YYYY',
+        'tt-ru': 'DD.MM.YYYY',
+        'pa-in': 'DD-MM-YY',
+        'gu-in': 'DD-MM-YY',
+        'ta-in': 'DD-MM-YYYY',
+        'te-in': 'DD-MM-YY',
+        'kn-in': 'DD-MM-YY',
+        'mr-in': 'DD-MM-YYYY',
+        'sa-in': 'DD-MM-YYYY',
+        'mn-mn': 'YY.MM.DD',
+        'gl-es': 'DD/MM/YY',
+        'kok-in': 'DD-MM-YYYY',
+        'syr-sy': 'DD/MM/YYYY',
+        'dv-mv': 'DD/MM/YY',
+        'ar-iq': 'DD/MM/YYYY',
+        'zh-cn': 'YYYY/M/D',
+        'de-ch': 'DD.MM.YYYY',
+        'en-gb': 'DD/MM/YYYY',
+        'es-mx': 'DD/MM/YYYY',
+        'fr-be': 'D/MM/YYYY',
+        'it-ch': 'DD.MM.YYYY',
+        'nl-be': 'D/MM/YYYY',
+        'nn-no': 'DD.MM.YYYY',
+        'pt-pt': 'DD-MM-YYYY',
+        'sr-latn-cs': 'D.M.YYYY',
+        'sv-fi': 'D.M.YYYY',
+        'az-cyrl-az': 'DD.MM.YYYY',
+        'ms-bn': 'DD/MM/YYYY',
+        'uz-cyrl-uz': 'DD.MM.YYYY',
+        'ar-eg': 'DD/MM/YYYY',
+        'zh-hk': 'D/M/YYYY',
+        'de-at': 'DD.MM.YYYY',
+        'en-au': 'D/MM/YYYY',
+        'es-es': 'DD/MM/YYYY',
+        'fr-ca': 'YYYY-MM-DD',
+        'sr-cyrl-cs': 'D.M.YYYY',
+        'ar-ly': 'DD/MM/YYYY',
+        'zh-sg': 'D/M/YYYY',
+        'de-lu': 'DD.MM.YYYY',
+        'en-ca': 'DD/MM/YYYY',
+        'es-gt': 'DD/MM/YYYY',
+        'fr-ch': 'DD.MM.YYYY',
+        'ar-dz': 'DD-MM-YYYY',
+        'zh-mo': 'D/M/YYYY',
+        'de-li': 'DD.MM.YYYY',
+        'en-nz': 'D/MM/YYYY',
+        'es-cr': 'DD/MM/YYYY',
+        'fr-lu': 'DD/MM/YYYY',
+        'ar-ma': 'DD-MM-YYYY',
+        'en-ie': 'DD/MM/YYYY',
+        'es-pa': 'MM/DD/YYYY',
+        'fr-mc': 'DD/MM/YYYY',
+        'ar-tn': 'DD-MM-YYYY',
+        'en-za': 'YYYY/MM/DD',
+        'es-do': 'DD/MM/YYYY',
+        'ar-om': 'DD/MM/YYYY',
+        'en-jm': 'DD/MM/YYYY',
+        'es-ve': 'DD/MM/YYYY',
+        'ar-ye': 'DD/MM/YYYY',
+        'en-029': 'MM/DD/YYYY',
+        'es-co': 'DD/MM/YYYY',
+        'ar-sy': 'DD/MM/YYYY',
+        'en-bz': 'DD/MM/YYYY',
+        'es-pe': 'DD/MM/YYYY',
+        'ar-jo': 'DD/MM/YYYY',
+        'en-tt': 'DD/MM/YYYY',
+        'es-ar': 'DD/MM/YYYY',
+        'ar-lb': 'DD/MM/YYYY',
+        'en-zw': 'M/D/YYYY',
+        'es-ec': 'DD/MM/YYYY',
+        'ar-kw': 'DD/MM/YYYY',
+        'en-ph': 'M/D/YYYY',
+        'es-cl': 'DD-MM-YYYY',
+        'ar-ae': 'DD/MM/YYYY',
+        'es-uy': 'DD/MM/YYYY',
+        'ar-bh': 'DD/MM/YYYY',
+        'es-py': 'DD/MM/YYYY',
+        'ar-qa': 'DD/MM/YYYY',
+        'es-bo': 'DD/MM/YYYY',
+        'es-sv': 'DD/MM/YYYY',
+        'es-hn': 'DD/MM/YYYY',
+        'es-ni': 'DD/MM/YYYY',
+        'es-pr': 'DD/MM/YYYY',
+        'am-et': 'D/M/YYYY',
+        'tzm-latn-dz': 'DD-MM-YYYY',
+        'iu-latn-ca': 'D/MM/YYYY',
+        'sma-no': 'DD.MM.YYYY',
+        'mn-mong-cn': 'YYYY/M/d',
+        'gd-gb': 'DD/MM/YYYY',
+        'en-my': 'D/M/YYYY',
+        'prs-af': 'DD/MM/YY',
+        'bn-bd': 'DD-MM-YY',
+        'wo-sn': 'DD/MM/YYYY',
+        'rw-rw': 'M/D/YYYY',
+        'qut-gt': 'DD/MM/YYYY',
+        'sah-ru': 'MM.DD.YYYY',
+        'gsw-fr': 'DD/MM/YYYY',
+        'co-fr': 'DD/MM/YYYY',
+        'oc-fr': 'DD/MM/YYYY',
+        'mi-nz': 'DD/MM/YYYY',
+        'ga-ie': 'DD/MM/YYYY',
+        'se-se': 'YYYY-MM-DD',
+        'br-fr': 'DD/MM/YYYY',
+        'smn-fi': 'D.M.YYYY',
+        'moh-ca': 'M/D/YYYY',
+        'arn-cl': 'DD-MM-YYYY',
+        'ii-cn': 'YYYY/M/D',
+        'dsb-de': 'D. M. YYYY',
+        'ig-ng': 'D/M/YYYY',
+        'kl-gl': 'DD-MM-YYYY',
+        'lb-lu': 'DD/MM/YYYY',
+        'ba-ru': 'DD.MM.YY',
+        'nso-za': 'YYYY/MM/DD',
+        'quz-bo': 'DD/MM/YYYY',
+        'yo-ng': 'D/M/YYYY',
+        'ha-latn-ng': 'D/M/YYYY',
+        'fil-ph': 'M/D/YYYY',
+        'ps-af': 'DD/MM/YY',
+        'fy-nl': 'D-M-YYYY',
+        'ne-np': 'M/D/YYYY',
+        'se-no': 'DD.MM.YYYY',
+        'iu-cans-ca': 'D/M/YYYY',
+        'sr-latn-rs': 'D.M.YYYY',
+        'si-lk': 'YYYY-MM-DD',
+        'sr-cyrl-rs': 'D.M.YYYY',
+        'lo-la': 'DD/MM/YYYY',
+        'km-kh': 'YYYY-MM-DD',
+        'cy-gb': 'DD/MM/YYYY',
+        'bo-cn': 'YYYY/M/D',
+        'sms-fi': 'D.M.YYYY',
+        'as-in': 'DD-MM-YYYY',
+        'ml-in': 'DD-MM-YY',
+        'en-in': 'DD-MM-YYYY',
+        'or-in': 'DD-MM-YY',
+        'bn-in': 'DD-MM-YY',
+        'tk-tm': 'DD.MM.YY',
+        'bs-latn-ba': 'D.M.YYYY',
+        'mt-mt': 'DD/MM/YYYY',
+        'sr-cyrl-me': 'D.M.YYYY',
+        'se-fi': 'D.M.YYYY',
+        'zu-za': 'YYYY/MM/DD',
+        'xh-za': 'YYYY/MM/DD',
+        'tn-za': 'YYYY/MM/DD',
+        'hsb-de': 'D. M. YYYY',
+        'bs-cyrl-ba': 'D.M.YYYY',
+        'tg-cyrl-tj': 'DD.MM.yy',
+        'sr-latn-ba': 'D.M.YYYY',
+        'smj-no': 'DD.MM.YYYY',
+        'rm-ch': 'DD/MM/YYYY',
+        'smj-se': 'YYYY-MM-DD',
+        'quz-ec': 'DD/MM/YYYY',
+        'quz-pe': 'DD/MM/YYYY',
+        'hr-ba': 'D.M.YYYY.',
+        'sr-latn-me': 'D.M.YYYY',
+        'sma-se': 'YYYY-MM-DD',
+        'en-sg': 'D/M/YYYY',
+        'ug-cn': 'YYYY-M-D',
+        'sr-cyrl-ba': 'D.M.YYYY',
+        'es-us': 'M/D/YYYY'
+      };
+      var key = navigator.language ? navigator.language.toLowerCase() : 'en-US';
+      return formats[key];
+    }
+
+    /**
+     * Check if Intl is supported
+     *
+     * @returns {boolean} whether the browser (presumably) supports date locale operations
+     */
+
+  }, {
+    key: 'localeSupported',
+    value: function localeSupported() {
+      return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === 'object';
+    }
+
+    /**
+     * Map normalized pages from API into a string of page names
+     * Used in normalizePageNames()
+     *
+     * @param {array} pages - array of page names
+     * @param {array} normalizedPages - array of normalized mappings returned by the API
+     * @returns {array} pages with the new normalized names, if given
+     */
+
+  }, {
+    key: 'mapNormalizedPageNames',
+    value: function mapNormalizedPageNames(pages, normalizedPages) {
+      normalizedPages.forEach(function (normalPage) {
+        /** do it this way to preserve ordering of pages */
+        pages = pages.map(function (page) {
+          if (normalPage.from === page) {
+            return normalPage.to;
+          } else {
+            return page;
+          }
+        });
+      });
+      return pages;
+    }
+
+    /**
+     * Localize Number object with delimiters
+     *
+     * @param {Number} value - the Number, e.g. 1234567
+     * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
+     */
+
+  }, {
+    key: 'n',
+    value: function n(value) {
+      return new Number(value).toLocaleString();
+    }
+
+    /**
+     * Make request to API in order to get normalized page names. E.g. masculine versus feminine namespaces on dewiki
+     *
+     * @param {array} pages - array of page names
+     * @returns {Deferred} promise with data fetched from API
+     */
+
+  }, {
+    key: 'normalizePageNames',
+    value: function normalizePageNames(pages) {
+      var _this = this;
+
+      var dfd = $.Deferred();
+
+      return $.ajax({
+        url: 'https://' + this.project + '.org/w/api.php?action=query&prop=info&format=json&titles=' + pages.join('|'),
+        dataType: 'jsonp'
+      }).then(function (data) {
+        if (data.query.normalized) {
+          pages = _this.mapNormalizedPageNames(pages, data.query.normalized);
+        }
+        return dfd.resolve(pages);
+      });
+    }
+
+    /**
+     * Compute how many days are in the selected date range
+     * @returns {integer} number of days
+     */
+
+  }, {
+    key: 'numDaysInRange',
+    value: function numDaysInRange() {
+      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+    }
+
+    /**
+     * Change alpha level of an rgba value
+     *
+     * @param {string} value - rgba value
+     * @param {float|string} alpha - transparency as float value
+     * @returns {string} rgba value
+     */
+
+  }, {
+    key: 'setSpecialRange',
+
+
+    /**
+     * Sets the daterange picker values and this.specialRange based on provided special range key
+     * WARNING: not to be called on daterange picker GUI events (e.g. special range buttons)
+     *
+     * @param {string} type - one of special ranges defined in config.specialRanges,
+     *   including dynamic latest range, such as `latest-15` for latest 15 days
+     * @returns {object|null} updated this.specialRange object or null if type was invalid
+     */
+    value: function setSpecialRange(type) {
+      var rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
+      var startDate = undefined,
+          endDate = undefined;
+
+      if (type.includes('latest-')) {
+        var offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+
+        var _config$specialRanges = this.config.specialRanges.latest(offset);
+
+        var _config$specialRanges2 = _slicedToArray(_config$specialRanges, 2);
+
+        startDate = _config$specialRanges2[0];
+        endDate = _config$specialRanges2[1];
+      } else if (rangeIndex >= 0) {
+        var _ref = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+        /** treat 'latest' as a function */
+
+
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        startDate = _ref2[0];
+        endDate = _ref2[1];
+
+        $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
+      } else {
+        return;
+      }
+
+      this.specialRange = {
+        range: type,
+        value: startDate.format(this.dateFormat) + ' - ' + endDate.format(this.dateFormat)
+      };
+
+      /** directly assign startDate then use setEndDate so that the events will be fired once */
+      this.daterangepicker.startDate = startDate;
+      this.daterangepicker.setEndDate(endDate);
+
+      return this.specialRange;
+    }
+
+    /**
+     * Splash in console, just for fun
+     * @returns {String} output
+     */
+
+  }, {
+    key: 'splash',
+    value: function splash() {
+      console.log('      ___            __ _                     _                             ');
+      console.log('     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ');
+      console.log('     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ');
+      console.log('    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ');
+      console.log('  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ');
+      console.log('  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ');
+      console.log('              ___                     _  _     _               _            ');
+      console.log('      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ');
+      console.log('     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ');
+      console.log('    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ');
+      console.log('   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ');
+      console.log('  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ');
+    }
+
+    /**
+     * Replace spaces with underscores
+     *
+     * @param {array} pages - array of page names
+     * @returns {array} page names with underscores
+     */
+
+  }, {
+    key: 'underscorePageNames',
+    value: function underscorePageNames(pages) {
+      return pages.map(function (page) {
+        return decodeURIComponent(page.replace(/ /g, '_'));
+      });
+    }
+
+    /**
+     * Writes message just below the chart
+     * @param {string} message - message to write
+     * @param {boolean} clear - whether to clear any existing messages
+     * @returns {jQuery} - jQuery object of message container
+     */
+
+  }, {
+    key: 'writeMessage',
+    value: function writeMessage(message, clear) {
+      if (clear) {
+        this.clearMessages();
+      }
+      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
+    }
+  }, {
+    key: 'dateFormat',
+    get: function get() {
+      if (this.localizeDateFormat === 'true') {
+        return this.getLocaleDateString();
+      } else {
+        return this.config.defaults.dateFormat;
+      }
+    }
+
+    /**
+     * Get the daterangepicker instance. Plain and simple.
+     * @return {Object} daterange picker
+     */
+
+  }, {
+    key: 'daterangepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('daterangepicker');
+    }
+  }, {
+    key: 'project',
+    get: function get() {
+      var project = $('.aqs-project-input').val();
+      // Get the first 2 characters from the project code to get the language
+      return project.replace(/.org$/, '');
+    }
+  }], [{
+    key: 'rgba',
+    value: function rgba(value, alpha) {
+      return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
+    }
+  }]);
+
+  return Pv;
+}();
+
+module.exports = Pv;
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -1344,8 +1502,10 @@ var pv = require('../shared/pv');
 var config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  daysAgo: 7,
   defaults: {
+    dateFormat: 'YYYY-MM-DD',
+    dateRange: 'last-week',
+    daysAgo: 7,
     excludes: [],
     localizeDateFormat: 'true',
     numericalFormatting: 'true',
@@ -1355,6 +1515,16 @@ var config = {
   maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',
+  specialRanges: {
+    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    latest: function latest() {
+      var offset = arguments.length <= 0 || arguments[0] === undefined ? config.daysAgo : arguments[0];
+
+      return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
+    }
+  },
   timestampFormat: 'YYYYMMDD00'
 };
 module.exports = config;
@@ -1362,451 +1532,606 @@ module.exports = config;
 },{"../shared/pv":2}],5:[function(require,module,exports){
 'use strict';
 
-var config = require('./config');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var session = {
-  excludes: [],
-  localizeDateFormat: localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat,
-  numericalFormatting: localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting,
-  offset: 0,
-  max: null,
-  pageData: [],
-  pageNames: [],
-  params: null
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-module.exports = session;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-},{"./config":4}],6:[function(require,module,exports){
-'use strict';
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+ * Topviews Analysis tool
+ *
+ * Copyright 2016 MusikAnimal
+ * Redistributed under the MIT License: https://opensource.org/licenses/MIT
+ */
 
 var config = require('./config');
 var siteMap = require('../shared/site_map');
 var siteDomains = Object.keys(siteMap).map(function (key) {
   return siteMap[key];
 });
-var pv = require('../shared/pv');
-var session = require('./session');
-window.session = session;
+var Pv = require('../shared/pv');
 
-/**
- * Apply user input by updating the URL hash and view, if needed
- * @param {boolean} force - apply all user options even if we've detected nothing has changed
- * @returns {Deferred} deferred object from initData
- */
-function applyChanges(force) {
-  if (!pushParams() && force !== true) return;
+var TopViews = function (_Pv) {
+  _inherits(TopViews, _Pv);
 
-  resetView(false);
-  return initData().then(function () {
-    drawData();
-  });
-}
+  function TopViews() {
+    _classCallCheck(this, TopViews);
 
-/**
- * Print list of top pages
- * @returns {null} nothing
- */
-function drawData() {
-  $('.chart-container').removeClass('loading').html('');
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TopViews).call(this));
 
-  var count = 0,
-      index = 0;
+    _this.excludes = [];
+    _this.localizeDateFormat = localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat;
+    _this.numericalFormatting = localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting;
+    _this.offset = 0;
+    _this.max = null;
+    _this.pageData = [];
+    _this.pageNames = [];
+    _this.params = null;
+    _this.config = config;
 
-  while (count < config.pageSize + session.offset) {
-    var item = session.pageData[index++];
+    _this.setupProjectInput();
+    _this.setupDateRangeSelector();
+    _this.popParams();
 
-    if (session.excludes.includes(item.article)) continue;
-    if (!session.max) session.max = item.views;
-
-    var width = 100 * (item.views / session.max);
-
-    $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(to right, #EEE ' + width + '%, transparent ' + width + '%)\'>\n       <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n       <span class=\'topview-entry--rank\'>' + ++count + '</span>\n       <a class=\'topview-entry--label\' href="https://en.wikipedia.org/wiki/' + item.article.replace(/ /g, '_') + '" target="_blank">' + item.article + '</a>\n       <span class=\'topview-entry--leader\'></span>\n       <a class=\'topview-entry--views\' href=\'' + getPageviewsURL(item.article) + '\'>' + pv.n(item.views) + '</a></div>');
-  }
-
-  pushParams();
-
-  $('.topview-entry--remove').off('click').on('click', function () {
-    session.excludes.push(session.pageNames[$(this).data('article-id')]);
-    setArticleSelectorDefaults(session.excludes);
-    pushParams();
-  });
-}
-
-/**
- * Get date format to use based on settings
- * @returns {string} date format to passed to parser
- */
-function getDateFormat() {
-  if (session.localizeDateFormat === 'true') {
-    return pv.getLocaleDateString();
-  } else {
-    return config.defaults.dateFormat;
-  }
-}
-
-/**
- * Gets the date headings as strings - i18n compliant
- * @param {boolean} localized - whether the dates should be localized per browser language
- * @returns {Array} the date headings as strings
- */
-function getDateHeadings(localized) {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker'),
-      dateHeadings = [];
-
-  for (var date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
-    if (localized) {
-      dateHeadings.push(date.format(getDateFormat()));
-    } else {
-      dateHeadings.push(date.format('YYYY-MM-DD'));
-    }
-  }
-  return dateHeadings;
-}
-
-/**
- * Link to /pageviews for given article and chosen daterange
- * @param {string} article - page name
- * @returns {string} URL
- */
-function getPageviewsURL(article) {
-  var startDate = moment($(config.dateRangeSelector).data('daterangepicker').startDate),
-      endDate = moment($(config.dateRangeSelector).data('daterangepicker').endDate);
-  var platform = $('#platform-select').val(),
-      project = $(config.projectInput).val();
-
-  return '/pageviews#start=' + startDate.subtract(3, 'days').format('YYYY-MM-DD') + ('&end=' + endDate.add(3, 'days').format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + article);
-}
-
-/**
- * Compute how many days are in the selected date range
- *
- * @returns {integer} number of days
- */
-function numDaysInRange() {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
-  return daterangepicker.endDate.diff(daterangepicker.startDate, 'days') + 1;
-}
-
-/**
- * Generate key/value pairs of URL hash params
- * @returns {Object} key/value pairs representation of URL hash
- */
-function parseHashParams() {
-  var uri = decodeURI(location.hash.slice(1)),
-      chunks = uri.split('&');
-  var params = {};
-
-  for (var i = 0; i < chunks.length; i++) {
-    var chunk = chunks[i].split('=');
-
-    if (chunk[0] === 'excludes') {
-      params.excludes = chunk[1].split('|');
-    } else {
-      params[chunk[0]] = chunk[1];
-    }
-  }
-
-  return params;
-}
-
-/**
- * Parses the URL hash and sets all the inputs accordingly
- * Should only be called on initial page load, until we decide to support pop states (probably never)
- * @returns {null} nothing
- */
-function popParams() {
-  var params = parseHashParams();
-
-  $(config.projectInput).val(params.project || config.defaults.project);
-  if (validateProject()) return;
-
-  var startDate = moment(params.start || moment().subtract(config.daysAgo, 'days')),
-      endDate = moment(params.end || Date.now());
-
-  $(config.dateRangeSelector).data('daterangepicker').setStartDate(startDate);
-  $(config.dateRangeSelector).data('daterangepicker').setEndDate(endDate);
-  $('#platform-select').val(params.platform || 'all-access');
-
-  if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-    pv.addSiteNotice('danger', 'Pageviews API does not contain data older than August 2015. Sorry.', 'Invalid parameters!', true);
-    resetView();
-    return;
-  } else if (startDate > endDate) {
-    pv.addSiteNotice('warning', 'Start date must be older than the end date.', 'Invalid parameters!', true);
-    resetView();
-    return;
-  }
-
-  if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
-    session.excludes = config.defaults.excludes;
-  } else {
-    session.excludes = params.excludes.map(function (exclude) {
-      return exclude.replace(/_/g, ' ');
-    });
-  }
-
-  initData().then(function () {
-    setupArticleSelector(session.excludes);
-    setupListeners();
-    drawData();
-  });
-}
-
-/**
- * Replaces history state with new URL hash representing current user input
- * Called whenever we go to update the chart
- * @returns {string|false} the new hash param string or false if nothing has changed
- */
-function pushParams() {
-  var daterangepicker = $(config.dateRangeSelector).data('daterangepicker');
-
-  var state = $.param({
-    start: daterangepicker.startDate.format('YYYY-MM-DD'),
-    end: daterangepicker.endDate.format('YYYY-MM-DD'),
-    project: $(config.projectInput).val(),
-    platform: $('#platform-select').val()
-  }) + ('&excludes=' + pv.underscorePageNames(session.excludes).join('|'));
-
-  session.params = '#' + state;
-
-  if (location.hash === session.params) {
-    return false;
-  }
-
-  if (window.history && window.history.replaceState) {
-    window.history.replaceState({}, 'Topviews comparsion', session.params);
-  }
-
-  return state;
-}
-
-/**
- * Removes all article selector related stuff then adds it back
- * @returns {null} nothing
- */
-function resetArticleSelector() {
-  var articleSelector = $(config.articleSelector);
-  articleSelector.off('change');
-  articleSelector.val(null);
-  articleSelector.html('');
-  articleSelector.select2('data', null);
-  articleSelector.select2('destroy');
-  setupArticleSelector();
-}
-
-/**
- * Removes chart, messages, and resets article selections
- * @returns {null} nothing
- */
-function resetView() {
-  var clearSelector = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-  session.max = null;
-  session.offset = 0;
-  session.pageData = [];
-  session.pageNames = [];
-  session.excludes = [];
-  $('.chart-container').removeClass('loading').html('');
-  $('.message-container').html('');
-  if (clearSelector) resetArticleSelector();
-}
-
-/**
- * Sets up the article selector and adds listener to update chart
- * @param {array} excludes - default page names to exclude
- * @returns {null} - nothing
- */
-function setupArticleSelector() {
-  var excludes = arguments.length <= 0 || arguments[0] === undefined ? session.excludes : arguments[0];
-
-  var articleSelector = $(config.articleSelector);
-
-  articleSelector.select2({
-    data: session.pageNames,
-    maximumSelectionLength: 50,
-    minimumInputLength: 0,
-    placeholder: 'Type page names to exclude from view...'
-  });
-
-  if (excludes.length) setArticleSelectorDefaults(excludes);
-
-  articleSelector.on('change', function () {
-    session.excludes = $(this).val() || [];
-    session.max = null;
-    drawData();
-    $(this).select2().trigger('close');
-  });
-}
-
-/**
- * Directly set articles in article selector
- *
- * @param {array} pages - page titles
- * @returns {array} - untouched array of pages
- */
-function setArticleSelectorDefaults(pages) {
-  $(config.articleSelector).val(pages).trigger('change');
-  return pages;
-}
-
-/**
- * sets up the daterange selector and adds listeners
- * @returns {null} - nothing
- */
-function setupDateRangeSelector() {
-  var dateRangeSelector = $(config.dateRangeSelector);
-  dateRangeSelector.daterangepicker({
-    dateLimit: { days: 31 },
-    locale: { format: getDateFormat() },
-    startDate: moment().subtract(config.daysAgo, 'days'),
-    minDate: config.minDate,
-    maxDate: config.maxDate,
-    ranges: {
-      'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-      'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment().subtract(1, 'days')],
-      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
-  });
-}
-
-/**
- * General place to add page-wide listeners
- * @returns {null} - nothing
- */
-function setupListeners() {
-  $(config.dateRangeSelector).on('change', applyChanges);
-  $('#platform-select').on('change', applyChanges);
-  $('a[href="#"]').on('click', function (e) {
-    return e.preventDefault();
-  });
-  $('.expand-chart').on('click', function () {
-    session.offset += config.pageSize;
-    drawData();
-  });
-}
-
-/**
- * Setup listeners for project input
- * @returns {null} - nothing
- */
-function setupProjectInput() {
-  $(config.projectInput).on('change', function () {
-    if (!this.value) {
-      this.value = config.defaults.project;
-      return;
-    }
-    if (validateProject()) return;
-    resetView(false);
-    applyChanges(true).then(resetArticleSelector);
-  });
-}
-
-/**
- * Fetch data from API
- * @returns {Deferred} promise with data
- */
-function initData() {
-  var _$;
-
-  $('.chart-container').addClass('loading');
-
-  /** Collect parameters from inputs. */
-  var dateRangeSelector = $(config.dateRangeSelector),
-      startDate = dateRangeSelector.data('daterangepicker').startDate,
-      endDate = dateRangeSelector.data('daterangepicker').endDate,
-      access = $('#platform-select').val();
-
-  var promises = [];
-
-  for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
-    promises.push($.ajax({
-      url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + pv.getProject() + '/' + access + '/' + date.format('YYYY/MM/DD'),
-      dataType: 'json'
-    }));
-  }
-
-  var dfd = $.Deferred();
-
-  return (_$ = $).when.apply(_$, promises).then(function () {
-    for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
-      data[_key] = arguments[_key];
-    }
-
-    if (promises.length === 1) data = [data];
-
-    /** import data and do summations */
-    data.forEach(function (day) {
-      day[0].items[0].articles.forEach(function (item, index) {
-        if (session.pageData[index]) {
-          session.pageData[index].views += item.views;
-        } else {
-          session.pageData[index] = {
-            article: item.article.replace(/_/g, ' '),
-            views: item.views
-          };
+    if (location.host !== 'localhost') {
+      /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
+      $.ajax({
+        url: '//tools.wmflabs.org/musikanimal/api/uses',
+        method: 'PATCH',
+        data: {
+          tool: 'topviews',
+          type: 'form'
         }
       });
-    });
-
-    /** sort given new view counts */
-    session.pageData = session.pageData.sort(function (a, b) {
-      return b.views - a.views;
-    });
-
-    /** ...and build the pageNames array for Select2 */
-    session.pageNames = session.pageData.map(function (value) {
-      return value.article.replace(/_/g, ' ');
-    });
-
-    return dfd.resolve(session.pageData);
-  });
-}
-
-/**
- * Checks value of project input and validates it against site map
- * @returns {boolean} whether the currently input project is valid
- */
-function validateProject() {
-  var project = $(config.projectInput).val();
-  if (siteDomains.includes(project)) {
-    $('body').removeClass('invalid-project');
-  } else {
-    resetView();
-    writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n       <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', 'validate', true);
-    $('body').addClass('invalid-project');
-    return true;
+    }
+    return _this;
   }
-}
 
-/**
- * Writes message just below the chart
- * @param {string} message - message to write
- * @param {boolean} clear - whether to clear any existing messages
- * @returns {jQuery} - jQuery object of message container
- */
-function writeMessage(message, clear) {
-  if (clear) {
-    pv.clearMessages();
-  }
-  return $('.message-container').append('<p class=\'error-message\'>' + message + '</p>');
-}
+  /**
+   * Apply user input by updating the URL hash and view, if needed
+   * @param {boolean} force - apply all user options even if we've detected nothing has changed
+   * @returns {Deferred} deferred object from initData
+   */
+
+
+  _createClass(TopViews, [{
+    key: 'applyChanges',
+    value: function applyChanges(force) {
+      this.pushParams();
+
+      /** prevent redundant querying */
+      if (location.hash === this.params && !force) {
+        return false;
+      }
+      this.params = location.hash;
+
+      this.resetView(false);
+      return this.initData().then(this.drawData.bind(this));
+    }
+
+    /**
+     * Print list of top pages
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'drawData',
+    value: function drawData() {
+      var _this2 = this;
+
+      $('.chart-container').removeClass('loading').html('');
+
+      var count = 0,
+          index = 0;
+
+      while (count < config.pageSize + this.offset) {
+        var item = this.pageData[index++];
+
+        if (this.excludes.includes(item.article)) continue;
+        if (!this.max) this.max = item.views;
+
+        var width = 100 * (item.views / this.max);
+
+        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(to right, #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         <a class=\'topview-entry--label\' href="https://en.wikipedia.org/wiki/' + item.article.replace(/ /g, '_') + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\'>' + this.n(item.views) + '</a></div>');
+      }
+
+      this.pushParams();
+
+      $('.topview-entry--remove').off('click').on('click', function (e) {
+        var pageName = _this2.pageNames[$(e.target).data('article-id')];
+        _this2.addExclude(pageName);
+        _this2.pushParams();
+      });
+    }
+  }, {
+    key: 'addExclude',
+    value: function addExclude(page) {
+      this.excludes.push(page);
+      page = page.replace(/ /g, '_');
+      $(config.articleSelector).html('');
+      this.excludes.forEach(function (exclude) {
+        var escapedText = $('<div>').text(exclude).html();
+        $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
+      });
+      $(config.articleSelector).val(this.excludes).trigger('change');
+      // $(config.articleSelector).select2('close');
+    }
+
+    /**
+     * Gets the date headings as strings - i18n compliant
+     * @param {boolean} localized - whether the dates should be localized per browser language
+     * @returns {Array} the date headings as strings
+     */
+
+  }, {
+    key: 'getDateHeadings',
+    value: function getDateHeadings(localized) {
+      var dateHeadings = [];
+
+      for (var date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
+        if (localized) {
+          dateHeadings.push(date.format(this.dateFormat));
+        } else {
+          dateHeadings.push(date.format('YYYY-MM-DD'));
+        }
+      }
+      return dateHeadings;
+    }
+
+    /**
+     * Link to /pageviews for given article and chosen daterange
+     * @param {string} article - page name
+     * @returns {string} URL
+     */
+
+  }, {
+    key: 'getPageviewsURL',
+    value: function getPageviewsURL(article) {
+      var startDate = moment(daterangepicker.startDate),
+          endDate = moment(daterangepicker.endDate);
+      var platform = $('#platform-select').val(),
+          project = $(config.projectInput).val();
+
+      return '/pageviews#start=' + startDate.subtract(3, 'days').format('YYYY-MM-DD') + ('&end=' + endDate.add(3, 'days').format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + article);
+    }
+
+    /**
+     * Generate key/value pairs of URL hash params
+     * @returns {Object} key/value pairs representation of URL hash
+     */
+
+  }, {
+    key: 'parseHashParams',
+    value: function parseHashParams() {
+      var uri = decodeURI(location.hash.slice(1)),
+          chunks = uri.split('&');
+      var params = {};
+
+      for (var i = 0; i < chunks.length; i++) {
+        var chunk = chunks[i].split('=');
+
+        if (chunk[0] === 'excludes') {
+          params.excludes = chunk[1].split('|');
+        } else {
+          params[chunk[0]] = chunk[1];
+        }
+      }
+
+      return params;
+    }
+
+    /**
+     * Parses the URL hash and sets all the inputs accordingly
+     * Should only be called on initial page load, until we decide to support pop states (probably never)
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'popParams',
+    value: function popParams() {
+      var _this3 = this;
+
+      var startDate = undefined,
+          endDate = undefined,
+          params = this.parseHashParams();
+
+      $(config.projectInput).val(params.project || config.defaults.project);
+      if (this.validateProject()) return;
+
+      /**
+       * Check if we're using a valid range, and if so ignore any start/end dates.
+       * If an invalid range, throw and error and use default dates.
+       */
+      if (params.range) {
+        if (!this.setSpecialRange(params.range)) {
+          this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+          this.setSpecialRange(config.defaults.dateRange);
+        }
+      } else if (params.start) {
+        startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+        endDate = moment(params.end || Date.now());
+        if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+          this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+          this.resetView();
+          return;
+        } else if (startDate > endDate) {
+          this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+          this.resetView();
+          return;
+        }
+        /** directly assign startDate before calling setEndDate so events will be fired once */
+        daterangepicker.startDate = startDate;
+        daterangepicker.setEndDate(endDate);
+      } else {
+        this.setSpecialRange(config.defaults.dateRange);
+      }
+
+      $('#platform-select').val(params.platform || 'all-access');
+
+      if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
+        this.excludes = config.defaults.excludes;
+      } else {
+        this.excludes = params.excludes.map(function (exclude) {
+          return exclude.replace(/_/g, ' ');
+        });
+      }
+
+      this.params = location.hash;
+
+      this.initData().then(function () {
+        _this3.setupArticleSelector();
+        _this3.drawData();
+        _this3.setupListeners();
+      });
+    }
+
+    /**
+     * Replaces history state with new URL hash representing current user input
+     * Called whenever we go to update the chart
+     * @returns {string|false} the new hash param string or false if nothing has changed
+     */
+
+  }, {
+    key: 'pushParams',
+    value: function pushParams() {
+      var state = {
+        project: $(config.projectInput).val(),
+        platform: $('#platform-select').val()
+      };
+
+      /**
+       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+       * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+       */
+      if (this.specialRange) {
+        state.range = this.specialRange.range;
+      } else {
+        state.start = daterangepicker.startDate.format('YYYY-MM-DD');
+        state.end = daterangepicker.endDate.format('YYYY-MM-DD');
+      }
+
+      if (window.history && window.history.replaceState) {
+        var excludes = this.underscorePageNames(this.excludes);
+        window.history.replaceState({}, 'Topviews comparsion', '#' + $.param(state) + '&excludes=' + excludes.join('|'));
+      }
+
+      return state;
+    }
+
+    /**
+     * Removes all article selector related stuff then adds it back
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'resetArticleSelector',
+    value: function resetArticleSelector() {
+      var articleSelector = $(config.articleSelector);
+      articleSelector.off('change');
+      articleSelector.val(null);
+      articleSelector.html('');
+      articleSelector.select2('data', null);
+      articleSelector.select2('destroy');
+      this.setupArticleSelector();
+    }
+
+    /**
+     * Removes chart, messages, and resets article selections
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'resetView',
+    value: function resetView() {
+      var clearSelector = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+      this.max = null;
+      this.offset = 0;
+      this.pageData = [];
+      this.pageNames = [];
+      $('.chart-container').removeClass('loading').html('');
+      $('.message-container').html('');
+      if (clearSelector) {
+        this.resetArticleSelector();
+        this.excludes = [];
+      }
+    }
+
+    /**
+     * Sets up the article selector and adds listener to update chart
+     * @param {array} excludes - default page names to exclude
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupArticleSelector',
+    value: function setupArticleSelector() {
+      var _this4 = this;
+
+      var excludes = arguments.length <= 0 || arguments[0] === undefined ? this.excludes : arguments[0];
+
+      var articleSelector = $(config.articleSelector);
+
+      articleSelector.select2({
+        data: [],
+        maximumSelectionLength: 50,
+        minimumInputLength: 0,
+        placeholder: 'Hover over entires and click the ✖ to exclude from view'
+      });
+
+      if (excludes.length) this.setArticleSelectorDefaults(excludes);
+
+      articleSelector.on('change', function (e) {
+        _this4.excludes = $(e.target).val() || [];
+        _this4.max = null;
+        _this4.drawData();
+        // $(this).select2().trigger('close');
+      });
+
+      /**
+       * for topviews we don't want the user input functionality of Select2
+       * setTimeout of 0 to let rendering threads catch up and actually disable the field
+       */
+      setTimeout(function () {
+        $('.select2-search__field').prop('disabled', true);
+      });
+    }
+
+    /**
+     * Directly set articles in article selector
+     * Currently is not able to remove underscore from page names
+     *
+     * @param {array} pages - page titles
+     * @returns {array} - untouched array of pages
+     */
+
+  }, {
+    key: 'setArticleSelectorDefaults',
+    value: function setArticleSelectorDefaults(pages) {
+      pages = pages.map(function (page) {
+        // page = page.replace(/ /g, '_');
+        var escapedText = $('<div>').text(page).html();
+        $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
+        return page;
+      });
+      $(config.articleSelector).select2('val', pages);
+      $(config.articleSelector).select2('close');
+
+      return pages;
+    }
+
+    /**
+     * sets up the daterange selector and adds listeners
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupDateRangeSelector',
+    value: function setupDateRangeSelector() {
+      var _this5 = this;
+
+      var dateRangeSelector = $(config.dateRangeSelector);
+
+      /** transform config.specialRanges to have i18n as keys */
+      var ranges = {};
+      Object.keys(config.specialRanges).forEach(function (key) {
+        ranges[i18nMessages[key]] = config.specialRanges[key];
+      });
+
+      dateRangeSelector.daterangepicker({
+        locale: {
+          format: this.dateFormat,
+          applyLabel: i18nMessages.apply,
+          cancelLabel: i18nMessages.cancel,
+          customRangeLabel: i18nMessages.customRange,
+          dateLimit: { days: 31 },
+          daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
+          monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
+        },
+        startDate: moment().subtract(config.defaults.daysAgo, 'days'),
+        minDate: config.minDate,
+        maxDate: config.maxDate,
+        ranges: ranges
+      });
+
+      daterangepicker = dateRangeSelector.data('daterangepicker');
+
+      /** so people know why they can't query data older than August 2015 */
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
+
+      /**
+       * The special date range options (buttons the right side of the daterange picker)
+       *
+       * WARNING: we're unable to add class names or data attrs to the range options,
+       * so checking which was clicked is hardcoded based on the index of the LI,
+       * as defined in config.specialRanges
+       */
+      $('.daterangepicker .ranges li').on('click', function (e) {
+        var index = $('.daterangepicker .ranges li').index(e.target),
+            container = daterangepicker.container,
+            inputs = container.find('.daterangepicker_input input');
+        _this5.specialRange = {
+          range: Object.keys(config.specialRanges)[index],
+          value: inputs[0].value + ' - ' + inputs[1].value
+        };
+      });
+
+      /** the "Latest N days" links */
+      $('.date-latest a').on('click', function (e) {
+        this.setSpecialRange('latest-' + $(this).data('value'));
+      });
+
+      dateRangeSelector.on('apply.daterangepicker', function (e, action) {
+        if (action.chosenLabel === i18nMessages.customRange) {
+          _this5.specialRange = null;
+
+          /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+          daterangepicker.updateElement();
+        }
+      });
+    }
+
+    /**
+     * General place to add page-wide listeners
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this6 = this;
+
+      $('#platform-select').on('change', this.applyChanges.bind(this));
+      $('a[href="#"]').on('click', function (e) {
+        return e.preventDefault();
+      });
+      $('.expand-chart').on('click', function () {
+        _this6.offset += config.pageSize;
+        _this6.drawData();
+      });
+      $(config.dateRangeSelector).on('change', function (e) {
+        /** clear out specialRange if it doesn't match our input */
+        if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
+          _this6.specialRange = null;
+        }
+        _this6.applyChanges();
+      });
+    }
+
+    /**
+     * Setup listeners for project input
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupProjectInput',
+    value: function setupProjectInput() {
+      var _this7 = this;
+
+      $(config.projectInput).on('change', function (e) {
+        if (!e.target.value) {
+          e.target.value = config.defaults.project;
+          return;
+        }
+        if (_this7.validateProject()) return;
+        _this7.resetView(false);
+        _this7.applyChanges(true).then(resetArticleSelector);
+      });
+    }
+
+    /**
+     * Fetch data from API
+     * @returns {Deferred} promise with data
+     */
+
+  }, {
+    key: 'initData',
+    value: function initData() {
+      var _$,
+          _this8 = this;
+
+      var dfd = $.Deferred();
+
+      $('.chart-container').addClass('loading');
+
+      /** Collect parameters from inputs. */
+      var startDate = daterangepicker.startDate,
+          endDate = daterangepicker.endDate,
+          access = $('#platform-select').val();
+
+      var promises = [];
+
+      for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
+        promises.push($.ajax({
+          url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + this.project + '/' + access + '/' + date.format('YYYY/MM/DD'),
+          dataType: 'json'
+        }));
+      }
+
+      return (_$ = $).when.apply(_$, promises).then(function () {
+        for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
+          data[_key] = arguments[_key];
+        }
+
+        if (promises.length === 1) data = [data];
+
+        /** import data and do summations */
+        data.forEach(function (day) {
+          day[0].items[0].articles.forEach(function (item, index) {
+            if (_this8.pageData[index]) {
+              _this8.pageData[index].views += item.views;
+            } else {
+              _this8.pageData[index] = {
+                article: item.article.replace(/_/g, ' '),
+                views: item.views
+              };
+            }
+          });
+        });
+
+        /** sort given new view counts */
+        _this8.pageData = _this8.pageData.sort(function (a, b) {
+          return b.views - a.views;
+        });
+
+        /** ...and build the pageNames array for Select2 */
+        _this8.pageNames = _this8.pageData.map(function (value) {
+          return value.article.replace(/_/g, ' ');
+        });
+
+        return dfd.resolve(_this8.pageData);
+      });
+    }
+
+    /**
+     * Checks value of project input and validates it against site map
+     * @returns {boolean} whether the currently input project is valid
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      var project = $(config.projectInput).val();
+      if (siteDomains.includes(project)) {
+        $('body').removeClass('invalid-project');
+      } else {
+        this.resetView();
+        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n         <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', 'validate', true);
+        $('body').addClass('invalid-project');
+        return true;
+      }
+    }
+  }]);
+
+  return TopViews;
+}(Pv);
 
 $(document).ready(function () {
-  setupProjectInput();
-  setupDateRangeSelector();
-  popParams();
-
-  /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
-  $.ajax({
-    url: '//tools.wmflabs.org/musikanimal/api/uses',
-    method: 'PATCH',
-    data: {
-      tool: 'topviews',
-      type: 'form'
-    }
-  });
+  new TopViews();
 });
 
-},{"../shared/pv":2,"../shared/site_map":3,"./config":4,"./session":5}]},{},[1,2,3,6]);
+},{"../shared/pv":2,"../shared/site_map":3,"./config":4}]},{},[1,2,3,5]);
