@@ -453,4 +453,6 @@ class Pv {
   }
 }
 
+window.noAdBlockers = true;
+
 module.exports = Pv;

@@ -590,6 +590,8 @@ var Pv = function () {
   return Pv;
 }();
 
+window.noAdBlockers = true;
+
 module.exports = Pv;
 
 },{}],3:[function(require,module,exports){

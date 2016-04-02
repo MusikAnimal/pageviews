@@ -1,3 +1,36 @@
+<div id="ad_blocker_notice" style="display:none">
+  <h3>Looks like you are using an ad blocker!</h3>
+  <br>
+  Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
+  In our case, we're just trying to show you metrics, not collect them!
+  <h2>
+    Please whitelist
+    <code>
+      tools.wmflabs.org
+    </code>
+  </h2>
+  <h4>AdBlock Plus</h4>
+  <p>
+    Click on the AdBlock Plus icon and select <i>Disable on tools.wmflabs.org</i>. Reload the page.
+  </p>
+  <h4>uBlock</h4>
+  <p>
+    Click on the uBlock icon and then click on the large power icon. Reload the page.
+  </p>
+</div>
+<div id="cookie_disabled_notice" class="col-lg-10 text-center" style="display:none">
+  <h3>Looks like you have cookies disabled!</h3>
+  <br>
+  <p>
+    Pageviews Analysis uses an internationalization library that requires to cookies to function.
+    <br>
+    Only your language preference is stored in a cookie. No sensitive information is recorded.
+  </p>
+  <br>
+  <p>
+    <strong>Please enable cookies or whitelist <code>tools.wmflabs.org</code> if you are using a cookie blocker.</strong>
+  </p>
+</div>
 <footer class="col-lg-10">
   <span>
     <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
@@ -56,3 +89,24 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+//<![CDATA[
+  if(!window.noAdBlockers) {
+    var noticeContent = document.getElementById('ad_blocker_notice');
+    document.querySelector('body').innerHTML = noticeContent.innerHTML;
+  }
+  
+  var cookieEnabled = navigator.cookieEnabled ? true : false;
+  if (typeof navigator.cookieEnabled === "undefined" && !cookieEnabled) {
+      document.cookie = "testcookie";
+      cookieEnabled = (document.cookie.indexOf("testcookie") !== -1) ? true : false;
+  }
+  
+  if (!cookieEnabled) {
+    document.querySelector('main').style.display = 'none';
+    document.getElementById('cookie_disabled_notice').style.display = 'block';
+  }
+  
+  
+//]]>
+</script>
