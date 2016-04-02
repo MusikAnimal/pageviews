@@ -20,108 +20,109 @@
               %strong
                 = $I18N->msg( 'title' )
 
-        / Site notice
-        %div.col-lg-10.text-center.site-notice-wrapper
-          %div.site-notice
+        %main
+          / Site notice
+          %div.col-lg-10.text-center.site-notice-wrapper
+            %div.site-notice
 
-        %div.row.aqs-row.options
-          / Date range selector
-          %div.col-lg-4.col-sm-4
-            %label(for="range-input")
-              = $I18N->msg( 'dates' )
-            %span.date-latest
-              :php
-                $days = array(10, 20, 30, 60, 90);
-                $dayLinks = '';
-                foreach ( $days as $day ) {
-                  $dayLinks .= " <a data-value='{$day}' href='#'>{$day}</a>";
-                }
-              = $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) )
-            %input.form-control.aqs-date-range-selector#range-input
+          %div.row.aqs-row.options
+            / Date range selector
+            %div.col-lg-4.col-sm-4
+              %label(for="range-input")
+                = $I18N->msg( 'dates' )
+              %span.date-latest
+                :php
+                  $days = array(10, 20, 30, 60, 90);
+                  $dayLinks = '';
+                  foreach ( $days as $day ) {
+                    $dayLinks .= " <a data-value='{$day}' href='#'>{$day}</a>";
+                  }
+                = $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) )
+              %input.form-control.aqs-date-range-selector#range-input
 
-          / Project selector
-          %div.col-lg-2.col-sm-3
-            %label(for="project-input")
-              = $I18N->msg( 'project' )
-            %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
+            / Project selector
+            %div.col-lg-2.col-sm-3
+              %label(for="project-input")
+                = $I18N->msg( 'project' )
+              %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
 
-          / Advanced options
-          %div.col-lg-2.col-sm-3
-            %label(for="platform-select")
-              = $I18N->msg( 'platform' )
-            %select.form-control#platform-select
-              %option(value="all-access")
-                = $I18N->msg( 'all' )
-              %option(value="desktop")
-                = $I18N->msg( 'desktop' )
-              %option(value="mobile-app")
-                = $I18N->msg( 'mobile-app' )
-              %option(value="mobile-web")
-                = $I18N->msg( 'mobile-web' )
+            / Advanced options
+            %div.col-lg-2.col-sm-3
+              %label(for="platform-select")
+                = $I18N->msg( 'platform' )
+              %select.form-control#platform-select
+                %option(value="all-access")
+                  = $I18N->msg( 'all' )
+                %option(value="desktop")
+                  = $I18N->msg( 'desktop' )
+                %option(value="mobile-app")
+                  = $I18N->msg( 'mobile-app' )
+                %option(value="mobile-web")
+                  = $I18N->msg( 'mobile-web' )
 
-          %div.col-lg-2.col-sm-2
-            %label(for="agent-select")
-              = $I18N->msg( 'agent' )
-            %select.form-control#agent-select
-              %option(value="all-agents")
-                = $I18N->msg( 'all' )
-              %option(selected="selected" value="user")
-                = $I18N->msg( 'user' )
-              %option(value="spider")
-                = $I18N->msg( 'spider' )
-              %option(value="bot")
-                = $I18N->msg( 'bot' )
+            %div.col-lg-2.col-sm-2
+              %label(for="agent-select")
+                = $I18N->msg( 'agent' )
+              %select.form-control#agent-select
+                %option(value="all-agents")
+                  = $I18N->msg( 'all' )
+                %option(selected="selected" value="user")
+                  = $I18N->msg( 'user' )
+                %option(value="spider")
+                  = $I18N->msg( 'spider' )
+                %option(value="bot")
+                  = $I18N->msg( 'bot' )
 
-        / Article selector
-        %div.row.aqs-row
-          %div.col-lg-10
-            %label(for="article-input")
-              = $I18N->msg( 'pages' )
-            / Button trigger modal
-            / %a.pull-right{href: "#", "data-toggle": "modal", "data-target": "#import-modal"}
-            / Import
-            %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
+          / Article selector
+          %div.row.aqs-row
+            %div.col-lg-10
+              %label(for="article-input")
+                = $I18N->msg( 'pages' )
+              / Button trigger modal
+              / %a.pull-right{href: "#", "data-toggle": "modal", "data-target": "#import-modal"}
+              / Import
+              %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
 
-        / Chart
-        %div.chart-container.col-lg-10.loading
-          / inline styles since the ad blocker might block loading of assets
-          %div.ad-block-notice.text-center
-            - $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>"
-            = $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) )
-          %canvas.aqs-chart
+          / Chart
+          %div.chart-container.col-lg-10.loading
+            / inline styles since the ad blocker might block loading of assets
+            %div.ad-block-notice.text-center
+              - $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>"
+              = $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) )
+            %canvas.aqs-chart
 
-        %div.message-container.col-lg-10
+          %div.message-container.col-lg-10
 
-        / Legend
-        %div.col-lg-10#chart-legend
+          / Legend
+          %div.col-lg-10#chart-legend
 
-        / Other links
-        %div.col-lg-10.data-links
-          %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")
-            = $I18N->msg( 'change-chart' )
-          &bullet;
-          %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")
-            = $I18N->msg( 'settings' )
-          &bullet;
-          - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
-          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) )
-          &middot;
-          %a.download-json(href="#")
-            = $I18N->msg( 'json' )
+          / Other links
+          %div.col-lg-10.data-links
+            %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")
+              = $I18N->msg( 'change-chart' )
+            &bullet;
+            %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")
+              = $I18N->msg( 'settings' )
+            &bullet;
+            - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
+            = $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) )
+            &middot;
+            %a.download-json(href="#")
+              = $I18N->msg( 'json' )
 
-          / Language selector
-          %span.btn-group.dropup.lang-group.pull-right
-            %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-              = $currentLang
-              %span.caret
-            %ul.dropdown-menu
-              %li
-                %a(href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews")
-                  = $I18N->msg( 'help-translate' )
-              %li.divider(role="separator")
-              - foreach (array_unique($langs) as $lang => $langName)
+            / Language selector
+            %span.btn-group.dropup.lang-group.pull-right
+              %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                = $currentLang
+                %span.caret
+              %ul.dropdown-menu
                 %li
-                  %a.lang-link(href="#" data-lang="#{$lang}")= $langName
+                  %a(href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews")
+                    = $I18N->msg( 'help-translate' )
+                %li.divider(role="separator")
+                - foreach (array_unique($langs) as $lang => $langName)
+                  %li
+                    %a.lang-link(href="#" data-lang="#{$lang}")= $langName
 
         - $app = "pageviews"
         - include "_footer.php"
