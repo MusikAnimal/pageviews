@@ -1,0 +1,130 @@
+/ Langviews Analysis tool
+/ Copyright 2016 MusikAnimal
+!!!
+%html
+  %head
+    - include '../_head.php'
+    %title= $I18N->msg( 'langviews-title' )
+  %body
+    %div.container
+      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'langviews-title' )
+
+      %main.col-lg-10.col-lg-offset-1
+        / Site notice
+        %div.text-center.site-notice-wrapper
+          %div.site-notice
+
+        %form#langviews_form
+          %div.row.aqs-row.options
+            / Date range selector
+            %div.col-lg-3.col-sm-4
+              %label(for="range_input")
+                = $I18N->msg( 'dates' )
+              %input.form-control.aqs-date-range-selector#range_input
+
+            / Project selector
+            %div.col-lg-3.col-sm-3
+              %label(for="project_input")
+                = $I18N->msg( 'source-project' )
+              %input.form-control#project_input(placeholder="en.wikipedia.org" required="required")
+
+            / Advanced options
+            %div.col-lg-3.col-sm-3
+              %label(for="platform_select")
+                = $I18N->msg( 'platform' )
+              %select.form-control#platform_select
+                %option(value="all-access")
+                  = $I18N->msg( 'all' )
+                %option(value="desktop")
+                  = $I18N->msg( 'desktop' )
+                %option(value="mobile-app")
+                  = $I18N->msg( 'mobile-app' )
+                %option(value="mobile-web")
+                  = $I18N->msg( 'mobile-web' )
+
+            %div.col-lg-3.col-sm-2
+              %label(for="agent_select")
+                = $I18N->msg( 'agent' )
+              %select.form-control#agent_select
+                %option(value="all-agents")
+                  = $I18N->msg( 'all' )
+                %option(selected="selected" value="user")
+                  = $I18N->msg( 'user' )
+                %option(value="spider")
+                  = $I18N->msg( 'spider' )
+                %option(value="bot")
+                  = $I18N->msg( 'bot' )
+
+          / Article URL input
+          %div.row.aqs-row.article-input-row
+            %div.col-lg-12
+              %label(for="article_input")
+                = $I18N->msg( 'page' )
+              %div.input-group
+                %input.form-control.aqs-article-input#article_input(placeholder="Star Wars" required="required" autocomplete="off")
+                %span.input-group-btn
+                  %button.btn.btn-primary.pull-right#article_submit
+                    = $I18N->msg( 'submit' )
+
+        %div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
+          %div.progress
+            %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
+
+        %output(form="langviews_form")
+          %header.output-header
+            %strong.another-query
+              %span.glyphicon.glyphicon-chevron-left
+              = $I18N->msg( 'another-query' )
+            %h2.tm
+              %a.langviews-page-name(target="_blank")
+              %small.langviews-params
+
+          %table.table.output-table
+            %thead
+              %tr
+                %th #
+                %th
+                  %span.sort-link(data-type='lang')
+                    = $I18N->msg( 'language' )
+                    %span.glyphicon.glyphicon-sort
+                %th
+                  %span.sort-link(data-type='title')
+                    = $I18N->msg( 'page-title' )
+                    %span.glyphicon.glyphicon-sort
+                %th
+                  %span.sort-link(data-type='badges')
+                    = $I18N->msg( 'badges' )
+                    %span.glyphicon.glyphicon-sort
+                %th
+                  %span.sort-link(data-type='views')
+                    = $I18N->msg( 'pageviews' )
+                    %span.glyphicon.glyphicon-sort
+              %tr.output-totals
+            %tbody#lang_list
+
+        %div.col-lg-12
+          %div.message-container
+
+        / Other links
+        %div.data-links.row.tm
+          %div.col-lg-12
+            / Language selector
+            %span.btn-group.dropup.lang-group.pull-right
+              %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                = $currentLang
+                %span.caret
+              %ul.dropdown-menu
+                %li
+                  %a(href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews")
+                    = $I18N->msg( 'help-translate' )
+                %li.divider(role="separator")
+                - foreach (array_unique($langs) as $lang => $langName)
+                  %li
+                    %a.lang-link(href="#" data-lang="#{$lang}")= $langName
+
+        - $app = "langviews"
+        - $columns = 12
+        - include "../_footer.php"

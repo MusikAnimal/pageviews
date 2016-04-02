@@ -16,12 +16,12 @@ class PageViews extends Pv {
   constructor() {
     super();
 
+    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
+    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
     this.chartObj = null;
     this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.params = null;
     this.prevChartType = null;
     this.specialRange = null;
@@ -461,7 +461,7 @@ class PageViews extends Pv {
    */
   saveSetting(key, value) {
     this[key] = value;
-    localStorage[`pageviews-settings-${key}`] = value;
+    this.setLocalStorage(`pageviews-settings-${key}`, value);
   }
 
   /**
@@ -680,6 +680,8 @@ class PageViews extends Pv {
    * @returns {null} - nothing
    */
   setupListeners() {
+    super.setupListeners();
+
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
     $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
@@ -687,22 +689,9 @@ class PageViews extends Pv {
     /** changing of chart types */
     $('.modal-chart-type a').on('click', e => {
       this.chartType = $(e.currentTarget).data('type');
-      localStorage['pageviews-chart-preference'] = this.chartType;
+      this.setLocalStorage('pageviews-chart-preference', this.chartType);
       this.updateChart();
     });
-
-    /** language selector */
-    $('.lang-link').on('click', function() {
-      const expiryGMT = moment().add(config.cookieExpiry, 'days').toDate().toGMTString();
-      document.cookie = `TsIntuition_userlang=${$(this).data('lang')}; expires=${expiryGMT}; path=/`;
-
-      const expiryUnix = Math.floor(Date.now() / 1000) + (config.cookieExpiry * 24 * 60 * 60);
-      document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
-      location.reload();
-    });
-
-    /** prevent browser's default behaviour for any link with href="#" */
-    $('a[href=\'#\']').on('click', e => e.preventDefault());
 
     // window.onpopstate = popParams();
   }

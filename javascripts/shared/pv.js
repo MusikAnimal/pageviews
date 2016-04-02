@@ -1,4 +1,12 @@
 class Pv {
+  constructor() {
+    this.storage = {}; // used as fallback when localStorage is not supported
+
+    if (location.host === 'localhost') {
+      window.app = this;
+    }
+  }
+
   addSiteNotice(level, message, title, autodismiss) {
     title = title ? `<strong>${title}</strong> ` : '';
     autodismiss = autodismiss ? ' autodismiss' : '';
@@ -69,9 +77,9 @@ class Pv {
    * @returns {boolean} lang.projectname
    */
   get project() {
-    const project = $('.aqs-project-input').val();
-    // Get the first 2 characters from the project code to get the language
-    return project.replace(/.org$/, '');
+    const project = $(this.config.projectInput).val();
+    /** Get the first 2 characters from the project code to get the language */
+    return project.toLowerCase().replace(/.org$/, '');
   }
 
   getLocaleDateString() {
@@ -292,6 +300,16 @@ class Pv {
   }
 
   /**
+   * Generate a unique hash code from given string
+   * @param  {String} str - to be hashed
+   * @return {String} the hash
+   */
+  hashCode(str) {
+    return str.split('').reduce((prevHash, currVal) =>
+      ((prevHash << 5) - prevHash) + currVal.charCodeAt(0), 0);
+  }
+
+  /**
    * Check if Intl is supported
    *
    * @returns {boolean} whether the browser (presumably) supports date locale operations
@@ -426,6 +444,61 @@ class Pv {
   }
 
   /**
+   * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
+   *
+   * Same as _.debounce but queues and executes all function calls
+   * @param  {Function} fn      [description]
+   * @param  {[type]}   delay   [description]
+   * @param  {[type]}   context [description]
+   * @return {[type]}           [description]
+   */
+  rateLimit(fn, delay, context) {
+    let queue = [], timer;
+
+    const processQueue = () => {
+      const item = queue.shift();
+      if (item) {
+        fn.apply(item.context, item.arguments);
+      }
+      if (queue.length === 0) {
+        clearInterval(timer), timer = null;
+      }
+    };
+
+    return function limited() {
+      queue.push({
+        context: context || this,
+        arguments: [].slice.call(arguments)
+      });
+
+      if (!timer) {
+        processQueue(); // start immediately on the first invocation
+        timer = setInterval(processQueue, delay);
+      }
+    };
+  }
+
+  /**
+   * Cross-application listeners
+   * Each app has it's own setupListeners() that should call super.setupListeners()
+   * @return {null} nothing
+   */
+  setupListeners() {
+    /** prevent browser's default behaviour for any link with href="#" */
+    $("a[href='#']").on('click', e => e.preventDefault());
+
+    /** language selector */
+    $('.lang-link').on('click', e => {
+      const expiryGMT = moment().add(this.config.cookieExpiry, 'days').toDate().toGMTString();
+      document.cookie = `TsIntuition_userlang=${$(e.target).data('lang')}; expires=${expiryGMT}; path=/`;
+
+      const expiryUnix = Math.floor(Date.now() / 1000) + (this.config.cookieExpiry * 24 * 60 * 60);
+      document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
+      location.reload();
+    });
+  }
+
+  /**
    * Replace spaces with underscores
    *
    * @param {array} pages - array of page names
@@ -453,16 +526,31 @@ class Pv {
   }
 
   /**
-   * Get a value from localStorage
+   * Get a value from localStorage, using a temporary storage if localStorage is not supported
    * @param {string} key - key for the value to retrieve
-   * @returns {Mixed} stored value or null if localStorage is disabled or key is not set
+   * @returns {Mixed} stored value
    */
   getFromLocalStorage(key) {
     // See if localStorage is supported and enabled
     try {
       return localStorage.getItem(key);
     } catch (err) {
-      return null;
+      return this.storage[key];
+    }
+  }
+
+  /**
+   * Set a value to localStorage, using a temporary storage if localStorage is not supported
+   * @param {string} key - key for the value to set
+   * @param {Mixed} value - value to store
+   * @returns {Mixed} stored value
+   */
+  setLocalStorage(key, value) {
+    // See if localStorage is supported and enabled
+    try {
+      return localStorage.setItem(key, value);
+    } catch (err) {
+      return this.storage[key] = value;
     }
   }
 }
