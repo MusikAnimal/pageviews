@@ -41,7 +41,6 @@ module.exports = function(grunt) {
     browserify: {
       pageviews: {
         options: {
-          browserifyOptions: { debug: true },
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {
@@ -53,7 +52,6 @@ module.exports = function(grunt) {
       },
       topviews: {
         options: {
-          browserifyOptions: { debug: true },
           transform: [['babelify', { presets: ['es2015'] }]]
         },
         files: {

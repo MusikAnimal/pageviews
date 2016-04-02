@@ -1695,7 +1695,12 @@ var TopViews = function (_Pv) {
       var platform = $('#platform-select').val(),
           project = $(config.projectInput).val();
 
-      return '/pageviews#start=' + startDate.subtract(3, 'days').format('YYYY-MM-DD') + ('&end=' + endDate.add(3, 'days').format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + article);
+      if (endDate.diff(startDate, 'days') === 0) {
+        startDate.subtract(3, 'days');
+        endDate.add(3, 'days');
+      }
+
+      return '/pageviews#start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + article);
     }
 
     /**
@@ -2063,7 +2068,8 @@ var TopViews = function (_Pv) {
           endDate = daterangepicker.endDate,
           access = $('#platform-select').val();
 
-      var promises = [];
+      var promises = [],
+          initPageData = {};
 
       for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
         promises.push($.ajax({
@@ -2081,26 +2087,32 @@ var TopViews = function (_Pv) {
 
         /** import data and do summations */
         data.forEach(function (day) {
-          day[0].items[0].articles.forEach(function (item, index) {
-            if (_this8.pageData[index]) {
-              _this8.pageData[index].views += item.views;
+          day[0].items[0].articles.forEach(function (item) {
+            var article = item.article.replace(/_/g, ' ');
+
+            if (initPageData[article]) {
+              initPageData[article] += item.views;
             } else {
-              _this8.pageData[index] = {
-                article: item.article.replace(/_/g, ' '),
-                views: item.views
-              };
+              initPageData[article] = item.views;
             }
           });
         });
 
         /** sort given new view counts */
-        _this8.pageData = _this8.pageData.sort(function (a, b) {
+        var sortable = [];
+        for (var page in initPageData) {
+          sortable.push({
+            article: page,
+            views: initPageData[page]
+          });
+        }
+        _this8.pageData = sortable.sort(function (a, b) {
           return b.views - a.views;
         });
 
         /** ...and build the pageNames array for Select2 */
         _this8.pageNames = _this8.pageData.map(function (value) {
-          return value.article.replace(/_/g, ' ');
+          return value.article;
         });
 
         return dfd.resolve(_this8.pageData);

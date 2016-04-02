@@ -136,8 +136,13 @@ class TopViews extends Pv {
     const platform = $('#platform-select').val(),
       project = $(config.projectInput).val();
 
-    return `/pageviews#start=${startDate.subtract(3, 'days').format('YYYY-MM-DD')}` +
-      `&end=${endDate.add(3, 'days').format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${article}`;
+    if (endDate.diff(startDate, 'days') === 0) {
+      startDate.subtract(3, 'days');
+      endDate.add(3, 'days');
+    }
+
+    return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
+      `&end=${endDate.format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${article}`;
   }
 
   /**
@@ -474,7 +479,7 @@ class TopViews extends Pv {
       endDate = daterangepicker.endDate,
       access = $('#platform-select').val();
 
-    let promises = [];
+    let promises = [], initPageData = {};
 
     for (let date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
       promises.push($.ajax({
@@ -488,23 +493,29 @@ class TopViews extends Pv {
 
       /** import data and do summations */
       data.forEach(day => {
-        day[0].items[0].articles.forEach((item, index) => {
-          if (this.pageData[index]) {
-            this.pageData[index].views += item.views;
+        day[0].items[0].articles.forEach(item => {
+          const article = item.article.replace(/_/g, ' ');
+
+          if (initPageData[article]) {
+            initPageData[article] += item.views;
           } else {
-            this.pageData[index] = {
-              article: item.article.replace(/_/g, ' '),
-              views: item.views
-            };
+            initPageData[article] = item.views;
           }
         });
       });
 
       /** sort given new view counts */
-      this.pageData = this.pageData.sort((a, b) => b.views - a.views);
+      let sortable = [];
+      for (let page in initPageData) {
+        sortable.push({
+          article: page,
+          views: initPageData[page]
+        });
+      }
+      this.pageData = sortable.sort((a, b) => b.views - a.views);
 
       /** ...and build the pageNames array for Select2 */
-      this.pageNames = this.pageData.map(value => value.article.replace(/_/g, ' '));
+      this.pageNames = this.pageData.map(value => value.article);
 
       return dfd.resolve(this.pageData);
     });
