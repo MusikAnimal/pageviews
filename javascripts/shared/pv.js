@@ -288,7 +288,7 @@ class Pv {
       'es-us': 'M/D/YYYY'
     };
     const key = navigator.language ? navigator.language.toLowerCase() : 'en-US';
-    return formats[key];
+    return formats[key] || this.config.defaults.dateFormat;
   }
 
   /**

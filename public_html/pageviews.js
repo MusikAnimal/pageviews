@@ -1506,7 +1506,7 @@ var Pv = function () {
         'es-us': 'M/D/YYYY'
       };
       var key = navigator.language ? navigator.language.toLowerCase() : 'en-US';
-      return formats[key];
+      return formats[key] || this.config.defaults.dateFormat;
     }
 
     /**
