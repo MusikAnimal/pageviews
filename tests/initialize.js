@@ -35,7 +35,7 @@ module.exports = {
       .url('http://localhost/pageviews/index#start=2016-01-01&end=2016-01-10&project=en.wikivoyage.org&pages=Europe|Asia&platform=desktop&agent=spider')
       .waitForElementPresent('canvas', 10000);
 
-    client.expect.element('#range-input').to.have.value.that.matches(/0?1\/0?1\/2016 - 0?1\/10\/2016/);
+    client.expect.element('#range-input').to.have.value.that.matches(/0?1\/0?1\/2016 - 0?1\/10\/2016|2016-01-01 - 2016-01-10/);
     client.expect.element('.aqs-project-input').to.have.value.that.equals('en.wikivoyage.org');
     client.expect.element('#platform-select').to.have.value.that.equals('desktop');
     client.expect.element('#agent-select').to.have.value.that.equals('spider');
