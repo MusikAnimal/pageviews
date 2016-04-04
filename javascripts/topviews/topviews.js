@@ -80,7 +80,7 @@ class TopViews extends Pv {
         `<div class='topview-entry' style='background:linear-gradient(to right, #EEE ${width}%, transparent ${width}%)'>
          <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1} aria-hidden='true'></span>
          <span class='topview-entry--rank'>${++count}</span>
-         <a class='topview-entry--label' href="https://en.wikipedia.org/wiki/${item.article.replace(/ /g, '_')}" target="_blank">${item.article}</a>
+         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
          <span class='topview-entry--leader'></span>
          <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.n(item.views)}</a></div>`
       );
