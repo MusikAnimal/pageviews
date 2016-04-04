@@ -95,5 +95,9 @@
 	"select2-max-items": "Pode apenas selecionar $1 item",
 	"select2-no-results": "Não foram encontrados resultados",
 	"select2-searching": "A pesquisar...",
-	"help-translate": "Ajude a traduzir"
+	"help-translate": "Ajude a traduzir",
+	"api-error": "Ocorreu um problema no carregamento de dados da API.",
+	"api-error-contact": "Por favor, reporte este problema à equipa de manutenção.",
+	"excluded-pages": "Páginas excluídas",
+	"show-more": "Mostrar mais"
 }

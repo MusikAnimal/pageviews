@@ -63,5 +63,8 @@
 	"select2-loading": "Méi Resultater gi gelueden...",
 	"select2-no-results": "Näischt fonnt",
 	"select2-searching": "Sichen...",
-	"help-translate": "Hëlleft iwwersetzen"
+	"help-translate": "Hëlleft iwwersetzen",
+	"api-error": "Et gpouf e Problem beim Luede vun Donnéeën vun der API.",
+	"excluded-pages": "Ausgeschloss Säiten",
+	"show-more": "Méi weisen"
 }

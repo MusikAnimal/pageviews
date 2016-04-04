@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gts-tg"
+			"Gts-tg",
+			"Geraki"
 		]
 	},
 	"title": "Ανάλυση ανάγνωσης σελίδων",
@@ -90,5 +91,7 @@
 	"select2-max-items": "Μπορείτε να επιλέξετε μόνο $1 στοιχείο",
 	"select2-no-results": "Δεν βρέθηκαν αποτελέσματα",
 	"select2-searching": "Γίνεται αναζήτηση...",
-	"help-translate": "Βοηθήστε στη μετάφραση"
+	"help-translate": "Βοηθήστε στη μετάφραση",
+	"excluded-pages": "Εξαιρούμενες σελίδες",
+	"show-more": "Εμφάνιση περισσότερων"
 }

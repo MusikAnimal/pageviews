@@ -99,5 +99,8 @@
 	"select2-searching": "Suchen …",
 	"help-translate": "Hilf beim Übersetzen",
 	"api-error": "Es gab ein Problem beim Laden der Daten von der API.",
-	"api-error-contact": "Berichte bitte dieses Problem an die Instandhalter."
+	"api-error-contact": "Berichte bitte dieses Problem an die Instandhalter.",
+	"topviews-title": "Topviews Analysis",
+	"excluded-pages": "Ausgeschlossene Seiten",
+	"show-more": "Mehr anzeigen"
 }

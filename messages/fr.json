@@ -103,5 +103,8 @@
 	"select2-searching": "Recherche en cours...",
 	"help-translate": "Aider à traduire",
 	"api-error": "Il y a eu un problème au chargement des données depuis l’API.",
-	"api-error-contact": "Veuillez signaler ce problème aux mainteneurs."
+	"api-error-contact": "Veuillez signaler ce problème aux mainteneurs.",
+	"topviews-title": "Analyse générale",
+	"excluded-pages": "Pages exclues",
+	"show-more": "Afficher plus"
 }

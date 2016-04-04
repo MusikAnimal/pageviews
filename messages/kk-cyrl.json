@@ -93,5 +93,8 @@
 	"select2-max-items": "Сіз тек $1 тармақты ғана таңдай аласыз",
 	"select2-no-results": "Ешбір нәтиже табылмады",
 	"select2-searching": "Іздеп жатыр...",
-	"help-translate": "Аударуға көмектесу"
+	"help-translate": "Аударуға көмектесу",
+	"topviews-title": "Көп қаралғандар талдауы",
+	"excluded-pages": "Алынып тасталған беттер",
+	"show-more": "Көбірек көрсету"
 }

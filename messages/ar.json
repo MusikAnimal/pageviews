@@ -74,5 +74,7 @@
 	"select2-loading": "جاري تحميل المزيد من النتائج...",
 	"select2-no-results": "لم يتم العثور على نتائج",
 	"select2-searching": "جارٍ البحث...",
-	"help-translate": "المساهمة في الترجمة"
+	"help-translate": "المساهمة في الترجمة",
+	"excluded-pages": "الصفحات المستثناة",
+	"show-more": "أظهر المزيد"
 }
