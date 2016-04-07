@@ -16,7 +16,7 @@ module.exports = {
     /** also including moment() - 21 days due to timezone anolomy of node vs selenium driver */
     const startDate2 = moment().subtract(21, 'days'),
       endDate2 = moment().subtract(2, 'days'),
-      dateStr2 = `0?${startDate2} - 0?${endDate2}`,
+      dateStr2 = `0?${startDate2.format('M/D/YYYY')} - 0?${endDate2.format('M/D/YYYY')}`,
       dateStr2IE = `${startDate2.format('YYYY-MM-DD')} - ${endDate2.format('YYYY-MM-DD')}`;
 
     /** replace \/ with \/0? to allow for leading zeros */

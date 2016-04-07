@@ -1039,10 +1039,8 @@ var PageViews = function (_Pv) {
        */
       articles.forEach(function (article, index) {
         var uriEncodedArticle = encodeURIComponent(article);
-        var projectForQuery = _this11.project;
-
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + projectForQuery + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         $.ajax({
           url: url,
           dataType: 'json'
@@ -1215,6 +1213,14 @@ if (typeof Object.assign !== 'function') {
 if (!('remove' in Element.prototype)) {
   Element.prototype.remove = function () {
     this.parentNode.removeChild(this);
+  };
+}
+
+// String.startsWith
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString, position) {
+    position = position || 0;
+    return this.substr(position, searchString.length) === searchString;
   };
 }
 

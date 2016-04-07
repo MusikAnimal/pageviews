@@ -799,11 +799,9 @@ class PageViews extends Pv {
      */
     articles.forEach((article, index) => {
       const uriEncodedArticle = encodeURIComponent(article);
-      let projectForQuery = this.project;
-
       /** @type {String} Url to query the API. */
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${projectForQuery}` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
         `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
