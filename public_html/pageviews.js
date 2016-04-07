@@ -1039,9 +1039,13 @@ var PageViews = function (_Pv) {
        */
       articles.forEach(function (article, index) {
         var uriEncodedArticle = encodeURIComponent(article);
+        var projectForQuery = _this11.project;
+        // Remove www hostnames since the pageviews API doesn't expect them.
+        if (projectForQuery.startsWith('www.')) {
+          projectForQuery = projectForQuery.substring(4);
+        }
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
-
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + projectForQuery + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         $.ajax({
           url: url,
           dataType: 'json'
