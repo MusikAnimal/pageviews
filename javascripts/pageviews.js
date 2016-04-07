@@ -800,10 +800,7 @@ class PageViews extends Pv {
     articles.forEach((article, index) => {
       const uriEncodedArticle = encodeURIComponent(article);
       let projectForQuery = this.project;
-      // Remove www hostnames since the pageviews API doesn't expect them.
-      if ( projectForQuery.startsWith('www.') ) {
-        projectForQuery = projectForQuery.substring(4);
-      }
+
       /** @type {String} Url to query the API. */
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${projectForQuery}` +
@@ -888,7 +885,14 @@ class PageViews extends Pv {
    * @returns {boolean} whether the currently input project is valid
    */
   validateProject() {
-    const project = $(config.projectInput).val();
+    let project = $(config.projectInput).val();
+
+    /** Remove www hostnames since the pageviews API doesn't expect them. */
+    if (project.startsWith('www.')) {
+      project = project.substring(4);
+      $(config.projectInput).val(project);
+    }
+
     if (siteDomains.includes(project)) {
       $('.validate').remove();
       $('.select2-selection--multiple').removeClass('disabled');
