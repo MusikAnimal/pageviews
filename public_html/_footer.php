@@ -22,7 +22,7 @@
   <h3>Looks like you have cookies disabled!</h3>
   <br>
   <p>
-    Pageviews Analysis uses an internationalization library that requires to cookies to function.
+    Pageviews Analysis uses an internationalization library that requires cookies to function.
     <br>
     Only your language preference is stored in a cookie. No sensitive information is recorded.
   </p>
