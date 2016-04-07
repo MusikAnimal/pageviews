@@ -93,5 +93,8 @@
 	"select2-searching": "Hledání...",
 	"help-translate": "Pomozte s překladem",
 	"api-error": "Nastal problém s načítáním dat z API.",
-	"api-error-contact": "Prosíme, nahlaste tento problém správcům."
+	"api-error-contact": "Prosíme, nahlaste tento problém správcům.",
+	"topviews-title": "Analýza nejvíce zobrazovaných",
+	"excluded-pages": "Vyloučené stránky",
+	"show-more": "Zobrazit více"
 }

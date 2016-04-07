@@ -98,5 +98,8 @@
 	"select2-searching": "Buscando…",
 	"help-translate": "Axude na tradución",
 	"api-error": "Houbo un problema ó cargar os datos da API.",
-	"api-error-contact": "Por favor, avise deste problema ó persoal de mantemento."
+	"api-error-contact": "Por favor, avise deste problema ó persoal de mantemento.",
+	"topviews-title": "Análise das máis vistas",
+	"excluded-pages": "Páxinas excluídas",
+	"show-more": "Mostrar máis"
 }
