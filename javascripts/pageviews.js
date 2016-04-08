@@ -200,7 +200,7 @@ class PageViews extends Pv {
 
     return Object.assign(
       {
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         value: values.reduce((a, b) => a + b)
       },
       config.chartConfig[this.chartType].dataset(color)
@@ -240,7 +240,7 @@ class PageViews extends Pv {
 
     return Object.assign(
       {
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         data: values,
         sum: values.reduce((a, b) => a + b)
       },
@@ -371,7 +371,7 @@ class PageViews extends Pv {
       if (data && data.query && data.query.prefixsearch.length) {
         results = data.query.prefixsearch.map(function(elem) {
           return {
-            id: elem.title.replace(/ /g, '_'),
+            id: elem.title.score(),
             text: elem.title
           };
         });
@@ -380,7 +380,7 @@ class PageViews extends Pv {
       if (data && data[1].length) {
         results = data[1].map(elem => {
           return {
-            id: elem.replace(/ /g, '_'),
+            id: elem.score(),
             text: elem
           };
         });
@@ -780,6 +780,7 @@ class PageViews extends Pv {
 
     this.params = location.hash;
     this.prevChartType = this.chartType;
+    this.clearMessages(); // clear out old error messages
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate.startOf('day'),
@@ -824,7 +825,9 @@ class PageViews extends Pv {
         }
       }).fail(data => {
         if (data.status === 404) {
-          this.writeMessage(`No data found for the page <a href='${this.getPageURL(article)}'>${article}</a>`, true);
+          this.writeMessage(
+            `<a href='${this.getPageURL(article)}'>${article.descore()}</a>: ${i18nMessages.apiErrorNoData}`
+          );
           articles = articles.filter(el => el !== article);
 
           if (!articles.length) {
@@ -843,7 +846,8 @@ class PageViews extends Pv {
         $('.chart-container').removeClass('loading');
         const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
         return this.writeMessage(
-          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`
+          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`,
+          true
         );
       }
 
@@ -863,7 +867,7 @@ class PageViews extends Pv {
       /** preserve order of datasets due to asyn calls */
       let sortedDatasets = new Array(articles.length);
       datasets.forEach(dataset => {
-        sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
+        sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
       });
 
       /** export built datasets to global scope Chart templates */

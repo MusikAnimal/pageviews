@@ -98,6 +98,7 @@
 	"help-translate": "Help translate",
 	"api-error": "There was a problem loading data from the API.",
 	"api-error-contact": "Please report this issue to the maintainers.",
+	"api-error-no-data": "No data found.",
 	"topviews-title": "Topviews Analysis",
 	"excluded-pages": "Excluded pages",
 	"show-more": "Show more"

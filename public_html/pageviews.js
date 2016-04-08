@@ -135,7 +135,7 @@ var config = {
 };
 module.exports = config;
 
-},{"./shared/pv":4,"./templates":6}],2:[function(require,module,exports){
+},{"./shared/pv":5,"./templates":7}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -379,7 +379,7 @@ var PageViews = function (_Pv) {
           color = config.colors[index];
 
       return Object.assign({
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         value: values.reduce(function (a, b) {
           return a + b;
         })
@@ -426,7 +426,7 @@ var PageViews = function (_Pv) {
           color = config.colors[index % 10];
 
       return Object.assign({
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         data: values,
         sum: values.reduce(function (a, b) {
           return a + b;
@@ -573,7 +573,7 @@ var PageViews = function (_Pv) {
         if (data && data.query && data.query.prefixsearch.length) {
           results = data.query.prefixsearch.map(function (elem) {
             return {
-              id: elem.title.replace(/ /g, '_'),
+              id: elem.title.score(),
               text: elem.title
             };
           });
@@ -582,7 +582,7 @@ var PageViews = function (_Pv) {
         if (data && data[1].length) {
           results = data[1].map(function (elem) {
             return {
-              id: elem.replace(/ /g, '_'),
+              id: elem.score(),
               text: elem
             };
           });
@@ -1021,6 +1021,7 @@ var PageViews = function (_Pv) {
 
       this.params = location.hash;
       this.prevChartType = this.chartType;
+      this.clearMessages(); // clear out old error messages
 
       /** Collect parameters from inputs. */
       var startDate = this.daterangepicker.startDate.startOf('day'),
@@ -1061,7 +1062,7 @@ var PageViews = function (_Pv) {
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this11.writeMessage('No data found for the page <a href=\'' + _this11.getPageURL(article) + '\'>' + article + '</a>', true);
+            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a>: ' + i18nMessages.apiErrorNoData);
             articles = articles.filter(function (el) {
               return el !== article;
             });
@@ -1083,7 +1084,7 @@ var PageViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
+          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
         }
 
         /**
@@ -1102,7 +1103,7 @@ var PageViews = function (_Pv) {
         /** preserve order of datasets due to asyn calls */
         var sortedDatasets = new Array(articles.length);
         datasets.forEach(function (dataset) {
-          sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
+          sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
         });
 
         /** export built datasets to global scope Chart templates */
@@ -1171,7 +1172,17 @@ $(document).ready(function () {
   new PageViews();
 });
 
-},{"./config":1,"./shared/pv":4,"./shared/site_map":5}],3:[function(require,module,exports){
+},{"./config":1,"./shared/pv":5,"./shared/site_map":6}],3:[function(require,module,exports){
+'use strict';
+
+String.prototype.descore = function () {
+  return this.replace(/_/g, ' ');
+};
+String.prototype.score = function () {
+  return this.replace(/ /g, '_');
+};
+
+},{}],4:[function(require,module,exports){
 'use strict';
 
 // Array.includes function polyfill
@@ -1236,7 +1247,7 @@ if (!String.prototype.startsWith) {
   };
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -1773,7 +1784,7 @@ var Pv = function () {
 
 module.exports = Pv;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var siteMap = {
@@ -2675,7 +2686,7 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var templates = {
@@ -2685,4 +2696,4 @@ var templates = {
 
 module.exports = templates;
 
-},{}]},{},[3,4,5,2]);
+},{}]},{},[3,4,5,6,2]);
