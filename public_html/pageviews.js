@@ -1086,9 +1086,15 @@ var PageViews = function (_Pv) {
           return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
         }
 
-        /** `data` is actually response from first call, but all we need to get the labels */
-        if (data[0].items) {
-          labels = data[0].items.map(function (elem) {
+        /**
+         * `data` is actually response from first call, but all we need here
+         * Data structure differs if there was a single promise versus multiple
+         */
+        data = Array.isArray(data) ? data[0] : data;
+
+        /** fetch the labels for the x-axis */
+        if (data.items) {
+          labels = data.items.map(function (elem) {
             return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
           });
         }

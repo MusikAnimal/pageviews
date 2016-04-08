@@ -847,9 +847,15 @@ class PageViews extends Pv {
         );
       }
 
-      /** `data` is actually response from first call, but all we need to get the labels */
-      if (data[0].items) {
-        labels = data[0].items.map(elem => {
+      /**
+       * `data` is actually response from first call, but all we need here
+       * Data structure differs if there was a single promise versus multiple
+       */
+      data = Array.isArray(data) ? data[0] : data;
+
+      /** fetch the labels for the x-axis */
+      if (data.items) {
+        labels = data.items.map(elem => {
           return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
         });
       }
