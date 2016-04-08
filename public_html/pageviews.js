@@ -1060,6 +1060,13 @@ var PageViews = function (_Pv) {
           } else {
             datasets.push(_this11.getCircularData(data, article, index));
           }
+
+          /** fetch the labels for the x-axis on success if we haven't already */
+          if (data.items && !labels.length) {
+            labels = data.items.map(function (elem) {
+              return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
+            });
+          }
         }).fail(function (data) {
           if (data.status === 404) {
             _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a>: ' + i18nMessages.apiErrorNoData);
@@ -1077,7 +1084,7 @@ var PageViews = function (_Pv) {
         });
       });
 
-      (_$ = $).when.apply(_$, promises).done(function (data) {
+      (_$ = $).when.apply(_$, promises).always(function (data) {
         if (errors.length === articles.length) {
           /** something went wrong */
           $('.chart-container').removeClass('loading');
@@ -1085,19 +1092,6 @@ var PageViews = function (_Pv) {
             return '<li>' + error + '</li>';
           }).join('');
           return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
-        }
-
-        /**
-         * `data` is actually response from first call, but all we need here
-         * Data structure differs if there was a single promise versus multiple
-         */
-        data = Array.isArray(data) ? data[0] : data;
-
-        /** fetch the labels for the x-axis */
-        if (data.items) {
-          labels = data.items.map(function (elem) {
-            return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
-          });
         }
 
         /** preserve order of datasets due to asyn calls */

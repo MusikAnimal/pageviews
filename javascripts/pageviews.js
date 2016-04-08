@@ -823,6 +823,13 @@ class PageViews extends Pv {
         } else {
           datasets.push(this.getCircularData(data, article, index));
         }
+
+        /** fetch the labels for the x-axis on success if we haven't already */
+        if (data.items && !labels.length) {
+          labels = data.items.map(elem => {
+            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
+          });
+        }
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
@@ -840,7 +847,7 @@ class PageViews extends Pv {
       });
     });
 
-    $.when(...promises).done(data => {
+    $.when(...promises).always(data => {
       if (errors.length === articles.length) {
         /** something went wrong */
         $('.chart-container').removeClass('loading');
@@ -849,19 +856,6 @@ class PageViews extends Pv {
           `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`,
           true
         );
-      }
-
-      /**
-       * `data` is actually response from first call, but all we need here
-       * Data structure differs if there was a single promise versus multiple
-       */
-      data = Array.isArray(data) ? data[0] : data;
-
-      /** fetch the labels for the x-axis */
-      if (data.items) {
-        labels = data.items.map(elem => {
-          return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
-        });
       }
 
       /** preserve order of datasets due to asyn calls */
