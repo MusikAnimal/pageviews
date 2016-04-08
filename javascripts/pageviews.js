@@ -792,6 +792,7 @@ class PageViews extends Pv {
     let labels = []; // Labels (dates) for the x-axis.
     let datasets = []; // Data for each article timeseries
     let errors = []; // Queue up errors to show after all requests have been made
+    let promises = [];
 
     /**
      * Asynchronously collect the data from Analytics Query Service API,
@@ -805,10 +806,14 @@ class PageViews extends Pv {
         `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
-      $.ajax({
+      const promise = $.ajax({
         url: url,
         dataType: 'json'
-      }).success(data => {
+      });
+      promises.push(promise);
+
+      promise.success(data => {
+        // FIXME: these needs fixing too, sometimes doesn't show zero
         this.fillInZeros(data, startDate, endDate);
 
         /** Build the article's dataset. */
@@ -817,8 +822,6 @@ class PageViews extends Pv {
         } else {
           datasets.push(this.getCircularData(data, article, index));
         }
-
-        window.chartData = datasets;
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(`No data found for the page <a href='${this.getPageURL(article)}'>${article}</a>`, true);
@@ -831,50 +834,54 @@ class PageViews extends Pv {
         } else {
           errors.push(data.responseJSON.detail[0]);
         }
-      }).always(data => {
-        /** Get the labels from the first call. */
-        if (labels.length === 0 && data.items) {
-          labels = data.items.map(elem => {
-            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
-          });
-        }
-
-        /** When all article datasets have been collected, initialize the chart. */
-        if (articles.length && datasets.length === articles.length) {
-          /** preserve order of datasets due to asyn calls */
-          let sortedDatasets = new Array(articles.length);
-          datasets.forEach(dataset => {
-            sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
-          });
-
-          $('.chart-container').removeClass('loading');
-          const options = Object.assign({},
-            config.chartConfig[this.chartType].opts,
-            config.globalChartOpts
-          );
-          const linearData = {labels: labels, datasets: sortedDatasets};
-
-          $('.chart-container').html('');
-          $('.chart-container').append("<canvas class='aqs-chart'>");
-          const context = $(config.chart)[0].getContext('2d');
-
-          if (config.linearCharts.includes(this.chartType)) {
-            this.chartObj = new Chart(context)[this.chartType](linearData, options);
-          } else {
-            this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
-          }
-
-          $('#chart-legend').html(this.chartObj.generateLegend());
-          $('.data-links').show();
-        } else if (errors.length && datasets.length + errors.length === articles.length) {
-          /** something went wrong */
-          $('.chart-container').removeClass('loading');
-          const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
-          this.writeMessage(
-            `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`
-          );
-        }
       });
+    });
+
+    $.when(...promises).done(data => {
+      if (errors.length === articles.length) {
+        /** something went wrong */
+        $('.chart-container').removeClass('loading');
+        const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
+        return this.writeMessage(
+          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`
+        );
+      }
+
+      /** `data` is actually response from first call, but all we need to get the labels */
+      if (data[0].items) {
+        labels = data[0].items.map(elem => {
+          return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
+        });
+      }
+
+      /** preserve order of datasets due to asyn calls */
+      let sortedDatasets = new Array(articles.length);
+      datasets.forEach(dataset => {
+        sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
+      });
+
+      /** export built datasets to global scope Chart templates */
+      window.chartData = sortedDatasets;
+
+      $('.chart-container').removeClass('loading');
+      const options = Object.assign({},
+        config.chartConfig[this.chartType].opts,
+        config.globalChartOpts
+      );
+      const linearData = {labels: labels, datasets: sortedDatasets};
+
+      $('.chart-container').html('');
+      $('.chart-container').append("<canvas class='aqs-chart'>");
+      const context = $(config.chart)[0].getContext('2d');
+
+      if (config.linearCharts.includes(this.chartType)) {
+        this.chartObj = new Chart(context)[this.chartType](linearData, options);
+      } else {
+        this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
+      }
+
+      $('#chart-legend').html(this.chartObj.generateLegend());
+      $('.data-links').show();
     });
   }
 
