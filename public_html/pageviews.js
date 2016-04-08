@@ -1002,7 +1002,8 @@ var PageViews = function (_Pv) {
   }, {
     key: 'updateChart',
     value: function updateChart(force) {
-      var _this11 = this;
+      var _this11 = this,
+          _$;
 
       var articles = $(config.articleSelector).select2('val') || [];
 
@@ -1032,6 +1033,7 @@ var PageViews = function (_Pv) {
       var labels = []; // Labels (dates) for the x-axis.
       var datasets = []; // Data for each article timeseries
       var errors = []; // Queue up errors to show after all requests have been made
+      var promises = [];
 
       /**
        * Asynchronously collect the data from Analytics Query Service API,
@@ -1041,10 +1043,14 @@ var PageViews = function (_Pv) {
         var uriEncodedArticle = encodeURIComponent(article);
         /** @type {String} Url to query the API. */
         var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
-        $.ajax({
+        var promise = $.ajax({
           url: url,
           dataType: 'json'
-        }).success(function (data) {
+        });
+        promises.push(promise);
+
+        promise.success(function (data) {
+          // FIXME: these needs fixing too, sometimes doesn't show zero
           _this11.fillInZeros(data, startDate, endDate);
 
           /** Build the article's dataset. */
@@ -1053,8 +1059,6 @@ var PageViews = function (_Pv) {
           } else {
             datasets.push(_this11.getCircularData(data, article, index));
           }
-
-          window.chartData = datasets;
         }).fail(function (data) {
           if (data.status === 404) {
             _this11.writeMessage('No data found for the page <a href=\'' + _this11.getPageURL(article) + '\'>' + article + '</a>', true);
@@ -1069,49 +1073,57 @@ var PageViews = function (_Pv) {
           } else {
             errors.push(data.responseJSON.detail[0]);
           }
-        }).always(function (data) {
-          /** Get the labels from the first call. */
-          if (labels.length === 0 && data.items) {
-            labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
-            });
-          }
-
-          /** When all article datasets have been collected, initialize the chart. */
-          if (articles.length && datasets.length === articles.length) {
-            (function () {
-              /** preserve order of datasets due to asyn calls */
-              var sortedDatasets = new Array(articles.length);
-              datasets.forEach(function (dataset) {
-                sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
-              });
-
-              $('.chart-container').removeClass('loading');
-              var options = Object.assign({}, config.chartConfig[_this11.chartType].opts, config.globalChartOpts);
-              var linearData = { labels: labels, datasets: sortedDatasets };
-
-              $('.chart-container').html('');
-              $('.chart-container').append("<canvas class='aqs-chart'>");
-              var context = $(config.chart)[0].getContext('2d');
-
-              if (config.linearCharts.includes(_this11.chartType)) {
-                _this11.chartObj = new Chart(context)[_this11.chartType](linearData, options);
-              } else {
-                _this11.chartObj = new Chart(context)[_this11.chartType](sortedDatasets, options);
-              }
-
-              $('#chart-legend').html(_this11.chartObj.generateLegend());
-              $('.data-links').show();
-            })();
-          } else if (errors.length && datasets.length + errors.length === articles.length) {
-            /** something went wrong */
-            $('.chart-container').removeClass('loading');
-            var errorMessages = Array.from(new Set(errors)).map(function (error) {
-              return '<li>' + error + '</li>';
-            }).join('');
-            _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
-          }
         });
+      });
+
+      (_$ = $).when.apply(_$, promises).done(function (data) {
+        if (errors.length === articles.length) {
+          /** something went wrong */
+          $('.chart-container').removeClass('loading');
+          var errorMessages = Array.from(new Set(errors)).map(function (error) {
+            return '<li>' + error + '</li>';
+          }).join('');
+          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
+        }
+
+        /**
+         * `data` is actually response from first call, but all we need here
+         * Data structure differs if there was a single promise versus multiple
+         */
+        data = Array.isArray(data) ? data[0] : data;
+
+        /** fetch the labels for the x-axis */
+        if (data.items) {
+          labels = data.items.map(function (elem) {
+            return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
+          });
+        }
+
+        /** preserve order of datasets due to asyn calls */
+        var sortedDatasets = new Array(articles.length);
+        datasets.forEach(function (dataset) {
+          sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
+        });
+
+        /** export built datasets to global scope Chart templates */
+        window.chartData = sortedDatasets;
+
+        $('.chart-container').removeClass('loading');
+        var options = Object.assign({}, config.chartConfig[_this11.chartType].opts, config.globalChartOpts);
+        var linearData = { labels: labels, datasets: sortedDatasets };
+
+        $('.chart-container').html('');
+        $('.chart-container').append("<canvas class='aqs-chart'>");
+        var context = $(config.chart)[0].getContext('2d');
+
+        if (config.linearCharts.includes(_this11.chartType)) {
+          _this11.chartObj = new Chart(context)[_this11.chartType](linearData, options);
+        } else {
+          _this11.chartObj = new Chart(context)[_this11.chartType](sortedDatasets, options);
+        }
+
+        $('#chart-legend').html(_this11.chartObj.generateLegend());
+        $('.data-links').show();
       });
     }
 
