@@ -477,7 +477,7 @@ var PageViews = function (_Pv) {
         var chunk = chunks[i].split('=');
 
         if (chunk[0] === 'pages') {
-          params.pages = chunk[1].split('|');
+          params.pages = chunk[1].split(/\||%7C/);
         } else {
           params[chunk[0]] = chunk[1];
         }
