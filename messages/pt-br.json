@@ -4,6 +4,7 @@
 			"Luk3"
 		]
 	},
+	"title": "Análise de Visitas da Página",
 	"dates": "Datas",
 	"latest-days": "Últimos $1 dias",
 	"last-week": "Semana passada",
@@ -28,6 +29,7 @@
 	"hosted": "Hospedado com $1 em $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "Perguntas frequentes",
+	"disclaimer": "Exoneração de responsabilidade",
 	"url-structure": "Estrutura de URL",
 	"view-source": "Ver código-fonte",
 	"report-issue": "Comunicar um problema",

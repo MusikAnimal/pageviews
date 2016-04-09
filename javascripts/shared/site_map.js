@@ -839,7 +839,7 @@ const siteMap = {
   'labtestwiki': 'labtestwikitech.wikimedia.org',
   'legalteamwiki': 'legalteam.wikimedia.org',
   'loginwiki': 'login.wikimedia.org',
-  'mediawikiwiki': 'www.mediawiki.org',
+  'mediawikiwiki': 'mediawiki.org',
   'metawiki': 'meta.wikimedia.org',
   'mkwikimedia': 'mk.wikimedia.org',
   'movementroleswiki': 'movementroles.wikimedia.org',

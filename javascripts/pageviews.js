@@ -200,7 +200,7 @@ class PageViews extends Pv {
 
     return Object.assign(
       {
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         value: values.reduce((a, b) => a + b)
       },
       config.chartConfig[this.chartType].dataset(color)
@@ -240,7 +240,7 @@ class PageViews extends Pv {
 
     return Object.assign(
       {
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         data: values,
         sum: values.reduce((a, b) => a + b)
       },
@@ -371,7 +371,7 @@ class PageViews extends Pv {
       if (data && data.query && data.query.prefixsearch.length) {
         results = data.query.prefixsearch.map(function(elem) {
           return {
-            id: elem.title.replace(/ /g, '_'),
+            id: elem.title.score(),
             text: elem.title
           };
         });
@@ -380,7 +380,7 @@ class PageViews extends Pv {
       if (data && data[1].length) {
         results = data[1].map(elem => {
           return {
-            id: elem.replace(/ /g, '_'),
+            id: elem.score(),
             text: elem
           };
         });
@@ -780,6 +780,7 @@ class PageViews extends Pv {
 
     this.params = location.hash;
     this.prevChartType = this.chartType;
+    this.clearMessages(); // clear out old error messages
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate.startOf('day'),
@@ -792,6 +793,7 @@ class PageViews extends Pv {
     let labels = []; // Labels (dates) for the x-axis.
     let datasets = []; // Data for each article timeseries
     let errors = []; // Queue up errors to show after all requests have been made
+    let promises = [];
 
     /**
      * Asynchronously collect the data from Analytics Query Service API,
@@ -799,21 +801,20 @@ class PageViews extends Pv {
      */
     articles.forEach((article, index) => {
       const uriEncodedArticle = encodeURIComponent(article);
-      let projectForQuery = this.project;
-      // Remove www hostnames since the pageviews API doesn't expect them.
-      if ( projectForQuery.startsWith('www.') ) {
-        projectForQuery = projectForQuery.substring(4);
-      }
       /** @type {String} Url to query the API. */
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${projectForQuery}` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
         `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
-      $.ajax({
+      const promise = $.ajax({
         url: url,
         dataType: 'json'
-      }).success(data => {
+      });
+      promises.push(promise);
+
+      promise.success(data => {
+        // FIXME: these needs fixing too, sometimes doesn't show zero
         this.fillInZeros(data, startDate, endDate);
 
         /** Build the article's dataset. */
@@ -823,10 +824,17 @@ class PageViews extends Pv {
           datasets.push(this.getCircularData(data, article, index));
         }
 
-        window.chartData = datasets;
+        /** fetch the labels for the x-axis on success if we haven't already */
+        if (data.items && !labels.length) {
+          labels = data.items.map(elem => {
+            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
+          });
+        }
       }).fail(data => {
         if (data.status === 404) {
-          this.writeMessage(`No data found for the page <a href='${this.getPageURL(article)}'>${article}</a>`, true);
+          this.writeMessage(
+            `<a href='${this.getPageURL(article)}'>${article.descore()}</a>: ${i18nMessages.apiErrorNoData}`
+          );
           articles = articles.filter(el => el !== article);
 
           if (!articles.length) {
@@ -836,50 +844,48 @@ class PageViews extends Pv {
         } else {
           errors.push(data.responseJSON.detail[0]);
         }
-      }).always(data => {
-        /** Get the labels from the first call. */
-        if (labels.length === 0 && data.items) {
-          labels = data.items.map(elem => {
-            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
-          });
-        }
-
-        /** When all article datasets have been collected, initialize the chart. */
-        if (articles.length && datasets.length === articles.length) {
-          /** preserve order of datasets due to asyn calls */
-          let sortedDatasets = new Array(articles.length);
-          datasets.forEach(dataset => {
-            sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
-          });
-
-          $('.chart-container').removeClass('loading');
-          const options = Object.assign({},
-            config.chartConfig[this.chartType].opts,
-            config.globalChartOpts
-          );
-          const linearData = {labels: labels, datasets: sortedDatasets};
-
-          $('.chart-container').html('');
-          $('.chart-container').append("<canvas class='aqs-chart'>");
-          const context = $(config.chart)[0].getContext('2d');
-
-          if (config.linearCharts.includes(this.chartType)) {
-            this.chartObj = new Chart(context)[this.chartType](linearData, options);
-          } else {
-            this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
-          }
-
-          $('#chart-legend').html(this.chartObj.generateLegend());
-          $('.data-links').show();
-        } else if (errors.length && datasets.length + errors.length === articles.length) {
-          /** something went wrong */
-          $('.chart-container').removeClass('loading');
-          const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
-          this.writeMessage(
-            `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`
-          );
-        }
       });
+    });
+
+    $.when(...promises).always(data => {
+      if (errors.length === articles.length) {
+        /** something went wrong */
+        $('.chart-container').removeClass('loading');
+        const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
+        return this.writeMessage(
+          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`,
+          true
+        );
+      }
+
+      /** preserve order of datasets due to asyn calls */
+      let sortedDatasets = new Array(articles.length);
+      datasets.forEach(dataset => {
+        sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
+      });
+
+      /** export built datasets to global scope Chart templates */
+      window.chartData = sortedDatasets;
+
+      $('.chart-container').removeClass('loading');
+      const options = Object.assign({},
+        config.chartConfig[this.chartType].opts,
+        config.globalChartOpts
+      );
+      const linearData = {labels: labels, datasets: sortedDatasets};
+
+      $('.chart-container').html('');
+      $('.chart-container').append("<canvas class='aqs-chart'>");
+      const context = $(config.chart)[0].getContext('2d');
+
+      if (config.linearCharts.includes(this.chartType)) {
+        this.chartObj = new Chart(context)[this.chartType](linearData, options);
+      } else {
+        this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
+      }
+
+      $('#chart-legend').html(this.chartObj.generateLegend());
+      $('.data-links').show();
     });
   }
 
@@ -888,7 +894,14 @@ class PageViews extends Pv {
    * @returns {boolean} whether the currently input project is valid
    */
   validateProject() {
-    const project = $(config.projectInput).val();
+    let project = $(config.projectInput).val();
+
+    /** Remove www hostnames since the pageviews API doesn't expect them. */
+    if (project.startsWith('www.')) {
+      project = project.substring(4);
+      $(config.projectInput).val(project);
+    }
+
     if (siteDomains.includes(project)) {
       $('.validate').remove();
       $('.select2-selection--multiple').removeClass('disabled');

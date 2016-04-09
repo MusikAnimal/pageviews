@@ -1,6 +1,16 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+String.prototype.descore = function () {
+  return this.replace(/_/g, ' ');
+};
+String.prototype.score = function () {
+  return this.replace(/ /g, '_');
+};
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
 // Array.includes function polyfill
 // This is not a full implementation, just a shorthand to indexOf !== -1
 if (!Array.prototype.includes) {
@@ -55,7 +65,15 @@ if (!('remove' in Element.prototype)) {
   };
 }
 
-},{}],2:[function(require,module,exports){
+// String.startsWith
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString, position) {
+    position = position || 0;
+    return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -610,7 +628,7 @@ var Pv = function () {
 
 module.exports = Pv;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 var siteMap = {
@@ -1454,7 +1472,7 @@ var siteMap = {
   'labtestwiki': 'labtestwikitech.wikimedia.org',
   'legalteamwiki': 'legalteam.wikimedia.org',
   'loginwiki': 'login.wikimedia.org',
-  'mediawikiwiki': 'www.mediawiki.org',
+  'mediawikiwiki': 'mediawiki.org',
   'metawiki': 'meta.wikimedia.org',
   'mkwikimedia': 'mk.wikimedia.org',
   'movementroleswiki': 'movementroles.wikimedia.org',
@@ -1512,7 +1530,7 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var pv = require('../shared/pv');
@@ -1547,7 +1565,7 @@ var config = {
 };
 module.exports = config;
 
-},{"../shared/pv":2}],5:[function(require,module,exports){
+},{"../shared/pv":3}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2164,4 +2182,4 @@ $(document).ready(function () {
   new TopViews();
 });
 
-},{"../shared/pv":2,"../shared/site_map":3,"./config":4}]},{},[1,2,3,5]);
+},{"../shared/pv":3,"../shared/site_map":4,"./config":5}]},{},[1,2,3,4,6]);

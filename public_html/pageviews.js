@@ -135,7 +135,7 @@ var config = {
 };
 module.exports = config;
 
-},{"./shared/pv":4,"./templates":6}],2:[function(require,module,exports){
+},{"./shared/pv":5,"./templates":7}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -379,7 +379,7 @@ var PageViews = function (_Pv) {
           color = config.colors[index];
 
       return Object.assign({
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         value: values.reduce(function (a, b) {
           return a + b;
         })
@@ -426,7 +426,7 @@ var PageViews = function (_Pv) {
           color = config.colors[index % 10];
 
       return Object.assign({
-        label: article.replace(/_/g, ' '),
+        label: article.descore(),
         data: values,
         sum: values.reduce(function (a, b) {
           return a + b;
@@ -573,7 +573,7 @@ var PageViews = function (_Pv) {
         if (data && data.query && data.query.prefixsearch.length) {
           results = data.query.prefixsearch.map(function (elem) {
             return {
-              id: elem.title.replace(/ /g, '_'),
+              id: elem.title.score(),
               text: elem.title
             };
           });
@@ -582,7 +582,7 @@ var PageViews = function (_Pv) {
         if (data && data[1].length) {
           results = data[1].map(function (elem) {
             return {
-              id: elem.replace(/ /g, '_'),
+              id: elem.score(),
               text: elem
             };
           });
@@ -1002,7 +1002,8 @@ var PageViews = function (_Pv) {
   }, {
     key: 'updateChart',
     value: function updateChart(force) {
-      var _this11 = this;
+      var _this11 = this,
+          _$;
 
       var articles = $(config.articleSelector).select2('val') || [];
 
@@ -1020,6 +1021,7 @@ var PageViews = function (_Pv) {
 
       this.params = location.hash;
       this.prevChartType = this.chartType;
+      this.clearMessages(); // clear out old error messages
 
       /** Collect parameters from inputs. */
       var startDate = this.daterangepicker.startDate.startOf('day'),
@@ -1032,6 +1034,7 @@ var PageViews = function (_Pv) {
       var labels = []; // Labels (dates) for the x-axis.
       var datasets = []; // Data for each article timeseries
       var errors = []; // Queue up errors to show after all requests have been made
+      var promises = [];
 
       /**
        * Asynchronously collect the data from Analytics Query Service API,
@@ -1039,17 +1042,16 @@ var PageViews = function (_Pv) {
        */
       articles.forEach(function (article, index) {
         var uriEncodedArticle = encodeURIComponent(article);
-        var projectForQuery = _this11.project;
-        // Remove www hostnames since the pageviews API doesn't expect them.
-        if (projectForQuery.startsWith('www.')) {
-          projectForQuery = projectForQuery.substring(4);
-        }
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + projectForQuery + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
-        $.ajax({
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var promise = $.ajax({
           url: url,
           dataType: 'json'
-        }).success(function (data) {
+        });
+        promises.push(promise);
+
+        promise.success(function (data) {
+          // FIXME: these needs fixing too, sometimes doesn't show zero
           _this11.fillInZeros(data, startDate, endDate);
 
           /** Build the article's dataset. */
@@ -1059,10 +1061,15 @@ var PageViews = function (_Pv) {
             datasets.push(_this11.getCircularData(data, article, index));
           }
 
-          window.chartData = datasets;
+          /** fetch the labels for the x-axis on success if we haven't already */
+          if (data.items && !labels.length) {
+            labels = data.items.map(function (elem) {
+              return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
+            });
+          }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this11.writeMessage('No data found for the page <a href=\'' + _this11.getPageURL(article) + '\'>' + article + '</a>', true);
+            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a>: ' + i18nMessages.apiErrorNoData);
             articles = articles.filter(function (el) {
               return el !== article;
             });
@@ -1074,49 +1081,44 @@ var PageViews = function (_Pv) {
           } else {
             errors.push(data.responseJSON.detail[0]);
           }
-        }).always(function (data) {
-          /** Get the labels from the first call. */
-          if (labels.length === 0 && data.items) {
-            labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
-            });
-          }
-
-          /** When all article datasets have been collected, initialize the chart. */
-          if (articles.length && datasets.length === articles.length) {
-            (function () {
-              /** preserve order of datasets due to asyn calls */
-              var sortedDatasets = new Array(articles.length);
-              datasets.forEach(function (dataset) {
-                sortedDatasets[articles.indexOf(dataset.label.replace(/ /g, '_'))] = dataset;
-              });
-
-              $('.chart-container').removeClass('loading');
-              var options = Object.assign({}, config.chartConfig[_this11.chartType].opts, config.globalChartOpts);
-              var linearData = { labels: labels, datasets: sortedDatasets };
-
-              $('.chart-container').html('');
-              $('.chart-container').append("<canvas class='aqs-chart'>");
-              var context = $(config.chart)[0].getContext('2d');
-
-              if (config.linearCharts.includes(_this11.chartType)) {
-                _this11.chartObj = new Chart(context)[_this11.chartType](linearData, options);
-              } else {
-                _this11.chartObj = new Chart(context)[_this11.chartType](sortedDatasets, options);
-              }
-
-              $('#chart-legend').html(_this11.chartObj.generateLegend());
-              $('.data-links').show();
-            })();
-          } else if (errors.length && datasets.length + errors.length === articles.length) {
-            /** something went wrong */
-            $('.chart-container').removeClass('loading');
-            var errorMessages = Array.from(new Set(errors)).map(function (error) {
-              return '<li>' + error + '</li>';
-            }).join('');
-            _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact);
-          }
         });
+      });
+
+      (_$ = $).when.apply(_$, promises).always(function (data) {
+        if (errors.length === articles.length) {
+          /** something went wrong */
+          $('.chart-container').removeClass('loading');
+          var errorMessages = Array.from(new Set(errors)).map(function (error) {
+            return '<li>' + error + '</li>';
+          }).join('');
+          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
+        }
+
+        /** preserve order of datasets due to asyn calls */
+        var sortedDatasets = new Array(articles.length);
+        datasets.forEach(function (dataset) {
+          sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
+        });
+
+        /** export built datasets to global scope Chart templates */
+        window.chartData = sortedDatasets;
+
+        $('.chart-container').removeClass('loading');
+        var options = Object.assign({}, config.chartConfig[_this11.chartType].opts, config.globalChartOpts);
+        var linearData = { labels: labels, datasets: sortedDatasets };
+
+        $('.chart-container').html('');
+        $('.chart-container').append("<canvas class='aqs-chart'>");
+        var context = $(config.chart)[0].getContext('2d');
+
+        if (config.linearCharts.includes(_this11.chartType)) {
+          _this11.chartObj = new Chart(context)[_this11.chartType](linearData, options);
+        } else {
+          _this11.chartObj = new Chart(context)[_this11.chartType](sortedDatasets, options);
+        }
+
+        $('#chart-legend').html(_this11.chartObj.generateLegend());
+        $('.data-links').show();
       });
     }
 
@@ -1129,6 +1131,13 @@ var PageViews = function (_Pv) {
     key: 'validateProject',
     value: function validateProject() {
       var project = $(config.projectInput).val();
+
+      /** Remove www hostnames since the pageviews API doesn't expect them. */
+      if (project.startsWith('www.')) {
+        project = project.substring(4);
+        $(config.projectInput).val(project);
+      }
+
       if (siteDomains.includes(project)) {
         $('.validate').remove();
         $('.select2-selection--multiple').removeClass('disabled');
@@ -1157,7 +1166,17 @@ $(document).ready(function () {
   new PageViews();
 });
 
-},{"./config":1,"./shared/pv":4,"./shared/site_map":5}],3:[function(require,module,exports){
+},{"./config":1,"./shared/pv":5,"./shared/site_map":6}],3:[function(require,module,exports){
+'use strict';
+
+String.prototype.descore = function () {
+  return this.replace(/_/g, ' ');
+};
+String.prototype.score = function () {
+  return this.replace(/ /g, '_');
+};
+
+},{}],4:[function(require,module,exports){
 'use strict';
 
 // Array.includes function polyfill
@@ -1214,7 +1233,15 @@ if (!('remove' in Element.prototype)) {
   };
 }
 
-},{}],4:[function(require,module,exports){
+// String.startsWith
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString, position) {
+    position = position || 0;
+    return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -1769,7 +1796,7 @@ var Pv = function () {
 
 module.exports = Pv;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var siteMap = {
@@ -2613,7 +2640,7 @@ var siteMap = {
   'labtestwiki': 'labtestwikitech.wikimedia.org',
   'legalteamwiki': 'legalteam.wikimedia.org',
   'loginwiki': 'login.wikimedia.org',
-  'mediawikiwiki': 'www.mediawiki.org',
+  'mediawikiwiki': 'mediawiki.org',
   'metawiki': 'meta.wikimedia.org',
   'mkwikimedia': 'mk.wikimedia.org',
   'movementroleswiki': 'movementroles.wikimedia.org',
@@ -2671,7 +2698,7 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var templates = {
@@ -2681,4 +2708,4 @@ var templates = {
 
 module.exports = templates;
 
-},{}]},{},[3,4,5,2]);
+},{}]},{},[3,4,5,6,2]);

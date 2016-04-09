@@ -5,7 +5,8 @@
 			"Liuxinyu970226",
 			"Nike",
 			"Robby",
-			"Wladek92"
+			"Wladek92",
+			"LordMsz"
 		]
 	},
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
@@ -102,7 +103,8 @@
 	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
 	"api-error": "General message saying something went wrong with the API",
 	"api-error-contact": "Message to contact the maintainers about the API error",
-	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page.",
+	"api-error-no-data": "When the API returned no data",
+	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews-test/)",
 	"excluded-pages": "Pages that are excluded from the Topviews list",
 	"show-more": "Link to reveal more of the Topviews data"
 }
