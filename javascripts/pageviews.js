@@ -16,12 +16,12 @@ class PageViews extends Pv {
   constructor() {
     super();
 
-    this.autocomplete = localStorage['pageviews-settings-autocomplete'] || config.defaults.autocomplete;
+    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
     this.chartObj = null;
-    this.chartType = localStorage['pageviews-chart-preference'] || config.defaults.chartType;
-    this.localizeDateFormat = localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat;
+    this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
+    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    this.numericalFormatting = localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting;
+    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.params = null;
     this.prevChartType = null;
     this.specialRange = null;
@@ -351,7 +351,7 @@ class PageViews extends Pv {
         params.pages = data;
 
         if (params.pages.length === 1) {
-          this.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
+          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
         }
 
         this.setArticleSelectorDefaults(this.underscorePageNames(params.pages));

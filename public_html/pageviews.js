@@ -170,12 +170,12 @@ var PageViews = function (_Pv) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PageViews).call(this));
 
-    _this.autocomplete = localStorage['pageviews-settings-autocomplete'] || config.defaults.autocomplete;
+    _this.autocomplete = _this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
     _this.chartObj = null;
-    _this.chartType = localStorage['pageviews-chart-preference'] || config.defaults.chartType;
-    _this.localizeDateFormat = localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat;
+    _this.chartType = _this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
+    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     _this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    _this.numericalFormatting = localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting;
+    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     _this.params = null;
     _this.prevChartType = null;
     _this.specialRange = null;
@@ -550,7 +550,7 @@ var PageViews = function (_Pv) {
           params.pages = data;
 
           if (params.pages.length === 1) {
-            _this4.chartType = localStorage['pageviews-chart-preference'] || 'Bar';
+            _this4.chartType = _this4.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
           }
 
           _this4.setArticleSelectorDefaults(_this4.underscorePageNames(params.pages));
@@ -1738,6 +1738,24 @@ var Pv = function () {
         this.clearMessages();
       }
       return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
+    }
+
+    /**
+     * Get a value from localStorage
+     * @param {string} key - key for the value to retrieve
+     * @returns {Mixed} stored value or null if localStorage is unsupported or disabled
+     */
+
+  }, {
+    key: 'getFromLocalStorage',
+    value: function getFromLocalStorage(key) {
+      // See if localStorage is supported and enabled
+      try {
+        window.localStorage;
+      } catch (err) {
+        return null;
+      }
+      return window.localStorage[key];
     }
   }, {
     key: 'dateFormat',
