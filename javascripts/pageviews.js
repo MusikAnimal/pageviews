@@ -176,7 +176,7 @@ class PageViews extends Pv {
       if (alreadyThere[date]) {
         data.items.push(alreadyThere[date]);
       } else {
-        let edgeCase = endDate.isSame(config.maxDate) || endDate.isSame(config.maxDate.subtract(1, 'days'));
+        let edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
         data.items.push({
           timestamp: date.format(config.timestampFormat),
           views: edgeCase ? null : 0
@@ -277,7 +277,7 @@ class PageViews extends Pv {
    * @returns {Object} key/value pairs representation of URL hash
    */
   parseHashParams() {
-    const uri = decodeURI(location.hash.slice(1)),
+    const uri = location.hash.slice(1),
       chunks = uri.split('&');
     let params = {};
 
@@ -417,7 +417,9 @@ class PageViews extends Pv {
     }
 
     if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, 'Pageviews comparsion', `#${$.param(state)}&pages=${pages.join('|')}`);
+      window.history.replaceState({}, 'Pageviews comparsion',
+        `#${$.param(state)}&pages=${pages.join('|').replace(/[&%]/g, escape)}`
+      );
     }
 
     return state;
@@ -833,7 +835,7 @@ class PageViews extends Pv {
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore()}</a>: ${i18nMessages.apiErrorNoData}`
+            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${i18nMessages.apiErrorNoData}`
           );
           articles = articles.filter(el => el !== article);
 
@@ -848,7 +850,9 @@ class PageViews extends Pv {
     });
 
     $.when(...promises).always(data => {
-      if (errors.length === articles.length) {
+      $('#chart-legend').html(''); // clear old chart legend
+
+      if (errors.length && errors.length === articles.length) {
         /** something went wrong */
         $('.chart-container').removeClass('loading');
         const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
@@ -857,6 +861,8 @@ class PageViews extends Pv {
           true
         );
       }
+
+      if (!articles.length) return;
 
       /** preserve order of datasets due to asyn calls */
       let sortedDatasets = new Array(articles.length);
