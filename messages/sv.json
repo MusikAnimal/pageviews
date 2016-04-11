@@ -98,5 +98,8 @@
 	"select2-searching": "Söker...",
 	"help-translate": "Hjälp till att översätta",
 	"api-error": "Ett problem uppstod när data skulle läsas in från API.",
-	"api-error-contact": "Rapportera detta fel till utvecklarna."
+	"api-error-contact": "Rapportera detta fel till utvecklarna.",
+	"api-error-no-data": "Ingen data hittades.",
+	"excluded-pages": "Exkluderade sidor",
+	"show-more": "Visa mer"
 }

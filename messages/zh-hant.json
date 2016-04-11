@@ -99,6 +99,7 @@
 	"help-translate": "協助翻譯",
 	"api-error": "API載入資料出現問題。",
 	"api-error-contact": "將此問題回報給維護人員。",
+	"api-error-no-data": "查無資料",
 	"topviews-title": "最多瀏覽分析",
 	"excluded-pages": "除外頁面",
 	"show-more": "顯示更多內容"

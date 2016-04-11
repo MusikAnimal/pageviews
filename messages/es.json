@@ -100,6 +100,7 @@
 	"help-translate": "Ayúdanos a traducir",
 	"api-error": "Hubo un problema al cargar los datos de la API.",
 	"api-error-contact": "Informa este problema al personal de mantenimiento.",
+	"api-error-no-data": "No se encontraron resultados.",
 	"topviews-title": "Análisis de las más vistas",
 	"excluded-pages": "Páginas excluidas",
 	"show-more": "Mostrar más"

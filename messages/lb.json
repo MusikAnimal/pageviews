@@ -65,6 +65,7 @@
 	"select2-searching": "Sichen...",
 	"help-translate": "Hëlleft iwwersetzen",
 	"api-error": "Et gpouf e Problem beim Luede vun Donnéeën vun der API.",
+	"api-error-no-data": "Keng Donnéeë fonnt.",
 	"excluded-pages": "Ausgeschloss Säiten",
 	"show-more": "Méi weisen"
 }

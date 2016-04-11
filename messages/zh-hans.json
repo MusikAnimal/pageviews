@@ -98,6 +98,7 @@
 	"help-translate": "帮助翻译",
 	"api-error": "从API载入数据时出现问题。",
 	"api-error-contact": "请将此问题报告给维护人员。",
+	"api-error-no-data": "找不到数据。",
 	"topviews-title": "最多浏览分析",
 	"excluded-pages": "排除的页面",
 	"show-more": "显示更多"
