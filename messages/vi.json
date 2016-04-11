@@ -46,8 +46,13 @@
 	"pie": "Tròn",
 	"settings-notice": "Các thiết lập của bạn sẽ được ghi nhớ trên trình duyệt này và máy tính này.",
 	"search-method": "Phương pháp tìm kiếm:",
+	"autocompletion": "Autocomplete ($1)",
+	"prefixsearch": "prefixsearch",
+	"opensearch": "opensearch",
+	"no-autocompletion": "Tắt autocomplete",
 	"other-options": "Tuỳ chọn khác:",
 	"format-numbers": "Định dạng dữ liệu dạng số",
+	"localize-dates": "Địa phương hoá định dạng ngày tháng",
 	"cancel": "Hủy bỏ",
 	"save": "Lưu",
 	"apply": "Áp dụng",
@@ -84,5 +89,11 @@
 	"select2-max-items": "Bạn chỉ được chọn tối đa $1 mục",
 	"select2-no-results": "Không tìm thấy kết quả",
 	"select2-searching": "Đang tìm…",
-	"help-translate": "Giúp biên dịch"
+	"help-translate": "Giúp biên dịch",
+	"api-error": "Gặp vấn đề trong lúc tải dữ liệu từ API.",
+	"api-error-contact": "Xin hãy báo cáo lỗi này đến người bảo quản.",
+	"api-error-no-data": "Không tìm thấy dữ liệu nào.",
+	"topviews-title": "Phân tích các trang được xem nhiều nhất",
+	"excluded-pages": "Các trang đã loại ra",
+	"show-more": "Hiện thêm"
 }

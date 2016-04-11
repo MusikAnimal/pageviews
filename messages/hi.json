@@ -96,5 +96,6 @@
 	"select2-max-items": "आप केवल $1 वस्तु चुन सकते हो",
 	"select2-no-results": "कोई परिणाम नहीं मिले",
 	"select2-searching": "खोज रहा...",
-	"help-translate": "अनुवाद में सहायता करें"
+	"help-translate": "अनुवाद में सहायता करें",
+	"api-error-no-data": "कोई डाटा नहीं मिला।"
 }

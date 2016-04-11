@@ -351,7 +351,7 @@ var PageViews = function (_Pv) {
         if (alreadyThere[date]) {
           data.items.push(alreadyThere[date]);
         } else {
-          var edgeCase = endDate.isSame(config.maxDate) || endDate.isSame(config.maxDate.subtract(1, 'days'));
+          var edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
           data.items.push({
             timestamp: date.format(config.timestampFormat),
             views: edgeCase ? null : 0
@@ -469,7 +469,7 @@ var PageViews = function (_Pv) {
   }, {
     key: 'parseHashParams',
     value: function parseHashParams() {
-      var uri = decodeURI(location.hash.slice(1)),
+      var uri = location.hash.slice(1),
           chunks = uri.split('&');
       var params = {};
 
@@ -477,7 +477,7 @@ var PageViews = function (_Pv) {
         var chunk = chunks[i].split('=');
 
         if (chunk[0] === 'pages') {
-          params.pages = chunk[1].split('|');
+          params.pages = chunk[1].split(/\||%7C/);
         } else {
           params[chunk[0]] = chunk[1];
         }
@@ -622,7 +622,7 @@ var PageViews = function (_Pv) {
       }
 
       if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, 'Pageviews comparsion', '#' + $.param(state) + '&pages=' + pages.join('|'));
+        window.history.replaceState({}, 'Pageviews comparsion', '#' + $.param(state) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
       }
 
       return state;
@@ -1069,7 +1069,7 @@ var PageViews = function (_Pv) {
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a>: ' + i18nMessages.apiErrorNoData);
+            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
             articles = articles.filter(function (el) {
               return el !== article;
             });
@@ -1085,7 +1085,9 @@ var PageViews = function (_Pv) {
       });
 
       (_$ = $).when.apply(_$, promises).always(function (data) {
-        if (errors.length === articles.length) {
+        $('#chart-legend').html(''); // clear old chart legend
+
+        if (errors.length && errors.length === articles.length) {
           /** something went wrong */
           $('.chart-container').removeClass('loading');
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
@@ -1093,6 +1095,8 @@ var PageViews = function (_Pv) {
           }).join('');
           return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
         }
+
+        if (!articles.length) return;
 
         /** preserve order of datasets due to asyn calls */
         var sortedDatasets = new Array(articles.length);

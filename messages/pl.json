@@ -87,5 +87,6 @@
 	"select2-no-results": "Brak wyników",
 	"select2-searching": "Wyszukiwanie...",
 	"help-translate": "Pomóż w tłumaczeniu",
+	"api-error-no-data": "Nie znaleziono danych.",
 	"show-more": "Pokaż więcej"
 }

@@ -1,7 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Green Zero"
+			"Green Zero",
+			"Piramidion",
+			"Visem"
 		]
 	},
 	"title": "Аналіз кількості переглядів сторінок",
@@ -95,5 +97,8 @@
 	"select2-max-items": "Ви можете обрати тільки $1 пункт",
 	"select2-no-results": "Нічого не знайдено",
 	"select2-searching": "Пошук…",
-	"help-translate": "Допоможіть перекласти"
+	"help-translate": "Допоможіть перекласти",
+	"api-error": "Виникла проблема із завантаженням даних з API.",
+	"api-error-contact": "Будь ласка, повідомте про цю проблему розробникам.",
+	"show-more": "Показати більше"
 }

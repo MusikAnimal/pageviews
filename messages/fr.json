@@ -102,8 +102,9 @@
 	"select2-no-results": "Aucun résultat trouvé",
 	"select2-searching": "Recherche en cours...",
 	"help-translate": "Aider à traduire",
-	"api-error": "Il y a eu un problème au chargement des données depuis l’API.",
+	"api-error": "Il y a eu un problème au chargement des données par l’API.",
 	"api-error-contact": "Veuillez signaler ce problème aux mainteneurs.",
+	"api-error-no-data": "Aucune donnée trouvée.",
 	"topviews-title": "Analyse générale",
 	"excluded-pages": "Pages exclues",
 	"show-more": "Afficher plus"
