@@ -451,6 +451,21 @@ class Pv {
       `<div class='error-message'>${message}</div>`
     );
   }
+
+  /**
+   * Get a value from localStorage
+   * @param {string} key - key for the value to retrieve
+   * @returns {Mixed} stored value or null if localStorage is unsupported or disabled
+   */
+  getFromLocalStorage(key) {
+    // See if localStorage is supported and enabled
+    try {
+      window.localStorage;
+    } catch (err) {
+      return null;
+    }
+    return window.localStorage[key];
+  }
 }
 
 module.exports = Pv;
