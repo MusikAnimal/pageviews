@@ -455,16 +455,15 @@ class Pv {
   /**
    * Get a value from localStorage
    * @param {string} key - key for the value to retrieve
-   * @returns {Mixed} stored value or null if localStorage is unsupported or disabled
+   * @returns {Mixed} stored value or null if localStorage is disabled or key is not set
    */
   getFromLocalStorage(key) {
     // See if localStorage is supported and enabled
     try {
-      window.localStorage;
+      return localStorage.getItem(key);
     } catch (err) {
       return null;
     }
-    return window.localStorage[key];
   }
 }
 

@@ -29,10 +29,10 @@ const config = {
       },
       dataset(color) {
         return {
-          fillColor: pv.rgba(color, .5),
-          highlightFill: pv.rgba(color, .75),
+          fillColor: pv.rgba(color, 0.5),
+          highlightFill: pv.rgba(color, 0.75),
           highlightStroke: color,
-          strokeColor: pv.rgba(color, .8)
+          strokeColor: pv.rgba(color, 0.8)
         };
       }
     },
