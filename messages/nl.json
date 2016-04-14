@@ -80,5 +80,6 @@
 	"select2-max-items": "U kunt maximaal $1 items selecteren",
 	"select2-no-results": "Geen resultaten gevonden",
 	"select2-searching": "Zoeken...",
-	"help-translate": "Helpen met vertalen"
+	"help-translate": "Helpen met vertalen",
+	"api-error-no-data": "Geen gegevens gevonden."
 }
