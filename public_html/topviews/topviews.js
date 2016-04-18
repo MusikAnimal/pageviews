@@ -87,6 +87,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Pv = function () {
   function Pv() {
     _classCallCheck(this, Pv);
+
+    this.storage = {}; // used as fallback when localStorage is not supported
+
+    if (location.host === 'localhost') {
+      window.app = this;
+    }
   }
 
   _createClass(Pv, [{
@@ -373,6 +379,20 @@ var Pv = function () {
     }
 
     /**
+     * Generate a unique hash code from given string
+     * @param  {String} str - to be hashed
+     * @return {String} the hash
+     */
+
+  }, {
+    key: 'hashCode',
+    value: function hashCode(str) {
+      return str.split('').reduce(function (prevHash, currVal) {
+        return (prevHash << 5) - prevHash + currVal.charCodeAt(0);
+      }, 0);
+    }
+
+    /**
      * Check if Intl is supported
      *
      * @returns {boolean} whether the browser (presumably) supports date locale operations
@@ -542,6 +562,72 @@ var Pv = function () {
     }
 
     /**
+     * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
+     *
+     * Same as _.debounce but queues and executes all function calls
+     * @param  {Function} fn      [description]
+     * @param  {[type]}   delay   [description]
+     * @param  {[type]}   context [description]
+     * @return {[type]}           [description]
+     */
+
+  }, {
+    key: 'rateLimit',
+    value: function rateLimit(fn, delay, context) {
+      var queue = [],
+          timer = undefined;
+
+      var processQueue = function processQueue() {
+        var item = queue.shift();
+        if (item) {
+          fn.apply(item.context, item.arguments);
+        }
+        if (queue.length === 0) {
+          clearInterval(timer), timer = null;
+        }
+      };
+
+      return function limited() {
+        queue.push({
+          context: context || this,
+          arguments: [].slice.call(arguments)
+        });
+
+        if (!timer) {
+          processQueue(); // start immediately on the first invocation
+          timer = setInterval(processQueue, delay);
+        }
+      };
+    }
+
+    /**
+     * Cross-application listeners
+     * Each app has it's own setupListeners() that should call super.setupListeners()
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this2 = this;
+
+      /** prevent browser's default behaviour for any link with href="#" */
+      $("a[href='#']").on('click', function (e) {
+        return e.preventDefault();
+      });
+
+      /** language selector */
+      $('.lang-link').on('click', function (e) {
+        var expiryGMT = moment().add(_this2.config.cookieExpiry, 'days').toDate().toGMTString();
+        document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
+
+        var expiryUnix = Math.floor(Date.now() / 1000) + _this2.config.cookieExpiry * 24 * 60 * 60;
+        document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
+        location.reload();
+      });
+    }
+
+    /**
      * Replace spaces with underscores
      *
      * @param {array} pages - array of page names
@@ -573,9 +659,9 @@ var Pv = function () {
     }
 
     /**
-     * Get a value from localStorage
+     * Get a value from localStorage, using a temporary storage if localStorage is not supported
      * @param {string} key - key for the value to retrieve
-     * @returns {Mixed} stored value or null if localStorage is unsupported or disabled
+     * @returns {Mixed} stored value
      */
 
   }, {
@@ -583,11 +669,28 @@ var Pv = function () {
     value: function getFromLocalStorage(key) {
       // See if localStorage is supported and enabled
       try {
-        window.localStorage;
+        return localStorage.getItem(key);
       } catch (err) {
-        return null;
+        return this.storage[key];
       }
-      return window.localStorage[key];
+    }
+
+    /**
+     * Set a value to localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to set
+     * @param {Mixed} value - value to store
+     * @returns {Mixed} stored value
+     */
+
+  }, {
+    key: 'setLocalStorage',
+    value: function setLocalStorage(key, value) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.setItem(key, value);
+      } catch (err) {
+        return this.storage[key] = value;
+      }
     }
   }, {
     key: 'dateFormat',
@@ -612,9 +715,9 @@ var Pv = function () {
   }, {
     key: 'project',
     get: function get() {
-      var project = $('.aqs-project-input').val();
-      // Get the first 2 characters from the project code to get the language
-      return project.replace(/.org$/, '');
+      var project = $(this.config.projectInput).val();
+      /** Get the first 2 characters from the project code to get the language */
+      return project.toLowerCase().replace(/.org$/, '');
     }
   }], [{
     key: 'rgba',
@@ -1598,9 +1701,9 @@ var TopViews = function (_Pv) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TopViews).call(this));
 
+    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
+    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     _this.excludes = [];
-    _this.localizeDateFormat = localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat;
-    _this.numericalFormatting = localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting;
     _this.offset = 0;
     _this.max = null;
     _this.pageData = [];
@@ -1707,7 +1810,7 @@ var TopViews = function (_Pv) {
     value: function getDateHeadings(localized) {
       var dateHeadings = [];
 
-      for (var date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
         if (localized) {
           dateHeadings.push(date.format(this.dateFormat));
         } else {
@@ -1726,8 +1829,8 @@ var TopViews = function (_Pv) {
   }, {
     key: 'getPageviewsURL',
     value: function getPageviewsURL(article) {
-      var startDate = moment(daterangepicker.startDate),
-          endDate = moment(daterangepicker.endDate);
+      var startDate = moment(this.daterangepicker.startDate),
+          endDate = moment(this.daterangepicker.endDate);
       var platform = $('#platform-select').val(),
           project = $(config.projectInput).val();
 
@@ -1804,8 +1907,8 @@ var TopViews = function (_Pv) {
           return;
         }
         /** directly assign startDate before calling setEndDate so events will be fired once */
-        daterangepicker.startDate = startDate;
-        daterangepicker.setEndDate(endDate);
+        this.daterangepicker.startDate = startDate;
+        this.daterangepicker.setEndDate(endDate);
       } else {
         this.setSpecialRange(config.defaults.dateRange);
       }
@@ -1851,8 +1954,8 @@ var TopViews = function (_Pv) {
       if (this.specialRange) {
         state.range = this.specialRange.range;
       } else {
-        state.start = daterangepicker.startDate.format('YYYY-MM-DD');
-        state.end = daterangepicker.endDate.format('YYYY-MM-DD');
+        state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+        state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
       }
 
       if (window.history && window.history.replaceState) {
@@ -1999,8 +2102,6 @@ var TopViews = function (_Pv) {
         ranges: ranges
       });
 
-      daterangepicker = dateRangeSelector.data('daterangepicker');
-
       /** so people know why they can't query data older than August 2015 */
       $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
 
@@ -2013,7 +2114,7 @@ var TopViews = function (_Pv) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = daterangepicker.container,
+            container = _this5.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
         _this5.specialRange = {
           range: Object.keys(config.specialRanges)[index],
@@ -2031,7 +2132,7 @@ var TopViews = function (_Pv) {
           _this5.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          daterangepicker.updateElement();
+          _this5.daterangepicker.updateElement();
         }
       });
     }
@@ -2047,9 +2148,6 @@ var TopViews = function (_Pv) {
       var _this6 = this;
 
       $('#platform-select').on('change', this.applyChanges.bind(this));
-      $('a[href="#"]').on('click', function (e) {
-        return e.preventDefault();
-      });
       $('.expand-chart').on('click', function () {
         _this6.offset += config.pageSize;
         _this6.drawData();
@@ -2100,8 +2198,8 @@ var TopViews = function (_Pv) {
       $('.chart-container').addClass('loading');
 
       /** Collect parameters from inputs. */
-      var startDate = daterangepicker.startDate,
-          endDate = daterangepicker.endDate,
+      var startDate = this.daterangepicker.startDate,
+          endDate = this.daterangepicker.endDate,
           access = $('#platform-select').val();
 
       var promises = [],

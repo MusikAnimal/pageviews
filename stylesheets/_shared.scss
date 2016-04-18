@@ -1,6 +1,4 @@
-$red: #fe875e;
-$gray: #ccc;
-$link: #337ab7;
+@import 'mixins';
 
 body {
   overflow-x: hidden;
@@ -100,36 +98,16 @@ footer {
 }
 
 .loading::after {
-  animation-duration: .75s;
-  animation-iteration-count: infinite;
-  animation-name: spin;
-  border: 3px solid $gray;
-  border-radius: 50%;
-  border-top-color: transparent;
-  bottom: 0;
-  content: '';
-  height: 60px;
-  left: 0;
-  margin: auto;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 60px;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  @extend %loading;
 }
 
 .error-message {
   color: $red;
   margin-bottom: 12px;
+
+  &:last-child {
+    margin: 0;
+  }
 
   ul {
     margin: 0;
@@ -144,4 +122,9 @@ footer {
 .dl-horizontal dt,
 .dl-horizontal dd {
   margin-bottom: 10px;
+}
+
+.lang-group .dropdown-menu {
+  max-height: 194px;
+  overflow-y: scroll;
 }

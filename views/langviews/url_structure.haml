@@ -1,0 +1,72 @@
+!!!
+%html
+  %head
+    - include '../../_head.php'
+    %title Langviews Analysis – URL Structure
+
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong Langviews Analysis – URL Structure
+
+        %div.col-lg-10
+          To get the latest cross-language pageviews data on a given article on your wiki, with default options, use:
+          <pre>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>
+          replacing <code>en.wikipedia.org</code> with a valid multilingual <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>. <code>{{FULLPAGENAMEE}}</code> will resolve to the page the link is placed on
+
+        %div.col-lg-10
+          %h3
+            Parameters
+            %small Can be used in any order
+          %hr
+          %dl.dl-horizontal
+            %dt project
+            %dd
+              %code en.wikipedia.org
+              (default) or other valid multilingual <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>
+            %dt page
+            %dd
+              Escaped page name. For linking to the current page on wiki, use <code>{{FULLPAGENAMEE}}</code>
+            %dt range
+            %dd
+              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              %ul.special-ranges
+                %li
+                  %code latest-<i>N</i>
+                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                %li
+                  %code last-week
+                  (default)
+                %li
+                  %code this-month
+                %li
+                  %code last-month
+            %dt start
+            %dd
+              Start date in the format <code>YYYY-MM-DD</code>
+            %dt end
+            %dd
+              End date in the format <code>YYYY-MM-DD</code>, defaults to previous day
+            %dt platform
+            %dd
+              One of <code>all-access</code> (default), <code>desktop</code>, <code>mobile-app</code> or <code>mobile-web</code>
+            %dt agent
+            %dd
+              One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
+            %dt sort
+            %dd
+              Which column to sort. One of <code>lang</code>, <code>title</code>, <code>badges</code> or <code>views</code>
+            %dt direction
+            %dd
+              The sort direction. <code>1</code> for descending, <code>-1</code> for ascending
+
+        %div.col-lg-10.text-center
+          %hr
+          %a(href="/langviews") Return to Langviews Analysis
+
+        - $app = "langviews";
+        -include "../../_footer.php";

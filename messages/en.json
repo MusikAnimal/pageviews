@@ -21,7 +21,9 @@
 	"user": "User",
 	"spider": "Spider",
 	"bot": "Bot",
+	"page": "Page",
 	"pages": "Pages",
+	"page-title": "Page title",
 	"change-chart": "Change chart type",
 	"settings": "Settings",
 	"download": "Download as $1",
@@ -101,5 +103,12 @@
 	"api-error-no-data": "No data found.",
 	"topviews-title": "Topviews Analysis",
 	"excluded-pages": "Excluded pages",
-	"show-more": "Show more"
+	"show-more": "Show more",
+	"langviews-title": "Langviews Analysis",
+	"source-project": "Source project",
+	"another-query": "Do another query",
+	"language": "Language",
+	"badges": "Badges",
+	"pageviews": "Pageviews",
+	"submit": "Submit"
 }

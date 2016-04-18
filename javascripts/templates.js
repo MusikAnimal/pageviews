@@ -16,3 +16,22 @@ const templates = {
 };
 
 module.exports = templates;
+
+/*
+<div style="
+  display: block;
+  float: none;
+  width: 200px;
+  border: solid 1px black;
+  border-radius: 5px;
+  line-height: 15px;
+"><div class="indic" style="background-color:rgba(171, 212, 235, 1);width: 100%;"><a href="//en.wikipedia.org/wiki/Cat" style="
+  float: none;
+">Cat</a></div><div style="
+  padding: 5px 10px;
+  padding-bottom: 0;
+"> 526,405 (8,773/day)</div><div style="
+  padding: 5px 10px;
+">Langviews • History
+</div></div>
+ */

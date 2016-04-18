@@ -14,9 +14,9 @@ class TopViews extends Pv {
   constructor() {
     super();
 
+    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
+    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.excludes = [];
-    this.localizeDateFormat = localStorage['pageviews-settings-localizeDateFormat'] || config.defaults.localizeDateFormat;
-    this.numericalFormatting = localStorage['pageviews-settings-numericalFormatting'] || config.defaults.numericalFormatting;
     this.offset = 0;
     this.max = null;
     this.pageData = [];
@@ -74,7 +74,7 @@ class TopViews extends Pv {
       if (this.excludes.includes(item.article)) continue;
       if (!this.max) this.max = item.views;
 
-      let width = 100 * (item.views / this.max);
+      const width = 100 * (item.views / this.max);
 
       $('.chart-container').append(
         `<div class='topview-entry' style='background:linear-gradient(to right, #EEE ${width}%, transparent ${width}%)'>
@@ -115,7 +115,7 @@ class TopViews extends Pv {
   getDateHeadings(localized) {
     const dateHeadings = [];
 
-    for (let date = moment(daterangepicker.startDate); date.isBefore(daterangepicker.endDate); date.add(1, 'd')) {
+    for (let date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
       if (localized) {
         dateHeadings.push(date.format(this.dateFormat));
       } else {
@@ -131,8 +131,8 @@ class TopViews extends Pv {
    * @returns {string} URL
    */
   getPageviewsURL(article) {
-    let startDate = moment(daterangepicker.startDate),
-      endDate = moment(daterangepicker.endDate);
+    let startDate = moment(this.daterangepicker.startDate),
+      endDate = moment(this.daterangepicker.endDate);
     const platform = $('#platform-select').val(),
       project = $(config.projectInput).val();
 
@@ -200,8 +200,8 @@ class TopViews extends Pv {
         return;
       }
       /** directly assign startDate before calling setEndDate so events will be fired once */
-      daterangepicker.startDate = startDate;
-      daterangepicker.setEndDate(endDate);
+      this.daterangepicker.startDate = startDate;
+      this.daterangepicker.setEndDate(endDate);
     } else {
       this.setSpecialRange(config.defaults.dateRange);
     }
@@ -242,8 +242,8 @@ class TopViews extends Pv {
     if (this.specialRange) {
       state.range = this.specialRange.range;
     } else {
-      state.start = daterangepicker.startDate.format('YYYY-MM-DD');
-      state.end = daterangepicker.endDate.format('YYYY-MM-DD');
+      state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+      state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
     if (window.history && window.history.replaceState) {
@@ -388,8 +388,6 @@ class TopViews extends Pv {
       ranges: ranges
     });
 
-    daterangepicker = dateRangeSelector.data('daterangepicker');
-
     /** so people know why they can't query data older than August 2015 */
     $('.daterangepicker').append(
       $('<div>')
@@ -406,7 +404,7 @@ class TopViews extends Pv {
      */
     $('.daterangepicker .ranges li').on('click', e => {
       const index = $('.daterangepicker .ranges li').index(e.target),
-        container = daterangepicker.container,
+        container = this.daterangepicker.container,
         inputs = container.find('.daterangepicker_input input');
       this.specialRange = {
         range: Object.keys(config.specialRanges)[index],
@@ -424,7 +422,7 @@ class TopViews extends Pv {
         this.specialRange = null;
 
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-        daterangepicker.updateElement();
+        this.daterangepicker.updateElement();
       }
     });
   }
@@ -435,7 +433,6 @@ class TopViews extends Pv {
    */
   setupListeners() {
     $('#platform-select').on('change', this.applyChanges.bind(this));
-    $('a[href="#"]').on('click', e => e.preventDefault());
     $('.expand-chart').on('click', () => {
       this.offset += config.pageSize;
       this.drawData();
@@ -475,8 +472,8 @@ class TopViews extends Pv {
     $('.chart-container').addClass('loading');
 
     /** Collect parameters from inputs. */
-    const startDate = daterangepicker.startDate,
-      endDate = daterangepicker.endDate,
+    const startDate = this.daterangepicker.startDate,
+      endDate = this.daterangepicker.endDate,
       access = $('#platform-select').val();
 
     let promises = [], initPageData = {};

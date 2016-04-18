@@ -27,7 +27,9 @@
 	"user": "Label for option to view statistics for user agents only (not spiders or bots)\n{{Identical|User}}",
 	"spider": "Label for option to view statistics for [[wikipedia:Web crawler|spider]] agents only (not users or bots)\n{{Identical|Spider}}",
 	"bot": "Label for option to view statistics for [[wikipedia:Wikipedia:Bots|bot]] agents only (not users or spiders)\n{{Identical|Bot}}",
-	"pages": "Header for the part of the interface that lets the user enter which pages they want to view statistics for\n{{Identical|Page}}",
+	"page": "Header for the singular page input for Langviews application",
+	"pages": "Header for the part of the interface that lets the user enter which pages they want to view statistics for",
+	"page-title": "Heading for the column of page titles in the Langviews application",
 	"change-chart": "Link that allows the user to choose a different type of chart",
 	"settings": "Link that opens an interface for the user to change their settings, for example, the date formatting\n{{Identical|Settings}}",
 	"download": "Link that downloads the pageview data to a file. $1 is the format of the file, for example 'CSV'.",
@@ -107,5 +109,12 @@
 	"api-error-no-data": "When the API returned no data",
 	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews-test/)",
 	"excluded-pages": "Pages that are excluded from the Topviews list",
-	"show-more": "Link to reveal more of the Topviews data"
+	"show-more": "Link to reveal more of the Topviews data",
+	"langviews-title": "The title of the Langviews tool. This is shown as a header at the top of the page.",
+	"source-project": "The label for the source project to query from on the Langviews application",
+	"another-query": "Link to run a new query on the Langviews application",
+	"language": "Header of the language column in the Langviews application\n{{Identical|Language}}",
+	"badges": "Header of the badges column in the Langviews application. Badges are special recognized articles, such as 'good articles' or 'featured articles'",
+	"pageviews": "Header of the pageviews column in the Langviews application.",
+	"submit": "The text for the button to submit the form in the Langviews application."
 }

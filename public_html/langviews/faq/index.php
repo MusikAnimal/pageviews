@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '../_head.php'; ?>
-    <title>Pageviews Analysis – FAQ</title>
+    <?php include '../../_head.php'; ?>
+    <title>Langviews Analysis – FAQ</title>
   </head>
   <body>
     <div class="container">
@@ -12,7 +12,7 @@
           <div class="col-lg-10 text-center">
             <h4>
               <strong>
-                Pageviews Analysis – FAQ
+                Langviews Analysis – FAQ
               </strong>
             </h4>
           </div>
@@ -24,7 +24,7 @@
                 <strong>Why can't I view data older than August 2015?</strong>
               </p>
               <p>
-                The Wikimedia pageviews API was introduced in August 2015 and does not include data from before that time. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Pageviews Anaylsis tool, and beyond the control of the maintainers.
+                The Wikimedia pageviews API was introduced in August 2015 and does not include data from before that time. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Langviews Anaylsis tool, and beyond the control of the maintainers.
               </p>
             </li>
             <li class="list-group-item">
@@ -58,33 +58,6 @@
             </li>
             <li class="list-group-item">
               <p>
-                <strong>I don't like this kind of chart</strong>
-              </p>
-              <p>
-                Select "Change chart type" at the bottom-left to choose amongst 6 different types. The app will remember your preference. By default, the application will show a bar chart when viewing data for a single page, and a line chart for multiple pages.
-              </p>
-              <p>
-                Note that the pie, doughnut and polar area charts can only show data for total number of views within the daterange.
-              </p>
-            </li>
-            <li class="list-group-item">
-              <p>
-                <strong>It's hard to hover my mouse over the points of the line chart</strong>
-              </p>
-              <p>
-                You can also hover over the date labels at the bottom to see data for each individual day. This is especially helpful on mobile. Simply tap and hold on a date label, and move your finger left and right to view data for each individual day.
-              </p>
-            </li>
-            <li class="list-group-item">
-              <p>
-                <strong>I want to see the top viewed pages within a date range</strong>
-              </p>
-              <p>
-                Try <a href="https://tools.wmflabs.org/topviews">Topviews Analysis</a> :)
-              </p>
-            </li>
-            <li class="list-group-item">
-              <p>
                 <strong>I have a feature request or bug to report</strong>
               </p>
               <p>
@@ -94,10 +67,10 @@
           </ul>
         </div>
         <div class="col-lg-10 text-center">
-          <a href="/pageviews">Return to Pageviews Analysis</a>
+          <a href="/langviews">Return to Langviews Analysis</a>
         </div>
-        <?php $app = "pageviews"; ?>
-        <?php include "../_footer.php"; ?>
+        <?php $app = "langviews"; ?>
+        <?php include "../../_footer.php"; ?>
       </div>
     </div>
   </body>

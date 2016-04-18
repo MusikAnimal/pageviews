@@ -48,6 +48,7 @@
      articlePlaceholder: "<?php echo $I18N->msg( 'article-placeholder' ); ?>",
      dateNotice: "<?php echo $I18N->msg( 'date-notice', array( 'variables' => array( $I18N->msg( 'title' ), "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>" ) ) ); ?>",
      invalidParams: "<?php echo $I18N->msg( 'invalid-params' ); ?>",
+     invalidWikiURL: "<?php echo $I18N->msg( 'invalid-wiki-url' ); ?>",
      paramError1: "<?php echo $I18N->msg( 'param-error-1' ); ?>",
      paramError2: "<?php echo $I18N->msg( 'param-error-2' ); ?>",
      paramError3: "<?php echo $I18N->msg( 'param-error-3' ); ?>",

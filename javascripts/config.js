@@ -128,4 +128,5 @@ const config = {
   },
   timestampFormat: 'YYYYMMDD00'
 };
+
 module.exports = config;

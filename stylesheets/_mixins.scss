@@ -1,3 +1,14 @@
+$red: #fe875e;
+$gray: #ccc;
+$link: #337ab7;
+
+@mixin prefix($prop, $val) {
+  @each $pre in -webkit-, -moz-, -ms-, -o- {
+    #{$pre}#{$prop}: #{$val};
+  }
+  #{$prop}: #{$val};
+}
+
 @mixin center($direction, $position: 'absolute') {
   position: unquote($position);
 
@@ -10,4 +21,38 @@
   } @else {
     transform: translate(-50%, -50%);
   }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+%disabled {
+  cursor: not-allowed;
+  opacity: .5;
+  pointer-events: none;
+}
+
+%loading {
+  animation-duration: .75s;
+  animation-iteration-count: infinite;
+  animation-name: spin;
+  border: 3px solid $gray;
+  border-radius: 50%;
+  border-top-color: transparent;
+  bottom: 0;
+  content: '';
+  height: 60px;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60px;
 }

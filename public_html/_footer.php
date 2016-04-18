@@ -1,4 +1,5 @@
-<footer class="col-lg-10">
+<?php isset($columns) || $columns = 10; ?>
+<footer class="col-lg-<?php echo $columns; ?>">
   <span>
     <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
     <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
@@ -11,25 +12,15 @@
     <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );; ?>
   </span>
   <div>
-    <a href="/<?php echo $app; ?>/faq">
-      <?php echo $I18N->msg( 'faq' ); ?>
-    </a>
+    <a href="/<?php echo $app; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
     &middot;
-    <a href="#" data-toggle="modal" data-target="#disclaimer-modal">
-      <?php echo $I18N->msg( 'disclaimer' ); ?>
-    </a>
+    <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?php echo $I18N->msg( 'disclaimer' ); ?></a>
     &middot;
-    <a href="/<?php echo $app; ?>/url_structure">
-      <?php echo $I18N->msg( 'url-structure' ); ?>
-    </a>
+    <a href="/<?php echo $app; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
     &middot;
-    <a href="https://github.com/MusikAnimal/pageviews">
-      <?php echo $I18N->msg( 'view-source' ); ?>
-    </a>
+    <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
     &middot;
-    <a href="https://github.com/MusikAnimal/pageviews/issues">
-      <?php echo $I18N->msg( 'report-issue' ); ?>
-    </a>
+    <a href="https://github.com/MusikAnimal/pageviews/issues"><?php echo $I18N->msg( 'report-issue' ); ?></a>
   </div>
 </footer>
 <div id="disclaimer-modal" class="modal fade" role="dialog" tabindex="-1">

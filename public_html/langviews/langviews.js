@@ -1,126 +1,48 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var templates = require('./templates');
-var pv = require('./shared/pv');
-
 var config = {
-  articleSelector: '.aqs-article-selector',
-  chart: '.aqs-chart',
-  chartConfig: {
-    Line: {
-      opts: {
-        bezierCurve: false,
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: 'rgba(0,0,0,0)',
-          pointColor: color,
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          pointStrokeColor: '#fff',
-          strokeColor: color
-        };
-      }
+  agentSelector: '#agent_select',
+  articleInput: '#article_input',
+  badges: {
+    'Q17437796': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
+      name: 'Featured article'
     },
-    Bar: {
-      opts: {
-        barDatasetSpacing: 0,
-        barValueSpacing: 0,
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: pv.rgba(color, 0.5),
-          highlightFill: pv.rgba(color, 0.75),
-          highlightStroke: color,
-          strokeColor: pv.rgba(color, 0.8)
-        };
-      }
+    'Q17437798': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+      name: 'Good article'
     },
-    Pie: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    Doughnut: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    PolarArea: {
-      opts: {
-        legendTemplate: templates.circularLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: pv.rgba(color, 0.8)
-        };
-      }
-    },
-    Radar: {
-      opts: {
-        legendTemplate: templates.linearLegend
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: pv.rgba(color, 0.1),
-          pointColor: color,
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          strokeColor: color
-        };
+    'Q17559452': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Art%C3%ADculo_bueno-blue.svg',
+      name: 'Recommended article'
+    }
+  },
+  cookieExpiry: 30, // num days
+  dateRangeSelector: '#range_input',
+  defaults: {
+    dateFormat: 'YYYY-MM-DD',
+    dateRange: 'last-week',
+    daysAgo: 7,
+    localizeDateFormat: 'true',
+    numericalFormatting: 'true',
+    project: 'en.wikipedia.org',
+    params: {
+      sort: 'views',
+      direction: 1,
+      langData: [],
+      totals: {
+        titles: [],
+        badges: {},
+        views: 0
       }
     }
   },
-  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
-  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-  cookieExpiry: 30, // num days
-  defaults: {
-    autocomplete: 'autocomplete',
-    chartType: 'Line',
-    dateFormat: 'YYYY-MM-DD',
-    dateRange: 'latest-20',
-    daysAgo: 20,
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true',
-    project: 'en.wikipedia.org'
-  },
-  dateRangeSelector: '.aqs-date-range-selector',
-  globalChartOpts: {
-    animation: true,
-    animationEasing: 'easeInOutQuart',
-    animationSteps: 30,
-    labelsFilter: function labelsFilter(value, index, labels) {
-      if (labels.length >= 60) {
-        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
-      } else {
-        return false;
-      }
-    },
-    multiTooltipTemplate: '<%= formatNumber(value) %>',
-    scaleLabel: '<%= formatNumber(value) %>',
-    tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
-  },
-  linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-08-01').startOf('day'),
-  maxDate: moment().subtract(1, 'days').startOf('day'),
-  projectInput: '.aqs-project-input',
+  minDate: moment('2015-08-01'),
+  maxDate: moment().subtract(1, 'days'),
+  langProjects: ['wikipedia', 'wiktionary', 'wikibooks', 'wikinews', 'wikiquote', 'wikisource', 'wikiversity', 'wikivoyage'],
+  platformSelector: '#platform_select',
+  projectInput: '#project_input',
   specialRanges: {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
     'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
@@ -131,12 +53,12 @@ var config = {
       return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
     }
   },
+  formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00'
 };
-
 module.exports = config;
 
-},{"./shared/pv":5,"./templates":7}],2:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -150,329 +72,424 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /*
- * Pageviews Analysis tool
- *
- * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
+ * Langviews Analysis tool
  *
  * Copyright 2016 MusikAnimal
  * Redistributed under the MIT License: https://opensource.org/licenses/MIT
  */
 
 var config = require('./config');
-var siteMap = require('./shared/site_map');
+var siteMap = require('../shared/site_map');
 var siteDomains = Object.keys(siteMap).map(function (key) {
   return siteMap[key];
 });
-var Pv = require('./shared/pv');
+var Pv = require('../shared/pv');
 
-var PageViews = function (_Pv) {
-  _inherits(PageViews, _Pv);
+var LangViews = function (_Pv) {
+  _inherits(LangViews, _Pv);
 
-  function PageViews() {
-    _classCallCheck(this, PageViews);
+  function LangViews() {
+    _classCallCheck(this, LangViews);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PageViews).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(LangViews).call(this));
 
     _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    _this.autocomplete = _this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
-    _this.chartObj = null;
-    _this.chartType = _this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
-    _this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    _this.params = null;
-    _this.prevChartType = null;
-    _this.specialRange = null;
     _this.config = config;
-    _this.colorsStyleEl = undefined;
-
-    /**
-     * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
-     * caused by race conditions between consecutive ajax calls. They are actually
-     * not critical and can be avoided with this empty function.
-     */
-    window.articleSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.formatNumber = _this.formatNumber.bind(_this);
-    window.getPageURL = _this.getPageURL.bind(_this);
-    window.numDaysInRange = _this.numDaysInRange.bind(_this);
-
-    _this.setupProjectInput();
+    _this.assignDefaults();
     _this.setupDateRangeSelector();
-    _this.setupArticleSelector();
-    _this.setupSettingsModal();
-    _this.setupSelect2Colors();
     _this.popParams();
     _this.setupListeners();
 
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
       $.ajax({
-        url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + _this.project,
-        method: 'PATCH'
+        url: '//tools.wmflabs.org/musikanimal/api/uses',
+        method: 'PATCH',
+        data: {
+          tool: 'langviews',
+          type: 'form'
+        }
       });
-
-      _this.splash();
     }
     return _this;
   }
 
   /**
-   * Destroy previous chart, if needed.
-   * @returns {null} nothing
+   * Copy default values over to class instance
+   * Use JSON stringify/parsing so to make a deep clone of the defaults
+   * @return {null} Nothing
    */
 
 
-  _createClass(PageViews, [{
-    key: 'destroyChart',
-    value: function destroyChart() {
-      if (this.chartObj) {
-        this.chartObj.destroy();
-        delete this.chartObj;
-      }
+  _createClass(LangViews, [{
+    key: 'assignDefaults',
+    value: function assignDefaults() {
+      Object.assign(this, JSON.parse(JSON.stringify(config.defaults.params)));
     }
 
     /**
-     * Exports current chart data to CSV format and loads it in a new tab
-     * With the prepended data:text/csv this should cause the browser to download the data
-     * @returns {string} CSV content
-     */
-
-  }, {
-    key: 'exportCSV',
-    value: function exportCSV() {
-      var csvContent = 'data:text/csv;charset=utf-8,Date,';
-      var titles = [];
-      var dataRows = [];
-      var dates = this.getDateHeadings(false);
-
-      // Begin constructing the dataRows array by populating it with the dates
-      dates.forEach(function (date, index) {
-        dataRows[index] = [date];
-      });
-
-      chartData.forEach(function (page) {
-        // Build an array of page titles for use in the CSV header
-        var pageTitle = '"' + page.label.replace(/"/g, '""') + '"';
-        titles.push(pageTitle);
-
-        // Populate the dataRows array with the data for this page
-        dates.forEach(function (date, index) {
-          dataRows[index].push(page.data[index]);
-        });
-      });
-
-      // Finish the CSV header
-      csvContent = csvContent + titles.join(',') + '\n';
-
-      // Add the rows to the CSV
-      dataRows.forEach(function (data) {
-        csvContent += data.join(',') + '\n';
-      });
-
-      // Output the CSV file to the browser
-      var encodedUri = encodeURI(csvContent);
-      window.open(encodedUri);
-    }
-
-    /**
-     * Exports current chart data to JSON format and loads it in a new tab
-     * @returns {string} stringified JSON
-     */
-
-  }, {
-    key: 'exportJSON',
-    value: function exportJSON() {
-      var _this2 = this;
-
-      var data = [];
-
-      chartData.forEach(function (page, index) {
-        var entry = {
-          page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
-          color: page.strokeColor,
-          sum: page.sum,
-          daily_average: Math.round(page.sum / _this2.numDaysInRange())
-        };
-
-        _this2.getDateHeadings(false).forEach(function (heading, index) {
-          entry[heading.replace(/\\/, '')] = page.data[index];
-        });
-
-        data.push(entry);
-      });
-
-      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
-          encodedUri = encodeURI(jsonContent);
-      window.open(encodedUri);
-
-      return jsonContent;
-    }
-
-    /**
-     * Fill in values within settings modal with what's in the session object
+     * Add general event listeners
      * @returns {null} nothing
      */
 
   }, {
-    key: 'fillInSettings',
-    value: function fillInSettings() {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this2 = this;
+
+      _get(Object.getPrototypeOf(LangViews.prototype), 'setupListeners', this).call(this);
+
+      $('#langviews_form').on('submit', function (e) {
+        e.preventDefault(); // prevent page from reloading
+        _this2.processArticle();
+      });
+
+      $('.another-query').on('click', function () {
+        _this2.setState('initial');
+        _this2.pushParams(true);
+      });
+
+      $('.sort-link').on('click', function (e) {
+        var sortType = $(e.target).data('type');
+        _this2.direction = _this2.sort === sortType ? -_this2.direction : 1;
+        _this2.sort = sortType;
+        _this2.renderData();
+      });
+
+      $(config.projectInput).on('change', this.validateProject.bind(this));
+    }
+
+    /**
+     * Get the base project name (without language and the .org)
+     * @returns {boolean} projectname
+     */
+
+  }, {
+    key: 'getParams',
+
+
+    /**
+     * Get all user-inputted parameters
+     * @param {boolean} [includePage] whether or not to include the page name
+     *   in the returned object. E.g. we don't want to escape all character of the page name in the URL params
+     * @return {Object} project, platform, agent, etc.
+     */
+    value: function getParams() {
+      var includePage = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var params = {
+        project: $(config.projectInput).val(),
+        platform: $(config.platformSelector).val(),
+        agent: $(config.agentSelector).val(),
+        sort: this.sort,
+        direction: this.direction
+      };
+
+      /**
+       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+       * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+       */
+      if (this.specialRange) {
+        params.range = this.specialRange.range;
+      } else {
+        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      }
+
+      if (includePage) params.page = $(config.articleInput).val();
+
+      return params;
+    }
+
+    /**
+     * Push relevant class properties to the query string
+     * @param  {Boolean} clear - wheter to clear the query string entirely
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'pushParams',
+    value: function pushParams() {
+      var clear = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      if (!window.history || !window.history.replaceState) return;
+
+      if (clear) {
+        return history.replaceState(null, document.title, location.href.split('?')[0]);
+      }
+
+      /** only certain characters within the page name are escaped */
+      var page = $(config.articleInput).val().score();
+      window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&page=' + page.replace(/[&%]/g, escape));
+    }
+
+    /**
+     * Given the badge code provided by the Wikidata API, return a image tag of the badge
+     * @param  {String} badgeCode - as defined in config.badges
+     * @return {String} HTML markup for the image
+     */
+
+  }, {
+    key: 'getBadgeMarkup',
+    value: function getBadgeMarkup(badgeCode) {
+      if (!config.badges[badgeCode]) return '';
+      var badgeImage = config.badges[badgeCode].image,
+          badgeName = config.badges[badgeCode].name;
+      return '<img class=\'article-badge\' src=\'' + badgeImage + '\' alt=\'' + badgeName + '\' title=\'' + badgeName + '\' />';
+    }
+
+    /**
+     * Render list of langviews into view
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'renderData',
+    value: function renderData() {
       var _this3 = this;
 
-      $.each($('#settings-modal input'), function (index, el) {
-        if (el.type === 'checkbox') {
-          el.checked = _this3[el.name] === 'true';
+      /** sort ascending by current sort setting */
+      var sortedLangViews = this.langData.sort(function (a, b) {
+        var before = _this3.getSortProperty(a, _this3.sort),
+            after = _this3.getSortProperty(b, _this3.sort);
+
+        if (before < after) {
+          return _this3.direction;
+        } else if (before > after) {
+          return -_this3.direction;
         } else {
-          el.checked = _this3[el.name] === el.value;
+          return 0;
         }
       });
+
+      var totalBadgesMarkup = Object.keys(this.totals.badges).map(function (badge) {
+        return '<span class=\'nowrap\'>' + _this3.getBadgeMarkup(badge) + ' &times; ' + _this3.totals.badges[badge] + '</span>';
+      }).join(', ');
+
+      $('.output-totals').html('<th scope=\'row\'>Totals</th>\n       <th>' + this.langData.length + ' languages</th>\n       <th>' + this.totals.titles.length + ' unique titles</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>');
+      $('#lang_list').html('');
+
+      sortedLangViews.forEach(function (item, index) {
+        var badgeMarkup = '';
+        if (item.badges) {
+          badgeMarkup = item.badges.map(_this3.getBadgeMarkup).join();
+        }
+
+        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         </tr>');
+      });
+
+      this.pushParams();
+      this.setState('complete');
     }
 
     /**
-     * Fills in zero value to a timeseries, see:
-     * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
-     *
-     * @param {object} data fetched from API
-     * @param {moment} startDate - start date of range to filter through
-     * @param {moment} endDate - end date of range
-     * @returns {object} dataset with zeros where nulls where
+     * Get value of given langview entry for the purposes of column sorting
+     * @param  {object} item - langview entry within this.langData
+     * @param  {String} type - type of property to get
+     * @return {String|Number} - value
      */
 
   }, {
-    key: 'fillInZeros',
-    value: function fillInZeros(data, startDate, endDate) {
-      /** Extract the dates that are already in the timeseries */
-      var alreadyThere = {};
-      data.items.forEach(function (elem) {
-        var date = moment(elem.timestamp, config.timestampFormat);
-        alreadyThere[date] = elem;
-      });
-      data.items = [];
+    key: 'getSortProperty',
+    value: function getSortProperty(item, type) {
+      switch (type) {
+        case 'lang':
+          return item.lang;
+        case 'title':
+          return item.pageName;
+        case 'badges':
+          return item.badges.sort().join('');
+        case 'views':
+          return Number(item.views);
+      }
+    }
 
-      /** Reconstruct with zeros instead of nulls */
-      for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-        if (alreadyThere[date]) {
-          data.items.push(alreadyThere[date]);
-        } else {
-          var edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
-          data.items.push({
-            timestamp: date.format(config.timestampFormat),
-            views: edgeCase ? null : 0
+    /**
+     * Link to /pageviews for given article and chosen daterange
+     * @param {String} lang - two character language code
+     * @param {String} project - base project without lang, e.g. wikipedia.org
+     * @param {String} article - page name
+     * @returns {String} URL
+     */
+
+  }, {
+    key: 'getPageviewsURL',
+    value: function getPageviewsURL(lang, project, article) {
+      var startDate = moment(this.daterangepicker.startDate),
+          endDate = moment(this.daterangepicker.endDate);
+      var platform = $(config.platformSelector).val();
+
+      if (endDate.diff(startDate, 'days') === 0) {
+        startDate.subtract(3, 'days');
+        endDate.add(3, 'days');
+      }
+
+      return '/pageviews#start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&project=' + lang + '.' + project + '.org&platform=' + platform + '&pages=' + article);
+    }
+
+    /**
+     * Loop through given interwiki data and query the pageviews API for each
+     *   Also updates this.langData with result
+     * @param  {Object} interWikiData - as given by the getInterwikiData promise
+     * @return {Deferred} - Promise resolving with data ready to be rendered to view
+     */
+
+  }, {
+    key: 'getPageViewsData',
+    value: function getPageViewsData(interWikiData) {
+      var _this4 = this;
+
+      var startDate = this.daterangepicker.startDate.startOf('day'),
+          endDate = this.daterangepicker.endDate.startOf('day'),
+          interWikiKeys = Object.keys(interWikiData);
+      var dfd = $.Deferred(),
+          promises = [],
+          count = 0,
+          hadFailure = undefined;
+
+      /** clear out existing data */
+      this.langData = [];
+
+      var makeRequest = function makeRequest(dbName) {
+        var data = interWikiData[dbName],
+            lang = data.site.replace(/wiki/, '');
+
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + lang + '.' + _this4.baseProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + data.title + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var promise = $.ajax({ url: url, dataType: 'json' });
+        promises.push(promise);
+
+        promise.done(function (pvData) {
+          var viewCounts = pvData.items.map(function (el) {
+            return el.views;
+          }),
+              views = viewCounts.reduce(function (a, b) {
+            return a + b;
           });
+
+          _this4.langData.push({
+            badges: data.badges,
+            dbName: dbName,
+            lang: lang,
+            pageName: data.title,
+            views: views,
+            url: data.url
+          });
+
+          /** keep track of unique badges/titles and total pageviews */
+          _this4.totals.views += views;
+          if (!_this4.totals.titles.includes(data.title)) {
+            _this4.totals.titles.push(data.title);
+          }
+          data.badges.forEach(function (badge) {
+            if (_this4.totals.badges[badge] === undefined) {
+              _this4.totals.badges[badge] = 1;
+            } else {
+              _this4.totals.badges[badge] += 1;
+            }
+          });
+        }).fail(function (errorData) {
+          _this4.writeMessage('Error fetching data for ' + dbName + ': ' + errorData.responseJSON.title);
+          hadFailure = true; // don't treat this series of requests as being cached by server
+        }).always(function () {
+          _this4.updateProgressBar(++count / interWikiKeys.length * 100);
+
+          if (count === interWikiKeys.length) {
+            dfd.resolve(_this4.langData);
+
+            /**
+             * if there were no failures, assume the resource is now cached by the server
+             *   and save this assumption to our own cache so we don't throttle the same requests
+             */
+            if (!hadFailure) {
+              simpleStorage.set(cacheKey, true, { TTL: 600000 });
+            }
+          }
+        });
+      };
+
+      /**
+       * We don't want to throttle requests for cached resources. However in our case,
+       *   we're unable to check response headers to see if the resource was cached,
+       *   so we use simpleStorage to keep track of what the user has recently queried.
+       */
+      var cacheKey = 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true))),
+          isCached = simpleStorage.hasKey(cacheKey),
+          requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
+
+      interWikiKeys.forEach(function (dbName, index) {
+        requestFn(dbName);
+      });
+
+      return dfd;
+    }
+
+    /**
+     * Query Wikidata to find data about a given page across all sister projects
+     * @param  {String} dbName - database name of source project
+     * @param  {String} pageName - name of page we want to get data about
+     * @return {Deferred} - Promise resolving with interwiki data
+     */
+
+  }, {
+    key: 'getInterwikiData',
+    value: function getInterwikiData(dbName, pageName) {
+      var _this5 = this;
+
+      var dfd = $.Deferred();
+      var url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=' + dbName + ('&titles=' + pageName + '&props=sitelinks/urls|datatype&format=json&callback=?');
+
+      $.getJSON(url).done(function (data) {
+        if (data.error) {
+          return dfd.reject('Error querying Wikidata: ' + data.error.info);
+        } else if (data.entities['-1']) {
+          return dfd.reject('<a href=\'' + _this5.getPageURL(pageName) + '\'>' + pageName.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
         }
+
+        var key = Object.keys(data.entities)[0],
+            sitelinks = data.entities[key].sitelinks,
+            filteredLinks = {},
+            matchRegex = new RegExp('^https://\\w+\\.' + _this5.baseProject + '\\.org');
+
+        /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
+        Object.keys(sitelinks).forEach(function (key) {
+          if (matchRegex.test(sitelinks[key].url)) {
+            filteredLinks[key] = sitelinks[key];
+          }
+        });
+
+        return dfd.resolve(filteredLinks);
+      });
+
+      return dfd;
+    }
+
+    /**
+     * Parse wiki URL for the page name
+     * @param  {String} url - full URL to a wiki page
+     * @return {String|null} page name
+     */
+
+  }, {
+    key: 'getPageNameFromURL',
+    value: function getPageNameFromURL(url) {
+      if (url.includes('?')) {
+        return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
+      } else {
+        return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
       }
     }
 
     /**
-     * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
-     *
-     * @param {object} data - data just before we are ready to render the chart
-     * @param {string} article - title of page
-     * @param {integer} index - where we are in the list of pages to show
-     *    used for colour selection
-     * @returns {object} - ready for chart rendering
+     * Generate key/value pairs of URL query string
+     * @returns {Object} key/value pairs representation of query string
      */
 
   }, {
-    key: 'getCircularData',
-    value: function getCircularData(data, article, index) {
-      var values = data.items.map(function (elem) {
-        return elem.views;
-      }),
-          color = config.colors[index];
-
-      return Object.assign({
-        label: article.descore(),
-        value: values.reduce(function (a, b) {
-          return a + b;
-        })
-      }, config.chartConfig[this.chartType].dataset(color));
-    }
-
-    /**
-     * Gets the date headings as strings - i18n compliant
-     * @param {boolean} localized - whether the dates should be localized per browser language
-     * @returns {Array} the date headings as strings
-     */
-
-  }, {
-    key: 'getDateHeadings',
-    value: function getDateHeadings(localized) {
-      var dateHeadings = [];
-
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
-        if (localized) {
-          dateHeadings.push(date.format(this.dateFormat));
-        } else {
-          dateHeadings.push(date.format('YYYY-MM-DD'));
-        }
-      }
-      return dateHeadings;
-    }
-
-    /**
-     * Get data formatted for a linear chart (Line, Bar, Radar)
-     *
-     * @param {object} data - data just before we are ready to render the chart
-     * @param {string} article - title of page
-     * @param {integer} index - where we are in the list of pages to show
-     *    used for colour selection
-     * @returns {object} - ready for chart rendering
-     */
-
-  }, {
-    key: 'getLinearData',
-    value: function getLinearData(data, article, index) {
-      var values = data.items.map(function (elem) {
-        return elem.views;
-      }),
-          color = config.colors[index % 10];
-
-      return Object.assign({
-        label: article.descore(),
-        data: values,
-        sum: values.reduce(function (a, b) {
-          return a + b;
-        })
-      }, config.chartConfig[this.chartType].dataset(color));
-    }
-
-    /**
-     * Construct query for API based on what type of search we're doing
-     * @param {Object} query - as returned from Select2 input
-     * @returns {Object} query params to be handed off to API
-     */
-
-  }, {
-    key: 'getSearchParams',
-    value: function getSearchParams(query) {
-      if (this.autocomplete === 'autocomplete') {
-        return {
-          'action': 'query',
-          'list': 'prefixsearch',
-          'format': 'json',
-          'pssearch': query || '',
-          'cirrusUseCompletionSuggester': 'yes'
-        };
-      } else if (this.autocomplete === 'autocomplete_redirects') {
-        return {
-          'action': 'opensearch',
-          'format': 'json',
-          'search': query || '',
-          'redirects': 'return'
-        };
-      }
-    }
-
-    /**
-     * Generate key/value pairs of URL hash params
-     * @returns {Object} key/value pairs representation of URL hash
-     */
-
-  }, {
-    key: 'parseHashParams',
-    value: function parseHashParams() {
-      var uri = location.hash.slice(1),
+    key: 'parseQueryString',
+    value: function parseQueryString() {
+      var uri = decodeURI(location.search.slice(1)),
           chunks = uri.split('&');
       var params = {};
 
@@ -480,7 +497,7 @@ var PageViews = function (_Pv) {
         var chunk = chunks[i].split('=');
 
         if (chunk[0] === 'pages') {
-          params.pages = chunk[1].split(/\||%7C/);
+          params.pages = chunk[1].split('|');
         } else {
           params[chunk[0]] = chunk[1];
         }
@@ -490,7 +507,7 @@ var PageViews = function (_Pv) {
     }
 
     /**
-     * Parses the URL hash and sets all the inputs accordingly
+     * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
      */
@@ -498,11 +515,9 @@ var PageViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this4 = this;
-
       var startDate = undefined,
           endDate = undefined,
-          params = this.parseHashParams();
+          params = this.parseQueryString();
 
       $(config.projectInput).val(params.project || config.defaults.project);
       if (this.validateProject()) return;
@@ -521,295 +536,69 @@ var PageViews = function (_Pv) {
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
           this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
-          this.resetView();
           return;
         } else if (startDate > endDate) {
           this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
-          this.resetView();
           return;
         }
-        /** directly assign startDate before calling setEndDate so events will be fired once */
-        this.daterangepicker.startDate = startDate;
+        this.daterangepicker.setStartDate(startDate);
         this.daterangepicker.setEndDate(endDate);
       } else {
         this.setSpecialRange(config.defaults.dateRange);
       }
 
-      $('#platform-select').val(params.platform || 'all-access');
-      $('#agent-select').val(params.agent || 'user');
+      $(config.platformSelector).val(params.platform || 'all-access');
+      $(config.agentSelector).val(params.agent || 'user');
+      this.sort = params.sort || config.defaults.params.sort;
+      this.direction = params.direction || config.defaults.params.direction;
 
-      this.resetArticleSelector();
-
-      if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
-        params.pages = ['Cat', 'Dog'];
-        this.setArticleSelectorDefaults(params.pages);
-      } else if (this.normalized) {
-        params.pages = this.underscorePageNames(params.pages);
-        this.setArticleSelectorDefaults(params.pages);
-      } else {
-        this.normalizePageNames(params.pages).then(function (data) {
-          _this4.normalized = true;
-
-          params.pages = data;
-
-          if (params.pages.length === 1) {
-            _this4.chartType = _this4.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
-          }
-
-          _this4.setArticleSelectorDefaults(_this4.underscorePageNames(params.pages));
-        });
+      /** start up processing if page name is present */
+      if (params.page) {
+        $(config.articleInput).val(params.page.descore());
+        this.processArticle();
       }
     }
-
-    /**
-     * Processes Mediawiki API results into Select2 format based on settings
-     * @param {Object} data - data as received from the API
-     * @returns {Object} data ready to handed over to Select2
-     */
-
   }, {
-    key: 'processSearchResults',
-    value: function processSearchResults(data) {
-      var results = [];
-
-      if (this.autocomplete === 'autocomplete') {
-        if (data && data.query && data.query.prefixsearch.length) {
-          results = data.query.prefixsearch.map(function (elem) {
-            return {
-              id: elem.title.score(),
-              text: elem.title
-            };
-          });
-        }
-      } else if (this.autocomplete === 'autocomplete_redirects') {
-        if (data && data[1].length) {
-          results = data[1].map(function (elem) {
-            return {
-              id: elem.score(),
-              text: elem
-            };
-          });
-        }
-      }
-
-      return { results: results };
+    key: 'getState',
+    value: function getState() {
+      var classList = $('main')[0].classList;
+      return config.formStates.filter(function (stateName) {
+        return classList.contains(stateName);
+      })[0];
     }
 
     /**
-     * Replaces history state with new URL hash representing current user input
-     * Called whenever we go to update the chart
-     * @returns {string} the new hash param string
-     */
-
-  }, {
-    key: 'pushParams',
-    value: function pushParams() {
-      var pages = $(config.articleSelector).select2('val') || [];
-
-      var state = {
-        project: $(config.projectInput).val(),
-        platform: $('#platform-select').val(),
-        agent: $('#agent-select').val()
-      };
-
-      /**
-       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-       * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
-       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
-       */
-      if (this.specialRange) {
-        state.range = this.specialRange.range;
-      } else {
-        state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-        state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
-      }
-
-      if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, 'Pageviews comparsion', '#' + $.param(state) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
-      }
-
-      return state;
-    }
-
-    /**
-     * Removes all article selector related stuff then adds it back
-     * Also calls updateChart
+     * Helper to set a CSS class on the `main` node,
+     *   styling the document based on a 'state'
+     * @param {String} state - class to be added;
+     *   should be one of ['initial', 'processing', 'complete']
      * @returns {null} nothing
      */
 
   }, {
-    key: 'resetArticleSelector',
-    value: function resetArticleSelector() {
-      var articleSelector = $(config.articleSelector);
-      articleSelector.off('change');
-      articleSelector.select2('val', null);
-      articleSelector.select2('data', null);
-      articleSelector.select2('destroy');
-      $('.data-links').hide();
-      this.setupArticleSelector();
-    }
+    key: 'setState',
+    value: function setState(state) {
+      $('main').removeClass(config.formStates.join(' ')).addClass(state);
 
-    /**
-     * Removes chart, messages, and resets article selections
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'resetView',
-    value: function resetView() {
-      $('.chart-container').html('');
-      $('.chart-container').removeClass('loading');
-      $('#chart-legend').html('');
-      $('.message-container').html('');
-      this.resetArticleSelector();
-    }
-
-    /**
-     * Save a particular setting to session and localStorage
-     *
-     * @param {string} key - settings key
-     * @param {string|boolean} value - value to save
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'saveSetting',
-    value: function saveSetting(key, value) {
-      this[key] = value;
-      this.setLocalStorage('pageviews-settings-' + key, value);
-    }
-
-    /**
-     * Save the selected settings within the settings modal
-     * Prefer this implementation over a large library like serializeObject or serializeJSON
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'saveSettings',
-    value: function saveSettings() {
-      var _this5 = this;
-
-      /** track if we're changing to no_autocomplete mode */
-      var wasAutocomplete = this.autocomplete === 'no_autocomplete';
-
-      $.each($('#settings-modal input'), function (index, el) {
-        if (el.type === 'checkbox') {
-          _this5.saveSetting(el.name, el.checked ? 'true' : 'false');
-        } else if (el.checked) {
-          _this5.saveSetting(el.name, el.value);
-        }
-      });
-
-      this.daterangepicker.locale.format = this.dateFormat;
-      this.daterangepicker.updateElement();
-      this.setupSelect2Colors();
-
-      /**
-       * If we changed to/from no_autocomplete we have to reset the article selector entirely
-       *   as setArticleSelectorDefaults is super buggy due to Select2 constraints
-       * So let's only reset if we have to
-       */
-      if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
-        this.resetArticleSelector();
-      }
-
-      this.updateChart(true);
-    }
-
-    /**
-     * Directly set articles in article selector
-     * Currently is not able to remove underscore from page names
-     *
-     * @param {array} pages - page titles
-     * @returns {array} - untouched array of pages
-     */
-
-  }, {
-    key: 'setArticleSelectorDefaults',
-    value: function setArticleSelectorDefaults(pages) {
-      pages.forEach(function (page) {
-        var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
-      });
-      $(config.articleSelector).select2('val', pages);
-      $(config.articleSelector).select2('close');
-
-      return pages;
-    }
-
-    /**
-     * Sets up the article selector and adds listener to update chart
-     * @returns {null} - nothing
-     */
-
-  }, {
-    key: 'setupArticleSelector',
-    value: function setupArticleSelector() {
-      var articleSelector = $(config.articleSelector);
-
-      var params = {
-        ajax: this.getArticleSelectorAjax(),
-        tags: this.autocomplete === 'no_autocomplete',
-        placeholder: i18nMessages.articlePlaceholder,
-        maximumSelectionLength: 10,
-        minimumInputLength: 1
-      };
-
-      articleSelector.select2(params);
-      articleSelector.on('change', this.updateChart.bind(this));
-    }
-
-    /**
-     * Get ajax parameters to be used in setupArticleSelector, based on this.autocomplete
-     * @return {object|null} to be passed in as the value for `ajax` in setupArticleSelector
-     */
-
-  }, {
-    key: 'getArticleSelectorAjax',
-    value: function getArticleSelectorAjax() {
-      var _this6 = this;
-
-      if (this.autocomplete !== 'no_autocomplete') {
-        /**
-         * This ajax call queries the Mediawiki API for article name
-         * suggestions given the search term inputed in the selector.
-         * We ultimately want to make the endpoint configurable based on whether they want redirects
-         */
-        return {
-          url: 'https://' + this.project + '.org/w/api.php',
-          dataType: 'jsonp',
-          delay: 200,
-          jsonpCallback: 'articleSuggestionCallback',
-          data: function data(search) {
-            return _this6.getSearchParams(search.term);
-          },
-          processResults: this.processSearchResults.bind(this),
-          cache: true
-        };
-      } else {
-        return null;
-      }
-    }
-
-    /**
-     * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'setChartPointDetectionRadius',
-    value: function setChartPointDetectionRadius() {
-      if (this.chartType !== 'Line') return;
-
-      if (this.numDaysInRange() > 50) {
-        Chart.defaults.Line.pointHitDetectionRadius = 3;
-      } else if (this.numDaysInRange() > 30) {
-        Chart.defaults.Line.pointHitDetectionRadius = 5;
-      } else if (this.numDaysInRange() > 20) {
-        Chart.defaults.Line.pointHitDetectionRadius = 10;
-      } else {
-        Chart.defaults.Line.pointHitDetectionRadius = 20;
+      switch (state) {
+        case 'initial':
+          this.clearMessages();
+          this.assignDefaults();
+          if (this.typeahead) this.typeahead.hide();
+          $(config.articleInput).val('').focus();
+          break;
+        case 'processing':
+          document.activeElement.blur();
+          $('.progress-bar').addClass('active');
+          $('.error-message').html('');
+          break;
+        case 'complete':
+          /** stop hidden animation for slight performance improvement */
+          this.updateProgressBar(0);
+          $('.progress-bar').removeClass('active');
+          break;
+        case 'invalid':
+          break;
       }
     }
 
@@ -821,7 +610,7 @@ var PageViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this7 = this;
+      var _this6 = this;
 
       var dateRangeSelector = $(config.dateRangeSelector);
 
@@ -837,6 +626,7 @@ var PageViews = function (_Pv) {
           applyLabel: i18nMessages.apply,
           cancelLabel: i18nMessages.cancel,
           customRangeLabel: i18nMessages.customRange,
+          dateLimit: { days: 31 },
           daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
           monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
         },
@@ -858,309 +648,165 @@ var PageViews = function (_Pv) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this7.daterangepicker.container,
+            container = _this6.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this7.specialRange = {
+        _this6.specialRange = {
           range: Object.keys(config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
 
-      /** the "Latest N days" links */
-      $('.date-latest a').on('click', function (e) {
-        _this7.setSpecialRange('latest-' + $(e.target).data('value'));
-      });
-
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === i18nMessages.customRange) {
-          _this7.specialRange = null;
+          _this6.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this7.daterangepicker.updateElement();
-        }
-      });
-
-      dateRangeSelector.on('change', function (e) {
-        _this7.setChartPointDetectionRadius();
-        _this7.updateChart();
-
-        /** clear out specialRange if it doesn't match our input */
-        if (_this7.specialRange && _this7.specialRange.value !== e.target.value) {
-          _this7.specialRange = null;
+          _this6.daterangepicker.updateElement();
         }
       });
     }
 
     /**
-     * General place to add page-wide listeners
-     * @returns {null} - nothing
+     * Process the langviews for the article and options entered
+     * Called when submitting the form
+     * @return {null} nothing
      */
 
   }, {
-    key: 'setupListeners',
-    value: function setupListeners() {
-      var _this8 = this;
+    key: 'processArticle',
+    value: function processArticle() {
+      var _this7 = this;
 
-      _get(Object.getPrototypeOf(PageViews.prototype), 'setupListeners', this).call(this);
+      var page = $(config.articleInput).val();
 
-      $('.download-csv').on('click', this.exportCSV.bind(this));
-      $('.download-json').on('click', this.exportJSON.bind(this));
-      $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
+      this.setState('processing');
 
-      /** changing of chart types */
-      $('.modal-chart-type a').on('click', function (e) {
-        _this8.chartType = $(e.currentTarget).data('type');
-        _this8.setLocalStorage('pageviews-chart-preference', _this8.chartType);
-        _this8.updateChart();
+      var dbName = Object.keys(siteMap).find(function (key) {
+        return siteMap[key] === $(config.projectInput).val();
       });
 
-      // window.onpopstate = popParams();
-    }
-
-    /**
-     * Setup listeners for project input
-     * @returns {null} - nothing
-     */
-
-  }, {
-    key: 'setupProjectInput',
-    value: function setupProjectInput() {
-      var _this9 = this;
-
-      $(config.projectInput).on('change', function (e) {
-        if (!e.target.value) {
-          e.target.value = config.defaults.project;
-          return;
-        }
-        if (_this9.validateProject()) return;
-        _this9.resetView();
-      });
-    }
-
-    /**
-     * Setup colors for Select2 entries so we can dynamically change them
-     * This is a necessary evil, as we have to mark them as !important
-     *   and since there are any number of entires, we need to use nth-child selectors
-     * @returns {CSSStylesheet} our new stylesheet
-     */
-
-  }, {
-    key: 'setupSelect2Colors',
-    value: function setupSelect2Colors() {
-      var _this10 = this;
-
-      /** first delete old stylesheet, if present */
-      if (this.colorsStyleEl) this.colorsStyleEl.remove();
-
-      /** create new stylesheet */
-      this.colorsStyleEl = document.createElement('style');
-      this.colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
-      document.head.appendChild(this.colorsStyleEl);
-
-      /** add color rules */
-      config.colors.forEach(function (color, index) {
-        _this10.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
-      });
-
-      return this.colorsStyleEl.sheet;
-    }
-
-    /**
-     * Set values of form based on localStorage or defaults, add listeners
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'setupSettingsModal',
-    value: function setupSettingsModal() {
-      /** fill in values, everything is either a checkbox or radio */
-      this.fillInSettings();
-
-      /** add listener */
-      $('.save-settings-btn').on('click', this.saveSettings.bind(this));
-      $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-    }
-
-    /**
-     * The mother of all functions, where all the chart logic lives
-     * Really needs to be broken out into several functions
-     *
-     * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
-     * @returns {null} - nothin
-     */
-
-  }, {
-    key: 'updateChart',
-    value: function updateChart(force) {
-      var _this11 = this,
-          _$;
-
-      var articles = $(config.articleSelector).select2('val') || [];
-
-      this.pushParams();
-
-      /** prevent duplicate querying due to conflicting listeners */
-      if (!force && location.hash === this.params && this.prevChartType === this.chartType) {
-        return;
-      }
-
-      if (!articles.length) {
-        this.resetView();
-        return;
-      }
-
-      this.params = location.hash;
-      this.prevChartType = this.chartType;
-      this.clearMessages(); // clear out old error messages
-
-      /** Collect parameters from inputs. */
-      var startDate = this.daterangepicker.startDate.startOf('day'),
-          endDate = this.daterangepicker.endDate.startOf('day');
-
-      this.destroyChart();
-      $('.message-container').html('');
-      $('.chart-container').addClass('loading');
-
-      var labels = []; // Labels (dates) for the x-axis.
-      var datasets = []; // Data for each article timeseries
-      var errors = []; // Queue up errors to show after all requests have been made
-      var promises = [];
-
-      /**
-       * Asynchronously collect the data from Analytics Query Service API,
-       * process it to Chart.js format and initialize the chart.
-       */
-      articles.forEach(function (article, index) {
-        var uriEncodedArticle = encodeURIComponent(article);
-        /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
-        var promise = $.ajax({
-          url: url,
-          dataType: 'json'
+      this.getInterwikiData(dbName, page).done(function (interWikiData) {
+        _this7.getPageViewsData(interWikiData).done(function () {
+          $('.langviews-page-name').text(page).prop('href', _this7.getPageURL(page));
+          $('.langviews-params').text($(config.dateRangeSelector).val());
+          _this7.updateProgressBar(100);
+          _this7.renderData();
         });
-        promises.push(promise);
+      }).fail(function (error) {
+        _this7.setState('initial');
 
-        promise.success(function (data) {
-          // FIXME: these needs fixing too, sometimes doesn't show zero
-          _this11.fillInZeros(data, startDate, endDate);
-
-          /** Build the article's dataset. */
-          if (config.linearCharts.includes(_this11.chartType)) {
-            datasets.push(_this11.getLinearData(data, article, index));
-          } else {
-            datasets.push(_this11.getCircularData(data, article, index));
-          }
-
-          /** fetch the labels for the x-axis on success if we haven't already */
-          if (data.items && !labels.length) {
-            labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, config.timestampFormat).format(_this11.dateFormat);
-            });
-          }
-        }).fail(function (data) {
-          if (data.status === 404) {
-            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
-            articles = articles.filter(function (el) {
-              return el !== article;
-            });
-
-            if (!articles.length) {
-              $('.chart-container').html('');
-              $('.chart-container').removeClass('loading');
-            }
-          } else {
-            errors.push(data.responseJSON.detail[0]);
-          }
-        });
-      });
-
-      (_$ = $).when.apply(_$, promises).always(function (data) {
-        $('#chart-legend').html(''); // clear old chart legend
-
-        if (errors.length && errors.length === articles.length) {
-          /** something went wrong */
-          $('.chart-container').removeClass('loading');
-          var errorMessages = Array.from(new Set(errors)).map(function (error) {
-            return '<li>' + error + '</li>';
-          }).join('');
-          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
-        }
-
-        if (!articles.length) return;
-
-        /** preserve order of datasets due to asyn calls */
-        var sortedDatasets = new Array(articles.length);
-        datasets.forEach(function (dataset) {
-          sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
-        });
-
-        /** export built datasets to global scope Chart templates */
-        window.chartData = sortedDatasets;
-
-        $('.chart-container').removeClass('loading');
-        var options = Object.assign({}, config.chartConfig[_this11.chartType].opts, config.globalChartOpts);
-        var linearData = { labels: labels, datasets: sortedDatasets };
-
-        $('.chart-container').html('');
-        $('.chart-container').append("<canvas class='aqs-chart'>");
-        var context = $(config.chart)[0].getContext('2d');
-
-        if (config.linearCharts.includes(_this11.chartType)) {
-          _this11.chartObj = new Chart(context)[_this11.chartType](linearData, options);
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (typeof error === 'string') {
+          _this7.writeMessage(error);
         } else {
-          _this11.chartObj = new Chart(context)[_this11.chartType](sortedDatasets, options);
+          _this7.writeMessage('An unknown error occurred when querying Wikidata.');
         }
-
-        $('#chart-legend').html(_this11.chartObj.generateLegend());
-        $('.data-links').show();
       });
     }
 
     /**
-     * Checks value of project input and validates it against site map
-     * @returns {boolean} whether the currently input project is valid
+     * Setup typeahead on the article input, killing the prevous instance if present
+     * Called in validateProject, which is called in popParams when the app is first loaded
+     * @return {null} Nothing
+     */
+
+  }, {
+    key: 'setupArticleInput',
+    value: function setupArticleInput() {
+      if (this.typeahead) this.typeahead.destroy();
+
+      $(config.articleInput).typeahead({
+        ajax: {
+          url: 'https://' + this.project + '.org/w/api.php',
+          timeout: 200,
+          triggerLength: 1,
+          method: 'get',
+          preDispatch: function preDispatch(query) {
+            return {
+              action: 'query',
+              list: 'prefixsearch',
+              format: 'json',
+              pssearch: query
+            };
+          },
+          preProcess: function preProcess(data) {
+            var results = data.query.prefixsearch.map(function (elem) {
+              return elem.title;
+            });
+            return results;
+          }
+        }
+      });
+    }
+
+    /**
+     * Set value of progress bar
+     * @param  {Number} value - percentage as float
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'updateProgressBar',
+    value: function updateProgressBar(value) {
+      $('.progress-bar').css('width', value.toFixed(2) + '%');
+    }
+
+    /**
+     * Validate the currently entered project. Called when the value is changed
+     * @return {boolean} true if validation failed
      */
 
   }, {
     key: 'validateProject',
     value: function validateProject() {
-      var project = $(config.projectInput).val();
+      var regex = new RegExp('.*?\\.(' + config.langProjects.join('|') + ')\\.org'),
+          project = $(config.projectInput).val();
 
-      /** Remove www hostnames since the pageviews API doesn't expect them. */
-      if (project.startsWith('www.')) {
-        project = project.substring(4);
-        $(config.projectInput).val(project);
-      }
-
-      if (siteDomains.includes(project)) {
-        $('.validate').remove();
-        $('.select2-selection--multiple').removeClass('disabled');
-      } else {
-        this.resetView();
-        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n         <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', true);
-        $('.select2-selection--multiple').addClass('disabled');
+      if (!siteDomains.includes(project) || !regex.test(project)) {
+        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is either invalid or not a multilingual project.', true);
+        this.setState('invalid');
         return true;
       }
+
+      this.setState('initial');
+
+      /** kill and re-init typeahead to point to new project */
+      this.setupArticleInput();
+
+      return false;
+    }
+  }, {
+    key: 'baseProject',
+    get: function get() {
+      return this.project.split('.')[1];
+    }
+
+    /**
+     * @returns {Typeahead} instance
+     */
+
+  }, {
+    key: 'typeahead',
+    get: function get() {
+      return $(config.articleInput).data('typeahead');
     }
   }]);
 
-  return PageViews;
+  return LangViews;
 }(Pv);
 
 $(document).ready(function () {
-  /** assume query params are supposed to be hash params */
-  if (document.location.search && !document.location.hash) {
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
     return document.location.href = document.location.href.replace('?', '#');
-  } else if (document.location.search) {
+  } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\?.*/, '');
   }
 
-  $.extend(Chart.defaults.global, { animation: false, responsive: true });
-
-  new PageViews();
+  new LangViews();
 });
 
-},{"./config":1,"./shared/pv":5,"./shared/site_map":6}],3:[function(require,module,exports){
+},{"../shared/pv":5,"../shared/site_map":6,"./config":1}],3:[function(require,module,exports){
 'use strict';
 
 String.prototype.descore = function () {
@@ -2794,34 +2440,5 @@ var siteMap = {
 };
 
 module.exports = siteMap;
-
-},{}],7:[function(require,module,exports){
-'use strict';
-
-var templates = {
-  linearLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.sum }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<datasets.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">' + "<a href='<%= getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " + ('<%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>'),
-  circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + ('<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>')
-};
-
-module.exports = templates;
-
-/*
-<div style="
-  display: block;
-  float: none;
-  width: 200px;
-  border: solid 1px black;
-  border-radius: 5px;
-  line-height: 15px;
-"><div class="indic" style="background-color:rgba(171, 212, 235, 1);width: 100%;"><a href="//en.wikipedia.org/wiki/Cat" style="
-  float: none;
-">Cat</a></div><div style="
-  padding: 5px 10px;
-  padding-bottom: 0;
-"> 526,405 (8,773/day)</div><div style="
-  padding: 5px 10px;
-">Langviews • History
-</div></div>
- */
 
 },{}]},{},[3,4,5,6,2]);
