@@ -638,7 +638,7 @@ var Pv = function () {
     key: 'underscorePageNames',
     value: function underscorePageNames(pages) {
       return pages.map(function (page) {
-        return decodeURIComponent(page.replace(/ /g, '_'));
+        return decodeURIComponent(page).score();
       });
     }
 

@@ -506,7 +506,7 @@ class Pv {
    */
   underscorePageNames(pages) {
     return pages.map(page => {
-      return decodeURIComponent(page.replace(/ /g, '_'));
+      return decodeURIComponent(page).score();
     });
   }
 
