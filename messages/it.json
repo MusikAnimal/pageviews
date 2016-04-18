@@ -98,7 +98,7 @@
 	"select2-no-results": "Nessun risultato trovato",
 	"select2-searching": "Ricerca in corso…",
 	"help-translate": "Aiuta a tradurre",
-	"api-error": "C'è stato un problema nel caricamento dei dati dalla API.",
+	"api-error": "Si è verificato un problema nel caricamento dei dati dalla API.",
 	"api-error-contact": "Segnala questo problema agli sviluppatori.",
 	"api-error-no-data": "Nessun dato trovato.",
 	"topviews-title": "Analisi delle pagine più viste",

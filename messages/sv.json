@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"WikiPhoenix",
-			"Ainali"
+			"Ainali",
+			"Jopparn"
 		]
 	},
 	"title": "Sidvisningsanalys",
@@ -100,6 +101,7 @@
 	"api-error": "Ett problem uppstod när data skulle läsas in från API.",
 	"api-error-contact": "Rapportera detta fel till utvecklarna.",
 	"api-error-no-data": "Ingen data hittades.",
+	"topviews-title": "Topviews-analys",
 	"excluded-pages": "Exkluderade sidor",
 	"show-more": "Visa mer"
 }
