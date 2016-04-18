@@ -84,4 +84,5 @@
 //]]>
 </script>
 <script src="application.js"></script>
+<script src="/pageviews/ad_block_test.js"></script>
 <link href="application.css" rel="stylesheet">

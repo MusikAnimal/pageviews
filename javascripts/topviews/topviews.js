@@ -432,6 +432,8 @@ class TopViews extends Pv {
    * @returns {null} - nothing
    */
   setupListeners() {
+    super.setupListeners();
+
     $('#platform-select').on('change', this.applyChanges.bind(this));
     $('.expand-chart').on('click', () => {
       this.offset += config.pageSize;

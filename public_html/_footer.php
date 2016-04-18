@@ -1,3 +1,24 @@
+<div id="ad_blocker_notice" style="display:none">
+  <div style="padding:20px">
+    <h3>Looks like you are using an ad blocker!</h3>
+    Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
+    In our case, we're just trying to show you metrics, not collect them!
+    <h2>
+      Please whitelist
+      <code>
+        tools.wmflabs.org
+      </code>
+    </h2>
+    <h4>AdBlock Plus</h4>
+    <p>
+      Click on the AdBlock Plus icon and select <i>Disable on tools.wmflabs.org</i>. Reload the page.
+    </p>
+    <h4>uBlock</h4>
+    <p>
+      Click on the uBlock icon and then click on the large power icon. Reload the page.
+    </p>
+  </div>
+</div>
 <?php isset($columns) || $columns = 10; ?>
 <footer class="col-lg-<?php echo $columns; ?>">
   <span>
@@ -47,3 +68,12 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+//<![CDATA[
+  if(!window.noAdBlockers) {
+    var noticeContent = document.getElementById('ad_blocker_notice');
+    document.querySelector('body').innerHTML = noticeContent.innerHTML;
+  }
+  
+//]]>
+</script>

@@ -1,3 +1,21 @@
+%div#ad_blocker_notice(style="display:none")
+  %div(style="padding:20px")
+    %h3 Looks like you are using an ad blocker!
+    Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
+    In our case, we're just trying to show you metrics, not collect them!
+
+    %h2
+      Please whitelist
+      %code
+        tools.wmflabs.org
+
+    %h4 AdBlock Plus
+    %p
+      Click on the AdBlock Plus icon and select <i>Disable on tools.wmflabs.org</i>. Reload the page.
+    %h4 uBlock
+    %p
+      Click on the uBlock icon and then click on the large power icon. Reload the page.
+
 - isset($columns) || $columns = 10
 %footer(class="col-lg-#{$columns}")
   %span
@@ -44,3 +62,9 @@
       %div.modal-footer
         %button.btn.btn-primary(data-dismiss="modal" type="button")
           = $I18N->msg( 'ok' )
+
+:javascript
+  if(!window.noAdBlockers) {
+    var noticeContent = document.getElementById('ad_blocker_notice');
+    document.querySelector('body').innerHTML = noticeContent.innerHTML;
+  }
