@@ -259,7 +259,9 @@ class LangViews extends Pv {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day'),
       interWikiKeys = Object.keys(interWikiData);
-    let dfd = $.Deferred(), promises = [], count = 0, hadFailure;
+    let dfd = $.Deferred(), promises = [], count = 0;
+    // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
+    // let hadFailure;
 
     /** clear out existing data */
     this.langData = [];
@@ -303,37 +305,40 @@ class LangViews extends Pv {
         });
       }).fail(errorData => {
         this.writeMessage(`${i18nMessages.langviewsError.i18nArg(dbName)}: ${errorData.responseJSON.title}`);
-        hadFailure = true; // don't treat this series of requests as being cached by server
+        // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
+        // hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
         this.updateProgressBar((++count / interWikiKeys.length) * 100);
 
         if (count === interWikiKeys.length) {
           dfd.resolve(this.langData);
 
-          /**
-           * if there were no failures, assume the resource is now cached by the server
-           *   and save this assumption to our own cache so we don't throttle the same requests
-           */
-          if (!hadFailure) {
-            simpleStorage.set(cacheKey, true, {TTL: 600000});
-          }
+          // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
+          // /**
+          //  * if there were no failures, assume the resource is now cached by the server
+          //  *   and save this assumption to our own cache so we don't throttle the same requests
+          //  */
+          // if (!hadFailure) {
+          //   simpleStorage.set(cacheKey, true, {TTL: 600000});
+          // }
         }
       });
     };
 
-    /**
-     * We don't want to throttle requests for cached resources. However in our case,
-     *   we're unable to check response headers to see if the resource was cached,
-     *   so we use simpleStorage to keep track of what the user has recently queried.
-     */
-    const cacheKey = `lv-cache-${this.hashCode(
-        JSON.stringify(this.getParams(true))
-      )}`,
-      isCached = simpleStorage.hasKey(cacheKey),
-      requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
+    // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
+    // /**
+    //  * We don't want to throttle requests for cached resources. However in our case,
+    //  *   we're unable to check response headers to see if the resource was cached,
+    //  *   so we use simpleStorage to keep track of what the user has recently queried.
+    //  */
+    // const cacheKey = `lv-cache-${this.hashCode(
+    //     JSON.stringify(this.getParams(true))
+    //   )}`,
+    //   isCached = simpleStorage.hasKey(cacheKey),
+    //   requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
 
     interWikiKeys.forEach((dbName, index) => {
-      requestFn(dbName);
+      makeRequest(dbName);
     });
 
     return dfd;
