@@ -32,8 +32,17 @@ output {
     visibility: hidden;
   }
 
-  &:hover .glyphicon {
+  .glyphicon-sort-by-alphabet,
+  .glyphicon-sort-by-alphabet-alt,
+  .glyphicon-sort-by-order,
+  .glyphicon-sort-by-order-alt {
     visibility: visible;
+  }
+
+  &:hover {
+    .glyphicon-sort {
+      visibility: visible;
+    }
   }
 }
 

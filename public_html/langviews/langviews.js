@@ -151,7 +151,7 @@ var LangViews = function (_Pv) {
       });
 
       $('.sort-link').on('click', function (e) {
-        var sortType = $(e.target).data('type');
+        var sortType = $(e.currentTarget).data('type');
         _this2.direction = _this2.sort === sortType ? -_this2.direction : 1;
         _this2.sort = sortType;
         _this2.renderData();
@@ -171,19 +171,17 @@ var LangViews = function (_Pv) {
 
     /**
      * Get all user-inputted parameters
-     * @param {boolean} [includePage] whether or not to include the page name
-     *   in the returned object. E.g. we don't want to escape all character of the page name in the URL params
+     * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
+     *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
      * @return {Object} project, platform, agent, etc.
      */
     value: function getParams() {
-      var includePage = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var forCacheKey = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
       var params = {
         project: $(config.projectInput).val(),
         platform: $(config.platformSelector).val(),
-        agent: $(config.agentSelector).val(),
-        sort: this.sort,
-        direction: this.direction
+        agent: $(config.agentSelector).val()
       };
 
       /**
@@ -198,7 +196,12 @@ var LangViews = function (_Pv) {
         params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
       }
 
-      if (includePage) params.page = $(config.articleInput).val();
+      if (forCacheKey) {
+        params.page = $(config.articleInput).val();
+      } else {
+        params.sort = this.sort;
+        params.direction = this.direction;
+      }
 
       return params;
     }
@@ -264,11 +267,15 @@ var LangViews = function (_Pv) {
         }
       });
 
+      $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+      var newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+      $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
+
       var totalBadgesMarkup = Object.keys(this.totals.badges).map(function (badge) {
         return '<span class=\'nowrap\'>' + _this3.getBadgeMarkup(badge) + ' &times; ' + _this3.totals.badges[badge] + '</span>';
       }).join(', ');
 
-      $('.output-totals').html('<th scope=\'row\'>Totals</th>\n       <th>' + this.langData.length + ' languages</th>\n       <th>' + this.totals.titles.length + ' unique titles</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>');
+      $('.output-totals').html('<th scope=\'row\'>Totals</th>\n       <th>' + this.langData.length + ' languages</th>\n       <th>' + this.totals.titles.length + ' unique titles</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>\n       <th>' + this.n(Math.round(this.totals.views / this.numDaysInRange())) + ' / ' + i18nMessages.day + '</th>');
       $('#lang_list').html('');
 
       sortedLangViews.forEach(function (item, index) {
@@ -277,7 +284,7 @@ var LangViews = function (_Pv) {
           badgeMarkup = item.badges.map(_this3.getBadgeMarkup).join();
         }
 
-        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         </tr>');
+        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         <td>' + _this3.n(Math.round(item.views / _this3.numDaysInRange())) + ' / ' + i18nMessages.day + '</td>\n         </tr>');
       });
 
       this.pushParams();

@@ -62,7 +62,7 @@ class LangViews extends Pv {
     });
 
     $('.sort-link').on('click', e => {
-      const sortType = $(e.target).data('type');
+      const sortType = $(e.currentTarget).data('type');
       this.direction = this.sort === sortType ? -this.direction : 1;
       this.sort = sortType;
       this.renderData();
@@ -88,17 +88,15 @@ class LangViews extends Pv {
 
   /**
    * Get all user-inputted parameters
-   * @param {boolean} [includePage] whether or not to include the page name
-   *   in the returned object. E.g. we don't want to escape all character of the page name in the URL params
+   * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
+   *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
    * @return {Object} project, platform, agent, etc.
    */
-  getParams(includePage = false) {
+  getParams(forCacheKey = false) {
     let params = {
       project: $(config.projectInput).val(),
       platform: $(config.platformSelector).val(),
-      agent: $(config.agentSelector).val(),
-      sort: this.sort,
-      direction: this.direction
+      agent: $(config.agentSelector).val()
     };
 
     /**
@@ -113,7 +111,12 @@ class LangViews extends Pv {
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
-    if (includePage) params.page = $(config.articleInput).val();
+    if (forCacheKey) {
+      params.page = $(config.articleInput).val();
+    } else {
+      params.sort = this.sort;
+      params.direction = this.direction;
+    }
 
     return params;
   }
@@ -166,6 +169,10 @@ class LangViews extends Pv {
       }
     });
 
+    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
     const totalBadgesMarkup = Object.keys(this.totals.badges).map(badge => {
       return `<span class='nowrap'>${this.getBadgeMarkup(badge)} &times; ${this.totals.badges[badge]}</span>`;
     }).join(', ');
@@ -175,7 +182,8 @@ class LangViews extends Pv {
        <th>${this.langData.length} languages</th>
        <th>${this.totals.titles.length} unique titles</th>
        <th>${totalBadgesMarkup}</th>
-       <th>${this.n(this.totals.views)}</th>`
+       <th>${this.n(this.totals.views)}</th>
+       <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${i18nMessages.day}</th>`
     );
     $('#lang_list').html('');
 
@@ -192,6 +200,7 @@ class LangViews extends Pv {
          <td><a href="${item.url}" target="_blank">${item.pageName}</a></td>
          <td>${badgeMarkup}</td>
          <td><a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}</a></td>
+         <td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${i18nMessages.day}</td>
          </tr>`
       );
     });

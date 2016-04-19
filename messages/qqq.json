@@ -116,5 +116,6 @@
 	"language": "Header of the language column in the Langviews application\n{{Identical|Language}}",
 	"badges": "Header of the badges column in the Langviews application. Badges are special recognized articles, such as 'good articles' or 'featured articles'",
 	"pageviews": "Header of the pageviews column in the Langviews application.",
+	"average": "Header of the average pageviews per day column in the Langviews application.",
 	"submit": "The text for the button to submit the form in the Langviews application."
 }

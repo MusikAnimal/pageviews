@@ -109,32 +109,37 @@
               <small class="langviews-params"></small>
             </h2>
           </header>
-          <table class="table output-table">
+          <table class="table table-hover output-table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>
-                  <span class="sort-link" data-type="<?php echo 'lang'; ?>">
+                  <span class="sort-link sort-link--lang" data-type="<?php echo 'lang'; ?>">
                     <?php echo $I18N->msg( 'language' ); ?>
                     <span class="glyphicon glyphicon-sort"></span>
                   </span>
                 </th>
                 <th>
-                  <span class="sort-link" data-type="<?php echo 'title'; ?>">
+                  <span class="sort-link sort-link--title" data-type="<?php echo 'title'; ?>">
                     <?php echo $I18N->msg( 'page-title' ); ?>
                     <span class="glyphicon glyphicon-sort"></span>
                   </span>
                 </th>
                 <th>
-                  <span class="sort-link" data-type="<?php echo 'badges'; ?>">
+                  <span class="sort-link sort-link--badges" data-type="<?php echo 'badges'; ?>">
                     <?php echo $I18N->msg( 'badges' ); ?>
                     <span class="glyphicon glyphicon-sort"></span>
                   </span>
                 </th>
                 <th>
-                  <span class="sort-link" data-type="<?php echo 'views'; ?>">
+                  <span class="sort-link sort-link--views" data-type="<?php echo 'views'; ?>">
                     <?php echo $I18N->msg( 'pageviews' ); ?>
                     <span class="glyphicon glyphicon-sort"></span>
+                  </span>
+                </th>
+                <th>
+                  <span>
+                    <?php echo $I18N->msg( 'average' ); ?>
                   </span>
                 </th>
               </tr>
