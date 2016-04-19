@@ -37,7 +37,6 @@
 	"url-structure": "URL Structure",
 	"view-source": "View source",
 	"report-issue": "Report an issue",
-	"chart-error": "Chart not appearing? Please ensure you have all ad blockers disabled or have $1 whitelisted.",
 	"disclaimer-text": "Data is fetched from the $1. This API is still listed as <b>experimental</b>. This means functionality <i>could</i> <b>break at any time without warning</b>. The $2 of Pageviews Analysis will work to stay up-to-date with API changes, but no promises can be made that the tool will indefinitely be stable until the API is released as stable.",
 	"rest-api": "Wikimedia REST API",
 	"maintainer": "maintainer",
@@ -70,7 +69,7 @@
 	"param-error-1": "Pageviews API does not contain data older than August 2015. Sorry.",
 	"param-error-2": "Start date must be older than the end date.",
 	"param-error-3": "Invalid <code>range</code>, using default range instead. See the <a href='/pageviews/url_structure'>documentation</a> for more information.",
-	"totals": "Totals:",
+	"totals": "Totals",
 	"day": "day",
 	"su": "Su",
 	"mo": "Mo",
@@ -111,5 +110,13 @@
 	"badges": "Badges",
 	"pageviews": "Pageviews",
 	"average": "Average",
-	"submit": "Submit"
+	"submit": "Submit",
+	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
+	"num-languages": "$1 languages",
+	"unique-titles": "$1 unique titles",
+	"invalid-project": "$1 is not a <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
+	"invalid-lang-project": "$1 is either invalid or not a multilingual project",
+	"wikidata-error": "Error querying Wikidata",
+	"wikidata-error-unknown": "An unknown error occurred when querying Wikidata",
+	"langviews-error": "Error fetching data for $1"
 }

@@ -41,7 +41,6 @@
 	"url-structure": "Structure des URL",
 	"view-source": "Voir la source",
 	"report-issue": "Signaler un problème",
-	"chart-error": "Le graphique n'apparaît pas? Veuillez vous assurer d'avoir déactivé tous les bloqueurs de publicité ou inscrit $1 en  la liste blanche.",
 	"disclaimer-text": "Les données sont récupérées à partir de l' $1. Cette API est toujours répertorié comme <b>expérimentale</b>. Cela signifie que la fonctionnalité <i>peut</i> <b>rompre à tout moment et sans avertissement</b>. L' $2 de l'analyse du nombre de vues continuera de travailler pour rester à jour avec les changements de l'API, mais aucune promesse ne peut être faite que l'outil sera indéfiniment stable jusqu'à ce que l'API soit libérée sous forme stable.",
 	"rest-api": "API Wikimedia REST",
 	"maintainer": "responsable",

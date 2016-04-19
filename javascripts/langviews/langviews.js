@@ -178,9 +178,9 @@ class LangViews extends Pv {
     }).join(', ');
 
     $('.output-totals').html(
-      `<th scope='row'>Totals</th>
-       <th>${this.langData.length} languages</th>
-       <th>${this.totals.titles.length} unique titles</th>
+      `<th scope='row'>${i18nMessages.totals}</th>
+       <th>${i18nMessages.numLanguages.i18nArg(this.langData.length)}</th>
+       <th>${i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length)}</th>
        <th>${totalBadgesMarkup}</th>
        <th>${this.n(this.totals.views)}</th>
        <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${i18nMessages.day}</th>`
@@ -302,7 +302,7 @@ class LangViews extends Pv {
           }
         });
       }).fail(errorData => {
-        this.writeMessage(`Error fetching data for ${dbName}: ${errorData.responseJSON.title}`);
+        this.writeMessage(`${i18nMessages.langviewsError.i18nArg(dbName)}: ${errorData.responseJSON.title}`);
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
         this.updateProgressBar((++count / interWikiKeys.length) * 100);
@@ -352,7 +352,7 @@ class LangViews extends Pv {
 
     $.getJSON(url).done(data => {
       if (data.error) {
-        return dfd.reject(`Error querying Wikidata: ${data.error.info}`);
+        return dfd.reject(`${i18nMessages.wikidataError}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
           `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${i18nMessages.apiErrorNoData}`
@@ -609,7 +609,7 @@ class LangViews extends Pv {
       if (typeof error === 'string') {
         this.writeMessage(error);
       } else {
-        this.writeMessage('An unknown error occurred when querying Wikidata.');
+        this.writeMessage(i18nMessages.wikidataErrorUnknown);
       }
     });
   }
@@ -663,8 +663,8 @@ class LangViews extends Pv {
 
     if (!siteDomains.includes(project) || !regex.test(project)) {
       this.writeMessage(
-        `<a href='//${project}'>${project}</a> is either invalid or not a multilingual project.`,
-         true
+        i18nMessages.invalidLangProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        true
       );
       this.setState('invalid');
       return true;
@@ -682,9 +682,9 @@ class LangViews extends Pv {
 $(document).ready(() => {
   /** assume hash params are supposed to be query params */
   if (document.location.hash && !document.location.search) {
-    return document.location.href = document.location.href.replace('?', '#');
+    return document.location.href = document.location.href.replace('#', '?');
   } else if (document.location.hash) {
-    return document.location.href = document.location.href.replace(/\?.*/, '');
+    return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
   new LangViews();

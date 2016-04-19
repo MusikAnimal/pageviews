@@ -43,7 +43,6 @@
 	"url-structure": "Link to documentation about the URL structure used by the tool",
 	"view-source": "Link to the source code for the tool\n{{Identical|View source}}",
 	"report-issue": "Link to report an issue or bug with the tool",
-	"chart-error": "Error message. $1 is the URL of the pageviews tool.",
 	"disclaimer-text": "Disclaimer text. $1 is a link to the API. $2 is a link to the maintainer.",
 	"rest-api": "Link to the API documentation",
 	"maintainer": "Link to the project maintainer. This is used in a sentence.",
@@ -117,5 +116,13 @@
 	"badges": "Header of the badges column in the Langviews application. Badges are special recognized articles, such as 'good articles' or 'featured articles'",
 	"pageviews": "Header of the pageviews column in the Langviews application.",
 	"average": "Header of the average pageviews per day column in the Langviews application.",
-	"submit": "The text for the button to submit the form in the Langviews application."
+	"submit": "The text for the button to submit the form in the Langviews application.",
+	"hover-to-exclude": "Placeholder in the input of the Topviews application, instructing to hover over entries and click on the X to exclude them from view",
+	"num-languages": "Indicates the number of languages a Langviews query returned. $1 is the actual number.",
+	"unique-titles": "Indicates the number of unique titles a Langviews query returned. $1 is the actual number.",
+	"invalid-project": "Error message saying the given value is not a valid WMF project. $1 is the name of the project.",
+	"invalid-lang-project": "Error message saying the given value is not a valid WMF multilingual project. $1 is the name of the project.",
+	"wikidata-error": "Generic error message for when something went wrong while querying the Wikidata API. This text is followed by the error message returned by the API.",
+	"wikidata-error-unknown": "Error message saying an unknown error occurred when querying Wikidata.",
+	"langviews-error": "Error message saying something went wrong when querying for a specific project in Langviews. $1 is the project name. This text is followed by the error message returned by the API."
 }

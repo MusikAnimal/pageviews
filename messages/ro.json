@@ -35,7 +35,6 @@
 	"url-structure": "Structura URL",
 	"view-source": "Vizualizare sursă",
 	"report-issue": "Raportează o problemă",
-	"chart-error": "Graficul nu apare? Asigurați-vă că aveți programele de blocare a publicității dezactivate sau că aveți $1 în lista de excepții.",
 	"disclaimer-text": "Datele sunt extrase din $1. Acest API este încă listat ca <b>experimental</b>. Aceasta înseamnă că funcționalitatea sa <i>ar putea</i> <b>ceda în orice moment fără avertizare</b>. $2 instrumentului „Analiza vizualizărilor paginii” vor lucra pentru a ține pasul cu schimbările intervenite în API, dar nu pot fi făcute niciun fel de promisiuni că instrumentul va rămâne stabil până la emiterea unei versiuni stabile a API-ului.",
 	"rest-api": "Wikimedia REST API",
 	"maintainer": "Întreținătorii",

@@ -31,7 +31,6 @@
 	"url-structure": "URL結構",
 	"view-source": "睇原始碼",
 	"report-issue": "報告問題",
-	"chart-error": "顯示唔到統計圖？請確保你已經熄晒所有擋廣告插件，或者將$1加落白名單度。",
 	"disclaimer-text": "資料由$1抽取。呢個API重係<b>試驗緊</b>。即係代表呢個功能<i>可能</i><b>響無通知嘅情況下隨時失靈</b>。版睇分析嘅$2會睇實最新API嘅改動，但唔保證呢個工具一路都穩定，直到API推出穩定版。",
 	"rest-api": "維基媒體 REST API",
 	"maintainer": "維護者",

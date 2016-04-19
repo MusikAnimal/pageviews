@@ -35,7 +35,6 @@
 	"url-structure": "URL结构",
 	"view-source": "查看源代码",
 	"report-issue": "报告问题",
-	"chart-error": "没有出现图表么？请确保您禁用了所有广告拦截器，或已将$1列入白名单。",
 	"disclaimer-text": "数据已从$1检索。该API仍被列为<b>实验版</b>。这意味着功能<i>可能</i><b>在未事先警告的情况下随时损坏</b>。页面浏览分析的$2将通过API更改努力保持更新，但在API作为稳定版本发布前，我们不能保证工具无限期稳定。",
 	"rest-api": "维基媒体REST API",
 	"maintainer": "维护人员",

@@ -36,7 +36,6 @@
 	"url-structure": "URL架構",
 	"view-source": "查看原始碼",
 	"report-issue": "問題回報",
-	"chart-error": "若無法顯示圖表，請確定您的瀏覽器已停用廣告阻擋軟體；或已將$1列為網站白名單。",
 	"disclaimer-text": "資料已由$1取得。此API仍被列為<b>實驗版本</b>。代表功能<i>可能</i>會在未被知會情況下<b>毀損</b>。$2之頁面分析內容將依API的修正而更新，但在API的正式版本釋出前並不保證工具性能穩定。",
 	"rest-api": "維基媒體REST API",
 	"maintainer": "維護人員",

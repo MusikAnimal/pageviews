@@ -37,7 +37,6 @@
 	"url-structure": "Adresstruktur",
 	"view-source": "Visa källkod",
 	"report-issue": "Rapportera ett problem",
-	"chart-error": "Visas inte diagrammet? Se till att du har inaktiverat alla annonsblockerare eller vitlistat $1.",
 	"disclaimer-text": "Data hämtas från $1. Detta API är fortfarande angivet som <b>experimentellt</b>. Detta innebär att funktionalitet <i>kan</i> <b>sluta fungera när som helst utan förvarning</b>. Den $2 för sidvisningsanalysen kommer att arbeta för att vara uppdaterad med API-förändringar, men inga löften kan göras för att verktyget alltid kommer att vara stabilt innan API:et är markerat som stabilt.",
 	"rest-api": "Wikimedia REST API",
 	"maintainer": "ansvariga",
