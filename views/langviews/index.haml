@@ -72,6 +72,11 @@
         %div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
           %div.progress
             %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
+        %div.throttle-notice.text-center
+          %b NOTE:
+          Requests are currently being throttled for performance reasons.
+          %br
+          Eventually Langviews will run much faster. See <a href="https://phabricator.wikimedia.org/T124314">phab:T124314</a> for more information.
 
         %output(form="langviews_form")
           %header.output-header

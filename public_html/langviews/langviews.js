@@ -353,9 +353,8 @@ var LangViews = function (_Pv) {
           interWikiKeys = Object.keys(interWikiData);
       var dfd = $.Deferred(),
           promises = [],
-          count = 0;
-      // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
-      // let hadFailure;
+          count = 0,
+          hadFailure = undefined;
 
       /** clear out existing data */
       this.langData = [];
@@ -399,40 +398,35 @@ var LangViews = function (_Pv) {
           });
         }).fail(function (errorData) {
           _this4.writeMessage(i18nMessages.langviewsError.i18nArg(dbName) + ': ' + errorData.responseJSON.title);
-          // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
-          // hadFailure = true; // don't treat this series of requests as being cached by server
+          hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
           _this4.updateProgressBar(++count / interWikiKeys.length * 100);
 
           if (count === interWikiKeys.length) {
             dfd.resolve(_this4.langData);
 
-            // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
-            // /**
-            //  * if there were no failures, assume the resource is now cached by the server
-            //  *   and save this assumption to our own cache so we don't throttle the same requests
-            //  */
-            // if (!hadFailure) {
-            //   simpleStorage.set(cacheKey, true, {TTL: 600000});
-            // }
+            /**
+             * if there were no failures, assume the resource is now cached by the server
+             *   and save this assumption to our own cache so we don't throttle the same requests
+             */
+            if (!hadFailure) {
+              simpleStorage.set(cacheKey, true, { TTL: 600000 });
+            }
           }
         });
       };
 
-      // XXX: Commenting out throttling code for now. Possibly not the issue with the backend errors
-      // /**
-      //  * We don't want to throttle requests for cached resources. However in our case,
-      //  *   we're unable to check response headers to see if the resource was cached,
-      //  *   so we use simpleStorage to keep track of what the user has recently queried.
-      //  */
-      // const cacheKey = `lv-cache-${this.hashCode(
-      //     JSON.stringify(this.getParams(true))
-      //   )}`,
-      //   isCached = simpleStorage.hasKey(cacheKey),
-      //   requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
+      /**
+       * We don't want to throttle requests for cached resources. However in our case,
+       *   we're unable to check response headers to see if the resource was cached,
+       *   so we use simpleStorage to keep track of what the user has recently queried.
+       */
+      var cacheKey = 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true))),
+          isCached = simpleStorage.hasKey(cacheKey),
+          requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
 
       interWikiKeys.forEach(function (dbName, index) {
-        makeRequest(dbName);
+        requestFn(dbName);
       });
 
       return dfd;

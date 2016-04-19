@@ -98,6 +98,12 @@
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
           </div>
         </div>
+        <div class="throttle-notice text-center">
+          <b>NOTE:</b>
+          Requests are currently being throttled for performance reasons.
+          <br>
+          Eventually Langviews will run much faster. See <a href="https://phabricator.wikimedia.org/T124314">phab:T124314</a> for more information.
+        </div>
         <output form="langviews_form">
           <header class="output-header">
             <strong class="another-query">

@@ -23,6 +23,11 @@ output {
   }
 }
 
+.throttle-notice {
+  color: $red;
+  display: none;
+}
+
 .sort-link {
   @include prefix(user-select, none);
   cursor: pointer;
@@ -58,6 +63,10 @@ main {
     }
 
     .progress-bar--wrapper {
+      display: block;
+    }
+
+    .throttle-notice {
       display: block;
     }
   }
