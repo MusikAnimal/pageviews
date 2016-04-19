@@ -1641,6 +1641,7 @@ var pv = require('../shared/pv');
 var config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
+  cookieExpiry: 30, // num days
   defaults: {
     dateFormat: 'YYYY-MM-DD',
     dateRange: 'last-week',

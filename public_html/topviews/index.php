@@ -87,10 +87,7 @@
         <!-- Other links -->
         <div class="col-lg-10 data-links">
           <hr>
-          <!-- Download as -->
-          <!-- %a.download-csv{href: "#"} CSV -->
-          <!-- \&middot; -->
-          <!-- %a.download-json{href: "#"} JSON -->
+          <?php include "../_lang_selector.php"; ?>
         </div>
         <?php $app = "topviews"; ?>
         <?php include "../_footer.php"; ?>

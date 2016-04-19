@@ -134,6 +134,7 @@ module.exports = function(grunt) {
           'public_html/index.php': 'views/index.haml',
           'public_html/_head.php': 'views/_head.haml',
           'public_html/_footer.php': 'views/_footer.haml',
+          'public_html/_lang_selector.php': 'views/_lang_selector.haml',
           'public_html/_modals.php': 'views/_modals.haml',
           'public_html/faq/index.php': 'views/faq.haml',
           'public_html/url_structure/index.php': 'views/url_structure.haml',

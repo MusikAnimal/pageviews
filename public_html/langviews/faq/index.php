@@ -29,6 +29,14 @@
             </li>
             <li class="list-group-item">
               <p>
+                <strong>Why can't I view data for today's date?</strong>
+              </p>
+              <p>
+                The Wikimedia pageviews API generally takes a full 24 hours to populate, sometimes longer. In some situations you may see data missing for yesterday's date as well, which will be left blank rather than showing a count of zero views.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <p>
                 <strong>Why do I need to disable my ad blocker?</strong>
               </p>
               <p>
