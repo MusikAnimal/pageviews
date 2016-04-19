@@ -417,7 +417,7 @@ class PageViews extends Pv {
     }
 
     if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, 'Pageviews comparsion',
+      window.history.replaceState({}, document.title,
         `#${$.param(state)}&pages=${pages.join('|').replace(/[&%]/g, escape)}`
       );
     }
@@ -903,9 +903,8 @@ class PageViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        `<a href='//${project}'>${project}</a> is not a
-         <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>`,
-         true
+        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        true
       );
       $('.select2-selection--multiple').addClass('disabled');
       return true;

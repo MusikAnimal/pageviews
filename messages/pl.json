@@ -34,7 +34,6 @@
 	"url-structure": "Struktura URL",
 	"view-source": "Kod źródłowy",
 	"report-issue": "Zgłoś problem",
-	"chart-error": "Wykres się nie wyświetla? Upewnij się, że wszystkie wtyczki do blokowania reklam są wyłączone oraz że $1 jest na liście dozwolonych adresów.",
 	"ok": "OK",
 	"chart-types": "Rodzaje wykresów",
 	"daily-pageviews": "Strony według dziennych odsłon",

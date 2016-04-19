@@ -59,3 +59,10 @@ if (!String.prototype.startsWith) {
     return this.substr(position, searchString.length) === searchString;
   };
 }
+
+// Array.of
+if (!Array.of) {
+  Array.of = function() {
+    return Array.prototype.slice.call(arguments);
+  };
+}

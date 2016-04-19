@@ -78,7 +78,15 @@
      select2Loading: "<?php echo $I18N->msg( 'select2-loading' ); ?>",
      select2MaxItems: "<?php echo $I18N->msg( 'select2-max-items', array( 'variables' => array( 'replace me' ) ) ); ?>",
      select2NoResults: "<?php echo $I18N->msg( 'select2-no-results' ); ?>",
-     select2Searching: "<?php echo $I18N->msg( 'select2-searching' ); ?>"
+     select2Searching: "<?php echo $I18N->msg( 'select2-searching' ); ?>",
+     hoverToExclude: "<?php echo $I18N->msg( 'hover-to-exclude' ); ?>",
+     numLanguages: "<?php echo $I18N->msg( 'num-languages', array( 'variables' => array( 'i18n-arg' ) ) ); ?>",
+     uniqueTitles: "<?php echo $I18N->msg( 'unique-titles', array( 'variables' => array( 'i18n-arg' ) ) ); ?>",
+     invalidProject: "<?php echo $I18N->msg( 'invalid-project', array( 'variables' => array( 'i18n-arg' ) ) ); ?>",
+     invalidLangProject: "<?php echo $I18N->msg( 'invalid-lang-project', array( 'variables' => array( 'i18n-arg' ) ) ); ?>",
+     wikidataError: "<?php echo $I18N->msg( 'wikidata-error' ); ?>",
+     wikidataErrorUnknown: "<?php echo $I18N->msg( 'wikidata-error-unknown' ); ?>",
+     langviewsError: "<?php echo $I18N->msg( 'langviews-error', array( 'variables' => array( 'i18n-arg' ) ) ); ?>"
    };
   
 //]]>

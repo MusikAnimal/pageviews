@@ -37,7 +37,6 @@
 	"url-structure": "Struttura URL",
 	"view-source": "Visualizza sorgente",
 	"report-issue": "Segnala un problema",
-	"chart-error": "Il grafico non viene visualizzato? Assicurati che tutti gli AdBlocker siano disabilitati o di avere $1 nella lista dei consentiti",
 	"disclaimer-text": "I dati vengono acquisiti da $1. Questa API è ancora elencata come <b>sperimentale</b>. Questo significa che le funzionalità <i>potrebbero</i> <b>interrompersi in qualsiasi momento e senza preavviso</b>. Il $2 dell'analisi delle visualizzazioni delle pagine lavorerà per rimanere aggiornato con le modifiche alle API, ma nessuna promessa può essere fatta che lo strumento rimarrà stabile a tempo indeterminato finché l'API non sarà stata rilasciata come stabile.",
 	"rest-api": "Wikimedia API REST",
 	"maintainer": "manutentore",

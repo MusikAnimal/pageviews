@@ -248,7 +248,7 @@ class TopViews extends Pv {
 
     if (window.history && window.history.replaceState) {
       const excludes = this.underscorePageNames(this.excludes);
-      window.history.replaceState({}, 'Topviews comparsion', `#${$.param(state)}&excludes=${excludes.join('|')}`);
+      window.history.replaceState({}, document.title, `#${$.param(state)}&excludes=${excludes.join('|')}`);
     }
 
     return state;
@@ -297,7 +297,7 @@ class TopViews extends Pv {
       data: [],
       maximumSelectionLength: 50,
       minimumInputLength: 0,
-      placeholder: 'Hover over entires and click the ✖ to exclude from view'
+      placeholder: i18nMessages.hoverToExclude
     });
 
     if (excludes.length) this.setArticleSelectorDefaults(excludes);
@@ -531,9 +531,8 @@ class TopViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        `<a href='//${project}'>${project}</a> is not a
-         <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>`,
-        'validate', true
+        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        true
       );
       $('body').addClass('invalid-project');
       return true;

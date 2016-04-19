@@ -84,10 +84,6 @@
 
         / Chart
         %div.chart-container.col-lg-10.loading
-          / inline styles since the ad blocker might block loading of assets
-          %div.ad-block-notice.text-center
-            - $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>"
-            = $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) )
           %canvas.aqs-chart
 
         %div.message-container.col-lg-10
@@ -97,16 +93,16 @@
 
         / Other links
         %div.col-lg-10.data-links
-          %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")
+          %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
             = $I18N->msg( 'change-chart' )
           &bullet;
-          %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")
+          %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
             = $I18N->msg( 'settings' )
           &bullet;
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
           = $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) )
           &middot;
-          %a.download-json(href="#")
+          %a.download-json(href="#")<
             = $I18N->msg( 'json' )
 
           - include "_lang_selector.php"

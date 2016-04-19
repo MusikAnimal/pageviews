@@ -625,7 +625,7 @@ var PageViews = function (_Pv) {
       }
 
       if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, 'Pageviews comparsion', '#' + $.param(state) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
+        window.history.replaceState({}, document.title, '#' + $.param(state) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
       }
 
       return state;
@@ -1137,7 +1137,7 @@ var PageViews = function (_Pv) {
         $('.select2-selection--multiple').removeClass('disabled');
       } else {
         this.resetView();
-        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n         <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', true);
+        this.writeMessage(i18nMessages.invalidProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
@@ -1168,6 +1168,13 @@ String.prototype.descore = function () {
 };
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
+};
+String.prototype.i18nArg = function (args) {
+  var newStr = this;
+  Array.of(args).forEach(function (arg) {
+    newStr = newStr.replace('i18n-arg', arg);
+  });
+  return newStr;
 };
 
 },{}],4:[function(require,module,exports){
@@ -1232,6 +1239,13 @@ if (!String.prototype.startsWith) {
   String.prototype.startsWith = function (searchString, position) {
     position = position || 0;
     return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+// Array.of
+if (!Array.of) {
+  Array.of = function () {
+    return Array.prototype.slice.call(arguments);
   };
 }
 

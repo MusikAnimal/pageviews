@@ -275,7 +275,7 @@ var LangViews = function (_Pv) {
         return '<span class=\'nowrap\'>' + _this3.getBadgeMarkup(badge) + ' &times; ' + _this3.totals.badges[badge] + '</span>';
       }).join(', ');
 
-      $('.output-totals').html('<th scope=\'row\'>Totals</th>\n       <th>' + this.langData.length + ' languages</th>\n       <th>' + this.totals.titles.length + ' unique titles</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>\n       <th>' + this.n(Math.round(this.totals.views / this.numDaysInRange())) + ' / ' + i18nMessages.day + '</th>');
+      $('.output-totals').html('<th scope=\'row\'>' + i18nMessages.totals + '</th>\n       <th>' + i18nMessages.numLanguages.i18nArg(this.langData.length) + '</th>\n       <th>' + i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length) + '</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>\n       <th>' + this.n(Math.round(this.totals.views / this.numDaysInRange())) + ' / ' + i18nMessages.day + '</th>');
       $('#lang_list').html('');
 
       sortedLangViews.forEach(function (item, index) {
@@ -397,7 +397,7 @@ var LangViews = function (_Pv) {
             }
           });
         }).fail(function (errorData) {
-          _this4.writeMessage('Error fetching data for ' + dbName + ': ' + errorData.responseJSON.title);
+          _this4.writeMessage(i18nMessages.langviewsError.i18nArg(dbName) + ': ' + errorData.responseJSON.title);
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
           _this4.updateProgressBar(++count / interWikiKeys.length * 100);
@@ -449,7 +449,7 @@ var LangViews = function (_Pv) {
 
       $.getJSON(url).done(function (data) {
         if (data.error) {
-          return dfd.reject('Error querying Wikidata: ' + data.error.info);
+          return dfd.reject(i18nMessages.wikidataError + ': ' + data.error.info);
         } else if (data.entities['-1']) {
           return dfd.reject('<a href=\'' + _this5.getPageURL(pageName) + '\'>' + pageName.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
         }
@@ -706,7 +706,7 @@ var LangViews = function (_Pv) {
         if (typeof error === 'string') {
           _this7.writeMessage(error);
         } else {
-          _this7.writeMessage('An unknown error occurred when querying Wikidata.');
+          _this7.writeMessage(i18nMessages.wikidataErrorUnknown);
         }
       });
     }
@@ -770,7 +770,7 @@ var LangViews = function (_Pv) {
           project = $(config.projectInput).val();
 
       if (!siteDomains.includes(project) || !regex.test(project)) {
-        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is either invalid or not a multilingual project.', true);
+        this.writeMessage(i18nMessages.invalidLangProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
         this.setState('invalid');
         return true;
       }
@@ -805,9 +805,9 @@ var LangViews = function (_Pv) {
 $(document).ready(function () {
   /** assume hash params are supposed to be query params */
   if (document.location.hash && !document.location.search) {
-    return document.location.href = document.location.href.replace('?', '#');
+    return document.location.href = document.location.href.replace('#', '?');
   } else if (document.location.hash) {
-    return document.location.href = document.location.href.replace(/\?.*/, '');
+    return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
   new LangViews();
@@ -821,6 +821,13 @@ String.prototype.descore = function () {
 };
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
+};
+String.prototype.i18nArg = function (args) {
+  var newStr = this;
+  Array.of(args).forEach(function (arg) {
+    newStr = newStr.replace('i18n-arg', arg);
+  });
+  return newStr;
 };
 
 },{}],4:[function(require,module,exports){
@@ -885,6 +892,13 @@ if (!String.prototype.startsWith) {
   String.prototype.startsWith = function (searchString, position) {
     position = position || 0;
     return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+// Array.of
+if (!Array.of) {
+  Array.of = function () {
+    return Array.prototype.slice.call(arguments);
   };
 }
 

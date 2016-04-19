@@ -37,7 +37,6 @@
 	"url-structure": "Estrutura do enderezo URL",
 	"view-source": "Ver o código fonte",
 	"report-issue": "Informar dun problema",
-	"chart-error": "Se non se amosa o gráfico, asegúrese de desactivar todos os filtros de publicidade ou que $1 se atopa na lista de enderezos permitidos.",
 	"disclaimer-text": "Os datos obtéñense a partir de $1. Esta API aínda aparece como <b>experimental</b>. Isto significa que a funcionalidade <i>podería</i> <b>fallar en calquera momento e sen previo aviso</b>. O $2 de análises de visitas traballará para manterse ao día cos cambios na API, pero non se pode prometer que a ferramenta sexa indefinidamente estable ata que a API se publique como estable.",
 	"rest-api": "REST API da Wikimedia",
 	"maintainer": "responsable",

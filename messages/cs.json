@@ -33,7 +33,6 @@
 	"url-structure": "Struktura URL",
 	"view-source": "Zobrazit zdrojový kód",
 	"report-issue": "Nahlásit problém",
-	"chart-error": "Graf se nezobrazuje? Ujistěte se prosím, že máte vypnutá všechna blokování reklam nebo máte $1 v seznamu výjimek.",
 	"disclaimer-text": "Data jsou stahována z $1. Toto API je stále uvedeno jako <b>experimentální</b>. To znamená, že funkčnost <i>může</i> <b>být kdykoliv přerušena bez varování</b>. $2 Analýzy návštěv bude pracovat na udržení kroku se změnami API, ale nelze zaručit, že tento nástroj bude neustále stabilní, dokud nebude API prohlášeno za stabilní.",
 	"rest-api": "Wikimedia REST API",
 	"maintainer": "Správce",

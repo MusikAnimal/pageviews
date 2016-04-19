@@ -7,6 +7,13 @@ String.prototype.descore = function () {
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
 };
+String.prototype.i18nArg = function (args) {
+  var newStr = this;
+  Array.of(args).forEach(function (arg) {
+    newStr = newStr.replace('i18n-arg', arg);
+  });
+  return newStr;
+};
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -70,6 +77,13 @@ if (!String.prototype.startsWith) {
   String.prototype.startsWith = function (searchString, position) {
     position = position || 0;
     return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+// Array.of
+if (!Array.of) {
+  Array.of = function () {
+    return Array.prototype.slice.call(arguments);
   };
 }
 
@@ -1963,7 +1977,7 @@ var TopViews = function (_Pv) {
 
       if (window.history && window.history.replaceState) {
         var excludes = this.underscorePageNames(this.excludes);
-        window.history.replaceState({}, 'Topviews comparsion', '#' + $.param(state) + '&excludes=' + excludes.join('|'));
+        window.history.replaceState({}, document.title, '#' + $.param(state) + '&excludes=' + excludes.join('|'));
       }
 
       return state;
@@ -2027,7 +2041,7 @@ var TopViews = function (_Pv) {
         data: [],
         maximumSelectionLength: 50,
         minimumInputLength: 0,
-        placeholder: 'Hover over entires and click the ✖ to exclude from view'
+        placeholder: i18nMessages.hoverToExclude
       });
 
       if (excludes.length) this.setArticleSelectorDefaults(excludes);
@@ -2271,7 +2285,7 @@ var TopViews = function (_Pv) {
         $('body').removeClass('invalid-project');
       } else {
         this.resetView();
-        this.writeMessage('<a href=\'//' + project + '\'>' + project + '</a> is not a\n         <a href=\'//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\'>valid project</a>', 'validate', true);
+        this.writeMessage(i18nMessages.invalidProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
         $('body').addClass('invalid-project');
         return true;
       }

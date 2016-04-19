@@ -105,11 +105,6 @@
         </div>
         <!-- Chart -->
         <div class="chart-container col-lg-10 loading">
-          <!-- inline styles since the ad blocker might block loading of assets -->
-          <div class="ad-block-notice text-center">
-            <?php $url = "<span style='font-family: Consolas, Lucida Console, monospace;'>/pageviews/*</span>"; ?>
-            <?php echo $I18N->msg( 'chart-error', array( 'variables' => array( $url ) ) ); ?>
-          </div>
           <canvas class="aqs-chart"></canvas>
         </div>
         <div class="message-container col-lg-10"></div>
@@ -117,20 +112,14 @@
         <div class="col-lg-10" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-10 data-links">
-          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#">
-            <?php echo $I18N->msg( 'change-chart' ); ?>
-          </a>
+          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'change-chart' ); ?></a>
           &bullet;
-          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#">
-            <?php echo $I18N->msg( 'settings' ); ?>
-          </a>
+          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'settings' ); ?></a>
           &bullet;
           <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) ); ?>
           &middot;
-          <a class="download-json" href="#">
-            <?php echo $I18N->msg( 'json' ); ?>
-          </a>
+          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
           <?php include "_lang_selector.php"; ?>
         </div>
         <?php $app = "pageviews"; ?>
