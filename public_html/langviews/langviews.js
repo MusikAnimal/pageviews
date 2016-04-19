@@ -351,10 +351,13 @@ var LangViews = function (_Pv) {
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day'),
           interWikiKeys = Object.keys(interWikiData);
+      // XXX: throttling
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
-          hadFailure = undefined;
+          hadFailure = undefined,
+          failureRetries = {},
+          totalRequestCount = interWikiKeys.length;
 
       /** clear out existing data */
       this.langData = [];
@@ -397,18 +400,36 @@ var LangViews = function (_Pv) {
             }
           });
         }).fail(function (errorData) {
+          // XXX: throttling
+          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+          if (errorData.responseJSON.title === 'Error in Cassandra table storage backend') {
+            if (failureRetries[dbName]) {
+              failureRetries[dbName]++;
+            } else {
+              failureRetries[dbName] = 1;
+            }
+
+            /** maximum of 3 retries */
+            if (failureRetries[dbName] < 3) {
+              totalRequestCount++;
+              return _this4.rateLimit(makeRequest, 100, _this4)(dbName);
+            }
+          }
+
           _this4.writeMessage(i18nMessages.langviewsError.i18nArg(dbName) + ': ' + errorData.responseJSON.title);
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
-          _this4.updateProgressBar(++count / interWikiKeys.length * 100);
+          _this4.updateProgressBar(++count / totalRequestCount * 100);
 
-          if (count === interWikiKeys.length) {
+          // XXX: throttling, totalRequestCount can just be interWikiKeys.length
+          if (count === totalRequestCount) {
             dfd.resolve(_this4.langData);
 
             /**
              * if there were no failures, assume the resource is now cached by the server
              *   and save this assumption to our own cache so we don't throttle the same requests
              */
+            // XXX: throttling
             if (!hadFailure) {
               simpleStorage.set(cacheKey, true, { TTL: 600000 });
             }
@@ -421,6 +442,7 @@ var LangViews = function (_Pv) {
        *   we're unable to check response headers to see if the resource was cached,
        *   so we use simpleStorage to keep track of what the user has recently queried.
        */
+      // XXX: throttling
       var cacheKey = 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true))),
           isCached = simpleStorage.hasKey(cacheKey),
           requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
@@ -683,6 +705,20 @@ var LangViews = function (_Pv) {
     key: 'processArticle',
     value: function processArticle() {
       var _this7 = this;
+
+      // XXX: throttling
+      /** Check if user has exceeded request limit and throw error */
+      if (simpleStorage.hasKey('langviews-throttle')) {
+        var timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+
+        /** > 0 check to combat race conditions */
+        if (timeRemaining > 0) {
+          return this.writeMessage('\n          Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n          for more information.\n        ', true);
+        }
+      } else {
+        /** limit to one request every 3 minutes */
+        simpleStorage.set('langviews-throttle', true, { TTL: 120000 });
+      }
 
       var page = $(config.articleInput).val();
 
