@@ -189,7 +189,7 @@ var LangViews = function (_Pv) {
        * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
        *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
        */
-      if (this.specialRange) {
+      if (this.specialRange && !forCacheKey) {
         params.range = this.specialRange.range;
       } else {
         params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
@@ -431,7 +431,7 @@ var LangViews = function (_Pv) {
              */
             // XXX: throttling
             if (!hadFailure) {
-              simpleStorage.set(cacheKey, true, { TTL: 600000 });
+              simpleStorage.set(_this4.getCacheKey(), true, { TTL: 600000 });
             }
           }
         });
@@ -443,15 +443,35 @@ var LangViews = function (_Pv) {
        *   so we use simpleStorage to keep track of what the user has recently queried.
        */
       // XXX: throttling
-      var cacheKey = 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true))),
-          isCached = simpleStorage.hasKey(cacheKey),
-          requestFn = isCached ? makeRequest : this.rateLimit(makeRequest, 100, this);
+      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
 
       interWikiKeys.forEach(function (dbName, index) {
         requestFn(dbName);
       });
 
       return dfd;
+    }
+
+    /**
+     * Return cache key for current params
+     * @return {String} key
+     */
+
+  }, {
+    key: 'getCacheKey',
+    value: function getCacheKey() {
+      return 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true)));
+    }
+
+    /**
+     * Check simple storage to see if a request with the current params would be cached
+     * @return {Boolean} cached or not
+     */
+
+  }, {
+    key: 'isRequestCached',
+    value: function isRequestCached() {
+      return simpleStorage.hasKey(this.getCacheKey());
     }
 
     /**
@@ -707,17 +727,20 @@ var LangViews = function (_Pv) {
       var _this7 = this;
 
       // XXX: throttling
-      /** Check if user has exceeded request limit and throw error */
-      if (simpleStorage.hasKey('langviews-throttle')) {
-        var timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+      /** allow resubmission of queries that are cached */
+      if (!this.isRequestCached()) {
+        /** Check if user has exceeded request limit and throw error */
+        if (simpleStorage.hasKey('langviews-throttle')) {
+          var timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
 
-        /** > 0 check to combat race conditions */
-        if (timeRemaining > 0) {
-          return this.writeMessage('\n          Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n          for more information.\n        ', true);
+          /** > 0 check to combat race conditions */
+          if (timeRemaining > 0) {
+            return this.writeMessage('\n            Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n            for more information.\n          ', true);
+          }
+        } else {
+          /** limit to one request every 3 minutes */
+          simpleStorage.set('langviews-throttle', true, { TTL: 120000 });
         }
-      } else {
-        /** limit to one request every 3 minutes */
-        simpleStorage.set('langviews-throttle', true, { TTL: 120000 });
       }
 
       var page = $(config.articleInput).val();
