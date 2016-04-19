@@ -80,6 +80,13 @@ if (!String.prototype.startsWith) {
   };
 }
 
+// Array.of
+if (!Array.of) {
+  Array.of = function () {
+    return Array.prototype.slice.call(arguments);
+  };
+}
+
 },{}],3:[function(require,module,exports){
 'use strict';
 
