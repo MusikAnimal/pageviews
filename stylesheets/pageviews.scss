@@ -73,3 +73,39 @@
   height: 20px;
   width: 10%;
 }
+
+.linear-legend {
+  border: solid 1px $gray;
+  border-radius: 5px;
+  float: left;
+  line-height: 15px;
+  margin-bottom: 6px;
+  margin-right: 6px;
+  overflow: hidden; // to make --label have the same border-radius
+  width: calc(100% / 3 - 4px);
+
+  &:nth-child(3n) {
+    margin: 0;
+  }
+
+  a {
+    float: none;
+  }
+}
+
+.linear-legend--totals {
+  margin-bottom: 10px;
+}
+
+.linear-legend--label {
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.linear-legend--counts {
+  padding: 5px 10px 0;
+}
+
+.linear-legend--links {
+  padding: 5px 10px;
+}

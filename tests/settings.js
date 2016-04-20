@@ -8,6 +8,8 @@ module.exports = {
       .url('http://localhost/pageviews/index')
       .waitForElementPresent('canvas', 10000);
 
+    client.click('body'); // IE10
+
     // Bar
     client.click('.js-test-change-chart');
     client.expect.element('#chart-type-modal').to.be.visible.after(1000);

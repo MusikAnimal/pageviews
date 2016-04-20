@@ -38,6 +38,8 @@ class PageViews extends Pv {
     /** need to export to global for chart templating */
     window.formatNumber = this.formatNumber.bind(this);
     window.getPageURL = this.getPageURL.bind(this);
+    window.getLangviewsURL = this.getLangviewsURL.bind(this);
+    window.getExpandedPageURL = this.getExpandedPageURL.bind(this);
     window.numDaysInRange = this.numDaysInRange.bind(this);
 
     this.setupProjectInput();
@@ -226,6 +228,15 @@ class PageViews extends Pv {
   }
 
   /**
+   * Link to /langviews for given page and chosen daterange
+   * @param {String} page - page title
+   * @returns {String} URL
+   */
+  getLangviewsURL(page) {
+    return `/langviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
+  }
+
+  /**
    * Get data formatted for a linear chart (Line, Bar, Radar)
    *
    * @param {object} data - data just before we are ready to render the chart
@@ -336,7 +347,7 @@ class PageViews extends Pv {
       this.setSpecialRange(config.defaults.dateRange);
     }
 
-    $('#platform-select').val(params.platform || 'all-access');
+    $(config.platformSelector).val(params.platform || 'all-access');
     $('#agent-select').val(params.agent || 'user');
 
     this.resetArticleSelector();
@@ -404,16 +415,13 @@ class PageViews extends Pv {
   }
 
   /**
-   * Replaces history state with new URL hash representing current user input
-   * Called whenever we go to update the chart
-   * @returns {string} the new hash param string
+   * Get all user-inputted parameters except the pages
+   * @return {Object} project, platform, agent, etc.
    */
-  pushParams() {
-    const pages = $(config.articleSelector).select2('val') || [];
-
-    let state = {
+  getParams() {
+    let params = {
       project: $(config.projectInput).val(),
-      platform: $('#platform-select').val(),
+      platform: $(config.platformSelector).val(),
       agent: $('#agent-select').val()
     };
 
@@ -423,19 +431,28 @@ class PageViews extends Pv {
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange) {
-      state.range = this.specialRange.range;
+      params.range = this.specialRange.range;
     } else {
-      state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-      state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+      params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
+
+    return params;
+  }
+
+  /**
+   * Replaces history state with new URL hash representing current user input
+   * Called whenever we go to update the chart
+   * @returns {null} nothing
+   */
+  pushParams() {
+    const pages = $(config.articleSelector).select2('val') || [];
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
-        `#${$.param(state)}&pages=${pages.join('|').replace(/[&%]/g, escape)}`
+        `#${$.param(this.getParams())}&pages=${pages.join('|').replace(/[&%]/g, escape)}`
       );
     }
-
-    return state;
   }
 
   /**
@@ -808,7 +825,7 @@ class PageViews extends Pv {
       /** @type {String} Url to query the API. */
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$('#platform-select').val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
+        `/${$(config.platformSelector).val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
       const promise = $.ajax({

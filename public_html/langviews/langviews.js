@@ -224,8 +224,8 @@ var LangViews = function (_Pv) {
       }
 
       /** only certain characters within the page name are escaped */
-      var page = $(config.articleInput).val().score();
-      window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&page=' + page.replace(/[&%]/g, escape));
+      var page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
+      window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&page=' + page);
     }
 
     /**
@@ -320,6 +320,7 @@ var LangViews = function (_Pv) {
      * @param {String} article - page name
      * @returns {String} URL
      */
+    // FIXME: should include agent and platform, and use special ranges as currently specified
 
   }, {
     key: 'getPageviewsURL',
@@ -364,9 +365,10 @@ var LangViews = function (_Pv) {
 
       var makeRequest = function makeRequest(dbName) {
         var data = interWikiData[dbName],
-            lang = data.site.replace(/wiki/, '');
+            lang = data.site.replace(/wiki/, ''),
+            uriEncodedPageName = encodeURIComponent(data.title);
 
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + lang + '.' + _this4.baseProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + data.title + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + lang + '.' + _this4.baseProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -487,7 +489,7 @@ var LangViews = function (_Pv) {
       var _this5 = this;
 
       var dfd = $.Deferred();
-      var url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=' + dbName + ('&titles=' + pageName + '&props=sitelinks/urls|datatype&format=json&callback=?');
+      var url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=' + dbName + ('&titles=' + encodeURIComponent(pageName) + '&props=sitelinks/urls|datatype&format=json&callback=?');
 
       $.getJSON(url).done(function (data) {
         if (data.error) {
@@ -603,7 +605,7 @@ var LangViews = function (_Pv) {
 
       /** start up processing if page name is present */
       if (params.page) {
-        $(config.articleInput).val(params.page.descore());
+        $(config.articleInput).val(decodeURIComponent(params.page).descore());
         this.processArticle();
       }
     }
@@ -738,7 +740,7 @@ var LangViews = function (_Pv) {
             return this.writeMessage('\n            Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n            for more information.\n          ', true);
           }
         } else {
-          /** limit to one request every 3 minutes */
+          /** limit to one request every 2 minutes */
           simpleStorage.set('langviews-throttle', true, { TTL: 120000 });
         }
       }
@@ -1033,6 +1035,20 @@ var Pv = function () {
       } else {
         return num;
       }
+    }
+
+    /**
+     * Get the explanded wiki URL given the page name
+     * This should be used instead of getPageURL when you want to chain query string parameters
+     *
+     * @param {string} page name
+     * @returns {string} URL for the page
+     */
+
+  }, {
+    key: 'getExpandedPageURL',
+    value: function getExpandedPageURL(page) {
+      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
     }
 
     /**

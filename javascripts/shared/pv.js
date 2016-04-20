@@ -72,6 +72,17 @@ class Pv {
   }
 
   /**
+   * Get the explanded wiki URL given the page name
+   * This should be used instead of getPageURL when you want to chain query string parameters
+   *
+   * @param {string} page name
+   * @returns {string} URL for the page
+   */
+  getExpandedPageURL(page) {
+    return `//${this.project}.org/w/index.php?title=${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
+  }
+
+  /**
    * Get the wiki URL given the page name
    *
    * @param {string} page name

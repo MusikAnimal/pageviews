@@ -20,12 +20,12 @@ module.exports = {
         ['Cat', 'Dog', 'Sea_lion']
       )).to.equal(true);
     });
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b.*\bDog\b.*\bSea lion\b/);
+    client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b[\s\S]*\bSea lion\b/);
   },
   'Removing a page updates the chart accordingly': client => {
     client.click('.select2-selection__choice__remove:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bDog\b.*\bSea lion\b/);
+    client.expect.element('#chart-legend').to.have.text.that.matches(/\bDog\b[\s\S]*\bSea lion\b/);
   },
   'Changing the date range updates the chart, URL parameters, and date selector': client => {
     // disable date formatting

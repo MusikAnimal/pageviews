@@ -134,8 +134,8 @@ class LangViews extends Pv {
     }
 
     /** only certain characters within the page name are escaped */
-    const page = $(config.articleInput).val().score();
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape)}`);
+    const page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
+    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page}`);
   }
 
   /**
@@ -235,6 +235,7 @@ class LangViews extends Pv {
    * @param {String} article - page name
    * @returns {String} URL
    */
+  // FIXME: should include agent and platform, and use special ranges as currently specified
   getPageviewsURL(lang, project, article) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
@@ -268,11 +269,12 @@ class LangViews extends Pv {
 
     const makeRequest = dbName => {
       const data = interWikiData[dbName],
-        lang = data.site.replace(/wiki/, '');
+        lang = data.site.replace(/wiki/, ''),
+        uriEncodedPageName = encodeURIComponent(data.title);
 
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${lang}.${this.baseProject}` +
-        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${data.title}/daily` +
+        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
@@ -383,7 +385,7 @@ class LangViews extends Pv {
   getInterwikiData(dbName, pageName) {
     const dfd = $.Deferred();
     const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&sites=${dbName}` +
-      `&titles=${pageName}&props=sitelinks/urls|datatype&format=json&callback=?`;
+      `&titles=${encodeURIComponent(pageName)}&props=sitelinks/urls|datatype&format=json&callback=?`;
 
     $.getJSON(url).done(data => {
       if (data.error) {
@@ -490,7 +492,7 @@ class LangViews extends Pv {
 
     /** start up processing if page name is present */
     if (params.page) {
-      $(config.articleInput).val(params.page.descore());
+      $(config.articleInput).val(decodeURIComponent(params.page).descore());
       this.processArticle();
     }
   }
@@ -641,7 +643,7 @@ class LangViews extends Pv {
           `, true);
         }
       } else {
-        /** limit to one request every 3 minutes */
+        /** limit to one request every 2 minutes */
         simpleStorage.set('langviews-throttle', true, {TTL: 120000});
       }
     }
