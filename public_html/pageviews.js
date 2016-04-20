@@ -120,6 +120,7 @@ var config = {
   linearCharts: ['Line', 'Bar', 'Radar'],
   minDate: moment('2015-08-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
+  platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   specialRanges: {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -195,6 +196,8 @@ var PageViews = function (_Pv) {
     /** need to export to global for chart templating */
     window.formatNumber = _this.formatNumber.bind(_this);
     window.getPageURL = _this.getPageURL.bind(_this);
+    window.getLangviewsURL = _this.getLangviewsURL.bind(_this);
+    window.getExpandedPageURL = _this.getExpandedPageURL.bind(_this);
     window.numDaysInRange = _this.numDaysInRange.bind(_this);
 
     _this.setupProjectInput();
@@ -411,6 +414,18 @@ var PageViews = function (_Pv) {
     }
 
     /**
+     * Link to /langviews for given page and chosen daterange
+     * @param {String} page - page title
+     * @returns {String} URL
+     */
+
+  }, {
+    key: 'getLangviewsURL',
+    value: function getLangviewsURL(page) {
+      return '/langviews?' + $.param(this.getParams()) + '&page=' + page.replace(/[&%]/g, escape).score();
+    }
+
+    /**
      * Get data formatted for a linear chart (Line, Bar, Radar)
      *
      * @param {object} data - data just before we are ready to render the chart
@@ -538,7 +553,7 @@ var PageViews = function (_Pv) {
         this.setSpecialRange(config.defaults.dateRange);
       }
 
-      $('#platform-select').val(params.platform || 'all-access');
+      $(config.platformSelector).val(params.platform || 'all-access');
       $('#agent-select').val(params.agent || 'user');
 
       this.resetArticleSelector();
@@ -609,19 +624,16 @@ var PageViews = function (_Pv) {
     }
 
     /**
-     * Replaces history state with new URL hash representing current user input
-     * Called whenever we go to update the chart
-     * @returns {string} the new hash param string
+     * Get all user-inputted parameters except the pages
+     * @return {Object} project, platform, agent, etc.
      */
 
   }, {
-    key: 'pushParams',
-    value: function pushParams() {
-      var pages = $(config.articleSelector).select2('val') || [];
-
-      var state = {
+    key: 'getParams',
+    value: function getParams() {
+      var params = {
         project: $(config.projectInput).val(),
-        platform: $('#platform-select').val(),
+        platform: $(config.platformSelector).val(),
         agent: $('#agent-select').val()
       };
 
@@ -631,17 +643,29 @@ var PageViews = function (_Pv) {
        *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
        */
       if (this.specialRange) {
-        state.range = this.specialRange.range;
+        params.range = this.specialRange.range;
       } else {
-        state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-        state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
       }
+
+      return params;
+    }
+
+    /**
+     * Replaces history state with new URL hash representing current user input
+     * Called whenever we go to update the chart
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'pushParams',
+    value: function pushParams() {
+      var pages = $(config.articleSelector).select2('val') || [];
 
       if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, document.title, '#' + $.param(state) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
+        window.history.replaceState({}, document.title, '#' + $.param(this.getParams()) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
       }
-
-      return state;
     }
 
     /**
@@ -1046,7 +1070,7 @@ var PageViews = function (_Pv) {
       articles.forEach(function (article, index) {
         var uriEncodedArticle = encodeURIComponent(article);
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $('#platform-select').val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this11.project + ('/' + $(config.platformSelector).val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         var promise = $.ajax({
           url: url,
           dataType: 'json'
@@ -1334,6 +1358,20 @@ var Pv = function () {
       } else {
         return num;
       }
+    }
+
+    /**
+     * Get the explanded wiki URL given the page name
+     * This should be used instead of getPageURL when you want to chain query string parameters
+     *
+     * @param {string} page name
+     * @returns {string} URL for the page
+     */
+
+  }, {
+    key: 'getExpandedPageURL',
+    value: function getExpandedPageURL(page) {
+      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
     }
 
     /**
@@ -2840,30 +2878,24 @@ module.exports = siteMap;
 },{}],7:[function(require,module,exports){
 'use strict';
 
+/**
+ * @file Templates used by Chart.js
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ */
+
+/**
+ * Templates used by Chart.js.
+ * Functions used within our app must be in the global scope.
+ * All quotations must be double-quotes or properly escaped.
+ * @type {Object}
+ */
 var templates = {
-  linearLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.sum }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<datasets.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=datasets[i].strokeColor%>\">' + "<a href='<%= getPageURL(datasets[i].label) %>'><%=datasets[i].label%></a></span> " + ('<%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>'),
+  // FIXME: add back a tile for Totals, and include totals for all of the currently selected project, and perhaps unique devices
+  linearLegend: '\n    <% if (chartData.length === 1) { %>\n      <strong><%= i18nMessages.totals %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n      &bullet;\n      <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank">Info</a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class="linear-legend--totals">\n        <strong><%= i18nMessages.totals %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')\n      </div>\n      <div class="linear-legends">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class="linear-legend">\n            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">\n              <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>\n            </div>\n            <div class="linear-legend--counts">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n            </div>\n            <div class="linear-legend--links">\n              <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>',
   circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + ('<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>')
 };
 
 module.exports = templates;
-
-/*
-<div style="
-  display: block;
-  float: none;
-  width: 200px;
-  border: solid 1px black;
-  border-radius: 5px;
-  line-height: 15px;
-"><div class="indic" style="background-color:rgba(171, 212, 235, 1);width: 100%;"><a href="//en.wikipedia.org/wiki/Cat" style="
-  float: none;
-">Cat</a></div><div style="
-  padding: 5px 10px;
-  padding-bottom: 0;
-"> 526,405 (8,773/day)</div><div style="
-  padding: 5px 10px;
-">Langviews • History
-</div></div>
- */
 
 },{}]},{},[3,4,5,6,2]);

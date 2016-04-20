@@ -27,7 +27,7 @@ module.exports = {
     client.expect.element('#platform-select').to.have.value.that.equals('all-access');
     client.expect.element('#agent-select').to.have.value.that.equals('user');
     client.expect.element('.select2-selection__rendered').to.have.text.that.matches(/×Cat\n.*×Dog/m);
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b.*\bDog\b/);
+    client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b/);
     client.end();
   },
   'Page loads with values and text matching given params': client => {
@@ -40,7 +40,7 @@ module.exports = {
     client.expect.element('#platform-select').to.have.value.that.equals('desktop');
     client.expect.element('#agent-select').to.have.value.that.equals('spider');
     client.expect.element('.select2-selection__rendered').to.have.text.that.matches(/Europe\n.*Asia/m);
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bEurope\b.*\bAsia\b/);
+    client.expect.element('#chart-legend').to.have.text.that.matches(/\bEurope\b[\s\S]*\bAsia\b/);
     client.end();
   }
 };

@@ -117,6 +117,7 @@ const config = {
   linearCharts: ['Line', 'Bar', 'Radar'],
   minDate: moment('2015-08-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
+  platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   specialRanges: {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
