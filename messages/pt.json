@@ -22,7 +22,9 @@
 	"user": "Utilizador(a)",
 	"spider": "Aranha",
 	"bot": "Robô",
+	"page": "Página",
 	"pages": "Páginas",
+	"page-title": "Título da página",
 	"change-chart": "Alterar tipo de gráfico",
 	"settings": "Configurações",
 	"download": "Descarregar como $1",
@@ -99,5 +101,11 @@
 	"api-error-contact": "Por favor, reporte este problema à equipa de manutenção.",
 	"api-error-no-data": "Não foram encontrados dados.",
 	"excluded-pages": "Páginas excluídas",
-	"show-more": "Mostrar mais"
+	"show-more": "Mostrar mais",
+	"source-project": "Projeto de origem",
+	"another-query": "Fazer outra consulta",
+	"language": "Idioma",
+	"badges": "Emblemas",
+	"pageviews": "Visualizações de página",
+	"submit": "Submeter"
 }

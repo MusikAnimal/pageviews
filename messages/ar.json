@@ -22,7 +22,9 @@
 	"user": "مستخدم",
 	"spider": "العناكب",
 	"bot": "بوت",
+	"page": "صفحة",
 	"pages": "الصفحات",
+	"page-title": "عنوان الصفحة",
 	"change-chart": "غير نوع المخطط",
 	"settings": "الإعدادات",
 	"download": "تحميل ب$1",
@@ -50,7 +52,7 @@
 	"apply": "تطبيق",
 	"article-placeholder": "أدخل أسماء الصفحات",
 	"invalid-params": "معاملات غير صالحة!",
-	"totals": " الاجمالي:",
+	"totals": " الاجمالي",
 	"day": "يوم",
 	"su": "أح",
 	"mo": "اث",
@@ -76,5 +78,6 @@
 	"select2-searching": "جارٍ البحث...",
 	"help-translate": "المساهمة في الترجمة",
 	"excluded-pages": "الصفحات المستثناة",
-	"show-more": "أظهر المزيد"
+	"show-more": "أظهر المزيد",
+	"submit": "إرسال"
 }

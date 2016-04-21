@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Stryn",
-			"Mikahama"
+			"Mikahama",
+			"Nike"
 		]
 	},
 	"dates": "Päivät",
@@ -36,6 +37,7 @@
 	"prefixsearch": "etuliitehaku",
 	"cancel": "Peruuta",
 	"save": "Tallenna",
+	"totals": "Yhteensä",
 	"day": "päivä",
 	"su": "Su",
 	"mo": "Ma",
@@ -60,5 +62,10 @@
 	"select2-max-items": "Voit valita vain $1 kohdetta",
 	"select2-no-results": "Tuloksia ei löytynyt",
 	"select2-searching": "Haetaan…",
-	"help-translate": "Auttaa kääntämään"
+	"help-translate": "Auttaa kääntämään",
+	"average": "Keskiarvo",
+	"num-languages": "$1 kieltä",
+	"unique-titles": "$1 eri sivua",
+	"wikidata-error": "WikiData-kysely epäonnistui",
+	"langviews-error": "Projektin $1 tietojen hakeminen epäonnistui"
 }

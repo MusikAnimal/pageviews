@@ -34,7 +34,7 @@
 	"save": "Saglabāt",
 	"apply": "Pielietot",
 	"invalid-params": "Nederīgi parametri!",
-	"totals": "Kopsummas:",
+	"totals": "Kopsummas",
 	"january": "janvāris",
 	"february": "februāris",
 	"march": "marts",
@@ -49,5 +49,6 @@
 	"december": "decembris",
 	"select2-loading": "Ielādē vairāk rezultātu...",
 	"select2-searching": "Meklē...",
-	"help-translate": "Palīdzi iztulkot"
+	"help-translate": "Palīdzi iztulkot",
+	"average": "Vidēji"
 }

@@ -23,7 +23,9 @@
 	"user": "Użytkownik",
 	"spider": "Pająk",
 	"bot": "Bot",
+	"page": "Strona",
 	"pages": "Strony",
+	"page-title": "Tytuł strony",
 	"change-chart": "Zmień rodzaj wykresu",
 	"settings": "Ustawienia",
 	"download": "Pobierz jako $1",
@@ -59,7 +61,7 @@
 	"date-notice": "$1 dostarcza dane począwszy od sierpnia 2015. Dla wcześniejszych danych spróbuj $2.",
 	"invalid-params": "Nieprawidłowe parametry!",
 	"param-error-2": "Data początkowa musi być wcześniejsza od daty końcowej.",
-	"totals": "W sumie:",
+	"totals": "W sumie",
 	"day": "dzień",
 	"su": "niedz.",
 	"mo": "pn.",
@@ -87,5 +89,12 @@
 	"select2-searching": "Wyszukiwanie...",
 	"help-translate": "Pomóż w tłumaczeniu",
 	"api-error-no-data": "Nie znaleziono danych.",
-	"show-more": "Pokaż więcej"
+	"show-more": "Pokaż więcej",
+	"language": "Język",
+	"badges": "Odznaki",
+	"average": "Średnia",
+	"submit": "Wyślij",
+	"wikidata-error": "Błąd podczas odpytywania Wikidanych",
+	"wikidata-error-unknown": "Wystąpił nieznany błąd podczas odpytywania Wikidanych",
+	"langviews-error": "Błąd podczas pobierania danych dla $1"
 }

@@ -19,7 +19,9 @@
 	"agent": "Agent",
 	"user": "Benotzer",
 	"bot": "Bot",
+	"page": "Säit",
 	"pages": "Säiten",
+	"page-title": "Titel vun der Säit",
 	"settings": "Astellungen",
 	"download": "Als $1 eroflueden",
 	"csv": "CSV",
@@ -48,7 +50,7 @@
 	"apply": "Uwenden",
 	"article-placeholder": "Tippt Säitennimm...",
 	"invalid-params": "Parametere sinn net valabel!",
-	"totals": "Totaler:",
+	"totals": "Totaler",
 	"day": "Dag",
 	"su": "So",
 	"mo": "Mé",
@@ -77,5 +79,9 @@
 	"api-error": "Et gpouf e Problem beim Luede vun Donnéeën vun der API.",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
 	"excluded-pages": "Ausgeschloss Säiten",
-	"show-more": "Méi weisen"
+	"show-more": "Méi weisen",
+	"language": "Sprooch",
+	"badges": "Auszeechnungen",
+	"average": "Duerchschnëtt",
+	"submit": "Späicheren"
 }

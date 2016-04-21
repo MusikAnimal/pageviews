@@ -35,7 +35,6 @@
 	"url-structure": "Adressestruktur",
 	"view-source": "Vis kildekode",
 	"report-issue": "Rapporter et problem",
-	"chart-error": "Vises diagrammet ikke? Kontrollér, at du har alle ad-blockereslået fra eller har $1 på whitelisten.",
 	"disclaimer-text": "Data hentes fra $1. Denne API's status er endnu angivet som <b>eksperimentelt</b>. Dette indebærer at den pludseligt <i>kan</i> <b>holde op med at fungere, uden nogle form for advarsel</b>. Den $2 for sidvisningsanalysen kommer til at være opdateret med API-forandringer, men intet loves inden API'en bliver stabil.",
 	"rest-api": "Wikimedia REST API",
 	"maintainer": "ansvarige",
