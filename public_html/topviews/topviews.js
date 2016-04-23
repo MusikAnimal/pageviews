@@ -388,7 +388,12 @@ var Pv = function () {
         'sr-cyrl-ba': 'D.M.YYYY',
         'es-us': 'M/D/YYYY'
       };
-      var key = navigator.language ? navigator.language.toLowerCase() : 'en-US';
+
+      if (!navigator.language) {
+        return this.config.defaults.dateFormat;
+      }
+
+      var key = navigator.language.toLowerCase();
       return formats[key] || this.config.defaults.dateFormat;
     }
 
@@ -561,18 +566,21 @@ var Pv = function () {
   }, {
     key: 'splash',
     value: function splash() {
-      console.log('      ___            __ _                     _                             ');
-      console.log('     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ');
-      console.log('     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ');
-      console.log('    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ');
-      console.log('  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ');
-      console.log('  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ');
-      console.log('              ___                     _  _     _               _            ');
-      console.log('      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ');
-      console.log('     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ');
-      console.log('    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ');
-      console.log('   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ');
-      console.log('  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ');
+      var style = 'background: #222; color: #bada55; padding: 4px; font-family:dejavu sans mono';
+      console.log('%c      ___            __ _                     _                             ', style);
+      console.log('%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ', style);
+      console.log('%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ', style);
+      console.log('%c    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ', style);
+      console.log('%c  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ', style);
+      console.log('%c  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ', style);
+      console.log('%c              ___                     _  _     _               _            ', style);
+      console.log('%c      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ', style);
+      console.log('%c     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ', style);
+      console.log('%c    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ', style);
+      console.log('%c   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ', style);
+      console.log('%c  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ', style);
+      console.log('%c                                                                            ', style);
+      console.log('%c  Copyright © ' + new Date().getFullYear() + ' MusikAnimal, Kaldari, Marcel Ruiz Forns                  ', style);
     }
 
     /**

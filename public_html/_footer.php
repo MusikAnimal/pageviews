@@ -27,11 +27,14 @@
     <?php $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>"; ?>
     <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );; ?>
   </span>
-  <span class="nowrap">
+  <div class="nowrap">
     <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
     <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>"; ?>
     <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );; ?>
-  </span>
+    <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
+    <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
+    <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ) ) ); ?>
+  </div>
   <div>
     <a href="/<?php echo $app; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
     &middot;

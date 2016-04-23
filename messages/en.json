@@ -31,6 +31,7 @@
 	"json": "JSON",
 	"credits": "Brought to you by $1, $2, and $3.",
 	"hosted": "Hosted with $1 on $2.",
+	"translation-credits": "Translations powered by $1 and $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "FAQ",
 	"disclaimer": "Disclaimer",

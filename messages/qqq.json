@@ -37,6 +37,7 @@
 	"json": "{{Optional}}\nLink for JSON file. See https://en.wikipedia.org/wiki/JSON for information on what a JSON file is.",
 	"credits": "Footer message crediting the programmers. $1, $2, and $3 are links to the programmers.",
 	"hosted": "Footer message about where the tool is hosted. $1 is a heart symbol (meaning 'love'). $2 is the name of the hosting service, for example, 'Tool Labs'.",
+	"translation-credits": "Footer message crediting translation tools translatewiki ($1) and Intution ($2)",
 	"tool-labs": "The name of the hosting service. See https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs for more information.",
 	"faq": "Link to frequently asked questions.\n{{Identical|FAQ}}",
 	"disclaimer": "Link to disclaimer.\n{{Identical|Disclaimer}}",
