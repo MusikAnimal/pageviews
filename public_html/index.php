@@ -7,9 +7,8 @@
 <html>
   <head>
     <?php include '_head.php'; ?>
-    <title><?php echo $I18N->msg( 'title' ); ?></title>
   </head>
-  <body>
+  <body class="<?php echo $rtl; ?>">
     <div class="container">
       <div class="col-lg-offset-2">
         <!-- Header -->

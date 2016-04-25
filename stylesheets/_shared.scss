@@ -4,6 +4,79 @@ body {
   overflow-x: hidden;
 }
 
+.rtl {
+  .container {
+    direction: rtl;
+  }
+
+  .chart-container {
+    direction: ltr;
+  }
+
+  .date-latest {
+    float: left;
+  }
+
+  .lang-group {
+    // scss-lint:disable ImportantRule
+    float: left !important;
+
+    .dropdown-menu {
+      left: 0;
+      right: auto;
+      text-align: right;
+    }
+  }
+
+  // scss-lint:disable QualifyingElement
+  button.close {
+    float: left;
+  }
+
+  .checkbox label,
+  .radio label {
+    padding-left: 0;
+    padding-right: 20px;
+  }
+
+  input[type=radio],
+  input[type=checkbox] {
+    margin-left: auto;
+    margin-right: -20px;
+  }
+
+  .modal-footer {
+    text-align: left;
+  }
+
+  .select2-container .select2-search--inline {
+    float: right;
+  }
+
+  // scss-lint:disable SelectorFormat
+  .select2-selection__choice {
+    float: right;
+  }
+
+  .daterangepicker .ranges {
+    text-align: right;
+  }
+
+  .daterange-notice {
+    text-align: right;
+  }
+
+  .input-mini {
+    text-align: right;
+  }
+
+  // scss-lint:disable SelectorDepth
+  .daterangepicker .calendar th {
+    max-width: 32px;
+    white-space: initial;
+  }
+}
+
 // Improve vertical spacing
 .aqs-row {
   padding-bottom: 10px;
@@ -40,6 +113,7 @@ a:focus {
   font-size: 12px;
   margin-left: 5px;
   margin-top: 6px;
+  max-width: 645px;
 }
 
 .options {

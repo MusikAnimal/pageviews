@@ -5,7 +5,6 @@
 <html>
   <head>
     <?php include "../_head.php"; ?>
-    <title><?php echo $I18N->msg( 'topviews-title' ); ?></title>
   </head>
   <body>
     <div class="container">

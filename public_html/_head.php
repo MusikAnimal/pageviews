@@ -25,7 +25,14 @@
    $I18N = new Intuition( 'pageviews' );
    $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
    $langs = getAvailableLangs();
-   $currentLang = in_array($I18N->getLangName(), $langs) ? $I18N->getLangName() : 'English';
+   $currentLang = in_array( $I18N->getLangName(), $langs ) ? $I18N->getLangName() : 'English';
+  
+   // Adds a .rtl class to the <body> if a right-to-left language
+   if ( in_array( $I18N->getLang(), array( 'ar', 'he', 'fa', 'ps', 'ur' ) ) ) {
+     $rtl = 'rtl';
+   } else {
+     $rtl = '';
+   }
   
 ?>
 <meta charset="utf-8">
@@ -94,3 +101,4 @@
 <script src="application.js"></script>
 <script src="/pageviews/ad_block_test.js"></script>
 <link href="application.css" rel="stylesheet">
+<title><?php echo $I18N->msg( 'title' ); ?></title>
