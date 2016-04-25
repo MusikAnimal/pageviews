@@ -448,18 +448,21 @@ var PageViews = function (_Pv) {
     value: function getSearchParams(query) {
       if (this.autocomplete === 'autocomplete') {
         return {
-          'action': 'query',
-          'list': 'prefixsearch',
-          'format': 'json',
-          'pssearch': query || '',
-          'cirrusUseCompletionSuggester': 'yes'
+          action: 'query',
+          list: 'prefixsearch',
+          format: 'json',
+          pssearch: query || '',
+          cirrusUseCompletionSuggester: 'yes'
         };
       } else if (this.autocomplete === 'autocomplete_redirects') {
         return {
-          'action': 'opensearch',
-          'format': 'json',
-          'search': query || '',
-          'redirects': 'return'
+          action: 'query',
+          generator: 'prefixsearch',
+          format: 'json',
+          gpssearch: query || '',
+          gpslimit: '10',
+          redirects: 'true',
+          cirrusUseCompletionSuggester: 'no'
         };
       }
     }
@@ -570,11 +573,12 @@ var PageViews = function (_Pv) {
   }, {
     key: 'processSearchResults',
     value: function processSearchResults(data) {
+      var query = data ? data.query : {};
       var results = [];
 
       if (this.autocomplete === 'autocomplete') {
-        if (data && data.query && data.query.prefixsearch.length) {
-          results = data.query.prefixsearch.map(function (elem) {
+        if (query.prefixsearch.length) {
+          results = query.prefixsearch.map(function (elem) {
             return {
               id: elem.title.score(),
               text: elem.title
@@ -582,14 +586,23 @@ var PageViews = function (_Pv) {
           });
         }
       } else if (this.autocomplete === 'autocomplete_redirects') {
-        if (data && data[1].length) {
-          results = data[1].map(function (elem) {
+        /** first merge in redirects */
+        if (query.redirects) {
+          results = query.redirects.map(function (red) {
             return {
-              id: elem.score(),
-              text: elem
+              id: red.from.score(),
+              text: red.from
             };
           });
         }
+
+        Object.keys(query.pages).forEach(function (pageId) {
+          var pageData = query.pages[pageId];
+          results.push({
+            id: pageData.title.score(),
+            text: pageData.title
+          });
+        });
       }
 
       return { results: results };

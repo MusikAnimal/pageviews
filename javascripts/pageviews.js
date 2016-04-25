@@ -256,18 +256,21 @@ class PageViews extends Pv {
   getSearchParams(query) {
     if (this.autocomplete === 'autocomplete') {
       return {
-        'action': 'query',
-        'list': 'prefixsearch',
-        'format': 'json',
-        'pssearch': query || '',
-        'cirrusUseCompletionSuggester': 'yes'
+        action: 'query',
+        list: 'prefixsearch',
+        format: 'json',
+        pssearch: query || '',
+        cirrusUseCompletionSuggester: 'yes'
       };
     } else if (this.autocomplete === 'autocomplete_redirects') {
       return {
-        'action': 'opensearch',
-        'format': 'json',
-        'search': query || '',
-        'redirects': 'return'
+        action: 'query',
+        generator: 'prefixsearch',
+        format: 'json',
+        gpssearch: query || '',
+        gpslimit: '10',
+        redirects: 'true',
+        cirrusUseCompletionSuggester: 'no'
       };
     }
   }
@@ -365,11 +368,12 @@ class PageViews extends Pv {
    * @returns {Object} data ready to handed over to Select2
    */
   processSearchResults(data) {
+    const query = data ? data.query : {};
     let results = [];
 
     if (this.autocomplete === 'autocomplete') {
-      if (data && data.query && data.query.prefixsearch.length) {
-        results = data.query.prefixsearch.map(function(elem) {
+      if (query.prefixsearch.length) {
+        results = query.prefixsearch.map(function(elem) {
           return {
             id: elem.title.score(),
             text: elem.title
@@ -377,14 +381,23 @@ class PageViews extends Pv {
         });
       }
     } else if (this.autocomplete === 'autocomplete_redirects') {
-      if (data && data[1].length) {
-        results = data[1].map(elem => {
+      /** first merge in redirects */
+      if (query.redirects) {
+        results = query.redirects.map(red => {
           return {
-            id: elem.score(),
-            text: elem
+            id: red.from.score(),
+            text: red.from
           };
         });
       }
+
+      Object.keys(query.pages).forEach(pageId => {
+        const pageData = query.pages[pageId];
+        results.push({
+          id: pageData.title.score(),
+          text: pageData.title
+        });
+      });
     }
 
     return {results: results};
