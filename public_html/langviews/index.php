@@ -101,7 +101,7 @@
           <b>NOTE:</b>
           Requests are currently being throttled for performance reasons.
           <br>
-          Eventually Langviews will run much faster. See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a> for more information.
+          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a> for more information.
         </div>
         <output form="langviews_form">
           <header class="output-header">
