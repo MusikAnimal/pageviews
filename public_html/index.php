@@ -7,6 +7,7 @@
 <html>
   <head>
     <?php include '_head.php'; ?>
+    <title><?php echo $I18N->msg( 'title' ); ?></title>
   </head>
   <body class="<?php echo $rtl; ?>">
     <div class="container">

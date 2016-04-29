@@ -4,6 +4,7 @@
 <html>
   <head>
     <?php include '../_head.php'; ?>
+    <title><?php echo $I18N->msg( 'langviews-title' ); ?></title>
   </head>
   <body>
     <div class="container">
