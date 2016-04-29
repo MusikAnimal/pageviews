@@ -2,8 +2,18 @@ class Pv {
   constructor() {
     this.storage = {}; // used as fallback when localStorage is not supported
 
+    /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
+    }
+
+    /** show notice if on staging environment */
+    if (/-test/.test(location.pathname)) {
+      const actualPathName = location.pathname.replace(/-test\/?/, '');
+      this.addSiteNotice('warning',
+        `This is a staging environment. For the actual ${document.title},
+         see <a href='${actualPathName}'>${location.origin}${actualPathName}</a>`
+      );
     }
   }
 
