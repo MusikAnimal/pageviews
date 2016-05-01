@@ -146,11 +146,11 @@ class TopViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL hash params
+   * Generate key/value pairs of URL query string
    * @returns {Object} key/value pairs representation of URL hash
    */
-  parseHashParams() {
-    const uri = decodeURI(location.hash.slice(1)),
+  parseQueryString() {
+    const uri = decodeURI(location.search.slice(1)),
       chunks = uri.split('&');
     let params = {};
 
@@ -168,12 +168,12 @@ class TopViews extends Pv {
   }
 
   /**
-   * Parses the URL hash and sets all the inputs accordingly
+   * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseHashParams();
+    let startDate, endDate, params = this.parseQueryString();
 
     $(config.projectInput).val(params.project || config.defaults.project);
     if (this.validateProject()) return;
@@ -224,7 +224,7 @@ class TopViews extends Pv {
   }
 
   /**
-   * Replaces history state with new URL hash representing current user input
+   * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
    * @returns {string|false} the new hash param string or false if nothing has changed
    */
@@ -248,7 +248,7 @@ class TopViews extends Pv {
 
     if (window.history && window.history.replaceState) {
       const excludes = this.underscorePageNames(this.excludes);
-      window.history.replaceState({}, document.title, `#${$.param(state)}&excludes=${excludes.join('|')}`);
+      window.history.replaceState({}, document.title, `?${$.param(state)}&excludes=${excludes.join('|')}`);
     }
 
     return state;
@@ -541,5 +541,12 @@ class TopViews extends Pv {
 }
 
 $(document).ready(() => {
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
+    return document.location.href = document.location.href.replace('#', '?');
+  } else if (document.location.hash) {
+    return document.location.href = document.location.href.replace(/\#.*/, '');
+  }
+
   new TopViews();
 });

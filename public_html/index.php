@@ -117,7 +117,7 @@
           <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'settings' ); ?></a>
           &bullet;
           <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
-          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) ); ?>
+          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
           <?php include "_lang_selector.php"; ?>

@@ -2,7 +2,9 @@
 <html>
   <head>
     <?php include '../../_head.php'; ?>
-    <title>Langviews Analysis – FAQ</title>
+    <title>
+      <?php echo $I18N->msg( 'langviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
+    </title>
   </head>
   <body>
     <div class="container">
@@ -12,7 +14,7 @@
           <div class="col-lg-10 text-center">
             <h4>
               <strong>
-                Langviews Analysis – FAQ
+                <?php echo $I18N->msg( 'langviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
               </strong>
             </h4>
           </div>
@@ -21,61 +23,53 @@
           <ul class="list-group">
             <li class="list-group-item">
               <p>
-                <strong>Why can't I view data older than August 2015?</strong>
+                <strong><?php echo $I18N->msg( 'faq-old-data-title' ); ?></strong>
               </p>
               <p>
-                The Wikimedia pageviews API was introduced in August 2015 and does not include data from before that time. You will have to rely on other tools such as <a href="http://stats.grok.se">stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of the Langviews Anaylsis tool, and beyond the control of the maintainers.
-              </p>
-            </li>
-            <li class="list-group-item">
-              <p>
-                <strong>Why can't I view data for today's date?</strong>
-              </p>
-              <p>
-                The Wikimedia pageviews API generally takes a full 24 hours to populate, sometimes longer. In some situations you may see data missing for yesterday's date as well, which will be left blank rather than showing a count of zero views.
+                <?php echo $I18N->msg( 'faq-old-data-body' ); ?>
               </p>
             </li>
             <li class="list-group-item">
               <p>
-                <strong>Why do I need to disable my ad blocker?</strong>
+                <strong><?php echo $I18N->msg( 'faq-todays-date-title' ); ?></strong>
               </p>
               <p>
-                There are no ads being served. It's actually the <a href="https://wikimedia.org/api/rest_v1/?doc#/">Wikimedia REST API</a> that the ad blockers are complaining about. This is due to the fact that the URL for the API request includes the string "/pageviews/", which is blacklisted by the <a href="https://easylist-downloads.adblockplus.org/easyprivacy.txt">EasyPrivacy list</a>. If your ad blocker allows you to control which lists you are subscribed to, removing the subscription to EasyPrivacy should also solve the issue.
+                <?php echo $I18N->msg( 'faq-todays-date-body' ); ?>
               </p>
             </li>
             <li class="list-group-item">
               <p>
-                <strong>What are the "Agents"?</strong>
+                <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
               </p>
               <ul class="agents-ul">
                 <li>
-                  <i>Users</i>
-                  includes all people who view a page. Editors, anonymous editors, and our readers.
+                  <i><?php echo $I18N->msg( 'user' ); ?></i>
+                  <?php echo $I18N->msg( 'faq-agents-user' ); ?>
                 </li>
                 <li>
-                  <i>
-                    <a href="https://en.wikipedia.org/wiki/Web_crawler">Spiders</a>
-                  </i>
-                  or "crawlers" are search engines like Google that read pages for the purposes of improving search results. Pages can receive significant views from web crawlers, which is why by default the tool shows data only from users.
+                  <i><?php echo $I18N->msg( 'spider' ); ?></i>
+                  <?php echo $I18N->msg( 'faq-agents-spider' ); ?>
                 </li>
                 <li>
-                  <i>Bots</i>
-                  are any other automated programs that may scrape pages for other purposes.
+                  <i><?php echo $I18N->msg( 'bot' ); ?></i>
+                  <?php echo $I18N->msg( 'faq-agents-bot' ); ?>
                 </li>
               </ul>
             </li>
             <li class="list-group-item">
               <p>
-                <strong>I have a feature request or bug to report</strong>
+                <strong><?php echo $I18N->msg( 'faq-bug-report-title' ); ?></strong>
               </p>
               <p>
-                Please review the requests listed on <a href="https://github.com/MusikAnimal/pageviews/issues">GitHub</a>. If you have a new request, creating a new issue there is preferred, but you may also contact the developer directly on <a href="https://en.wikipedia.org/wiki/User_talk:MusikAnimal">Wikipedia</a>.
+                <?php echo $I18N->msg( 'faq-bug-report-body' ); ?>
               </p>
             </li>
           </ul>
         </div>
         <div class="col-lg-10 text-center">
-          <a href="/langviews">Return to Langviews Analysis</a>
+          <a href="/langviews">
+            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) ); ?>
+          </a>
         </div>
         <?php $app = "langviews"; ?>
         <?php include "../../_footer.php"; ?>

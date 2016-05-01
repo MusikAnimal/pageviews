@@ -2,7 +2,9 @@
 <html>
   <head>
     <?php include '../_head.php'; ?>
-    <title>Pageviews Analysis – URL Structure</title>
+    <title>
+      <?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
+    </title>
   </head>
   <body>
     <div class="container">
@@ -11,80 +13,88 @@
         <header class="row aqs-row">
           <div class="col-lg-10 text-center">
             <h4>
-              <strong>Pageviews Analysis – URL Structure</strong>
+              <strong><?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?></strong>
             </h4>
           </div>
         </header>
         <div class="col-lg-10">
-          To get the latest data on a given article on your wiki, with default options, use:
-          <pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>
-          replacing <code>en.wikipedia.org</code> with a valid <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>. <code>{{FULLPAGENAMEE}}</code> will resolve to the page the link is placed on
+          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
+          <?php $project = "<code>en.wikipedia.org</code>"; ?>
+          <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+          <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
+          <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
           <p class="intro">
-            Pageviews Analysis uses the JavaScript <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> to construct the URL parameters. This means instead of <code>?</code> all parameters follow a hashmark <code>#</code>
+            <?php echo $I18N->msg( 'url-structure-hash-param' ); ?>
           </p>
         </div>
         <div class="col-lg-10">
           <h3>
-            Parameters
-            <small>Can be used in any order</small>
+            <?php echo $I18N->msg( 'url-structure-parameters' ); ?>
+            <small><?php echo $I18N->msg( 'url-structure-parameters-order' ); ?></small>
           </h3>
           <hr>
           <dl class="dl-horizontal">
             <dt>project</dt>
             <dd>
-              <code>en.wikipedia.org</code>
-              (default) or other valid <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>
+              <?php $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "; ?>
+              <?php echo $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>pages</dt>
             <dd>
-              Escaped page names separated by a pipe <code>|</code> such as <code>Cat|Dog</code> (default)
+              <?php echo $I18N->msg( 'url-structure-pages' ); ?>
               <br>
-              For linking to the current page on wiki, use <code>{{FULLPAGENAMEE}}</code>
+              <?php echo $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>range</dt>
             <dd>
-              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              <?php echo $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
               <ul class="special-ranges">
                 <li>
                   <code>latest</code>
-                  (default) The last 20 days of data
+                  <?php echo "(" . strtolower( $I18N->msg( 'default' ) ) . ")"; ?>
+                  <?php echo $I18N->msg( 'url-structure-special-range-latest' ); ?>
                 </li>
                 <li>
                   <code>latest-<i>N</i></code>
-                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                  <?php echo $I18N->msg( 'url-structure-special-range-latest-n' ); ?>
                 </li>
                 <li>
                   <code>last-week</code>
+                  <?php echo $I18N->msg( 'last-week' ); ?>
                 </li>
                 <li>
                   <code>this-month</code>
+                  <?php echo $I18N->msg( 'this-month' ); ?>
                 </li>
                 <li>
                   <code>last-month</code>
+                  <?php echo $I18N->msg( 'last-month' ); ?>
                 </li>
               </ul>
             </dd>
             <dt>start</dt>
             <dd>
-              Start date in the format <code>YYYY-MM-DD</code>
+              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>end</dt>
             <dd>
-              End date in the format <code>YYYY-MM-DD</code>, defaults to previous day
+              <?php echo $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>platform</dt>
             <dd>
-              One of <code>all-access</code> (default), <code>desktop</code>, <code>mobile-app</code> or <code>mobile-web</code>
+              <?php echo $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>agent</dt>
             <dd>
-              One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
+              <?php echo $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) ); ?>
             </dd>
           </dl>
         </div>
         <div class="col-lg-10 text-center">
           <hr>
-          <a href="/pageviews">Return to Pageviews Analysis</a>
+          <a href="/pageviews">
+            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) ); ?>
+          </a>
         </div>
         <?php $app = "pageviews"; ?>
         <?php include "../_footer.php"; ?>

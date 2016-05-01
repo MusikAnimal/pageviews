@@ -1875,14 +1875,14 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Generate key/value pairs of URL hash params
+     * Generate key/value pairs of URL query string
      * @returns {Object} key/value pairs representation of URL hash
      */
 
   }, {
-    key: 'parseHashParams',
-    value: function parseHashParams() {
-      var uri = decodeURI(location.hash.slice(1)),
+    key: 'parseQueryString',
+    value: function parseQueryString() {
+      var uri = decodeURI(location.search.slice(1)),
           chunks = uri.split('&');
       var params = {};
 
@@ -1900,7 +1900,7 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Parses the URL hash and sets all the inputs accordingly
+     * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
      */
@@ -1912,7 +1912,7 @@ var TopViews = function (_Pv) {
 
       var startDate = undefined,
           endDate = undefined,
-          params = this.parseHashParams();
+          params = this.parseQueryString();
 
       $(config.projectInput).val(params.project || config.defaults.project);
       if (this.validateProject()) return;
@@ -1965,7 +1965,7 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Replaces history state with new URL hash representing current user input
+     * Replaces history state with new URL query string representing current user input
      * Called whenever we go to update the chart
      * @returns {string|false} the new hash param string or false if nothing has changed
      */
@@ -1992,7 +1992,7 @@ var TopViews = function (_Pv) {
 
       if (window.history && window.history.replaceState) {
         var excludes = this.underscorePageNames(this.excludes);
-        window.history.replaceState({}, document.title, '#' + $.param(state) + '&excludes=' + excludes.join('|'));
+        window.history.replaceState({}, document.title, '?' + $.param(state) + '&excludes=' + excludes.join('|'));
       }
 
       return state;
@@ -2311,6 +2311,13 @@ var TopViews = function (_Pv) {
 }(Pv);
 
 $(document).ready(function () {
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
+    return document.location.href = document.location.href.replace('#', '?');
+  } else if (document.location.hash) {
+    return document.location.href = document.location.href.replace(/\#.*/, '');
+  }
+
   new TopViews();
 });
 

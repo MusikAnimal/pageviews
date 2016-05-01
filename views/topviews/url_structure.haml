@@ -2,7 +2,8 @@
 %html
   %head
     - include "../../_head.php"
-    %title Topviews Analysis – URL Structure
+    %title
+      = $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
   %body
     %div.container
       %div.col-lg-offset-2
@@ -10,60 +11,62 @@
         %header.row.aqs-row
           %div.col-lg-10.text-center
             %h4
-              %strong Topviews Analysis – URL Structure
+              %strong= $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
 
         %div.col-lg-10
-          To show the default list of top viewed pages on your wiki, use:
-          <pre>//tools.wmflabs.org/topviews#project=en.wikipedia.org</pre>
-          replacing <code>en.wikipedia.org</code> with a valid <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2">project</a>. You can also use <code>excludes</code> to exclude certain pages from view, such as the Main Page.
-          %p.intro
-            Topviews Analysis uses the JavaScript <a href="https://en.wikipedia.org/wiki/Fragment_identifier">fragment identifier</a> to construct the URL parameters. This means instead of <code>?</code> all parameters follow a hashmark <code>#</code>
+          - $topviewsLink = "<pre>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"
+          - $project = "<code>en.wikipedia.org</code>"
+          - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
+          - $excldues = "<code>excludes</code>"
+          = $I18N->msg( 'url-structure-topviews-example', array( 'variables' => array( $topviewsLink, $project, $sitematrixLink, $excludes ), 'parsemag' => true ) )
 
         %div.col-lg-10
           %h3
-            Parameters
-            %small Can be used in any order
+            = $I18N->msg( 'url-structure-parameters' )
+            %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
             %dt project
             %dd
-              %code en.wikipedia.org
-              (default) or other valid <a href="https://meta.wikimedia.org/w/api.php?action=sitematrix&formatversion=2">project</a>
+              - $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "
+              = $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) )
             %dt excludes
             %dd
-              Escaped page names to exclude from the view separated by a pipe <code>|</code>, such as false-positives or irrelevant pages. For example <code>Main_page|Special:Search</code>
+              = $I18N->msg( 'url-structure-excludes' )
             %dt range
             %dd
-              A special range to use instead of exact <code>start</code> and <code>end</code> dates. May be one of the following:
+              = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
               %ul.special-ranges
                 %li
                   %code last-week
-                  (default)
+                  = "(" . strtolower( $I18N->msg( 'default' ) ) . ")"
+                  = $I18N->msg( 'last-week' )
                 %li
                   %code this-month
+                  = $I18N->msg( 'this-month' )
                 %li
                   %code last-month
+                  = $I18N->msg( 'last-month' )
                 %li
                   %code latest
-                  The last 20 days of data
+                  = $I18N->msg( 'url-structure-special-range-latest' )
                 %li
                   %code latest-<i>N</i>
-                  where <i>N</i> is a number. For example <code>latest-30</code> will show the last 30 days of data
+                  = $I18N->msg( 'url-structure-special-range-latest-n' )
             %dt start
             %dd
-              Start date in the format <code>YYYY-MM-DD</code>, defaults to 7 days ago
-              <br>
-              Omit this parameter and the <code>end</code> parameter to show the most recent data
+              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) )
             %dt end
             %dd
-              End date in the format <code>YYYY-MM-DD</code>, defaults to previous day
+              = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
             %dt platform
             %dd
-              One of <code>user</code> (human viewer, default), <code>spider</code> (search engine crawlers), <code>bot</code> (WMF bots) or <code>all-agents</code> (user, spider and bot)
+              = $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) )
 
         %div.col-lg-10.text-center
           %hr
-          %a(href="/topviews") Return to Topviews Analysis
+          %a(href="/topviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
 
         - $app = "topviews";
         - include "../../_footer.php";

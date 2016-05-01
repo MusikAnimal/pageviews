@@ -1,11 +1,17 @@
 %div#ad_blocker_notice(style="display:none")
   %div(style="padding:20px")
     %h3 Looks like you are using an ad blocker!
+
     Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
     In our case, we're just trying to show you metrics, not collect them!
 
-    %h2
-      Please whitelist
+    %p
+      This issue may be resolved by simply updating your ad blocker, specifically the
+      %code EasyPrivacy
+      list.
+
+    %p
+      Or you can manually whitelist
       %code
         tools.wmflabs.org
 
@@ -22,16 +28,16 @@
     - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
     - $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
     - $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
-    = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );
+    = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );
 
   %div.nowrap
     - $heart = "<span class='heart'>&hearts;</span>";
     - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
-    = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );
+    = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );
 
     - $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"
     - $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"
-    = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ) ) )
+    = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
 
   %div
     %a(href="/#{$app}/faq")<
@@ -61,7 +67,7 @@
       %div.modal-body
         - $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
         - $maintainer = "maintainers";
-        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );
+        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ), 'parsemag' => true ) );
 
       %div.modal-footer
         %button.btn.btn-primary(data-dismiss="modal" type="button")

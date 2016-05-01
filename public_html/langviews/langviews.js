@@ -22,8 +22,8 @@ var config = {
   dateRangeSelector: '#range_input',
   defaults: {
     dateFormat: 'YYYY-MM-DD',
-    dateRange: 'last-week',
-    daysAgo: 7,
+    dateRange: 'latest-20',
+    daysAgo: 20,
     localizeDateFormat: 'true',
     numericalFormatting: 'true',
     project: 'en.wikipedia.org',

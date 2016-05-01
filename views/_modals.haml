@@ -62,14 +62,12 @@
           %div.radio
             %label
               %input.js-test-prefixsearch(name="autocomplete" type="radio" value="autocomplete")
-              - $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>";
-              = $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );
+              = $I18N->msg( 'autocompletion' );
 
           %div.radio
             %label
               %input.js-test-opensearch(name="autocomplete" type="radio" value="autocomplete_redirects")
-              - $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>";
-              = $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );
+              = $I18N->msg( 'autocompletion-redirects' );
 
           %div.radio
             %label

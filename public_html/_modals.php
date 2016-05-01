@@ -86,15 +86,13 @@
           <div class="radio">
             <label>
               <input class="js-test-prefixsearch" name="autocomplete" type="radio" value="autocomplete">
-              <?php $prefixsearchlink = "<a href='https://www.mediawiki.org/wiki/API:Prefixsearch' target='_blank'>" . $I18N->msg( 'prefixsearch' ) . "</a>"; ?>
-              <?php echo $I18N->msg( 'autocompletion', array( 'variables' => array( $prefixsearchlink ) ) );; ?>
+              <?php echo $I18N->msg( 'autocompletion' );; ?>
             </label>
           </div>
           <div class="radio">
             <label>
               <input class="js-test-opensearch" name="autocomplete" type="radio" value="autocomplete_redirects">
-              <?php $opensearchlink = "<a href='https://www.mediawiki.org/wiki/API:Opensearch' target='_blank'>" . $I18N->msg( 'opensearch' ) . "</a>"; ?>
-              <?php echo $I18N->msg( 'autocompletion-redirects', array( 'variables' => array( $opensearchlink ) ) );; ?>
+              <?php echo $I18N->msg( 'autocompletion-redirects' );; ?>
             </label>
           </div>
           <div class="radio">

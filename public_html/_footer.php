@@ -3,12 +3,17 @@
     <h3>Looks like you are using an ad blocker!</h3>
     Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
     In our case, we're just trying to show you metrics, not collect them!
-    <h2>
-      Please whitelist
+    <p>
+      This issue may be resolved by simply updating your ad blocker, specifically the
+      <code>EasyPrivacy</code>
+      list.
+    </p>
+    <p>
+      Or you can manually whitelist
       <code>
         tools.wmflabs.org
       </code>
-    </h2>
+    </p>
     <h4>AdBlock Plus</h4>
     <p>
       Click on the AdBlock Plus icon and select <i>Disable on tools.wmflabs.org</i>. Reload the page.
@@ -25,15 +30,15 @@
     <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
     <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
     <?php $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>"; ?>
-    <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ) ) );; ?>
+    <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );; ?>
   </span>
   <div class="nowrap">
     <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
     <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>"; ?>
-    <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ) ) );; ?>
+    <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );; ?>
     <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
     <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
-    <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ) ) ); ?>
+    <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) ); ?>
   </div>
   <div>
     <a href="/<?php echo $app; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
@@ -61,7 +66,7 @@
       <div class="modal-body">
         <?php $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>"; ?>
         <?php $maintainer = "maintainers"; ?>
-        <?php echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ) ) );; ?>
+        <?php echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ), 'parsemag' => true ) );; ?>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" data-dismiss="modal" type="button">

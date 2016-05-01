@@ -100,7 +100,7 @@
             = $I18N->msg( 'settings' )
           &bullet;
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
-          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ) ) )
+          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
           &middot;
           %a.download-json(href="#")<
             = $I18N->msg( 'json' )
