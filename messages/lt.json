@@ -17,7 +17,9 @@
 	"agent": "Agentas",
 	"user": "Naudotojas",
 	"bot": "Robotas",
+	"page": "Puslapis",
 	"pages": "Puslapiai",
+	"page-title": "Puslapio pavadinimas",
 	"settings": "Nustatymai",
 	"download": "Parsisiųsti kaip $1",
 	"hosted": "Patalpinta su $1 į $2.",
@@ -57,5 +59,11 @@
 	"select2-loading": "Įkeliama daugiau rezultatų...",
 	"select2-no-results": "Rezultatų nerasta",
 	"select2-searching": "Ieškoma...",
-	"help-translate": "Padėti išversti"
+	"help-translate": "Padėti išversti",
+	"language": "Kalba",
+	"badges": "Ženkliukai",
+	"pageviews": "Puslapio peržiūrų skaičius",
+	"average": "Vidurkis",
+	"submit": "Pateikti",
+	"num-languages": "$1 kalbos"
 }

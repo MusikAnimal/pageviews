@@ -46,8 +46,6 @@
 	"settings-notice": "Các thiết lập của bạn sẽ được ghi nhớ trên trình duyệt này và máy tính này.",
 	"search-method": "Phương pháp tìm kiếm:",
 	"autocompletion": "Autocomplete ($1)",
-	"prefixsearch": "prefixsearch",
-	"opensearch": "opensearch",
 	"no-autocompletion": "Tắt autocomplete",
 	"other-options": "Tuỳ chọn khác:",
 	"format-numbers": "Định dạng dữ liệu dạng số",

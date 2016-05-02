@@ -3,7 +3,8 @@
 		"authors": [
 			"Stryn",
 			"Mikahama",
-			"Nike"
+			"Nike",
+			"Silvonen"
 		]
 	},
 	"dates": "Päivät",
@@ -19,7 +20,9 @@
 	"mobile-web": "Mobiilisivusto",
 	"agent": "Agentti",
 	"user": "Käyttäjä",
+	"page": "Sivu",
 	"pages": "Sivut",
+	"page-title": "Sivun otsikko",
 	"change-chart": "Muuta kaavion tyyppi",
 	"settings": "Asetukset",
 	"download": "Lataa muodossa $1",
@@ -34,7 +37,6 @@
 	"ok": "OK",
 	"chart-types": "Kaaviotyypit",
 	"doughnut": "Rinkiläkaavio",
-	"prefixsearch": "etuliitehaku",
 	"cancel": "Peruuta",
 	"save": "Tallenna",
 	"totals": "Yhteensä",
@@ -63,6 +65,8 @@
 	"select2-no-results": "Tuloksia ei löytynyt",
 	"select2-searching": "Haetaan…",
 	"help-translate": "Auttaa kääntämään",
+	"show-more": "Näytä lisää",
+	"language": "Kieli",
 	"average": "Keskiarvo",
 	"num-languages": "$1 kieltä",
 	"unique-titles": "$1 eri sivua",

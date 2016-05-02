@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Otokoume",
-			"Ridmevo"
+			"Ridmevo",
+			"Thibaut120094"
 		]
 	},
 	"last-week": "先週",
@@ -15,6 +16,8 @@
 	"mobile-app": "モバイルアプリ",
 	"user": "利用者",
 	"bot": "ボット",
+	"page": "ページ",
+	"page-title": "ページ名",
 	"settings": "設定",
 	"download": "$1 形式でダウンロード",
 	"csv": "CSV",
@@ -55,5 +58,7 @@
 	"november": "11月",
 	"december": "12月",
 	"select2-no-results": "該当するものはありません",
-	"select2-searching": "検索中..."
+	"select2-searching": "検索中...",
+	"language": "言語",
+	"submit": "送信"
 }

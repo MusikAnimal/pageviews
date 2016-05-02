@@ -41,9 +41,7 @@
 	"doughnut": "Donutdiagram",
 	"settings-notice": "Uw instellen worden onthouden in dezelfde browser en computer",
 	"search-method": "Zoekmethode:",
-	"autocompletion": "Automatisch aanvullen ($1)",
-	"prefixsearch": "prefixsearch",
-	"opensearch": "opensearch",
+	"autocompletion": "Automatisch aanvullen",
 	"no-autocompletion": "Geen automatisch aanvullen",
 	"other-options": "Andere opties:",
 	"format-numbers": "Numerieke data lokaliseren",
@@ -81,5 +79,7 @@
 	"select2-no-results": "Geen resultaten gevonden",
 	"select2-searching": "Zoeken...",
 	"help-translate": "Helpen met vertalen",
-	"api-error-no-data": "Geen gegevens gevonden."
+	"api-error-no-data": "Geen gegevens gevonden.",
+	"url-structure-parameters": "Parameters",
+	"default": "Standaard"
 }

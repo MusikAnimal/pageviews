@@ -26,6 +26,7 @@
 	"download": "Als $1 eroflueden",
 	"csv": "CSV",
 	"json": "JSON",
+	"translation-credits": "Iwwersetzunge erméiglecht duerch $1 a(n) $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "FAQ",
 	"url-structure": "URL-Struktur",
@@ -83,5 +84,13 @@
 	"language": "Sprooch",
 	"badges": "Auszeechnungen",
 	"average": "Duerchschnëtt",
-	"submit": "Späicheren"
+	"submit": "Späicheren",
+	"num-languages": "$1 Sproochen",
+	"wikidata-error-unknown": "Bei der Ufro u Wikidata ass en onbekannte Feeler geschitt",
+	"faq-return-to": "Zréck op $1",
+	"faq-try-tool": "Probéiert $1",
+	"url-structure-parameters": "Parameteren",
+	"url-structure-project": "$1 oder aner valabel $2",
+	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
+	"default": "Standard"
 }

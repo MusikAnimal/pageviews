@@ -18,7 +18,9 @@
 	"user": "کارن",
 	"spider": "غڼي",
 	"bot": "روباټ",
+	"page": "مخ",
 	"pages": "مخونه",
+	"page-title": "مخ سرليک",
 	"settings": "امستنې",
 	"download": "د $1 په بڼه ښکته کول",
 	"csv": "CSV",
@@ -33,7 +35,7 @@
 	"other-options": "نورې خوښنې:",
 	"cancel": "ناگارل",
 	"save": "خوندي کول",
-	"totals": "ټولټال:",
+	"totals": "ټولټال",
 	"day": "ورځ",
 	"su": "يونۍ",
 	"mo": "دونۍ",
@@ -55,5 +57,11 @@
 	"november": "نومبر",
 	"december": "ډيسمبر",
 	"select2-no-results": "کومې پايلې و نه موندل شوې",
-	"help-translate": "په ژباړلو کې مرسته وکړئ"
+	"select2-searching": "په پلټنې کې دی...",
+	"help-translate": "په ژباړلو کې مرسته وکړئ",
+	"show-more": "نور موندل",
+	"source-project": "د سرچينې پروژه",
+	"language": "ژبه",
+	"submit": "سپارل",
+	"num-languages": "$1 ژبې"
 }

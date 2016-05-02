@@ -29,6 +29,7 @@
 	"json": "JSON",
 	"credits": "Bragt til dig af $1, $2 og $3.",
 	"hosted": "Lavet med $1 af $2.",
+	"translation-credits": "Oversættelser er drevet af $1 og $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "Ofte Stillede Spørgsmål",
 	"disclaimer": "Ansvarsfraskrivelse",
@@ -51,9 +52,7 @@
 	"settings-notice": "Dine indstillinger vil blive husket på den samme browser og computer.",
 	"search-method": "Søgemetode",
 	"autocompletion": "Automatisk færdiggørelse ($1)",
-	"prefixsearch": "prefixsearch",
 	"autocompletion-redirects": "Automatiske færdiggørelse med omdirigeringer ($1)",
-	"opensearch": "opensearch",
 	"no-autocompletion": "Ingen automatisk færdiggørelse",
 	"other-options": "Andre muligheder:",
 	"format-numbers": "Tegnsætning i tal",
@@ -67,7 +66,7 @@
 	"param-error-1": "Sidevisnings-API'en har ikke data som er fra før august 2015. Beklager.",
 	"param-error-2": "Startdatoen skal være ældre end slutdatoen.",
 	"param-error-3": "Ugyldigt <code>interval</code>, standardintervallet anvendes istedet. Se <a href='/pageviews/url_structure'>dokumentationen</a> for mere information.",
-	"totals": "I alt:",
+	"totals": "I alt",
 	"day": "dag",
 	"su": "Sø",
 	"mo": "Ma",
@@ -100,5 +99,10 @@
 	"api-error-no-data": "Ingen data blev fundet.",
 	"topviews-title": "Sider med flest visninger",
 	"excluded-pages": "Undtagne sider",
-	"show-more": "Vis flere"
+	"show-more": "Vis flere",
+	"source-project": "Kildeprojekt",
+	"another-query": "Lav endnu en forespørgelse",
+	"language": "Sprog",
+	"pageviews": "Sidevisninger",
+	"average": "Middelværdi"
 }
