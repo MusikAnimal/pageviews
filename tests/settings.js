@@ -10,6 +10,7 @@ module.exports = {
 
     // Bar
     client.click('.js-test-change-chart');
+    client.click('.js-test-change-chart'); // IE 10
     client.expect.element('#chart-type-modal').to.be.visible.after(1000);
     client.click('.js-test-bar-chart');
     client.expect.element('.aqs-chart').to.be.visible.after(1000);
