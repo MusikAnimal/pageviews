@@ -16,8 +16,10 @@ const templates = {
     <% if (chartData.length === 1) { %>
       <strong><%= i18nMessages.totals %>:</strong>
       <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/${i18nMessages.day})
-      &bullet;
-      <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>
+      <% if (isMultilangProject()) { %>
+        &bullet;
+        <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>
+      <% } %>
       &bullet;
       <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>
       &bullet;
@@ -38,8 +40,10 @@ const templates = {
               <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/${i18nMessages.day})
             </div>
             <div class="linear-legend--links">
-              <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>
-              &bullet;
+              <% if (isMultilangProject()) { %>
+                <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>
+                &bullet;
+              <% } %>
               <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>
               &bullet;
               <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>

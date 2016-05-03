@@ -20,6 +20,7 @@
     "grunt-contrib-uglify": "0.9.2",
     "grunt-contrib-sass": "0.9.2",
     "grunt-haml-php": "0.5.0",
+    "grunt-jsdoc": "2.0.0",
     "grunt-scss-lint": "0.3.8",
     "gruntify-eslint": "2.0.0",
     "jquery": "2.1.1",

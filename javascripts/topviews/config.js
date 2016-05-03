@@ -1,5 +1,16 @@
+/**
+ * @file Configuration for Topviews application
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ */
+
 const pv = require('../shared/pv');
 
+/**
+ * Configuration for Topviews application.
+ * This includes selectors, defaults, and other constants specific to Topviews
+ * @type {Object}
+ */
 const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',

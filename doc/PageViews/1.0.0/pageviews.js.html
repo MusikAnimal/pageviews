@@ -1,4 +1,32 @@
-/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pageviews.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pageviews.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
  * Pageviews Analysis tool
  *
  * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
@@ -176,7 +204,7 @@ class PageViews extends Pv {
     data.items = [];
 
     /** Reconstruct with zeros instead of nulls */
-    for (let date = moment(startDate); date <= endDate; date.add(1, 'd')) {
+    for (let date = moment(startDate); date &lt;= endDate; date.add(1, 'd')) {
       if (alreadyThere[date]) {
         data.items.push(alreadyThere[date]);
       } else {
@@ -235,7 +263,7 @@ class PageViews extends Pv {
    * @returns {String} URL
    */
   getLangviewsURL(page) {
-    return `/langviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
+    return `/langviews?${$.param(this.getParams())}&amp;page=${page.replace(/[&amp;%]/g, escape).score()}`;
   }
 
   /**
@@ -294,10 +322,10 @@ class PageViews extends Pv {
    */
   parseHashParams() {
     const uri = location.hash.slice(1),
-      chunks = uri.split('&');
+      chunks = uri.split('&amp;');
     let params = {};
 
-    for (let i = 0; i < chunks.length; i++) {
+    for (let i = 0; i &lt; chunks.length; i++) {
       let chunk = chunks[i].split('=');
 
       if (chunk[0] === 'pages') {
@@ -333,7 +361,7 @@ class PageViews extends Pv {
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+      if (startDate &lt; moment('2015-08-01') || endDate &lt; moment('2015-08-01')) {
         this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
         this.resetView();
         return;
@@ -354,7 +382,7 @@ class PageViews extends Pv {
 
     this.resetArticleSelector();
 
-    if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
+    if (!params.pages || params.pages.length === 1 &amp;&amp; !params.pages[0]) {
       params.pages = ['Cat', 'Dog'];
       this.setArticleSelectorDefaults(params.pages);
     } else if (this.normalized) {
@@ -450,9 +478,9 @@ class PageViews extends Pv {
   pushParams() {
     const pages = $(config.articleSelector).select2('val') || [];
 
-    if (window.history && window.history.replaceState) {
+    if (window.history &amp;&amp; window.history.replaceState) {
       window.history.replaceState({}, document.title,
-        `#${$.param(this.getParams())}&pages=${pages.join('|').replace(/[&%]/g, escape)}`
+        `#${$.param(this.getParams())}&amp;pages=${pages.join('|').replace(/[&amp;%]/g, escape)}`
       );
     }
   }
@@ -538,8 +566,8 @@ class PageViews extends Pv {
    */
   setArticleSelectorDefaults(pages) {
     pages.forEach(page => {
-      const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
+      const escapedText = $('&lt;div>').text(page).html();
+      $('&lt;option>' + escapedText + '&lt;/option>').appendTo(config.articleSelector);
     });
     $(config.articleSelector).select2('val', pages);
     $(config.articleSelector).select2('close');
@@ -660,7 +688,7 @@ class PageViews extends Pv {
 
     /** so people know why they can't query data older than August 2015 */
     $('.daterangepicker').append(
-      $('<div>')
+      $('&lt;div>')
         .addClass('daterange-notice')
         .html(i18nMessages.dateNotice)
     );
@@ -701,7 +729,7 @@ class PageViews extends Pv {
       this.updateChart();
 
       /** clear out specialRange if it doesn't match our input */
-      if (this.specialRange && this.specialRange.value !== e.target.value) {
+      if (this.specialRange &amp;&amp; this.specialRange.value !== e.target.value) {
         this.specialRange = null;
       }
     });
@@ -792,7 +820,7 @@ class PageViews extends Pv {
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.hash === this.params && this.prevChartType === this.chartType) {
+    if (!force &amp;&amp; location.hash === this.params &amp;&amp; this.prevChartType === this.chartType) {
       return;
     }
 
@@ -848,7 +876,7 @@ class PageViews extends Pv {
         }
 
         /** fetch the labels for the x-axis on success if we haven't already */
-        if (data.items && !labels.length) {
+        if (data.items &amp;&amp; !labels.length) {
           labels = data.items.map(elem => {
             return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
           });
@@ -856,7 +884,7 @@ class PageViews extends Pv {
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${i18nMessages.apiErrorNoData}`
+            `&lt;a href='${this.getPageURL(article)}'>${article.descore()}&lt;/a> - ${i18nMessages.apiErrorNoData}`
           );
           articles = articles.filter(el => el !== article);
 
@@ -873,12 +901,12 @@ class PageViews extends Pv {
     $.when(...promises).always(data => {
       $('#chart-legend').html(''); // clear old chart legend
 
-      if (errors.length && errors.length === articles.length) {
+      if (errors.length &amp;&amp; errors.length === articles.length) {
         /** something went wrong */
         $('.chart-container').removeClass('loading');
-        const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
+        const errorMessages = Array.from(new Set(errors)).map(error => `&lt;li>${error}&lt;/li>`).join('');
         return this.writeMessage(
-          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`,
+          `${i18nMessages.apiError}&lt;ul>${errorMessages}&lt;/ul>&lt;br/>${i18nMessages.apiErrorContact}`,
           true
         );
       }
@@ -902,7 +930,7 @@ class PageViews extends Pv {
       const linearData = {labels: labels, datasets: sortedDatasets};
 
       $('.chart-container').html('');
-      $('.chart-container').append("<canvas class='aqs-chart'>");
+      $('.chart-container').append("&lt;canvas class='aqs-chart'>");
       const context = $(config.chart)[0].getContext('2d');
 
       if (config.linearCharts.includes(this.chartType)) {
@@ -935,7 +963,7 @@ class PageViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        i18nMessages.invalidProject.i18nArg(`&lt;a href='//${project}'>${project}&lt;/a>`),
         true
       );
       $('.select2-selection--multiple').addClass('disabled');
@@ -946,7 +974,7 @@ class PageViews extends Pv {
 
 $(document).ready(() => {
   /** assume query params are supposed to be hash params */
-  if (document.location.search && !document.location.hash) {
+  if (document.location.search &amp;&amp; !document.location.hash) {
     return document.location.href = document.location.href.replace('?', '#');
   } else if (document.location.search) {
     return document.location.href = document.location.href.replace(/\?.*/, '');
@@ -956,3 +984,26 @@ $(document).ready(() => {
 
   new PageViews();
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LangViews.html">LangViews</a></li><li><a href="PageViews.html">PageViews</a></li><li><a href="Pv.html">Pv</a></li><li><a href="TopViews.html">TopViews</a></li></ul><h3>Global</h3><ul><li><a href="global.html#config">config</a></li><li><a href="global.html#siteMap">siteMap</a></li><li><a href="global.html#templates">templates</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 02 2016 23:53:48 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

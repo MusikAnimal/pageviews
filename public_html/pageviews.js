@@ -1,9 +1,20 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+/**
+ * @file Configuration for Pageviews application
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ */
+
 var templates = require('./templates');
 var pv = require('./shared/pv');
 
+/**
+ * Configuration for Pageviews application.
+ * This includes selectors, defaults, and other constants specific to Pageviews
+ * @type {Object}
+ */
 var config = {
   articleSelector: '.aqs-article-selector',
   chart: '.aqs-chart',
@@ -166,6 +177,8 @@ var siteDomains = Object.keys(siteMap).map(function (key) {
 });
 var Pv = require('./shared/pv');
 
+/** Main PageViews class */
+
 var PageViews = function (_Pv) {
   _inherits(PageViews, _Pv);
 
@@ -199,6 +212,7 @@ var PageViews = function (_Pv) {
     window.getLangviewsURL = _this.getLangviewsURL.bind(_this);
     window.getExpandedPageURL = _this.getExpandedPageURL.bind(_this);
     window.numDaysInRange = _this.numDaysInRange.bind(_this);
+    window.isMultilangProject = _this.isMultilangProject.bind(_this);
 
     _this.setupProjectInput();
     _this.setupDateRangeSelector();
@@ -1200,6 +1214,14 @@ $(document).ready(function () {
 },{"./config":1,"./shared/pv":5,"./shared/site_map":6}],3:[function(require,module,exports){
 'use strict';
 
+/**
+ * @file Core JavaScript extensions, either to native JS or a library.
+ *   Polyfills have their own file [polyfills.js](global.html#polyfills)
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
 String.prototype.descore = function () {
   return this.replace(/_/g, ' ');
 };
@@ -1216,6 +1238,11 @@ String.prototype.i18nArg = function (args) {
 
 },{}],4:[function(require,module,exports){
 'use strict';
+
+/**
+ * @file Polyfills for users who refuse to upgrade their browsers
+ *   Most code is adapted from [MDN](https://developer.mozilla.org)
+ */
 
 // Array.includes function polyfill
 // This is not a full implementation, just a shorthand to indexOf !== -1
@@ -1296,6 +1323,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @author MusikAnimal, Kaldari
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
 
 var Pv = function () {
   function Pv() {
@@ -1618,6 +1654,17 @@ var Pv = function () {
     }
 
     /**
+     * Test if the current project is a multilingual project
+     * @returns {Boolean} is multilingual or not
+     */
+
+  }, {
+    key: 'isMultilangProject',
+    value: function isMultilangProject() {
+      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
+    }
+
+    /**
      * Generate a unique hash code from given string
      * @param  {String} str - to be hashed
      * @return {String} the hash
@@ -1669,14 +1716,20 @@ var Pv = function () {
     }
 
     /**
+     * List of valid multilingual projects
+     * @return {Array} base projects, without the language
+     */
+
+  }, {
+    key: 'n',
+
+
+    /**
      * Localize Number object with delimiters
      *
      * @param {Number} value - the Number, e.g. 1234567
      * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
      */
-
-  }, {
-    key: 'n',
     value: function n(value) {
       return new Number(value).toLocaleString();
     }
@@ -1807,10 +1860,10 @@ var Pv = function () {
      * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
      *
      * Same as _.debounce but queues and executes all function calls
-     * @param  {Function} fn      [description]
-     * @param  {[type]}   delay   [description]
-     * @param  {[type]}   context [description]
-     * @return {[type]}           [description]
+     * @param  {Function} fn - function to debounce
+     * @param  {delay} delay - delay duration of milliseconds
+     * @param  {object} context - scope the function should refer to
+     * @return {Function} rate-limited function to call instead of your function
      */
 
   }, {
@@ -1966,6 +2019,11 @@ var Pv = function () {
     value: function rgba(value, alpha) {
       return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
     }
+  }, {
+    key: 'multilangProjects',
+    get: function get() {
+      return ['wikipedia', 'wikibooks', 'wikinews', 'wikiquote', 'wikisource', 'wikiversity', 'wikivoyage'];
+    }
   }]);
 
   return Pv;
@@ -1976,6 +2034,14 @@ module.exports = Pv;
 },{}],6:[function(require,module,exports){
 'use strict';
 
+/**
+ * @file WMF [site matrix](https://www.mediawiki.org/w/api.php?action=sitematrix), with some unsupported wikis removed
+ */
+
+/**
+ * Sitematrix of all supported WMF wikis
+ * @type {Object}
+ */
 var siteMap = {
   'aawiki': 'aa.wikipedia.org',
   'aawiktionary': 'aa.wiktionary.org',
@@ -2892,7 +2958,7 @@ module.exports = siteMap;
  */
 var templates = {
   // FIXME: add back a tile for Totals, and include totals for all of the currently selected project, and perhaps unique devices
-  linearLegend: '\n    <% if (chartData.length === 1) { %>\n      <strong><%= i18nMessages.totals %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n      &bullet;\n      <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank">Info</a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class="linear-legend--totals">\n        <strong><%= i18nMessages.totals %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')\n      </div>\n      <div class="linear-legends">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class="linear-legend">\n            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">\n              <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>\n            </div>\n            <div class="linear-legend--counts">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n            </div>\n            <div class="linear-legend--links">\n              <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>',
+  linearLegend: '\n    <% if (chartData.length === 1) { %>\n      <strong><%= i18nMessages.totals %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n      <% if (isMultilangProject()) { %>\n        &bullet;\n        <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>\n      <% } %>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank">Info</a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class="linear-legend--totals">\n        <strong><%= i18nMessages.totals %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')\n      </div>\n      <div class="linear-legends">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class="linear-legend">\n            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">\n              <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>\n            </div>\n            <div class="linear-legend--counts">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n            </div>\n            <div class="linear-legend--links">\n              <% if (isMultilangProject()) { %>\n                <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>\n                &bullet;\n              <% } %>\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>',
   circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + ('<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>')
 };
 

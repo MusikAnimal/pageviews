@@ -1,4 +1,32 @@
-/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: topviews/topviews.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: topviews/topviews.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
  * Topviews Analysis tool
  * @file Main file for Topviews application
  * @author MusikAnimal
@@ -52,7 +80,7 @@ class TopViews extends Pv {
     this.pushParams();
 
     /** prevent redundant querying */
-    if (location.hash === this.params && !force) {
+    if (location.hash === this.params &amp;&amp; !force) {
       return false;
     }
     this.params = location.hash;
@@ -70,7 +98,7 @@ class TopViews extends Pv {
 
     let count = 0, index = 0;
 
-    while (count < config.pageSize + this.offset) {
+    while (count &lt; config.pageSize + this.offset) {
       let item = this.pageData[index++];
 
       if (this.excludes.includes(item.article)) continue;
@@ -79,12 +107,12 @@ class TopViews extends Pv {
       const width = 100 * (item.views / this.max);
 
       $('.chart-container').append(
-        `<div class='topview-entry' style='background:linear-gradient(to right, #EEE ${width}%, transparent ${width}%)'>
-         <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1} aria-hidden='true'></span>
-         <span class='topview-entry--rank'>${++count}</span>
-         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
-         <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.n(item.views)}</a></div>`
+        `&lt;div class='topview-entry' style='background:linear-gradient(to right, #EEE ${width}%, transparent ${width}%)'>
+         &lt;span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1} aria-hidden='true'>&lt;/span>
+         &lt;span class='topview-entry--rank'>${++count}&lt;/span>
+         &lt;a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}&lt;/a>
+         &lt;span class='topview-entry--leader'>&lt;/span>
+         &lt;a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.n(item.views)}&lt;/a>&lt;/div>`
       );
     }
 
@@ -102,8 +130,8 @@ class TopViews extends Pv {
     page = page.replace(/ /g, '_');
     $(config.articleSelector).html('');
     this.excludes.forEach(exclude => {
-      const escapedText = $('<div>').text(exclude).html();
-      $(`<option>${escapedText}</option>`).appendTo(config.articleSelector);
+      const escapedText = $('&lt;div>').text(exclude).html();
+      $(`&lt;option>${escapedText}&lt;/option>`).appendTo(config.articleSelector);
     });
     $(config.articleSelector).val(this.excludes).trigger('change');
     // $(config.articleSelector).select2('close');
@@ -144,7 +172,7 @@ class TopViews extends Pv {
     }
 
     return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
-      `&end=${endDate.format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${article}`;
+      `&amp;end=${endDate.format('YYYY-MM-DD')}&amp;project=${project}&amp;platform=${platform}&amp;pages=${article}`;
   }
 
   /**
@@ -153,10 +181,10 @@ class TopViews extends Pv {
    */
   parseQueryString() {
     const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
+      chunks = uri.split('&amp;');
     let params = {};
 
-    for (let i = 0; i < chunks.length; i++) {
+    for (let i = 0; i &lt; chunks.length; i++) {
       let chunk = chunks[i].split('=');
 
       if (chunk[0] === 'excludes') {
@@ -192,7 +220,7 @@ class TopViews extends Pv {
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+      if (startDate &lt; moment('2015-08-01') || endDate &lt; moment('2015-08-01')) {
         this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
         this.resetView();
         return;
@@ -210,7 +238,7 @@ class TopViews extends Pv {
 
     $('#platform-select').val(params.platform || 'all-access');
 
-    if (!params.excludes || (params.excludes.length === 1 && !params.excludes[0])) {
+    if (!params.excludes || (params.excludes.length === 1 &amp;&amp; !params.excludes[0])) {
       this.excludes = config.defaults.excludes;
     } else {
       this.excludes = params.excludes.map(exclude => exclude.replace(/_/g, ' '));
@@ -248,9 +276,9 @@ class TopViews extends Pv {
       state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
-    if (window.history && window.history.replaceState) {
+    if (window.history &amp;&amp; window.history.replaceState) {
       const excludes = this.underscorePageNames(this.excludes);
-      window.history.replaceState({}, document.title, `?${$.param(state)}&excludes=${excludes.join('|')}`);
+      window.history.replaceState({}, document.title, `?${$.param(state)}&amp;excludes=${excludes.join('|')}`);
     }
 
     return state;
@@ -330,8 +358,8 @@ class TopViews extends Pv {
   setArticleSelectorDefaults(pages) {
     pages = pages.map(page => {
       // page = page.replace(/ /g, '_');
-      const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
+      const escapedText = $('&lt;div>').text(page).html();
+      $('&lt;option>' + escapedText + '&lt;/option>').appendTo(config.articleSelector);
       return page;
     });
     $(config.articleSelector).select2('val', pages);
@@ -392,7 +420,7 @@ class TopViews extends Pv {
 
     /** so people know why they can't query data older than August 2015 */
     $('.daterangepicker').append(
-      $('<div>')
+      $('&lt;div>')
         .addClass('daterange-notice')
         .html(i18nMessages.dateNotice)
     );
@@ -443,7 +471,7 @@ class TopViews extends Pv {
     });
     $(config.dateRangeSelector).on('change', e => {
       /** clear out specialRange if it doesn't match our input */
-      if (this.specialRange && this.specialRange.value !== e.target.value) {
+      if (this.specialRange &amp;&amp; this.specialRange.value !== e.target.value) {
         this.specialRange = null;
       }
       this.applyChanges();
@@ -533,7 +561,7 @@ class TopViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        i18nMessages.invalidProject.i18nArg(`&lt;a href='//${project}'>${project}&lt;/a>`),
         true
       );
       $('body').addClass('invalid-project');
@@ -544,7 +572,7 @@ class TopViews extends Pv {
 
 $(document).ready(() => {
   /** assume hash params are supposed to be query params */
-  if (document.location.hash && !document.location.search) {
+  if (document.location.hash &amp;&amp; !document.location.search) {
     return document.location.href = document.location.href.replace('#', '?');
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
@@ -552,3 +580,26 @@ $(document).ready(() => {
 
   new TopViews();
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LangViews.html">LangViews</a></li><li><a href="PageViews.html">PageViews</a></li><li><a href="Pv.html">Pv</a></li><li><a href="TopViews.html">TopViews</a></li></ul><h3>Global</h3><ul><li><a href="global.html#config">config</a></li><li><a href="global.html#siteMap">siteMap</a></li><li><a href="global.html#templates">templates</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 02 2016 23:53:48 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
