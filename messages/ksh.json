@@ -66,7 +66,7 @@
 	"november": "Novämber",
 	"december": "Dezämber",
 	"select2-loading": "Mih Äjehpneße lahde&nbsp;&hellip;",
-	"select2-max-items": "Mer kann blohß {{PLURAL:$1|ein Saach|$ Saache|nix}} ußwähle.",
+	"select2-max-items": "Mer kann blohß $1 Saache ußwähle.",
 	"select2-no-results": "Nix jefonge",
 	"select2-searching": "Aam söhke …",
 	"help-translate": "Hellef beim Övversäze",
@@ -75,5 +75,5 @@
 	"pageviews": "Aanzahl Siggeaffrohfe",
 	"average": "Dorschnett",
 	"submit": "Lohß jonn!",
-	"num-languages": "{{PLURAL:$1|ein Schprohch|$1 Schprohche|kei Schprohch}}"
+	"num-languages": "$1 Schprohche"
 }
