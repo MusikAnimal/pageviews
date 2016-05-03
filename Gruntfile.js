@@ -7,6 +7,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-scss-lint');
   grunt.loadNpmTasks('grunt-haml-php');
+  grunt.loadNpmTasks('grunt-jsdoc');
 
   const coreJSDependencies = [
     'vendor/javascripts/jquery.min.js',
@@ -37,6 +38,16 @@ module.exports = function(grunt) {
         colorizeOutput: true
       },
       allFiles: ['stylesheets/**/*.scss']
+    },
+    jsdoc: {
+      dist: {
+        src: ['javascripts/**/*.js'],
+        options: {
+          destination: 'doc',
+          package: 'package.json',
+          configure: 'doc/conf.json'
+        }
+      }
     },
     browserify: {
       pageviews: {

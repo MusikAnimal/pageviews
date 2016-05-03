@@ -1,4 +1,32 @@
-/*
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: langviews/langviews.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: langviews/langviews.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
  * Langviews Analysis tool
  * @file Main file for Langviews application
  * @author MusikAnimal
@@ -106,7 +134,7 @@ class LangViews extends Pv {
      * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
-    if (this.specialRange && !forCacheKey) {
+    if (this.specialRange &amp;&amp; !forCacheKey) {
       params.range = this.specialRange.range;
     } else {
       params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
@@ -136,8 +164,8 @@ class LangViews extends Pv {
     }
 
     /** only certain characters within the page name are escaped */
-    const page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page}`);
+    const page = $(config.articleInput).val().score().replace(/[&amp;%]/g, escape);
+    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&amp;page=${page}`);
   }
 
   /**
@@ -149,7 +177,7 @@ class LangViews extends Pv {
     if (!config.badges[badgeCode]) return '';
     const badgeImage = config.badges[badgeCode].image,
       badgeName = config.badges[badgeCode].name;
-    return `<img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
+    return `&lt;img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
   }
 
   /**
@@ -162,7 +190,7 @@ class LangViews extends Pv {
       const before = this.getSortProperty(a, this.sort),
         after = this.getSortProperty(b, this.sort);
 
-      if (before < after) {
+      if (before &lt; after) {
         return this.direction;
       } else if (before > after) {
         return -this.direction;
@@ -176,16 +204,16 @@ class LangViews extends Pv {
     $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     const totalBadgesMarkup = Object.keys(this.totals.badges).map(badge => {
-      return `<span class='nowrap'>${this.getBadgeMarkup(badge)} &times; ${this.totals.badges[badge]}</span>`;
+      return `&lt;span class='nowrap'>${this.getBadgeMarkup(badge)} &amp;times; ${this.totals.badges[badge]}&lt;/span>`;
     }).join(', ');
 
     $('.output-totals').html(
-      `<th scope='row'>${i18nMessages.totals}</th>
-       <th>${i18nMessages.numLanguages.i18nArg(this.langData.length)}</th>
-       <th>${i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length)}</th>
-       <th>${totalBadgesMarkup}</th>
-       <th>${this.n(this.totals.views)}</th>
-       <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${i18nMessages.day}</th>`
+      `&lt;th scope='row'>${i18nMessages.totals}&lt;/th>
+       &lt;th>${i18nMessages.numLanguages.i18nArg(this.langData.length)}&lt;/th>
+       &lt;th>${i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length)}&lt;/th>
+       &lt;th>${totalBadgesMarkup}&lt;/th>
+       &lt;th>${this.n(this.totals.views)}&lt;/th>
+       &lt;th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${i18nMessages.day}&lt;/th>`
     );
     $('#lang_list').html('');
 
@@ -196,14 +224,14 @@ class LangViews extends Pv {
       }
 
       $('#lang_list').append(
-        `<tr>
-         <th scope='row'>${index + 1}</th>
-         <td>${item.lang}</td>
-         <td><a href="${item.url}" target="_blank">${item.pageName}</a></td>
-         <td>${badgeMarkup}</td>
-         <td><a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}</a></td>
-         <td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${i18nMessages.day}</td>
-         </tr>`
+        `&lt;tr>
+         &lt;th scope='row'>${index + 1}&lt;/th>
+         &lt;td>${item.lang}&lt;/td>
+         &lt;td>&lt;a href="${item.url}" target="_blank">${item.pageName}&lt;/a>&lt;/td>
+         &lt;td>${badgeMarkup}&lt;/td>
+         &lt;td>&lt;a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}&lt;/a>&lt;/td>
+         &lt;td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${i18nMessages.day}&lt;/td>
+         &lt;/tr>`
       );
     });
 
@@ -249,7 +277,7 @@ class LangViews extends Pv {
     }
 
     return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
-      `&end=${endDate.format('YYYY-MM-DD')}&project=${lang}.${project}.org&platform=${platform}&pages=${article}`;
+      `&amp;end=${endDate.format('YYYY-MM-DD')}&amp;project=${lang}.${project}.org&amp;platform=${platform}&amp;pages=${article}`;
   }
 
   /**
@@ -318,7 +346,7 @@ class LangViews extends Pv {
           }
 
           /** maximum of 3 retries */
-          if (failureRetries[dbName] < 3) {
+          if (failureRetries[dbName] &lt; 3) {
             totalRequestCount++;
             return this.rateLimit(makeRequest, 100, this)(dbName);
           }
@@ -386,15 +414,15 @@ class LangViews extends Pv {
    */
   getInterwikiData(dbName, pageName) {
     const dfd = $.Deferred();
-    const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&sites=${dbName}` +
-      `&titles=${encodeURIComponent(pageName)}&props=sitelinks/urls|datatype&format=json&callback=?`;
+    const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&amp;sites=${dbName}` +
+      `&amp;titles=${encodeURIComponent(pageName)}&amp;props=sitelinks/urls|datatype&amp;format=json&amp;callback=?`;
 
     $.getJSON(url).done(data => {
       if (data.error) {
         return dfd.reject(`${i18nMessages.wikidataError}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
-          `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${i18nMessages.apiErrorNoData}`
+          `&lt;a href='${this.getPageURL(pageName)}'>${pageName.descore()}&lt;/a> - ${i18nMessages.apiErrorNoData}`
         );
       }
 
@@ -423,7 +451,7 @@ class LangViews extends Pv {
    */
   getPageNameFromURL(url) {
     if (url.includes('?')) {
-      return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
+      return url.match(/\?(?:.*\b)?title=(.*?)(?:&amp;|$)/)[1];
     } else {
       return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
     }
@@ -435,10 +463,10 @@ class LangViews extends Pv {
    */
   parseQueryString() {
     const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
+      chunks = uri.split('&amp;');
     let params = {};
 
-    for (let i = 0; i < chunks.length; i++) {
+    for (let i = 0; i &lt; chunks.length; i++) {
       let chunk = chunks[i].split('=');
 
       if (chunk[0] === 'pages') {
@@ -474,7 +502,7 @@ class LangViews extends Pv {
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
+      if (startDate &lt; moment('2015-08-01') || endDate &lt; moment('2015-08-01')) {
         this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
         return;
       } else if (startDate > endDate) {
@@ -590,7 +618,7 @@ class LangViews extends Pv {
 
     /** so people know why they can't query data older than August 2015 */
     $('.daterangepicker').append(
-      $('<div>')
+      $('&lt;div>')
         .addClass('daterange-notice')
         .html(i18nMessages.dateNotice)
     );
@@ -638,9 +666,9 @@ class LangViews extends Pv {
         /** > 0 check to combat race conditions */
         if (timeRemaining > 0) {
           return this.writeMessage(`
-            Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
-            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
-            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>
+            Please wait &lt;b>${timeRemaining}&lt;/b> seconds before submitting another request.&lt;br/>
+            Apologies for the inconvenience. This is a temporary throttling tactic.&lt;br/>
+            See &lt;a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314&lt;/a>
             for more information.
           `, true);
         }
@@ -723,7 +751,7 @@ class LangViews extends Pv {
 
     if (!this.isMultilangProject()) {
       this.writeMessage(
-        i18nMessages.invalidLangProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        i18nMessages.invalidLangProject.i18nArg(`&lt;a href='//${project}'>${project}&lt;/a>`),
         true
       );
       this.setState('invalid');
@@ -741,7 +769,7 @@ class LangViews extends Pv {
 
 $(document).ready(() => {
   /** assume hash params are supposed to be query params */
-  if (document.location.hash && !document.location.search) {
+  if (document.location.hash &amp;&amp; !document.location.search) {
     return document.location.href = document.location.href.replace('#', '?');
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
@@ -749,3 +777,26 @@ $(document).ready(() => {
 
   new LangViews();
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LangViews.html">LangViews</a></li><li><a href="PageViews.html">PageViews</a></li><li><a href="Pv.html">Pv</a></li><li><a href="TopViews.html">TopViews</a></li></ul><h3>Global</h3><ul><li><a href="global.html#config">config</a></li><li><a href="global.html#siteMap">siteMap</a></li><li><a href="global.html#templates">templates</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 02 2016 23:53:48 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
