@@ -8,6 +8,8 @@ config.php
 composer.lock
 vendor/composer
 vendor/krinkle
+vendor/psr
+vendor/whichbrowser
 vendor/autoload.php
 reports/
 *.jar

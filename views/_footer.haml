@@ -30,14 +30,15 @@
     - $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
     = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );
 
-  %div.nowrap
-    - $heart = "<span class='heart'>&hearts;</span>";
-    - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
-    = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );
-
-    - $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"
-    - $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"
-    = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
+  %div
+    %span.nowrap
+      - $heart = "<span class='heart'>&hearts;</span>";
+      - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
+      = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );
+    %span.nowrap
+      - $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"
+      - $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"
+      = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
 
   %div
     %a(href="/#{$app}/faq")<

@@ -109,10 +109,6 @@ var LangViews = function (_Pv) {
     _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     _this.config = config;
-    _this.assignDefaults();
-    _this.setupDateRangeSelector();
-    _this.popParams();
-    _this.setupListeners();
 
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
@@ -129,13 +125,28 @@ var LangViews = function (_Pv) {
   }
 
   /**
-   * Copy default values over to class instance
-   * Use JSON stringify/parsing so to make a deep clone of the defaults
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
    * @return {null} Nothing
    */
 
 
   _createClass(LangViews, [{
+    key: 'initialize',
+    value: function initialize() {
+      this.assignDefaults();
+      this.setupDateRangeSelector();
+      this.popParams();
+      this.setupListeners();
+    }
+
+    /**
+     * Copy default values over to class instance
+     * Use JSON stringify/parsing so to make a deep clone of the defaults
+     * @return {null} Nothing
+     */
+
+  }, {
     key: 'assignDefaults',
     value: function assignDefaults() {
       Object.assign(this, JSON.parse(JSON.stringify(config.defaults.params)));
@@ -288,7 +299,7 @@ var LangViews = function (_Pv) {
         return '<span class=\'nowrap\'>' + _this3.getBadgeMarkup(badge) + ' &times; ' + _this3.totals.badges[badge] + '</span>';
       }).join(', ');
 
-      $('.output-totals').html('<th scope=\'row\'>' + i18nMessages.totals + '</th>\n       <th>' + i18nMessages.numLanguages.i18nArg(this.langData.length) + '</th>\n       <th>' + i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length) + '</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>\n       <th>' + this.n(Math.round(this.totals.views / this.numDaysInRange())) + ' / ' + i18nMessages.day + '</th>');
+      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('num-languages', this.langData.length) + '</th>\n       <th>' + $.i18n('unique-titles', this.totals.titles.length) + '</th>\n       <th>' + totalBadgesMarkup + '</th>\n       <th>' + this.n(this.totals.views) + '</th>\n       <th>' + this.n(Math.round(this.totals.views / this.numDaysInRange())) + ' / ' + $.i18n('day') + '</th>');
       $('#lang_list').html('');
 
       sortedLangViews.forEach(function (item, index) {
@@ -297,7 +308,7 @@ var LangViews = function (_Pv) {
           badgeMarkup = item.badges.map(_this3.getBadgeMarkup).join();
         }
 
-        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         <td>' + _this3.n(Math.round(item.views / _this3.numDaysInRange())) + ' / ' + i18nMessages.day + '</td>\n         </tr>');
+        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         <td>' + _this3.n(Math.round(item.views / _this3.numDaysInRange())) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
       });
 
       this.pushParams();
@@ -431,7 +442,7 @@ var LangViews = function (_Pv) {
             }
           }
 
-          _this4.writeMessage(i18nMessages.langviewsError.i18nArg(dbName) + ': ' + errorData.responseJSON.title);
+          _this4.writeMessage($.i18n('langviews-error', dbName) + ': ' + errorData.responseJSON.title);
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
           _this4.updateProgressBar(++count / totalRequestCount * 100);
@@ -506,9 +517,9 @@ var LangViews = function (_Pv) {
 
       $.getJSON(url).done(function (data) {
         if (data.error) {
-          return dfd.reject(i18nMessages.wikidataError + ': ' + data.error.info);
+          return dfd.reject($.i18n('wikidata-error') + ': ' + data.error.info);
         } else if (data.entities['-1']) {
-          return dfd.reject('<a href=\'' + _this5.getPageURL(pageName) + '\'>' + pageName.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
+          return dfd.reject('<a href=\'' + _this5.getPageURL(pageName) + '\'>' + pageName.descore() + '</a> - ' + $.i18n('api-error-no-data'));
         }
 
         var key = Object.keys(data.entities)[0],
@@ -592,17 +603,17 @@ var LangViews = function (_Pv) {
        */
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
           this.setSpecialRange(config.defaults.dateRange);
         }
       } else if (params.start) {
         startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-          this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
           return;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           return;
         }
         this.daterangepicker.setStartDate(startDate);
@@ -681,18 +692,18 @@ var LangViews = function (_Pv) {
       /** transform config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(config.specialRanges).forEach(function (key) {
-        ranges[i18nMessages[key]] = config.specialRanges[key];
+        ranges[$.i18n(key)] = config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
         locale: {
           format: this.dateFormat,
-          applyLabel: i18nMessages.apply,
-          cancelLabel: i18nMessages.cancel,
-          customRangeLabel: i18nMessages.customRange,
+          applyLabel: $.i18n('apply'),
+          cancelLabel: $.i18n('cancel'),
+          customRangeLabel: $.i18n('custom-range'),
           dateLimit: { days: 31 },
-          daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
-          monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
+          daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
+          monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
         startDate: moment().subtract(config.defaults.daysAgo, 'days'),
         minDate: config.minDate,
@@ -701,7 +712,7 @@ var LangViews = function (_Pv) {
       });
 
       /** so people know why they can't query data older than August 2015 */
-      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice')));
 
       /**
        * The special date range options (buttons the right side of the daterange picker)
@@ -721,7 +732,7 @@ var LangViews = function (_Pv) {
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
-        if (action.chosenLabel === i18nMessages.customRange) {
+        if (action.chosenLabel === $.i18n('custom-range')) {
           _this6.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -750,11 +761,16 @@ var LangViews = function (_Pv) {
 
           /** > 0 check to combat race conditions */
           if (timeRemaining > 0) {
+            // FIXME: restore when fallbacks are supported for multi-param messages
+            // return this.writeMessage($.i18n(
+            //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
+            //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+            // ), true);
             return this.writeMessage('\n            Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n            for more information.\n          ', true);
           }
         } else {
-          /** limit to one request every 2 minutes */
-          simpleStorage.set('langviews-throttle', true, { TTL: 120000 });
+          /** limit to one request every 90 seconds */
+          simpleStorage.set('langviews-throttle', true, { TTL: 90000 });
         }
       }
 
@@ -780,7 +796,7 @@ var LangViews = function (_Pv) {
         if (typeof error === 'string') {
           _this7.writeMessage(error);
         } else {
-          _this7.writeMessage(i18nMessages.wikidataErrorUnknown);
+          _this7.writeMessage($.i18n('wikidata-error-unknown'));
         }
       });
     }
@@ -843,7 +859,7 @@ var LangViews = function (_Pv) {
       var project = $(config.projectInput).val();
 
       if (!this.isMultilangProject()) {
-        this.writeMessage(i18nMessages.invalidLangProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
+        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
         this.setState('invalid');
         return true;
       }
@@ -902,13 +918,6 @@ String.prototype.descore = function () {
 };
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
-};
-String.prototype.i18nArg = function (args) {
-  var newStr = this;
-  Array.of(args).forEach(function (arg) {
-    newStr = newStr.replace('i18n-arg', arg);
-  });
-  return newStr;
 };
 
 },{}],4:[function(require,module,exports){
@@ -988,6 +997,30 @@ if (!Array.of) {
   };
 }
 
+// Array.find
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value = undefined;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -996,6 +1029,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1022,8 +1057,16 @@ var Pv = function () {
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.origin + actualPathName + '</a>');
+      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
     }
+
+    /**
+     * Load translations then initialize the app
+     * Each app has it's own initialize method
+     */
+    $.i18n({
+      locale: i18nLang
+    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{

@@ -214,14 +214,6 @@ var PageViews = function (_Pv) {
     window.numDaysInRange = _this.numDaysInRange.bind(_this);
     window.isMultilangProject = _this.isMultilangProject.bind(_this);
 
-    _this.setupProjectInput();
-    _this.setupDateRangeSelector();
-    _this.setupArticleSelector();
-    _this.setupSettingsModal();
-    _this.setupSelect2Colors();
-    _this.popParams();
-    _this.setupListeners();
-
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
       $.ajax({
@@ -235,12 +227,30 @@ var PageViews = function (_Pv) {
   }
 
   /**
-   * Destroy previous chart, if needed.
-   * @returns {null} nothing
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   * @return {null} Nothing
    */
 
 
   _createClass(PageViews, [{
+    key: 'initialize',
+    value: function initialize() {
+      this.setupProjectInput();
+      this.setupDateRangeSelector();
+      this.setupArticleSelector();
+      this.setupSettingsModal();
+      this.setupSelect2Colors();
+      this.popParams();
+      this.setupListeners();
+    }
+
+    /**
+     * Destroy previous chart, if needed.
+     * @returns {null} nothing
+     */
+
+  }, {
     key: 'destroyChart',
     value: function destroyChart() {
       if (this.chartObj) {
@@ -545,18 +555,18 @@ var PageViews = function (_Pv) {
        */
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
           this.setSpecialRange(config.defaults.dateRange);
         }
       } else if (params.start) {
         startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-          this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
           this.resetView();
           return;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           this.resetView();
           return;
         }
@@ -802,7 +812,7 @@ var PageViews = function (_Pv) {
       var params = {
         ajax: this.getArticleSelectorAjax(),
         tags: this.autocomplete === 'no_autocomplete',
-        placeholder: i18nMessages.articlePlaceholder,
+        placeholder: $.i18n('article-placeholder'),
         maximumSelectionLength: 10,
         minimumInputLength: 1
       };
@@ -879,17 +889,17 @@ var PageViews = function (_Pv) {
       /** transform config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(config.specialRanges).forEach(function (key) {
-        ranges[i18nMessages[key]] = config.specialRanges[key];
+        ranges[$.i18n(key)] = config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
         locale: {
           format: this.dateFormat,
-          applyLabel: i18nMessages.apply,
-          cancelLabel: i18nMessages.cancel,
-          customRangeLabel: i18nMessages.customRange,
-          daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
-          monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
+          applyLabel: $.i18n('apply'),
+          cancelLabel: $.i18n('cancel'),
+          customRangeLabel: $.i18n('custom-range'),
+          daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
+          monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
         startDate: moment().subtract(config.defaults.daysAgo, 'days'),
         minDate: config.minDate,
@@ -898,7 +908,7 @@ var PageViews = function (_Pv) {
       });
 
       /** so people know why they can't query data older than August 2015 */
-      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>")));
 
       /**
        * The special date range options (buttons the right side of the daterange picker)
@@ -923,7 +933,7 @@ var PageViews = function (_Pv) {
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
-        if (action.chosenLabel === i18nMessages.customRange) {
+        if (action.chosenLabel === $.i18n('custom-range')) {
           _this7.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -1110,7 +1120,7 @@ var PageViews = function (_Pv) {
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + i18nMessages.apiErrorNoData);
+            _this11.writeMessage('<a href=\'' + _this11.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + $.i18n('api-error-no-data'));
             articles = articles.filter(function (el) {
               return el !== article;
             });
@@ -1134,7 +1144,7 @@ var PageViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this11.writeMessage(i18nMessages.apiError + '<ul>' + errorMessages + '</ul><br/>' + i18nMessages.apiErrorContact, true);
+          return _this11.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
         }
 
         if (!articles.length) return;
@@ -1188,7 +1198,7 @@ var PageViews = function (_Pv) {
         $('.select2-selection--multiple').removeClass('disabled');
       } else {
         this.resetView();
-        this.writeMessage(i18nMessages.invalidProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
@@ -1227,13 +1237,6 @@ String.prototype.descore = function () {
 };
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
-};
-String.prototype.i18nArg = function (args) {
-  var newStr = this;
-  Array.of(args).forEach(function (arg) {
-    newStr = newStr.replace('i18n-arg', arg);
-  });
-  return newStr;
 };
 
 },{}],4:[function(require,module,exports){
@@ -1313,6 +1316,30 @@ if (!Array.of) {
   };
 }
 
+// Array.find
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value = undefined;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -1321,6 +1348,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1347,8 +1376,16 @@ var Pv = function () {
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.origin + actualPathName + '</a>');
+      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
     }
+
+    /**
+     * Load translations then initialize the app
+     * Each app has it's own initialize method
+     */
+    $.i18n({
+      locale: i18nLang
+    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{
@@ -2942,7 +2979,7 @@ var siteMap = {
 module.exports = siteMap;
 
 },{}],7:[function(require,module,exports){
-'use strict';
+"use strict";
 
 /**
  * @file Templates used by Chart.js
@@ -2958,8 +2995,8 @@ module.exports = siteMap;
  */
 var templates = {
   // FIXME: add back a tile for Totals, and include totals for all of the currently selected project, and perhaps unique devices
-  linearLegend: '\n    <% if (chartData.length === 1) { %>\n      <strong><%= i18nMessages.totals %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n      <% if (isMultilangProject()) { %>\n        &bullet;\n        <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>\n      <% } %>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>\n      &bullet;\n      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank">Info</a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class="linear-legend--totals">\n        <strong><%= i18nMessages.totals %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')\n      </div>\n      <div class="linear-legends">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class="linear-legend">\n            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">\n              <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>\n            </div>\n            <div class="linear-legend--counts">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/' + i18nMessages.day + ')\n            </div>\n            <div class="linear-legend--links">\n              <% if (isMultilangProject()) { %>\n                <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>\n                &bullet;\n              <% } %>\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>\n              &bullet;\n              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>',
-  circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' + '<ul class=\"<%=name.toLowerCase()%>-legend\">' + ('<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/' + i18nMessages.day + ')</li><% } %>') + '<% for (var i=0; i<segments.length; i++){%>' + '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' + "<a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " + ('<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/' + i18nMessages.day + ')</li><%}%></ul>')
+  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      <% if (isMultilangProject()) { %>\n        &bullet;\n        <a href=\"<%= getLangviewsURL(chartData[0].label) %>\"><%= $.i18n('all-languages') %></a>\n      <% } %>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=history\" target=\"_blank\"><%= $.i18n('history') %></a>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=info\" target=\"_blank\"><%= $.i18n('info') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"<%= getPageURL(chartData[i].label) %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <% if (isMultilangProject()) { %>\n                <a href=\"<%= getLangviewsURL(chartData[i].label) %>\">All languages</a>\n                &bullet;\n              <% } %>\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=history\" target=\"_blank\">History</a>\n              &bullet;\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=info\" target=\"_blank\">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
+  circularLegend: "\n    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>\n    <ul class=\"<%=name.toLowerCase()%>-legend\">\n      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>\n      <% for (var i=0; i<segments.length; i++) { %>\n        <li>\n          <span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">\n            <a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a>\n          </span>\n          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)\n        </li>\n      <% } %>\n    </ul>\n    "
 };
 
 module.exports = templates;

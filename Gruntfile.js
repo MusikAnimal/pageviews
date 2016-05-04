@@ -11,6 +11,7 @@ module.exports = function(grunt) {
 
   const coreJSDependencies = [
     'vendor/javascripts/jquery.min.js',
+    'public_html/jquery.i18n.js',
     'vendor/javascripts/moment.min.js',
     'vendor/javascripts/bootstrap.min.js'
   ];
@@ -147,6 +148,7 @@ module.exports = function(grunt) {
           'public_html/_footer.php': 'views/_footer.haml',
           'public_html/_lang_selector.php': 'views/_lang_selector.haml',
           'public_html/_modals.php': 'views/_modals.haml',
+          'public_html/_browser_check.php': 'views/_browser_check.haml',
           'public_html/faq/index.php': 'views/faq.haml',
           'public_html/url_structure/index.php': 'views/url_structure.haml',
 
@@ -163,6 +165,17 @@ module.exports = function(grunt) {
     concat: {
       options: {
         separator: '\n'
+      },
+      i18n: {
+        files: {
+          'public_html/jquery.i18n.js': [
+            'vendor/javascripts/jquery.i18n/jquery.i18n.js',
+            'vendor/javascripts/jquery.i18n/jquery.i18n.messagestore.js',
+            'vendor/javascripts/jquery.i18n/jquery.i18n.parser.js',
+            'vendor/javascripts/jquery.i18n/jquery.i18n.emitter.js',
+            'vendor/javascripts/jquery.i18n/jquery.i18n.language.js'
+          ]
+        }
       },
       pageviews: {
         files: {
@@ -265,7 +278,7 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['eslint', 'scsslint']);
 
   grunt.registerTask('production', () => {
-    const tasks = ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml'];
+    const tasks = ['lint', 'browserify', 'sass:dist', 'concat', 'uglify', 'haml', 'jsdoc'];
     grunt.config.set('browserify.pageviews.options.browserifyOptions.debug', false);
     grunt.config.set('browserify.topviews.options.browserifyOptions.debug', false);
     grunt.task.run(tasks);

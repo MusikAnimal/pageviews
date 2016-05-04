@@ -18,7 +18,9 @@
       <main class="col-lg-10 col-lg-offset-1">
         <!-- Site notice -->
         <div class="text-center site-notice-wrapper">
-          <div class="site-notice"></div>
+          <div class="site-notice">
+            <?php include "../_browser_check.php"; ?>
+          </div>
         </div>
         <form id="langviews_form">
           <div class="row aqs-row options">
@@ -99,10 +101,8 @@
           </div>
         </div>
         <div class="throttle-notice text-center">
-          <b>NOTE:</b>
-          Requests are currently being throttled for performance reasons.
-          <br>
-          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a> for more information.
+          <b><?php echo strtoupper( $I18N->msg( 'note' ) ) . ':'; ?></b>
+          <?php echo $I18N->msg( 'langviews-throttle-notice', array( 'variables' => array( '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>' ) ) ); ?>
         </div>
         <output form="langviews_form">
           <header class="output-header">

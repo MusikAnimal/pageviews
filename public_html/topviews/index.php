@@ -22,7 +22,9 @@
         </header>
         <!-- Site notice -->
         <div class="col-lg-10 text-center site-notice-wrapper">
-          <div class="site-notice"></div>
+          <div class="site-notice">
+            <?php include "../_browser_check.php"; ?>
+          </div>
         </div>
         <div class="row aqs-row options">
           <!-- Date range selector -->
@@ -39,14 +41,6 @@
             </label>
             <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
-          <!-- .col-lg-3 -->
-          <!-- %label{for: "platform-select"} Namespace -->
-          <!-- %select#platform-select.form-control -->
-          <!-- %option{value: "all"} All -->
-          <!-- %option{value: "1"} Main -->
-          <!-- %option{value: "2"} Mobile app -->
-          <!-- %option{value: "3"} Mobile web -->
-          <!-- Advanced options -->
           <div class="col-lg-3 col-sm-4">
             <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>

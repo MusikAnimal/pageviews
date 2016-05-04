@@ -92,7 +92,7 @@
 	"select2-min-chars": "Please enter $1 or more characters",
 	"select2-max-chars": "Please delete $1 character",
 	"select2-loading": "Loading more results…",
-	"select2-max-items": "You can only select $1 item",
+	"select2-max-items": "You can only select $1 items",
 	"select2-no-results": "No results found",
 	"select2-searching": "Searching…",
 	"help-translate": "Help translate",
@@ -118,6 +118,8 @@
 	"wikidata-error": "Error querying Wikidata",
 	"wikidata-error-unknown": "An unknown error occurred when querying Wikidata",
 	"langviews-error": "Error fetching data for $1",
+	"langviews-throttle-notice": "Requests are currently being throttled for performance reasons.<br/>See $1 for more information.",
+	"langviews-throttle-wait": "Please wait $1 seconds before submitting another request.<br/>Apologies for the inconvenience. This is a temporary throttling tactic.<br/>See $2 for more information.",
 	"faq-return-to": "Return to $1",
 	"faq-old-data-title": "Why can't I view data older than August 2015?",
 	"faq-old-data-body": "The Wikimedia pageviews API was introduced in August 2015 and does not include data from before that time. You will have to rely on other tools such as <a href='http://stats.grok.se'>stats.grok.se</a> to view data older than this. Whether or not they work is unfortunately outside the scope of this tool, and beyond the control of the maintainers.",
@@ -156,5 +158,10 @@
 	"url-structure-agent": "One of $1 (human viewer, default), $2 (search engine crawlers), $3 (WMF bots) or $4 (user, spider and bot)",
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
-	"default": "Default"
+	"default": "Default",
+	"all-languages": "All languages",
+	"history": "History",
+	"info": "Info",
+	"note": "Note",
+	"unsupported-browser-error": "$1 and below is not supported. Please <a href='http://browsehappy.com/'>upgrade your browser</a></strong>."
 }

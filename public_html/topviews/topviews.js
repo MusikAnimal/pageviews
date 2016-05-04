@@ -15,13 +15,6 @@ String.prototype.descore = function () {
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
 };
-String.prototype.i18nArg = function (args) {
-  var newStr = this;
-  Array.of(args).forEach(function (arg) {
-    newStr = newStr.replace('i18n-arg', arg);
-  });
-  return newStr;
-};
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -100,6 +93,30 @@ if (!Array.of) {
   };
 }
 
+// Array.find
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value = undefined;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -108,6 +125,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -134,8 +153,16 @@ var Pv = function () {
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.origin + actualPathName + '</a>');
+      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
     }
+
+    /**
+     * Load translations then initialize the app
+     * Each app has it's own initialize method
+     */
+    $.i18n({
+      locale: i18nLang
+    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{
@@ -1823,10 +1850,6 @@ var TopViews = function (_Pv) {
     _this.params = null;
     _this.config = config;
 
-    _this.setupProjectInput();
-    _this.setupDateRangeSelector();
-    _this.popParams();
-
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
       $.ajax({
@@ -1842,22 +1865,36 @@ var TopViews = function (_Pv) {
   }
 
   /**
-   * Apply user input by updating the URL hash and view, if needed
-   * @param {boolean} force - apply all user options even if we've detected nothing has changed
-   * @returns {Deferred} deferred object from initData
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   * @return {null} Nothing
    */
 
 
   _createClass(TopViews, [{
+    key: 'initialize',
+    value: function initialize() {
+      this.setupProjectInput();
+      this.setupDateRangeSelector();
+      this.popParams();
+    }
+
+    /**
+     * Apply user input by updating the URL query string and view, if needed
+     * @param {boolean} force - apply all user options even if we've detected nothing has changed
+     * @returns {Deferred} deferred object from initData
+     */
+
+  }, {
     key: 'applyChanges',
     value: function applyChanges(force) {
       this.pushParams();
 
       /** prevent redundant querying */
-      if (location.hash === this.params && !force) {
+      if (location.search === this.params && !force) {
         return false;
       }
-      this.params = location.hash;
+      this.params = location.search;
 
       this.resetView(false);
       return this.initData().then(this.drawData.bind(this));
@@ -1956,7 +1993,7 @@ var TopViews = function (_Pv) {
 
     /**
      * Generate key/value pairs of URL query string
-     * @returns {Object} key/value pairs representation of URL hash
+     * @returns {Object} key/value pairs representation of URL query string
      */
 
   }, {
@@ -2003,18 +2040,18 @@ var TopViews = function (_Pv) {
        */
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
           this.setSpecialRange(config.defaults.dateRange);
         }
       } else if (params.start) {
         startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-          this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+          this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
           this.resetView();
           return;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           this.resetView();
           return;
         }
@@ -2035,7 +2072,7 @@ var TopViews = function (_Pv) {
         });
       }
 
-      this.params = location.hash;
+      this.params = location.search;
 
       this.initData().then(function () {
         _this3.setupArticleSelector();
@@ -2047,7 +2084,7 @@ var TopViews = function (_Pv) {
     /**
      * Replaces history state with new URL query string representing current user input
      * Called whenever we go to update the chart
-     * @returns {string|false} the new hash param string or false if nothing has changed
+     * @returns {string|false} the new query param string or false if nothing has changed
      */
 
   }, {
@@ -2136,7 +2173,7 @@ var TopViews = function (_Pv) {
         data: [],
         maximumSelectionLength: 50,
         minimumInputLength: 0,
-        placeholder: i18nMessages.hoverToExclude
+        placeholder: $.i18n('hover-to-exclude')
       });
 
       if (excludes.length) this.setArticleSelectorDefaults(excludes);
@@ -2195,18 +2232,18 @@ var TopViews = function (_Pv) {
       /** transform config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(config.specialRanges).forEach(function (key) {
-        ranges[i18nMessages[key]] = config.specialRanges[key];
+        ranges[$.i18n(key)] = config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
         locale: {
           format: this.dateFormat,
-          applyLabel: i18nMessages.apply,
-          cancelLabel: i18nMessages.cancel,
-          customRangeLabel: i18nMessages.customRange,
+          applyLabel: $.i18n('apply'),
+          cancelLabel: $.i18n('cancel'),
+          customRangeLabel: $.i18n('custom-range'),
           dateLimit: { days: 31 },
-          daysOfWeek: [i18nMessages.su, i18nMessages.mo, i18nMessages.tu, i18nMessages.we, i18nMessages.th, i18nMessages.fr, i18nMessages.sa],
-          monthNames: [i18nMessages.january, i18nMessages.february, i18nMessages.march, i18nMessages.april, i18nMessages.may, i18nMessages.june, i18nMessages.july, i18nMessages.august, i18nMessages.september, i18nMessages.october, i18nMessages.november, i18nMessages.december]
+          daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
+          monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
         startDate: moment().subtract(config.defaults.daysAgo, 'days'),
         minDate: config.minDate,
@@ -2215,7 +2252,7 @@ var TopViews = function (_Pv) {
       });
 
       /** so people know why they can't query data older than August 2015 */
-      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html(i18nMessages.dateNotice));
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice')));
 
       /**
        * The special date range options (buttons the right side of the daterange picker)
@@ -2240,7 +2277,7 @@ var TopViews = function (_Pv) {
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
-        if (action.chosenLabel === i18nMessages.customRange) {
+        if (action.chosenLabel === $.i18n('custom-range')) {
           _this5.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -2380,7 +2417,7 @@ var TopViews = function (_Pv) {
         $('body').removeClass('invalid-project');
       } else {
         this.resetView();
-        this.writeMessage(i18nMessages.invalidProject.i18nArg('<a href=\'//' + project + '\'>' + project + '</a>'), true);
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
         $('body').addClass('invalid-project');
         return true;
       }

@@ -20,9 +20,19 @@ class Pv {
       const actualPathName = location.pathname.replace(/-test\/?/, '');
       this.addSiteNotice('warning',
         `This is a staging environment. For the actual ${document.title},
-         see <a href='${actualPathName}'>${location.origin}${actualPathName}</a>`
+         see <a href='${actualPathName}'>${location.hostname}${actualPathName}</a>`
       );
     }
+
+    /**
+     * Load translations then initialize the app
+     * Each app has it's own initialize method
+     */
+    $.i18n({
+      locale: i18nLang
+    }).load({
+      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
+    }).then(this.initialize.bind(this));
   }
 
   addSiteNotice(level, message, title, autodismiss) {

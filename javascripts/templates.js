@@ -14,21 +14,21 @@ const templates = {
   // FIXME: add back a tile for Totals, and include totals for all of the currently selected project, and perhaps unique devices
   linearLegend: `
     <% if (chartData.length === 1) { %>
-      <strong><%= i18nMessages.totals %>:</strong>
-      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/${i18nMessages.day})
+      <strong><%= $.i18n('totals') %>:</strong>
+      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
       <% if (isMultilangProject()) { %>
         &bullet;
-        <a href="<%= getLangviewsURL(chartData[0].label) %>">All languages</a>
+        <a href="<%= getLangviewsURL(chartData[0].label) %>"><%= $.i18n('all-languages') %></a>
       <% } %>
       &bullet;
-      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank">History</a>
+      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank"><%= $.i18n('history') %></a>
       &bullet;
-      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank">Info</a>
+      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank"><%= $.i18n('info') %></a>
     <% } else { %>
       <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>
       <div class="linear-legend--totals">
-        <strong><%= i18nMessages.totals %>:</strong>
-        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/${i18nMessages.day})
+        <strong><%= $.i18n('totals') %>:</strong>
+        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)
       </div>
       <div class="linear-legends">
         <% for (var i=0; i<chartData.length; i++) { %>
@@ -37,7 +37,7 @@ const templates = {
               <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>
             </div>
             <div class="linear-legend--counts">
-              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/${i18nMessages.day})
+              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
             </div>
             <div class="linear-legend--links">
               <% if (isMultilangProject()) { %>
@@ -52,13 +52,20 @@ const templates = {
         <% } %>
       </div>
     <% } %>`,
-  circularLegend: '<b>' + i18nMessages.totals + '</b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>' +
-    '<ul class=\"<%=name.toLowerCase()%>-legend\">' +
-    `<%if(chartData.length > 1) {%><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/${i18nMessages.day})</li><% } %>` +
-    '<% for (var i=0; i<segments.length; i++){%>' +
-    '<li><span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">' +
-    "<a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a></span> " +
-    `<%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/${i18nMessages.day})</li><%}%></ul>`
+  circularLegend: `
+    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>
+    <ul class="<%=name.toLowerCase()%>-legend">
+      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>
+      <% for (var i=0; i<segments.length; i++) { %>
+        <li>
+          <span class="indic" style="background-color:<%=segments[i].fillColor%>">
+            <a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a>
+          </span>
+          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)
+        </li>
+      <% } %>
+    </ul>
+    `
 };
 
 module.exports = templates;

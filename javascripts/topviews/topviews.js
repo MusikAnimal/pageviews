@@ -26,10 +26,6 @@ class TopViews extends Pv {
     this.params = null;
     this.config = config;
 
-    this.setupProjectInput();
-    this.setupDateRangeSelector();
-    this.popParams();
-
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
       $.ajax({
@@ -44,7 +40,18 @@ class TopViews extends Pv {
   }
 
   /**
-   * Apply user input by updating the URL hash and view, if needed
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   * @return {null} Nothing
+   */
+  initialize() {
+    this.setupProjectInput();
+    this.setupDateRangeSelector();
+    this.popParams();
+  }
+
+  /**
+   * Apply user input by updating the URL query string and view, if needed
    * @param {boolean} force - apply all user options even if we've detected nothing has changed
    * @returns {Deferred} deferred object from initData
    */
@@ -52,10 +59,10 @@ class TopViews extends Pv {
     this.pushParams();
 
     /** prevent redundant querying */
-    if (location.hash === this.params && !force) {
+    if (location.search === this.params && !force) {
       return false;
     }
-    this.params = location.hash;
+    this.params = location.search;
 
     this.resetView(false);
     return this.initData().then(this.drawData.bind(this));
@@ -149,7 +156,7 @@ class TopViews extends Pv {
 
   /**
    * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of URL hash
+   * @returns {Object} key/value pairs representation of URL query string
    */
   parseQueryString() {
     const uri = decodeURI(location.search.slice(1)),
@@ -186,18 +193,18 @@ class TopViews extends Pv {
      */
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
-        this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
         this.setSpecialRange(config.defaults.dateRange);
       }
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-        this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       } else if (startDate > endDate) {
-        this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+        this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       }
@@ -216,7 +223,7 @@ class TopViews extends Pv {
       this.excludes = params.excludes.map(exclude => exclude.replace(/_/g, ' '));
     }
 
-    this.params = location.hash;
+    this.params = location.search;
 
     this.initData().then(() => {
       this.setupArticleSelector();
@@ -228,7 +235,7 @@ class TopViews extends Pv {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
-   * @returns {string|false} the new hash param string or false if nothing has changed
+   * @returns {string|false} the new query param string or false if nothing has changed
    */
   pushParams() {
     let state = {
@@ -299,7 +306,7 @@ class TopViews extends Pv {
       data: [],
       maximumSelectionLength: 50,
       minimumInputLength: 0,
-      placeholder: i18nMessages.hoverToExclude
+      placeholder: $.i18n('hover-to-exclude')
     });
 
     if (excludes.length) this.setArticleSelectorDefaults(excludes);
@@ -350,38 +357,38 @@ class TopViews extends Pv {
     /** transform config.specialRanges to have i18n as keys */
     let ranges = {};
     Object.keys(config.specialRanges).forEach(key => {
-      ranges[i18nMessages[key]] = config.specialRanges[key];
+      ranges[$.i18n(key)] = config.specialRanges[key];
     });
 
     dateRangeSelector.daterangepicker({
       locale: {
         format: this.dateFormat,
-        applyLabel: i18nMessages.apply,
-        cancelLabel: i18nMessages.cancel,
-        customRangeLabel: i18nMessages.customRange,
+        applyLabel: $.i18n('apply'),
+        cancelLabel: $.i18n('cancel'),
+        customRangeLabel: $.i18n('custom-range'),
         dateLimit: { days: 31 },
         daysOfWeek: [
-          i18nMessages.su,
-          i18nMessages.mo,
-          i18nMessages.tu,
-          i18nMessages.we,
-          i18nMessages.th,
-          i18nMessages.fr,
-          i18nMessages.sa
+          $.i18n('su'),
+          $.i18n('mo'),
+          $.i18n('tu'),
+          $.i18n('we'),
+          $.i18n('th'),
+          $.i18n('fr'),
+          $.i18n('sa')
         ],
         monthNames: [
-          i18nMessages.january,
-          i18nMessages.february,
-          i18nMessages.march,
-          i18nMessages.april,
-          i18nMessages.may,
-          i18nMessages.june,
-          i18nMessages.july,
-          i18nMessages.august,
-          i18nMessages.september,
-          i18nMessages.october,
-          i18nMessages.november,
-          i18nMessages.december
+          $.i18n('january'),
+          $.i18n('february'),
+          $.i18n('march'),
+          $.i18n('april'),
+          $.i18n('may'),
+          $.i18n('june'),
+          $.i18n('july'),
+          $.i18n('august'),
+          $.i18n('september'),
+          $.i18n('october'),
+          $.i18n('november'),
+          $.i18n('december')
         ]
       },
       startDate: moment().subtract(config.defaults.daysAgo, 'days'),
@@ -394,7 +401,7 @@ class TopViews extends Pv {
     $('.daterangepicker').append(
       $('<div>')
         .addClass('daterange-notice')
-        .html(i18nMessages.dateNotice)
+        .html($.i18n('date-notice'))
     );
 
     /**
@@ -420,7 +427,7 @@ class TopViews extends Pv {
     });
 
     dateRangeSelector.on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === i18nMessages.customRange) {
+      if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
 
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -533,7 +540,7 @@ class TopViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
         true
       );
       $('body').addClass('invalid-project');

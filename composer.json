@@ -1,5 +1,6 @@
 {
     "require": {
-        "Krinkle/intuition": "^0.2.3"
+        "Krinkle/intuition": "^0.2.3",
+        "whichbrowser/parser": "^2.0"
     }
 }

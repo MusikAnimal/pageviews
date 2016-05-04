@@ -19,10 +19,6 @@ class LangViews extends Pv {
     this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
     this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.config = config;
-    this.assignDefaults();
-    this.setupDateRangeSelector();
-    this.popParams();
-    this.setupListeners();
 
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
@@ -35,6 +31,18 @@ class LangViews extends Pv {
         }
       });
     }
+  }
+
+  /**
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   * @return {null} Nothing
+   */
+  initialize() {
+    this.assignDefaults();
+    this.setupDateRangeSelector();
+    this.popParams();
+    this.setupListeners();
   }
 
   /**
@@ -180,12 +188,12 @@ class LangViews extends Pv {
     }).join(', ');
 
     $('.output-totals').html(
-      `<th scope='row'>${i18nMessages.totals}</th>
-       <th>${i18nMessages.numLanguages.i18nArg(this.langData.length)}</th>
-       <th>${i18nMessages.uniqueTitles.i18nArg(this.totals.titles.length)}</th>
+      `<th scope='row'>${$.i18n('totals')}</th>
+       <th>${$.i18n('num-languages', this.langData.length)}</th>
+       <th>${$.i18n('unique-titles', this.totals.titles.length)}</th>
        <th>${totalBadgesMarkup}</th>
        <th>${this.n(this.totals.views)}</th>
-       <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${i18nMessages.day}</th>`
+       <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${$.i18n('day')}</th>`
     );
     $('#lang_list').html('');
 
@@ -202,7 +210,7 @@ class LangViews extends Pv {
          <td><a href="${item.url}" target="_blank">${item.pageName}</a></td>
          <td>${badgeMarkup}</td>
          <td><a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}</a></td>
-         <td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${i18nMessages.day}</td>
+         <td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${$.i18n('day')}</td>
          </tr>`
       );
     });
@@ -324,7 +332,7 @@ class LangViews extends Pv {
           }
         }
 
-        this.writeMessage(`${i18nMessages.langviewsError.i18nArg(dbName)}: ${errorData.responseJSON.title}`);
+        this.writeMessage(`${$.i18n('langviews-error', dbName)}: ${errorData.responseJSON.title}`);
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
         this.updateProgressBar((++count / totalRequestCount) * 100);
@@ -391,10 +399,10 @@ class LangViews extends Pv {
 
     $.getJSON(url).done(data => {
       if (data.error) {
-        return dfd.reject(`${i18nMessages.wikidataError}: ${data.error.info}`);
+        return dfd.reject(`${$.i18n('wikidata-error')}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
-          `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${i18nMessages.apiErrorNoData}`
+          `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${$.i18n('api-error-no-data')}`
         );
       }
 
@@ -468,17 +476,17 @@ class LangViews extends Pv {
      */
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
-        this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
         this.setSpecialRange(config.defaults.dateRange);
       }
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-        this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
         return;
       } else if (startDate > endDate) {
-        this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+        this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
         return;
       }
       this.daterangepicker.setStartDate(startDate);
@@ -548,38 +556,38 @@ class LangViews extends Pv {
     /** transform config.specialRanges to have i18n as keys */
     let ranges = {};
     Object.keys(config.specialRanges).forEach(key => {
-      ranges[i18nMessages[key]] = config.specialRanges[key];
+      ranges[$.i18n(key)] = config.specialRanges[key];
     });
 
     dateRangeSelector.daterangepicker({
       locale: {
         format: this.dateFormat,
-        applyLabel: i18nMessages.apply,
-        cancelLabel: i18nMessages.cancel,
-        customRangeLabel: i18nMessages.customRange,
+        applyLabel: $.i18n('apply'),
+        cancelLabel: $.i18n('cancel'),
+        customRangeLabel: $.i18n('custom-range'),
         dateLimit: { days: 31 },
         daysOfWeek: [
-          i18nMessages.su,
-          i18nMessages.mo,
-          i18nMessages.tu,
-          i18nMessages.we,
-          i18nMessages.th,
-          i18nMessages.fr,
-          i18nMessages.sa
+          $.i18n('su'),
+          $.i18n('mo'),
+          $.i18n('tu'),
+          $.i18n('we'),
+          $.i18n('th'),
+          $.i18n('fr'),
+          $.i18n('sa')
         ],
         monthNames: [
-          i18nMessages.january,
-          i18nMessages.february,
-          i18nMessages.march,
-          i18nMessages.april,
-          i18nMessages.may,
-          i18nMessages.june,
-          i18nMessages.july,
-          i18nMessages.august,
-          i18nMessages.september,
-          i18nMessages.october,
-          i18nMessages.november,
-          i18nMessages.december
+          $.i18n('january'),
+          $.i18n('february'),
+          $.i18n('march'),
+          $.i18n('april'),
+          $.i18n('may'),
+          $.i18n('june'),
+          $.i18n('july'),
+          $.i18n('august'),
+          $.i18n('september'),
+          $.i18n('october'),
+          $.i18n('november'),
+          $.i18n('december')
         ]
       },
       startDate: moment().subtract(config.defaults.daysAgo, 'days'),
@@ -592,7 +600,7 @@ class LangViews extends Pv {
     $('.daterangepicker').append(
       $('<div>')
         .addClass('daterange-notice')
-        .html(i18nMessages.dateNotice)
+        .html($.i18n('date-notice'))
     );
 
     /**
@@ -613,7 +621,7 @@ class LangViews extends Pv {
     });
 
     dateRangeSelector.on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === i18nMessages.customRange) {
+      if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
 
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -637,6 +645,11 @@ class LangViews extends Pv {
 
         /** > 0 check to combat race conditions */
         if (timeRemaining > 0) {
+          // FIXME: restore when fallbacks are supported for multi-param messages
+          // return this.writeMessage($.i18n(
+          //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
+          //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+          // ), true);
           return this.writeMessage(`
             Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
             Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
@@ -645,8 +658,8 @@ class LangViews extends Pv {
           `, true);
         }
       } else {
-        /** limit to one request every 2 minutes */
-        simpleStorage.set('langviews-throttle', true, {TTL: 120000});
+        /** limit to one request every 90 seconds */
+        simpleStorage.set('langviews-throttle', true, {TTL: 90000});
       }
     }
 
@@ -670,7 +683,7 @@ class LangViews extends Pv {
       if (typeof error === 'string') {
         this.writeMessage(error);
       } else {
-        this.writeMessage(i18nMessages.wikidataErrorUnknown);
+        this.writeMessage($.i18n('wikidata-error-unknown'));
       }
     });
   }
@@ -723,7 +736,7 @@ class LangViews extends Pv {
 
     if (!this.isMultilangProject()) {
       this.writeMessage(
-        i18nMessages.invalidLangProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        $.i18n('invalid-lang-project', `<a href='//${project}'>${project}</a>`),
         true
       );
       this.setState('invalid');

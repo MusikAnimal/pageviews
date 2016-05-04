@@ -44,14 +44,6 @@ class PageViews extends Pv {
     window.numDaysInRange = this.numDaysInRange.bind(this);
     window.isMultilangProject = this.isMultilangProject.bind(this);
 
-    this.setupProjectInput();
-    this.setupDateRangeSelector();
-    this.setupArticleSelector();
-    this.setupSettingsModal();
-    this.setupSelect2Colors();
-    this.popParams();
-    this.setupListeners();
-
     if (location.host !== 'localhost') {
       /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
       $.ajax({
@@ -61,6 +53,21 @@ class PageViews extends Pv {
 
       this.splash();
     }
+  }
+
+  /**
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   * @return {null} Nothing
+   */
+  initialize() {
+    this.setupProjectInput();
+    this.setupDateRangeSelector();
+    this.setupArticleSelector();
+    this.setupSettingsModal();
+    this.setupSelect2Colors();
+    this.popParams();
+    this.setupListeners();
   }
 
   /**
@@ -327,18 +334,18 @@ class PageViews extends Pv {
      */
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
-        this.addSiteNotice('danger', i18nMessages.paramError3, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
         this.setSpecialRange(config.defaults.dateRange);
       }
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-        this.addSiteNotice('danger', i18nMessages.paramError1, i18nMessages.invalidParams, true);
+        this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       } else if (startDate > endDate) {
-        this.addSiteNotice('warning', i18nMessages.paramError2, i18nMessages.invalidParams, true);
+        this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       }
@@ -557,7 +564,7 @@ class PageViews extends Pv {
     let params = {
       ajax: this.getArticleSelectorAjax(),
       tags: this.autocomplete === 'no_autocomplete',
-      placeholder: i18nMessages.articlePlaceholder,
+      placeholder: $.i18n('article-placeholder'),
       maximumSelectionLength: 10,
       minimumInputLength: 1
     };
@@ -619,37 +626,37 @@ class PageViews extends Pv {
     /** transform config.specialRanges to have i18n as keys */
     let ranges = {};
     Object.keys(config.specialRanges).forEach(key => {
-      ranges[i18nMessages[key]] = config.specialRanges[key];
+      ranges[$.i18n(key)] = config.specialRanges[key];
     });
 
     dateRangeSelector.daterangepicker({
       locale: {
         format: this.dateFormat,
-        applyLabel: i18nMessages.apply,
-        cancelLabel: i18nMessages.cancel,
-        customRangeLabel: i18nMessages.customRange,
+        applyLabel: $.i18n('apply'),
+        cancelLabel: $.i18n('cancel'),
+        customRangeLabel: $.i18n('custom-range'),
         daysOfWeek: [
-          i18nMessages.su,
-          i18nMessages.mo,
-          i18nMessages.tu,
-          i18nMessages.we,
-          i18nMessages.th,
-          i18nMessages.fr,
-          i18nMessages.sa
+          $.i18n('su'),
+          $.i18n('mo'),
+          $.i18n('tu'),
+          $.i18n('we'),
+          $.i18n('th'),
+          $.i18n('fr'),
+          $.i18n('sa')
         ],
         monthNames: [
-          i18nMessages.january,
-          i18nMessages.february,
-          i18nMessages.march,
-          i18nMessages.april,
-          i18nMessages.may,
-          i18nMessages.june,
-          i18nMessages.july,
-          i18nMessages.august,
-          i18nMessages.september,
-          i18nMessages.october,
-          i18nMessages.november,
-          i18nMessages.december
+          $.i18n('january'),
+          $.i18n('february'),
+          $.i18n('march'),
+          $.i18n('april'),
+          $.i18n('may'),
+          $.i18n('june'),
+          $.i18n('july'),
+          $.i18n('august'),
+          $.i18n('september'),
+          $.i18n('october'),
+          $.i18n('november'),
+          $.i18n('december')
         ]
       },
       startDate: moment().subtract(config.defaults.daysAgo, 'days'),
@@ -662,7 +669,7 @@ class PageViews extends Pv {
     $('.daterangepicker').append(
       $('<div>')
         .addClass('daterange-notice')
-        .html(i18nMessages.dateNotice)
+        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>"))
     );
 
     /**
@@ -688,7 +695,7 @@ class PageViews extends Pv {
     });
 
     dateRangeSelector.on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === i18nMessages.customRange) {
+      if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
 
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -856,7 +863,7 @@ class PageViews extends Pv {
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${i18nMessages.apiErrorNoData}`
+            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${$.i18n('api-error-no-data')}`
           );
           articles = articles.filter(el => el !== article);
 
@@ -878,7 +885,7 @@ class PageViews extends Pv {
         $('.chart-container').removeClass('loading');
         const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
         return this.writeMessage(
-          `${i18nMessages.apiError}<ul>${errorMessages}</ul><br/>${i18nMessages.apiErrorContact}`,
+          `${$.i18n('api-error')}<ul>${errorMessages}</ul><br/>${$.i18n('api-error-contact')}`,
           true
         );
       }
@@ -935,7 +942,7 @@ class PageViews extends Pv {
     } else {
       this.resetView();
       this.writeMessage(
-        i18nMessages.invalidProject.i18nArg(`<a href='//${project}'>${project}</a>`),
+        $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
         true
       );
       $('.select2-selection--multiple').addClass('disabled');

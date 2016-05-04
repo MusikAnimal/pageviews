@@ -24,7 +24,9 @@
         </header>
         <!-- Site notice -->
         <div class="col-lg-10 text-center site-notice-wrapper">
-          <div class="site-notice"></div>
+          <div class="site-notice">
+            <?php include "_browser_check.php"; ?>
+          </div>
         </div>
         <div class="row aqs-row options">
           <!-- Date range selector -->

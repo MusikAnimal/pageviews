@@ -70,7 +70,7 @@
         "start_process" : false
       }
     },
-    "saucelabs_ie10" : {
+    "saucelabs_ie11" : {
       "launch_url" : "http://localhost/pageviews",
       "selenium_host": "ondemand.saucelabs.com",
       "selenium_port": 80,
@@ -81,9 +81,9 @@
       "output" : true,
       "desiredCapabilities": {
         "browserName": "internet explorer",
-        "version": "10.0",
+        "version": "11.0",
         "platform": "Windows 7",
-        "name": "[${TRAVIS_REPO_SLUG}]:(${TRAVIS_BRANCH})-${TRAVIS_BUILD_NUMBER}_ie10",
+        "name": "[${TRAVIS_REPO_SLUG}]:(${TRAVIS_BRANCH})-${TRAVIS_BUILD_NUMBER}_ie11",
         "tunnel_identifier": "${TRAVIS_JOB_NUMBER}"
       },
       "selenium" : {
