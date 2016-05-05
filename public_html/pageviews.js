@@ -213,16 +213,6 @@ var PageViews = function (_Pv) {
     window.getExpandedPageURL = _this.getExpandedPageURL.bind(_this);
     window.numDaysInRange = _this.numDaysInRange.bind(_this);
     window.isMultilangProject = _this.isMultilangProject.bind(_this);
-
-    if (location.host !== 'localhost') {
-      /** simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :) */
-      $.ajax({
-        url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + _this.project,
-        method: 'PATCH'
-      });
-
-      _this.splash();
-    }
     return _this;
   }
 
@@ -532,6 +522,22 @@ var PageViews = function (_Pv) {
     }
 
     /**
+     * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'patchUsage',
+    value: function patchUsage() {
+      if (location.host !== 'localhost') {
+        $.ajax({
+          url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + this.project,
+          method: 'PATCH'
+        });
+      }
+    }
+
+    /**
      * Parses the URL hash and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
@@ -548,6 +554,8 @@ var PageViews = function (_Pv) {
 
       $(config.projectInput).val(params.project || config.defaults.project);
       if (this.validateProject()) return;
+
+      this.patchUsage();
 
       /**
        * Check if we're using a valid range, and if so ignore any start/end dates.
@@ -1371,6 +1379,8 @@ var Pv = function () {
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
+    } else {
+      this.splash();
     }
 
     /** show notice if on staging environment */
