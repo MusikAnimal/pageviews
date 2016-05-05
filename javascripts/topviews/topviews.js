@@ -401,7 +401,7 @@ class TopViews extends Pv {
     $('.daterangepicker').append(
       $('<div>')
         .addClass('daterange-notice')
-        .html($.i18n('date-notice'))
+        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>"))
     );
 
     /**
