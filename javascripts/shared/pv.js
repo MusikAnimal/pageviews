@@ -13,6 +13,8 @@ class Pv {
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
+    } else {
+      this.splash();
     }
 
     /** show notice if on staging environment */
