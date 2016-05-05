@@ -579,12 +579,8 @@ var LangViews = function (_Pv) {
     value: function patchUsage() {
       if (location.host !== 'localhost') {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/uses',
-          method: 'PATCH',
-          data: {
-            tool: 'langviews',
-            type: 'form'
-          }
+          url: '//tools.wmflabs.org/musikanimal/api/lv_uses/' + this.project,
+          method: 'PATCH'
         });
       }
     }

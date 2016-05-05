@@ -2016,12 +2016,8 @@ var TopViews = function (_Pv) {
     value: function patchUsage() {
       if (location.host !== 'localhost') {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/uses',
-          method: 'PATCH',
-          data: {
-            tool: 'topviews',
-            type: 'form'
-          }
+          url: '//tools.wmflabs.org/musikanimal/api/tv_uses/' + this.project,
+          method: 'PATCH'
         });
       }
     }
