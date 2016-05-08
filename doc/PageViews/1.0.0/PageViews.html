@@ -179,7 +179,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line769">line 769</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line783">line 783</a>
     </li></ul></dd>
     
 
@@ -305,7 +305,7 @@ We ultimately want to make the endpoint configurable based on whether they want 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line593">line 593</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line607">line 607</a>
     </li></ul></dd>
     
 
@@ -1000,7 +1000,7 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line585">line 585</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line599">line 599</a>
     </li></ul></dd>
     
 
@@ -1766,7 +1766,7 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
 
     
 
-    <h4 class="name" id="getParams"><span class="type-signature"></span>getParams<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="getParams"><span class="type-signature"></span>getParams<span class="signature">(specialRange<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1774,6 +1774,171 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
 
 <div class="description">
     <p>Get all user-inputted parameters except the pages</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>specialRange</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>whether or not to include the special range instead of start/end, if applicable</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line446">line 446</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>project, platform, agent, etc.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getPermaLink"><span class="type-signature"></span>getPermaLink<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Get params needed to create a permanent link of visible data</p>
 </div>
 
 
@@ -1817,7 +1982,7 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line435">line 435</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line265">line 265</a>
     </li></ul></dd>
     
 
@@ -1844,7 +2009,7 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
 
         
 <div class="param-desc">
-    <p>project, platform, agent, etc.</p>
+    <p>hash of params</p>
 </div>
 
 
@@ -1970,7 +2135,7 @@ https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line266">line 266</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line276">line 276</a>
     </li></ul></dd>
     
 
@@ -2179,7 +2344,7 @@ Called in <code>pv.js</code> after translations have loaded</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line292">line 292</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line302">line 302</a>
     </li></ul></dd>
     
 
@@ -2283,7 +2448,7 @@ Called in <code>pv.js</code> after translations have loaded</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line314">line 314</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line324">line 324</a>
     </li></ul></dd>
     
 
@@ -2388,7 +2553,7 @@ Should only be called on initial page load, until we decide to support pop state
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line328">line 328</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line338">line 338</a>
     </li></ul></dd>
     
 
@@ -2541,7 +2706,7 @@ Should only be called on initial page load, until we decide to support pop state
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line395">line 395</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line405">line 405</a>
     </li></ul></dd>
     
 
@@ -2646,7 +2811,7 @@ Called whenever we go to update the chart</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line462">line 462</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line473">line 473</a>
     </li></ul></dd>
     
 
@@ -2751,7 +2916,7 @@ Also calls updateChart</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line477">line 477</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line491">line 491</a>
     </li></ul></dd>
     
 
@@ -2855,7 +3020,7 @@ Also calls updateChart</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line491">line 491</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line505">line 505</a>
     </li></ul></dd>
     
 
@@ -3034,7 +3199,7 @@ Also calls updateChart</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line506">line 506</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line520">line 520</a>
     </li></ul></dd>
     
 
@@ -3139,7 +3304,7 @@ Prefer this implementation over a large library like serializeObject or serializ
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line516">line 516</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line530">line 530</a>
     </li></ul></dd>
     
 
@@ -3293,7 +3458,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line551">line 551</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line565">line 565</a>
     </li></ul></dd>
     
 
@@ -3399,7 +3564,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line610">line 610</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line624">line 624</a>
     </li></ul></dd>
     
 
@@ -3503,7 +3668,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line566">line 566</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line580">line 580</a>
     </li></ul></dd>
     
 
@@ -3609,7 +3774,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line628">line 628</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line642">line 642</a>
     </li></ul></dd>
     
 
@@ -3715,7 +3880,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line726">line 726</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line740">line 740</a>
     </li></ul></dd>
     
 
@@ -3821,7 +3986,7 @@ Currently is not able to remove underscore from page names</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line747">line 747</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line761">line 761</a>
     </li></ul></dd>
     
 
@@ -3929,7 +4094,7 @@ This is a necessary evil, as we have to mark them as !important
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line764">line 764</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line778">line 778</a>
     </li></ul></dd>
     
 
@@ -4033,7 +4198,7 @@ This is a necessary evil, as we have to mark them as !important
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line785">line 785</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line799">line 799</a>
     </li></ul></dd>
     
 
@@ -4187,7 +4352,7 @@ Really needs to be broken out into several functions</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line801">line 801</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line815">line 815</a>
     </li></ul></dd>
     
 
@@ -4293,7 +4458,7 @@ Really needs to be broken out into several functions</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line935">line 935</a>
+        <a href="pageviews.js.html">pageviews.js</a>, <a href="pageviews.js.html#line949">line 949</a>
     </li></ul></dd>
     
 
@@ -4363,7 +4528,7 @@ Really needs to be broken out into several functions</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu May 05 2016 19:22:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun May 08 2016 17:35:19 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

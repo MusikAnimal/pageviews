@@ -11,26 +11,23 @@
   </head>
   <body class="<?php echo $rtl; ?>">
     <div class="container">
-      <div class="col-lg-offset-2">
-        <!-- Header -->
-        <header class="row aqs-row">
-          <div class="col-lg-10 text-center">
-            <h4>
-              <strong>
-                <?php echo $I18N->msg( 'title' ); ?>
-              </strong>
-            </h4>
-          </div>
-        </header>
+      <header class="col-lg-10 col-lg-offset-1 aqs-row text-center">
+        <h4>
+          <strong>
+            <?php echo $I18N->msg( 'title' ); ?>
+          </strong>
+        </h4>
+      </header>
+      <main class="col-lg-10 col-lg-offset-1">
         <!-- Site notice -->
-        <div class="col-lg-10 text-center site-notice-wrapper">
+        <div class="text-center site-notice-wrapper">
           <div class="site-notice">
             <?php include "_browser_check.php"; ?>
           </div>
         </div>
         <div class="row aqs-row options">
           <!-- Date range selector -->
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-5 col-sm-5">
             <label for="range-input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
@@ -47,14 +44,14 @@
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
-          <div class="col-lg-2 col-sm-3">
+          <div class="col-lg-3 col-sm-3">
             <label for="project-input">
               <?php echo $I18N->msg( 'project' ); ?>
             </label>
             <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
           <!-- Advanced options -->
-          <div class="col-lg-2 col-sm-3">
+          <div class="col-lg-2 col-sm-2">
             <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
@@ -95,7 +92,7 @@
         </div>
         <!-- Article selector -->
         <div class="row aqs-row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
             <label for="article-input">
               <?php echo $I18N->msg( 'pages' ); ?>
             </label>
@@ -106,17 +103,20 @@
           </div>
         </div>
         <!-- Chart -->
-        <div class="chart-container col-lg-10 loading">
+        <div class="chart-container col-lg-12 loading">
           <canvas class="aqs-chart"></canvas>
         </div>
-        <div class="message-container col-lg-10"></div>
+        <div class="message-container col-lg-12"></div>
         <!-- Legend -->
-        <div class="col-lg-10 clearfix" id="chart-legend"></div>
+        <div class="col-lg-12 clearfix" id="chart-legend"></div>
         <!-- Other links -->
-        <div class="col-lg-10 data-links">
+        <div class="col-lg-12 data-links">
           <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'change-chart' ); ?></a>
           &bullet;
           <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'settings' ); ?></a>
+          &bullet;
+          <a class="permalink" href="#"><span class="glyphicon glyphicon-link"></span>
+          <?php echo $I18N->msg( 'permalink' ); ?></a>
           &bullet;
           <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
@@ -125,8 +125,9 @@
           <?php include "_lang_selector.php"; ?>
         </div>
         <?php $app = "pageviews"; ?>
+        <?php $columns = 12; ?>
         <?php include "_footer.php"; ?>
-      </div>
+      </main>
       <?php include "_modals.php"; ?>
     </div>
   </body>

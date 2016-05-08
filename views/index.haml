@@ -12,23 +12,20 @@
     %title= $I18N->msg( 'title' )
   %body(class=$rtl)
     %div.container
-      %div.col-lg-offset-2
+      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'title' )
 
-        / Header
-        %header.row.aqs-row
-          %div.col-lg-10.text-center
-            %h4
-              %strong
-                = $I18N->msg( 'title' )
-
+      %main.col-lg-10.col-lg-offset-1
         / Site notice
-        %div.col-lg-10.text-center.site-notice-wrapper
+        %div.text-center.site-notice-wrapper
           %div.site-notice
             - include "_browser_check.php"
 
         %div.row.aqs-row.options
           / Date range selector
-          %div.col-lg-4.col-sm-4
+          %div.col-lg-5.col-sm-5
             %label(for="range-input")
               = $I18N->msg( 'dates' )
             %span.date-latest
@@ -42,13 +39,13 @@
             %input.form-control.aqs-date-range-selector#range-input
 
           / Project selector
-          %div.col-lg-2.col-sm-3
+          %div.col-lg-3.col-sm-3
             %label(for="project-input")
               = $I18N->msg( 'project' )
             %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
 
           / Advanced options
-          %div.col-lg-2.col-sm-3
+          %div.col-lg-2.col-sm-2
             %label(for="platform-select")
               = $I18N->msg( 'platform' )
             %select.form-control#platform-select
@@ -76,7 +73,7 @@
 
         / Article selector
         %div.row.aqs-row
-          %div.col-lg-10
+          %div.col-lg-12
             %label(for="article-input")
               = $I18N->msg( 'pages' )
             / Button trigger modal
@@ -85,21 +82,25 @@
             %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
 
         / Chart
-        %div.chart-container.col-lg-10.loading
+        %div.chart-container.col-lg-12.loading
           %canvas.aqs-chart
 
-        %div.message-container.col-lg-10
+        %div.message-container.col-lg-12
 
         / Legend
-        %div.col-lg-10.clearfix#chart-legend
+        %div.col-lg-12.clearfix#chart-legend
 
         / Other links
-        %div.col-lg-10.data-links
+        %div.col-lg-12.data-links
           %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
             = $I18N->msg( 'change-chart' )
           &bullet;
           %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
             = $I18N->msg( 'settings' )
+          &bullet;
+          %a.permalink(href="#")<
+            %span.glyphicon.glyphicon-link
+            = $I18N->msg( 'permalink' )
           &bullet;
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
           = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
@@ -110,6 +111,7 @@
           - include "_lang_selector.php"
 
         - $app = "pageviews"
+        - $columns = 12
         - include "_footer.php"
 
       - include "_modals.php"

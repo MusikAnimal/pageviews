@@ -467,6 +467,19 @@ var PageViews = function (_Pv) {
     }
 
     /**
+     * Get params needed to create a permanent link of visible data
+     * @return {Object} hash of params
+     */
+
+  }, {
+    key: 'getPermaLink',
+    value: function getPermaLink() {
+      var params = this.getParams(false);
+      delete params.range;
+      return params;
+    }
+
+    /**
      * Construct query for API based on what type of search we're doing
      * @param {Object} query - as returned from Select2 input
      * @returns {Object} query params to be handed off to API
@@ -657,12 +670,15 @@ var PageViews = function (_Pv) {
 
     /**
      * Get all user-inputted parameters except the pages
+     * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
      * @return {Object} project, platform, agent, etc.
      */
 
   }, {
     key: 'getParams',
     value: function getParams() {
+      var specialRange = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
       var params = {
         project: $(config.projectInput).val(),
         platform: $(config.platformSelector).val(),
@@ -674,7 +690,7 @@ var PageViews = function (_Pv) {
        * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
        *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
        */
-      if (this.specialRange) {
+      if (this.specialRange && specialRange) {
         params.range = this.specialRange.range;
       } else {
         params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
@@ -693,11 +709,14 @@ var PageViews = function (_Pv) {
   }, {
     key: 'pushParams',
     value: function pushParams() {
-      var pages = $(config.articleSelector).select2('val') || [];
+      var pages = $(config.articleSelector).select2('val') || [],
+          escapedPages = pages.join('|').replace(/[&%]/g, escape);
 
       if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, document.title, '#' + $.param(this.getParams()) + '&pages=' + pages.join('|').replace(/[&%]/g, escape));
+        window.history.replaceState({}, document.title, '#' + $.param(this.getParams()) + '&pages=' + escapedPages);
       }
+
+      $('.permalink').prop('href', '#' + $.param(this.getPermaLink()) + '&pages=' + escapedPages);
     }
 
     /**

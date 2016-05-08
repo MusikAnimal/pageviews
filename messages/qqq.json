@@ -169,5 +169,6 @@
 	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis",
 	"info": "A link to the wiki page information page of the article. This appears in the 'info tiles' on Pageviews Analysis",
 	"note": "The word that goes before a general notice, such as a temporarily limited feature.\n{{Identical|Notice}}",
-	"unsupported-browser-error": "Message saying the user's browser is not supported. $1 is the browser version."
+	"unsupported-browser-error": "Message saying the user's browser is not supported. $1 is the browser version.",
+	"permalink": "A permanent link to the tool with the current data. By default the tool shows the latest-N days, this will link to the exact date range."
 }

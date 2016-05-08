@@ -163,5 +163,6 @@
 	"history": "History",
 	"info": "Info",
 	"note": "Note",
-	"unsupported-browser-error": "$1 and below is not supported. Please <a href='http://browsehappy.com/'>upgrade your browser</a></strong>."
+	"unsupported-browser-error": "$1 and below is not supported. Please <a href='http://browsehappy.com/'>upgrade your browser</a></strong>.",
+	"permalink": "Permalink"
 }
