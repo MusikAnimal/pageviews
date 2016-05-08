@@ -16,19 +16,19 @@
           </strong>
           <span class="modal-chart-type">
             <a class="js-test-line-chart" data-dismiss="modal" data-type="Line" href="#">
-              <img src="images/line-chart-small.jpg">
+              <img src="/pageviews/images/line-chart-small.jpg">
               <?php echo $I18N->msg( 'line' ); ?>
             </a>
           </span>
           <span class="modal-chart-type">
             <a class="js-test-bar-chart" data-dismiss="modal" data-type="Bar" href="#">
-              <img src="images/bar-chart-small.jpg">
+              <img src="/pageviews/images/bar-chart-small.jpg">
               <?php echo $I18N->msg( 'bar' ); ?>
             </a>
           </span>
           <span class="modal-chart-type">
             <a data-dismiss="modal" data-type="Radar" href="#">
-              <img src="images/radar-chart-small.jpg">
+              <img src="/pageviews/images/radar-chart-small.jpg">
               <?php echo $I18N->msg( 'radar' ); ?>
             </a>
           </span>
@@ -40,19 +40,19 @@
           </strong>
           <span class="modal-chart-type">
             <a class="js-test-pie-chart" data-dismiss="modal" data-type="Pie" href="#">
-              <img src="images/pie-chart-small.jpg">
+              <img src="/pageviews/images/pie-chart-small.jpg">
               <?php echo $I18N->msg( 'pie' ); ?>
             </a>
           </span>
           <span class="modal-chart-type">
             <a data-dismiss="modal" data-type="Doughnut" href="#">
-              <img src="images/doughnut-chart-small.jpg">
+              <img src="/pageviews/images/doughnut-chart-small.jpg">
               <?php echo $I18N->msg( 'doughnut' ); ?>
             </a>
           </span>
           <span class="modal-chart-type">
             <a data-dismiss="modal" data-type="PolarArea" href="#">
-              <img src="images/polararea-chart-small.jpg">
+              <img src="/pageviews/images/polararea-chart-small.jpg">
               <?php echo $I18N->msg( 'polar-area' ); ?>
             </a>
           </span>

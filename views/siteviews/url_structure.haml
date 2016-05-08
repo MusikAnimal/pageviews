@@ -1,0 +1,81 @@
+!!!
+%html
+  %head
+    - include '../_head.php'
+    %title
+      = $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' )
+
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong= $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' )
+
+        %div.col-lg-10
+          - $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
+          - $project = "<code>en.wikipedia.org</code>"
+          - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
+          - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
+          = $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
+
+          %p.intro
+            = $I18N->msg( 'url-structure-hash-param' )
+
+        %div.col-lg-10
+          %h3
+            = $I18N->msg( 'url-structure-parameters' )
+            %small= $I18N->msg( 'url-structure-parameters-order' )
+          %hr
+          %dl.dl-horizontal
+            %dt project
+            %dd
+              - $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "
+              = $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) )
+            %dt pages
+            %dd
+              = $I18N->msg( 'url-structure-pages' )
+              %br
+              = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
+            %dt range
+            %dd
+              = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
+              %ul.special-ranges
+                %li
+                  %code latest
+                  = "(" . strtolower( $I18N->msg( 'default' ) ) . ")"
+                  = $I18N->msg( 'url-structure-special-range-latest' )
+                %li
+                  %code latest-<i>N</i>
+                  = $I18N->msg( 'url-structure-special-range-latest-n' )
+                %li
+                  %code last-week
+                  = $I18N->msg( 'last-week' )
+                %li
+                  %code this-month
+                  = $I18N->msg( 'this-month' )
+                %li
+                  %code last-month
+                  = $I18N->msg( 'last-month' )
+            %dt start
+            %dd
+              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+            %dt end
+            %dd
+              = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+            %dt platform
+            %dd
+              = $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) )
+            %dt agent
+            %dd
+              = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
+
+        %div.col-lg-10.text-center
+          %hr
+          %a(href="/pageviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
+
+        - $app = "pageviews";
+        -include "../_footer.php";

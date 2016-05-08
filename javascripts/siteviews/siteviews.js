@@ -1,18 +1,18 @@
 /*
- * Pageviews Analysis tool
- * @file Main file for Pageviews application
- * @author MusikAnimal, Kaldari, Marcelrf
+ * Siteviews Analysis tool
+ * @file Main file for Siteviews application
+ * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 const config = require('./config');
-const siteMap = require('./shared/site_map');
+const siteMap = require('../shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
-const Pv = require('./shared/pv');
+const Pv = require('../shared/pv');
 
-/** Main PageViews class */
-class PageViews extends Pv {
+/** Main SiteViews class */
+class SiteViews extends Pv {
   constructor() {
     super();
 
@@ -33,15 +33,12 @@ class PageViews extends Pv {
      * caused by race conditions between consecutive ajax calls. They are actually
      * not critical and can be avoided with this empty function.
      */
-    window.articleSuggestionCallback = $.noop;
+    window.siteSuggestionCallback = $.noop;
 
     /** need to export to global for chart templating */
     window.formatNumber = this.formatNumber.bind(this);
-    window.getPageURL = this.getPageURL.bind(this);
-    window.getLangviewsURL = this.getLangviewsURL.bind(this);
-    window.getExpandedPageURL = this.getExpandedPageURL.bind(this);
+    window.getTopviewsURL = this.getTopviewsURL.bind(this);
     window.numDaysInRange = this.numDaysInRange.bind(this);
-    window.isMultilangProject = this.isMultilangProject.bind(this);
   }
 
   /**
@@ -50,9 +47,8 @@ class PageViews extends Pv {
    * @return {null} Nothing
    */
   initialize() {
-    this.setupProjectInput();
     this.setupDateRangeSelector();
-    this.setupArticleSelector();
+    this.setupSiteSelector();
     this.setupSettingsModal();
     this.setupSelect2Colors();
     this.popParams();
@@ -86,14 +82,14 @@ class PageViews extends Pv {
       dataRows[index] = [date];
     });
 
-    chartData.forEach(page => {
-      // Build an array of page titles for use in the CSV header
-      let pageTitle = '"' + page.label.replace(/"/g, '""') + '"';
-      titles.push(pageTitle);
+    chartData.forEach(site => {
+      // Build an array of site titles for use in the CSV header
+      let siteTitle = '"' + site.label.replace(/"/g, '""') + '"';
+      titles.push(siteTitle);
 
-      // Populate the dataRows array with the data for this page
+      // Populate the dataRows array with the data for this site
       dates.forEach((date, index) => {
-        dataRows[index].push(page.data[index]);
+        dataRows[index].push(site.data[index]);
       });
     });
 
@@ -117,16 +113,16 @@ class PageViews extends Pv {
   exportJSON() {
     let data = [];
 
-    chartData.forEach((page, index) => {
+    chartData.forEach((site, index) => {
       let entry = {
-        page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
-        color: page.strokeColor,
-        sum: page.sum,
-        daily_average: Math.round(page.sum / this.numDaysInRange())
+        site: site.label.replace(/"/g, '\"').replace(/'/g, "\'"),
+        color: site.strokeColor,
+        sum: site.sum,
+        daily_average: Math.round(site.sum / this.numDaysInRange())
       };
 
       this.getDateHeadings(false).forEach((heading, index) => {
-        entry[heading.replace(/\\/,'')] = page.data[index];
+        entry[heading.replace(/\\/,'')] = site.data[index];
       });
 
       data.push(entry);
@@ -189,18 +185,18 @@ class PageViews extends Pv {
    * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
    *
    * @param {object} data - data just before we are ready to render the chart
-   * @param {string} article - title of page
-   * @param {integer} index - where we are in the list of pages to show
+   * @param {string} site - title of site
+   * @param {integer} index - where we are in the list of sites to show
    *    used for colour selection
    * @returns {object} - ready for chart rendering
    */
-  getCircularData(data, article, index) {
+  getCircularData(data, site, index) {
     const values = data.items.map(elem => elem.views),
       color = config.colors[index];
 
     return Object.assign(
       {
-        label: article.descore(),
+        label: site,
         value: values.reduce((a, b) => a + b)
       },
       config.chartConfig[this.chartType].dataset(color)
@@ -226,30 +222,21 @@ class PageViews extends Pv {
   }
 
   /**
-   * Link to /langviews for given page and chosen daterange
-   * @param {String} page - page title
-   * @returns {String} URL
-   */
-  getLangviewsURL(page) {
-    return `/langviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
-  }
-
-  /**
    * Get data formatted for a linear chart (Line, Bar, Radar)
    *
    * @param {object} data - data just before we are ready to render the chart
-   * @param {string} article - title of page
-   * @param {integer} index - where we are in the list of pages to show
+   * @param {string} site - title of site
+   * @param {integer} index - where we are in the list of sites to show
    *    used for colour selection
    * @returns {object} - ready for chart rendering
    */
-  getLinearData(data, article, index) {
+  getLinearData(data, site, index) {
     const values = data.items.map(elem => elem.views),
       color = config.colors[index % 10];
 
     return Object.assign(
       {
-        label: article.descore(),
+        label: site,
         data: values,
         sum: values.reduce((a, b) => a + b)
       },
@@ -268,46 +255,28 @@ class PageViews extends Pv {
   }
 
   /**
-   * Construct query for API based on what type of search we're doing
-   * @param {Object} query - as returned from Select2 input
-   * @returns {Object} query params to be handed off to API
+   * Link to /topviews for given project and chosen options
+   * @param {String} project - project to link to
+   * @returns {String} URL
    */
-  getSearchParams(query) {
-    if (this.autocomplete === 'autocomplete') {
-      return {
-        action: 'query',
-        list: 'prefixsearch',
-        format: 'json',
-        pssearch: query || '',
-        cirrusUseCompletionSuggester: 'yes'
-      };
-    } else if (this.autocomplete === 'autocomplete_redirects') {
-      return {
-        action: 'query',
-        generator: 'prefixsearch',
-        format: 'json',
-        gpssearch: query || '',
-        gpslimit: '10',
-        redirects: 'true',
-        cirrusUseCompletionSuggester: 'no'
-      };
-    }
+  getTopviewsURL(project) {
+    return `/topviews?${$.param(this.getParams())}&project=${project}`;
   }
 
   /**
-   * Generate key/value pairs of URL hash params
-   * @returns {Object} key/value pairs representation of URL hash
+   * Generate key/value pairs of URL query string
+   * @returns {Object} key/value pairs representation of query string
    */
-  parseHashParams() {
-    const uri = location.hash.slice(1),
+  parseQueryString() {
+    const uri = decodeURI(location.search.slice(1)),
       chunks = uri.split('&');
     let params = {};
 
     for (let i = 0; i < chunks.length; i++) {
       let chunk = chunks[i].split('=');
 
-      if (chunk[0] === 'pages') {
-        params.pages = chunk[1].split(/\||%7C/);
+      if (chunk[0] === 'sites') {
+        params.sites = chunk[1].split(/\||%7C/);
       } else {
         params[chunk[0]] = chunk[1];
       }
@@ -321,24 +290,22 @@ class PageViews extends Pv {
    * @return {null} nothing
    */
   patchUsage() {
-    if (location.host !== 'localhost') {
-      $.ajax({
-        url: `//tools.wmflabs.org/musikanimal/api/pv_uses/${this.project}`,
-        method: 'PATCH'
-      });
-    }
+    // FIXME: not on a per-project basis
+    // if (location.host !== 'localhost') {
+    //   $.ajax({
+    //     url: `//tools.wmflabs.org/musikanimal/api/sv_uses`,
+    //     method: 'PATCH'
+    //   });
+    // }
   }
 
   /**
-   * Parses the URL hash and sets all the inputs accordingly
+   * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseHashParams();
-
-    $(config.projectInput).val(params.project || config.defaults.project);
-    if (this.validateProject()) return;
+    let startDate, endDate, params = this.parseQueryString();
 
     this.patchUsage();
 
@@ -371,82 +338,30 @@ class PageViews extends Pv {
     }
 
     $(config.platformSelector).val(params.platform || 'all-access');
-    $('#agent-select').val(params.agent || 'user');
+    $(config.agentSelector).val(params.agent || 'user');
 
-    this.resetArticleSelector();
+    this.resetSiteSelector();
 
-    if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
-      params.pages = ['Cat', 'Dog'];
-      this.setArticleSelectorDefaults(params.pages);
-    } else if (this.normalized) {
-      params.pages = this.underscorePageNames(params.pages);
-      this.setArticleSelectorDefaults(params.pages);
+    if (!params.sites || params.sites.length === 1 && !params.sites[0]) {
+      params.sites = config.defaults.projects;
+      this.setSiteSelectorDefaults(params.sites);
     } else {
-      this.normalizePageNames(params.pages).then(data => {
-        this.normalized = true;
-
-        params.pages = data;
-
-        if (params.pages.length === 1) {
-          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
-        }
-
-        this.setArticleSelectorDefaults(this.underscorePageNames(params.pages));
-      });
+      if (params.sites.length === 1) {
+        this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
+      }
+      this.setSiteSelectorDefaults(params.sites);
     }
   }
 
   /**
-   * Processes Mediawiki API results into Select2 format based on settings
-   * @param {Object} data - data as received from the API
-   * @returns {Object} data ready to handed over to Select2
-   */
-  processSearchResults(data) {
-    const query = data ? data.query : {};
-    let results = [];
-
-    if (this.autocomplete === 'autocomplete') {
-      if (query.prefixsearch.length) {
-        results = query.prefixsearch.map(function(elem) {
-          return {
-            id: elem.title.score(),
-            text: elem.title
-          };
-        });
-      }
-    } else if (this.autocomplete === 'autocomplete_redirects') {
-      /** first merge in redirects */
-      if (query.redirects) {
-        results = query.redirects.map(red => {
-          return {
-            id: red.from.score(),
-            text: red.from
-          };
-        });
-      }
-
-      Object.keys(query.pages).forEach(pageId => {
-        const pageData = query.pages[pageId];
-        results.push({
-          id: pageData.title.score(),
-          text: pageData.title
-        });
-      });
-    }
-
-    return {results: results};
-  }
-
-  /**
-   * Get all user-inputted parameters except the pages
+   * Get all user-inputted parameters except the sites
    * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
-   * @return {Object} project, platform, agent, etc.
+   * @return {Object} platform, agent, etc.
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(config.projectInput).val(),
       platform: $(config.platformSelector).val(),
-      agent: $('#agent-select').val()
+      agent: $(config.agentSelector).val()
     };
 
     /**
@@ -465,40 +380,39 @@ class PageViews extends Pv {
   }
 
   /**
-   * Replaces history state with new URL hash representing current user input
+   * Push relevant class properties to the query string
    * Called whenever we go to update the chart
    * @returns {null} nothing
    */
   pushParams() {
-    const pages = $(config.articleSelector).select2('val') || [],
-      escapedPages = pages.join('|').replace(/[&%]/g, escape);
+    const sites = $(config.siteSelector).select2('val') || [];
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
-        `#${$.param(this.getParams())}&pages=${escapedPages}`
+        `?${$.param(this.getParams())}&sites=${sites.join('|')}`
       );
     }
 
-    $('.permalink').prop('href', `#${$.param(this.getPermaLink())}&pages=${escapedPages}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&sites=${sites.join('|')}`);
   }
 
   /**
-   * Removes all article selector related stuff then adds it back
+   * Removes all site selector related stuff then adds it back
    * Also calls updateChart
    * @returns {null} nothing
    */
-  resetArticleSelector() {
-    const articleSelector = $(config.articleSelector);
-    articleSelector.off('change');
-    articleSelector.select2('val', null);
-    articleSelector.select2('data', null);
-    articleSelector.select2('destroy');
+  resetSiteSelector() {
+    const siteSelector = $(config.siteSelector);
+    siteSelector.off('change');
+    siteSelector.select2('val', null);
+    siteSelector.select2('data', null);
+    siteSelector.select2('destroy');
     $('.data-links').hide();
-    this.setupArticleSelector();
+    this.setupSiteSelector();
   }
 
   /**
-   * Removes chart, messages, and resets article selections
+   * Removes chart, messages, and resets site selections
    * @returns {null} nothing
    */
   resetView() {
@@ -506,7 +420,7 @@ class PageViews extends Pv {
     $('.chart-container').removeClass('loading');
     $('#chart-legend').html('');
     $('.message-container').html('');
-    this.resetArticleSelector();
+    this.resetSiteSelector();
   }
 
   /**
@@ -543,77 +457,44 @@ class PageViews extends Pv {
     this.setupSelect2Colors();
 
     /**
-     * If we changed to/from no_autocomplete we have to reset the article selector entirely
-     *   as setArticleSelectorDefaults is super buggy due to Select2 constraints
+     * If we changed to/from no_autocomplete we have to reset the site selector entirely
+     *   as setSiteSelectorDefaults is super buggy due to Select2 constraints
      * So let's only reset if we have to
      */
     if ((this.autocomplete === 'no_autocomplete') !== wasAutocomplete) {
-      this.resetArticleSelector();
+      this.resetSiteSelector();
     }
 
     this.updateChart(true);
   }
 
   /**
-   * Directly set articles in article selector
-   * Currently is not able to remove underscore from page names
+   * Directly set sites in site selector
    *
-   * @param {array} pages - page titles
-   * @returns {array} - untouched array of pages
+   * @param {array} sites - site titles
+   * @returns {array} - untouched array of sites
    */
-  setArticleSelectorDefaults(pages) {
-    pages.forEach(page => {
-      const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
-    });
-    $(config.articleSelector).select2('val', pages);
-    $(config.articleSelector).select2('close');
-
-    return pages;
+  setSiteSelectorDefaults(sites) {
+    $(config.siteSelector).select2('val', sites);
+    return sites;
   }
 
   /**
-   * Sets up the article selector and adds listener to update chart
+   * Sets up the site selector and adds listener to update chart
    * @returns {null} - nothing
    */
-  setupArticleSelector() {
-    const articleSelector = $(config.articleSelector);
+  setupSiteSelector() {
+    const siteSelector = $(config.siteSelector);
 
     let params = {
-      ajax: this.getArticleSelectorAjax(),
-      tags: this.autocomplete === 'no_autocomplete',
-      placeholder: $.i18n('article-placeholder'),
+      data: siteDomains,
+      placeholder: $.i18n('projects-placeholder'),
       maximumSelectionLength: 10,
       minimumInputLength: 1
     };
 
-    articleSelector.select2(params);
-    articleSelector.on('change', this.updateChart.bind(this));
-  }
-
-  /**
-   * Get ajax parameters to be used in setupArticleSelector, based on this.autocomplete
-   * @return {object|null} to be passed in as the value for `ajax` in setupArticleSelector
-   */
-  getArticleSelectorAjax() {
-    if (this.autocomplete !== 'no_autocomplete') {
-      /**
-       * This ajax call queries the Mediawiki API for article name
-       * suggestions given the search term inputed in the selector.
-       * We ultimately want to make the endpoint configurable based on whether they want redirects
-       */
-      return {
-        url: `https://${this.project}.org/w/api.php`,
-        dataType: 'jsonp',
-        delay: 200,
-        jsonpCallback: 'articleSuggestionCallback',
-        data: search => this.getSearchParams(search.term),
-        processResults: this.processSearchResults.bind(this),
-        cache: true
-      };
-    } else {
-      return null;
-    }
+    siteSelector.select2(params);
+    siteSelector.on('change', this.updateChart.bind(this));
   }
 
   /**
@@ -683,13 +564,6 @@ class PageViews extends Pv {
       ranges: ranges
     });
 
-    /** so people know why they can't query data older than August 2015 */
-    $('.daterangepicker').append(
-      $('<div>')
-        .addClass('daterange-notice')
-        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>"))
-    );
-
     /**
      * The special date range options (buttons the right side of the daterange picker)
      *
@@ -754,21 +628,6 @@ class PageViews extends Pv {
   }
 
   /**
-   * Setup listeners for project input
-   * @returns {null} - nothing
-   */
-  setupProjectInput() {
-    $(config.projectInput).on('change', e => {
-      if (!e.target.value) {
-        e.target.value = config.defaults.project;
-        return;
-      }
-      if (this.validateProject()) return;
-      this.resetView();
-    });
-  }
-
-  /**
    * Setup colors for Select2 entries so we can dynamically change them
    * This is a necessary evil, as we have to mark them as !important
    *   and since there are any number of entires, we need to use nth-child selectors
@@ -812,21 +671,21 @@ class PageViews extends Pv {
    * @returns {null} - nothin
    */
   updateChart(force) {
-    let articles = $(config.articleSelector).select2('val') || [];
+    let sites = $(config.siteSelector).select2('val') || [];
 
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.hash === this.params && this.prevChartType === this.chartType) {
+    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
       return;
     }
 
-    if (!articles.length) {
+    if (!sites.length) {
       this.resetView();
       return;
     }
 
-    this.params = location.hash;
+    this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
 
@@ -839,7 +698,7 @@ class PageViews extends Pv {
     $('.chart-container').addClass('loading');
 
     let labels = []; // Labels (dates) for the x-axis.
-    let datasets = []; // Data for each article timeseries
+    let datasets = []; // Data for each site timeseries
     let errors = []; // Queue up errors to show after all requests have been made
     let promises = [];
 
@@ -847,12 +706,12 @@ class PageViews extends Pv {
      * Asynchronously collect the data from Analytics Query Service API,
      * process it to Chart.js format and initialize the chart.
      */
-    articles.forEach((article, index) => {
-      const uriEncodedArticle = encodeURIComponent(article);
+    sites.forEach((site, index) => {
+      const uriEncodedSite = encodeURIComponent(site);
       /** @type {String} Url to query the API. */
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(config.platformSelector).val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedSite}` +
+        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
       const promise = $.ajax({
@@ -865,11 +724,11 @@ class PageViews extends Pv {
         // FIXME: these needs fixing too, sometimes doesn't show zero
         this.fillInZeros(data, startDate, endDate);
 
-        /** Build the article's dataset. */
+        /** Build the site's dataset. */
         if (config.linearCharts.includes(this.chartType)) {
-          datasets.push(this.getLinearData(data, article, index));
+          datasets.push(this.getLinearData(data, site, index));
         } else {
-          datasets.push(this.getCircularData(data, article, index));
+          datasets.push(this.getCircularData(data, site, index));
         }
 
         /** fetch the labels for the x-axis on success if we haven't already */
@@ -881,11 +740,11 @@ class PageViews extends Pv {
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${$.i18n('api-error-no-data')}`
+            `<a href='https://${site}'>${site}</a> - ${$.i18n('api-error-no-data')}`
           );
-          articles = articles.filter(el => el !== article);
+          sites = sites.filter(el => el !== site);
 
-          if (!articles.length) {
+          if (!sites.length) {
             $('.chart-container').html('');
             $('.chart-container').removeClass('loading');
           }
@@ -898,7 +757,7 @@ class PageViews extends Pv {
     $.when(...promises).always(data => {
       $('#chart-legend').html(''); // clear old chart legend
 
-      if (errors.length && errors.length === articles.length) {
+      if (errors.length && errors.length === sites.length) {
         /** something went wrong */
         $('.chart-container').removeClass('loading');
         const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
@@ -908,12 +767,12 @@ class PageViews extends Pv {
         );
       }
 
-      if (!articles.length) return;
+      if (!sites.length) return;
 
       /** preserve order of datasets due to asyn calls */
-      let sortedDatasets = new Array(articles.length);
+      let sortedDatasets = new Array(sites.length);
       datasets.forEach(dataset => {
-        sortedDatasets[articles.indexOf(dataset.label.score())] = dataset;
+        sortedDatasets[sites.indexOf(dataset.label)] = dataset;
       });
 
       /** export built datasets to global scope Chart templates */
@@ -940,44 +799,17 @@ class PageViews extends Pv {
       $('.data-links').show();
     });
   }
-
-  /**
-   * Checks value of project input and validates it against site map
-   * @returns {boolean} whether the currently input project is valid
-   */
-  validateProject() {
-    let project = $(config.projectInput).val();
-
-    /** Remove www hostnames since the pageviews API doesn't expect them. */
-    if (project.startsWith('www.')) {
-      project = project.substring(4);
-      $(config.projectInput).val(project);
-    }
-
-    if (siteDomains.includes(project)) {
-      $('.validate').remove();
-      $('.select2-selection--multiple').removeClass('disabled');
-    } else {
-      this.resetView();
-      this.writeMessage(
-        $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
-        true
-      );
-      $('.select2-selection--multiple').addClass('disabled');
-      return true;
-    }
-  }
 }
 
 $(document).ready(() => {
-  /** assume query params are supposed to be hash params */
-  if (document.location.search && !document.location.hash) {
-    return document.location.href = document.location.href.replace('?', '#');
-  } else if (document.location.search) {
-    return document.location.href = document.location.href.replace(/\?.*/, '');
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
+    return document.location.href = document.location.href.replace('#', '?');
+  } else if (document.location.hash) {
+    return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
   $.extend(Chart.defaults.global, {animation: false, responsive: true});
 
-  new PageViews();
+  new SiteViews();
 });

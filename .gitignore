@@ -12,4 +12,5 @@ vendor/psr
 vendor/whichbrowser
 vendor/autoload.php
 reports/
+doc/
 *.jar

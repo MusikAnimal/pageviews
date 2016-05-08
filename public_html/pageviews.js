@@ -163,11 +163,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /*
  * Pageviews Analysis tool
- *
- * Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d courtesy of marcelrf
- *
- * Copyright 2016 MusikAnimal
- * Redistributed under the MIT License: https://opensource.org/licenses/MIT
+ * @file Main file for Pageviews application
+ * @author MusikAnimal, Kaldari, Marcelrf
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 var config = require('./config');

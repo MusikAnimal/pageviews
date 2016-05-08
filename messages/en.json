@@ -164,5 +164,10 @@
 	"info": "Info",
 	"note": "Note",
 	"unsupported-browser-error": "$1 and below is not supported. Please <a href='http://browsehappy.com/'>upgrade your browser</a></strong>.",
-	"permalink": "Permalink"
+	"permalink": "Permalink",
+	"siteviews-title": "Siteviews Analysis",
+	"projects": "Projects",
+	"projects-placeholder": "Type project names...",
+	"statistics": "Statistics",
+	"most-viewed-pages": "Most viewed pages"
 }
