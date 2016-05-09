@@ -18,7 +18,7 @@
           </div>
         </header>
         <div class="col-lg-10">
-          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#projects={{SERVERNAME}}</pre>"; ?>
+          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
         </div>
         <div class="col-lg-10">
@@ -28,7 +28,7 @@
           </h3>
           <hr>
           <dl class="dl-horizontal">
-            <dt>projects</dt>
+            <dt>sites</dt>
             <dd>
               <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"; ?>
               <?php echo $I18N->msg( 'url-structure-projects', array( 'variables' => array( $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ), 'parsemag' => true ) ); ?>

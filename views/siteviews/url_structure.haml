@@ -15,7 +15,7 @@
               %strong= $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
 
         %div.col-lg-10
-          - $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#projects={{SERVERNAME}}</pre>"
+          - $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"
           = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
 
         %div.col-lg-10
@@ -24,7 +24,7 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            %dt projects
+            %dt sites
             %dd
               - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"
               = $I18N->msg( 'url-structure-projects', array( 'variables' => array( $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ), 'parsemag' => true ) )
