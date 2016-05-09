@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Obaid Raza"
+			"Obaid Raza",
+			"Macofe"
 		]
 	},
 	"dates": "تاریخ",
@@ -40,7 +41,7 @@
 	"cancel": "منسوخ",
 	"save": "محفوظ",
 	"apply": "اطلاق",
-	"totals": "کل:",
+	"totals": "کل",
 	"day": "دن",
 	"su": "اتوار",
 	"mo": "پیر",

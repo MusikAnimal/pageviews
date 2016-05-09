@@ -3,7 +3,8 @@
 		"authors": [
 			"Green Zero",
 			"Piramidion",
-			"Visem"
+			"Visem",
+			"Macofe"
 		]
 	},
 	"title": "Аналіз кількості переглядів сторінок",
@@ -55,8 +56,8 @@
 	"polar-area": "Полярна площа",
 	"settings-notice": "Ваші налаштування будуть збережені для того ж браузера і комп'ютера.",
 	"search-method": "Пошуковий метод:",
-	"autocompletion": "Автодоповнення ($1)",
-	"autocompletion-redirects": "Автодоповнення, враховуючи перенаправлення ($1)",
+	"autocompletion": "Автодоповнення",
+	"autocompletion-redirects": "Автодоповнення, враховуючи перенаправлення",
 	"no-autocompletion": "Без автодоповнення",
 	"other-options": "Інші налаштування:",
 	"format-numbers": "Формат числових даних",

@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Luk3",
-			"Dianakc"
+			"Dianakc",
+			"Macofe"
 		]
 	},
 	"title": "Visualizações da página",
@@ -51,8 +52,8 @@
 	"doughnut": "Rosca",
 	"polar-area": "Área polar",
 	"search-method": "Método de pesquisa:",
-	"autocompletion": "Auto-completar ($1)",
-	"autocompletion-redirects": "Autocompletar incluindo redirecionamentos ($1)",
+	"autocompletion": "Auto-completar",
+	"autocompletion-redirects": "Autocompletar incluindo redirecionamentos",
 	"no-autocompletion": "Sem autocompletar",
 	"other-options": "Outras opções:",
 	"format-numbers": "Formatar os dados numéricos",

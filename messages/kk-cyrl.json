@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Arystanbek"
+			"Arystanbek",
+			"Macofe"
 		]
 	},
 	"title": "Бет қаралу талдауы",
@@ -21,13 +22,16 @@
 	"user": "Қатысушы",
 	"spider": "Өрмекші",
 	"bot": "Бот",
+	"page": "Бет",
 	"pages": "Беттер",
+	"page-title": "Бет атауы",
 	"change-chart": "Диаграмма түрін өзгерту",
 	"settings": "Баптаулар",
 	"download": "$1 түрінде түсіріп алу",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "Сіз үшін жасағандар: $1, $2 және $3.",
+	"translation-credits": "Аударма $1 және $2 арқылы жасалды.",
 	"tool-labs": "Tool Labs",
 	"faq": "ЖҚС",
 	"disclaimer": "Қабылдамау хабарламасы",
@@ -48,8 +52,8 @@
 	"polar-area": "Полярлық аумақ",
 	"settings-notice": "Баптауларыңыз бірдей броузерде және компютерде сақталады.",
 	"search-method": "Іздеу әдісі:",
-	"autocompletion": "Автотолтыру ($1)",
-	"autocompletion-redirects": "Автотолтыру, бағыттауларды қоса алғанда ($1)",
+	"autocompletion": "Автотолтыру",
+	"autocompletion-redirects": "Автотолтыру, бағыттауларды қоса алғанда",
 	"no-autocompletion": "Автотолтырусыз",
 	"other-options": "Басқа опциялар:",
 	"format-numbers": "Сандық дерек форматы",
@@ -91,7 +95,16 @@
 	"select2-no-results": "Ешбір нәтиже табылмады",
 	"select2-searching": "Іздеп жатыр...",
 	"help-translate": "Аударуға көмектесу",
+	"api-error": "API-ден дерек оқылудан проблем пайда болды.",
+	"api-error-no-data": "Дерек табылмады.",
 	"topviews-title": "Көп қаралғандар талдауы",
 	"excluded-pages": "Алынып тасталған беттер",
-	"show-more": "Көбірек көрсету"
+	"show-more": "Көбірек көрсету",
+	"langviews-title": "Тіл қаралу талдауы",
+	"source-project": "Қайнар жоба",
+	"language": "Тіл",
+	"pageviews": "Бет қаралуы",
+	"average": "Орташа",
+	"submit": "Жіберу",
+	"num-languages": "$1 тіл"
 }

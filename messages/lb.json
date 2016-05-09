@@ -74,6 +74,7 @@
 	"december": "Dezember",
 	"select2-max-chars": "Läscht w.e.g. $1 Zeechen",
 	"select2-loading": "Méi Resultater gi gelueden...",
+	"select2-max-items": "Dir kënnt nëmmen $1 Elementer eraussichen",
 	"select2-no-results": "Näischt fonnt",
 	"select2-searching": "Sichen...",
 	"help-translate": "Hëlleft iwwersetzen",
@@ -88,9 +89,19 @@
 	"num-languages": "$1 Sproochen",
 	"wikidata-error-unknown": "Bei der Ufro u Wikidata ass en onbekannte Feeler geschitt",
 	"faq-return-to": "Zréck op $1",
+	"faq-todays-date-title": "Firwat kann ech keng Donnéeë fir den Datum vun haut gesinn?",
+	"faq-chart-type-title": "Ech hunn dës Form vun Diagramm net gär",
 	"faq-try-tool": "Probéiert $1",
+	"faq-bug-report-title": "Ech hunn en Ufro fir eng Funktioun oder e Feeler ze mellen",
 	"url-structure-parameters": "Parameteren",
+	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
 	"url-structure-project": "$1 oder aner valabel $2",
+	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
-	"default": "Standard"
+	"url-structure-platform": "Eng vu(n) $1, $2, $3 oder $4",
+	"default": "Standard",
+	"all-languages": "All Sproochen",
+	"history": "Versiounen",
+	"info": "Informatioun",
+	"note": "Notiz"
 }

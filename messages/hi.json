@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Niharika29",
-			"Sfic"
+			"Sfic",
+			"Macofe"
 		]
 	},
 	"title": "पृष्ठदृश्य विश्लेषण",
@@ -53,8 +54,8 @@
 	"polar-area": "ध्रुवीय क्षेत्र",
 	"settings-notice": "आपके द्वारा दिया गया जानकारी समान ब्राउज़र और कम्प्युटर में याद रहेगा।",
 	"search-method": "खोज का तरीका",
-	"autocompletion": "स्वतः पूरा ($1)",
-	"autocompletion-redirects": "पुनर्निदेशन के साथ स्वतः पूर्ण ($1)",
+	"autocompletion": "स्वतः पूरा",
+	"autocompletion-redirects": "पुनर्निदेशन के साथ स्वतः पूर्ण",
 	"no-autocompletion": "स्वतः पूर्ण नहीं",
 	"other-options": "अन्य विकल्प:",
 	"format-numbers": "संख्यात्मक डाटा प्रारूप",

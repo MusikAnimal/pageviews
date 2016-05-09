@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Aftabuzzaman",
-			"Bodhisattwa"
+			"Bodhisattwa",
+			"Macofe"
 		]
 	},
 	"title": "পৃষ্ঠা দর্শনের বিশ্লেষণ",
@@ -54,8 +55,8 @@
 	"polar-area": "মেরু অঞ্চল",
 	"settings-notice": "আপনার সেটিংস একই ব্রাউজার এবং কম্পিউটারে মনে রাখা হবে।",
 	"search-method": "অনুসন্ধান পদ্ধতি:",
-	"autocompletion": "স্বয়ংপূরণ ($1)",
-	"autocompletion-redirects": "পুননির্দেশনা সহ স্বয়ংপূরণ ($1)",
+	"autocompletion": "স্বয়ংপূরণ",
+	"autocompletion-redirects": "পুননির্দেশনা সহ স্বয়ংপূরণ",
 	"no-autocompletion": "কোন স্বয়ংপূরণ নেই",
 	"other-options": "অন্যান্য বিকল্প:",
 	"format-numbers": "সাংখ্যিক উপাত্ত বিন্যাস",
@@ -118,5 +119,30 @@
 	"invalid-lang-project": "$1 হয় অবৈধ বা নাহয় একটি বহুভাষী প্রকল্প নয়",
 	"wikidata-error": "উইকিউপাত্তের অনুসন্ধানের ত্রুটি",
 	"wikidata-error-unknown": "উইকিউপাত্তে অনুসন্ধানের সময় একটি অজানা ত্রুটি ঘটেছে",
-	"langviews-error": "$1-এর জন্য উপাত্ত আনার সময় ত্রুটি"
+	"langviews-error": "$1-এর জন্য উপাত্ত আনার সময় ত্রুটি",
+	"langviews-throttle-notice": "বর্তমানে কর্মক্ষমতার কারণে অনুরোধ আটকে দেওয়া হচ্ছে।<br/>আরো তথ্যের জন্য $1 দেখুন।",
+	"langviews-throttle-wait": "আরেকটি অনুরোধ জমা দেওয়ার আগে $1 সেকেন্ড অপেক্ষা করুন।<br/>অসুবিধার জন্য ক্ষমাপ্রার্থী। এটি একটি সাময়িক আটকানোর কৌশল।<br/>আরো তথ্যের জন্য $2 দেখুন।",
+	"faq-return-to": "$1-এ ফেরত যান।",
+	"faq-old-data-title": "কেন আমি আগস্ট ২০১৫-র চেয়ে পুরোনো উপাত্ত দেখতে পারছি না?",
+	"faq-todays-date-title": "কেন আমি আজকের উপাত্ত দেখতে পারছি না?",
+	"faq-agents-title": "\"প্রতিনিধি\" কি?",
+	"faq-chart-type-title": "আমি এই ধরনের লেখচিত্র বা চার্ট পছন্দ করি না",
+	"faq-top-viewed-title": "আমি একটি তারিখ পরিসীমার মধ্যে সবচেয়ে বেশি দেখা পৃষ্ঠাগুলি দেখতে চাই",
+	"faq-multi-lang-title": "আমি একটি প্রকল্পের জন্য সব ভাষাতে একটি পৃষ্ঠার জন্য উপাত্ত দেখতে চাই",
+	"faq-try-tool": "$1 ব্যবহার করে দেখুন",
+	"faq-bug-report-title": "আমি একটি বৈশিষ্ট্য অনুরোধ করতে বা বাগ প্রতিবেদন করতে চাই",
+	"url-structure-parameters": "প্যারামিটার",
+	"url-structure-parameters-order": "যে কোনো অনুক্রমে ব্যবহার করা যেতে পারে",
+	"url-structure-project": "$1 বা আরেকটি বৈধ $2",
+	"url-structure-project-multilang": "প্রদত্ত উৎস প্রকল্পটি বহুভাষিক হতে হবে, যেমন $1 বা $2",
+	"url-structure-onwiki-link": "উইকিতে বর্তমান পাতাটির সংযোগ করতে, $1 ব্যবহার করুন",
+	"url-structure-special-range-latest": "সর্বশেষ ২০ দিনের উপাত্ত",
+	"url-structure-special-range-latest-n": "যেখানে <i>N</i> হচ্ছে একটি সংখ্যা। উদাহরণস্বরূপ <code>latest-30</code> যা সর্বশেষ ৩০ দিনের উপাত্ত দেখাবে",
+	"url-structure-platform": "$1, $2, $3 বা $4-এর মধ্যে একটি",
+	"default": "পূর্বনির্ধারিত",
+	"all-languages": "সকল ভাষা",
+	"history": "ইতিহাস",
+	"info": "তথ্য",
+	"note": "টীকা",
+	"unsupported-browser-error": "$1 ও তাঁর নীচে সমর্থিত নয়। দয়া করে <a href='http://browsehappy.com/'>আপনার ব্রাউজার হালনাগাদ করুন</a></strong>।"
 }

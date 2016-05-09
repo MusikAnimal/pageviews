@@ -118,6 +118,8 @@
 	"wikidata-error": "查询维基数据时出错",
 	"wikidata-error-unknown": "当查询维基数据时发生未知错误",
 	"langviews-error": "检索$1的数据时出错",
+	"langviews-throttle-notice": "因性能原因，请求目前被限流。<br/>参见$1以获取更多信息。",
+	"langviews-throttle-wait": "请在提交另一个请求前等待$1秒。<br/>给您带来的不便尽请谅解。这是一次临时限流策略。<br/>参见$2以获取更多信息。",
 	"faq-return-to": "返回至$1",
 	"faq-old-data-title": "为什么我不能查看早于2015年8月的数据？",
 	"faq-old-data-body": "维基媒体页面浏览API于2015年8月引进，并不包含此时间之前的数据。您将不得不依赖其他工具，例如<a href='http://stats.grok.se'>stats.grok.se</a>以查看早于该时间的数据。很遗憾，无论是否工作，这在此工具范围之外，并超出了维护人员的控制能力。",
@@ -156,5 +158,10 @@
 	"url-structure-agent": "$1（人类查看，默认）、$2（搜索引擎蜘蛛）、$3（基金会机器人）或$4（用户、蜘蛛和机器人）之一",
 	"url-structure-sort": "要排序的列。$1、$2、$3或$4之一",
 	"url-structure-sort-direction": "排序方向。$1递减，$2递增",
-	"default": "默认"
+	"default": "默认",
+	"all-languages": "所有语言",
+	"history": "历史",
+	"info": "信息",
+	"note": "注意",
+	"unsupported-browser-error": "$1及更低版本不受支持。请<a href='http://browsehappy.com/'>升级您的浏览器</a></strong>。"
 }

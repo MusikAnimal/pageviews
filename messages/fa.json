@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"AzorAhai",
-			"Mardetanha"
+			"Mardetanha",
+			"Macofe"
 		]
 	},
 	"title": "آنالیزگر بازدیدصفحه",
@@ -46,7 +47,7 @@
 	"doughnut": "دونات",
 	"polar-area": "منطقه قطبی",
 	"search-method": "روش جستجو",
-	"autocompletion": "تکمیل‌کننده خودکار($1)",
+	"autocompletion": "تکمیل‌کننده خودکار",
 	"no-autocompletion": "بدون تکمیل‌کننده خودکار",
 	"other-options": "گزینه‌های دیگر:",
 	"format-numbers": "فرمت داده‌های عددی",
@@ -93,5 +94,12 @@
 	"language": "زبان",
 	"average": "میانگین",
 	"submit": "ثبت",
-	"num-languages": "$1 زبان‌ها"
+	"num-languages": "$1 زبان‌ها",
+	"url-structure-parameters": "پارامترها",
+	"url-structure-platform": "یکی از $1, $2, $3 یا $4",
+	"default": "پیش‌فرض",
+	"all-languages": "همهٔ زبان‌ها",
+	"history": "تاریخچه",
+	"info": "اطلاعات",
+	"note": "یادداشت"
 }

@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Diniscoelho",
-			"Vitorvicentevalente"
+			"Vitorvicentevalente",
+			"Macofe"
 		]
 	},
 	"title": "Análise de Visualizações de Página",
@@ -53,8 +54,8 @@
 	"polar-area": "Área polar",
 	"settings-notice": "As suas configurações serão gravadas no mesmo navegador e computador.",
 	"search-method": "Método de pesquisa:",
-	"autocompletion": "Completação automatica ($1)",
-	"autocompletion-redirects": "Preenchimento automático inclui redirecionamentos ($1)",
+	"autocompletion": "Completação automatica",
+	"autocompletion-redirects": "Preenchimento automático inclui redirecionamentos",
 	"no-autocompletion": "Desativar preenchimento automático",
 	"other-options": "Outras opções:",
 	"format-numbers": "Formato numérico",
@@ -67,7 +68,7 @@
 	"invalid-params": "Parâmetros inválidos!",
 	"param-error-1": "A API de Visualizações de Página não contem dados anteriores a agosto de 2015. Desculpe.",
 	"param-error-2": "Data inicial tem que ser mais antiga do que data final.",
-	"totals": "Totais:",
+	"totals": "Totais",
 	"day": "dia",
 	"su": "Dom",
 	"mo": "Seg",

@@ -55,8 +55,8 @@
 	"polar-area": "Área polar",
 	"settings-notice": "A súa configuración lembrarase neste mesmo navegador e computadora.",
 	"search-method": "Método de busca:",
-	"autocompletion": "Autocompletar ($1)",
-	"autocompletion-redirects": "Autocompletar incluíndo redireccións ($1)",
+	"autocompletion": "Autocompletar",
+	"autocompletion-redirects": "Autocompletar incluíndo redireccións",
 	"no-autocompletion": "Sen autocompletar",
 	"other-options": "Outras opcións:",
 	"format-numbers": "Dar formato aos datos numéricos",
@@ -119,5 +119,8 @@
 	"invalid-lang-project": "$1 é un proxecto inválido ou non multilingüe",
 	"wikidata-error": "Erro consultando Wikidata",
 	"wikidata-error-unknown": "Houbo un erro descoñecido consultando Wikidata",
-	"langviews-error": "Erro obtendo datos para $1"
+	"langviews-error": "Erro obtendo datos para $1",
+	"faq-return-to": "Volver a $1",
+	"faq-old-data-title": "Por que non podo ver os datos previos a agosto de 2015?",
+	"faq-todays-date-title": "Por que non podo ver os datos da data de hoxe?"
 }

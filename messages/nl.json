@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sjoerddebruin"
+			"Sjoerddebruin",
+			"Macofe"
 		]
 	},
 	"title": "Paginaweergaven-analyse",
@@ -51,7 +52,7 @@
 	"article-placeholder": "Paginanamen invoeren...",
 	"invalid-params": "Ongeldige parameters!",
 	"param-error-2": "Begindatum moet ouder dan de einddatum zijn.",
-	"totals": "Totalen:",
+	"totals": "Totalen",
 	"day": "dag",
 	"su": "zo",
 	"mo": "ma",

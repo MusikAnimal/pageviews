@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"아라"
+			"아라",
+			"Macofe"
 		]
 	},
 	"title": "페이지뷰 분석 도구",
@@ -50,8 +51,8 @@
 	"polar-area": "폴라 영역",
 	"settings-notice": "설정이 같은 브라우저와 컴퓨터에 기억됩니다.",
 	"search-method": "검색 방법:",
-	"autocompletion": "자동완성 ($1)",
-	"autocompletion-redirects": "넘겨주기 포함 자동완성 ($1)",
+	"autocompletion": "자동완성",
+	"autocompletion-redirects": "넘겨주기 포함 자동완성",
 	"no-autocompletion": "자동완성 없음",
 	"other-options": "다른 옵션:",
 	"format-numbers": "형식 수치 데이터",
@@ -65,7 +66,7 @@
 	"param-error-1": "페이지뷰 API는 2015년 8월보다 오래된 데이터를 포함하지 않습니다.",
 	"param-error-2": "시작 날짜는 끝 날짜보다 오래되어야 합니다.",
 	"param-error-3": "<code>range</code>가 올바르지 않습니다, 기본 range를 대신 사용하세요. 자세한 정보에 대해서는 <a href='/pageviews/url_structure'>설명서</a>를 보세요.",
-	"totals": "총:",
+	"totals": "총",
 	"day": "일",
 	"su": "일",
 	"mo": "월",

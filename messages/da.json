@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Pyrros"
+			"Pyrros",
+			"Macofe"
 		]
 	},
 	"title": "Analyse af sidevisninger",
@@ -51,8 +52,8 @@
 	"polar-area": "Polarområde",
 	"settings-notice": "Dine indstillinger vil blive husket på den samme browser og computer.",
 	"search-method": "Søgemetode",
-	"autocompletion": "Automatisk færdiggørelse ($1)",
-	"autocompletion-redirects": "Automatiske færdiggørelse med omdirigeringer ($1)",
+	"autocompletion": "Automatisk færdiggørelse",
+	"autocompletion-redirects": "Automatiske færdiggørelse med omdirigeringer",
 	"no-autocompletion": "Ingen automatisk færdiggørelse",
 	"other-options": "Andre muligheder:",
 	"format-numbers": "Tegnsætning i tal",

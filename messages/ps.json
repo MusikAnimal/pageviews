@@ -63,5 +63,10 @@
 	"source-project": "د سرچينې پروژه",
 	"language": "ژبه",
 	"submit": "سپارل",
-	"num-languages": "$1 ژبې"
+	"num-languages": "$1 ژبې",
+	"default": "تلواليز",
+	"all-languages": "ټولې ژبې",
+	"history": "پېښليک",
+	"info": "مالومات",
+	"note": "يادښت"
 }

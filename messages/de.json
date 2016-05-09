@@ -120,6 +120,8 @@
 	"wikidata-error": "Fehler beim Abruf der Wikidata-API",
 	"wikidata-error-unknown": "Beim Abrufen der Wikidata-API ist ein unbekannter Fehler aufgetreten",
 	"langviews-error": "Fehler beim Abrufen der Daten für $1",
+	"langviews-throttle-notice": "Anfragen werden derzeit aus Leistungsgründen gedrosselt.<br/>Siehe $1 für weitere Informationen.",
+	"langviews-throttle-wait": "Bitte $1 Sekunden warten, bevor du eine weitere Anfrage sendest.<br/>Entschuldigung für die Unannehmlichkeit. Dies ist eine vorübergehende Drosselungstaktik.<br/>Siehe $2 für weitere Informationen.",
 	"faq-return-to": "Zurück zu $1",
 	"faq-old-data-title": "Warum kann ich keine Daten ansehen, die älter sind als vom August 2015?",
 	"faq-old-data-body": "Die Wikimedia-Pageviews-API wurde im August 2015 eingeführt und enthält keine Daten vor diesem Datum. Du musst dich auf andere Werkzeuge wie <a href=\"http://stats.grok.se\">stats.grok.se</a> verlassen, um ältere Daten anzusehen. Ob sie funktionieren oder nicht, liegt leider außerhalb des Verantwortungsbereichs dieses Werkzeugs und jenseits der Kontrolle der Instandhalter.",
@@ -158,5 +160,10 @@
 	"url-structure-agent": "Eines von $1 (menschliche Leser, Standard), $2 (Suchmaschinencrawler), $3 (Bots der WMF) oder $4 (Benutzer, Spider und Bots)",
 	"url-structure-sort": "Die zu sortierende Spalte. Eines von $1, $2, $3 oder $4",
 	"url-structure-sort-direction": "Die Sortierreihenfolge. $1 für absteigend, $2 für aufsteigend",
-	"default": "Standard"
+	"default": "Standard",
+	"all-languages": "Alle Sprachen",
+	"history": "Versionsgeschichte",
+	"info": "Information",
+	"note": "Hinweis",
+	"unsupported-browser-error": "$1 und ältere Versionen werden nicht unterstützt. Bitte <a href='http://browsehappy.com/'>aktualisiere deinen Browser</a>."
 }

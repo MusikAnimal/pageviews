@@ -7,12 +7,13 @@
 			"Robby",
 			"Wladek92",
 			"LordMsz",
-			"Macofe"
+			"Macofe",
+			"Purodha"
 		]
 	},
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
 	"dates": "Header for the part of the interface that lets the user select a range of dates\n{{Identical|Date}}",
-	"latest-days": "The 'latest days' links above the date selector. $1 are the links, and are NOT numerical, so {{PLURAL}} should not be used.",
+	"latest-days": "These are the 'latest days' links preceeding the date selector. $1 are the individual links. They are not numerical, so <nowiki>{{PLURAL}}</nowiki> cannot not be used on them.",
 	"last-week": "Last week",
 	"this-month": "This month",
 	"last-month": "Last month",
@@ -168,9 +169,9 @@
 	"url-structure-sort-direction": "Documentation for the 'direction' parameter. $1 is the value for descending, $2 is the value for ascending",
 	"default": "Default\n{{Identical|Default}}",
 	"all-languages": "A link to show the article in the multilingual pageviews tool. This appears in the 'info tiles' on Pageviews Analysis",
-	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis",
-	"info": "A link to the wiki page information page of the article. This appears in the 'info tiles' on Pageviews Analysis",
-	"note": "The word that goes before a general notice, such as a temporarily limited feature.\n{{Identical|Notice}}",
+	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|History}}",
+	"info": "A link to the wiki page information page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|Info}}",
+	"note": "The word that goes before a general notice, such as a temporarily limited feature.\n{{Identical|Note}}",
 	"unsupported-browser-error": "Message saying the user's browser is not supported. $1 is the browser version.",
 	"permalink": "A permanent link to the tool with the current data. By default the tool shows the latest-N days, this will link to the exact date range.",
 	"siteviews-title": "The title of the Siteviews tool. This is shown as a header at the top of the page.",

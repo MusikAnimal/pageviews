@@ -3,7 +3,8 @@
 		"authors": [
 			"WikiPhoenix",
 			"Ainali",
-			"Jopparn"
+			"Jopparn",
+			"Macofe"
 		]
 	},
 	"title": "Sidvisningsanalys",
@@ -55,8 +56,8 @@
 	"polar-area": "Polarområde",
 	"settings-notice": "Dina inställningar kommer att kommas ihåg på samma webbläsare eller dator.",
 	"search-method": "Sökmetod:",
-	"autocompletion": "Automatisk komplettering ($1)",
-	"autocompletion-redirects": "Automatisk komplettering med omdirigeringar ($1)",
+	"autocompletion": "Automatisk komplettering",
+	"autocompletion-redirects": "Automatisk komplettering med omdirigeringar",
 	"no-autocompletion": "Ingen automatisk komplettering",
 	"other-options": "Andra alternativ:",
 	"format-numbers": "Formatera numerisk data",
@@ -118,5 +119,21 @@
 	"invalid-project": "$1 är inte ett <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>giltigt projekt</a>",
 	"invalid-lang-project": "$1 är antingen ogiltigt eller inte ett flerspråkigt projekt",
 	"wikidata-error-unknown": "Ett okänt fel uppstod när förfrågan skickades till Wikidata",
-	"langviews-error": "Kunde inte hämta data för $1"
+	"langviews-error": "Kunde inte hämta data för $1",
+	"faq-return-to": "Tillbaka till $1",
+	"faq-old-data-title": "Varför kan jag inte visa data äldre än augusti 2015?",
+	"faq-todays-date-title": "Varför kan jag inte visa data för dagens datum?",
+	"faq-agents-title": "Vad är \"agenter\"?",
+	"faq-agents-user": "inkluderar alla personer som besöker en sida. Redigerare, anonyma redigerare och alla våra läsare.",
+	"faq-agents-spider": "inkluderar \"<a href='https://sv.wikipedia.org/wiki/Spindel_%28internet%29'>sökmotorsspindlar</a>\", som Google, som läser sidor i syfte att förbättra sina sökresultat. Sidan kan få många visningar från spindlar, som är anledningen till varför verktyget endast visar data från användare som standard.",
+	"faq-chart-type-title": "Jag gillar inte denna diagramtyp",
+	"faq-try-tool": "Prova $1",
+	"url-structure-parameters": "Parametrar",
+	"url-structure-parameters-order": "Kan användas i valfri ordning",
+	"url-structure-platform": "En av $1, $2, $3 eller $4",
+	"url-structure-sort": "Vilken kolumn att sortera. En av $1, $2, $3 eller $4",
+	"default": "Standard",
+	"all-languages": "Alla språk",
+	"history": "Historik",
+	"info": "Info"
 }

@@ -49,8 +49,8 @@
 	"polar-area": "Поларна област",
 	"settings-notice": "Подешавања бити запамћена на истом претраживачу и рачунару.",
 	"search-method": "Начин претраге:",
-	"autocompletion": "Аутоматско довршавање ($1)",
-	"autocompletion-redirects": "Аутоматско довршавање укључујући преусмјеравања ($1)",
+	"autocompletion": "Аутоматско довршавање",
+	"autocompletion-redirects": "Аутоматско довршавање укључујући преусмјеравања",
 	"no-autocompletion": "Без аутоматског довршавања",
 	"other-options": "Остале опције:",
 	"format-numbers": "Локализуј нумеричке податке",
@@ -87,5 +87,13 @@
 	"select2-loading": "Учитавам још резултата...",
 	"select2-no-results": "Нема резултата",
 	"select2-searching": "Претражујем...",
-	"help-translate": "Преведи"
+	"help-translate": "Преведи",
+	"langviews-title": "Анализа посећености по језицима",
+	"language": "Језик",
+	"badges": "Значке",
+	"pageviews": "Прегледа",
+	"average": "Просечно",
+	"all-languages": "Сви језици",
+	"history": "Историја",
+	"info": "Инфо"
 }
