@@ -1,9 +1,9 @@
 !!!
 %html
   %head
-    - include '../_head.php'
+    - include '../../_head.php'
     %title
-      = $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' )
+      = $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' )
 
   %body
     %div.container
@@ -13,7 +13,7 @@
           %div.col-lg-10.text-center
             %h4
               %strong
-                = $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' )
+                = $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' )
 
         %div.col-lg-10
           %ul.list-group
@@ -62,8 +62,8 @@
                 = $I18N->msg( 'faq-bug-report-body' )
 
         %div.col-lg-10.text-center
-          %a(href="/pageviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
+          %a(href="/siteviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
 
-        - $app = "pageviews";
-        - include "../_footer.php"
+        - $app = "siteviews";
+        - include "../../_footer.php"

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '../_head.php'; ?>
+    <?php include '../../_head.php'; ?>
     <title>
-      <?php echo $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
+      <?php echo $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
   <body>
@@ -14,7 +14,7 @@
           <div class="col-lg-10 text-center">
             <h4>
               <strong>
-                <?php echo $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
+                <?php echo $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
               </strong>
             </h4>
           </div>
@@ -91,12 +91,12 @@
           </ul>
         </div>
         <div class="col-lg-10 text-center">
-          <a href="/pageviews">
-            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) ); ?>
+          <a href="/siteviews">
+            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "pageviews"; ?>
-        <?php include "../_footer.php"; ?>
+        <?php $app = "siteviews"; ?>
+        <?php include "../../_footer.php"; ?>
       </div>
     </div>
   </body>

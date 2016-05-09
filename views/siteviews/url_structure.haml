@@ -1,9 +1,9 @@
 !!!
 %html
   %head
-    - include '../_head.php'
+    - include '../../_head.php'
     %title
-      = $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' )
+      = $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
 
   %body
     %div.container
@@ -12,17 +12,11 @@
         %header.row.aqs-row
           %div.col-lg-10.text-center
             %h4
-              %strong= $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' )
+              %strong= $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
 
         %div.col-lg-10
-          - $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
-          - $project = "<code>en.wikipedia.org</code>"
-          - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
-          - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
-          = $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
-
-          %p.intro
-            = $I18N->msg( 'url-structure-hash-param' )
+          - $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#projects={{SERVERNAME}}</pre>"
+          = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
 
         %div.col-lg-10
           %h3
@@ -30,15 +24,10 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            %dt project
+            %dt projects
             %dd
-              - $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "
-              = $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) )
-            %dt pages
-            %dd
-              = $I18N->msg( 'url-structure-pages' )
-              %br
-              = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
+              - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"
+              = $I18N->msg( 'url-structure-projects', array( 'variables' => array( $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ), 'parsemag' => true ) )
             %dt range
             %dd
               = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
@@ -61,7 +50,7 @@
                   = $I18N->msg( 'last-month' )
             %dt start
             %dd
-              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) )
             %dt end
             %dd
               = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
@@ -74,8 +63,8 @@
 
         %div.col-lg-10.text-center
           %hr
-          %a(href="/pageviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
+          %a(href="/siteviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
 
-        - $app = "pageviews";
-        -include "../_footer.php";
+        - $app = "siteviews";
+        -include "../../_footer.php";

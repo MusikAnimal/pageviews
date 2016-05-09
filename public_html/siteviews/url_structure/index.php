@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '../_head.php'; ?>
+    <?php include '../../_head.php'; ?>
     <title>
-      <?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
+      <?php echo $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
   <body>
@@ -13,19 +13,13 @@
         <header class="row aqs-row">
           <div class="col-lg-10 text-center">
             <h4>
-              <strong><?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?></strong>
+              <strong><?php echo $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?></strong>
             </h4>
           </div>
         </header>
         <div class="col-lg-10">
-          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
-          <?php $project = "<code>en.wikipedia.org</code>"; ?>
-          <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
-          <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
-          <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
-          <p class="intro">
-            <?php echo $I18N->msg( 'url-structure-hash-param' ); ?>
-          </p>
+          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#projects={{SERVERNAME}}</pre>"; ?>
+          <?php echo $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
         </div>
         <div class="col-lg-10">
           <h3>
@@ -34,16 +28,10 @@
           </h3>
           <hr>
           <dl class="dl-horizontal">
-            <dt>project</dt>
+            <dt>projects</dt>
             <dd>
-              <?php $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "; ?>
-              <?php echo $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) ); ?>
-            </dd>
-            <dt>pages</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-pages' ); ?>
-              <br>
-              <?php echo $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) ); ?>
+              <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"; ?>
+              <?php echo $I18N->msg( 'url-structure-projects', array( 'variables' => array( $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>range</dt>
             <dd>
@@ -74,7 +62,7 @@
             </dd>
             <dt>start</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>end</dt>
             <dd>
@@ -92,12 +80,12 @@
         </div>
         <div class="col-lg-10 text-center">
           <hr>
-          <a href="/pageviews">
-            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) ); ?>
+          <a href="/siteviews">
+            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "pageviews"; ?>
-        <?php include "../_footer.php"; ?>
+        <?php $app = "siteviews"; ?>
+        <?php include "../../_footer.php"; ?>
       </div>
     </div>
   </body>
