@@ -108,7 +108,7 @@
         </div>
         <div class="message-container col-lg-12"></div>
         <!-- Legend -->
-        <div class="col-lg-12 clearfix" id="chart-legend"></div>
+        <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-12 data-links">
           <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'change-chart' ); ?></a>

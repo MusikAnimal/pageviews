@@ -16,7 +16,7 @@ const templates = {
       <strong><%= $.i18n('totals') %>:</strong>
       <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
       &bullet;
-      <a href="https://<%= chartData[0].label %>/wiki/Special:Statistics" target="_blank"><%= $.i18n('statistics') %></a>
+      <a href="https://<%= chartData[0].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>" target="_blank"><%= $.i18n('statistics') %></a>
       &bullet;
       <a href="<%= getTopviewsURL(chartData[0].label) %>" target="_blank"><%= $.i18n('most-viewed-pages') %></a>
     <% } else { %>
@@ -35,7 +35,7 @@ const templates = {
               <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
             </div>
             <div class="linear-legend--links">
-              <a href="https://<%= chartData[i].label %>/wiki/Special:Statistics" target="_blank"><%= $.i18n('statistics') %></a>
+              <a href="https://<%= chartData[i].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>" target="_blank"><%= $.i18n('statistics') %></a>
               &bullet;
               <a href="<%= getTopviewsURL(chartData[i].label) %>" target="_blank"><%= $.i18n('most-viewed-pages') %></a>
             </div>

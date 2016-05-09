@@ -27,6 +27,7 @@ class SiteViews extends Pv {
     this.specialRange = null;
     this.config = config;
     this.colorsStyleEl = undefined;
+    this.siteMap = siteMap; // for debugging, as scope is accessible on localhost
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -290,13 +291,12 @@ class SiteViews extends Pv {
    * @return {null} nothing
    */
   patchUsage() {
-    // FIXME: not on a per-project basis
-    // if (location.host !== 'localhost') {
-    //   $.ajax({
-    //     url: `//tools.wmflabs.org/musikanimal/api/sv_uses`,
-    //     method: 'PATCH'
-    //   });
-    // }
+    if (location.host !== 'localhost') {
+      $.ajax({
+        url: `//tools.wmflabs.org/musikanimal/api/sv_uses/${i18nLang}`,
+        method: 'PATCH'
+      });
+    }
   }
 
   /**
@@ -475,7 +475,13 @@ class SiteViews extends Pv {
    * @returns {array} - untouched array of sites
    */
   setSiteSelectorDefaults(sites) {
+    sites.forEach(page => {
+      const escapedText = $('<div>').text(page).html();
+      $('<option>' + escapedText + '</option>').appendTo(config.siteSelector);
+    });
     $(config.siteSelector).select2('val', sites);
+    $(config.siteSelector).select2('close');
+
     return sites;
   }
 
@@ -487,7 +493,21 @@ class SiteViews extends Pv {
     const siteSelector = $(config.siteSelector);
 
     let params = {
-      data: siteDomains,
+      ajax: {
+        transport: (params, success, failure) => {
+          const results = siteDomains.filter(domain => domain.startsWith(params.data.q));
+          success({ results: results.slice(0, 10) });
+        },
+        processResults: data => {
+          const results = data.results.map(domain => {
+            return {
+              id: domain,
+              text: domain
+            };
+          });
+          return {results};
+        }
+      },
       placeholder: $.i18n('projects-placeholder'),
       maximumSelectionLength: 10,
       minimumInputLength: 1
@@ -797,6 +817,26 @@ class SiteViews extends Pv {
 
       $('#chart-legend').html(this.chartObj.generateLegend());
       $('.data-links').show();
+    });
+  }
+
+  /**
+   * Validates the given projects against the site map
+   *   showing an error message of any that are invalid,
+   *   and returning an array of the given projects that are valid
+   * @param {Array} projects - array of project strings to validate
+   * @returns {Array} - given projects that are valid
+   */
+  validateProjects(projects = []) {
+    return projects.filter(project => {
+      if (siteDomains.includes(project)) {
+        return true;
+      } else {
+        this.writeMessage(
+          $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`)
+        );
+        return false;
+      }
     });
   }
 }

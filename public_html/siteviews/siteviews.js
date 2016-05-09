@@ -1957,6 +1957,7 @@ var SiteViews = function (_Pv) {
     _this.specialRange = null;
     _this.config = config;
     _this.colorsStyleEl = undefined;
+    _this.siteMap = siteMap; // for debugging, as scope is accessible on localhost
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -2266,15 +2267,14 @@ var SiteViews = function (_Pv) {
 
   }, {
     key: 'patchUsage',
-    value: function patchUsage() {}
-    // FIXME: not on a per-project basis
-    // if (location.host !== 'localhost') {
-    //   $.ajax({
-    //     url: `//tools.wmflabs.org/musikanimal/api/sv_uses`,
-    //     method: 'PATCH'
-    //   });
-    // }
-
+    value: function patchUsage() {
+      if (location.host !== 'localhost') {
+        $.ajax({
+          url: '//tools.wmflabs.org/musikanimal/api/sv_uses/' + i18nLang,
+          method: 'PATCH'
+        });
+      }
+    }
 
     /**
      * Parses the URL query string and sets all the inputs accordingly
@@ -2480,7 +2480,13 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'setSiteSelectorDefaults',
     value: function setSiteSelectorDefaults(sites) {
+      sites.forEach(function (page) {
+        var escapedText = $('<div>').text(page).html();
+        $('<option>' + escapedText + '</option>').appendTo(config.siteSelector);
+      });
       $(config.siteSelector).select2('val', sites);
+      $(config.siteSelector).select2('close');
+
       return sites;
     }
 
@@ -2495,7 +2501,23 @@ var SiteViews = function (_Pv) {
       var siteSelector = $(config.siteSelector);
 
       var params = {
-        data: siteDomains,
+        ajax: {
+          transport: function transport(params, success, failure) {
+            var results = siteDomains.filter(function (domain) {
+              return domain.startsWith(params.data.q);
+            });
+            success({ results: results.slice(0, 10) });
+          },
+          processResults: function processResults(data) {
+            var results = data.results.map(function (domain) {
+              return {
+                id: domain,
+                text: domain
+              };
+            });
+            return { results: results };
+          }
+        },
         placeholder: $.i18n('projects-placeholder'),
         maximumSelectionLength: 10,
         minimumInputLength: 1
@@ -2805,6 +2827,31 @@ var SiteViews = function (_Pv) {
         $('.data-links').show();
       });
     }
+
+    /**
+     * Validates the given projects against the site map
+     *   showing an error message of any that are invalid,
+     *   and returning an array of the given projects that are valid
+     * @param {Array} projects - array of project strings to validate
+     * @returns {Array} - given projects that are valid
+     */
+
+  }, {
+    key: 'validateProjects',
+    value: function validateProjects() {
+      var _this9 = this;
+
+      var projects = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+      return projects.filter(function (project) {
+        if (siteDomains.includes(project)) {
+          return true;
+        } else {
+          _this9.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
+          return false;
+        }
+      });
+    }
   }]);
 
   return SiteViews;
@@ -2839,7 +2886,7 @@ $(document).ready(function () {
  * @type {Object}
  */
 var templates = {
-  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      &bullet;\n      <a href=\"https://<%= chartData[0].label %>/wiki/Special:Statistics\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n      &bullet;\n      <a href=\"<%= getTopviewsURL(chartData[0].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"https://<%= chartData[i].label %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <a href=\"https://<%= chartData[i].label %>/wiki/Special:Statistics\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n              &bullet;\n              <a href=\"<%= getTopviewsURL(chartData[i].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
+  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      &bullet;\n      <a href=\"https://<%= chartData[0].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n      &bullet;\n      <a href=\"<%= getTopviewsURL(chartData[0].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"https://<%= chartData[i].label %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <a href=\"https://<%= chartData[i].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n              &bullet;\n              <a href=\"<%= getTopviewsURL(chartData[i].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
   circularLegend: "\n    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>\n    <ul class=\"<%=name.toLowerCase()%>-legend\">\n      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>\n      <% for (var i=0; i<segments.length; i++) { %>\n        <li>\n          <span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">\n            <a href='https://<%= segments[i].label %>'><%=segments[i].label%></a>\n          </span>\n          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)\n        </li>\n      <% } %>\n    </ul>\n    "
 };
 
