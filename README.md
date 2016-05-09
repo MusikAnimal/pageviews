@@ -43,7 +43,7 @@ at that. Other browsers will still function without the styling. Use [Bootstrap]
 
 [JSDoc](http://usejsdoc.org/) is the preferred comment format. Try to document each function you create. The linters will complain if you don't!
 
-IE9 and below are not supported.
+IE10 and Safari 8 and below are not supported.
 
 ## Compilation
 All assets and views are ultimated placed in `public_html`. With the exception of images, you won't need to make any manual modifications to this directory.
@@ -55,6 +55,11 @@ The repo currently contains two (and eventually three) separate applications, th
 Each app has it's own `config.js`, which are constants for application-wide use. When the JS files are compiled, they are concatenated into a single `application.js` that lives within the directory for that app inside `public_html`. If you compile for non-production source maps will be included.
 
 Shared JavaScript goes in the `/shared` directory and will be automatically included in each `application.js`.
+
+All JavaScript is documented [JSDoc](http://usejsdoc.org/). You can view the documentation by running:
+```
+grunt jsdoc && open doc/PageViews/1.0.0/index.html
+```
 
 #### Sass
 Because of implications with concatenation, each SCSS file is first compiled into a file with the same name within `public_html`, and _then_ concatentated into an `application.css` which is included in the views.
