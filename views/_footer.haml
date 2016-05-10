@@ -24,6 +24,18 @@
 
 - isset($columns) || $columns = 10
 %footer(class="col-lg-#{$columns}")
+  %hr
+  %div.interapp-links.bm
+    - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' )
+    - $appLinks = array();
+    - foreach( $apps as $app )
+      - $i18nName = $app === 'pageviews' ? '' : $app . '-'
+      - if ( $app === $currentApp )
+        - $appLinks[] = $I18N->msg( $i18nName . 'title' )
+      - else
+        - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $i18nName . 'title' )}</a>"
+    = implode( ' &bullet; ', $appLinks )
+
   %span
     - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
     - $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
@@ -41,13 +53,13 @@
       = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
 
   %div
-    %a(href="/#{$app}/faq")<
+    %a(href="/#{$currentApp}/faq")<
       = $I18N->msg( 'faq' )
     &middot;
     %a(href="#" data-toggle="modal" data-target="#disclaimer-modal")<
       = $I18N->msg( 'disclaimer' )
     &middot;
-    %a(href="/#{$app}/url_structure")<
+    %a(href="/#{$currentApp}/url_structure")<
       = $I18N->msg( 'url-structure' )
     &middot;
     %a(href="https://github.com/MusikAnimal/pageviews")<

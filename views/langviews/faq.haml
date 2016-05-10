@@ -46,9 +46,9 @@
               %p
                 = $I18N->msg( 'faq-bug-report-body' )
 
-        %div.col-lg-10.text-center
+        %div.col-lg-10.text-center.tm
           %a(href="/langviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) )
 
-        - $app = "langviews";
+        - $currentApp = "langviews";
         - include "../../_footer.php"

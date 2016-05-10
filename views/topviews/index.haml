@@ -56,6 +56,10 @@
             %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
 
         / Chart
+        %div.col-lg-10
+          %small.text-warning
+            = $I18N->msg( 'topviews-data-approx' )
+            = $I18N->msg( 'topviews-false-positive' )
         %div.chart-container.col-lg-10
         %div.col-lg-10.text-center
           %a.expand-chart(href="#")
@@ -65,8 +69,7 @@
 
         / Other links
         %div.col-lg-10.data-links
-          %hr
           - include "../_lang_selector.php"
 
-        - $app = "topviews";
+        - $currentApp = "topviews";
         - include "../_footer.php"

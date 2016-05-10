@@ -111,7 +111,7 @@
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
           <?php include "../_lang_selector.php"; ?>
         </div>
-        <?php $app = "siteviews"; ?>
+        <?php $currentApp = "siteviews"; ?>
         <?php $columns = 12; ?>
         <?php include "../_footer.php"; ?>
       </main>

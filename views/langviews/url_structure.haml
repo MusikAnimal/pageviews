@@ -78,10 +78,9 @@
             %dd
               = $I18N->msg( 'url-structure-sort-direction', array( 'variables' => array( '<code>1</code>', '<code>-1</code>' ), 'parsemag' => true ) )
 
-        %div.col-lg-10.text-center
-          %hr
+        %div.col-lg-10.text-center.tm
           %a(href="/langviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) )
 
-        - $app = "langviews";
+        - $currentApp = "langviews";
         -include "../../_footer.php";

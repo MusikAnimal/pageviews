@@ -138,6 +138,11 @@
 	"faq-try-tool": "Try $1",
 	"faq-bug-report-title": "I have a feature request or bug to report",
 	"faq-bug-report-body": "Please review the requests listed on <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a>. If you have a new request, creating a new issue there is preferred, but you may also contact the maintainers directly.",
+	"faq-topviews-data-approx-title": "The data seems slightly off",
+	"faq-topviews-data-approx-body": "The $1 only provides the most viewed pages on a per-day basis. Topviews Analysis works by querying data for the top 1000 viewed pages for each day in the given date range, then giving you the sum of this data. This means that if a certain page was not in the top 1000 at some point during the given date range, the total views you see might be inaccurate. For the top 10 most viewed pages, this usually is a trivial difference, but the further you go down the list the more inaccurate the data might become.",
+	"faq-topviews-false-positive-title": "Why do some random pages have such high view counts?",
+	"faq-topviews-false-positive-body1": "These are <strong>false positives</strong>, and unfortunately they are unavoidable. These could surface because someone used an automated program to scrape the page, for instance. One tactic to identify false positives is to compare desktop views with mobile web. Mobile web views should be comprabale if not higher than desktop, so if mobile web views are very low, it might be a false positive.",
+	"faq-topviews-false-positive-body2": "You can also open a page in the Pageviews app for further analysis. Just click on the view count on the right side. The data you see here is accurate. If there's an unusual spike in traffic, the Wikimedia Analytics team might be able to explain it.",
 	"url-structure-example": "To get the latest data on a given article on your wiki, with default options, use:\n$1\nreplacing $2 with a valid $3. $4 will resolve to the page the link is placed on",
 	"url-structure-example-siteviews": "To get the latest data on a given article on your wiki, with default options, use:\n$1",
 	"url-structure-topviews-example": "To show the default list of top viewed pages on your wiki, use:\n$1\nreplacing $2 with a valid $3. You can also use $4 to exclude certain pages from view, such as the Main Page.",
@@ -171,5 +176,7 @@
 	"projects": "Projects",
 	"projects-placeholder": "Type project names...",
 	"statistics": "Statistics",
-	"most-viewed-pages": "Most viewed pages"
+	"most-viewed-pages": "Most viewed pages",
+	"topviews-data-approx": "All topviews data is <a href='/topviews/faq#data_caveat'>approximate</a>.",
+	"topviews-false-positive": "Some pages listed may be <a href='/topviews/faq#false_positive'>false positives</a>."
 }

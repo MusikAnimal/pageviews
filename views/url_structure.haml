@@ -72,10 +72,9 @@
             %dd
               = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
 
-        %div.col-lg-10.text-center
-          %hr
+        %div.col-lg-10.text-center.tm
           %a(href="/pageviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
 
-        - $app = "pageviews";
+        - $currentApp = "pageviews";
         -include "../_footer.php";

@@ -232,6 +232,7 @@ var PageViews = function (_Pv) {
       this.setupSelect2Colors();
       this.popParams();
       this.setupListeners();
+      this.updateInterAppLinks();
     }
 
     /**
@@ -603,8 +604,11 @@ var PageViews = function (_Pv) {
       this.resetArticleSelector();
 
       if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
-        params.pages = ['Cat', 'Dog'];
-        this.setArticleSelectorDefaults(params.pages);
+        // only set default of Cat and Dog for enwiki
+        if (this.project === 'en.wikipedia') {
+          params.pages = ['Cat', 'Dog'];
+          this.setArticleSelectorDefaults(params.pages);
+        }
       } else if (this.normalized) {
         params.pages = this.underscorePageNames(params.pages);
         this.setArticleSelectorDefaults(params.pages);
@@ -1021,6 +1025,8 @@ var PageViews = function (_Pv) {
         }
         if (_this9.validateProject()) return;
         _this9.resetView();
+
+        _this9.updateInterAppLinks();
       });
     }
 
@@ -1205,7 +1211,7 @@ var PageViews = function (_Pv) {
 
     /**
      * Checks value of project input and validates it against site map
-     * @returns {boolean} whether the currently input project is valid
+     * @returns {boolean} whether the currently input project is INvalid
      */
 
   }, {
@@ -1999,6 +2005,27 @@ var Pv = function () {
     value: function underscorePageNames(pages) {
       return pages.map(function (page) {
         return decodeURIComponent(page).score();
+      });
+    }
+
+    /**
+     * Update hrefs of inter-app links to load currently selected project
+     * @return {null} nuttin'
+     */
+
+  }, {
+    key: 'updateInterAppLinks',
+    value: function updateInterAppLinks() {
+      var _this3 = this;
+
+      $('.interapp-link').each(function (i, link) {
+        var url = link.href.split('?')[0];
+
+        if (link.classList.contains('interapp-link--siteviews')) {
+          link.href = url + '?sites=' + _this3.project + '.org';
+        } else {
+          link.href = url + '?project=' + _this3.project + '.org';
+        }
       });
     }
 

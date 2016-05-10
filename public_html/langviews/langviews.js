@@ -126,6 +126,7 @@ var LangViews = function (_Pv) {
       this.setupDateRangeSelector();
       this.popParams();
       this.setupListeners();
+      this.updateInterAppLinks();
     }
 
     /**
@@ -169,7 +170,10 @@ var LangViews = function (_Pv) {
         _this2.renderData();
       });
 
-      $(config.projectInput).on('change', this.validateProject.bind(this));
+      $(config.projectInput).on('change', function () {
+        _this2.validateProject();
+        _this2.updateInterAppLinks();
+      });
     }
 
     /**
@@ -1660,6 +1664,27 @@ var Pv = function () {
     value: function underscorePageNames(pages) {
       return pages.map(function (page) {
         return decodeURIComponent(page).score();
+      });
+    }
+
+    /**
+     * Update hrefs of inter-app links to load currently selected project
+     * @return {null} nuttin'
+     */
+
+  }, {
+    key: 'updateInterAppLinks',
+    value: function updateInterAppLinks() {
+      var _this3 = this;
+
+      $('.interapp-link').each(function (i, link) {
+        var url = link.href.split('?')[0];
+
+        if (link.classList.contains('interapp-link--siteviews')) {
+          link.href = url + '?sites=' + _this3.project + '.org';
+        } else {
+          link.href = url + '?project=' + _this3.project + '.org';
+        }
       });
     }
 

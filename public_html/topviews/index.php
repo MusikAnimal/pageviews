@@ -71,6 +71,12 @@
           </div>
         </div>
         <!-- Chart -->
+        <div class="col-lg-10">
+          <small class="text-warning">
+            <?php echo $I18N->msg( 'topviews-data-approx' ); ?>
+            <?php echo $I18N->msg( 'topviews-false-positive' ); ?>
+          </small>
+        </div>
         <div class="chart-container col-lg-10"></div>
         <div class="col-lg-10 text-center">
           <a class="expand-chart" href="#">
@@ -80,10 +86,9 @@
         <div class="message-container col-lg-10"></div>
         <!-- Other links -->
         <div class="col-lg-10 data-links">
-          <hr>
           <?php include "../_lang_selector.php"; ?>
         </div>
-        <?php $app = "topviews"; ?>
+        <?php $currentApp = "topviews"; ?>
         <?php include "../_footer.php"; ?>
       </div>
     </div>

@@ -145,6 +145,11 @@
 	"faq-try-tool": "FAQ - link to 'try' the other tools (Langviews, Topviews). $1 is the link to the tool.\n{{Identical|Try}}",
 	"faq-bug-report-title": "FAQ - title of the section explaining how to report a bug or request a feature",
 	"faq-bug-report-body": "FAQ - body of the section explaining how to report a bug or request a feature",
+	"faq-topviews-data-approx-title": "FAQ - title of the section explaining that Topviews data is approximate.",
+	"faq-topviews-data-approx-body": "FAQ - body of the section explaining that Topviews data is approximate. $1 is a link to the Wikimedia API documentation.",
+	"faq-topviews-false-positive-title": "FAQ - title of the section explaning that there could be false positives in the Topviews report.",
+	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report.",
+	"faq-topviews-false-positive-body2": "FAQ - an additional body of text explaining that there could be false positives in the Topviews report.",
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
 	"url-structure-example-siteviews": "Example of how to link to Siteviews Analysis on a wiki. $1 is the example link. This message is the same as the first sentence of 'url-structure-example'",
 	"url-structure-topviews-example": "Example of how to link to Topviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, and $4 is the 'excludes' parameter",
@@ -178,5 +183,7 @@
 	"projects": "Header for the part of the interface that lets the user select which projects they want to view statistics for in the Siteviews application.\n{{Identical|Projects}}",
 	"projects-placeholder": "Placeholder text for the form input where the user enters the projects they want to view statistics for in the Siteviews application",
 	"statistics": "Link to show a project's statistics page\n{{Identical|Statistics}}",
-	"most-viewed-pages": "Link to view the most viewed pages of a project"
+	"most-viewed-pages": "Link to view the most viewed pages of a project",
+	"topviews-data-approx": "Text that shows above the list of pages on Topviews that explains the data is approximate. This links to the relevant FAQ section. Please do not alter the link.",
+	"topviews-false-positive": "Text that shows above the list of pages on Topviews that explains there might be false positives. This links to the relevant FAQ section. Please do not alter the link.",
 }

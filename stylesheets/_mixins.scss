@@ -1,6 +1,7 @@
 $red: #fe875e;
 $gray: #ccc;
 $link: #337ab7;
+$flash: #fbf8b2;
 
 @mixin prefix($prop, $val) {
   @each $pre in -webkit-, -moz-, -ms-, -o- {

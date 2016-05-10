@@ -78,13 +78,12 @@
             </dd>
           </dl>
         </div>
-        <div class="col-lg-10 text-center">
-          <hr>
+        <div class="col-lg-10 text-center tm">
           <a href="/siteviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "siteviews"; ?>
+        <?php $currentApp = "siteviews"; ?>
         <?php include "../../_footer.php"; ?>
       </div>
     </div>

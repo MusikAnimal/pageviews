@@ -81,13 +81,12 @@
             </dd>
           </dl>
         </div>
-        <div class="col-lg-10 text-center">
-          <hr>
+        <div class="col-lg-10 text-center tm">
           <a href="/topviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "topviews"; ?>
+        <?php $currentApp = "topviews"; ?>
         <?php include "../../_footer.php"; ?>
       </div>
     </div>

@@ -584,6 +584,22 @@ class Pv {
   }
 
   /**
+   * Update hrefs of inter-app links to load currently selected project
+   * @return {null} nuttin'
+   */
+  updateInterAppLinks() {
+    $('.interapp-link').each((i, link) => {
+      let url = link.href.split('?')[0];
+
+      if (link.classList.contains('interapp-link--siteviews')) {
+        link.href = `${url}?sites=${this.project}.org`;
+      } else {
+        link.href = `${url}?project=${this.project}.org`;
+      }
+    });
+  }
+
+  /**
    * Writes message just below the chart
    * @param {string} message - message to write
    * @param {boolean} clear - whether to clear any existing messages

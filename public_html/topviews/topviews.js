@@ -754,6 +754,27 @@ var Pv = function () {
     }
 
     /**
+     * Update hrefs of inter-app links to load currently selected project
+     * @return {null} nuttin'
+     */
+
+  }, {
+    key: 'updateInterAppLinks',
+    value: function updateInterAppLinks() {
+      var _this3 = this;
+
+      $('.interapp-link').each(function (i, link) {
+        var url = link.href.split('?')[0];
+
+        if (link.classList.contains('interapp-link--siteviews')) {
+          link.href = url + '?sites=' + _this3.project + '.org';
+        } else {
+          link.href = url + '?project=' + _this3.project + '.org';
+        }
+      });
+    }
+
+    /**
      * Writes message just below the chart
      * @param {string} message - message to write
      * @param {boolean} clear - whether to clear any existing messages
@@ -1867,6 +1888,7 @@ var TopViews = function (_Pv) {
       this.setupProjectInput();
       this.setupDateRangeSelector();
       this.popParams();
+      this.updateInterAppLinks();
     }
 
     /**

@@ -26,6 +26,20 @@
 </div>
 <?php isset($columns) || $columns = 10; ?>
 <footer class="col-lg-<?php echo $columns; ?>">
+  <hr>
+  <div class="interapp-links bm">
+    <?php $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' ); ?>
+    <?php $appLinks = array(); ?>
+    <?php foreach( $apps as $app ) { ?>
+      <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
+      <?php if ( $app === $currentApp ) { ?>
+        <?php $appLinks[] = $I18N->msg( $i18nName . 'title' ); ?>
+      <?php } else { ?>
+        <?php $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $i18nName . 'title' )}</a>"; ?>
+      <?php } ?>
+    <?php } ?>
+    <?php echo implode( ' &bullet; ', $appLinks ); ?>
+  </div>
   <span>
     <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
     <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
@@ -45,11 +59,11 @@
     </span>
   </div>
   <div>
-    <a href="/<?php echo $app; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
+    <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
     &middot;
     <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?php echo $I18N->msg( 'disclaimer' ); ?></a>
     &middot;
-    <a href="/<?php echo $app; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
+    <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
     &middot;
     <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
     &middot;

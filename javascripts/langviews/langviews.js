@@ -31,6 +31,7 @@ class LangViews extends Pv {
     this.setupDateRangeSelector();
     this.popParams();
     this.setupListeners();
+    this.updateInterAppLinks();
   }
 
   /**
@@ -66,7 +67,10 @@ class LangViews extends Pv {
       this.renderData();
     });
 
-    $(config.projectInput).on('change', this.validateProject.bind(this));
+    $(config.projectInput).on('change', () => {
+      this.validateProject();
+      this.updateInterAppLinks();
+    });
   }
 
   /**

@@ -57,6 +57,7 @@ class PageViews extends Pv {
     this.setupSelect2Colors();
     this.popParams();
     this.setupListeners();
+    this.updateInterAppLinks();
   }
 
   /**
@@ -376,8 +377,11 @@ class PageViews extends Pv {
     this.resetArticleSelector();
 
     if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
-      params.pages = ['Cat', 'Dog'];
-      this.setArticleSelectorDefaults(params.pages);
+      // only set default of Cat and Dog for enwiki
+      if (this.project === 'en.wikipedia') {
+        params.pages = ['Cat', 'Dog'];
+        this.setArticleSelectorDefaults(params.pages);
+      }
     } else if (this.normalized) {
       params.pages = this.underscorePageNames(params.pages);
       this.setArticleSelectorDefaults(params.pages);
@@ -765,6 +769,8 @@ class PageViews extends Pv {
       }
       if (this.validateProject()) return;
       this.resetView();
+
+      this.updateInterAppLinks();
     });
   }
 
@@ -943,7 +949,7 @@ class PageViews extends Pv {
 
   /**
    * Checks value of project input and validates it against site map
-   * @returns {boolean} whether the currently input project is valid
+   * @returns {boolean} whether the currently input project is INvalid
    */
   validateProject() {
     let project = $(config.projectInput).val();

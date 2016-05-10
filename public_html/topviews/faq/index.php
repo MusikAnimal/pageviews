@@ -21,6 +21,30 @@
         </header>
         <div class="col-lg-10">
           <ul class="list-group">
+            <li class="list-group-item" id="data_caveat">
+              <p>
+                <strong>
+                  <?php echo $I18N->msg( 'faq-topviews-data-approx-title'); ?>
+                </strong>
+              </p>
+              <p>
+                <?php $restBaseLink = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>Wikimedia Pageviews API</a>"; ?>
+                <?php echo $I18N->msg( 'faq-topviews-data-approx-body', array( 'variables' => array( $restBaseLink ) ) ); ?>
+              </p>
+            </li>
+            <li class="list-group-item" id="false_positive">
+              <p>
+                <strong>
+                  <?php echo $I18N->msg( 'faq-topviews-false-positive-title'); ?>
+                </strong>
+              </p>
+              <p>
+                <?php echo $I18N->msg( 'faq-topviews-false-positive-body1'); ?>
+              </p>
+              <p>
+                <?php echo $I18N->msg( 'faq-topviews-false-positive-body2'); ?>
+              </p>
+            </li>
             <li class="list-group-item">
               <p>
                 <strong><?php echo $I18N->msg( 'faq-old-data-title' ); ?></strong>
@@ -47,14 +71,20 @@
             </li>
           </ul>
         </div>
-        <div class="col-lg-10 text-center">
+        <div class="col-lg-10 text-center tm">
           <a href="/topviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "topviews"; ?>
+        <?php $currentApp = "topviews"; ?>
         <?php include "../../_footer.php"; ?>
       </div>
     </div>
   </body>
+  <script type="text/javascript">
+  //<![CDATA[
+    if (location.hash) $(location.hash).addClass('flash');
+    
+  //]]>
+  </script>
 </html>

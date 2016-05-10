@@ -90,13 +90,12 @@
             </dd>
           </dl>
         </div>
-        <div class="col-lg-10 text-center">
-          <hr>
+        <div class="col-lg-10 text-center tm">
           <a href="/pageviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $app = "pageviews"; ?>
+        <?php $currentApp = "pageviews"; ?>
         <?php include "../_footer.php"; ?>
       </div>
     </div>

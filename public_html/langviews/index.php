@@ -163,7 +163,7 @@
             <?php include "../_lang_selector.php"; ?>
           </div>
         </div>
-        <?php $app = "langviews"; ?>
+        <?php $currentApp = "langviews"; ?>
         <?php $columns = 12; ?>
         <?php include "../_footer.php"; ?>
       </main>

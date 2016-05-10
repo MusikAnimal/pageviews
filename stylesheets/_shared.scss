@@ -142,7 +142,7 @@ header {
 footer {
   display: block;
   font-family: sans-serif;
-  margin: 40px 0 20px;
+  margin: 6px 0 20px;
   text-align: center;
 }
 
@@ -199,6 +199,23 @@ footer {
   overflow-y: scroll;
 }
 
+.bm {
+  margin-bottom: 15px;
+}
+
 .tm {
   margin-top: 15px;
+}
+
+.interapp-links {
+  font-size: 15px;
+}
+
+.flash {
+  animation: 3s ease-out 1 flash;
+}
+
+@keyframes flash {
+  0% { background-color: $flash; }
+  100% { background-color: none; }
 }

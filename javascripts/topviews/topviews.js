@@ -36,6 +36,7 @@ class TopViews extends Pv {
     this.setupProjectInput();
     this.setupDateRangeSelector();
     this.popParams();
+    this.updateInterAppLinks();
   }
 
   /**
