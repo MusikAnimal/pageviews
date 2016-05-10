@@ -39,6 +39,21 @@
             </li>
             <li class="list-group-item">
               <p>
+                <strong><?php echo $I18N->msg( 'faq-source-title' ); ?></strong>
+              </p>
+              <ul class="agents-ul">
+                <li>
+                  <i><?php echo $I18N->msg( 'pageviews' ); ?></i>
+                  <?php echo $I18N->msg( 'faq-source-pageviews' ); ?>
+                </li>
+                <li>
+                  <i><?php echo $I18N->msg( 'unique-devices' ); ?></i>
+                  <?php echo $I18N->msg( 'faq-source-unique-devices' ); ?>
+                </li>
+              </ul>
+            </li>
+            <li class="list-group-item">
+              <p>
                 <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
               </p>
               <ul class="agents-ul">

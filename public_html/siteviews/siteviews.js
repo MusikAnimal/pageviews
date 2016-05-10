@@ -1882,6 +1882,7 @@ var config = {
   circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
   colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
   cookieExpiry: 30, // num days
+  dataSourceSelector: '#data-source-select',
   defaults: {
     autocomplete: 'autocomplete',
     chartType: 'Line',
@@ -1935,6 +1936,8 @@ module.exports = config;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2008,6 +2011,7 @@ var SiteViews = function (_Pv) {
       this.setupSiteSelector();
       this.setupSettingsModal();
       this.setupSelect2Colors();
+      this.setupDataSourceSelector();
       this.popParams();
       this.setupListeners();
     }
@@ -2149,10 +2153,9 @@ var SiteViews = function (_Pv) {
           data.items.push(alreadyThere[date]);
         } else {
           var edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
-          data.items.push({
-            timestamp: date.format(config.timestampFormat),
-            views: edgeCase ? null : 0
-          });
+          data.items.push(_defineProperty({
+            timestamp: date.format(config.timestampFormat)
+          }, this.isPageviews() ? 'views' : 'devices', edgeCase ? null : 0));
         }
       }
     }
@@ -2170,8 +2173,10 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'getCircularData',
     value: function getCircularData(data, site, index) {
+      var _this4 = this;
+
       var values = data.items.map(function (elem) {
-        return elem.views;
+        return _this4.isPageviews() ? elem.views : elem.devices;
       }),
           color = config.colors[index];
 
@@ -2217,8 +2222,10 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'getLinearData',
     value: function getLinearData(data, site, index) {
+      var _this5 = this;
+
       var values = data.items.map(function (elem) {
-        return elem.views;
+        return _this5.isPageviews() ? elem.views : elem.devices;
       }),
           color = config.colors[index % 10];
 
@@ -2340,8 +2347,16 @@ var SiteViews = function (_Pv) {
         this.setSpecialRange(config.defaults.dateRange);
       }
 
+      $(config.dataSourceSelector).val(params.source || 'pageviews');
+
+      this.setupDataSourceSelector();
+
       $(config.platformSelector).val(params.platform || 'all-access');
-      $(config.agentSelector).val(params.agent || 'user');
+      if (params.source === 'pageviews') {
+        $(config.agentSelector).val();
+      } else {
+        $(config.dataSourceSelector).trigger('change');
+      }
 
       this.resetSiteSelector();
 
@@ -2369,8 +2384,12 @@ var SiteViews = function (_Pv) {
 
       var params = {
         platform: $(config.platformSelector).val(),
-        agent: $(config.agentSelector).val()
+        source: $(config.dataSourceSelector).val()
       };
+
+      if (this.isPageviews()) {
+        params.agent = $(config.agentSelector).val();
+      }
 
       /**
        * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
@@ -2385,6 +2404,11 @@ var SiteViews = function (_Pv) {
       }
 
       return params;
+    }
+  }, {
+    key: 'isPageviews',
+    value: function isPageviews() {
+      return $(config.dataSourceSelector).val() === 'pageviews';
     }
 
     /**
@@ -2462,16 +2486,16 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'saveSettings',
     value: function saveSettings() {
-      var _this4 = this;
+      var _this6 = this;
 
       /** track if we're changing to no_autocomplete mode */
       var wasAutocomplete = this.autocomplete === 'no_autocomplete';
 
       $.each($('#settings-modal input'), function (index, el) {
         if (el.type === 'checkbox') {
-          _this4.saveSetting(el.name, el.checked ? 'true' : 'false');
+          _this6.saveSetting(el.name, el.checked ? 'true' : 'false');
         } else if (el.checked) {
-          _this4.saveSetting(el.name, el.value);
+          _this6.saveSetting(el.name, el.value);
         }
       });
 
@@ -2577,7 +2601,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this5 = this;
+      var _this7 = this;
 
       var dateRangeSelector = $(config.dateRangeSelector);
 
@@ -2611,9 +2635,9 @@ var SiteViews = function (_Pv) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this5.daterangepicker.container,
+            container = _this7.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this5.specialRange = {
+        _this7.specialRange = {
           range: Object.keys(config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
@@ -2621,26 +2645,61 @@ var SiteViews = function (_Pv) {
 
       /** the "Latest N days" links */
       $('.date-latest a').on('click', function (e) {
-        _this5.setSpecialRange('latest-' + $(e.target).data('value'));
+        _this7.setSpecialRange('latest-' + $(e.target).data('value'));
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this5.specialRange = null;
+          _this7.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this5.daterangepicker.updateElement();
+          _this7.daterangepicker.updateElement();
         }
       });
 
       dateRangeSelector.on('change', function (e) {
-        _this5.setChartPointDetectionRadius();
-        _this5.updateChart();
+        _this7.setChartPointDetectionRadius();
+        _this7.updateChart();
 
         /** clear out specialRange if it doesn't match our input */
-        if (_this5.specialRange && _this5.specialRange.value !== e.target.value) {
-          _this5.specialRange = null;
+        if (_this7.specialRange && _this7.specialRange.value !== e.target.value) {
+          _this7.specialRange = null;
         }
+      });
+    }
+  }, {
+    key: 'setPlatformOptionValues',
+    value: function setPlatformOptionValues() {
+      var _this8 = this;
+
+      $(config.platformSelector).find('option').each(function (index, el) {
+        $(el).prop('value', _this8.isPageviews() ? $(el).data('value') : $(el).data('ud-value'));
+      });
+    }
+  }, {
+    key: 'setupDataSourceSelector',
+    value: function setupDataSourceSelector() {
+      var _this9 = this;
+
+      this.setPlatformOptionValues();
+
+      $(config.dataSourceSelector).on('change', function (e) {
+        if (_this9.isPageviews()) {
+          $('.platform-select--mobile-web').show();
+          $(config.agentSelector).prop('disabled', false);
+        } else {
+          $('.platform-select--mobile-web').hide();
+          $(config.agentSelector).val('user').prop('disabled', true);
+        }
+
+        _this9.setPlatformOptionValues();
+
+        /** reset to all-access if currently on mobile-app for unique-devices (not pageviews) */
+        if ($(config.platformSelector).val() === 'mobile-app' && !_this9.isPageviews()) {
+          $(config.platformSelector).val('all-sites'); // chart will automatically re-render
+        } else {
+            _this9.updateChart();
+          }
       });
     }
 
@@ -2652,7 +2711,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this6 = this;
+      var _this10 = this;
 
       _get(Object.getPrototypeOf(SiteViews.prototype), 'setupListeners', this).call(this);
 
@@ -2662,9 +2721,9 @@ var SiteViews = function (_Pv) {
 
       /** changing of chart types */
       $('.modal-chart-type a').on('click', function (e) {
-        _this6.chartType = $(e.currentTarget).data('type');
-        _this6.setLocalStorage('pageviews-chart-preference', _this6.chartType);
-        _this6.updateChart();
+        _this10.chartType = $(e.currentTarget).data('type');
+        _this10.setLocalStorage('pageviews-chart-preference', _this10.chartType);
+        _this10.updateChart();
       });
 
       // window.onpopstate = popParams();
@@ -2680,7 +2739,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'setupSelect2Colors',
     value: function setupSelect2Colors() {
-      var _this7 = this;
+      var _this11 = this;
 
       /** first delete old stylesheet, if present */
       if (this.colorsStyleEl) this.colorsStyleEl.remove();
@@ -2692,7 +2751,7 @@ var SiteViews = function (_Pv) {
 
       /** add color rules */
       config.colors.forEach(function (color, index) {
-        _this7.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
+        _this11.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
       });
 
       return this.colorsStyleEl.sheet;
@@ -2725,7 +2784,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'updateChart',
     value: function updateChart(force) {
-      var _this8 = this,
+      var _this12 = this,
           _$;
 
       var sites = $(config.siteSelector).select2('val') || [];
@@ -2765,8 +2824,10 @@ var SiteViews = function (_Pv) {
        */
       sites.forEach(function (site, index) {
         var uriEncodedSite = encodeURIComponent(site);
+
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedSite + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = _this12.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedSite + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedSite + '/' + $(config.platformSelector).val() + '/daily' + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+
         var promise = $.ajax({
           url: url,
           dataType: 'json'
@@ -2775,24 +2836,24 @@ var SiteViews = function (_Pv) {
 
         promise.success(function (data) {
           // FIXME: these needs fixing too, sometimes doesn't show zero
-          _this8.fillInZeros(data, startDate, endDate);
+          if (_this12.isPageviews()) _this12.fillInZeros(data, startDate, endDate);
 
           /** Build the site's dataset. */
-          if (config.linearCharts.includes(_this8.chartType)) {
-            datasets.push(_this8.getLinearData(data, site, index));
+          if (config.linearCharts.includes(_this12.chartType)) {
+            datasets.push(_this12.getLinearData(data, site, index));
           } else {
-            datasets.push(_this8.getCircularData(data, site, index));
+            datasets.push(_this12.getCircularData(data, site, index));
           }
 
           /** fetch the labels for the x-axis on success if we haven't already */
           if (data.items && !labels.length) {
             labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, config.timestampFormat).format(_this8.dateFormat);
+              return moment(elem.timestamp, config.timestampFormat).format(_this12.dateFormat);
             });
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this8.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
+            _this12.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
             sites = sites.filter(function (el) {
               return el !== site;
             });
@@ -2816,7 +2877,7 @@ var SiteViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this8.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
+          return _this12.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
         }
 
         if (!sites.length) return;
@@ -2831,20 +2892,20 @@ var SiteViews = function (_Pv) {
         window.chartData = sortedDatasets;
 
         $('.chart-container').removeClass('loading');
-        var options = Object.assign({}, config.chartConfig[_this8.chartType].opts, config.globalChartOpts);
+        var options = Object.assign({}, config.chartConfig[_this12.chartType].opts, config.globalChartOpts);
         var linearData = { labels: labels, datasets: sortedDatasets };
 
         $('.chart-container').html('');
         $('.chart-container').append("<canvas class='aqs-chart'>");
         var context = $(config.chart)[0].getContext('2d');
 
-        if (config.linearCharts.includes(_this8.chartType)) {
-          _this8.chartObj = new Chart(context)[_this8.chartType](linearData, options);
+        if (config.linearCharts.includes(_this12.chartType)) {
+          _this12.chartObj = new Chart(context)[_this12.chartType](linearData, options);
         } else {
-          _this8.chartObj = new Chart(context)[_this8.chartType](sortedDatasets, options);
+          _this12.chartObj = new Chart(context)[_this12.chartType](sortedDatasets, options);
         }
 
-        $('#chart-legend').html(_this8.chartObj.generateLegend());
+        $('#chart-legend').html(_this12.chartObj.generateLegend());
         $('.data-links').show();
       });
     }
@@ -2860,7 +2921,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'validateProjects',
     value: function validateProjects() {
-      var _this9 = this;
+      var _this13 = this;
 
       var projects = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
@@ -2868,7 +2929,7 @@ var SiteViews = function (_Pv) {
         if (siteDomains.includes(project)) {
           return true;
         } else {
-          _this9.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
+          _this13.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
           return false;
         }
       });

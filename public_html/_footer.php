@@ -33,9 +33,9 @@
     <?php foreach( $apps as $app ) { ?>
       <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
       <?php if ( $app === $currentApp ) { ?>
-        <?php $appLinks[] = $I18N->msg( $i18nName . 'title' ); ?>
+        <?php $appLinks[] = $I18N->msg( $app ); ?>
       <?php } else { ?>
-        <?php $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $i18nName . 'title' )}</a>"; ?>
+        <?php $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"; ?>
       <?php } ?>
     <?php } ?>
     <?php echo implode( ' &bullet; ', $appLinks ); ?>

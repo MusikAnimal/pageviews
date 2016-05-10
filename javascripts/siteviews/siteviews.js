@@ -52,6 +52,7 @@ class SiteViews extends Pv {
     this.setupSiteSelector();
     this.setupSettingsModal();
     this.setupSelect2Colors();
+    this.setupDataSourceSelector();
     this.popParams();
     this.setupListeners();
   }
@@ -176,7 +177,7 @@ class SiteViews extends Pv {
         let edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
         data.items.push({
           timestamp: date.format(config.timestampFormat),
-          views: edgeCase ? null : 0
+          [this.isPageviews() ? 'views' : 'devices']: edgeCase ? null : 0
         });
       }
     }
@@ -192,7 +193,7 @@ class SiteViews extends Pv {
    * @returns {object} - ready for chart rendering
    */
   getCircularData(data, site, index) {
-    const values = data.items.map(elem => elem.views),
+    const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
       color = config.colors[index];
 
     return Object.assign(
@@ -232,7 +233,7 @@ class SiteViews extends Pv {
    * @returns {object} - ready for chart rendering
    */
   getLinearData(data, site, index) {
-    const values = data.items.map(elem => elem.views),
+    const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
       color = config.colors[index % 10];
 
     return Object.assign(
@@ -337,8 +338,16 @@ class SiteViews extends Pv {
       this.setSpecialRange(config.defaults.dateRange);
     }
 
+    $(config.dataSourceSelector).val(params.source || 'pageviews');
+
+    this.setupDataSourceSelector();
+
     $(config.platformSelector).val(params.platform || 'all-access');
-    $(config.agentSelector).val(params.agent || 'user');
+    if (params.source === 'pageviews') {
+      $(config.agentSelector).val();
+    } else {
+      $(config.dataSourceSelector).trigger('change');
+    }
 
     this.resetSiteSelector();
 
@@ -361,8 +370,12 @@ class SiteViews extends Pv {
   getParams(specialRange = true) {
     let params = {
       platform: $(config.platformSelector).val(),
-      agent: $(config.agentSelector).val()
+      source: $(config.dataSourceSelector).val()
     };
+
+    if (this.isPageviews()) {
+      params.agent = $(config.agentSelector).val();
+    }
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
@@ -377,6 +390,10 @@ class SiteViews extends Pv {
     }
 
     return params;
+  }
+
+  isPageviews() {
+    return $(config.dataSourceSelector).val() === 'pageviews';
   }
 
   /**
@@ -626,6 +643,35 @@ class SiteViews extends Pv {
     });
   }
 
+  setPlatformOptionValues() {
+    $(config.platformSelector).find('option').each((index, el) => {
+      $(el).prop('value', this.isPageviews() ? $(el).data('value') : $(el).data('ud-value'));
+    });
+  }
+
+  setupDataSourceSelector() {
+    this.setPlatformOptionValues();
+
+    $(config.dataSourceSelector).on('change', e => {
+      if (this.isPageviews()) {
+        $('.platform-select--mobile-web').show();
+        $(config.agentSelector).prop('disabled', false);
+      } else {
+        $('.platform-select--mobile-web').hide();
+        $(config.agentSelector).val('user').prop('disabled', true);
+      }
+
+      this.setPlatformOptionValues();
+
+      /** reset to all-access if currently on mobile-app for unique-devices (not pageviews) */
+      if ($(config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
+        $(config.platformSelector).val('all-sites'); // chart will automatically re-render
+      } else {
+        this.updateChart();
+      }
+    });
+  }
+
   /**
    * General place to add page-wide listeners
    * @returns {null} - nothing
@@ -728,12 +774,17 @@ class SiteViews extends Pv {
      */
     sites.forEach((site, index) => {
       const uriEncodedSite = encodeURIComponent(site);
+
       /** @type {String} Url to query the API. */
-      const url = (
+      const url = this.isPageviews() ? (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedSite}` +
         `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+      ) : (
+        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedSite}/${$(config.platformSelector).val()}/daily` +
+        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
+
       const promise = $.ajax({
         url: url,
         dataType: 'json'
@@ -742,7 +793,7 @@ class SiteViews extends Pv {
 
       promise.success(data => {
         // FIXME: these needs fixing too, sometimes doesn't show zero
-        this.fillInZeros(data, startDate, endDate);
+        if (this.isPageviews()) this.fillInZeros(data, startDate, endDate);
 
         /** Build the site's dataset. */
         if (config.linearCharts.includes(this.chartType)) {

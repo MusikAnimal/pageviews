@@ -108,6 +108,9 @@
 	"language": "Language",
 	"badges": "Badges",
 	"pageviews": "Pageviews",
+	"langviews": "Langviews",
+	"topviews": "Topviews",
+	"siteviews": "Siteviews",
 	"average": "Average",
 	"submit": "Submit",
 	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
@@ -143,6 +146,9 @@
 	"faq-topviews-false-positive-title": "Why do some random pages have such high view counts?",
 	"faq-topviews-false-positive-body1": "These are <strong>false positives</strong>, and unfortunately they are unavoidable. These could surface because someone used an automated program to scrape the page, for instance. One tactic to identify false positives is to compare desktop views with mobile web. Mobile web views should be comprabale if not higher than desktop, so if mobile web views are very low, it might be a false positive.",
 	"faq-topviews-false-positive-body2": "You can also open a page in the Pageviews app for further analysis. Just click on the view count on the right side. The data you see here is accurate. If there's an unusual spike in traffic, the Wikimedia Analytics team might be able to explain it.",
+	"faq-source-title": "What are the \"Data sources\"?",
+	"faq-source-pageviews": "is the total number of pageviews the project received.",
+	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
 	"url-structure-example": "To get the latest data on a given article on your wiki, with default options, use:\n$1\nreplacing $2 with a valid $3. $4 will resolve to the page the link is placed on",
 	"url-structure-example-siteviews": "To get the latest data on a given article on your wiki, with default options, use:\n$1",
 	"url-structure-topviews-example": "To show the default list of top viewed pages on your wiki, use:\n$1\nreplacing $2 with a valid $3. You can also use $4 to exclude certain pages from view, such as the Main Page.",
@@ -165,6 +171,7 @@
 	"url-structure-agent": "One of $1 (human viewer, default), $2 (search engine crawlers), $3 (WMF bots) or $4 (user, spider and bot)",
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
+	"url-structure-source": "Either $1 (total page views) or $2 (number of unique devices that viewed the page)",
 	"default": "Default",
 	"all-languages": "All languages",
 	"history": "History",
@@ -178,5 +185,6 @@
 	"statistics": "Statistics",
 	"most-viewed-pages": "Most viewed pages",
 	"topviews-data-approx": "All topviews data is <a href='/topviews/faq#data_caveat'>approximate</a>.",
-	"topviews-false-positive": "Some pages listed may be <a href='/topviews/faq#false_positive'>false positives</a>."
+	"topviews-false-positive": "Some pages listed may be <a href='/topviews/faq#false_positive'>false positives</a>.",
+	"unique-devices": "Unique devices"
 }

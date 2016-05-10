@@ -24,7 +24,7 @@
         </div>
         <div class="row aqs-row options">
           <!-- Date range selector -->
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-5 col-sm-5">
             <label for="range-input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
@@ -41,26 +41,39 @@
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Advanced options -->
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-3 col-sm-3">
+            <label for="data-source-select">
+              Data source
+            </label>
+            <select class="form-control" id="data-source-select">
+              <option value="pageviews">
+                Pageviews
+              </option>
+              <option value="unique-devices">
+                Unique devices
+              </option>
+            </select>
+          </div>
+          <div class="col-lg-2 col-sm-2">
             <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
             <select class="form-control" id="platform-select">
-              <option value="all-access">
+              <option value="all-access" data-value="all-access" data-ud-value="all-sites">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>
-              <option value="desktop">
+              <option value="desktop" data-value="desktop" data-ud-value="desktop-site">
                 <?php echo $I18N->msg( 'desktop' ); ?>
               </option>
-              <option value="mobile-app">
+              <option class="platform-select--mobile-web" value="mobile-app">
                 <?php echo $I18N->msg( 'mobile-app' ); ?>
               </option>
-              <option value="mobile-web">
+              <option value="mobile-web" data-value="mobile-web" data-ud-value="mobile-site">
                 <?php echo $I18N->msg( 'mobile-web' ); ?>
               </option>
             </select>
           </div>
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-2 col-sm-2">
             <label for="agent-select">
               <?php echo $I18N->msg( 'agent' ); ?>
             </label>
@@ -98,13 +111,16 @@
         <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-12 data-links">
-          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'change-chart' ); ?></a>
-          &bullet;
-          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'settings' ); ?></a>
-          &bullet;
+          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-th"></span>
+          <?php echo $I18N->msg( 'change-chart' ); ?></a>
+          &nbsp;&bullet;&nbsp;
+          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
+          <?php echo $I18N->msg( 'settings' ); ?></a>
+          &bullet;&nbsp;
           <a class="permalink" href="#"><span class="glyphicon glyphicon-link"></span>
           <?php echo $I18N->msg( 'permalink' ); ?></a>
-          &bullet;
+          &nbsp;&bullet;&nbsp;
+          <span class="glyphicon glyphicon-download-alt"></span>
           <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;

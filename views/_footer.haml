@@ -31,9 +31,9 @@
     - foreach( $apps as $app )
       - $i18nName = $app === 'pageviews' ? '' : $app . '-'
       - if ( $app === $currentApp )
-        - $appLinks[] = $I18N->msg( $i18nName . 'title' )
+        - $appLinks[] = $I18N->msg( $app )
       - else
-        - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $i18nName . 'title' )}</a>"
+        - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"
     = implode( ' &bullet; ', $appLinks )
 
   %span

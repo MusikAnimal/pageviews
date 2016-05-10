@@ -20,7 +20,7 @@
 
         %div.row.aqs-row.options
           / Date range selector
-          %div.col-lg-4.col-sm-4
+          %div.col-lg-5.col-sm-5
             %label(for="range-input")
               = $I18N->msg( 'dates' )
             %span.date-latest
@@ -34,20 +34,29 @@
             %input.form-control.aqs-date-range-selector#range-input
 
           / Advanced options
-          %div.col-lg-4.col-sm-4
+          %div.col-lg-3.col-sm-3
+            %label(for="data-source-select")
+              Data source
+            %select.form-control#data-source-select
+              %option(value="pageviews")
+                Pageviews
+              %option(value="unique-devices")
+                Unique devices
+
+          %div.col-lg-2.col-sm-2
             %label(for="platform-select")
               = $I18N->msg( 'platform' )
             %select.form-control#platform-select
-              %option(value="all-access")
+              %option(value="all-access" data-value="all-access" data-ud-value="all-sites")
                 = $I18N->msg( 'all' )
-              %option(value="desktop")
+              %option(value="desktop" data-value="desktop" data-ud-value="desktop-site")
                 = $I18N->msg( 'desktop' )
-              %option(value="mobile-app")
+              %option.platform-select--mobile-web(value="mobile-app")
                 = $I18N->msg( 'mobile-app' )
-              %option(value="mobile-web")
+              %option(value="mobile-web" data-value="mobile-web" data-ud-value="mobile-site")
                 = $I18N->msg( 'mobile-web' )
 
-          %div.col-lg-4.col-sm-4
+          %div.col-lg-2.col-sm-2
             %label(for="agent-select")
               = $I18N->msg( 'agent' )
             %select.form-control#agent-select
@@ -79,15 +88,18 @@
         / Other links
         %div.col-lg-12.data-links
           %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
+            %span.glyphicon.glyphicon-th
             = $I18N->msg( 'change-chart' )
-          &bullet;
+          &nbsp;&bullet;&nbsp;
           %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
+            %span.glyphicon.glyphicon-wrench
             = $I18N->msg( 'settings' )
-          &bullet;
+          &bullet;&nbsp;
           %a.permalink(href="#")<
             %span.glyphicon.glyphicon-link
             = $I18N->msg( 'permalink' )
-          &bullet;
+          &nbsp;&bullet;&nbsp;
+          %span.glyphicon.glyphicon-download-alt
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
           = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
           &middot;

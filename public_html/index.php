@@ -111,13 +111,16 @@
         <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-12 data-links">
-          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'change-chart' ); ?></a>
-          &bullet;
-          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><?php echo $I18N->msg( 'settings' ); ?></a>
-          &bullet;
+          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-th"></span>
+          <?php echo $I18N->msg( 'change-chart' ); ?></a>
+          &nbsp;&bullet;&nbsp;
+          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
+          <?php echo $I18N->msg( 'settings' ); ?></a>
+          &bullet;&nbsp;
           <a class="permalink" href="#"><span class="glyphicon glyphicon-link"></span>
           <?php echo $I18N->msg( 'permalink' ); ?></a>
-          &bullet;
+          &nbsp;&bullet;&nbsp;
+          <span class="glyphicon glyphicon-download-alt"></span>
           <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;

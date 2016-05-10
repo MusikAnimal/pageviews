@@ -29,6 +29,16 @@
                 = $I18N->msg( 'faq-todays-date-body' )
             %li.list-group-item
               %p
+                %strong= $I18N->msg( 'faq-source-title' )
+              %ul.agents-ul
+                %li
+                  %i= $I18N->msg( 'pageviews' )
+                  = $I18N->msg( 'faq-source-pageviews' )
+                %li
+                  %i= $I18N->msg( 'unique-devices' )
+                  = $I18N->msg( 'faq-source-unique-devices' )
+            %li.list-group-item
+              %p
                 %strong= $I18N->msg( 'faq-agents-title' )
               %ul.agents-ul
                 %li

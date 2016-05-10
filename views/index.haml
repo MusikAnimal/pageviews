@@ -93,15 +93,18 @@
         / Other links
         %div.col-lg-12.data-links
           %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
+            %span.glyphicon.glyphicon-th
             = $I18N->msg( 'change-chart' )
-          &bullet;
+          &nbsp;&bullet;&nbsp;
           %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
+            %span.glyphicon.glyphicon-wrench
             = $I18N->msg( 'settings' )
-          &bullet;
+          &bullet;&nbsp;
           %a.permalink(href="#")<
             %span.glyphicon.glyphicon-link
             = $I18N->msg( 'permalink' )
-          &bullet;
+          &nbsp;&bullet;&nbsp;
+          %span.glyphicon.glyphicon-download-alt
           - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
           = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
           &middot;
