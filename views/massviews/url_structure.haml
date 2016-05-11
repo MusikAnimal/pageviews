@@ -3,23 +3,20 @@
   %head
     - include '../../_head.php'
     %title
-      = $I18N->msg( 'langviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
+      = $I18N->msg( 'massviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
   %body
     %div.container
       %header.col-lg-12.text-center
         %h4
           %strong
-            = $I18N->msg( 'langviews-title' )
+            = $I18N->msg( 'massviews-title' )
           %small.app-description
             = $I18N->msg( 'url-structure' )
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $langviewsLink = "<pre>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
-          - $project = "<code>en.wikipedia.org</code>"
-          - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
-          - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
-          = $I18N->msg( 'url-structure-example', array( 'variables' => array( $langviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
+          Example URL:
+          <pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>
 
         %div
           %h3
@@ -27,18 +24,12 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            %dt project
+            %dt source
             %dd
-              - $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "
-              = $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) )
-              %br
-              - $wikipediaLink = "<a href='https://www.wikipedia.org/'>Wikipedia</a>"
-              - $wikivoyageLink = "<a href='https://www.wikivoyage.org/'>Wikivoyage</a>"
-              = $I18N->msg( 'url-structure-project-multilang', array( 'variables' => array( $wikipediaLink, $wikivoyageLink ), 'parsemag' => true ) )
-            %dt page
+              Currently only <code>pagepile</code> is supported, but other sources will be added soon
+            %dt target
             %dd
-              = $I18N->msg( 'url-structure-page' )
-              = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
+              The Page Pile ID
             %dt range
             %dd
               = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
@@ -79,8 +70,8 @@
               = $I18N->msg( 'url-structure-sort-direction', array( 'variables' => array( '<code>1</code>', '<code>-1</code>' ), 'parsemag' => true ) )
 
         %div.col-lg-12.text-center.tm
-          %a(href="/langviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) )
+          %a(href="/massviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'massviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "langviews";
+        - $currentApp = "massviews";
         -include "../../_footer.php";

@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -18,6 +20,80 @@ module.exports = function(grunt) {
   const coreCSSDependencies = [
     'vendor/stylesheets/bootstrap.min.css'
   ];
+  const apps = ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews'];
+
+  // set up initial structure of tasks
+  let browserifyTasks = {
+    options: {
+      transform: [['babelify', { presets: ['es2015'] }]]
+    }
+  };
+  let sassTasks = {
+    options: {
+      sourcemap: 'none',
+      style: 'expanded'
+    },
+    dist: {
+      options: {
+        style: 'compressed',
+        sourcemap: 'none'
+      },
+      files: {}
+    }
+  };
+  let hamlFiles = {
+    'public_html/_head.php': 'views/_head.haml',
+    'public_html/_footer.php': 'views/_footer.haml',
+    'public_html/_lang_selector.php': 'views/_lang_selector.haml',
+    'public_html/_modals.php': 'views/_modals.haml',
+    'public_html/_browser_check.php': 'views/_browser_check.haml'
+  };
+  let uglifyTask = {
+    options: {
+      compress: true
+    },
+    all: {
+      files: {}
+    }
+  };
+
+  // loop through apps and fill in key/values
+  apps.forEach(app => {
+    const path = app === 'pageviews' ? '' : `${app}/`;
+
+    // BROWSERIFY
+    browserifyTasks[app] = {
+      files: {
+        [`public_html/${path}${app}.js`]: [
+          'javascripts/shared/*.js',
+          `javascripts/${path}${app}.js`
+        ]
+      }
+    };
+
+    // SASS
+    const sourcesHash = {
+      [`public_html/${path}${app}.css`]: `stylesheets/${path}${app}.scss`,
+      [`public_html/${path}faq.css`]: `stylesheets/${path}faq.scss`,
+      [`public_html/${path}url_structure.css`]: `stylesheets/${path}url_structure.scss`
+    };
+    sassTasks[app] = {
+      files: [sourcesHash]
+    };
+    Object.assign(sassTasks.dist.files, sourcesHash);
+
+    // HAML
+    hamlFiles[`public_html/${path}index.php`] = `views/${path}index.haml`;
+    hamlFiles[`public_html/${path}faq/index.php`] = `views/${path}faq.haml`;
+    hamlFiles[`public_html/${path}url_structure/index.php`] = `views/${path}url_structure.haml`;
+
+    // UGLIFY
+    Object.assign(uglifyTask.all.files, {
+      [`public_html/${path}application.js`]: [`public_html/${path}application.js`],
+      [`public_html/${path}faq/application.js`]: [`public_html/${path}faq/application.js`],
+      [`public_html/${path}url_structure/application.js`]: [`public_html/${path}url_structure/application.js`],
+    });
+  });
 
   grunt.initConfig({
     watch: {
@@ -50,145 +126,14 @@ module.exports = function(grunt) {
         }
       }
     },
-    browserify: {
-      pageviews: {
-        options: {
-          transform: [['babelify', { presets: ['es2015'] }]]
-        },
-        files: {
-          'public_html/pageviews.js': [
-            'javascripts/shared/*.js',
-            'javascripts/pageviews.js'
-          ]
-        }
-      },
-      topviews: {
-        options: {
-          transform: [['babelify', { presets: ['es2015'] }]]
-        },
-        files: {
-          'public_html/topviews/topviews.js': [
-            'javascripts/shared/*.js',
-            'javascripts/topviews/topviews.js'
-          ]
-        }
-      },
-      langviews: {
-        options: {
-          transform: [['babelify', { presets: ['es2015'] }]]
-        },
-        files: {
-          'public_html/langviews/langviews.js': [
-            'javascripts/shared/*.js',
-            'javascripts/langviews/langviews.js'
-          ]
-        }
-      },
-      siteviews: {
-        options: {
-          transform: [['babelify', { presets: ['es2015'] }]]
-        },
-        files: {
-          'public_html/siteviews/siteviews.js': [
-            'javascripts/shared/*.js',
-            'javascripts/siteviews/siteviews.js'
-          ]
-        }
-      }
-    },
-    sass: {
-      pageviews: {
-        options: {
-          sourcemap: 'none',
-          style: 'expanded'
-        },
-        files: [{
-          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
-          'public_html/faq.css': 'stylesheets/faq.scss',
-          'public_html/url_structure.css': 'stylesheets/url_structure.scss'
-        }]
-      },
-      topviews: {
-        options: {
-          sourcemap: 'none',
-          style: 'expanded'
-        },
-        files: [{
-          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
-          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
-          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss'
-        }]
-      },
-      langviews: {
-        options: {
-          sourcemap: 'none',
-          style: 'expanded'
-        },
-        files: [{
-          'public_html/langviews/langviews.css': 'stylesheets/langviews/langviews.scss',
-          'public_html/langviews/faq.css': 'stylesheets/langviews/faq.scss',
-          'public_html/langviews/url_structure.css': 'stylesheets/langviews/url_structure.scss'
-        }]
-      },
-      siteviews: {
-        options: {
-          sourcemap: 'none',
-          style: 'expanded'
-        },
-        files: [{
-          'public_html/siteviews/siteviews.css': 'stylesheets/siteviews/siteviews.scss',
-          'public_html/siteviews/faq.css': 'stylesheets/siteviews/faq.scss',
-          'public_html/siteviews/url_structure.css': 'stylesheets/siteviews/url_structure.scss'
-        }]
-      },
-      dist: {
-        options: {
-          style: 'compressed',
-          sourcemap: 'none'
-        },
-        files: [{
-          'public_html/pageviews.css': 'stylesheets/pageviews.scss',
-          'public_html/faq.css': 'stylesheets/faq.scss',
-          'public_html/url_structure.css': 'stylesheets/url_structure.scss',
-          'public_html/topviews/topviews.css': 'stylesheets/topviews/topviews.scss',
-          'public_html/topviews/faq.css': 'stylesheets/topviews/faq.scss',
-          'public_html/topviews/url_structure.css': 'stylesheets/topviews/url_structure.scss',
-          'public_html/langviews/langviews.css': 'stylesheets/langviews/langviews.scss',
-          'public_html/langviews/faq.css': 'stylesheets/langviews/faq.scss',
-          'public_html/langviews/url_structure.css': 'stylesheets/langviews/url_structure.scss',
-          'public_html/siteviews/siteviews.css': 'stylesheets/siteviews/siteviews.scss',
-          'public_html/siteviews/faq.css': 'stylesheets/siteviews/faq.scss',
-          'public_html/siteviews/url_structure.css': 'stylesheets/siteviews/url_structure.scss'
-        }]
-      }
-    },
+    browserify: browserifyTasks,
+    sass: sassTasks,
     haml: {
       options: {
         enableDynamicAttributes: false
       },
       compile: {
-        files: {
-          'public_html/index.php': 'views/index.haml',
-          'public_html/_head.php': 'views/_head.haml',
-          'public_html/_footer.php': 'views/_footer.haml',
-          'public_html/_lang_selector.php': 'views/_lang_selector.haml',
-          'public_html/_modals.php': 'views/_modals.haml',
-          'public_html/_browser_check.php': 'views/_browser_check.haml',
-          'public_html/faq/index.php': 'views/faq.haml',
-          'public_html/url_structure/index.php': 'views/url_structure.haml',
-
-          'public_html/topviews/index.php': 'views/topviews/index.haml',
-          'public_html/topviews/faq/index.php': 'views/topviews/faq.haml',
-          'public_html/topviews/url_structure/index.php': 'views/topviews/url_structure.haml',
-
-          'public_html/langviews/index.php': 'views/langviews/index.haml',
-          'public_html/langviews/faq/index.php': 'views/langviews/faq.haml',
-          'public_html/langviews/url_structure/index.php': 'views/langviews/url_structure.haml',
-
-          'public_html/siteviews/index.php': 'views/siteviews/index.haml',
-          'public_html/siteviews/faq/index.php': 'views/siteviews/faq.haml',
-          'public_html/siteviews/url_structure/index.php': 'views/siteviews/url_structure.haml'
-        }
+        files: hamlFiles
       }
     },
     concat: {
@@ -299,39 +244,40 @@ module.exports = function(grunt) {
             'public_html/siteviews/url_structure.css'
           ])
         }
-      }
-    },
-    uglify: {
-      options: {
-        compress: true
       },
-      all: {
+      massviews: {
         files: {
-          'public_html/application.js': ['public_html/application.js'],
-          'public_html/faq/application.js': ['public_html/faq/application.js'],
-          'public_html/url_structure/application.js': ['public_html/url_structure/application.js'],
-
-          'public_html/topviews/application.js': ['public_html/topviews/application.js'],
-          'public_html/topviews/faq/application.js': ['public_html/topviews/faq/application.js'],
-          'public_html/topviews/url_structure/application.js': ['public_html/topviews/url_structure/application.js'],
-
-          'public_html/langviews/application.js': ['public_html/langviews/application.js'],
-          'public_html/langviews/faq/application.js': ['public_html/langviews/faq/application.js'],
-          'public_html/langviews/url_structure/application.js': ['public_html/langviews/url_structure/application.js'],
-
-          'public_html/siteviews/application.js': ['public_html/siteviews/application.js'],
-          'public_html/siteviews/faq/application.js': ['public_html/siteviews/faq/application.js'],
-          'public_html/siteviews/url_structure/application.js': ['public_html/siteviews/url_structure/application.js']
+          // order matters here
+          'public_html/massviews/application.js': coreJSDependencies.concat([
+            'vendor/javascripts/daterangepicker.min.js',
+            'vendor/javascripts/bootstrap-typeahead.js',
+            'vendor/javascripts/simpleStorage.js',
+            'public_html/massviews/massviews.js'
+          ]),
+          'public_html/massviews/application.css': coreCSSDependencies.concat([
+            'vendor/stylesheets/daterangepicker.min.css',
+            'public_html/massviews/massviews.css'
+          ]),
+          'public_html/massviews/faq/application.js': coreJSDependencies,
+          'public_html/massviews/faq/application.css': coreCSSDependencies.concat([
+            'public_html/massviews/faq.css'
+          ]),
+          'public_html/massviews/url_structure/application.js': coreJSDependencies,
+          'public_html/massviews/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/massviews/url_structure.css'
+          ])
         }
       }
-    }
+    },
+    uglify: uglifyTask
   });
 
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
-  grunt.registerTask('pageviews', ['browserify:pageviews', 'sass:pageviews', 'concat:pageviews', 'haml']);
-  grunt.registerTask('topviews', ['browserify:topviews', 'sass:topviews', 'concat:topviews', 'haml']);
-  grunt.registerTask('langviews', ['browserify:langviews', 'sass:langviews', 'concat:langviews', 'haml']);
-  grunt.registerTask('siteviews', ['browserify:siteviews', 'sass:siteviews', 'concat:siteviews', 'haml']);
+
+  apps.forEach(app => {
+    grunt.registerTask(app, [`browserify:${app}`, `sass:${app}`, `concat:${app}`, 'haml']);
+  });
+
   grunt.registerTask('default', ['pageviews']);
   grunt.registerTask('lint', ['eslint', 'scsslint']);
 

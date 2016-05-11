@@ -111,6 +111,7 @@
 	"langviews": "Langviews",
 	"topviews": "Topviews",
 	"siteviews": "Siteviews",
+	"massviews": "Massviews",
 	"average": "Average",
 	"submit": "Submit",
 	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
@@ -186,5 +187,6 @@
 	"most-viewed-pages": "Most viewed pages",
 	"topviews-data-approx": "All topviews data is <a href='/topviews/faq#data_caveat'>approximate</a>.",
 	"topviews-false-positive": "Some pages listed may be <a href='/topviews/faq#false_positive'>false positives</a>.",
-	"unique-devices": "Unique devices"
+	"unique-devices": "Unique devices",
+	"massviews-title": "Massviews Analysis"
 }

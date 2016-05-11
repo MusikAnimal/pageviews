@@ -1,0 +1,54 @@
+!!!
+%html
+  %head
+    - include '../../_head.php'
+    %title
+      = $I18N->msg( 'massviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+
+  %body
+    %div.container
+      %div.col-lg-offset-2
+        / Header
+        %header.row.aqs-row
+          %div.col-lg-10.text-center
+            %h4
+              %strong
+                = $I18N->msg( 'massviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+
+        %div.col-lg-10
+          %ul.list-group
+            %li.list-group-item
+              %p
+                %strong= $I18N->msg( 'faq-old-data-title' )
+              %p
+                = $I18N->msg( 'faq-old-data-body' )
+            %li.list-group-item
+              %p
+                %strong= $I18N->msg( 'faq-todays-date-title' )
+              %p
+                = $I18N->msg( 'faq-todays-date-body' )
+            %li.list-group-item
+              %p
+                %strong= $I18N->msg( 'faq-agents-title' )
+              %ul.agents-ul
+                %li
+                  %i= $I18N->msg( 'user' )
+                  = $I18N->msg( 'faq-agents-user' )
+                %li
+                  %i= $I18N->msg( 'spider' )
+                  = $I18N->msg( 'faq-agents-spider' )
+                %li
+                  %i= $I18N->msg( 'bot' )
+                  = $I18N->msg( 'faq-agents-bot' )
+            %li.list-group-item
+              %p
+                %strong= $I18N->msg( 'faq-bug-report-title' )
+              %p
+                = $I18N->msg( 'faq-bug-report-body' )
+
+        %div.col-lg-10.text-center.tm
+          %a(href="/massviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'massviews-title' ) ), 'parsemag' => true ) )
+
+        - $currentApp = "massviews";
+        - include "../../_footer.php"

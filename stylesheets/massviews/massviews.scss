@@ -1,0 +1,126 @@
+@import '../shared';
+@import '../mixins';
+
+.output-header {
+  padding-top: 10px;
+}
+
+output {
+  @include prefix(transform, translateY(500px));
+  @include prefix(transition, all 500ms ease);
+  opacity: 0;
+
+  .output-header {
+    display: none;
+  }
+
+  .output-table {
+    display: none;
+
+    td {
+      position: relative;
+    }
+  }
+}
+
+.throttle-notice {
+  color: $red;
+  display: none;
+}
+
+.sort-link {
+  @include prefix(user-select, none);
+  cursor: pointer;
+
+  .glyphicon {
+    top: 2px;
+    visibility: hidden;
+  }
+
+  .glyphicon-sort-by-alphabet,
+  .glyphicon-sort-by-alphabet-alt,
+  .glyphicon-sort-by-order,
+  .glyphicon-sort-by-order-alt {
+    visibility: visible;
+  }
+
+  &:hover {
+    .glyphicon-sort {
+      visibility: visible;
+    }
+  }
+}
+
+main {
+  &.processing {
+    form {
+      @extend %disabled;
+    }
+
+    // Hide typeahead should it show up after they've submitted
+    .typeahead {
+      display: none !important; // scss-lint:disable ImportantRule
+    }
+
+    .progress-bar--wrapper {
+      display: block;
+    }
+
+    .throttle-notice {
+      display: block;
+    }
+  }
+
+  &.complete {
+    form {
+      @extend %disabled;
+      display: none;
+      height: 0;
+      opacity: 0;
+    }
+
+    output {
+      @include prefix(transform, translateY(0%));
+      opacity: 1;
+    }
+
+    .output-header {
+      display: block;
+    }
+
+    .output-table {
+      display: table;
+    }
+  }
+
+  &.invalid {
+    .article-input-row {
+      @extend %disabled;
+    }
+  }
+}
+
+.another-query {
+  cursor: pointer;
+}
+
+.article-badge {
+  // bottom: 0;
+  height: 20px;
+  // left: 8px;
+  // margin: auto;
+  // position: absolute;
+  // top: 0;
+  vertical-align: -5px;
+  width: 20px;
+}
+
+.progress-bar--wrapper {
+  display: none;
+  float: none;
+  margin-top: 50px;
+}
+
+.massviews-params a {
+  color: $bootstrap-gay;
+}
