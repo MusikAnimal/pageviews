@@ -127,11 +127,11 @@ const config = {
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
   },
   linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-08-01').startOf('day'),
+  minDate: moment('2015-07-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  siteSelector: '.aqs-site-selector',
+  select2Input: '.aqs-site-selector',
   specialRanges: {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
     'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],

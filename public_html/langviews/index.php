@@ -159,9 +159,7 @@
         </div>
         <!-- Other links -->
         <div class="data-links row tm">
-          <div class="col-lg-12">
-            <?php include "../_lang_selector.php"; ?>
-          </div>
+          <div class="col-lg-12"></div>
         </div>
         <?php $currentApp = "langviews"; ?>
         <?php $columns = 12; ?>

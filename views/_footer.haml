@@ -25,16 +25,19 @@
 - isset($columns) || $columns = 10
 %footer(class="col-lg-#{$columns}")
   %hr
-  %div.interapp-links.bm
-    - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' )
-    - $appLinks = array();
-    - foreach( $apps as $app )
-      - $i18nName = $app === 'pageviews' ? '' : $app . '-'
-      - if ( $app === $currentApp )
-        - $appLinks[] = $I18N->msg( $app )
-      - else
-        - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"
-    = implode( ' &bullet; ', $appLinks )
+  %div.footer-nav
+    - include "_lang_selector.php"
+
+    %div.interapp-links.bm
+      - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' )
+      - $appLinks = array();
+      - foreach( $apps as $app )
+        - $i18nName = $app === 'pageviews' ? '' : $app . '-'
+        - if ( $app === $currentApp )
+          - $appLinks[] = $I18N->msg( $app )
+        - else
+          - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"
+      = implode( ' &bullet; ', $appLinks )
 
   %span
     - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";

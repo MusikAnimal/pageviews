@@ -125,7 +125,6 @@
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
-          <?php include "../_lang_selector.php"; ?>
         </div>
         <?php $currentApp = "siteviews"; ?>
         <?php $columns = 12; ?>

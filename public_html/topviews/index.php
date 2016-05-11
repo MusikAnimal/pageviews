@@ -85,9 +85,7 @@
         </div>
         <div class="message-container col-lg-10"></div>
         <!-- Other links -->
-        <div class="col-lg-10 data-links">
-          <?php include "../_lang_selector.php"; ?>
-        </div>
+        <div class="col-lg-10 data-links"></div>
         <?php $currentApp = "topviews"; ?>
         <?php include "../_footer.php"; ?>
       </div>

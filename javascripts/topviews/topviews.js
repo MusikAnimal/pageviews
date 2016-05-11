@@ -166,19 +166,6 @@ class TopViews extends Pv {
   }
 
   /**
-   * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-   * @return {null} nothing
-   */
-  patchUsage() {
-    if (location.host !== 'localhost') {
-      $.ajax({
-        url: `//tools.wmflabs.org/musikanimal/api/tv_uses/${this.project}`,
-        method: 'PATCH'
-      });
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
@@ -203,8 +190,8 @@ class TopViews extends Pv {
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-        this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
+      if (startDate < config.minDate || endDate < config.minDate) {
+        this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       } else if (startDate > endDate) {
@@ -356,74 +343,9 @@ class TopViews extends Pv {
    * @returns {null} - nothing
    */
   setupDateRangeSelector() {
+    super.setupDateRangeSelector();
+
     const dateRangeSelector = $(config.dateRangeSelector);
-
-    /** transform config.specialRanges to have i18n as keys */
-    let ranges = {};
-    Object.keys(config.specialRanges).forEach(key => {
-      ranges[$.i18n(key)] = config.specialRanges[key];
-    });
-
-    dateRangeSelector.daterangepicker({
-      locale: {
-        format: this.dateFormat,
-        applyLabel: $.i18n('apply'),
-        cancelLabel: $.i18n('cancel'),
-        customRangeLabel: $.i18n('custom-range'),
-        dateLimit: { days: 31 },
-        daysOfWeek: [
-          $.i18n('su'),
-          $.i18n('mo'),
-          $.i18n('tu'),
-          $.i18n('we'),
-          $.i18n('th'),
-          $.i18n('fr'),
-          $.i18n('sa')
-        ],
-        monthNames: [
-          $.i18n('january'),
-          $.i18n('february'),
-          $.i18n('march'),
-          $.i18n('april'),
-          $.i18n('may'),
-          $.i18n('june'),
-          $.i18n('july'),
-          $.i18n('august'),
-          $.i18n('september'),
-          $.i18n('october'),
-          $.i18n('november'),
-          $.i18n('december')
-        ]
-      },
-      startDate: moment().subtract(config.defaults.daysAgo, 'days'),
-      minDate: config.minDate,
-      maxDate: config.maxDate,
-      ranges: ranges
-    });
-
-    /** so people know why they can't query data older than August 2015 */
-    $('.daterangepicker').append(
-      $('<div>')
-        .addClass('daterange-notice')
-        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>"))
-    );
-
-    /**
-     * The special date range options (buttons the right side of the daterange picker)
-     *
-     * WARNING: we're unable to add class names or data attrs to the range options,
-     * so checking which was clicked is hardcoded based on the index of the LI,
-     * as defined in config.specialRanges
-     */
-    $('.daterangepicker .ranges li').on('click', e => {
-      const index = $('.daterangepicker .ranges li').index(e.target),
-        container = this.daterangepicker.container,
-        inputs = container.find('.daterangepicker_input input');
-      this.specialRange = {
-        range: Object.keys(config.specialRanges)[index],
-        value: `${inputs[0].value} - ${inputs[1].value}`
-      };
-    });
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', function(e) {

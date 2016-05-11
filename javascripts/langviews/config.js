@@ -27,6 +27,7 @@ const config = {
     }
   },
   cookieExpiry: 30, // num days
+  dateLimit: 31, // num days
   dateRangeSelector: '#range_input',
   defaults: {
     dateFormat: 'YYYY-MM-DD',
@@ -46,7 +47,7 @@ const config = {
       }
     }
   },
-  minDate: moment('2015-08-01'),
+  minDate: moment('2015-07-01'),
   maxDate: moment().subtract(1, 'days'),
   platformSelector: '#platform_select',
   projectInput: '#project_input',

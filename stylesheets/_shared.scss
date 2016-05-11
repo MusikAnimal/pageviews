@@ -18,8 +18,7 @@ body {
   }
 
   .lang-group {
-    // scss-lint:disable ImportantRule
-    float: left !important;
+    left: 0;
 
     .dropdown-menu {
       left: 0;
@@ -194,9 +193,19 @@ footer {
   margin-bottom: 10px;
 }
 
-.lang-group .dropdown-menu {
-  max-height: 194px;
-  overflow-y: scroll;
+.footer-nav {
+  position: relative;
+}
+
+.lang-group {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  .dropdown-menu {
+    max-height: 194px;
+    overflow-y: scroll;
+  }
 }
 
 .bm {

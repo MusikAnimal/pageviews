@@ -18,10 +18,11 @@
         %div.col-lg-10
           %ul.list-group
             %li.list-group-item
+              - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
               %p
-                %strong= $I18N->msg( 'faq-old-data-title' )
+                %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
               %p
-                = $I18N->msg( 'faq-old-data-body' )
+                = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
             %li.list-group-item
               %p
                 %strong= $I18N->msg( 'faq-todays-date-title' )

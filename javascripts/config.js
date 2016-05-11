@@ -13,7 +13,6 @@ const pv = require('./shared/pv');
  * @type {Object}
  */
 const config = {
-  articleSelector: '.aqs-article-selector',
   chart: '.aqs-chart',
   chartConfig: {
     Line: {
@@ -126,10 +125,11 @@ const config = {
     tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
   },
   linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-08-01').startOf('day'),
+  minDate: moment('2015-07-01').startOf('day'),
   maxDate: moment().subtract(1, 'days').startOf('day'),
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
+  select2Input: '.aqs-article-selector',
   specialRanges: {
     'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
     'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],

@@ -49,7 +49,7 @@ class SiteViews extends Pv {
    */
   initialize() {
     this.setupDateRangeSelector();
-    this.setupSiteSelector();
+    this.setupSelect2();
     this.setupSettingsModal();
     this.setupSelect2Colors();
     this.setupDataSourceSelector();
@@ -138,20 +138,6 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Fill in values within settings modal with what's in the session object
-   * @returns {null} nothing
-   */
-  fillInSettings() {
-    $.each($('#settings-modal input'), (index, el) => {
-      if (el.type === 'checkbox') {
-        el.checked = this[el.name] === 'true';
-      } else {
-        el.checked = this[el.name] === el.value;
-      }
-    });
-  }
-
-  /**
    * Fills in zero value to a timeseries, see:
    * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
    *
@@ -203,24 +189,6 @@ class SiteViews extends Pv {
       },
       config.chartConfig[this.chartType].dataset(color)
     );
-  }
-
-  /**
-   * Gets the date headings as strings - i18n compliant
-   * @param {boolean} localized - whether the dates should be localized per browser language
-   * @returns {Array} the date headings as strings
-   */
-  getDateHeadings(localized) {
-    const dateHeadings = [];
-
-    for (let date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
-      if (localized) {
-        dateHeadings.push(date.format(this.dateFormat));
-      } else {
-        dateHeadings.push(date.format('YYYY-MM-DD'));
-      }
-    }
-    return dateHeadings;
   }
 
   /**
@@ -288,19 +256,6 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-   * @return {null} nothing
-   */
-  patchUsage() {
-    if (location.host !== 'localhost') {
-      $.ajax({
-        url: `//tools.wmflabs.org/musikanimal/api/sv_uses/${i18nLang}`,
-        method: 'PATCH'
-      });
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
@@ -322,8 +277,8 @@ class SiteViews extends Pv {
     } else if (params.start) {
       startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
-        this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
+      if (startDate < config.minDate || endDate < config.minDate) {
+        this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         this.resetView();
         return;
       } else if (startDate > endDate) {
@@ -349,16 +304,16 @@ class SiteViews extends Pv {
       $(config.dataSourceSelector).trigger('change');
     }
 
-    this.resetSiteSelector();
+    this.resetSelect2();
 
     if (!params.sites || params.sites.length === 1 && !params.sites[0]) {
       params.sites = config.defaults.projects;
-      this.setSiteSelectorDefaults(params.sites);
+      this.setSelect2Defaults(params.sites);
     } else {
       if (params.sites.length === 1) {
         this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
       }
-      this.setSiteSelectorDefaults(params.sites);
+      this.setSelect2Defaults(params.sites);
     }
   }
 
@@ -402,7 +357,7 @@ class SiteViews extends Pv {
    * @returns {null} nothing
    */
   pushParams() {
-    const sites = $(config.siteSelector).select2('val') || [];
+    const sites = $(config.select2Input).select2('val') || [];
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -414,21 +369,6 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Removes all site selector related stuff then adds it back
-   * Also calls updateChart
-   * @returns {null} nothing
-   */
-  resetSiteSelector() {
-    const siteSelector = $(config.siteSelector);
-    siteSelector.off('change');
-    siteSelector.select2('val', null);
-    siteSelector.select2('data', null);
-    siteSelector.select2('destroy');
-    $('.data-links').hide();
-    this.setupSiteSelector();
-  }
-
-  /**
    * Removes chart, messages, and resets site selections
    * @returns {null} nothing
    */
@@ -437,77 +377,15 @@ class SiteViews extends Pv {
     $('.chart-container').removeClass('loading');
     $('#chart-legend').html('');
     $('.message-container').html('');
-    this.resetSiteSelector();
-  }
-
-  /**
-   * Save a particular setting to session and localStorage
-   *
-   * @param {string} key - settings key
-   * @param {string|boolean} value - value to save
-   * @returns {null} nothing
-   */
-  saveSetting(key, value) {
-    this[key] = value;
-    this.setLocalStorage(`pageviews-settings-${key}`, value);
-  }
-
-  /**
-   * Save the selected settings within the settings modal
-   * Prefer this implementation over a large library like serializeObject or serializeJSON
-   * @returns {null} nothing
-   */
-  saveSettings() {
-    /** track if we're changing to no_autocomplete mode */
-    const wasAutocomplete = this.autocomplete === 'no_autocomplete';
-
-    $.each($('#settings-modal input'), (index, el) => {
-      if (el.type === 'checkbox') {
-        this.saveSetting(el.name, el.checked ? 'true' : 'false');
-      } else if (el.checked) {
-        this.saveSetting(el.name, el.value);
-      }
-    });
-
-    this.daterangepicker.locale.format = this.dateFormat;
-    this.daterangepicker.updateElement();
-    this.setupSelect2Colors();
-
-    /**
-     * If we changed to/from no_autocomplete we have to reset the site selector entirely
-     *   as setSiteSelectorDefaults is super buggy due to Select2 constraints
-     * So let's only reset if we have to
-     */
-    if ((this.autocomplete === 'no_autocomplete') !== wasAutocomplete) {
-      this.resetSiteSelector();
-    }
-
-    this.updateChart(true);
-  }
-
-  /**
-   * Directly set sites in site selector
-   *
-   * @param {array} sites - site titles
-   * @returns {array} - untouched array of sites
-   */
-  setSiteSelectorDefaults(sites) {
-    sites.forEach(page => {
-      const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(config.siteSelector);
-    });
-    $(config.siteSelector).select2('val', sites);
-    $(config.siteSelector).select2('close');
-
-    return sites;
+    this.resetSelect2();
   }
 
   /**
    * Sets up the site selector and adds listener to update chart
    * @returns {null} - nothing
    */
-  setupSiteSelector() {
-    const siteSelector = $(config.siteSelector);
+  setupSelect2() {
+    const select2Input = $(config.select2Input);
 
     let params = {
       ajax: {
@@ -530,26 +408,8 @@ class SiteViews extends Pv {
       minimumInputLength: 1
     };
 
-    siteSelector.select2(params);
-    siteSelector.on('change', this.updateChart.bind(this));
-  }
-
-  /**
-   * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-   * @returns {null} nothing
-   */
-  setChartPointDetectionRadius() {
-    if (this.chartType !== 'Line') return;
-
-    if (this.numDaysInRange() > 50) {
-      Chart.defaults.Line.pointHitDetectionRadius = 3;
-    } else if (this.numDaysInRange() > 30) {
-      Chart.defaults.Line.pointHitDetectionRadius = 5;
-    } else if (this.numDaysInRange() > 20) {
-      Chart.defaults.Line.pointHitDetectionRadius = 10;
-    } else {
-      Chart.defaults.Line.pointHitDetectionRadius = 20;
-    }
+    select2Input.select2(params);
+    select2Input.on('change', this.updateChart.bind(this));
   }
 
   /**
@@ -557,66 +417,9 @@ class SiteViews extends Pv {
    * @returns {null} - nothing
    */
   setupDateRangeSelector() {
+    super.setupDateRangeSelector();
+
     const dateRangeSelector = $(config.dateRangeSelector);
-
-    /** transform config.specialRanges to have i18n as keys */
-    let ranges = {};
-    Object.keys(config.specialRanges).forEach(key => {
-      ranges[$.i18n(key)] = config.specialRanges[key];
-    });
-
-    dateRangeSelector.daterangepicker({
-      locale: {
-        format: this.dateFormat,
-        applyLabel: $.i18n('apply'),
-        cancelLabel: $.i18n('cancel'),
-        customRangeLabel: $.i18n('custom-range'),
-        daysOfWeek: [
-          $.i18n('su'),
-          $.i18n('mo'),
-          $.i18n('tu'),
-          $.i18n('we'),
-          $.i18n('th'),
-          $.i18n('fr'),
-          $.i18n('sa')
-        ],
-        monthNames: [
-          $.i18n('january'),
-          $.i18n('february'),
-          $.i18n('march'),
-          $.i18n('april'),
-          $.i18n('may'),
-          $.i18n('june'),
-          $.i18n('july'),
-          $.i18n('august'),
-          $.i18n('september'),
-          $.i18n('october'),
-          $.i18n('november'),
-          $.i18n('december')
-        ]
-      },
-      startDate: moment().subtract(config.defaults.daysAgo, 'days'),
-      minDate: config.minDate,
-      maxDate: config.maxDate,
-      ranges: ranges
-    });
-
-    /**
-     * The special date range options (buttons the right side of the daterange picker)
-     *
-     * WARNING: we're unable to add class names or data attrs to the range options,
-     * so checking which was clicked is hardcoded based on the index of the LI,
-     * as defined in config.specialRanges
-     */
-    $('.daterangepicker .ranges li').on('click', e => {
-      const index = $('.daterangepicker .ranges li').index(e.target),
-        container = this.daterangepicker.container,
-        inputs = container.find('.daterangepicker_input input');
-      this.specialRange = {
-        range: Object.keys(config.specialRanges)[index],
-        value: `${inputs[0].value} - ${inputs[1].value}`
-      };
-    });
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', e => {
@@ -694,29 +497,6 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Setup colors for Select2 entries so we can dynamically change them
-   * This is a necessary evil, as we have to mark them as !important
-   *   and since there are any number of entires, we need to use nth-child selectors
-   * @returns {CSSStylesheet} our new stylesheet
-   */
-  setupSelect2Colors() {
-    /** first delete old stylesheet, if present */
-    if (this.colorsStyleEl) this.colorsStyleEl.remove();
-
-    /** create new stylesheet */
-    this.colorsStyleEl = document.createElement('style');
-    this.colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
-    document.head.appendChild(this.colorsStyleEl);
-
-    /** add color rules */
-    config.colors.forEach((color, index) => {
-      this.colorsStyleEl.sheet.insertRule(`.select2-selection__choice:nth-of-type(${index + 1}) { background: ${color} !important }`, 0);
-    });
-
-    return this.colorsStyleEl.sheet;
-  }
-
-  /**
    * Set values of form based on localStorage or defaults, add listeners
    * @returns {null} nothing
    */
@@ -737,7 +517,7 @@ class SiteViews extends Pv {
    * @returns {null} - nothin
    */
   updateChart(force) {
-    let sites = $(config.siteSelector).select2('val') || [];
+    let sites = $(config.select2Input).select2('val') || [];
 
     this.pushParams();
 

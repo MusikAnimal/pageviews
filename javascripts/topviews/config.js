@@ -15,6 +15,7 @@ const config = {
   articleSelector: '.aqs-article-selector',
   dateRangeSelector: '.aqs-date-range-selector',
   cookieExpiry: 30, // num days
+  dateLimit: 31, // num days
   defaults: {
     dateFormat: 'YYYY-MM-DD',
     dateRange: 'last-week',
@@ -24,7 +25,7 @@ const config = {
     numericalFormatting: 'true',
     project: 'en.wikipedia.org'
   },
-  minDate: moment('2015-08-01'),
+  minDate: moment('2015-07-01'),
   maxDate: moment().subtract(1, 'days'),
   pageSize: 20,
   projectInput: '.aqs-project-input',
