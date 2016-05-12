@@ -63,6 +63,7 @@ class TopViews extends Pv {
    */
   drawData() {
     $('.chart-container').removeClass('loading').html('');
+    $('.show-more').show();
 
     let count = 0, index = 0;
 
@@ -278,6 +279,7 @@ class TopViews extends Pv {
     this.pageData = [];
     this.pageNames = [];
     $('.chart-container').removeClass('loading').html('');
+    $('.show-more').show();
     $('.message-container').html('');
     if (clearSelector) {
       this.resetArticleSelector();
@@ -407,6 +409,7 @@ class TopViews extends Pv {
     let dfd = $.Deferred();
 
     $('.chart-container').addClass('loading');
+    $('.show-more').hide();
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate,

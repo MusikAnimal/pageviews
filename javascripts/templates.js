@@ -11,7 +11,6 @@
  * @type {Object}
  */
 const templates = {
-  // FIXME: add back a tile for Totals, and include totals for all of the currently selected project, and perhaps unique devices
   linearLegend: `
     <% if (chartData.length === 1) { %>
       <strong><%= $.i18n('totals') %>:</strong>
@@ -53,18 +52,32 @@ const templates = {
       </div>
     <% } %>`,
   circularLegend: `
-    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>
-    <ul class="<%=name.toLowerCase()%>-legend">
-      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>
+    <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>
+    <div class="linear-legend--totals">
+      <strong><%= $.i18n('totals') %>:</strong>
+      <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)
+    </div>
+    <div class="linear-legends">
       <% for (var i=0; i<segments.length; i++) { %>
-        <li>
-          <span class="indic" style="background-color:<%=segments[i].fillColor%>">
-            <a href='<%= getPageURL(segments[i].label) %>'><%=segments[i].label%></a>
-          </span>
-          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)
-        </li>
+        <span class="linear-legend">
+          <div class="linear-legend--label" style="background-color:<%= segments[i].fillColor %>">
+            <a href="<%= getPageURL(segments[i].label) %>" target="_blank"><%= segments[i].label %></a>
+          </div>
+          <div class="linear-legend--counts">
+            <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)
+          </div>
+          <div class="linear-legend--links">
+            <% if (isMultilangProject()) { %>
+              <a href="<%= getLangviewsURL(segments[i].label) %>">All languages</a>
+              &bullet;
+            <% } %>
+            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=history" target="_blank">History</a>
+            &bullet;
+            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=info" target="_blank">Info</a>
+          </div>
+        </span>
       <% } %>
-    </ul>
+    </div>
     `
 };
 

@@ -7,18 +7,19 @@
 
   %body
     %div.container
-      %div.col-lg-offset-2
-        / Header
-        %header.row.aqs-row
-          %div.col-lg-10.text-center
-            %h4
-              %strong= $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'siteviews-title' )
+          %small.app-description
+            = $I18N->msg( 'url-structure' )
 
-        %div.col-lg-10
+      %main.col-lg-10.col-lg-offset-1
+        %div
           - $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"
           = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
 
-        %div.col-lg-10
+        %div
           %h3
             = $I18N->msg( 'url-structure-parameters' )
             %small= $I18N->msg( 'url-structure-parameters-order' )
@@ -64,7 +65,7 @@
             %dd
               = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
 
-        %div.col-lg-10.text-center.tm
+        %div.col-lg-12.text-center.tm
           %a(href="/siteviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
 

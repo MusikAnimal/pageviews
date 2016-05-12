@@ -7,10 +7,12 @@
     %title= $I18N->msg( 'siteviews-title' )
   %body(class=$rtl)
     %div.container
-      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+      %header.col-lg-10.col-lg-offset-1.text-center
         %h4
           %strong
             = $I18N->msg( 'siteviews-title' )
+          %small.app-description
+            Analysis of total pageviews across multiple projects
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -107,7 +109,6 @@
             = $I18N->msg( 'json' )
 
         - $currentApp = "siteviews"
-        - $columns = 12
         - include "../_footer.php"
 
       - include "../_modals.php"

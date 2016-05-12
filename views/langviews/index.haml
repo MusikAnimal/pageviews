@@ -7,10 +7,12 @@
     %title= $I18N->msg( 'langviews-title' )
   %body
     %div.container
-      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+      %header.col-lg-12.text-center
         %h4
           %strong
             = $I18N->msg( 'langviews-title' )
+          %small.app-description
+            Pageviews of an article across all languages
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -112,13 +114,10 @@
               %tr.output-totals
             %tbody#lang_list
 
-        %div.col-lg-12
-          %div.message-container
+        %div.message-container.col-lg-10
 
         / Other links
-        %div.data-links.row.tm
-          %div.col-lg-12
+        %div.col-lg-10.data-links
 
         - $currentApp = "langviews"
-        - $columns = 12
         - include "../_footer.php"

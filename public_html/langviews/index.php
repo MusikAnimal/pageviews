@@ -8,11 +8,14 @@
   </head>
   <body>
     <div class="container">
-      <header class="col-lg-10 col-lg-offset-1 aqs-row text-center">
+      <header class="col-lg-12 text-center">
         <h4>
           <strong>
             <?php echo $I18N->msg( 'langviews-title' ); ?>
           </strong>
+          <small class="app-description">
+            Pageviews of an article across all languages
+          </small>
         </h4>
       </header>
       <main class="col-lg-10 col-lg-offset-1">
@@ -154,15 +157,10 @@
             <tbody id="lang_list"></tbody>
           </table>
         </output>
-        <div class="col-lg-12">
-          <div class="message-container"></div>
-        </div>
+        <div class="message-container col-lg-10"></div>
         <!-- Other links -->
-        <div class="data-links row tm">
-          <div class="col-lg-12"></div>
-        </div>
+        <div class="col-lg-10 data-links"></div>
         <?php $currentApp = "langviews"; ?>
-        <?php $columns = 12; ?>
         <?php include "../_footer.php"; ?>
       </main>
     </div>

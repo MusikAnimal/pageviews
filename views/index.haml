@@ -1,10 +1,5 @@
 / Pageviews Analysis tool
-/
-/ Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d
-/ courtesy of marcelrf
-/
 / Copyright 2016 MusikAnimal
-/ Redistributed under the MIT License: https://opensource.org/licenses/MIT
 !!!
 %html
   %head
@@ -12,10 +7,12 @@
     %title= $I18N->msg( 'title' )
   %body(class=$rtl)
     %div.container
-      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+      %header.col-lg-12.text-center
         %h4
           %strong
             = $I18N->msg( 'title' )
+          %small.app-description
+            Analysis of pageviews across multiple pages
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -112,7 +109,6 @@
             = $I18N->msg( 'json' )
 
         - $currentApp = "pageviews"
-        - $columns = 12
         - include "_footer.php"
 
       - include "_modals.php"

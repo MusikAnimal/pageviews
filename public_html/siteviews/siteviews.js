@@ -2905,7 +2905,13 @@ var SiteViews = function (_Pv) {
           return _this9.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
         }
 
-        if (!sites.length) return;
+        if (!sites.length) {
+          return;
+        } else if (sites.length === 1) {
+          $('.multi-page-chart-node').hide();
+        } else {
+          $('.multi-page-chart-node').show();
+        }
 
         /** preserve order of datasets due to asyn calls */
         var sortedDatasets = new Array(sites.length);

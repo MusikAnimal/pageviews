@@ -1,8 +1,5 @@
 <!-- Pageviews Analysis tool -->
-<!-- Original code forked from https://gist.github.com/marcelrf/49738d14116fd547fe6d -->
-<!-- courtesy of marcelrf -->
 <!-- Copyright 2016 MusikAnimal -->
-<!-- Redistributed under the MIT License: https://opensource.org/licenses/MIT -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -11,11 +8,14 @@
   </head>
   <body class="<?php echo $rtl; ?>">
     <div class="container">
-      <header class="col-lg-10 col-lg-offset-1 aqs-row text-center">
+      <header class="col-lg-12 text-center">
         <h4>
           <strong>
             <?php echo $I18N->msg( 'title' ); ?>
           </strong>
+          <small class="app-description">
+            Analysis of pageviews across multiple pages
+          </small>
         </h4>
       </header>
       <main class="col-lg-10 col-lg-offset-1">
@@ -127,7 +127,6 @@
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
         </div>
         <?php $currentApp = "pageviews"; ?>
-        <?php $columns = 12; ?>
         <?php include "_footer.php"; ?>
       </main>
       <?php include "_modals.php"; ?>

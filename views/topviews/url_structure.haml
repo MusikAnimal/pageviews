@@ -6,21 +6,22 @@
       = $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
   %body
     %div.container
-      %div.col-lg-offset-2
-        / Header
-        %header.row.aqs-row
-          %div.col-lg-10.text-center
-            %h4
-              %strong= $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'topviews-title' )
+          %small.app-description
+            = $I18N->msg( 'url-structure' )
 
-        %div.col-lg-10
+      %main.col-lg-10.col-lg-offset-1
+        %div
           - $topviewsLink = "<pre>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $excldues = "<code>excludes</code>"
           = $I18N->msg( 'url-structure-topviews-example', array( 'variables' => array( $topviewsLink, $project, $sitematrixLink, $excludes ), 'parsemag' => true ) )
 
-        %div.col-lg-10
+        %div
           %h3
             = $I18N->msg( 'url-structure-parameters' )
             %small= $I18N->msg( 'url-structure-parameters-order' )
@@ -63,7 +64,7 @@
             %dd
               = $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) )
 
-        %div.col-lg-10.text-center.tm
+        %div.col-lg-12.text-center.tm
           %a(href="/topviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
 

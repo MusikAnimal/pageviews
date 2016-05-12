@@ -8,11 +8,14 @@
   </head>
   <body class="<?php echo $rtl; ?>">
     <div class="container">
-      <header class="col-lg-10 col-lg-offset-1 aqs-row text-center">
+      <header class="col-lg-10 col-lg-offset-1 text-center">
         <h4>
           <strong>
             <?php echo $I18N->msg( 'siteviews-title' ); ?>
           </strong>
+          <small class="app-description">
+            Analysis of total pageviews across multiple projects
+          </small>
         </h4>
       </header>
       <main class="col-lg-10 col-lg-offset-1">
@@ -127,7 +130,6 @@
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
         </div>
         <?php $currentApp = "siteviews"; ?>
-        <?php $columns = 12; ?>
         <?php include "../_footer.php"; ?>
       </main>
       <?php include "../_modals.php"; ?>

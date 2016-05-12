@@ -8,23 +8,25 @@
   </head>
   <body>
     <div class="container">
-      <div class="col-lg-offset-2">
-        <!-- Header -->
-        <header class="row aqs-row">
-          <div class="col-lg-10 text-center">
-            <h4>
-              <strong><?php echo $I18N->msg( 'langviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?></strong>
-            </h4>
-          </div>
-        </header>
-        <div class="col-lg-10">
+      <header class="col-lg-12 text-center">
+        <h4>
+          <strong>
+            <?php echo $I18N->msg( 'langviews-title' ); ?>
+          </strong>
+          <small class="app-description">
+            <?php echo $I18N->msg( 'url-structure' ); ?>
+          </small>
+        </h4>
+      </header>
+      <main class="col-lg-10 col-lg-offset-1">
+        <div>
           <?php $langviewsLink = "<pre>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
           <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
           <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $langviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
         </div>
-        <div class="col-lg-10">
+        <div>
           <h3>
             <?php echo $I18N->msg( 'url-structure-parameters' ); ?>
             <small><?php echo $I18N->msg( 'url-structure-parameters-order' ); ?></small>
@@ -98,14 +100,14 @@
             </dd>
           </dl>
         </div>
-        <div class="col-lg-10 text-center tm">
+        <div class="col-lg-12 text-center tm">
           <a href="/langviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
         <?php $currentApp = "langviews"; ?>
         <?php include "../../_footer.php"; ?>
-      </div>
+      </main>
     </div>
   </body>
 </html>

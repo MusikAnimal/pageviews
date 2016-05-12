@@ -1,7 +1,32 @@
 @import 'mixins';
 
 body {
+  background: url('/pageviews/images/gradient.png');
   overflow-x: hidden;
+}
+
+hr {
+  border-color: $light-gray;
+}
+
+.app-description {
+  display: block;
+  margin-top: 8px;
+}
+
+.date-latest {
+  float: right;
+}
+
+input,
+select {
+  // scss-lint:disable ImportantRule
+  background: rgba(255, 255, 255, .7) !important;
+}
+
+.select2-selection {
+  // scss-lint:disable ImportantRule
+  background: rgba(255, 255, 255, .8) !important;
 }
 
 .rtl {
@@ -134,7 +159,7 @@ a:focus {
 }
 
 header {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   margin-top: 10px;
 }
 
@@ -193,6 +218,18 @@ footer {
   margin-bottom: 10px;
 }
 
+.data-links {
+  height: 30px;
+  line-height: 30px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.agents-ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
 .footer-nav {
   position: relative;
 }
@@ -218,6 +255,10 @@ footer {
 
 .interapp-links {
   font-size: 15px;
+}
+
+.list-group-item {
+  background: rgba(255, 255, 255, .5);
 }
 
 .flash {

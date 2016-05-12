@@ -618,7 +618,13 @@ class SiteViews extends Pv {
         );
       }
 
-      if (!sites.length) return;
+      if (!sites.length) {
+        return;
+      } else if (sites.length === 1) {
+        $('.multi-page-chart-node').hide();
+      } else {
+        $('.multi-page-chart-node').show();
+      }
 
       /** preserve order of datasets due to asyn calls */
       let sortedDatasets = new Array(sites.length);

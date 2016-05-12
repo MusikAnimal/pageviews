@@ -24,53 +24,54 @@
     </p>
   </div>
 </div>
-<?php isset($columns) || $columns = 10; ?>
-<footer class="col-lg-<?php echo $columns; ?>">
-  <hr>
-  <div class="footer-nav">
-    <?php include "_lang_selector.php"; ?>
-    <div class="interapp-links bm">
-      <?php $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' ); ?>
-      <?php $appLinks = array(); ?>
-      <?php foreach( $apps as $app ) { ?>
-        <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
-        <?php if ( $app === $currentApp ) { ?>
-          <?php $appLinks[] = $I18N->msg( $app ); ?>
-        <?php } else { ?>
-          <?php $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"; ?>
+<footer class="row">
+  <div class="col-lg-12">
+    <hr>
+    <div class="footer-nav">
+      <?php include "_lang_selector.php"; ?>
+      <div class="interapp-links bm">
+        <?php $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' ); ?>
+        <?php $appLinks = array(); ?>
+        <?php foreach( $apps as $app ) { ?>
+          <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
+          <?php if ( $app === $currentApp ) { ?>
+            <?php $appLinks[] = $I18N->msg( $app ); ?>
+          <?php } else { ?>
+            <?php $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"; ?>
+          <?php } ?>
         <?php } ?>
-      <?php } ?>
-      <?php echo implode( ' &bullet; ', $appLinks ); ?>
+        <?php echo implode( ' &bullet; ', $appLinks ); ?>
+      </div>
     </div>
-  </div>
-  <span>
-    <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
-    <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
-    <?php $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>"; ?>
-    <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );; ?>
-  </span>
-  <div>
-    <span class="nowrap">
-      <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
-      <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>"; ?>
-      <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );; ?>
+    <span>
+      <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
+      <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
+      <?php $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>"; ?>
+      <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );; ?>
     </span>
-    <span class="nowrap">
-      <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
-      <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
-      <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) ); ?>
-    </span>
-  </div>
-  <div>
-    <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
-    &middot;
-    <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?php echo $I18N->msg( 'disclaimer' ); ?></a>
-    &middot;
-    <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
-    &middot;
-    <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
-    &middot;
-    <a href="https://github.com/MusikAnimal/pageviews/issues"><?php echo $I18N->msg( 'report-issue' ); ?></a>
+    <div>
+      <span class="nowrap">
+        <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
+        <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>"; ?>
+        <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );; ?>
+      </span>
+      <span class="nowrap">
+        <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
+        <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
+        <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) ); ?>
+      </span>
+    </div>
+    <div>
+      <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
+      &middot;
+      <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?php echo $I18N->msg( 'disclaimer' ); ?></a>
+      &middot;
+      <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
+      &middot;
+      <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
+      &middot;
+      <a href="https://github.com/MusikAnimal/pageviews/issues"><?php echo $I18N->msg( 'report-issue' ); ?></a>
+    </div>
   </div>
 </footer>
 <div id="disclaimer-modal" class="modal fade" role="dialog" tabindex="-1">

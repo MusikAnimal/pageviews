@@ -11,7 +11,7 @@
       </div>
       <div class="modal-body">
         <div>
-          <strong>
+          <strong class="multi-page-chart-node">
             <?php echo $I18N->msg( 'daily-pageviews' ); ?>
           </strong>
           <span class="modal-chart-type">
@@ -33,29 +33,31 @@
             </a>
           </span>
         </div>
-        <hr>
-        <div>
-          <strong>
-            <?php echo $I18N->msg( 'total-pageviews' ); ?>
-          </strong>
-          <span class="modal-chart-type">
-            <a class="js-test-pie-chart" data-dismiss="modal" data-type="Pie" href="#">
-              <img src="/pageviews/images/pie-chart-small.jpg">
-              <?php echo $I18N->msg( 'pie' ); ?>
-            </a>
-          </span>
-          <span class="modal-chart-type">
-            <a data-dismiss="modal" data-type="Doughnut" href="#">
-              <img src="/pageviews/images/doughnut-chart-small.jpg">
-              <?php echo $I18N->msg( 'doughnut' ); ?>
-            </a>
-          </span>
-          <span class="modal-chart-type">
-            <a data-dismiss="modal" data-type="PolarArea" href="#">
-              <img src="/pageviews/images/polararea-chart-small.jpg">
-              <?php echo $I18N->msg( 'polar-area' ); ?>
-            </a>
-          </span>
+        <div class="multi-page-chart-node">
+          <hr>
+          <div>
+            <strong>
+              <?php echo $I18N->msg( 'total-pageviews' ); ?>
+            </strong>
+            <span class="modal-chart-type">
+              <a class="js-test-pie-chart" data-dismiss="modal" data-type="Pie" href="#">
+                <img src="/pageviews/images/pie-chart-small.jpg">
+                <?php echo $I18N->msg( 'pie' ); ?>
+              </a>
+            </span>
+            <span class="modal-chart-type">
+              <a data-dismiss="modal" data-type="Doughnut" href="#">
+                <img src="/pageviews/images/doughnut-chart-small.jpg">
+                <?php echo $I18N->msg( 'doughnut' ); ?>
+              </a>
+            </span>
+            <span class="modal-chart-type">
+              <a data-dismiss="modal" data-type="PolarArea" href="#">
+                <img src="/pageviews/images/polararea-chart-small.jpg">
+                <?php echo $I18N->msg( 'polar-area' ); ?>
+              </a>
+            </span>
+          </div>
         </div>
       </div>
       <div class="modal-footer">

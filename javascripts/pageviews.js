@@ -686,7 +686,13 @@ class PageViews extends Pv {
         );
       }
 
-      if (!articles.length) return;
+      if (!articles.length) {
+        return;
+      } else if (articles.length === 1) {
+        $('.multi-page-chart-node').hide();
+      } else {
+        $('.multi-page-chart-node').show();
+      }
 
       /** preserve order of datasets due to asyn calls */
       let sortedDatasets = new Array(articles.length);

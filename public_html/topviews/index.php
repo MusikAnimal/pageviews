@@ -1,6 +1,5 @@
 <!-- Topviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
-<!-- Redistributed under the MIT License: https://opensource.org/licenses/MIT -->
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,19 +8,19 @@
   </head>
   <body>
     <div class="container">
-      <div class="col-lg-offset-2">
-        <!-- Header -->
-        <header class="row aqs-row">
-          <div class="col-lg-10 text-center">
-            <h4>
-              <strong>
-                <?php echo $I18N->msg( 'topviews-title' ); ?>
-              </strong>
-            </h4>
-          </div>
-        </header>
+      <header class="col-lg-12 text-center">
+        <h4>
+          <strong>
+            <?php echo $I18N->msg( 'topviews-title' ); ?>
+          </strong>
+          <small class="app-description">
+            Most viewed pages of a project
+          </small>
+        </h4>
+      </header>
+      <main class="col-lg-10 col-lg-offset-1">
         <!-- Site notice -->
-        <div class="col-lg-10 text-center site-notice-wrapper">
+        <div class="text-center site-notice-wrapper">
           <div class="site-notice">
             <?php include "../_browser_check.php"; ?>
           </div>
@@ -35,13 +34,13 @@
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
-          <div class="col-lg-3 col-sm-4">
+          <div class="col-lg-4 col-sm-4">
             <label for="project-input">
               <?php echo $I18N->msg( 'project' ); ?>
             </label>
             <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
-          <div class="col-lg-3 col-sm-4">
+          <div class="col-lg-4 col-sm-4">
             <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
@@ -63,7 +62,7 @@
         </div>
         <!-- Article selector -->
         <div class="row aqs-row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
             <label for="article-input">
               <?php echo $I18N->msg( 'excluded-pages' ); ?>
             </label>
@@ -71,14 +70,14 @@
           </div>
         </div>
         <!-- Chart -->
-        <div class="col-lg-10">
+        <div class="col-lg-12">
           <small class="text-warning">
             <?php echo $I18N->msg( 'topviews-data-approx' ); ?>
             <?php echo $I18N->msg( 'topviews-false-positive' ); ?>
           </small>
         </div>
-        <div class="chart-container col-lg-10"></div>
-        <div class="col-lg-10 text-center">
+        <div class="chart-container col-lg-12 loading"></div>
+        <div class="col-lg-12 text-center">
           <a class="expand-chart" href="#">
             <?php echo $I18N->msg( 'show-more' ); ?>
           </a>
@@ -88,7 +87,7 @@
         <div class="col-lg-10 data-links"></div>
         <?php $currentApp = "topviews"; ?>
         <?php include "../_footer.php"; ?>
-      </div>
+      </main>
     </div>
   </body>
 </html>

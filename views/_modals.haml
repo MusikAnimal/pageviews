@@ -9,7 +9,7 @@
 
       %div.modal-body
         %div
-          %strong
+          %strong.multi-page-chart-node
             = $I18N->msg( 'daily-pageviews' )
           %span.modal-chart-type
             %a.js-test-line-chart(data-dismiss="modal" data-type="Line" href="#")
@@ -24,22 +24,23 @@
               %img(src="/pageviews/images/radar-chart-small.jpg")
               = $I18N->msg( 'radar' )
 
-        %hr
-        %div
-          %strong
-            = $I18N->msg( 'total-pageviews' )
-          %span.modal-chart-type
-            %a.js-test-pie-chart(data-dismiss="modal" data-type="Pie" href="#")
-              %img(src="/pageviews/images/pie-chart-small.jpg")
-              = $I18N->msg( 'pie' )
-          %span.modal-chart-type
-            %a(data-dismiss="modal" data-type="Doughnut" href="#")
-              %img(src="/pageviews/images/doughnut-chart-small.jpg")
-              = $I18N->msg( 'doughnut' )
-          %span.modal-chart-type
-            %a(data-dismiss="modal" data-type="PolarArea" href="#")
-              %img(src="/pageviews/images/polararea-chart-small.jpg")
-              = $I18N->msg( 'polar-area' )
+        %div.multi-page-chart-node
+          %hr
+          %div
+            %strong
+              = $I18N->msg( 'total-pageviews' )
+            %span.modal-chart-type
+              %a.js-test-pie-chart(data-dismiss="modal" data-type="Pie" href="#")
+                %img(src="/pageviews/images/pie-chart-small.jpg")
+                = $I18N->msg( 'pie' )
+            %span.modal-chart-type
+              %a(data-dismiss="modal" data-type="Doughnut" href="#")
+                %img(src="/pageviews/images/doughnut-chart-small.jpg")
+                = $I18N->msg( 'doughnut' )
+            %span.modal-chart-type
+              %a(data-dismiss="modal" data-type="PolarArea" href="#")
+                %img(src="/pageviews/images/polararea-chart-small.jpg")
+                = $I18N->msg( 'polar-area' )
 
       %div.modal-footer
         %button.btn.btn-default(data-dismiss="modal" type="button")

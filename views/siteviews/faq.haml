@@ -4,75 +4,73 @@
     - include '../../_head.php'
     %title
       = $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' )
-
   %body
     %div.container
-      %div.col-lg-offset-2
-        / Header
-        %header.row.aqs-row
-          %div.col-lg-10.text-center
-            %h4
-              %strong
-                = $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'siteviews-title' )
+          %small.app-description
+            = $I18N->msg( 'faq' )
 
-        %div.col-lg-10
-          %ul.list-group
-            %li.list-group-item
-              - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
-              %p
-                %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
-              %p
-                = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-todays-date-title' )
-              %p
-                = $I18N->msg( 'faq-todays-date-body' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-source-title' )
-              %ul.agents-ul
-                %li
-                  %i= $I18N->msg( 'pageviews' )
-                  = $I18N->msg( 'faq-source-pageviews' )
-                %li
-                  %i= $I18N->msg( 'unique-devices' )
-                  = $I18N->msg( 'faq-source-unique-devices' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-agents-title' )
-              %ul.agents-ul
-                %li
-                  %i= $I18N->msg( 'user' )
-                  = $I18N->msg( 'faq-agents-user' )
-                %li
-                  %i= $I18N->msg( 'spider' )
-                  = $I18N->msg( 'faq-agents-spider' )
-                %li
-                  %i= $I18N->msg( 'bot' )
-                  = $I18N->msg( 'faq-agents-bot' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-chart-type-title' )
-              %p
-                = $I18N->msg( 'faq-chart-type-body' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-line-chart-title' )
-              %p
-                = $I18N->msg( 'faq-line-chart-body' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-top-viewed-title' )
-              %p
-                = $I18N->msg( 'faq-try-tool', array( 'variables' => array( "<a href='/topviews'>" . $I18N->msg( 'topviews-title' ) . "</a>" ), 'parsemag' => true ) )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-bug-report-title' )
-              %p
-                = $I18N->msg( 'faq-bug-report-body' )
+      %main.col-lg-10.col-lg-offset-1
+        %ul.list-group
+          %li.list-group-item
+            - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
+            %p
+              %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
+            %p
+              = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-todays-date-title' )
+            %p
+              = $I18N->msg( 'faq-todays-date-body' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-source-title' )
+            %ul.agents-ul
+              %li
+                %i= $I18N->msg( 'pageviews' )
+                = $I18N->msg( 'faq-source-pageviews' )
+              %li
+                %i= $I18N->msg( 'unique-devices' )
+                = $I18N->msg( 'faq-source-unique-devices' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-agents-title' )
+            %ul.agents-ul
+              %li
+                %i= $I18N->msg( 'user' )
+                = $I18N->msg( 'faq-agents-user' )
+              %li
+                %i= $I18N->msg( 'spider' )
+                = $I18N->msg( 'faq-agents-spider' )
+              %li
+                %i= $I18N->msg( 'bot' )
+                = $I18N->msg( 'faq-agents-bot' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-chart-type-title' )
+            %p
+              = $I18N->msg( 'faq-chart-type-body' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-line-chart-title' )
+            %p
+              = $I18N->msg( 'faq-line-chart-body' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-top-viewed-title' )
+            %p
+              = $I18N->msg( 'faq-try-tool', array( 'variables' => array( "<a href='/topviews'>" . $I18N->msg( 'topviews-title' ) . "</a>" ), 'parsemag' => true ) )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-bug-report-title' )
+            %p
+              = $I18N->msg( 'faq-bug-report-body' )
 
-        %div.col-lg-10.text-center.tm
+        %div.col-lg-12.text-center.tm
           %a(href="/siteviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
 

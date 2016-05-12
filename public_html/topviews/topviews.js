@@ -2181,6 +2181,7 @@ var TopViews = function (_Pv) {
       var _this2 = this;
 
       $('.chart-container').removeClass('loading').html('');
+      $('.show-more').show();
 
       var count = 0,
           index = 0;
@@ -2419,6 +2420,7 @@ var TopViews = function (_Pv) {
       this.pageData = [];
       this.pageNames = [];
       $('.chart-container').removeClass('loading').html('');
+      $('.show-more').show();
       $('.message-container').html('');
       if (clearSelector) {
         this.resetArticleSelector();
@@ -2579,6 +2581,7 @@ var TopViews = function (_Pv) {
       var dfd = $.Deferred();
 
       $('.chart-container').addClass('loading');
+      $('.show-more').hide();
 
       /** Collect parameters from inputs. */
       var startDate = this.daterangepicker.startDate,
