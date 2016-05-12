@@ -187,5 +187,6 @@
 	"unique-devices": "Unique devices",
 	"massviews-title": "Massviews Analysis",
 	"massviews-empty-set": "$1 contains no pages!",
-	"url-structure-sort-massviews": "Which column to sort. Either $1 or $2"
+	"url-structure-sort-massviews": "Which column to sort. Either $1 or $2",
+	"massviews-description": "Import a list of pages and analyze the pageviews"
 }
