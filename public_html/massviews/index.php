@@ -14,7 +14,7 @@
             <?php echo $I18N->msg( 'massviews-title' ); ?>
           </strong>
           <small class="app-description">
-            Import a list of pages and analyze the pageviews
+            <?php echo $I18N->msg( 'massviews-description' ); ?>
           </small>
         </h4>
       </header>

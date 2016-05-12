@@ -188,5 +188,6 @@
 	"topviews-data-approx": "All topviews data is <a href='/topviews/faq#data_caveat'>approximate</a>.",
 	"topviews-false-positive": "Some pages listed may be <a href='/topviews/faq#false_positive'>false positives</a>.",
 	"unique-devices": "Unique devices",
-	"massviews-title": "Massviews Analysis"
+	"massviews-title": "Massviews Analysis",
+	"massviews-description": "Import a list of pages and analyze the pageviews"
 }

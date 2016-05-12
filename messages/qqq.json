@@ -193,5 +193,7 @@
 	"most-viewed-pages": "Link to view the most viewed pages of a project",
 	"topviews-data-approx": "Text that shows above the list of pages on Topviews that explains the data is approximate. This links to the relevant FAQ section. Please do not alter the link.",
 	"topviews-false-positive": "Text that shows above the list of pages on Topviews that explains there might be false positives. This links to the relevant FAQ section. Please do not alter the link.",
-	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)"
+	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
+	"massviews-title": "The title of the Massviews tool. This is shown as a header at the top of the page.",
+	"massviews-description": "Brief description of the Massviews tool. Shown directly under the header."
 }
