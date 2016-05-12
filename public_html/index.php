@@ -116,7 +116,7 @@
           &nbsp;&bullet;&nbsp;
           <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
           <?php echo $I18N->msg( 'settings' ); ?></a>
-          &bullet;&nbsp;
+          &nbsp;&bullet;&nbsp;
           <a class="permalink" href="#"><span class="glyphicon glyphicon-link"></span>
           <?php echo $I18N->msg( 'permalink' ); ?></a>
           &nbsp;&bullet;&nbsp;
