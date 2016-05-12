@@ -128,6 +128,7 @@
 	"faq-chart-type-title": "No me gusta este tipo de gráfico",
 	"faq-try-tool": "Prueba $1",
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
+	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
 	"url-structure-parameters": "Parámetros",
 	"url-structure-parameters-order": "Puede usarse en cualquier orden",
 	"url-structure-project": "$1 u otro válido $2",
@@ -140,5 +141,11 @@
 	"history": "Historial",
 	"info": "Información",
 	"note": "Nota",
-	"unsupported-browser-error": "No se admite $1 y anteriores. <a href='http://browsehappy.com/'>Actualiza tu navegador</a></strong>."
+	"unsupported-browser-error": "No se admite $1 y anteriores. <a href='http://browsehappy.com/'>Actualiza tu navegador</a></strong>.",
+	"permalink": "Enlace permanente",
+	"projects": "Proyectos",
+	"projects-placeholder": "Escribe nombres de proyectos...",
+	"statistics": "Estadísticas",
+	"most-viewed-pages": "Páginas más vistas",
+	"unique-devices": "Dispositivos únicos"
 }

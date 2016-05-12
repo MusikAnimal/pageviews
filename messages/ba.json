@@ -6,7 +6,8 @@
 			"Янмурза Баки",
 			"Ilmira",
 			"Macofe",
-			"Ләйсән"
+			"Ләйсән",
+			"Lizalizaufa"
 		]
 	},
 	"title": "Биттәрҙе ҡарау иҫәбен анализлау",
@@ -93,10 +94,18 @@
 	"select2-searching": "Эҙләү...",
 	"help-translate": "Тәржемә менән ярҙам итергә",
 	"language": "Тел",
-	"faq-return-to": "$1 битенә ҡайтырға",
-	"url-structure-parameters": "Параметр",
-	"default": "Ғәҙәттәге",
+	"langviews": "Ҡараусылар",
+	"topviews": "Яҡшылап ҡарап сығыу",
+	"siteviews": "Сайтты ҡараусылар",
+	"faq-return-to": "$1 ҡайтырға",
+	"faq-source-title": "\"Мәғлүмәт сығанағы\" ниндәй?",
+	"faq-source-pageviews": "проект битен ҡараусыларҙың дөйөм иҫәбе.",
+	"faq-source-unique-devices": "сайтҡа инеүсе уникаль ҡоролмалар иҫәбе.",
+	"url-structure-parameters": "Параметрҙар",
+	"url-structure-source": "Йәки $1 (битте ҡараусылар иҫәбе) йәки $2 (битте ҡараусы уникаль ҡоролмалар иҫәбе)",
+	"default": "Килешеү буйынса",
 	"history": "Тарих",
 	"info": "Мәғлүмәт",
-	"note": "Иҫкәрмә"
+	"note": "Иҫкәрмә",
+	"unique-devices": "Уникаль приборҙар"
 }

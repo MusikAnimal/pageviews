@@ -147,5 +147,14 @@
 	"history": "Историја",
 	"info": "Инфо",
 	"note": "Белешка",
-	"unsupported-browser-error": "$1 и постари верзии не се поддржани. <a href='http://browsehappy.com/'>Надградете го прелистувачот</a></strong>."
+	"unsupported-browser-error": "$1 и постари верзии не се поддржани. <a href='http://browsehappy.com/'>Надградете го прелистувачот</a></strong>.",
+	"permalink": "Постојана врска",
+	"siteviews-title": "Анализа на посети",
+	"projects": "Проекти",
+	"projects-placeholder": "Внесете имиња на проекти...",
+	"statistics": "Статистика",
+	"most-viewed-pages": "Најпосетувани страници",
+	"topviews-data-approx": "Сите податоци за најголема посетеност се <a href='/topviews/faq#data_caveat'>приближни</a>.",
+	"topviews-false-positive": "Некои од наведените страници може да се <a href='/topviews/faq#false_positive'>погрешно утврдени</a>.",
+	"unique-devices": "Поединечни уреди"
 }

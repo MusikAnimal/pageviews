@@ -107,11 +107,15 @@
 	"faq-multi-lang-title": "Chcę zobaczyć dane dla strony we wszystkich językach projektu",
 	"faq-try-tool": "Spróbuj $1",
 	"url-structure-parameters": "Parametry",
+	"url-structure-special-range-latest": "Ostatnie 20 dni danych",
 	"url-structure-special-range-latest-n": "gdzie <i>N</i> jest liczbą. Na przykład <code>latest-30</code> pokaże dane z ostatnich 30 dni",
 	"url-structure-sort-direction": "Kierunek sortowania. $1 malejąco, $2 rosnąco",
 	"default": "Domyślnie",
 	"all-languages": "Wszystkie języki",
 	"history": "Historia",
 	"info": "Informacje",
-	"unsupported-browser-error": "Wersja $1 i wcześniejsze nie są obsługiwane. <a href='http://browsehappy.com/'>Zaktualizuj swoją przeglądarkę</a></strong>."
+	"unsupported-browser-error": "Wersja $1 i wcześniejsze nie są obsługiwane. <a href='http://browsehappy.com/'>Zaktualizuj swoją przeglądarkę</a></strong>.",
+	"projects": "Projekty",
+	"statistics": "Statystyki",
+	"most-viewed-pages": "Najczęściej odwiedzane strony"
 }
