@@ -512,7 +512,7 @@ var PageViews = function (_Pv) {
       $(config.projectInput).val(params.project || config.defaults.project);
       if (this.validateProject()) return;
 
-      this.patchUsage();
+      this.patchUsage('pv');
 
       /**
        * Check if we're using a valid range, and if so ignore any start/end dates.
@@ -1653,15 +1653,16 @@ var Pv = function () {
 
     /**
      * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
+     * @param {string} app - one of: pv, lv, tv, sv, ms
      * @return {null} nothing
      */
 
   }, {
     key: 'patchUsage',
-    value: function patchUsage() {
+    value: function patchUsage(app) {
       if (location.host !== 'localhost') {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + (this.project || i18nLang),
+          url: '//tools.wmflabs.org/musikanimal/api/' + app + '_uses/' + (this.project || i18nLang),
           method: 'PATCH'
         });
       }

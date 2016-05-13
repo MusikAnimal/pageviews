@@ -413,19 +413,6 @@ class MassViews extends Pv {
   }
 
   /**
-   * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-   * @return {null} nothing
-   */
-  patchUsage() {
-    if (location.host !== 'localhost') {
-      $.ajax({
-        url: `//tools.wmflabs.org/musikanimal/api/mv_uses/${i18nLang}`,
-        method: 'PATCH'
-      });
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
@@ -433,7 +420,7 @@ class MassViews extends Pv {
   popParams() {
     let startDate, endDate, params = this.parseQueryString();
 
-    this.patchUsage();
+    this.patchUsage('mv');
 
     /**
      * Check if we're using a valid range, and if so ignore any start/end dates.

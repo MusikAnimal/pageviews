@@ -263,7 +263,7 @@ class SiteViews extends Pv {
   popParams() {
     let startDate, endDate, params = this.parseQueryString();
 
-    this.patchUsage();
+    this.patchUsage('sv');
 
     /**
      * Check if we're using a valid range, and if so ignore any start/end dates.

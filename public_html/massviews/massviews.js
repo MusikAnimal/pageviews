@@ -542,22 +542,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-     * @return {null} nothing
-     */
-
-  }, {
-    key: 'patchUsage',
-    value: function patchUsage() {
-      if (location.host !== 'localhost') {
-        $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/mv_uses/' + i18nLang,
-          method: 'PATCH'
-        });
-      }
-    }
-
-    /**
      * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
@@ -570,7 +554,7 @@ var MassViews = function (_Pv) {
           endDate = undefined,
           params = this.parseQueryString();
 
-      this.patchUsage();
+      this.patchUsage('mv');
 
       /**
        * Check if we're using a valid range, and if so ignore any start/end dates.
@@ -1436,15 +1420,16 @@ var Pv = function () {
 
     /**
      * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
+     * @param {string} app - one of: pv, lv, tv, sv, ms
      * @return {null} nothing
      */
 
   }, {
     key: 'patchUsage',
-    value: function patchUsage() {
+    value: function patchUsage(app) {
       if (location.host !== 'localhost') {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/pv_uses/' + (this.project || i18nLang),
+          url: '//tools.wmflabs.org/musikanimal/api/' + app + '_uses/' + (this.project || i18nLang),
           method: 'PATCH'
         });
       }
