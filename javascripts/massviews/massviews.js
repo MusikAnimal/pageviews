@@ -66,6 +66,9 @@ class MassViews extends Pv {
       this.sort = sortType;
       this.renderData();
     });
+
+    $('.download-csv').on('click', this.exportCSV.bind(this));
+    $('.download-json').on('click', this.exportJSON.bind(this));
   }
 
   /**
@@ -111,6 +114,17 @@ class MassViews extends Pv {
   }
 
   /**
+   * Get params needed to create a permanent link of visible data
+   * @return {Object} hash of params
+   */
+  getPermaLink() {
+    let params = this.getParams(true);
+    params.sort = this.sort;
+    params.direction = this.direction;
+    return params;
+  }
+
+  /**
    * Push relevant class properties to the query string
    * @param  {Boolean} clear - wheter to clear the query string entirely
    * @return {null} nothing
@@ -125,18 +139,8 @@ class MassViews extends Pv {
     /** only certain characters within the page name are escaped */
     // const page = $(config.sourceInput).val().score().replace(/[&%]/g, escape);
     window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
-  }
 
-  /**
-   * Given the badge code provided by the Wikidata API, return a image tag of the badge
-   * @param  {String} badgeCode - as defined in config.badges
-   * @return {String} HTML markup for the image
-   */
-  getBadgeMarkup(badgeCode) {
-    if (!config.badges[badgeCode]) return '';
-    const badgeImage = config.badges[badgeCode].image,
-      badgeName = config.badges[badgeCode].name;
-    return `<img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
+    $('.permalink').prop('href', `/massviews?${$.param(this.getPermaLink())}`);
   }
 
   /**
@@ -225,7 +229,7 @@ class MassViews extends Pv {
    * Loop through given pages and query the pageviews API for each
    *   Also updates this.massData with result
    * @param  {string} dbName - database name as returned by Page Pile API
-   * @param  {Object} pages - as given by the getInterwikiData promise
+   * @param  {Object} pages - as given by the getPagePile promise
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
    */
   getPageViewsData(dbName, pages) {
@@ -234,7 +238,7 @@ class MassViews extends Pv {
 
     // XXX: throttling
     let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
-      totalRequestCount = pages.length;
+      totalRequestCount = pages.length, failedPages = [];
 
     /** clear out existing data */
     this.massData = [];
@@ -265,7 +269,8 @@ class MassViews extends Pv {
       }).fail(errorData => {
         // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-        if (errorData.responseJSON.title === 'Error in Cassandra table storage backend') {
+        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+        if (cassandraError) {
           if (failureRetries[dbName]) {
             failureRetries[dbName]++;
           } else {
@@ -279,7 +284,12 @@ class MassViews extends Pv {
           }
         }
 
-        this.writeMessage(`${$.i18n('langviews-error', page)}: ${errorData.responseJSON.title}`);
+        if (cassandraError) {
+          failedPages.push(page);
+        } else {
+          this.writeMessage(`${this.getPageLink(page, sourceProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+        }
+
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
         this.updateProgressBar((++count / totalRequestCount) * 100);
@@ -287,6 +297,15 @@ class MassViews extends Pv {
         // XXX: throttling, totalRequestCount can just be interWikiKeys.length
         if (count === totalRequestCount) {
           dfd.resolve(this.massData);
+
+          if (failedPages.length) {
+            this.writeMessage($.i18n(
+              'api-error-timeout',
+              '<ul>' +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, sourceProject)}</li>`) +
+              '</ul>'
+            ));
+          }
 
           /**
            * if there were no failures, assume the resource is now cached by the server
@@ -360,8 +379,7 @@ class MassViews extends Pv {
         this.writeMessage(
           `
           ${this.getPileLink(id)} contains ${this.n(pages.length)} pages.
-          For performance reasons, the limit is currently set to ${config.pageLimit}.
-          Processing the first ${config.pageLimit} pages only.
+          For performance reasons, only the first ${config.pageLimit} pages will be processed.
           `
         );
 
@@ -474,9 +492,10 @@ class MassViews extends Pv {
    *   styling the document based on a 'state'
    * @param {String} state - class to be added;
    *   should be one of ['initial', 'processing', 'complete']
+   * @param {function} [cb] - Optional function to be called after initial state has been set
    * @returns {null} nothing
    */
-  setState(state) {
+  setState(state, cb) {
     $('main').removeClass(config.formStates.join(' ')).addClass(state);
 
     switch (state) {
@@ -485,8 +504,10 @@ class MassViews extends Pv {
       this.assignDefaults();
       if (this.typeahead) this.typeahead.hide();
       $(config.sourceInput).val('').focus();
+      if (typeof cb === 'function') cb.call(this);
       break;
     case 'processing':
+      this.clearMessages();
       document.activeElement.blur();
       $('.progress-bar').addClass('active');
       $('.error-message').html('');
@@ -586,6 +607,35 @@ class MassViews extends Pv {
   }
 
   /**
+   * XXX: throttling
+   * @return {[type]} [description]
+   */
+  checkThrottle() {
+    if (simpleStorage.hasKey('pageviews-throttle')) {
+      const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
+
+      /** > 0 check to combat race conditions */
+      if (timeRemaining > 0) {
+        // FIXME: restore when fallbacks are supported for multi-param messages
+        // return this.writeMessage($.i18n(
+        //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
+        //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+        // ), true);
+        return this.writeMessage(`
+          Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
+          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
+          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>
+          for more information.
+        `, true);
+      }
+    } else {
+      /** limit to one request every 90 seconds */
+      simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+      return false;
+    }
+  }
+
+  /**
    * Process the massviews for the given source and options entered
    * Called when submitting the form
    * @return {null} nothing
@@ -595,32 +645,37 @@ class MassViews extends Pv {
     /** allow resubmission of queries that are cached */
     if (!this.isRequestCached()) {
       /** Check if user has exceeded request limit and throw error */
-      if (simpleStorage.hasKey('langviews-throttle')) {
-        const timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+      if (simpleStorage.hasKey('pageviews-throttle')) {
+        const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
 
         /** > 0 check to combat race conditions */
         if (timeRemaining > 0) {
-          // FIXME: restore when fallbacks are supported for multi-param messages
-          // return this.writeMessage($.i18n(
-          //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-          //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-          // ), true);
-          return this.writeMessage(`
-            Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
-            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
-            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>
-            for more information.
-          `, true);
+          return this.writeMessage($.i18n(
+            'api-throttle-wait', `<b>${timeRemaining}</b>`,
+            '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+          ), true);
         }
-      } else {
-        /** limit to one request every 90 seconds */
-        simpleStorage.set('langviews-throttle', true, {TTL: 90000});
       }
     }
 
     this.setState('processing');
 
-    this.getPagePile($(config.sourceInput).val()).done(pileData => {
+    const pileId = $(config.sourceInput).val();
+
+    this.getPagePile(pileId).done(pileData => {
+      if (!pileData.pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', this.getPileLink(pileId)));
+        });
+      }
+
+      /**
+       * XXX: caching
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+
       this.sourceProject = siteMap[pileData.wiki];
       this.getPageViewsData(pileData.wiki, pileData.pages).done(() => {
         $('.massviews-input-name').text(`Page Pile #${pileData.id}`).prop('href', this.getPileURL(pileData.id));
@@ -641,7 +696,7 @@ class MassViews extends Pv {
       if (typeof error === 'string') {
         this.writeMessage(error);
       } else {
-        this.writeMessage($.i18n('wikidata-error-unknown'));
+        this.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
       }
     });
   }
@@ -653,6 +708,42 @@ class MassViews extends Pv {
    */
   updateProgressBar(value) {
     $('.progress-bar').css('width', `${value.toFixed(2)}%`);
+  }
+
+  /**
+   * Exports current mass data to CSV format and loads it in a new tab
+   * With the prepended data:text/csv this should cause the browser to download the data
+   * @returns {string} CSV content
+   */
+  exportCSV() {
+    let csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
+
+    // Add the rows to the CSV
+    this.massData.forEach(page => {
+      let pageName = '"' + page.title.descore().replace(/"/g, '""') + '"';
+
+      csvContent += [
+        pageName,
+        page.views,
+        page.average
+      ].join(',') + '\n';
+    });
+
+    // Output the CSV file to the browser
+    const encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
+  }
+
+  /**
+   * Exports current mass data to JSON format and loads it in a new tab
+   * @returns {string} stringified JSON
+   */
+  exportJSON() {
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData),
+      encodedUri = encodeURI(jsonContent);
+    window.open(encodedUri);
+
+    return jsonContent;
   }
 }
 

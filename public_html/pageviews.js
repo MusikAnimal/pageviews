@@ -940,7 +940,7 @@ var PageViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this8.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
+          return _this8.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>', true);
         }
 
         if (!articles.length) {
@@ -1184,12 +1184,19 @@ var Pv = function () {
     }
 
     /**
-     * Load translations then initialize the app
-     * Each app has it's own initialize method
+     * Load translations then initialize the app.
+     * Each app has it's own initialize method.
+     * Make sure we load 'en.json' as a fallback
      */
+    var messagesToLoad = _defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json');
+
+    if (i18nLang !== 'en') {
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+
     $.i18n({
       locale: i18nLang
-    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{
@@ -1292,6 +1299,19 @@ var Pv = function () {
     }
 
     /**
+     * Get a full link for the given page and project
+     * @param  {string} page - page to link to
+     * @param  {string} [project] - project link, defaults to `this.project`
+     * @return {string} HTML markup
+     */
+
+  }, {
+    key: 'getPageLink',
+    value: function getPageLink(page, project) {
+      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore() + '</a>';
+    }
+
+    /**
      * Get the wiki URL given the page name
      *
      * @param {string} page name
@@ -1301,7 +1321,9 @@ var Pv = function () {
   }, {
     key: 'getPageURL',
     value: function getPageURL(page) {
-      return '//' + this.project + '.org/wiki/' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+      var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
+
+      return '//' + project.replace(/\.org$/, '') + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**

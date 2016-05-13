@@ -175,6 +175,9 @@ var LangViews = function (_Pv) {
         _this2.validateProject();
         _this2.updateInterAppLinks();
       });
+
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
     }
 
     /**
@@ -224,6 +227,20 @@ var LangViews = function (_Pv) {
     }
 
     /**
+     * Get params needed to create a permanent link of visible data
+     * @return {Object} hash of params
+     */
+
+  }, {
+    key: 'getPermaLink',
+    value: function getPermaLink() {
+      var params = this.getParams(true);
+      params.sort = this.sort;
+      params.direction = this.direction;
+      return params;
+    }
+
+    /**
      * Push relevant class properties to the query string
      * @param  {Boolean} clear - wheter to clear the query string entirely
      * @return {null} nothing
@@ -243,6 +260,8 @@ var LangViews = function (_Pv) {
       /** only certain characters within the page name are escaped */
       var page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
       window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&page=' + page);
+
+      $('.permalink').prop('href', '/langviews?' + $.param(this.getPermaLink()));
     }
 
     /**
@@ -301,7 +320,7 @@ var LangViews = function (_Pv) {
           badgeMarkup = item.badges.map(_this3.getBadgeMarkup).join();
         }
 
-        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         <td>' + _this3.n(Math.round(item.views / _this3.numDaysInRange())) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
+        $('#lang_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td>' + item.lang + '</td>\n         <td><a href="' + item.url + '" target="_blank">' + item.pageName + '</a></td>\n         <td>' + badgeMarkup + '</td>\n         <td><a href=\'' + _this3.getPageviewsURL(item.lang, _this3.baseProject, item.pageName) + '\'>' + _this3.n(item.views) + '</a></td>\n         <td>' + _this3.n(item.average) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
       });
 
       this.pushParams();
@@ -403,7 +422,8 @@ var LangViews = function (_Pv) {
             lang: lang,
             pageName: data.title,
             views: views,
-            url: data.url
+            url: data.url,
+            average: Math.round(views / _this4.numDaysInRange())
           });
 
           /** keep track of unique badges/titles and total pageviews */
@@ -435,7 +455,9 @@ var LangViews = function (_Pv) {
             }
           }
 
-          _this4.writeMessage($.i18n('langviews-error', dbName) + ': ' + errorData.responseJSON.title);
+          var errorMessage = cassandraError ? $.i18n('api-error-timeout') : $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title;
+          _this4.writeMessage(dbName + ': ' + errorMessage);
+
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
           _this4.updateProgressBar(++count / totalRequestCount * 100);
@@ -510,7 +532,7 @@ var LangViews = function (_Pv) {
 
       $.getJSON(url).done(function (data) {
         if (data.error) {
-          return dfd.reject($.i18n('wikidata-error') + ': ' + data.error.info);
+          return dfd.reject($.i18n('api-error', 'Wikidata') + ': ' + data.error.info);
         } else if (data.entities['-1']) {
           return dfd.reject('<a href=\'' + _this5.getPageURL(pageName) + '\'>' + pageName.descore() + '</a> - ' + $.i18n('api-error-no-data'));
         }
@@ -590,6 +612,7 @@ var LangViews = function (_Pv) {
       $(config.projectInput).val(params.project || config.defaults.project);
       if (this.validateProject()) return;
 
+      // FIXME: only run this when they actually submit
       this.patchUsage('lv');
 
       /**
@@ -749,7 +772,7 @@ var LangViews = function (_Pv) {
         if (typeof error === 'string') {
           _this7.writeMessage(error);
         } else {
-          _this7.writeMessage($.i18n('wikidata-error-unknown'));
+          _this7.writeMessage($.i18n('api-error-unknown', 'Wikidata'));
         }
       });
     }
@@ -823,6 +846,46 @@ var LangViews = function (_Pv) {
       this.setupArticleInput();
 
       return false;
+    }
+
+    /**
+     * Exports current mass data to CSV format and loads it in a new tab
+     * With the prepended data:text/csv this should cause the browser to download the data
+     * @returns {string} CSV content
+     */
+
+  }, {
+    key: 'exportCSV',
+    value: function exportCSV() {
+      var csvContent = 'data:text/csv;charset=utf-8,Language,Title,Badges,Pageviews,Average\n';
+
+      // Add the rows to the CSV
+      this.langData.forEach(function (page) {
+        var pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"';
+
+        csvContent += [page.lang, pageName, page.badges.map(function (badge) {
+          return config.badges[badge].name;
+        }), page.views, page.average].join(',') + '\n';
+      });
+
+      // Output the CSV file to the browser
+      var encodedUri = encodeURI(csvContent);
+      window.open(encodedUri);
+    }
+
+    /**
+     * Exports current mass data to JSON format and loads it in a new tab
+     * @returns {string} stringified JSON
+     */
+
+  }, {
+    key: 'exportJSON',
+    value: function exportJSON() {
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.langData),
+          encodedUri = encodeURI(jsonContent);
+      window.open(encodedUri);
+
+      return jsonContent;
     }
   }, {
     key: 'baseProject',
@@ -1016,12 +1079,19 @@ var Pv = function () {
     }
 
     /**
-     * Load translations then initialize the app
-     * Each app has it's own initialize method
+     * Load translations then initialize the app.
+     * Each app has it's own initialize method.
+     * Make sure we load 'en.json' as a fallback
      */
+    var messagesToLoad = _defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json');
+
+    if (i18nLang !== 'en') {
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+
     $.i18n({
       locale: i18nLang
-    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{
@@ -1124,6 +1194,19 @@ var Pv = function () {
     }
 
     /**
+     * Get a full link for the given page and project
+     * @param  {string} page - page to link to
+     * @param  {string} [project] - project link, defaults to `this.project`
+     * @return {string} HTML markup
+     */
+
+  }, {
+    key: 'getPageLink',
+    value: function getPageLink(page, project) {
+      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore() + '</a>';
+    }
+
+    /**
      * Get the wiki URL given the page name
      *
      * @param {string} page name
@@ -1133,7 +1216,9 @@ var Pv = function () {
   }, {
     key: 'getPageURL',
     value: function getPageURL(page) {
-      return '//' + this.project + '.org/wiki/' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+      var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
+
+      return '//' + project.replace(/\.org$/, '') + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**

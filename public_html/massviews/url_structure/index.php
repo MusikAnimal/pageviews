@@ -32,7 +32,7 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              Currently only <code>pagepile</code> is supported, but other sources will be added soon
+              Currently only <code>pagepile</code> is supported, but other sources such as categories will be added soon
             </dd>
             <dt>target</dt>
             <dd>
@@ -67,7 +67,7 @@
             </dd>
             <dt>start</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>end</dt>
             <dd>
@@ -83,7 +83,7 @@
             </dd>
             <dt>sort</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-sort', array( 'variables' => array( '<code>lang</code>', '<code>title</code>', '<code>badges</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-sort-massviews', array( 'variables' => array( '<code>title</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>direction</dt>
             <dd>

@@ -30,7 +30,7 @@
     <div class="footer-nav">
       <?php include "_lang_selector.php"; ?>
       <div class="interapp-links bm">
-        <?php $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews' ); ?>
+        <?php $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews' ); ?>
         <?php $appLinks = array(); ?>
         <?php foreach( $apps as $app ) { ?>
           <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>

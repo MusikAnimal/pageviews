@@ -71,6 +71,9 @@ class LangViews extends Pv {
       this.validateProject();
       this.updateInterAppLinks();
     });
+
+    $('.download-csv').on('click', this.exportCSV.bind(this));
+    $('.download-json').on('click', this.exportJSON.bind(this));
   }
 
   /**
@@ -124,6 +127,17 @@ class LangViews extends Pv {
   }
 
   /**
+   * Get params needed to create a permanent link of visible data
+   * @return {Object} hash of params
+   */
+  getPermaLink() {
+    let params = this.getParams(true);
+    params.sort = this.sort;
+    params.direction = this.direction;
+    return params;
+  }
+
+  /**
    * Push relevant class properties to the query string
    * @param  {Boolean} clear - wheter to clear the query string entirely
    * @return {null} nothing
@@ -138,6 +152,8 @@ class LangViews extends Pv {
     /** only certain characters within the page name are escaped */
     const page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
     window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page}`);
+
+    $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}`);
   }
 
   /**
@@ -202,7 +218,7 @@ class LangViews extends Pv {
          <td><a href="${item.url}" target="_blank">${item.pageName}</a></td>
          <td>${badgeMarkup}</td>
          <td><a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}</a></td>
-         <td>${this.n(Math.round(item.views / this.numDaysInRange()))} / ${$.i18n('day')}</td>
+         <td>${this.n(item.average)} / ${$.i18n('day')}</td>
          </tr>`
       );
     });
@@ -292,7 +308,8 @@ class LangViews extends Pv {
           lang,
           pageName: data.title,
           views,
-          url: data.url
+          url: data.url,
+          average: Math.round(views / this.numDaysInRange())
         });
 
         /** keep track of unique badges/titles and total pageviews */
@@ -324,7 +341,9 @@ class LangViews extends Pv {
           }
         }
 
-        this.writeMessage(`${$.i18n('langviews-error', dbName)}: ${errorData.responseJSON.title}`);
+        const errorMessage = cassandraError ? $.i18n('api-error-timeout') : `${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`;
+        this.writeMessage(`${dbName}: ${errorMessage}`);
+
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
         this.updateProgressBar((++count / totalRequestCount) * 100);
@@ -391,7 +410,7 @@ class LangViews extends Pv {
 
     $.getJSON(url).done(data => {
       if (data.error) {
-        return dfd.reject(`${$.i18n('wikidata-error')}: ${data.error.info}`);
+        return dfd.reject(`${$.i18n('api-error', 'Wikidata')}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
           `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${$.i18n('api-error-no-data')}`
@@ -462,6 +481,7 @@ class LangViews extends Pv {
     $(config.projectInput).val(params.project || config.defaults.project);
     if (this.validateProject()) return;
 
+    // FIXME: only run this when they actually submit
     this.patchUsage('lv');
 
     /**
@@ -610,7 +630,7 @@ class LangViews extends Pv {
       if (typeof error === 'string') {
         this.writeMessage(error);
       } else {
-        this.writeMessage($.i18n('wikidata-error-unknown'));
+        this.writeMessage($.i18n('api-error-unknown', 'Wikidata'));
       }
     });
   }
@@ -676,6 +696,44 @@ class LangViews extends Pv {
     this.setupArticleInput();
 
     return false;
+  }
+
+  /**
+   * Exports current mass data to CSV format and loads it in a new tab
+   * With the prepended data:text/csv this should cause the browser to download the data
+   * @returns {string} CSV content
+   */
+  exportCSV() {
+    let csvContent = 'data:text/csv;charset=utf-8,Language,Title,Badges,Pageviews,Average\n';
+
+    // Add the rows to the CSV
+    this.langData.forEach(page => {
+      let pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"';
+
+      csvContent += [
+        page.lang,
+        pageName,
+        page.badges.map(badge => config.badges[badge].name),
+        page.views,
+        page.average
+      ].join(',') + '\n';
+    });
+
+    // Output the CSV file to the browser
+    const encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
+  }
+
+  /**
+   * Exports current mass data to JSON format and loads it in a new tab
+   * @returns {string} stringified JSON
+   */
+  exportJSON() {
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.langData),
+      encodedUri = encodeURI(jsonContent);
+    window.open(encodedUri);
+
+    return jsonContent;
   }
 }
 

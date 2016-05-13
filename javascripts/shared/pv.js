@@ -27,14 +27,21 @@ class Pv {
     }
 
     /**
-     * Load translations then initialize the app
-     * Each app has it's own initialize method
+     * Load translations then initialize the app.
+     * Each app has it's own initialize method.
+     * Make sure we load 'en.json' as a fallback
      */
+    let messagesToLoad = {
+      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
+    };
+
+    if (i18nLang !== 'en') {
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+
     $.i18n({
       locale: i18nLang
-    }).load({
-      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
-    }).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(this.initialize.bind(this));
   }
 
   addSiteNotice(level, message, title, autodismiss) {
@@ -135,13 +142,23 @@ class Pv {
   }
 
   /**
+   * Get a full link for the given page and project
+   * @param  {string} page - page to link to
+   * @param  {string} [project] - project link, defaults to `this.project`
+   * @return {string} HTML markup
+   */
+  getPageLink(page, project) {
+    return `<a target="_blank" href="//${this.getPageURL(page, project)}">${page.descore()}</a>`;
+  }
+
+  /**
    * Get the wiki URL given the page name
    *
    * @param {string} page name
    * @returns {string} URL for the page
    */
-  getPageURL(page) {
-    return `//${this.project}.org/wiki/${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
+  getPageURL(page, project = this.project) {
+    return `//${project.replace(/\.org$/, '')}.org/wiki/${encodeURIComponent(page.score()).replace(/'/, escape)}`;
   }
 
   /**

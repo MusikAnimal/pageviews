@@ -11,20 +11,6 @@
  */
 const config = {
   agentSelector: '#agent_select',
-  badges: {
-    'Q17437796': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
-      name: 'Featured article'
-    },
-    'Q17437798': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
-      name: 'Good article'
-    },
-    'Q17559452': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Art%C3%ADculo_bueno-blue.svg',
-      name: 'Recommended article'
-    }
-  },
   cookieExpiry: 30, // num days
   dateRangeSelector: '#range_input',
   defaults: {
