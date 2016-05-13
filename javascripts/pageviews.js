@@ -681,7 +681,7 @@ class PageViews extends Pv {
         $('.chart-container').removeClass('loading');
         const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
         return this.writeMessage(
-          `${$.i18n('api-error')}<ul>${errorMessages}</ul><br/>${$.i18n('api-error-contact')}`,
+          `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`,
           true
         );
       }

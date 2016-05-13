@@ -14,20 +14,6 @@
  */
 var config = {
   agentSelector: '#agent_select',
-  badges: {
-    'Q17437796': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
-      name: 'Featured article'
-    },
-    'Q17437798': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
-      name: 'Good article'
-    },
-    'Q17559452': {
-      image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Art%C3%ADculo_bueno-blue.svg',
-      name: 'Recommended article'
-    }
-  },
   cookieExpiry: 30, // num days
   dateRangeSelector: '#range_input',
   defaults: {
@@ -168,6 +154,9 @@ var MassViews = function (_Pv) {
         _this2.sort = sortType;
         _this2.renderData();
       });
+
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
     }
 
     /**
@@ -216,6 +205,20 @@ var MassViews = function (_Pv) {
     }
 
     /**
+     * Get params needed to create a permanent link of visible data
+     * @return {Object} hash of params
+     */
+
+  }, {
+    key: 'getPermaLink',
+    value: function getPermaLink() {
+      var params = this.getParams(true);
+      params.sort = this.sort;
+      params.direction = this.direction;
+      return params;
+    }
+
+    /**
      * Push relevant class properties to the query string
      * @param  {Boolean} clear - wheter to clear the query string entirely
      * @return {null} nothing
@@ -235,21 +238,8 @@ var MassViews = function (_Pv) {
       /** only certain characters within the page name are escaped */
       // const page = $(config.sourceInput).val().score().replace(/[&%]/g, escape);
       window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
-    }
 
-    /**
-     * Given the badge code provided by the Wikidata API, return a image tag of the badge
-     * @param  {String} badgeCode - as defined in config.badges
-     * @return {String} HTML markup for the image
-     */
-
-  }, {
-    key: 'getBadgeMarkup',
-    value: function getBadgeMarkup(badgeCode) {
-      if (!config.badges[badgeCode]) return '';
-      var badgeImage = config.badges[badgeCode].image,
-          badgeName = config.badges[badgeCode].name;
-      return '<img class=\'article-badge\' src=\'' + badgeImage + '\' alt=\'' + badgeName + '\' title=\'' + badgeName + '\' />';
+      $('.permalink').prop('href', '/massviews?' + $.param(this.getPermaLink()));
     }
 
     /**
@@ -336,7 +326,7 @@ var MassViews = function (_Pv) {
      * Loop through given pages and query the pageviews API for each
      *   Also updates this.massData with result
      * @param  {string} dbName - database name as returned by Page Pile API
-     * @param  {Object} pages - as given by the getInterwikiData promise
+     * @param  {Object} pages - as given by the getPagePile promise
      * @return {Deferred} - Promise resolving with data ready to be rendered to view
      */
 
@@ -354,7 +344,8 @@ var MassViews = function (_Pv) {
           count = 0,
           hadFailure = undefined,
           failureRetries = {},
-          totalRequestCount = pages.length;
+          totalRequestCount = pages.length,
+          failedPages = [];
 
       /** clear out existing data */
       this.massData = [];
@@ -385,7 +376,8 @@ var MassViews = function (_Pv) {
         }).fail(function (errorData) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          if (errorData.responseJSON.title === 'Error in Cassandra table storage backend') {
+          var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+          if (cassandraError) {
             if (failureRetries[dbName]) {
               failureRetries[dbName]++;
             } else {
@@ -399,7 +391,12 @@ var MassViews = function (_Pv) {
             }
           }
 
-          _this4.writeMessage($.i18n('langviews-error', page) + ': ' + errorData.responseJSON.title);
+          if (cassandraError) {
+            failedPages.push(page);
+          } else {
+            _this4.writeMessage(_this4.getPageLink(page, sourceProject) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+          }
+
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
           _this4.updateProgressBar(++count / totalRequestCount * 100);
@@ -407,6 +404,12 @@ var MassViews = function (_Pv) {
           // XXX: throttling, totalRequestCount can just be interWikiKeys.length
           if (count === totalRequestCount) {
             dfd.resolve(_this4.massData);
+
+            if (failedPages.length) {
+              _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
+                return '<li>' + _this4.getPageLink(failedPage, sourceProject) + '</li>';
+              }) + '</ul>'));
+            }
 
             /**
              * if there were no failures, assume the resource is now cached by the server
@@ -488,7 +491,7 @@ var MassViews = function (_Pv) {
         var pages = Object.keys(data.pages);
 
         if (pages.length > 500) {
-          _this5.writeMessage('\n          ' + _this5.getPileLink(id) + ' contains ' + _this5.n(pages.length) + ' pages.\n          For performance reasons, the limit is currently set to ' + config.pageLimit + '.\n          Processing the first ' + config.pageLimit + ' pages only.\n          ');
+          _this5.writeMessage('\n          ' + _this5.getPileLink(id) + ' contains ' + _this5.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + config.pageLimit + ' pages will be processed.\n          ');
 
           pages = pages.slice(0, config.pageLimit);
         }
@@ -609,12 +612,13 @@ var MassViews = function (_Pv) {
      *   styling the document based on a 'state'
      * @param {String} state - class to be added;
      *   should be one of ['initial', 'processing', 'complete']
+     * @param {function} [cb] - Optional function to be called after initial state has been set
      * @returns {null} nothing
      */
 
   }, {
     key: 'setState',
-    value: function setState(state) {
+    value: function setState(state, cb) {
       $('main').removeClass(config.formStates.join(' ')).addClass(state);
 
       switch (state) {
@@ -623,8 +627,10 @@ var MassViews = function (_Pv) {
           this.assignDefaults();
           if (this.typeahead) this.typeahead.hide();
           $(config.sourceInput).val('').focus();
+          if (typeof cb === 'function') cb.call(this);
           break;
         case 'processing':
+          this.clearMessages();
           document.activeElement.blur();
           $('.progress-bar').addClass('active');
           $('.error-message').html('');
@@ -704,6 +710,33 @@ var MassViews = function (_Pv) {
     }
 
     /**
+     * XXX: throttling
+     * @return {[type]} [description]
+     */
+
+  }, {
+    key: 'checkThrottle',
+    value: function checkThrottle() {
+      if (simpleStorage.hasKey('pageviews-throttle')) {
+        var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
+
+        /** > 0 check to combat race conditions */
+        if (timeRemaining > 0) {
+          // FIXME: restore when fallbacks are supported for multi-param messages
+          // return this.writeMessage($.i18n(
+          //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
+          //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+          // ), true);
+          return this.writeMessage('\n          Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n          for more information.\n        ', true);
+        }
+      } else {
+        /** limit to one request every 90 seconds */
+        simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        return false;
+      }
+    }
+
+    /**
      * Process the massviews for the given source and options entered
      * Called when submitting the form
      * @return {null} nothing
@@ -718,27 +751,34 @@ var MassViews = function (_Pv) {
       /** allow resubmission of queries that are cached */
       if (!this.isRequestCached()) {
         /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('langviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+        if (simpleStorage.hasKey('pageviews-throttle')) {
+          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
 
           /** > 0 check to combat race conditions */
           if (timeRemaining > 0) {
-            // FIXME: restore when fallbacks are supported for multi-param messages
-            // return this.writeMessage($.i18n(
-            //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-            //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-            // ), true);
-            return this.writeMessage('\n            Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n            for more information.\n          ', true);
+            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
           }
-        } else {
-          /** limit to one request every 90 seconds */
-          simpleStorage.set('langviews-throttle', true, { TTL: 90000 });
         }
       }
 
       this.setState('processing');
 
-      this.getPagePile($(config.sourceInput).val()).done(function (pileData) {
+      var pileId = $(config.sourceInput).val();
+
+      this.getPagePile(pileId).done(function (pileData) {
+        if (!pileData.pages.length) {
+          return _this7.setState('initial', function () {
+            _this7.writeMessage($.i18n('massviews-empty-set', _this7.getPileLink(pileId)));
+          });
+        }
+
+        /**
+         * XXX: caching
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+
         _this7.sourceProject = siteMap[pileData.wiki];
         _this7.getPageViewsData(pileData.wiki, pileData.pages).done(function () {
           $('.massviews-input-name').text('Page Pile #' + pileData.id).prop('href', _this7.getPileURL(pileData.id));
@@ -753,7 +793,7 @@ var MassViews = function (_Pv) {
         if (typeof error === 'string') {
           _this7.writeMessage(error);
         } else {
-          _this7.writeMessage($.i18n('wikidata-error-unknown'));
+          _this7.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
     }
@@ -768,6 +808,44 @@ var MassViews = function (_Pv) {
     key: 'updateProgressBar',
     value: function updateProgressBar(value) {
       $('.progress-bar').css('width', value.toFixed(2) + '%');
+    }
+
+    /**
+     * Exports current mass data to CSV format and loads it in a new tab
+     * With the prepended data:text/csv this should cause the browser to download the data
+     * @returns {string} CSV content
+     */
+
+  }, {
+    key: 'exportCSV',
+    value: function exportCSV() {
+      var csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
+
+      // Add the rows to the CSV
+      this.massData.forEach(function (page) {
+        var pageName = '"' + page.title.descore().replace(/"/g, '""') + '"';
+
+        csvContent += [pageName, page.views, page.average].join(',') + '\n';
+      });
+
+      // Output the CSV file to the browser
+      var encodedUri = encodeURI(csvContent);
+      window.open(encodedUri);
+    }
+
+    /**
+     * Exports current mass data to JSON format and loads it in a new tab
+     * @returns {string} stringified JSON
+     */
+
+  }, {
+    key: 'exportJSON',
+    value: function exportJSON() {
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData),
+          encodedUri = encodeURI(jsonContent);
+      window.open(encodedUri);
+
+      return jsonContent;
     }
   }, {
     key: 'baseProject',
@@ -951,12 +1029,19 @@ var Pv = function () {
     }
 
     /**
-     * Load translations then initialize the app
-     * Each app has it's own initialize method
+     * Load translations then initialize the app.
+     * Each app has it's own initialize method.
+     * Make sure we load 'en.json' as a fallback
      */
+    var messagesToLoad = _defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json');
+
+    if (i18nLang !== 'en') {
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+
     $.i18n({
       locale: i18nLang
-    }).load(_defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json')).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(this.initialize.bind(this));
   }
 
   _createClass(Pv, [{
@@ -1059,6 +1144,19 @@ var Pv = function () {
     }
 
     /**
+     * Get a full link for the given page and project
+     * @param  {string} page - page to link to
+     * @param  {string} [project] - project link, defaults to `this.project`
+     * @return {string} HTML markup
+     */
+
+  }, {
+    key: 'getPageLink',
+    value: function getPageLink(page, project) {
+      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore() + '</a>';
+    }
+
+    /**
      * Get the wiki URL given the page name
      *
      * @param {string} page name
@@ -1068,7 +1166,9 @@ var Pv = function () {
   }, {
     key: 'getPageURL',
     value: function getPageURL(page) {
-      return '//' + this.project + '.org/wiki/' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+      var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
+
+      return '//' + project.replace(/\.org$/, '') + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**

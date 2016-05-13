@@ -7,12 +7,12 @@
     %title= $I18N->msg( 'massviews-title' )
   %body
     %div.container
-      %header.col-lg-10.col-lg-offset-1.aqs-row.text-center
+      %header.col-lg-12.text-center
         %h4
           %strong
             = $I18N->msg( 'massviews-title' )
           %small.app-description
-            Import a list of pages and analyze the pageviews
+            = $I18N->msg( 'massviews-description' )
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -72,7 +72,7 @@
                 /       %a(href="#") Page Pile ID
                 /     %li
                 /       %a(href="#") Category URL
-                %input.form-control.source-input#source_input(type="number" min="0" placeholder="12345" required="required" autocomplete="off")
+                %input.form-control.input-control.source-input#source_input(type="number" min="0" placeholder="12345" required="required" autocomplete="off")
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right
                     = $I18N->msg( 'submit' )
@@ -80,9 +80,6 @@
         %div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
           %div.progress
             %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
-        %div.throttle-notice.text-center
-          %b= strtoupper( $I18N->msg( 'note' ) ) . ':'
-          = $I18N->msg( 'langviews-throttle-notice', array( 'variables' => array( '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>' ) ) )
 
         %output(form="massview_form")
           %header.output-header
@@ -111,13 +108,20 @@
               %tr.output-totals
             %tbody#mass_list
 
-        %div.col-lg-12
-          %div.message-container
+        %div.message-container.col-lg-12
 
         / Other links
-        %div.data-links.row.tm
-          %div.col-lg-12
+        %div.col-lg-12.data-links
+          %a.permalink(href="/massviews")<
+            %span.glyphicon.glyphicon-link
+            = $I18N->msg( 'permalink' )
+          &nbsp;&bullet;&nbsp;
+          %span.glyphicon.glyphicon-download-alt
+          - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
+          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
+          &middot;
+          %a.download-json(href="#")<
+            = $I18N->msg( 'json' )
 
         - $currentApp = "massviews"
-        - $columns = 12
         - include "../_footer.php"

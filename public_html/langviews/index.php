@@ -88,7 +88,7 @@
                 <?php echo $I18N->msg( 'page' ); ?>
               </label>
               <div class="input-group">
-                <input class="form-control aqs-article-input" id="article_input" placeholder="Star Wars" required="required" autocomplete="off">
+                <input class="form-control input-control" id="article_input" placeholder="Star Wars" required="required" autocomplete="off">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right" id="article_submit">
                     <?php echo $I18N->msg( 'submit' ); ?>
@@ -102,10 +102,6 @@
           <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
           </div>
-        </div>
-        <div class="throttle-notice text-center">
-          <b><?php echo strtoupper( $I18N->msg( 'note' ) ) . ':'; ?></b>
-          <?php echo $I18N->msg( 'langviews-throttle-notice', array( 'variables' => array( '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>' ) ) ); ?>
         </div>
         <output form="langviews_form">
           <header class="output-header">
@@ -157,9 +153,18 @@
             <tbody id="lang_list"></tbody>
           </table>
         </output>
-        <div class="message-container col-lg-10"></div>
+        <div class="message-container col-lg-12"></div>
         <!-- Other links -->
-        <div class="col-lg-10 data-links"></div>
+        <div class="col-lg-12 data-links">
+          <a class="permalink" href="/massviews"><span class="glyphicon glyphicon-link"></span>
+          <?php echo $I18N->msg( 'permalink' ); ?></a>
+          &nbsp;&bullet;&nbsp;
+          <span class="glyphicon glyphicon-download-alt"></span>
+          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
+          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
+          &middot;
+          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
+        </div>
         <?php $currentApp = "langviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>

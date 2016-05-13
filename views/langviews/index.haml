@@ -67,7 +67,7 @@
               %label(for="article_input")
                 = $I18N->msg( 'page' )
               %div.input-group
-                %input.form-control.aqs-article-input#article_input(placeholder="Star Wars" required="required" autocomplete="off")
+                %input.form-control.input-control#article_input(placeholder="Star Wars" required="required" autocomplete="off")
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right#article_submit
                     = $I18N->msg( 'submit' )
@@ -75,9 +75,6 @@
         %div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
           %div.progress
             %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
-        %div.throttle-notice.text-center
-          %b= strtoupper( $I18N->msg( 'note' ) ) . ':'
-          = $I18N->msg( 'langviews-throttle-notice', array( 'variables' => array( '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>' ) ) )
 
         %output(form="langviews_form")
           %header.output-header
@@ -114,10 +111,20 @@
               %tr.output-totals
             %tbody#lang_list
 
-        %div.message-container.col-lg-10
+        %div.message-container.col-lg-12
 
         / Other links
-        %div.col-lg-10.data-links
+        %div.col-lg-12.data-links
+          %a.permalink(href="/massviews")<
+            %span.glyphicon.glyphicon-link
+            = $I18N->msg( 'permalink' )
+          &nbsp;&bullet;&nbsp;
+          %span.glyphicon.glyphicon-download-alt
+          - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
+          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
+          &middot;
+          %a.download-json(href="#")<
+            = $I18N->msg( 'json' )
 
         - $currentApp = "langviews"
         - include "../_footer.php"

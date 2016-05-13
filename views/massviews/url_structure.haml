@@ -26,7 +26,7 @@
           %dl.dl-horizontal
             %dt source
             %dd
-              Currently only <code>pagepile</code> is supported, but other sources will be added soon
+              Currently only <code>pagepile</code> is supported, but other sources such as categories will be added soon
             %dt target
             %dd
               The Page Pile ID
@@ -52,7 +52,7 @@
                   = $I18N->msg( 'last-month' )
             %dt start
             %dd
-              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) )
             %dt end
             %dd
               = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
@@ -64,7 +64,7 @@
               = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
             %dt sort
             %dd
-              = $I18N->msg( 'url-structure-sort', array( 'variables' => array( '<code>lang</code>', '<code>title</code>', '<code>badges</code>', '<code>views</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-sort-massviews', array( 'variables' => array( '<code>title</code>', '<code>views</code>' ), 'parsemag' => true ) )
             %dt direction
             %dd
               = $I18N->msg( 'url-structure-sort-direction', array( 'variables' => array( '<code>1</code>', '<code>-1</code>' ), 'parsemag' => true ) )

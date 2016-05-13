@@ -8,13 +8,13 @@
   </head>
   <body>
     <div class="container">
-      <header class="col-lg-10 col-lg-offset-1 aqs-row text-center">
+      <header class="col-lg-12 text-center">
         <h4>
           <strong>
             <?php echo $I18N->msg( 'massviews-title' ); ?>
           </strong>
           <small class="app-description">
-            Import a list of pages and analyze the pageviews
+            <?php echo $I18N->msg( 'massviews-description' ); ?>
           </small>
         </h4>
       </header>
@@ -92,7 +92,7 @@
                 <!-- %a(href="#") Page Pile ID -->
                 <!-- %li -->
                 <!-- %a(href="#") Category URL -->
-                <input class="form-control source-input" id="source_input" type="number" min="0" placeholder="12345" required="required" autocomplete="off">
+                <input class="form-control input-control source-input" id="source_input" type="number" min="0" placeholder="12345" required="required" autocomplete="off">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right">
                     <?php echo $I18N->msg( 'submit' ); ?>
@@ -106,10 +106,6 @@
           <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
           </div>
-        </div>
-        <div class="throttle-notice text-center">
-          <b><?php echo strtoupper( $I18N->msg( 'note' ) ) . ':'; ?></b>
-          <?php echo $I18N->msg( 'langviews-throttle-notice', array( 'variables' => array( '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>' ) ) ); ?>
         </div>
         <output form="massview_form">
           <header class="output-header">
@@ -149,15 +145,19 @@
             <tbody id="mass_list"></tbody>
           </table>
         </output>
-        <div class="col-lg-12">
-          <div class="message-container"></div>
-        </div>
+        <div class="message-container col-lg-12"></div>
         <!-- Other links -->
-        <div class="data-links row tm">
-          <div class="col-lg-12"></div>
+        <div class="col-lg-12 data-links">
+          <a class="permalink" href="/massviews"><span class="glyphicon glyphicon-link"></span>
+          <?php echo $I18N->msg( 'permalink' ); ?></a>
+          &nbsp;&bullet;&nbsp;
+          <span class="glyphicon glyphicon-download-alt"></span>
+          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
+          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
+          &middot;
+          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
         </div>
         <?php $currentApp = "massviews"; ?>
-        <?php $columns = 12; ?>
         <?php include "../_footer.php"; ?>
       </main>
     </div>
