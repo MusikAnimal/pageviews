@@ -441,7 +441,9 @@ var LangViews = function (_Pv) {
         }).fail(function (errorData) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          if (errorData.responseJSON.title === 'Error in Cassandra table storage backend') {
+          var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
+          if (cassandraError) {
             if (failureRetries[dbName]) {
               failureRetries[dbName]++;
             } else {
@@ -732,21 +734,13 @@ var LangViews = function (_Pv) {
       /** allow resubmission of queries that are cached */
       if (!this.isRequestCached()) {
         /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('langviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+        if (simpleStorage.hasKey('pageviews-throttle')) {
+          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
 
           /** > 0 check to combat race conditions */
           if (timeRemaining > 0) {
-            // FIXME: restore when fallbacks are supported for multi-param messages
-            // return this.writeMessage($.i18n(
-            //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-            //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-            // ), true);
-            return this.writeMessage('\n            Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n            for more information.\n          ', true);
+            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
           }
-        } else {
-          /** limit to one request every 90 seconds */
-          simpleStorage.set('langviews-throttle', true, { TTL: 90000 });
         }
       }
 
@@ -759,11 +753,24 @@ var LangViews = function (_Pv) {
       });
 
       this.getInterwikiData(dbName, page).done(function (interWikiData) {
+        /**
+         * XXX: throttling
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+
         _this7.getPageViewsData(interWikiData).done(function () {
           $('.langviews-page-name').text(page).prop('href', _this7.getPageURL(page));
           $('.langviews-params').text($(config.dateRangeSelector).val());
           _this7.updateProgressBar(100);
           _this7.renderData();
+
+          /**
+           * XXX: throttling
+           * Reset throttling again; the first one was in case they aborted
+           */
+          if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
         });
       }).fail(function (error) {
         _this7.setState('initial');

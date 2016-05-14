@@ -111,7 +111,6 @@ var MassViews = function (_Pv) {
       this.setupDateRangeSelector();
       this.popParams();
       this.setupListeners();
-      this.updateInterAppLinks();
     }
 
     /**
@@ -377,6 +376,7 @@ var MassViews = function (_Pv) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
           if (cassandraError) {
             if (failureRetries[dbName]) {
               failureRetries[dbName]++;
@@ -408,7 +408,7 @@ var MassViews = function (_Pv) {
             if (failedPages.length) {
               _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
                 return '<li>' + _this4.getPageLink(failedPage, sourceProject) + '</li>';
-              }) + '</ul>'));
+              }).join('') + '</ul>'));
             }
 
             /**
@@ -773,11 +773,11 @@ var MassViews = function (_Pv) {
         }
 
         /**
-         * XXX: caching
+         * XXX: throttling
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
         _this7.sourceProject = siteMap[pileData.wiki];
         _this7.getPageViewsData(pileData.wiki, pileData.pages).done(function () {
@@ -785,6 +785,12 @@ var MassViews = function (_Pv) {
           $('.massviews-params').html('\n          ' + $(config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this7.sourceProject + '" target="_blank">' + _this7.sourceProject.replace(/.org$/, '') + '</a>\n          ');
           _this7.updateProgressBar(100);
           _this7.renderData();
+
+          /**
+           * XXX: throttling
+           * Reset throttling again; the first one was in case they aborted
+           */
+          if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
         });
       }).fail(function (error) {
         _this7.setState('initial');

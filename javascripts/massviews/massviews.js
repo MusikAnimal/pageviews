@@ -31,7 +31,6 @@ class MassViews extends Pv {
     this.setupDateRangeSelector();
     this.popParams();
     this.setupListeners();
-    this.updateInterAppLinks();
   }
 
   /**
@@ -270,6 +269,7 @@ class MassViews extends Pv {
         // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
         if (cassandraError) {
           if (failureRetries[dbName]) {
             failureRetries[dbName]++;
@@ -302,7 +302,7 @@ class MassViews extends Pv {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, sourceProject)}</li>`) +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, sourceProject)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -670,11 +670,11 @@ class MassViews extends Pv {
       }
 
       /**
-       * XXX: caching
+       * XXX: throttling
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
        */
-      simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
 
       this.sourceProject = siteMap[pileData.wiki];
       this.getPageViewsData(pileData.wiki, pileData.pages).done(() => {
@@ -688,6 +688,12 @@ class MassViews extends Pv {
         );
         this.updateProgressBar(100);
         this.renderData();
+
+        /**
+         * XXX: throttling
+         * Reset throttling again; the first one was in case they aborted
+         */
+        if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
       });
     }).fail(error => {
       this.setState('initial');

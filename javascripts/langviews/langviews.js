@@ -327,7 +327,9 @@ class LangViews extends Pv {
       }).fail(errorData => {
         // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-        if (errorData.responseJSON.title === 'Error in Cassandra table storage backend') {
+        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
+        if (cassandraError) {
           if (failureRetries[dbName]) {
             failureRetries[dbName]++;
           } else {
@@ -587,26 +589,16 @@ class LangViews extends Pv {
     /** allow resubmission of queries that are cached */
     if (!this.isRequestCached()) {
       /** Check if user has exceeded request limit and throw error */
-      if (simpleStorage.hasKey('langviews-throttle')) {
-        const timeRemaining = Math.round(simpleStorage.getTTL('langviews-throttle') / 1000);
+      if (simpleStorage.hasKey('pageviews-throttle')) {
+        const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
 
         /** > 0 check to combat race conditions */
         if (timeRemaining > 0) {
-          // FIXME: restore when fallbacks are supported for multi-param messages
-          // return this.writeMessage($.i18n(
-          //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-          //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-          // ), true);
-          return this.writeMessage(`
-            Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
-            Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
-            See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>
-            for more information.
-          `, true);
+          return this.writeMessage($.i18n(
+            'api-throttle-wait', `<b>${timeRemaining}</b>`,
+            '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
+          ), true);
         }
-      } else {
-        /** limit to one request every 90 seconds */
-        simpleStorage.set('langviews-throttle', true, {TTL: 90000});
       }
     }
 
@@ -617,11 +609,24 @@ class LangViews extends Pv {
     const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(config.projectInput).val());
 
     this.getInterwikiData(dbName, page).done(interWikiData => {
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+
       this.getPageViewsData(interWikiData).done(() => {
         $('.langviews-page-name').text(page).prop('href', this.getPageURL(page));
         $('.langviews-params').text($(config.dateRangeSelector).val());
         this.updateProgressBar(100);
         this.renderData();
+
+        /**
+         * XXX: throttling
+         * Reset throttling again; the first one was in case they aborted
+         */
+        if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
       });
     }).fail(error => {
       this.setState('initial');
