@@ -264,11 +264,11 @@ class PageViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL hash params
-   * @returns {Object} key/value pairs representation of URL hash
+   * Generate key/value pairs of URL query string
+   * @returns {Object} key/value pairs representation of query string
    */
-  parseHashParams() {
-    const uri = location.hash.slice(1),
+  parseQueryString() {
+    const uri = decodeURI(location.search.slice(1)),
       chunks = uri.split('&');
     let params = {};
 
@@ -286,12 +286,12 @@ class PageViews extends Pv {
   }
 
   /**
-   * Parses the URL hash and sets all the inputs accordingly
+   * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseHashParams();
+    let startDate, endDate, params = this.parseQueryString();
 
     $(config.projectInput).val(params.project || config.defaults.project);
     if (this.validateProject()) return;
@@ -424,7 +424,7 @@ class PageViews extends Pv {
   }
 
   /**
-   * Replaces history state with new URL hash representing current user input
+   * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
    * @returns {null} nothing
    */
@@ -434,11 +434,11 @@ class PageViews extends Pv {
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
-        `#${$.param(this.getParams())}&pages=${escapedPages}`
+        `?${$.param(this.getParams())}&pages=${escapedPages}`
       );
     }
 
-    $('.permalink').prop('href', `#${$.param(this.getPermaLink())}&pages=${escapedPages}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&pages=${escapedPages}`);
   }
 
   /**
@@ -595,7 +595,7 @@ class PageViews extends Pv {
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.hash === this.params && this.prevChartType === this.chartType) {
+    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
       return;
     }
 
@@ -604,7 +604,7 @@ class PageViews extends Pv {
       return;
     }
 
-    this.params = location.hash;
+    this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
 
@@ -754,11 +754,11 @@ class PageViews extends Pv {
 }
 
 $(document).ready(() => {
-  /** assume query params are supposed to be hash params */
-  if (document.location.search && !document.location.hash) {
-    return document.location.href = document.location.href.replace('?', '#');
-  } else if (document.location.search) {
-    return document.location.href = document.location.href.replace(/\?.*/, '');
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
+    return document.location.href = document.location.href.replace('#', '?');
+  } else if (document.location.hash) {
+    return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
   $.extend(Chart.defaults.global, {animation: false, responsive: true});

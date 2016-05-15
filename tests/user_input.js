@@ -59,7 +59,7 @@ module.exports = {
     client.click('.applyBtn');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return [$("#range-input").val(), location.hash]', [], response => {
+    client.execute('return [$("#range-input").val(), location.search]', [], response => {
       dates = response.value[0].split(' - ');
       dateRegex = new RegExp(`start=${dates[0]}&end=${dates[1]}`);
       client.expect(response.value[1]).to.match(dateRegex);
@@ -72,7 +72,7 @@ module.exports = {
     client.waitForElementNotVisible('.daterangepicker', 500);
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return [$("#range-input").val(), location.hash]', [], response => {
+    client.execute('return [$("#range-input").val(), location.search]', [], response => {
       dates = response.value[0].split(' - ');
       client.expect(moment(dates[1]).diff(moment(dates[0]), 'days')).to.equal(6);
       client.expect(response.value[1]).to.match(/range=last-week/);
@@ -82,7 +82,7 @@ module.exports = {
     client.click('.date-latest a:first-child'); // latest 10 days
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return [$("#range-input").val(), location.hash]', [], response => {
+    client.execute('return [$("#range-input").val(), location.search]', [], response => {
       dates = response.value[0].split(' - ');
       client.expect(moment(dates[0]).isSame(moment().subtract(10, 'days'), 'day'));
       client.expect(moment(dates[1]).isSame(moment(), 'day'));
@@ -98,7 +98,7 @@ module.exports = {
     client.click('#agent-select option:nth-child(3)'); // spider
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return location.hash', [], response => {
+    client.execute('return location.search', [], response => {
       client.expect(response.value).to.match(/platform=desktop&agent=spider/);
     });
   },
@@ -119,7 +119,7 @@ module.exports = {
     client.click('.select2-results__option:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return [$(".aqs-article-selector").val(), location.hash]', [], response => {
+    client.execute('return [$(".aqs-article-selector").val(), location.search]', [], response => {
       client.expect(_.isEqual(
         response.value[0],
         ['Google']

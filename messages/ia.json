@@ -148,7 +148,6 @@
 	"url-structure-example": "Pro obtener le ultime datos sur un certe articulo in tu wiki, con optiones predefinite, usa:\n$1\nreimplaciante $2 per un $3 valide. $4 devenira le pagina sur le qual le ligamine es inserite",
 	"url-structure-example-siteviews": "Pro obtener le ultime datos sur un certe articulo in tu wiki, con optiones predefinite, usa:\n$1",
 	"url-structure-topviews-example": "Pro monstrar le lista predefinite del paginas le plus visitate in tu wiki, usa:\n$1\nreimplaciante $2 per un $3 valide. Tu pote etiam usar $4 pro excluder certe paginas, como p.ex. le pagina principal.",
-	"url-structure-hash-param": "Le analyse de visitas usa le technica JavaScript <a href='https://en.wikipedia.org/wiki/Fragment_identifier'>identificator de fragmentos</a> pro construer le parametros de URL. Isto significa que, in loco del <code>?</code>, tote le parametros seque un character de grillia <code>#</code>",
 	"url-structure-parameters": "Parametros",
 	"url-structure-parameters-order": "Pote esser usate in qualcunque ordine",
 	"url-structure-project": "$1 o altere $2 valide",

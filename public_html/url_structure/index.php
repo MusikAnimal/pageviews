@@ -20,14 +20,11 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews#project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
+          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/pageviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
           <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
           <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
-          <p class="intro">
-            <?php echo $I18N->msg( 'url-structure-hash-param' ); ?>
-          </p>
         </div>
         <div>
           <h3>

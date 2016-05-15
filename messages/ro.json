@@ -152,7 +152,6 @@
 	"url-structure-example": "Pentru a obține ultimele informații pentru un articol anume de pe wiki-ul dumneavoastră, cu opțiuni implicite, folosiți următoarea legătură (link):\n$1\nînlocuind $2 cu un $3 valid. $4 reprezintă numele paginii pe care este plasată legătura (linkul)",
 	"url-structure-example-siteviews": "Pentru a obține ultimele informații despre un anumit articol de pe wiki-ul dvs., cu opțiuni implicite, folosiți:\n$1",
 	"url-structure-topviews-example": "Pentru a afișa lista implicită pentru cele mai vizualizate pagini de pe wiki-ul dvs., folosiți:\n$1\nînlocuind $2 cu un $3 valid. Puteți folosi și $4 pentru a exclude afișarea anumitor pagini, cum ar fi Pagina principală.",
-	"url-structure-hash-param": "Analiza vizualizărilor paginii folosește <a href='https://ro.wikipedia.org/wiki/Identificator_de_fragment'>identificatorul de fragmente</a> al JavaScript pentru a construi parametrii URL. Aceasta înseamnă că în loc de <code>?</code> toți parametrii urmează după un semn diez <code>#</code>",
 	"url-structure-parameters": "Parametri",
 	"url-structure-parameters-order": "Pot fi folosiți în orice ordine",
 	"url-structure-project": "$1 sau alt $2 valid",

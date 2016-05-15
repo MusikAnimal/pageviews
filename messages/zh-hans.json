@@ -153,7 +153,6 @@
 	"url-structure-example": "要获取您wiki上指定条目的最新数据，并使用默认选项，请使用：\n$1\n将$2替换为有效的$3。$4将决定链接放置的页面",
 	"url-structure-example-siteviews": "要获取您wiki上指定条目的最新数据，并使用默认选项，请使用：\n$1",
 	"url-structure-topviews-example": "要获取您wiki上默认最多浏览页面的列表，请使用：\n$1\n将$2替换为有效的$3。您也可以使用$4以从视图中排除特定页面，例如首页。",
-	"url-structure-hash-param": "页面浏览分析使用JavaScript<a href='https://en.wikipedia.org/wiki/Fragment_identifier'>碎片标识符</a>以将URL参数结构化。这意味着所有参数会跟随题标<code>#</code>而不是<code>?</code>",
 	"url-structure-parameters": "参数",
 	"url-structure-parameters-order": "可被用在任何顺序",
 	"url-structure-project": "$1或其他有效的$2",

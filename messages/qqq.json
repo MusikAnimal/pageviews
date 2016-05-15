@@ -161,7 +161,6 @@
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
 	"url-structure-example-siteviews": "Example of how to link to Siteviews Analysis on a wiki. $1 is the example link. This message is the same as the first sentence of 'url-structure-example'",
 	"url-structure-topviews-example": "Example of how to link to Topviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, and $4 is the 'excludes' parameter",
-	"url-structure-hash-param": "Text explaining that Pageviews Analysis uses the hash identifier rather than a query string.",
 	"url-structure-parameters": "Heading for the list of parameters\n{{Identical|Parameter}}",
 	"url-structure-parameters-order": "Text explaining that parameters can be used in any order",
 	"url-structure-project": "Documentation for the 'project' parameter. $1 is the default (en.wikipedia.org), $2 is the link to the site matrix",

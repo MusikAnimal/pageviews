@@ -154,7 +154,6 @@
 	"url-structure-example": "Um die aktuellsten Daten zu einem angegebenen Artikel auf deinem Wiki mit Standardoptionen abzurufen, verwende:\n$1\nErsetze $2 durch ein gültiges $3. $4 wird durch die Seite aufgelöst, auf der der Link platziert ist.",
 	"url-structure-example-siteviews": "Um die aktuellsten Daten zu einem angegebenen Artikel auf deinem Wiki mit Standardoptionen zu erhalten, verwende:\n$1",
 	"url-structure-topviews-example": "Um die Standardliste der meistbesuchten Seiten auf deinem Wiki anzuzeigen, verwende:\n$1\nErsetze $2 durch ein gültiges $3. Du kannst auch $4 verwenden, um bestimmte Seiten wie die Hauptseite von der Ansicht auszuschließen.",
-	"url-structure-hash-param": "Pageviews Analysis verwendet den JavaScript-<a href=\"https://de.wikipedia.org/wiki/Fragmentbezeichner\">Fragmentbezeichner</a>, um die URL-Parameter zu erstellen. Das bedeutet, dass anstatt <code>?</code> alle Parameter einem Rautensymbol <code>#</code> folgen.",
 	"url-structure-parameters": "Parameter",
 	"url-structure-parameters-order": "Kann in beliebiger Reihenfolge verwendet werden",
 	"url-structure-project": "$1 oder andere gültige $2",

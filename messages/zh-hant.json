@@ -156,7 +156,6 @@
 	"url-structure-example": "想取得您所指定的維基百科條目最新數據內容；並使用預設選項，請使用：\n$1\n將$2替換成有效的$3。$4會呈現出頁面相關連結",
 	"url-structure-example-siteviews": "要以預設方式獲取您在維基上指定的條目最新數據資料，請使用$1",
 	"url-structure-topviews-example": "想顯示出維基上最多瀏覽頁面的預設清單內容，請使用：\n$1\n將$2替換成有效的$3。您也可使用$4把指定的頁面項目從畫面上排除，例如首頁。",
-	"url-structure-hash-param": "本頁面瀏覽分析工具是以 JavaScript 程式語言中的 <a href='https://en.wikipedia.org/wiki/Fragment_identifier'>片段標識符</a>來結構化網址所使用的參數。這代表參數是以符號 <code>#</code>為開頭；而非符號 <code>?</code>",
 	"url-structure-parameters": "參數",
 	"url-structure-parameters-order": "可用在任何排序",
 	"url-structure-project": "$1或其它有效的$2",

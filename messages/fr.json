@@ -159,7 +159,6 @@
 	"url-structure-example": "Pour obtenir les dernières données sur un article récent de votre wiki, avec les options par défaut, utiliser : $1\nen remplaçant $2 par un $3 valide. $4 résoudra vers la page le lien qui est placé dessus",
 	"url-structure-example-siteviews": "Pour obtenir les dernières données sur un article donné de votre wiki, avec les options par défaut, utiliser :\n$1",
 	"url-structure-topviews-example": "Pour afficher la valeur par défaut de la liste des pages les plus vues sur votre wiki, utilisez:\n$1\nen remplaçant $2 par un lien valide $3 . Vous pouvez également utiliser $4 pour empêcher certaines pages d'être vues, comme la page principale.",
-	"url-structure-hash-param": "L’Analyse Pageviews utilise <a href='https://en.wikipedia.org/wiki/Fragment_identifier'>l’identifiant de fragment</a> JavaScript pour construire les paramètres de l’URL. Cela veut dire qu’au lieu d’un <code>?</code>, tous les paramètres suivent un dièse <code>#</code>",
 	"url-structure-parameters": "Paramètres",
 	"url-structure-parameters-order": "Peut être utilisé dans n'importe quel ordre",
 	"url-structure-project": "$1 ou un autre page valide $2",
