@@ -684,11 +684,13 @@ var LangViews = function (_Pv) {
           $(config.articleInput).val('').focus();
           break;
         case 'processing':
+          this.processStarted();
+          this.clearMessages();
           document.activeElement.blur();
           $('.progress-bar').addClass('active');
-          $('.error-message').html('');
           break;
         case 'complete':
+          this.processEnded();
           /** stop hidden animation for slight performance improvement */
           this.updateProgressBar(0);
           $('.progress-bar').removeClass('active');
@@ -759,7 +761,7 @@ var LangViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        _this7.setThrottle();
 
         _this7.getPageViewsData(interWikiData).done(function () {
           $('.langviews-page-name').text(page).prop('href', _this7.getPageURL(page));
@@ -771,7 +773,7 @@ var LangViews = function (_Pv) {
            * XXX: throttling
            * Reset throttling again; the first one was in case they aborted
            */
-          if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+          _this7.setThrottle();
         });
       }).fail(function (error) {
         _this7.setState('initial');
@@ -869,11 +871,12 @@ var LangViews = function (_Pv) {
 
       // Add the rows to the CSV
       this.langData.forEach(function (page) {
-        var pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"';
+        var pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"',
+            badges = '"' + page.badges.map(function (badge) {
+          return config.badges[badge].name.replace(/"/g, '""');
+        }) + '"';
 
-        csvContent += [page.lang, pageName, page.badges.map(function (badge) {
-          return config.badges[badge].name;
-        }), page.views, page.average].join(',') + '\n';
+        csvContent += [page.lang, pageName, badges, page.views, page.average].join(',') + '\n';
       });
 
       // Output the CSV file to the browser
@@ -1073,6 +1076,9 @@ var Pv = function () {
 
     this.storage = {}; // used as fallback when localStorage is not supported
 
+    /** @type {null|Date} tracking of elapsed time */
+    this.processStart = null;
+
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
@@ -1198,7 +1204,7 @@ var Pv = function () {
   }, {
     key: 'getExpandedPageURL',
     value: function getExpandedPageURL(page) {
-      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**
@@ -1594,6 +1600,33 @@ var Pv = function () {
     }
 
     /**
+     * Set timestamp of when process started
+     * @return {moment} start time
+     */
+
+  }, {
+    key: 'processStarted',
+    value: function processStarted() {
+      return this.processStart = moment();
+    }
+
+    /**
+     * Get elapsed time from this.processStart, and show it
+     * @return {moment} Elapsed time from `this.processStart` in milliseconds
+     */
+
+  }, {
+    key: 'processEnded',
+    value: function processEnded() {
+      var endTime = moment(),
+          elapsedTime = endTime.diff(this.processStart, 'milliseconds');
+
+      $('.elapsed-time').attr('datetime', endTime.format()).text('Elapsed time: ' + elapsedTime / 1000 + ' seconds');
+
+      return elapsedTime;
+    }
+
+    /**
      * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
      *
      * Same as _.debounce but queues and executes all function calls
@@ -1954,6 +1987,11 @@ var Pv = function () {
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
+    }
+  }, {
+    key: 'setThrottle',
+    value: function setThrottle() {
+      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
     }
 
     /**

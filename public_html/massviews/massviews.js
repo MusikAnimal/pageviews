@@ -49,12 +49,14 @@ var config = {
   },
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
-  validSources: ['pagepile']
+  validSources: ['pagepile', 'category']
 };
 module.exports = config;
 
 },{}],2:[function(require,module,exports){
 'use strict';
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -156,6 +158,25 @@ var MassViews = function (_Pv) {
 
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
+
+      $('.source-option').on('click', function (e) {
+        return _this2.updateSourceInput(e.target);
+      });
+    }
+  }, {
+    key: 'updateSourceInput',
+    value: function updateSourceInput(node) {
+      var source = node.dataset.value;
+
+      $('#source_button').data('value', source).html(node.textContent + ' <span class=\'caret\'></span>');
+
+      if (source === 'category') {
+        $(config.sourceInput).prop('type', 'text').prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York').val('');
+      } else {
+        $(config.sourceInput).prop('type', 'number').prop('placeholder', '12345').val('');
+      }
+
+      $(config.sourceInput).focus();
     }
 
     /**
@@ -324,14 +345,14 @@ var MassViews = function (_Pv) {
     /**
      * Loop through given pages and query the pageviews API for each
      *   Also updates this.massData with result
-     * @param  {string} dbName - database name as returned by Page Pile API
+     * @param  {string} project - project such as en.wikipedia.org
      * @param  {Object} pages - as given by the getPagePile promise
      * @return {Deferred} - Promise resolving with data ready to be rendered to view
      */
 
   }, {
     key: 'getPageViewsData',
-    value: function getPageViewsData(dbName, pages) {
+    value: function getPageViewsData(project, pages) {
       var _this4 = this;
 
       var startDate = this.daterangepicker.startDate.startOf('day'),
@@ -350,10 +371,9 @@ var MassViews = function (_Pv) {
       this.massData = [];
 
       var makeRequest = function makeRequest(page) {
-        var uriEncodedPageName = encodeURIComponent(page),
-            sourceProject = siteMap[dbName];
+        var uriEncodedPageName = encodeURIComponent(page);
 
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + sourceProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -378,14 +398,14 @@ var MassViews = function (_Pv) {
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
           if (cassandraError) {
-            if (failureRetries[dbName]) {
-              failureRetries[dbName]++;
+            if (failureRetries[project]) {
+              failureRetries[project]++;
             } else {
-              failureRetries[dbName] = 1;
+              failureRetries[project] = 1;
             }
 
             /** maximum of 3 retries */
-            if (failureRetries[dbName] < 3) {
+            if (failureRetries[project] < 3) {
               totalRequestCount++;
               return _this4.rateLimit(makeRequest, 100, _this4)(page);
             }
@@ -394,7 +414,7 @@ var MassViews = function (_Pv) {
           if (cassandraError) {
             failedPages.push(page);
           } else {
-            _this4.writeMessage(_this4.getPageLink(page, sourceProject) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            _this4.writeMessage(_this4.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
           hadFailure = true; // don't treat this series of requests as being cached by server
@@ -407,7 +427,7 @@ var MassViews = function (_Pv) {
 
             if (failedPages.length) {
               _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
-                return '<li>' + _this4.getPageLink(failedPage, sourceProject) + '</li>';
+                return '<li>' + _this4.getPageLink(failedPage, project) + '</li>';
               }).join('') + '</ul>'));
             }
 
@@ -509,19 +529,23 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Parse wiki URL for the page name
+     * Parse wiki URL for the wiki and page name
      * @param  {String} url - full URL to a wiki page
-     * @return {String|null} page name
+     * @return {Array|null} ['wiki', 'page'] or null if invalid
      */
 
   }, {
-    key: 'getPageNameFromURL',
-    value: function getPageNameFromURL(url) {
+    key: 'getWikiPageFromURL',
+    value: function getWikiPageFromURL(url) {
+      var matches = undefined;
+
       if (url.includes('?')) {
-        return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
+        matches = url.match(/\/\/(.*?)\/w\/.*\?(?:.*\b)?title=(.*?)(?:&|$)/);
       } else {
-        return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
+        matches = url.match(/\/\/(.*?)\/wiki\/(.*?)(?:\?|$)/);
       }
+
+      return matches ? matches.slice(1) : [null, null];
     }
 
     /**
@@ -589,9 +613,9 @@ var MassViews = function (_Pv) {
       this.sort = params.sort || config.defaults.params.sort;
       this.direction = params.direction || config.defaults.params.direction;
 
-      /** start up processing if page name is present */
+      /** start up processing if necessary params are present */
       if (config.validSources.includes(params.source) && params.target) {
-        $(config.sourceButton).data('value', params.source);
+        this.updateSourceInput($('.source-option[data-value=' + params.source + ']')[0]);
         $(config.sourceInput).val(decodeURIComponent(params.target).descore());
         this.processInput();
       } else {
@@ -630,12 +654,13 @@ var MassViews = function (_Pv) {
           if (typeof cb === 'function') cb.call(this);
           break;
         case 'processing':
+          this.processStarted();
           this.clearMessages();
           document.activeElement.blur();
           $('.progress-bar').addClass('active');
-          $('.error-message').html('');
           break;
         case 'complete':
+          this.processEnded();
           /** stop hidden animation for slight performance improvement */
           this.updateProgressBar(0);
           $('.progress-bar').removeClass('active');
@@ -708,60 +733,10 @@ var MassViews = function (_Pv) {
         }
       });
     }
-
-    /**
-     * XXX: throttling
-     * @return {[type]} [description]
-     */
-
   }, {
-    key: 'checkThrottle',
-    value: function checkThrottle() {
-      if (simpleStorage.hasKey('pageviews-throttle')) {
-        var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-        /** > 0 check to combat race conditions */
-        if (timeRemaining > 0) {
-          // FIXME: restore when fallbacks are supported for multi-param messages
-          // return this.writeMessage($.i18n(
-          //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-          //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-          // ), true);
-          return this.writeMessage('\n          Please wait <b>' + timeRemaining + '</b> seconds before submitting another request.<br/>\n          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>\n          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>\n          for more information.\n        ', true);
-        }
-      } else {
-        /** limit to one request every 90 seconds */
-        simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
-        return false;
-      }
-    }
-
-    /**
-     * Process the massviews for the given source and options entered
-     * Called when submitting the form
-     * @return {null} nothing
-     */
-
-  }, {
-    key: 'processInput',
-    value: function processInput() {
+    key: 'processPagePile',
+    value: function processPagePile(cb) {
       var _this7 = this;
-
-      // XXX: throttling
-      /** allow resubmission of queries that are cached */
-      if (!this.isRequestCached()) {
-        /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('pageviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-          /** > 0 check to combat race conditions */
-          if (timeRemaining > 0) {
-            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
-          }
-        }
-      }
-
-      this.setState('processing');
 
       var pileId = $(config.sourceInput).val();
 
@@ -780,17 +755,11 @@ var MassViews = function (_Pv) {
         if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
         _this7.sourceProject = siteMap[pileData.wiki];
-        _this7.getPageViewsData(pileData.wiki, pileData.pages).done(function () {
+        _this7.getPageViewsData(_this7.sourceProject, pileData.pages).done(function () {
           $('.massviews-input-name').text('Page Pile #' + pileData.id).prop('href', _this7.getPileURL(pileData.id));
           $('.massviews-params').html('\n          ' + $(config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this7.sourceProject + '" target="_blank">' + _this7.sourceProject.replace(/.org$/, '') + '</a>\n          ');
-          _this7.updateProgressBar(100);
-          _this7.renderData();
 
-          /**
-           * XXX: throttling
-           * Reset throttling again; the first one was in case they aborted
-           */
-          if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+          cb();
         });
       }).fail(function (error) {
         _this7.setState('initial');
@@ -802,6 +771,120 @@ var MassViews = function (_Pv) {
           _this7.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
+    }
+  }, {
+    key: 'processCategory',
+    value: function processCategory(cb) {
+      var _this8 = this;
+
+      var _getWikiPageFromURL = this.getWikiPageFromURL($(config.sourceInput).val());
+
+      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
+
+      var project = _getWikiPageFromURL2[0];
+      var category = _getWikiPageFromURL2[1];
+
+
+      if (!category) {
+        return this.setState('initial', function () {
+          _this8.writeMessage($.i18n('invalid-category-url'));
+        });
+      }
+
+      var promise = $.ajax({
+        url: 'https://' + project + '/w/api.php',
+        jsonp: 'callback',
+        dataType: 'jsonp',
+        data: {
+          action: 'query',
+          format: 'json',
+          list: 'categorymembers',
+          cmlimit: 500,
+          cmtitle: category
+        }
+      });
+      var categoryLink = this.getPageLink(category, project);
+      this.sourceProject = project; // for caching purposes
+
+      promise.done(function (data) {
+        if (!data.query.categorymembers.length) {
+          return _this8.setState('initial', function () {
+            _this8.writeMessage($.i18n('massviews-empty-set', categoryLink));
+          });
+        }
+
+        /**
+         * XXX: throttling
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        _this8.setThrottle();
+
+        var pageNames = data.query.categorymembers.map(function (cat) {
+          return cat.title;
+        });
+
+        _this8.getPageViewsData(project, pageNames).done(function () {
+          $('.massviews-input-name').html(categoryLink);
+          $('.massviews-params').html($(config.dateRangeSelector).val());
+
+          cb();
+        });
+      }).fail(function (data) {
+        _this8.setState('initial');
+
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (data && data.error) {
+          _this8.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
+        } else {
+          _this8.writeMessage($.i18n('api-error-unknown', categoryLink));
+        }
+      });
+    }
+
+    /**
+     * Process the massviews for the given source and options entered
+     * Called when submitting the form
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'processInput',
+    value: function processInput() {
+      var _this9 = this;
+
+      // XXX: throttling
+      /** allow resubmission of queries that are cached */
+      if (!this.isRequestCached()) {
+        /** Check if user has exceeded request limit and throw error */
+        if (simpleStorage.hasKey('pageviews-throttle')) {
+          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
+
+          /** > 0 check to combat race conditions */
+          if (timeRemaining > 0) {
+            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
+          }
+        }
+      }
+
+      this.setState('processing');
+
+      var cb = function cb() {
+        _this9.updateProgressBar(100);
+        _this9.renderData();
+
+        // XXX: throttling
+        _this9.setThrottle();
+      };
+
+      switch ($('#source_button').data('value')) {
+        case 'pagepile':
+          this.processPagePile(cb);
+          break;
+        case 'category':
+          this.processCategory(cb);
+          break;
+      }
     }
 
     /**
@@ -1021,6 +1104,9 @@ var Pv = function () {
 
     this.storage = {}; // used as fallback when localStorage is not supported
 
+    /** @type {null|Date} tracking of elapsed time */
+    this.processStart = null;
+
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
@@ -1146,7 +1232,7 @@ var Pv = function () {
   }, {
     key: 'getExpandedPageURL',
     value: function getExpandedPageURL(page) {
-      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape);
+      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**
@@ -1542,6 +1628,33 @@ var Pv = function () {
     }
 
     /**
+     * Set timestamp of when process started
+     * @return {moment} start time
+     */
+
+  }, {
+    key: 'processStarted',
+    value: function processStarted() {
+      return this.processStart = moment();
+    }
+
+    /**
+     * Get elapsed time from this.processStart, and show it
+     * @return {moment} Elapsed time from `this.processStart` in milliseconds
+     */
+
+  }, {
+    key: 'processEnded',
+    value: function processEnded() {
+      var endTime = moment(),
+          elapsedTime = endTime.diff(this.processStart, 'milliseconds');
+
+      $('.elapsed-time').attr('datetime', endTime.format()).text('Elapsed time: ' + elapsedTime / 1000 + ' seconds');
+
+      return elapsedTime;
+    }
+
+    /**
      * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
      *
      * Same as _.debounce but queues and executes all function calls
@@ -1902,6 +2015,11 @@ var Pv = function () {
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
+    }
+  }, {
+    key: 'setThrottle',
+    value: function setThrottle() {
+      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
     }
 
     /**

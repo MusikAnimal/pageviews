@@ -154,6 +154,10 @@
 	"faq-source-title": "FAQ - title of the section explaining what the 'source' options are.",
 	"faq-source-pageviews": "FAQ - body of the section explaining what the 'source' options are.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
+	"faq-page-pile-title": "FAQ - title of the section explaining what Page Pile is.",
+	"faq-page-pile-body": "FAQ - body of the section explaining what Page Pile is. $1 is a link to the Page Pile tool.",
+	"faq-throttle-wait-title": "FAQ - title of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
+	"faq-throttle-wait-body": "FAQ - body of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
 	"url-structure-example-siteviews": "Example of how to link to Siteviews Analysis on a wiki. $1 is the example link. This message is the same as the first sentence of 'url-structure-example'",
 	"url-structure-topviews-example": "Example of how to link to Topviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, and $4 is the 'excludes' parameter",
@@ -194,5 +198,10 @@
 	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
 	"massviews-title": "Title of the Massviews application, which allows you to import a large list of pages and get the pageviews counts. This title is shown as a header at the top of the page.",
 	"url-structure-sort-massviews": "Documentation for the 'sort' parameter for the Massviews application. $1 and $2 are the valid values",
-	"massviews-description": "Brief description of the Massviews tool. Shown directly under the header."
+	"massviews-description": "Brief description of the Massviews tool. Shown directly under the header.",
+	"invalid-category-url": "Error messages saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
+	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
+	"page-pile-id": "Label for the 'Page Pile ID' input field on the Massviews tool. The proper noun 'Page Pile' should not be translated.",
+	"category-url": "Label for the 'Category URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki category.",
+	"elapsed-time": "Message saying the amount of time the operation took. $1 is the number of seconds."
 }

@@ -4,49 +4,59 @@
     - include '../../_head.php'
     %title
       = $I18N->msg( 'massviews-title' ) . ' - ' . $I18N->msg( 'faq' )
-
   %body
     %div.container
-      %div.col-lg-offset-2
-        / Header
-        %header.row.aqs-row
-          %div.col-lg-10.text-center
-            %h4
-              %strong
-                = $I18N->msg( 'massviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'massviews-title' )
+          %small.app-description
+            = $I18N->msg( 'faq' )
 
-        %div.col-lg-10
-          %ul.list-group
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-old-data-title' )
-              %p
-                = $I18N->msg( 'faq-old-data-body' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-todays-date-title' )
-              %p
-                = $I18N->msg( 'faq-todays-date-body' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-agents-title' )
-              %ul.agents-ul
-                %li
-                  %i= $I18N->msg( 'user' )
-                  = $I18N->msg( 'faq-agents-user' )
-                %li
-                  %i= $I18N->msg( 'spider' )
-                  = $I18N->msg( 'faq-agents-spider' )
-                %li
-                  %i= $I18N->msg( 'bot' )
-                  = $I18N->msg( 'faq-agents-bot' )
-            %li.list-group-item
-              %p
-                %strong= $I18N->msg( 'faq-bug-report-title' )
-              %p
-                = $I18N->msg( 'faq-bug-report-body' )
+      %main.col-lg-10.col-lg-offset-1
+        %ul.list-group
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ) ) )
+            %p
+              = $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-page-pile-title' )
+            %p
+              - $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"
+              = $I18N->msg( 'faq-page-pile-body', array( 'variables' => array( $pagePileLink ) ) )
+          %li.list-group-item
+            - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
+            %p
+              %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
+            %p
+              = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-todays-date-title' )
+            %p
+              = $I18N->msg( 'faq-todays-date-body' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-agents-title' )
+            %ul.agents-ul
+              %li
+                %i= $I18N->msg( 'user' )
+                = $I18N->msg( 'faq-agents-user' )
+              %li
+                %i= $I18N->msg( 'spider' )
+                = $I18N->msg( 'faq-agents-spider' )
+              %li
+                %i= $I18N->msg( 'bot' )
+                = $I18N->msg( 'faq-agents-bot' )
+          %li.list-group-item
+            %p
+              %strong= $I18N->msg( 'faq-bug-report-title' )
+            %p
+              = $I18N->msg( 'faq-bug-report-body' )
 
-        %div.col-lg-10.text-center.tm
+        %div.col-lg-12.text-center.tm
           %a(href="/massviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'massviews-title' ) ), 'parsemag' => true ) )
 

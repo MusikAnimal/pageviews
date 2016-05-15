@@ -68,6 +68,26 @@ class MassViews extends Pv {
 
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
+
+    $('.source-option').on('click', e => this.updateSourceInput(e.target));
+  }
+
+  updateSourceInput(node) {
+    const source = node.dataset.value;
+
+    $('#source_button').data('value', source).html(`${node.textContent} <span class='caret'></span>`);
+
+    if (source === 'category') {
+      $(config.sourceInput).prop('type', 'text')
+        .prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York')
+        .val('');
+    } else {
+      $(config.sourceInput).prop('type', 'number')
+        .prop('placeholder', '12345')
+        .val('');
+    }
+
+    $(config.sourceInput).focus();
   }
 
   /**
@@ -227,11 +247,11 @@ class MassViews extends Pv {
   /**
    * Loop through given pages and query the pageviews API for each
    *   Also updates this.massData with result
-   * @param  {string} dbName - database name as returned by Page Pile API
+   * @param  {string} project - project such as en.wikipedia.org
    * @param  {Object} pages - as given by the getPagePile promise
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
    */
-  getPageViewsData(dbName, pages) {
+  getPageViewsData(project, pages) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
@@ -243,11 +263,10 @@ class MassViews extends Pv {
     this.massData = [];
 
     const makeRequest = page => {
-      const uriEncodedPageName = encodeURIComponent(page),
-        sourceProject = siteMap[dbName];
+      const uriEncodedPageName = encodeURIComponent(page);
 
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${sourceProject}` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${project}` +
         `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
@@ -271,14 +290,14 @@ class MassViews extends Pv {
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
         if (cassandraError) {
-          if (failureRetries[dbName]) {
-            failureRetries[dbName]++;
+          if (failureRetries[project]) {
+            failureRetries[project]++;
           } else {
-            failureRetries[dbName] = 1;
+            failureRetries[project] = 1;
           }
 
           /** maximum of 3 retries */
-          if (failureRetries[dbName] < 3) {
+          if (failureRetries[project] < 3) {
             totalRequestCount++;
             return this.rateLimit(makeRequest, 100, this)(page);
           }
@@ -287,7 +306,7 @@ class MassViews extends Pv {
         if (cassandraError) {
           failedPages.push(page);
         } else {
-          this.writeMessage(`${this.getPageLink(page, sourceProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+          this.writeMessage(`${this.getPageLink(page, project)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
         }
 
         hadFailure = true; // don't treat this series of requests as being cached by server
@@ -302,7 +321,7 @@ class MassViews extends Pv {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, sourceProject)}</li>`).join('') +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, project)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -401,16 +420,20 @@ class MassViews extends Pv {
   }
 
   /**
-   * Parse wiki URL for the page name
+   * Parse wiki URL for the wiki and page name
    * @param  {String} url - full URL to a wiki page
-   * @return {String|null} page name
+   * @return {Array|null} ['wiki', 'page'] or null if invalid
    */
-  getPageNameFromURL(url) {
+  getWikiPageFromURL(url) {
+    let matches;
+
     if (url.includes('?')) {
-      return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
+      matches = url.match(/\/\/(.*?)\/w\/.*\?(?:.*\b)?title=(.*?)(?:&|$)/);
     } else {
-      return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
+      matches = url.match(/\/\/(.*?)\/wiki\/(.*?)(?:\?|$)/);
     }
+
+    return matches ? matches.slice(1) : [null, null];
   }
 
   /**
@@ -470,9 +493,9 @@ class MassViews extends Pv {
     this.sort = params.sort || config.defaults.params.sort;
     this.direction = params.direction || config.defaults.params.direction;
 
-    /** start up processing if page name is present */
+    /** start up processing if necessary params are present */
     if (config.validSources.includes(params.source) && params.target) {
-      $(config.sourceButton).data('value', params.source);
+      this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
       $(config.sourceInput).val(decodeURIComponent(params.target).descore());
       this.processInput();
     } else {
@@ -507,12 +530,13 @@ class MassViews extends Pv {
       if (typeof cb === 'function') cb.call(this);
       break;
     case 'processing':
+      this.processStarted();
       this.clearMessages();
       document.activeElement.blur();
       $('.progress-bar').addClass('active');
-      $('.error-message').html('');
       break;
     case 'complete':
+      this.processEnded();
       /** stop hidden animation for slight performance improvement */
       this.updateProgressBar(0);
       $('.progress-bar').removeClass('active');
@@ -606,33 +630,106 @@ class MassViews extends Pv {
     });
   }
 
-  /**
-   * XXX: throttling
-   * @return {[type]} [description]
-   */
-  checkThrottle() {
-    if (simpleStorage.hasKey('pageviews-throttle')) {
-      const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
+  processPagePile(cb) {
+    const pileId = $(config.sourceInput).val();
 
-      /** > 0 check to combat race conditions */
-      if (timeRemaining > 0) {
-        // FIXME: restore when fallbacks are supported for multi-param messages
-        // return this.writeMessage($.i18n(
-        //   'langviews-throttle-wait', `<b>${timeRemaining}</b>`,
-        //   '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-        // ), true);
-        return this.writeMessage(`
-          Please wait <b>${timeRemaining}</b> seconds before submitting another request.<br/>
-          Apologies for the inconvenience. This is a temporary throttling tactic.<br/>
-          See <a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>
-          for more information.
-        `, true);
+    this.getPagePile(pileId).done(pileData => {
+      if (!pileData.pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', this.getPileLink(pileId)));
+        });
       }
-    } else {
-      /** limit to one request every 90 seconds */
-      simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
-      return false;
+
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+
+      this.sourceProject = siteMap[pileData.wiki];
+      this.getPageViewsData(this.sourceProject, pileData.pages).done(() => {
+        $('.massviews-input-name').text(`Page Pile #${pileData.id}`).prop('href', this.getPileURL(pileData.id));
+        $('.massviews-params').html(
+          `
+          ${$(config.dateRangeSelector).val()}
+          &mdash;
+          <a href="https://${this.sourceProject}" target="_blank">${this.sourceProject.replace(/.org$/, '')}</a>
+          `
+        );
+
+        cb();
+      });
+    }).fail(error => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (typeof error === 'string') {
+        this.writeMessage(error);
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
+      }
+    });
+  }
+
+  processCategory(cb) {
+    const [project, category] = this.getWikiPageFromURL($(config.sourceInput).val());
+
+    if (!category) {
+      return this.setState('initial', () => {
+        this.writeMessage($.i18n('invalid-category-url'));
+      });
     }
+
+    const promise = $.ajax({
+      url: `https://${project}/w/api.php`,
+      jsonp: 'callback',
+      dataType: 'jsonp',
+      data: {
+        action: 'query',
+        format: 'json',
+        list: 'categorymembers',
+        cmlimit: 500,
+        cmtitle: category
+      }
+    });
+    const categoryLink = this.getPageLink(category, project);
+    this.sourceProject = project; // for caching purposes
+
+    promise.done(data => {
+      if (!data.query.categorymembers.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', categoryLink));
+        });
+      }
+
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      this.setThrottle();
+
+      const pageNames = data.query.categorymembers.map(cat => cat.title);
+
+      this.getPageViewsData(project, pageNames).done(() => {
+        $('.massviews-input-name').html(categoryLink);
+        $('.massviews-params').html($(config.dateRangeSelector).val());
+
+        cb();
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && data.error) {
+        this.writeMessage(
+          $.i18n('api-error', categoryLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', categoryLink));
+      }
+    });
   }
 
   /**
@@ -660,51 +757,22 @@ class MassViews extends Pv {
 
     this.setState('processing');
 
-    const pileId = $(config.sourceInput).val();
+    const cb = () => {
+      this.updateProgressBar(100);
+      this.renderData();
 
-    this.getPagePile(pileId).done(pileData => {
-      if (!pileData.pages.length) {
-        return this.setState('initial', () => {
-          this.writeMessage($.i18n('massviews-empty-set', this.getPileLink(pileId)));
-        });
-      }
+      // XXX: throttling
+      this.setThrottle();
+    };
 
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
-
-      this.sourceProject = siteMap[pileData.wiki];
-      this.getPageViewsData(pileData.wiki, pileData.pages).done(() => {
-        $('.massviews-input-name').text(`Page Pile #${pileData.id}`).prop('href', this.getPileURL(pileData.id));
-        $('.massviews-params').html(
-          `
-          ${$(config.dateRangeSelector).val()}
-          &mdash;
-          <a href="https://${this.sourceProject}" target="_blank">${this.sourceProject.replace(/.org$/, '')}</a>
-          `
-        );
-        this.updateProgressBar(100);
-        this.renderData();
-
-        /**
-         * XXX: throttling
-         * Reset throttling again; the first one was in case they aborted
-         */
-        if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
-      });
-    }).fail(error => {
-      this.setState('initial');
-
-      /** structured error comes back as a string, otherwise we don't know what happened */
-      if (typeof error === 'string') {
-        this.writeMessage(error);
-      } else {
-        this.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
-      }
-    });
+    switch ($('#source_button').data('value')) {
+    case 'pagepile':
+      this.processPagePile(cb);
+      break;
+    case 'category':
+      this.processCategory(cb);
+      break;
+    }
   }
 
   /**

@@ -44,6 +44,6 @@ const config = {
   },
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
-  validSources: ['pagepile']
+  validSources: ['pagepile', 'category']
 };
 module.exports = config;

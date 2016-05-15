@@ -549,11 +549,13 @@ class LangViews extends Pv {
       $(config.articleInput).val('').focus();
       break;
     case 'processing':
+      this.processStarted();
+      this.clearMessages();
       document.activeElement.blur();
       $('.progress-bar').addClass('active');
-      $('.error-message').html('');
       break;
     case 'complete':
+      this.processEnded();
       /** stop hidden animation for slight performance improvement */
       this.updateProgressBar(0);
       $('.progress-bar').removeClass('active');
@@ -615,7 +617,7 @@ class LangViews extends Pv {
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
        */
-      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+      this.setThrottle();
 
       this.getPageViewsData(interWikiData).done(() => {
         $('.langviews-page-name').text(page).prop('href', this.getPageURL(page));
@@ -627,7 +629,7 @@ class LangViews extends Pv {
          * XXX: throttling
          * Reset throttling again; the first one was in case they aborted
          */
-        if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+        this.setThrottle();
       });
     }).fail(error => {
       this.setState('initial');
@@ -714,12 +716,13 @@ class LangViews extends Pv {
 
     // Add the rows to the CSV
     this.langData.forEach(page => {
-      let pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"';
+      const pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"',
+        badges = '"' + page.badges.map(badge => config.badges[badge].name.replace(/"/g, '""')) + '"';
 
       csvContent += [
         page.lang,
         pageName,
-        page.badges.map(badge => config.badges[badge].name),
+        badges,
         page.views,
         page.average
       ].join(',') + '\n';

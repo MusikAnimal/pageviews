@@ -20,8 +20,10 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          Example URL:
-          <pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>
+          <?php $pagePileExample = "<pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
+          <?php $categoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
+          <?php $wikiCategoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;{{urlencode:{{fullurl}}}}</pre>"; ?>
+          <?php echo $I18N->msg( 'url-structure-example-massviews', array( 'variables' => array( $pagePileExample, $categoryExample, $wikiCategoryExample ), 'parsemag' => true ) ); ?>
         </div>
         <div>
           <h3>
@@ -32,11 +34,18 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              Currently only <code>pagepile</code> is supported, but other sources such as categories will be added soon
+              One of <code>pagepile</code> or <code>category</code>
             </dd>
             <dt>target</dt>
             <dd>
-              The Page Pile ID
+              The Page Pile ID, or full URL to a category. If a question mark <code>?</code> is in the URL, it <strong>must be encoded</strong>.
+              <br>
+              For instance, <strong>do not use</strong>:
+              <pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>
+              Instead use:
+              <pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>
+              Or you could simply use the shorter wiki URL:
+              <pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>
             </dd>
             <dt>range</dt>
             <dd>

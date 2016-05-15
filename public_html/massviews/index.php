@@ -78,21 +78,28 @@
           <div class="row aqs-row">
             <div class="col-lg-12">
               <label for="source_input">
-                Page Pile ID
+                <?php echo $I18N->msg( 'source' ); ?>
               </label>
               <div class="input-group">
-                <!-- FIXME: this is temporary, should be using the button -->
-                <input id="source_button" type="hidden" data-value="pagepile">
-                <!-- %div.input-group-btn -->
-                <!-- %button.btn.btn-default.dropdown-toggle#source_button(data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false") -->
-                <!-- Page Pile ID -->
-                <!-- %span.caret -->
-                <!-- %ul.dropdown-menu -->
-                <!-- %li -->
-                <!-- %a(href="#") Page Pile ID -->
-                <!-- %li -->
-                <!-- %a(href="#") Category URL -->
-                <input class="form-control input-control source-input" id="source_input" type="number" min="0" placeholder="12345" required="required" autocomplete="off">
+                <div class="input-group-btn">
+                  <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
+                    <?php echo $I18N->msg( 'page-pile-id' ); ?>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="source-option" href="#" data-value="pagepile">
+                        <?php echo $I18N->msg( 'page-pile-id' ); ?>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="category">
+                        <?php echo $I18N->msg( 'category-url' ); ?>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <input class="form-control input-control source-input" id="source_input" type="number" min="0" placeholder="12345" required="required">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right">
                     <?php echo $I18N->msg( 'submit' ); ?>
@@ -156,6 +163,7 @@
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
+          <time class="elapsed-time pull-right"></time>
         </div>
         <?php $currentApp = "massviews"; ?>
         <?php include "../_footer.php"; ?>

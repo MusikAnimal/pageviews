@@ -147,6 +147,10 @@
 	"faq-source-title": "What are the \"Data sources\"?",
 	"faq-source-pageviews": "is the total number of pageviews the project received.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
+	"faq-page-pile-title": "What is Page Pile?",
+	"faq-page-pile-body": "$1 manages lists of pages on Wikimedia projects. You can create lists and import them into Massviews to analyze their pageviews.",
+	"faq-throttle-wait-title": "Why do I have to wait $1 seconds before I can use the tool a second time?",
+	"faq-throttle-wait-body": "The Wikimedia Pageviews API can only handle so many requests during a window of time. In order to ensure the API does not fail and you get all the data you need, you are forced to wait $1 seconds after using the tool before you can use it again.",
 	"url-structure-example": "To get the latest data on a given article on your wiki, with default options, use:\n$1\nreplacing $2 with a valid $3. $4 will resolve to the page the link is placed on",
 	"url-structure-example-siteviews": "To get the latest data on a given article on your wiki, with default options, use:\n$1",
 	"url-structure-topviews-example": "To show the default list of top viewed pages on your wiki, use:\n$1\nreplacing $2 with a valid $3. You can also use $4 to exclude certain pages from view, such as the Main Page.",
@@ -170,6 +174,7 @@
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
 	"url-structure-source": "Either $1 (total page views) or $2 (number of unique devices that viewed the page)",
+	"url-structure-example-massviews": "Example URL for PagePile: $1 Example URL for a category: $2 To link to Massviews on a category page on your wiki, use: $3",
 	"default": "Default",
 	"all-languages": "All languages",
 	"history": "History",
@@ -188,5 +193,10 @@
 	"massviews-title": "Massviews Analysis",
 	"massviews-empty-set": "$1 contains no pages!",
 	"url-structure-sort-massviews": "Which column to sort. Either $1 or $2",
-	"massviews-description": "Import a list of pages and analyze the pageviews"
+	"massviews-description": "Import a list of pages and analyze the pageviews",
+	"invalid-category-url": "Invalid category! Please enter the full wiki URL of the category.",
+	"source": "Source",
+	"page-pile-id": "Page Pile ID",
+	"category-url": "Category URL",
+	"elapsed-time": "Elapsed time: $1 seconds"
 }

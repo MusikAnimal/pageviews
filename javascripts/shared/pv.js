@@ -10,6 +10,9 @@ class Pv {
   constructor() {
     this.storage = {}; // used as fallback when localStorage is not supported
 
+    /** @type {null|Date} tracking of elapsed time */
+    this.processStart = null;
+
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
       window.app = this;
@@ -138,7 +141,7 @@ class Pv {
    * @returns {string} URL for the page
    */
   getExpandedPageURL(page) {
-    return `//${this.project}.org/w/index.php?title=${encodeURIComponent(page).replace(/ /g, '_').replace(/'/, escape)}`;
+    return `//${this.project}.org/w/index.php?title=${encodeURIComponent(page.score()).replace(/'/, escape)}`;
   }
 
   /**
@@ -512,6 +515,28 @@ class Pv {
   }
 
   /**
+   * Set timestamp of when process started
+   * @return {moment} start time
+   */
+  processStarted() {
+    return this.processStart = moment();
+  }
+
+  /**
+   * Get elapsed time from this.processStart, and show it
+   * @return {moment} Elapsed time from `this.processStart` in milliseconds
+   */
+  processEnded() {
+    const endTime = moment(),
+      elapsedTime = endTime.diff(this.processStart, 'milliseconds');
+
+    $('.elapsed-time').attr('datetime', endTime.format())
+      .text(`Elapsed time: ${elapsedTime / 1000} seconds`);
+
+    return elapsedTime;
+  }
+
+  /**
    * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
    *
    * Same as _.debounce but queues and executes all function calls
@@ -839,6 +864,10 @@ class Pv {
         value: `${inputs[0].value} - ${inputs[1].value}`
       };
     });
+  }
+
+  setThrottle() {
+    if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
   }
 
   /**

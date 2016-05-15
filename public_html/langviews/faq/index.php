@@ -21,6 +21,14 @@
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
           <li class="list-group-item">
+            <p>
+              <strong><?php echo $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ) ) ); ?></strong>
+            </p>
+            <p>
+              <?php echo $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) ); ?>
+            </p>
+          </li>
+          <li class="list-group-item">
             <?php $backfillDate = $I18N->msg( 'july' ) . ' 2015'; ?>
             <p>
               <strong><?php echo $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) ); ?></strong>

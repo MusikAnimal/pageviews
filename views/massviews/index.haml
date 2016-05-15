@@ -59,20 +59,20 @@
           %div.row.aqs-row
             %div.col-lg-12
               %label(for="source_input")
-                Page Pile ID
+                = $I18N->msg( 'source' )
               %div.input-group
-                / FIXME: this is temporary, should be using the button
-                %input#source_button(type="hidden" data-value="pagepile")
-                / %div.input-group-btn
-                /   %button.btn.btn-default.dropdown-toggle#source_button(data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
-                /     Page Pile ID
-                /     %span.caret
-                /   %ul.dropdown-menu
-                /     %li
-                /       %a(href="#") Page Pile ID
-                /     %li
-                /       %a(href="#") Category URL
-                %input.form-control.input-control.source-input#source_input(type="number" min="0" placeholder="12345" required="required" autocomplete="off")
+                %div.input-group-btn
+                  %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
+                    = $I18N->msg( 'page-pile-id' )
+                    %span.caret
+                  %ul.dropdown-menu
+                    %li
+                      %a.source-option(href="#" data-value="pagepile")
+                        = $I18N->msg( 'page-pile-id' )
+                    %li
+                      %a.source-option(href="#" data-value="category")
+                        = $I18N->msg( 'category-url' )
+                %input.form-control.input-control.source-input#source_input(type="number" min="0" placeholder="12345" required="required")
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right
                     = $I18N->msg( 'submit' )
@@ -122,6 +122,8 @@
           &middot;
           %a.download-json(href="#")<
             = $I18N->msg( 'json' )
+
+          %time.elapsed-time.pull-right
 
         - $currentApp = "massviews"
         - include "../_footer.php"
