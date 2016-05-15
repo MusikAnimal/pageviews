@@ -422,12 +422,13 @@ class LangViews extends Pv {
       const key = Object.keys(data.entities)[0],
         sitelinks = data.entities[key].sitelinks,
         filteredLinks = {},
-        matchRegex = new RegExp(`^https://\\w+\\.${this.baseProject}\\.org`);
+        matchRegex = new RegExp(`^https://[\\w-]+\\.${this.baseProject}\\.org`);
 
       /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
       Object.keys(sitelinks).forEach(key => {
         if (matchRegex.test(sitelinks[key].url)) {
-          filteredLinks[key] = sitelinks[key];
+          sitelinks[key].site = sitelinks[key].site.replace(/_/g, '-');
+          filteredLinks[key.replace(/_/g, '-')] = sitelinks[key];
         }
       });
 
