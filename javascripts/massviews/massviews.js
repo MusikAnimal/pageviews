@@ -1,4 +1,4 @@
-/*
+/**
  * Massviews Analysis tool
  * @file Main file for Massviews application
  * @author MusikAnimal

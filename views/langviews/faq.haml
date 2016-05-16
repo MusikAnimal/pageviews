@@ -17,9 +17,9 @@
         %ul.list-group
           %li.list-group-item
             %p
-              %strong= $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ) ) )
+              %strong= $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ), 'parsemag' => true ) )
             %p
-              = $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) )
+              = $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ), 'parsemag' => true ) )
           %li.list-group-item
             - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
             %p

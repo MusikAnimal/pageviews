@@ -22,10 +22,10 @@
         <ul class="list-group">
           <li class="list-group-item">
             <p>
-              <strong><?php echo $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ) ) ); ?></strong>
+              <strong><?php echo $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ), 'parsemag' => true ) ); ?></strong>
             </p>
             <p>
-              <?php echo $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) ); ?>
+              <?php echo $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ), 'parsemag' => true ) ); ?>
             </p>
           </li>
           <li class="list-group-item" id="sources">

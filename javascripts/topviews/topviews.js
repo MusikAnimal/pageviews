@@ -1,4 +1,4 @@
-/*
+/**
  * Topviews Analysis tool
  * @file Main file for Topviews application
  * @author MusikAnimal
@@ -90,14 +90,22 @@ class TopViews extends Pv {
     });
   }
 
-  addExclude(page) {
-    this.excludes.push(page);
-    page = page.replace(/ /g, '_');
-    $(this.config.articleSelector).html('');
+  addExclude(pages) {
+    if (!Array.isArray(pages)) pages = [pages];
+
+    pages.forEach(page => {
+      if (!this.excludes.includes(page)) {
+        this.excludes.push(page);
+      }
+    });
+
+    $(config.articleSelector).html('');
+
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
       $(`<option>${escapedText}</option>`).appendTo(this.config.articleSelector);
     });
+
     $(this.config.articleSelector).val(this.excludes).trigger('change');
     // $(this.config.articleSelector).select2('close');
   }
@@ -186,7 +194,7 @@ class TopViews extends Pv {
     if (!params.excludes || (params.excludes.length === 1 && !params.excludes[0])) {
       this.excludes = this.config.defaults.excludes;
     } else {
-      this.excludes = params.excludes.map(exclude => exclude.replace(/_/g, ' '));
+      this.excludes = params.excludes.map(exclude => exclude.descore());
     }
 
     this.params = location.search;
@@ -428,7 +436,58 @@ class TopViews extends Pv {
       /** ...and build the pageNames array for Select2 */
       this.pageNames = this.pageData.map(value => value.article);
 
-      return dfd.resolve(this.pageData);
+      if (this.excludes.length) {
+        return dfd.resolve(this.pageData);
+      } else {
+        /** find first 30 non-mainspace pages and exclude them */
+        this.filterByNamespace(this.pageNames.slice(0, 30)).done(() => {
+          return dfd.resolve(this.pageData);
+        });
+      }
+    });
+  }
+
+  /**
+   * Get the pages that are not in the given namespace
+   * @param {array} pages - pages to filter
+   * @param  {Number} [ns] - namespace to restrict to, defaults to main
+   * @return {Deferred} promise resolving with page titles that are not in the given namespace
+   */
+  filterByNamespace(pages, ns = 0) {
+    let dfd = $.Deferred();
+
+    return $.ajax({
+      url: `https://${this.project}.org/w/api.php`,
+      data: {
+        action: 'query',
+        titles: pages.join('|'),
+        meta: 'siteinfo',
+        siprop: 'general',
+        format: 'json'
+      },
+      prop: 'info',
+      dataType: 'jsonp'
+    }).always(data => {
+      if (data && data.query && data.query.pages) {
+        let normalizeMap = {};
+        (data.query.normalized || []).map(entry => {
+          normalizeMap[entry.to] = entry.from;
+        });
+
+        let excludes = [data.query.general.mainpage];
+        Object.keys(data.query.pages).forEach(key => {
+          const page = data.query.pages[key];
+          if (page.ns !== ns || page.missing === '') {
+            const title = data.query.pages[key].title,
+              normalizedTitle = normalizeMap[title];
+            delete normalizeMap[title];
+            excludes.push(normalizedTitle || title);
+          }
+        });
+        this.addExclude(excludes);
+      }
+
+      dfd.resolve();
     });
   }
 
