@@ -1,4 +1,4 @@
-/*
+/**
  * Siteviews Analysis tool
  * @file Main file for Siteviews application
  * @author MusikAnimal

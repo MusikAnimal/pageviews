@@ -1,4 +1,4 @@
-/*
+/**
  * Topviews Analysis tool
  * @file Main file for Topviews application
  * @author MusikAnimal
@@ -90,14 +90,22 @@ class TopViews extends Pv {
     });
   }
 
-  addExclude(page) {
-    this.excludes.push(page);
-    page = page.replace(/ /g, '_');
-    $(this.config.articleSelector).html('');
+  addExclude(pages) {
+    if (!Array.isArray(pages)) pages = [pages];
+
+    pages.forEach(page => {
+      if (!this.excludes.includes(page)) {
+        this.excludes.push(page);
+      }
+    });
+
+    $(config.articleSelector).html('');
+
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
       $(`<option>${escapedText}</option>`).appendTo(this.config.articleSelector);
     });
+
     $(this.config.articleSelector).val(this.excludes).trigger('change');
     // $(this.config.articleSelector).select2('close');
   }
@@ -428,7 +436,47 @@ class TopViews extends Pv {
       /** ...and build the pageNames array for Select2 */
       this.pageNames = this.pageData.map(value => value.article);
 
-      return dfd.resolve(this.pageData);
+      /** find first 30 non-mainspace pages and exclude them */
+      this.filterByNamespace(this.pageNames.slice(0, 30)).done(() => {
+        return dfd.resolve(this.pageData);
+      });
+    });
+  }
+
+  /**
+   * Get the pages that are not in the given namespace
+   * @param {array} pages - pages to filter
+   * @param  {Number} [ns] - namespace to restrict to, defaults to main
+   * @return {Deferred} promise resolving with page titles that are not in the given namespace
+   */
+  filterByNamespace(pages, ns = 0) {
+    let dfd = $.Deferred();
+
+    return $.ajax({
+      url: `https://${this.project}.org/w/api.php`,
+      data: {
+        action: 'query',
+        titles: pages.join('|'),
+        meta: 'siteinfo',
+        siprop: 'general',
+        format: 'json'
+      },
+      prop: 'info',
+      dataType: 'jsonp'
+    }).always(data => {
+      if (data && data.query && data.query.pages) {
+        let excludes = [data.query.general.mainpage];
+        Object.keys(data.query.pages).forEach(key => {
+          if (data.query.pages[key].ns !== ns) {
+            excludes.push(data.query.pages[key].title);
+          }
+        });
+        this.addExclude(excludes);
+      }
+
+      filterOutMainPage().then(() => {
+        dfd.resolve();
+      });
     });
   }
 

@@ -2421,7 +2421,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/*
+/**
  * Topviews Analysis tool
  * @file Main file for Topviews application
  * @author MusikAnimal
@@ -2528,16 +2528,24 @@ var TopViews = function (_Pv) {
     }
   }, {
     key: 'addExclude',
-    value: function addExclude(page) {
+    value: function addExclude(pages) {
       var _this3 = this;
 
-      this.excludes.push(page);
-      page = page.replace(/ /g, '_');
-      $(this.config.articleSelector).html('');
+      if (!Array.isArray(pages)) pages = [pages];
+
+      pages.forEach(function (page) {
+        if (!_this3.excludes.includes(page)) {
+          _this3.excludes.push(page);
+        }
+      });
+
+      $(config.articleSelector).html('');
+
       this.excludes.forEach(function (exclude) {
         var escapedText = $('<div>').text(exclude).html();
         $('<option>' + escapedText + '</option>').appendTo(_this3.config.articleSelector);
       });
+
       $(this.config.articleSelector).val(this.excludes).trigger('change');
       // $(this.config.articleSelector).select2('close');
     }
@@ -2935,7 +2943,56 @@ var TopViews = function (_Pv) {
           return value.article;
         });
 
-        return dfd.resolve(_this10.pageData);
+        /** find first 30 non-mainspace pages and exclude them */
+        _this10.filterByNamespace(_this10.pageNames.slice(0, 30)).done(function () {
+          return dfd.resolve(_this10.pageData);
+        });
+      });
+    }
+
+    /**
+     * Get the pages that are not in the given namespace
+     * @param {array} pages - pages to filter
+     * @param  {Number} [ns] - namespace to restrict to, defaults to main
+     * @return {Deferred} promise resolving with page titles that are not in the given namespace
+     */
+
+  }, {
+    key: 'filterByNamespace',
+    value: function filterByNamespace(pages) {
+      var _this11 = this;
+
+      var ns = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+      var dfd = $.Deferred();
+
+      return $.ajax({
+        url: 'https://' + this.project + '.org/w/api.php',
+        data: {
+          action: 'query',
+          titles: pages.join('|'),
+          meta: 'siteinfo',
+          siprop: 'general',
+          format: 'json'
+        },
+        prop: 'info',
+        dataType: 'jsonp'
+      }).always(function (data) {
+        if (data && data.query && data.query.pages) {
+          (function () {
+            var excludes = [data.query.general.mainpage];
+            Object.keys(data.query.pages).forEach(function (key) {
+              if (data.query.pages[key].ns !== ns) {
+                excludes.push(data.query.pages[key].title);
+              }
+            });
+            _this11.addExclude(excludes);
+          })();
+        }
+
+        filterOutMainPage().then(function () {
+          dfd.resolve();
+        });
       });
     }
 

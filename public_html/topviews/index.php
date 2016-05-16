@@ -71,7 +71,7 @@
         </div>
         <!-- Chart -->
         <div class="col-lg-12">
-          <small class="text-warning">
+          <small class="text-muted">
             <?php echo $I18N->msg( 'topviews-data-approx' ); ?>
             <?php echo $I18N->msg( 'topviews-false-positive' ); ?>
           </small>
