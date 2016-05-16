@@ -102,6 +102,7 @@
           <div class="progress">
             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
           </div>
+          <div class="progress-text text-center"></div>
         </div>
         <output form="langviews_form">
           <header class="output-header">

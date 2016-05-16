@@ -1201,6 +1201,7 @@ var siteMap = {
   'abwiki': 'ab.wikipedia.org',
   'abwiktionary': 'ab.wiktionary.org',
   'acewiki': 'ace.wikipedia.org',
+  'adywiki': 'ady.wikipedia.org',
   'afwiki': 'af.wikipedia.org',
   'afwiktionary': 'af.wiktionary.org',
   'afwikibooks': 'af.wikibooks.org',

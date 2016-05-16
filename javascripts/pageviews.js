@@ -364,6 +364,8 @@ class PageViews extends Pv {
     const query = data ? data.query : {};
     let results = [];
 
+    if (!query) return {results};
+
     if (this.autocomplete === 'autocomplete') {
       if (query.prefixsearch.length) {
         results = query.prefixsearch.map(function(elem) {

@@ -401,10 +401,9 @@ var LangViews = function (_Pv) {
 
       var makeRequest = function makeRequest(dbName) {
         var data = interWikiData[dbName],
-            lang = data.site.replace(/wiki.*$/, ''),
             uriEncodedPageName = encodeURIComponent(data.title);
 
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + lang + '.' + _this4.baseProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + data.lang + '.' + _this4.baseProject + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -419,7 +418,7 @@ var LangViews = function (_Pv) {
           _this4.langData.push({
             badges: data.badges,
             dbName: dbName,
-            lang: lang,
+            lang: data.lang,
             pageName: data.title,
             views: views,
             url: data.url,
@@ -546,9 +545,11 @@ var LangViews = function (_Pv) {
 
         /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
         Object.keys(sitelinks).forEach(function (key) {
-          if (matchRegex.test(sitelinks[key].url)) {
-            sitelinks[key].site = sitelinks[key].site.replace(/_/g, '-');
-            filteredLinks[key.replace(/_/g, '-')] = sitelinks[key];
+          var siteMapKey = sitelinks[key].site.replace(/-/g, '_');
+
+          if (matchRegex.test(sitelinks[key].url) && siteMap[siteMapKey]) {
+            sitelinks[key].lang = siteMap[siteMapKey].replace(/\.wiki.*$/, '');
+            filteredLinks[key] = sitelinks[key];
           }
         });
 
@@ -2132,6 +2133,7 @@ var siteMap = {
   'abwiki': 'ab.wikipedia.org',
   'abwiktionary': 'ab.wiktionary.org',
   'acewiki': 'ace.wikipedia.org',
+  'adywiki': 'ady.wikipedia.org',
   'afwiki': 'af.wikipedia.org',
   'afwiktionary': 'af.wiktionary.org',
   'afwikibooks': 'af.wikibooks.org',

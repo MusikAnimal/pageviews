@@ -583,6 +583,8 @@ var PageViews = function (_Pv) {
       var query = data ? data.query : {};
       var results = [];
 
+      if (!query) return { results: results };
+
       if (this.autocomplete === 'autocomplete') {
         if (query.prefixsearch.length) {
           results = query.prefixsearch.map(function (elem) {
@@ -2226,6 +2228,7 @@ var siteMap = {
   'abwiki': 'ab.wikipedia.org',
   'abwiktionary': 'ab.wiktionary.org',
   'acewiki': 'ace.wikipedia.org',
+  'adywiki': 'ady.wikipedia.org',
   'afwiki': 'af.wikipedia.org',
   'afwiktionary': 'af.wiktionary.org',
   'afwikibooks': 'af.wikibooks.org',

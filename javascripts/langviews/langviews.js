@@ -287,11 +287,10 @@ class LangViews extends Pv {
 
     const makeRequest = dbName => {
       const data = interWikiData[dbName],
-        lang = data.site.replace(/wiki.*$/, ''),
         uriEncodedPageName = encodeURIComponent(data.title);
 
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${lang}.${this.baseProject}` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${data.lang}.${this.baseProject}` +
         `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
       );
@@ -305,7 +304,7 @@ class LangViews extends Pv {
         this.langData.push({
           badges: data.badges,
           dbName,
-          lang,
+          lang: data.lang,
           pageName: data.title,
           views,
           url: data.url,
@@ -426,9 +425,11 @@ class LangViews extends Pv {
 
       /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
       Object.keys(sitelinks).forEach(key => {
-        if (matchRegex.test(sitelinks[key].url)) {
-          sitelinks[key].site = sitelinks[key].site.replace(/_/g, '-');
-          filteredLinks[key.replace(/_/g, '-')] = sitelinks[key];
+        const siteMapKey = sitelinks[key].site.replace(/-/g, '_');
+
+        if (matchRegex.test(sitelinks[key].url) && siteMap[siteMapKey]) {
+          sitelinks[key].lang = siteMap[siteMapKey].replace(/\.wiki.*$/, '');
+          filteredLinks[key] = sitelinks[key];
         }
       });
 
