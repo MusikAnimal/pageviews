@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Sator",
-			"Macofe"
+			"Macofe",
+			"Subi"
 		]
 	},
 	"title": "Bisiten Analisia",
@@ -96,7 +97,6 @@
 	"select2-searching": "Bilatzen...",
 	"help-translate": "Lagundu euskaratzen",
 	"api-error": "Arazo bat gertatu da datuak APItik kargatzerakoan.",
-	"api-error-contact": "Arazo honen berri eman mesedez garatzaileei.",
 	"api-error-no-data": "Ez da daturik aurkitu.",
 	"topviews-title": "Ikusienen Analasia",
 	"excluded-pages": "Baztertutako orrialdeak",
@@ -111,9 +111,6 @@
 	"submit": "Bidali",
 	"num-languages": "$1 hizkuntzetan",
 	"unique-titles": "$1 titulu bakar",
-	"wikidata-error": "Akatsa Wikidata kontsultatzerakoan",
-	"wikidata-error-unknown": "Akats ezezagun bat gertatu da Wikidata kontsultatzerakoan",
-	"langviews-error": "Akatsa $1(e)rako datuak berreskuratzean",
 	"faq-return-to": "$1-(e)ra itzuli",
 	"faq-old-data-title": "Zergatik ezin dut 2015eko abuztua baino datu zaharragoak ikusi?",
 	"faq-todays-date-title": "Zergatik ezin dut gaurko eguneko daturik ikusi?",
@@ -122,5 +119,7 @@
 	"faq-try-tool": "Saiatu $1",
 	"url-structure-parameters": "Parametroak",
 	"url-structure-parameters-order": "Edozein ordenetan erabili daiteke",
-	"default": "Lehenetsia"
+	"default": "Lehenetsia",
+	"all-languages": "Hizkuntza guztiak",
+	"statistics": "Estatistikak"
 }

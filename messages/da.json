@@ -96,7 +96,6 @@
 	"select2-searching": "Søger...",
 	"help-translate": "Hjælp til med at oversætte",
 	"api-error": "Et problem opstod under indlæsningen af data fra API'en.",
-	"api-error-contact": "Rapporter venligst denne fejl til udviklerne.",
 	"api-error-no-data": "Ingen data blev fundet.",
 	"topviews-title": "Sider med flest visninger",
 	"excluded-pages": "Undtagne sider",

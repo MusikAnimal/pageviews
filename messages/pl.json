@@ -97,9 +97,6 @@
 	"badges": "Odznaki",
 	"average": "Średnia",
 	"submit": "Wyślij",
-	"wikidata-error": "Błąd podczas odpytywania Wikidanych",
-	"wikidata-error-unknown": "Wystąpił nieznany błąd podczas odpytywania Wikidanych",
-	"langviews-error": "Błąd podczas pobierania danych dla $1",
 	"faq-return-to": "Powrót do $1",
 	"faq-old-data-title": "Dlaczego nie mogę wyświetlić danych wcześniejszych niż $1?",
 	"faq-chart-type-title": "Nie podoba mi się ten rodzaj wykresu",
@@ -117,5 +114,6 @@
 	"unsupported-browser-error": "Wersja $1 i wcześniejsze nie są obsługiwane. <a href='http://browsehappy.com/'>Zaktualizuj swoją przeglądarkę</a></strong>.",
 	"projects": "Projekty",
 	"statistics": "Statystyki",
-	"most-viewed-pages": "Najczęściej odwiedzane strony"
+	"most-viewed-pages": "Najczęściej odwiedzane strony",
+	"massviews-empty-set": "$1 nie zawiera stron!"
 }

@@ -14,7 +14,7 @@
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
 	"dates": "Header for the part of the interface that lets the user select a range of dates\n{{Identical|Date}}",
 	"latest-days": "These are the 'latest days' links preceeding the date selector. $1 are the individual links. They are not numerical, so <nowiki>{{PLURAL}}</nowiki> cannot not be used on them.",
-	"last-week": "Last week",
+	"last-week": "{{Identical|Last week}}",
 	"this-month": "This month",
 	"last-month": "Last month",
 	"custom-range": "Custom range",

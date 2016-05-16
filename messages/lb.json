@@ -87,7 +87,6 @@
 	"average": "Duerchschnëtt",
 	"submit": "Späicheren",
 	"num-languages": "$1 Sproochen",
-	"wikidata-error-unknown": "Bei der Ufro u Wikidata ass en onbekannte Feeler geschitt",
 	"faq-return-to": "Zréck op $1",
 	"faq-todays-date-title": "Firwat kann ech keng Donnéeë fir den Datum vun haut gesinn?",
 	"faq-chart-type-title": "Ech hunn dës Form vun Diagramm net gär",
@@ -103,5 +102,7 @@
 	"all-languages": "All Sproochen",
 	"history": "Versiounen",
 	"info": "Informatioun",
-	"note": "Notiz"
+	"note": "Notiz",
+	"projects": "Projeten",
+	"statistics": "Statistiken"
 }

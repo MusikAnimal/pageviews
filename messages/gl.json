@@ -99,7 +99,6 @@
 	"select2-searching": "Buscando…",
 	"help-translate": "Axudar coas traducións",
 	"api-error": "Houbo un problema ao cargar os datos da API.",
-	"api-error-contact": "Por favor, avise deste problema ao persoal de mantemento.",
 	"api-error-no-data": "Non se atoparon datos.",
 	"topviews-title": "Análise das máis vistas",
 	"excluded-pages": "Páxinas excluídas",
@@ -117,9 +116,6 @@
 	"unique-titles": "$1 títulos únicos",
 	"invalid-project": "$1 non é un <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>proxecto válido</a>",
 	"invalid-lang-project": "$1 é un proxecto inválido ou non multilingüe",
-	"wikidata-error": "Erro consultando Wikidata",
-	"wikidata-error-unknown": "Houbo un erro descoñecido consultando Wikidata",
-	"langviews-error": "Erro obtendo datos para $1",
 	"faq-return-to": "Volver a $1",
 	"faq-old-data-title": "Por que non podo ver os datos previos a agosto de 2015?",
 	"faq-todays-date-title": "Por que non podo ver os datos da data de hoxe?"

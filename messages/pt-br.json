@@ -93,7 +93,6 @@
 	"select2-searching": "Pesquisando...",
 	"help-translate": "Ajude a traduzir",
 	"api-error": "Houve um problema ao carregar os dados do API.",
-	"api-error-contact": "Por favor, reporte este problema para os mantenedores.",
 	"api-error-no-data": "Nenhum dado encontrado.",
 	"excluded-pages": "Página excluídas",
 	"show-more": "Mostrar mais",
@@ -102,6 +101,5 @@
 	"average": "Média",
 	"submit": "Enviar",
 	"num-languages": "$1 idiomas",
-	"unique-titles": "$1 títulos únicos",
-	"langviews-error": "Erro ao obter dado para $1"
+	"unique-titles": "$1 títulos únicos"
 }

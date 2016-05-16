@@ -96,7 +96,6 @@
 	"select2-searching": "Hledání...",
 	"help-translate": "Pomozte s překladem",
 	"api-error": "Nastal problém s načítáním dat z API.",
-	"api-error-contact": "Prosíme, nahlaste tento problém správcům.",
 	"api-error-no-data": "Nebyla nalezena žádná data.",
 	"topviews-title": "Analýza nejvíce zobrazovaných",
 	"excluded-pages": "Vyloučené stránky",
@@ -114,11 +113,6 @@
 	"unique-titles": "$1 jedinečných názvů",
 	"invalid-project": "$1 není <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>platný projekt</a>",
 	"invalid-lang-project": "Projekt $1 je buď neplatný nebo není vícejazyčný",
-	"wikidata-error": "Chyba při dotazování rozhraní Wikidata",
-	"wikidata-error-unknown": "Došlo k neznámé chybě při dotazování Wikidata",
-	"langviews-error": "Chyba při načítání dat pro $1",
-	"langviews-throttle-notice": "Požadavky jsou v současné době omezovány z výkonových důvodů.<br /> Viz $1 pro více informací.",
-	"langviews-throttle-wait": "Prosím počkejte $1 sekund před odesláním dalšího požadavku.<br />Omlouváme se za nepříjemnosti. Toto je dočasné omezovací opatření.<br />Viz $2 pro více informací.",
 	"faq-return-to": "Zpět na $1",
 	"faq-old-data-title": "Proč nemohu zobrazit data starší než srpen 2015?"
 }

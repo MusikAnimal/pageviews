@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"아라",
-			"Macofe"
+			"Macofe",
+			"Revi"
 		]
 	},
 	"title": "페이지뷰 분석 도구",
@@ -61,9 +62,9 @@
 	"save": "저장",
 	"apply": "적용",
 	"article-placeholder": "페이지 이름을 입력하세요...",
-	"date-notice": "$1는 2015년 8월 이후의 데이터를 제공합니다. 오래된 데이터에 대해서는, $2를 시도하세요.",
+	"date-notice": "$1는 $1 이후의 데이터를 제공합니다. 오래된 데이터에 대해서는, $2를 시도하세요.",
 	"invalid-params": "매개변수가 올바르지 않습니다!",
-	"param-error-1": "페이지뷰 API는 2015년 8월보다 오래된 데이터를 포함하지 않습니다.",
+	"param-error-1": "페이지뷰 API는 $1보다 오래된 데이터를 포함하지 않습니다.",
 	"param-error-2": "시작 날짜는 끝 날짜보다 오래되어야 합니다.",
 	"param-error-3": "<code>range</code>가 올바르지 않습니다, 기본 range를 대신 사용하세요. 자세한 정보에 대해서는 <a href='/pageviews/url_structure'>설명서</a>를 보세요.",
 	"totals": "총",
@@ -93,5 +94,7 @@
 	"select2-max-items": "항목 $1개만을 선택할 수 있습니다",
 	"select2-no-results": "결과가 없습니다",
 	"select2-searching": "검색 중…",
-	"help-translate": "변역 돕기"
+	"help-translate": "변역 돕기",
+	"faq-old-data-title": "왜 $1 이전의 데이터를 볼 수 없나요?",
+	"faq-old-data-body": "위키미디어 페이지뷰 API는 2015년 8월에 도입되었으며 $1까지의 데이터가 채워져 있습니다. 이 이전의 데이터를 보려면 <a href='http://stats.grok.se'>stats.grok.se</a>와 같은 외부 데이터에 의존해야 합니다. 이 외부 서비스가 작동하는지 여부는 이 도구외 무관한 부분으로 이 서비스를 관리하는 사람들의 권한 밖에 있습니다."
 }

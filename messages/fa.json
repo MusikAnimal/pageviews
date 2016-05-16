@@ -85,7 +85,6 @@
 	"select2-searching": "در حال جستجو...",
 	"help-translate": "کمک به ترجمه",
 	"api-error": "مشکلی در بارگذاری داده ها از API وجود دارد.",
-	"api-error-contact": "لطفا این موضوع را به نگهدارنده‌ها را گزارش کنید.",
 	"api-error-no-data": "هیچ داده‌ای یافت نشد.",
 	"topviews-title": "تحلیل بیشترین‌مشاهدات",
 	"excluded-pages": "به غیر از صفحات",
