@@ -5,10 +5,43 @@
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
+const pvConfig = require('./pv_config');
+
 /** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
 class Pv {
-  constructor() {
+  constructor(appConfig) {
+    /** assign initial class properties */
+    this.config = Object.assign({}, pvConfig, appConfig);
+
+    /** must manually assign defaults as Object.assign is shallow */
+    this.config.defaults = Object.assign({}, pvConfig.defaults, appConfig.defaults);
+
+    this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
+    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
+    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
+    this.params = null;
+
+    /** some chart-specific set up */
+    if (this.config.chart) {
+      this.chartObj = null;
+      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
+      this.prevChartType = null;
+
+      /** need to export to global for chart templating */
+      window.formatNumber = this.formatNumber.bind(this);
+      window.numDaysInRange = this.numDaysInRange.bind(this);
+      window.getPageURL = this.getPageURL.bind(this);
+
+      /** copy over app-specific chart templates */
+      this.config.linearCharts.forEach(linearChart => {
+        this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
+      });
+      this.config.circularCharts.forEach(circularChart => {
+        this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
+      });
+    }
 
     /** @type {null|Date} tracking of elapsed time */
     this.processStart = null;
@@ -37,11 +70,9 @@ class Pv {
     let messagesToLoad = {
       [i18nLang]: `/pageviews/messages/${i18nLang}.json`
     };
-
     if (i18nLang !== 'en') {
       messagesToLoad.en = '/pageviews/messages/en.json';
     }
-
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
@@ -86,6 +117,17 @@ class Pv {
    */
   get daterangepicker() {
     return $(this.config.dateRangeSelector).data('daterangepicker');
+  }
+
+  /**
+   * Destroy previous chart, if needed.
+   * @returns {null} nothing
+   */
+  destroyChart() {
+    if (this.chartObj) {
+      this.chartObj.destroy();
+      delete this.chartObj;
+    }
   }
 
   /**
@@ -501,6 +543,29 @@ class Pv {
   }
 
   /**
+   * Generate key/value pairs of URL query string
+   * @param {string} [multiParam] - parameter whose values needs to split by pipe character
+   * @returns {Object} key/value pairs representation of query string
+   */
+  parseQueryString(multiParam) {
+    const uri = decodeURI(location.search.slice(1)),
+      chunks = uri.split('&');
+    let params = {};
+
+    for (let i = 0; i < chunks.length; i++) {
+      let chunk = chunks[i].split('=');
+
+      if (multiParam && chunk[0] === multiParam) {
+        params[multiParam] = chunk[1].split('|');
+      } else {
+        params[chunk[0]] = chunk[1];
+      }
+    }
+
+    return params;
+  }
+
+  /**
    * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
    * @param {string} app - one of: pv, lv, tv, sv, ms
    * @return {null} nothing
@@ -584,17 +649,6 @@ class Pv {
     select2Input.select2('destroy');
     $('.data-links').hide();
     this.setupSelect2();
-  }
-
-  /**
-   * Change alpha level of an rgba value
-   *
-   * @param {string} value - rgba value
-   * @param {float|string} alpha - transparency as float value
-   * @returns {string} rgba value
-   */
-  static rgba(value, alpha) {
-    return value.replace(/,\s*\d\)/, `, ${alpha})`);
   }
 
   /**
@@ -754,6 +808,19 @@ class Pv {
       document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
       location.reload();
     });
+  }
+
+  /**
+   * Set values of form based on localStorage or defaults, add listeners
+   * @returns {null} nothing
+   */
+  setupSettingsModal() {
+    /** fill in values, everything is either a checkbox or radio */
+    this.fillInSettings();
+
+    /** add listener */
+    $('.save-settings-btn').on('click', this.saveSettings.bind(this));
+    $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
   }
 
   /**

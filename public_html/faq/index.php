@@ -37,7 +37,7 @@
               <?php echo $I18N->msg( 'faq-todays-date-body' ); ?>
             </p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item" id="agents">
             <p>
               <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
             </p>

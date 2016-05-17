@@ -2,26 +2,22 @@
 'use strict';
 
 /**
- * @file Configuration for Langviews application
+ * @file Configuration for Massviews application
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  */
 
 /**
- * Configuration for Langviews application.
- * This includes selectors, defaults, and other constants specific to Langviews
+ * Configuration for Massviews application.
+ * This includes selectors, defaults, and other constants specific to Massviews
  * @type {Object}
  */
 var config = {
   agentSelector: '#agent_select',
-  cookieExpiry: 30, // num days
+  chart: '.aqs-chart',
   dateRangeSelector: '#range_input',
   defaults: {
-    dateFormat: 'YYYY-MM-DD',
     dateRange: 'latest-20',
-    daysAgo: 20,
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true',
     project: 'en.wikipedia.org',
     params: {
       sort: 'views',
@@ -31,26 +27,15 @@ var config = {
       total: 0
     }
   },
-  minDate: moment('2015-08-01'),
-  maxDate: moment().subtract(1, 'days'),
   pageLimit: 500,
   platformSelector: '#platform_select',
   sourceButton: '#source_button',
   sourceInput: '#source_input',
-  specialRanges: {
-    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
-    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    latest: function latest() {
-      var offset = arguments.length <= 0 || arguments[0] === undefined ? config.daysAgo : arguments[0];
-
-      return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
-    }
-  },
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
   validSources: ['pagepile', 'category']
 };
+
 module.exports = config;
 
 },{}],2:[function(require,module,exports){
@@ -91,12 +76,7 @@ var MassViews = function (_Pv) {
   function MassViews() {
     _classCallCheck(this, MassViews);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MassViews).call(this));
-
-    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    _this.config = config;
-    return _this;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(MassViews).call(this, config));
   }
 
   /**
@@ -124,7 +104,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'assignDefaults',
     value: function assignDefaults() {
-      Object.assign(this, JSON.parse(JSON.stringify(config.defaults.params)));
+      Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
     }
 
     /**
@@ -171,12 +151,12 @@ var MassViews = function (_Pv) {
       $('#source_button').data('value', source).html(node.textContent + ' <span class=\'caret\'></span>');
 
       if (source === 'category') {
-        $(config.sourceInput).prop('type', 'text').prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York').val('');
+        $(this.config.sourceInput).prop('type', 'text').prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York').val('');
       } else {
-        $(config.sourceInput).prop('type', 'number').prop('placeholder', '12345').val('');
+        $(this.config.sourceInput).prop('type', 'number').prop('placeholder', '12345').val('');
       }
 
-      $(config.sourceInput).focus();
+      $(this.config.sourceInput).focus();
     }
 
     /**
@@ -198,15 +178,15 @@ var MassViews = function (_Pv) {
       var forCacheKey = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
       var params = {
-        platform: $(config.platformSelector).val(),
-        agent: $(config.agentSelector).val(),
-        source: $(config.sourceButton).data('value'),
-        target: $(config.sourceInput).val()
+        platform: $(this.config.platformSelector).val(),
+        agent: $(this.config.agentSelector).val(),
+        source: $(this.config.sourceButton).data('value'),
+        target: $(this.config.sourceInput).val()
       };
 
       /**
        * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-       * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+       * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
        *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
        */
       if (this.specialRange && !forCacheKey) {
@@ -256,7 +236,7 @@ var MassViews = function (_Pv) {
       }
 
       /** only certain characters within the page name are escaped */
-      // const page = $(config.sourceInput).val().score().replace(/[&%]/g, escape);
+      // const page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
       window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
 
       $('.permalink').prop('href', '/massviews?' + $.param(this.getPermaLink()));
@@ -332,7 +312,7 @@ var MassViews = function (_Pv) {
     value: function getPageviewsURL(project, page) {
       var startDate = moment(this.daterangepicker.startDate),
           endDate = moment(this.daterangepicker.endDate);
-      var platform = $(config.platformSelector).val();
+      var platform = $(this.config.platformSelector).val();
 
       if (endDate.diff(startDate, 'days') === 0) {
         startDate.subtract(3, 'days');
@@ -373,7 +353,7 @@ var MassViews = function (_Pv) {
       var makeRequest = function makeRequest(page) {
         var uriEncodedPageName = encodeURIComponent(page);
 
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(config.platformSelector).val() + '/' + $(config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(config.timestampFormat) + '/' + endDate.format(config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this4.config.platformSelector).val() + '/' + $(_this4.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this4.config.timestampFormat) + '/' + endDate.format(_this4.config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -511,9 +491,9 @@ var MassViews = function (_Pv) {
         var pages = Object.keys(data.pages);
 
         if (pages.length > 500) {
-          _this5.writeMessage('\n          ' + _this5.getPileLink(id) + ' contains ' + _this5.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + config.pageLimit + ' pages will be processed.\n          ');
+          _this5.writeMessage('\n          ' + _this5.getPileLink(id) + ' contains ' + _this5.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + _this5.config.pageLimit + ' pages will be processed.\n          ');
 
-          pages = pages.slice(0, config.pageLimit);
+          pages = pages.slice(0, _this5.config.pageLimit);
         }
 
         return dfd.resolve({
@@ -549,26 +529,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Generate key/value pairs of URL query string
-     * @returns {Object} key/value pairs representation of query string
-     */
-
-  }, {
-    key: 'parseQueryString',
-    value: function parseQueryString() {
-      var uri = decodeURI(location.search.slice(1)),
-          chunks = uri.split('&');
-      var params = {};
-
-      for (var i = 0; i < chunks.length; i++) {
-        var chunk = chunks[i].split('=');
-        params[chunk[0]] = chunk[1];
-      }
-
-      return params;
-    }
-
-    /**
      * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
@@ -590,10 +550,10 @@ var MassViews = function (_Pv) {
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
           this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-          this.setSpecialRange(config.defaults.dateRange);
+          this.setSpecialRange(this.config.defaults.dateRange);
         }
       } else if (params.start) {
-        startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+        startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
         endDate = moment(params.end || Date.now());
         if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
           this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
@@ -605,18 +565,18 @@ var MassViews = function (_Pv) {
         this.daterangepicker.setStartDate(startDate);
         this.daterangepicker.setEndDate(endDate);
       } else {
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
 
-      $(config.platformSelector).val(params.platform || 'all-access');
-      $(config.agentSelector).val(params.agent || 'user');
-      this.sort = params.sort || config.defaults.params.sort;
-      this.direction = params.direction || config.defaults.params.direction;
+      $(this.config.platformSelector).val(params.platform || 'all-access');
+      $(this.config.agentSelector).val(params.agent || 'user');
+      this.sort = params.sort || this.config.defaults.params.sort;
+      this.direction = params.direction || this.config.defaults.params.direction;
 
       /** start up processing if necessary params are present */
-      if (config.validSources.includes(params.source) && params.target) {
+      if (this.config.validSources.includes(params.source) && params.target) {
         this.updateSourceInput($('.source-option[data-value=' + params.source + ']')[0]);
-        $(config.sourceInput).val(decodeURIComponent(params.target).descore());
+        $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
         this.processInput();
       } else {
         this.setState('initial');
@@ -626,7 +586,7 @@ var MassViews = function (_Pv) {
     key: 'getState',
     value: function getState() {
       var classList = $('main')[0].classList;
-      return config.formStates.filter(function (stateName) {
+      return this.config.formStates.filter(function (stateName) {
         return classList.contains(stateName);
       })[0];
     }
@@ -643,14 +603,14 @@ var MassViews = function (_Pv) {
   }, {
     key: 'setState',
     value: function setState(state, cb) {
-      $('main').removeClass(config.formStates.join(' ')).addClass(state);
+      $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
 
       switch (state) {
         case 'initial':
           this.clearMessages();
           this.assignDefaults();
           if (this.typeahead) this.typeahead.hide();
-          $(config.sourceInput).val('').focus();
+          $(this.config.sourceInput).val('').focus();
           if (typeof cb === 'function') cb.call(this);
           break;
         case 'processing':
@@ -680,12 +640,12 @@ var MassViews = function (_Pv) {
     value: function setupDateRangeSelector() {
       var _this6 = this;
 
-      var dateRangeSelector = $(config.dateRangeSelector);
+      var dateRangeSelector = $(this.config.dateRangeSelector);
 
-      /** transform config.specialRanges to have i18n as keys */
+      /** transform this.config.specialRanges to have i18n as keys */
       var ranges = {};
-      Object.keys(config.specialRanges).forEach(function (key) {
-        ranges[$.i18n(key)] = config.specialRanges[key];
+      Object.keys(this.config.specialRanges).forEach(function (key) {
+        ranges[$.i18n(key)] = _this6.config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
@@ -698,9 +658,9 @@ var MassViews = function (_Pv) {
           daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
           monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
-        startDate: moment().subtract(config.defaults.daysAgo, 'days'),
-        minDate: config.minDate,
-        maxDate: config.maxDate,
+        startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+        minDate: this.config.minDate,
+        maxDate: this.config.maxDate,
         ranges: ranges
       });
 
@@ -712,14 +672,14 @@ var MassViews = function (_Pv) {
        *
        * WARNING: we're unable to add class names or data attrs to the range options,
        * so checking which was clicked is hardcoded based on the index of the LI,
-       * as defined in config.specialRanges
+       * as defined in this.config.specialRanges
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
             container = _this6.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
         _this6.specialRange = {
-          range: Object.keys(config.specialRanges)[index],
+          range: Object.keys(_this6.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
@@ -738,7 +698,7 @@ var MassViews = function (_Pv) {
     value: function processPagePile(cb) {
       var _this7 = this;
 
-      var pileId = $(config.sourceInput).val();
+      var pileId = $(this.config.sourceInput).val();
 
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
@@ -757,7 +717,7 @@ var MassViews = function (_Pv) {
         _this7.sourceProject = siteMap[pileData.wiki];
         _this7.getPageViewsData(_this7.sourceProject, pileData.pages).done(function () {
           $('.massviews-input-name').text('Page Pile #' + pileData.id).prop('href', _this7.getPileURL(pileData.id));
-          $('.massviews-params').html('\n          ' + $(config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this7.sourceProject + '" target="_blank">' + _this7.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+          $('.massviews-params').html('\n          ' + $(_this7.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this7.sourceProject + '" target="_blank">' + _this7.sourceProject.replace(/.org$/, '') + '</a>\n          ');
 
           cb();
         });
@@ -777,7 +737,7 @@ var MassViews = function (_Pv) {
     value: function processCategory(cb) {
       var _this8 = this;
 
-      var _getWikiPageFromURL = this.getWikiPageFromURL($(config.sourceInput).val());
+      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
       var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
 
@@ -826,7 +786,7 @@ var MassViews = function (_Pv) {
 
         _this8.getPageViewsData(project, pageNames).done(function () {
           $('.massviews-input-name').html(categoryLink);
-          $('.massviews-params').html($(config.dateRangeSelector).val());
+          $('.massviews-params').html($(_this8.config.dateRangeSelector).val());
 
           cb();
         });
@@ -957,7 +917,7 @@ $(document).ready(function () {
   new MassViews();
 });
 
-},{"../shared/pv":5,"../shared/site_map":6,"./config":1}],3:[function(require,module,exports){
+},{"../shared/pv":5,"../shared/site_map":7,"./config":1}],3:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1096,13 +1056,48 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
+var pvConfig = require('./pv_config');
+
 /** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
 
 var Pv = function () {
-  function Pv() {
+  function Pv(appConfig) {
+    var _this = this;
+
     _classCallCheck(this, Pv);
 
+    /** assign initial class properties */
+    this.config = Object.assign({}, pvConfig, appConfig);
+
+    /** must manually assign defaults as Object.assign is shallow */
+    this.config.defaults = Object.assign({}, pvConfig.defaults, appConfig.defaults);
+
+    this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
+    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
+    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
+    this.params = null;
+
+    /** some chart-specific set up */
+    if (this.config.chart) {
+      this.chartObj = null;
+      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
+      this.prevChartType = null;
+
+      /** need to export to global for chart templating */
+      window.formatNumber = this.formatNumber.bind(this);
+      window.numDaysInRange = this.numDaysInRange.bind(this);
+      window.getPageURL = this.getPageURL.bind(this);
+
+      /** copy over app-specific chart templates */
+      this.config.linearCharts.forEach(function (linearChart) {
+        _this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
+      });
+      this.config.circularCharts.forEach(function (circularChart) {
+        _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
+      });
+    }
 
     /** @type {null|Date} tracking of elapsed time */
     this.processStart = null;
@@ -1126,11 +1121,9 @@ var Pv = function () {
      * Make sure we load 'en.json' as a fallback
      */
     var messagesToLoad = _defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json');
-
     if (i18nLang !== 'en') {
       messagesToLoad.en = '/pageviews/messages/en.json';
     }
-
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
@@ -1165,21 +1158,35 @@ var Pv = function () {
      */
 
   }, {
-    key: 'fillInSettings',
+    key: 'destroyChart',
 
+
+    /**
+     * Destroy previous chart, if needed.
+     * @returns {null} nothing
+     */
+    value: function destroyChart() {
+      if (this.chartObj) {
+        this.chartObj.destroy();
+        delete this.chartObj;
+      }
+    }
 
     /**
      * Fill in values within settings modal with what's in the session object
      * @returns {null} nothing
      */
+
+  }, {
+    key: 'fillInSettings',
     value: function fillInSettings() {
-      var _this = this;
+      var _this2 = this;
 
       $.each($('#settings-modal input'), function (index, el) {
         if (el.type === 'checkbox') {
-          el.checked = _this[el.name] === 'true';
+          el.checked = _this2[el.name] === 'true';
         } else {
-          el.checked = _this[el.name] === el.value;
+          el.checked = _this2[el.name] === el.value;
         }
       });
     }
@@ -1584,7 +1591,7 @@ var Pv = function () {
   }, {
     key: 'normalizePageNames',
     value: function normalizePageNames(pages) {
-      var _this2 = this;
+      var _this3 = this;
 
       var dfd = $.Deferred();
 
@@ -1593,7 +1600,7 @@ var Pv = function () {
         dataType: 'jsonp'
       }).then(function (data) {
         if (data.query.normalized) {
-          pages = _this2.mapNormalizedPageNames(pages, data.query.normalized);
+          pages = _this3.mapNormalizedPageNames(pages, data.query.normalized);
         }
         return dfd.resolve(pages);
       });
@@ -1608,6 +1615,32 @@ var Pv = function () {
     key: 'numDaysInRange',
     value: function numDaysInRange() {
       return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+    }
+
+    /**
+     * Generate key/value pairs of URL query string
+     * @param {string} [multiParam] - parameter whose values needs to split by pipe character
+     * @returns {Object} key/value pairs representation of query string
+     */
+
+  }, {
+    key: 'parseQueryString',
+    value: function parseQueryString(multiParam) {
+      var uri = decodeURI(location.search.slice(1)),
+          chunks = uri.split('&');
+      var params = {};
+
+      for (var i = 0; i < chunks.length; i++) {
+        var chunk = chunks[i].split('=');
+
+        if (multiParam && chunk[0] === multiParam) {
+          params[multiParam] = chunk[1].split('|');
+        } else {
+          params[chunk[0]] = chunk[1];
+        }
+      }
+
+      return params;
     }
 
     /**
@@ -1712,24 +1745,15 @@ var Pv = function () {
     }
 
     /**
-     * Change alpha level of an rgba value
-     *
-     * @param {string} value - rgba value
-     * @param {float|string} alpha - transparency as float value
-     * @returns {string} rgba value
-     */
-
-  }, {
-    key: 'saveSetting',
-
-
-    /**
      * Save a particular setting to session and localStorage
      *
      * @param {string} key - settings key
      * @param {string|boolean} value - value to save
      * @returns {null} nothing
      */
+
+  }, {
+    key: 'saveSetting',
     value: function saveSetting(key, value) {
       this[key] = value;
       this.setLocalStorage('pageviews-settings-' + key, value);
@@ -1744,16 +1768,16 @@ var Pv = function () {
   }, {
     key: 'saveSettings',
     value: function saveSettings() {
-      var _this3 = this;
+      var _this4 = this;
 
       /** track if we're changing to no_autocomplete mode */
       var wasAutocomplete = this.autocomplete === 'no_autocomplete';
 
       $.each($('#settings-modal input'), function (index, el) {
         if (el.type === 'checkbox') {
-          _this3.saveSetting(el.name, el.checked ? 'true' : 'false');
+          _this4.saveSetting(el.name, el.checked ? 'true' : 'false');
         } else if (el.checked) {
-          _this3.saveSetting(el.name, el.value);
+          _this4.saveSetting(el.name, el.value);
         }
       });
 
@@ -1805,11 +1829,11 @@ var Pv = function () {
   }, {
     key: 'setSelect2Defaults',
     value: function setSelect2Defaults(items) {
-      var _this4 = this;
+      var _this5 = this;
 
       items.forEach(function (item) {
         var escapedText = $('<div>').text(item).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this4.config.select2Input);
+        $('<option>' + escapedText + '</option>').appendTo(_this5.config.select2Input);
       });
       $(this.config.select2Input).select2('val', items);
       $(this.config.select2Input).select2('close');
@@ -1879,7 +1903,7 @@ var Pv = function () {
   }, {
     key: 'setupSelect2Colors',
     value: function setupSelect2Colors() {
-      var _this5 = this;
+      var _this6 = this;
 
       /** first delete old stylesheet, if present */
       if (this.colorsStyleEl) this.colorsStyleEl.remove();
@@ -1891,7 +1915,7 @@ var Pv = function () {
 
       /** add color rules */
       this.config.colors.forEach(function (color, index) {
-        _this5.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
+        _this6.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
       });
 
       return this.colorsStyleEl.sheet;
@@ -1906,7 +1930,7 @@ var Pv = function () {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this6 = this;
+      var _this7 = this;
 
       /** prevent browser's default behaviour for any link with href="#" */
       $("a[href='#']").on('click', function (e) {
@@ -1915,13 +1939,29 @@ var Pv = function () {
 
       /** language selector */
       $('.lang-link').on('click', function (e) {
-        var expiryGMT = moment().add(_this6.config.cookieExpiry, 'days').toDate().toGMTString();
+        var expiryGMT = moment().add(_this7.config.cookieExpiry, 'days').toDate().toGMTString();
         document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
 
-        var expiryUnix = Math.floor(Date.now() / 1000) + _this6.config.cookieExpiry * 24 * 60 * 60;
+        var expiryUnix = Math.floor(Date.now() / 1000) + _this7.config.cookieExpiry * 24 * 60 * 60;
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+    }
+
+    /**
+     * Set values of form based on localStorage or defaults, add listeners
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'setupSettingsModal',
+    value: function setupSettingsModal() {
+      /** fill in values, everything is either a checkbox or radio */
+      this.fillInSettings();
+
+      /** add listener */
+      $('.save-settings-btn').on('click', this.saveSettings.bind(this));
+      $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
     }
 
     /**
@@ -1967,14 +2007,14 @@ var Pv = function () {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this7 = this;
+      var _this8 = this;
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
       /** transform this.config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
-        ranges[$.i18n(key)] = _this7.config.specialRanges[key];
+        ranges[$.i18n(key)] = _this8.config.specialRanges[key];
       });
 
       var datepickerOptions = {
@@ -2008,10 +2048,10 @@ var Pv = function () {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this7.daterangepicker.container,
+            container = _this8.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this7.specialRange = {
-          range: Object.keys(_this7.config.specialRanges)[index],
+        _this8.specialRange = {
+          range: Object.keys(_this8.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
@@ -2070,15 +2110,15 @@ var Pv = function () {
   }, {
     key: 'updateInterAppLinks',
     value: function updateInterAppLinks() {
-      var _this8 = this;
+      var _this9 = this;
 
       $('.interapp-link').each(function (i, link) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this8.project + '.org';
+          link.href = url + '?sites=' + _this9.project + '.org';
         } else {
-          link.href = url + '?project=' + _this8.project + '.org';
+          link.href = url + '?project=' + _this9.project + '.org';
         }
       });
     }
@@ -2126,11 +2166,6 @@ var Pv = function () {
       return project ? project.toLowerCase().replace(/.org$/, '') : null;
     }
   }], [{
-    key: 'rgba',
-    value: function rgba(value, alpha) {
-      return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
-    }
-  }, {
     key: 'multilangProjects',
     get: function get() {
       return ['wikipedia', 'wikibooks', 'wikinews', 'wikiquote', 'wikisource', 'wikiversity', 'wikivoyage'];
@@ -2142,7 +2177,149 @@ var Pv = function () {
 
 module.exports = Pv;
 
-},{}],6:[function(require,module,exports){
+},{"./pv_config":6}],6:[function(require,module,exports){
+'use strict';
+
+/**
+ * @file Shared config amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+/**
+ * Change alpha level of an rgba value
+ *
+ * @param {string} value - rgba value
+ * @param {float|string} alpha - transparency as float value
+ * @returns {string} rgba value
+ */
+var rgba = function rgba(value, alpha) {
+  return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
+};
+
+/**
+ * Configuration for all Pageviews applications.
+ * Some properties may be overriden by app-specific configs
+ * @type {Object}
+ */
+var pvConfig = {
+  chartConfig: {
+    Line: {
+      opts: {
+        bezierCurve: false
+      },
+      dataset: function dataset(color) {
+        return {
+          fillColor: 'rgba(0,0,0,0)',
+          pointColor: color,
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: color,
+          pointStrokeColor: '#fff',
+          strokeColor: color
+        };
+      }
+    },
+    Bar: {
+      opts: {
+        barDatasetSpacing: 0,
+        barValueSpacing: 0
+      },
+      dataset: function dataset(color) {
+        return {
+          fillColor: rgba(color, 0.5),
+          highlightFill: rgba(color, 0.75),
+          highlightStroke: color,
+          strokeColor: rgba(color, 0.8)
+        };
+      }
+    },
+    Pie: {
+      opts: {},
+      dataset: function dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    Doughnut: {
+      opts: {},
+      dataset: function dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    PolarArea: {
+      opts: {},
+      dataset: function dataset(color) {
+        return {
+          color: color,
+          highlight: rgba(color, 0.8)
+        };
+      }
+    },
+    Radar: {
+      opts: {},
+      dataset: function dataset(color) {
+        return {
+          fillColor: rgba(color, 0.1),
+          pointColor: color,
+          pointStrokeColor: '#fff',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: color,
+          strokeColor: color
+        };
+      }
+    }
+  },
+  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
+  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
+  cookieExpiry: 30, // num days
+  defaults: {
+    autocomplete: 'autocomplete',
+    chartType: 'Line',
+    daysAgo: 20,
+    dateFormat: 'YYYY-MM-DD',
+    localizeDateFormat: 'true',
+    numericalFormatting: 'true'
+  },
+  globalChartOpts: {
+    animation: true,
+    animationEasing: 'easeInOutQuart',
+    animationSteps: 30,
+    labelsFilter: function labelsFilter(value, index, labels) {
+      if (labels.length >= 60) {
+        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
+      } else {
+        return false;
+      }
+    },
+    multiTooltipTemplate: '<%= formatNumber(value) %>',
+    scaleLabel: '<%= formatNumber(value) %>',
+    tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
+  },
+  linearCharts: ['Line', 'Bar', 'Radar'],
+  minDate: moment('2015-07-01').startOf('day'),
+  maxDate: moment().subtract(1, 'days').startOf('day'),
+  specialRanges: {
+    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    latest: function latest() {
+      var offset = arguments.length <= 0 || arguments[0] === undefined ? pvConfig.daysAgo : arguments[0];
+
+      return [moment().subtract(offset, 'days').startOf('day'), pvConfig.maxDate];
+    }
+  },
+  timestampFormat: 'YYYYMMDD00'
+};
+
+module.exports = pvConfig;
+
+},{}],7:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3053,4 +3230,4 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}]},{},[3,4,5,6,2]);
+},{}]},{},[3,4,5,6,7,2]);

@@ -14,11 +14,7 @@ const Pv = require('../shared/pv');
 /** Main MassViews class */
 class MassViews extends Pv {
   constructor() {
-    super();
-
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    this.config = config;
+    super(config);
   }
 
   /**
@@ -39,7 +35,7 @@ class MassViews extends Pv {
    * @return {null} Nothing
    */
   assignDefaults() {
-    Object.assign(this, JSON.parse(JSON.stringify(config.defaults.params)));
+    Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
   }
 
   /**
@@ -78,16 +74,16 @@ class MassViews extends Pv {
     $('#source_button').data('value', source).html(`${node.textContent} <span class='caret'></span>`);
 
     if (source === 'category') {
-      $(config.sourceInput).prop('type', 'text')
+      $(this.config.sourceInput).prop('type', 'text')
         .prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York')
         .val('');
     } else {
-      $(config.sourceInput).prop('type', 'number')
+      $(this.config.sourceInput).prop('type', 'number')
         .prop('placeholder', '12345')
         .val('');
     }
 
-    $(config.sourceInput).focus();
+    $(this.config.sourceInput).focus();
   }
 
   /**
@@ -106,15 +102,15 @@ class MassViews extends Pv {
    */
   getParams(forCacheKey = false) {
     let params = {
-      platform: $(config.platformSelector).val(),
-      agent: $(config.agentSelector).val(),
-      source: $(config.sourceButton).data('value'),
-      target: $(config.sourceInput).val()
+      platform: $(this.config.platformSelector).val(),
+      agent: $(this.config.agentSelector).val(),
+      source: $(this.config.sourceButton).data('value'),
+      target: $(this.config.sourceInput).val()
     };
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange && !forCacheKey) {
@@ -156,7 +152,7 @@ class MassViews extends Pv {
     }
 
     /** only certain characters within the page name are escaped */
-    // const page = $(config.sourceInput).val().score().replace(/[&%]/g, escape);
+    // const page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
     window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
 
     $('.permalink').prop('href', `/massviews?${$.param(this.getPermaLink())}`);
@@ -233,7 +229,7 @@ class MassViews extends Pv {
   getPageviewsURL(project, page) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
-    const platform = $(config.platformSelector).val();
+    const platform = $(this.config.platformSelector).val();
 
     if (endDate.diff(startDate, 'days') === 0) {
       startDate.subtract(3, 'days');
@@ -267,8 +263,8 @@ class MassViews extends Pv {
 
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${project}` +
-        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
       promises.push(promise);
@@ -398,11 +394,11 @@ class MassViews extends Pv {
         this.writeMessage(
           `
           ${this.getPileLink(id)} contains ${this.n(pages.length)} pages.
-          For performance reasons, only the first ${config.pageLimit} pages will be processed.
+          For performance reasons, only the first ${this.config.pageLimit} pages will be processed.
           `
         );
 
-        pages = pages.slice(0, config.pageLimit);
+        pages = pages.slice(0, this.config.pageLimit);
       }
 
       return dfd.resolve({
@@ -437,23 +433,6 @@ class MassViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of query string
-   */
-  parseQueryString() {
-    const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
-    let params = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i].split('=');
-      params[chunk[0]] = chunk[1];
-    }
-
-    return params;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
@@ -470,10 +449,10 @@ class MassViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
       if (startDate < moment('2015-08-01') || endDate < moment('2015-08-01')) {
         this.addSiteNotice('danger', $.i18n('param-error-1'), $.i18n('invalid-params'), true);
@@ -485,18 +464,18 @@ class MassViews extends Pv {
       this.daterangepicker.setStartDate(startDate);
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange(config.defaults.dateRange);
+      this.setSpecialRange(this.config.defaults.dateRange);
     }
 
-    $(config.platformSelector).val(params.platform || 'all-access');
-    $(config.agentSelector).val(params.agent || 'user');
-    this.sort = params.sort || config.defaults.params.sort;
-    this.direction = params.direction || config.defaults.params.direction;
+    $(this.config.platformSelector).val(params.platform || 'all-access');
+    $(this.config.agentSelector).val(params.agent || 'user');
+    this.sort = params.sort || this.config.defaults.params.sort;
+    this.direction = params.direction || this.config.defaults.params.direction;
 
     /** start up processing if necessary params are present */
-    if (config.validSources.includes(params.source) && params.target) {
+    if (this.config.validSources.includes(params.source) && params.target) {
       this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
-      $(config.sourceInput).val(decodeURIComponent(params.target).descore());
+      $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
       this.processInput();
     } else {
       this.setState('initial');
@@ -505,7 +484,7 @@ class MassViews extends Pv {
 
   getState() {
     const classList = $('main')[0].classList;
-    return config.formStates.filter(stateName => {
+    return this.config.formStates.filter(stateName => {
       return classList.contains(stateName);
     })[0];
   }
@@ -519,14 +498,14 @@ class MassViews extends Pv {
    * @returns {null} nothing
    */
   setState(state, cb) {
-    $('main').removeClass(config.formStates.join(' ')).addClass(state);
+    $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
 
     switch (state) {
     case 'initial':
       this.clearMessages();
       this.assignDefaults();
       if (this.typeahead) this.typeahead.hide();
-      $(config.sourceInput).val('').focus();
+      $(this.config.sourceInput).val('').focus();
       if (typeof cb === 'function') cb.call(this);
       break;
     case 'processing':
@@ -551,12 +530,12 @@ class MassViews extends Pv {
    * @returns {null} - nothing
    */
   setupDateRangeSelector() {
-    const dateRangeSelector = $(config.dateRangeSelector);
+    const dateRangeSelector = $(this.config.dateRangeSelector);
 
-    /** transform config.specialRanges to have i18n as keys */
+    /** transform this.config.specialRanges to have i18n as keys */
     let ranges = {};
-    Object.keys(config.specialRanges).forEach(key => {
-      ranges[$.i18n(key)] = config.specialRanges[key];
+    Object.keys(this.config.specialRanges).forEach(key => {
+      ranges[$.i18n(key)] = this.config.specialRanges[key];
     });
 
     dateRangeSelector.daterangepicker({
@@ -590,9 +569,9 @@ class MassViews extends Pv {
           $.i18n('december')
         ]
       },
-      startDate: moment().subtract(config.defaults.daysAgo, 'days'),
-      minDate: config.minDate,
-      maxDate: config.maxDate,
+      startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+      minDate: this.config.minDate,
+      maxDate: this.config.maxDate,
       ranges: ranges
     });
 
@@ -608,14 +587,14 @@ class MassViews extends Pv {
      *
      * WARNING: we're unable to add class names or data attrs to the range options,
      * so checking which was clicked is hardcoded based on the index of the LI,
-     * as defined in config.specialRanges
+     * as defined in this.config.specialRanges
      */
     $('.daterangepicker .ranges li').on('click', e => {
       const index = $('.daterangepicker .ranges li').index(e.target),
         container = this.daterangepicker.container,
         inputs = container.find('.daterangepicker_input input');
       this.specialRange = {
-        range: Object.keys(config.specialRanges)[index],
+        range: Object.keys(this.config.specialRanges)[index],
         value: `${inputs[0].value} - ${inputs[1].value}`
       };
     });
@@ -631,7 +610,7 @@ class MassViews extends Pv {
   }
 
   processPagePile(cb) {
-    const pileId = $(config.sourceInput).val();
+    const pileId = $(this.config.sourceInput).val();
 
     this.getPagePile(pileId).done(pileData => {
       if (!pileData.pages.length) {
@@ -652,7 +631,7 @@ class MassViews extends Pv {
         $('.massviews-input-name').text(`Page Pile #${pileData.id}`).prop('href', this.getPileURL(pileData.id));
         $('.massviews-params').html(
           `
-          ${$(config.dateRangeSelector).val()}
+          ${$(this.config.dateRangeSelector).val()}
           &mdash;
           <a href="https://${this.sourceProject}" target="_blank">${this.sourceProject.replace(/.org$/, '')}</a>
           `
@@ -673,7 +652,7 @@ class MassViews extends Pv {
   }
 
   processCategory(cb) {
-    const [project, category] = this.getWikiPageFromURL($(config.sourceInput).val());
+    const [project, category] = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
     if (!category) {
       return this.setState('initial', () => {
@@ -714,7 +693,7 @@ class MassViews extends Pv {
 
       this.getPageViewsData(project, pageNames).done(() => {
         $('.massviews-input-name').html(categoryLink);
-        $('.massviews-params').html($(config.dateRangeSelector).val());
+        $('.massviews-params').html($(this.config.dateRangeSelector).val());
 
         cb();
       });

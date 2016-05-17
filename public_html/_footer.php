@@ -98,6 +98,14 @@
     </div>
   </div>
 </div>
+<?php if ( strpos ( $_SERVER['PHP_SELF'], 'faq' ) !== false ) { ?>
+  <script type="text/javascript">
+  //<![CDATA[
+    if (location.hash) $(location.hash).addClass('flash');
+    
+  //]]>
+  </script>
+<?php } ?>
 <script type="text/javascript">
 //<![CDATA[
   if(!window.noAdBlockers) {

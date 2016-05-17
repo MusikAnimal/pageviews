@@ -14,11 +14,7 @@ const Pv = require('../shared/pv');
 /** Main LangViews class */
 class LangViews extends Pv {
   constructor() {
-    super();
-
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    this.config = config;
+    super(config);
   }
 
   /**
@@ -40,7 +36,7 @@ class LangViews extends Pv {
    * @return {null} Nothing
    */
   assignDefaults() {
-    Object.assign(this, JSON.parse(JSON.stringify(config.defaults.params)));
+    Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
   }
 
   /**
@@ -67,7 +63,7 @@ class LangViews extends Pv {
       this.renderData();
     });
 
-    $(config.projectInput).on('change', () => {
+    $(this.config.projectInput).on('change', () => {
       this.validateProject();
       this.updateInterAppLinks();
     });
@@ -88,7 +84,7 @@ class LangViews extends Pv {
    * @returns {Typeahead} instance
    */
   get typeahead() {
-    return $(config.articleInput).data('typeahead');
+    return $(this.config.articleInput).data('typeahead');
   }
 
   /**
@@ -99,14 +95,14 @@ class LangViews extends Pv {
    */
   getParams(forCacheKey = false) {
     let params = {
-      project: $(config.projectInput).val(),
-      platform: $(config.platformSelector).val(),
-      agent: $(config.agentSelector).val()
+      project: $(this.config.projectInput).val(),
+      platform: $(this.config.platformSelector).val(),
+      agent: $(this.config.agentSelector).val()
     };
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange && !forCacheKey) {
@@ -117,7 +113,7 @@ class LangViews extends Pv {
     }
 
     if (forCacheKey) {
-      params.page = $(config.articleInput).val();
+      params.page = $(this.config.articleInput).val();
     } else {
       params.sort = this.sort;
       params.direction = this.direction;
@@ -150,7 +146,7 @@ class LangViews extends Pv {
     }
 
     /** only certain characters within the page name are escaped */
-    const page = $(config.articleInput).val().score().replace(/[&%]/g, escape);
+    const page = $(this.config.articleInput).val().score().replace(/[&%]/g, escape);
     window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page}`);
 
     $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}`);
@@ -158,13 +154,13 @@ class LangViews extends Pv {
 
   /**
    * Given the badge code provided by the Wikidata API, return a image tag of the badge
-   * @param  {String} badgeCode - as defined in config.badges
+   * @param  {String} badgeCode - as defined in this.config.badges
    * @return {String} HTML markup for the image
    */
   getBadgeMarkup(badgeCode) {
-    if (!config.badges[badgeCode]) return '';
-    const badgeImage = config.badges[badgeCode].image,
-      badgeName = config.badges[badgeCode].name;
+    if (!this.config.badges[badgeCode]) return '';
+    const badgeImage = this.config.badges[badgeCode].image,
+      badgeName = this.config.badges[badgeCode].name;
     return `<img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
   }
 
@@ -208,7 +204,7 @@ class LangViews extends Pv {
     sortedLangViews.forEach((item, index) => {
       let badgeMarkup = '';
       if (item.badges) {
-        badgeMarkup = item.badges.map(this.getBadgeMarkup).join();
+        badgeMarkup = item.badges.map(this.getBadgeMarkup.bind(this)).join();
       }
 
       $('#lang_list').append(
@@ -257,7 +253,7 @@ class LangViews extends Pv {
   getPageviewsURL(lang, project, article) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
-    const platform = $(config.platformSelector).val();
+    const platform = $(this.config.platformSelector).val();
 
     if (endDate.diff(startDate, 'days') === 0) {
       startDate.subtract(3, 'days');
@@ -291,8 +287,8 @@ class LangViews extends Pv {
 
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${data.lang}.${this.baseProject}` +
-        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
       promises.push(promise);
@@ -467,36 +463,14 @@ class LangViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of query string
-   */
-  parseQueryString() {
-    const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
-    let params = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i].split('=');
-
-      if (chunk[0] === 'pages') {
-        params.pages = chunk[1].split('|');
-      } else {
-        params[chunk[0]] = chunk[1];
-      }
-    }
-
-    return params;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseQueryString();
+    let startDate, endDate, params = this.parseQueryString('pages');
 
-    $(config.projectInput).val(params.project || config.defaults.project);
+    $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
     // FIXME: only run this when they actually submit
@@ -509,12 +483,12 @@ class LangViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < config.minDate || endDate < config.minDate) {
+      if (startDate < this.config.minDate || endDate < this.config.minDate) {
         this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         return;
       } else if (startDate > endDate) {
@@ -524,24 +498,24 @@ class LangViews extends Pv {
       this.daterangepicker.setStartDate(startDate);
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange(config.defaults.dateRange);
+      this.setSpecialRange(this.config.defaults.dateRange);
     }
 
-    $(config.platformSelector).val(params.platform || 'all-access');
-    $(config.agentSelector).val(params.agent || 'user');
-    this.sort = params.sort || config.defaults.params.sort;
-    this.direction = params.direction || config.defaults.params.direction;
+    $(this.config.platformSelector).val(params.platform || 'all-access');
+    $(this.config.agentSelector).val(params.agent || 'user');
+    this.sort = params.sort || this.config.defaults.params.sort;
+    this.direction = params.direction || this.config.defaults.params.direction;
 
     /** start up processing if page name is present */
     if (params.page) {
-      $(config.articleInput).val(decodeURIComponent(params.page).descore());
+      $(this.config.articleInput).val(decodeURIComponent(params.page).descore());
       this.processArticle();
     }
   }
 
   getState() {
     const classList = $('main')[0].classList;
-    return config.formStates.filter(stateName => {
+    return this.config.formStates.filter(stateName => {
       return classList.contains(stateName);
     })[0];
   }
@@ -554,14 +528,14 @@ class LangViews extends Pv {
    * @returns {null} nothing
    */
   setState(state) {
-    $('main').removeClass(config.formStates.join(' ')).addClass(state);
+    $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
 
     switch (state) {
     case 'initial':
       this.clearMessages();
       this.assignDefaults();
       if (this.typeahead) this.typeahead.hide();
-      $(config.articleInput).val('').focus();
+      $(this.config.articleInput).val('').focus();
       break;
     case 'processing':
       this.processStarted();
@@ -587,7 +561,7 @@ class LangViews extends Pv {
   setupDateRangeSelector() {
     super.setupDateRangeSelector();
 
-    $(config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
+    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
       if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
 
@@ -620,11 +594,11 @@ class LangViews extends Pv {
       }
     }
 
-    const page = $(config.articleInput).val();
+    const page = $(this.config.articleInput).val();
 
     this.setState('processing');
 
-    const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(config.projectInput).val());
+    const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(this.config.projectInput).val());
 
     this.getInterwikiData(dbName, page).done(interWikiData => {
       /**
@@ -636,7 +610,7 @@ class LangViews extends Pv {
 
       this.getPageViewsData(interWikiData).done(() => {
         $('.langviews-page-name').text(page).prop('href', this.getPageURL(page));
-        $('.langviews-params').text($(config.dateRangeSelector).val());
+        $('.langviews-params').text($(this.config.dateRangeSelector).val());
         this.updateProgressBar(100);
         this.renderData();
 
@@ -666,7 +640,7 @@ class LangViews extends Pv {
   setupArticleInput() {
     if (this.typeahead) this.typeahead.destroy();
 
-    $(config.articleInput).typeahead({
+    $(this.config.articleInput).typeahead({
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         timeout: 200,
@@ -702,7 +676,7 @@ class LangViews extends Pv {
    * @return {boolean} true if validation failed
    */
   validateProject() {
-    const project = $(config.projectInput).val();
+    const project = $(this.config.projectInput).val();
 
     if (!this.isMultilangProject()) {
       this.writeMessage(
@@ -732,7 +706,7 @@ class LangViews extends Pv {
     // Add the rows to the CSV
     this.langData.forEach(page => {
       const pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"',
-        badges = '"' + page.badges.map(badge => config.badges[badge].name.replace(/"/g, '""')) + '"';
+        badges = '"' + page.badges.map(badge => this.config.badges[badge].name.replace(/"/g, '""')) + '"';
 
       csvContent += [
         page.lang,

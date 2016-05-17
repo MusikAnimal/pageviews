@@ -261,6 +261,14 @@ footer {
   background: rgba(255, 255, 255, .5);
 }
 
+.agents-help-link {
+  color: $bootstrap-text;
+
+  span {
+    vertical-align: -1px;
+  }
+}
+
 .flash {
   animation: 3s ease-out 1 flash;
 }

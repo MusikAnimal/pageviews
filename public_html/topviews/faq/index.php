@@ -80,10 +80,4 @@
       </main>
     </div>
   </body>
-  <script type="text/javascript">
-  //<![CDATA[
-    if (location.hash) $(location.hash).addClass('flash');
-    
-  //]]>
-  </script>
 </html>

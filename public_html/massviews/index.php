@@ -57,6 +57,9 @@
             <div class="col-lg-4 col-sm-4">
               <label for="agent_select">
                 <?php echo $I18N->msg( 'agent' ); ?>
+                <a class="agents-help-link" href="/massviews/faq#agents">
+                  <span class="glyphicon glyphicon-question-sign"></span>
+                </a>
               </label>
               <select class="form-control" id="agent_select">
                 <option value="all-agents">

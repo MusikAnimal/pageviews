@@ -14,17 +14,13 @@ const Pv = require('../shared/pv');
 /** Main TopViews class */
 class TopViews extends Pv {
   constructor() {
-    super();
+    super(config);
 
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
     this.excludes = [];
     this.offset = 0;
     this.max = null;
     this.pageData = [];
     this.pageNames = [];
-    this.params = null;
-    this.config = config;
   }
 
   /**
@@ -67,7 +63,7 @@ class TopViews extends Pv {
 
     let count = 0, index = 0;
 
-    while (count < config.pageSize + this.offset) {
+    while (count < this.config.pageSize + this.offset) {
       let item = this.pageData[index++];
 
       if (this.excludes.includes(item.article)) continue;
@@ -97,13 +93,13 @@ class TopViews extends Pv {
   addExclude(page) {
     this.excludes.push(page);
     page = page.replace(/ /g, '_');
-    $(config.articleSelector).html('');
+    $(this.config.articleSelector).html('');
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
-      $(`<option>${escapedText}</option>`).appendTo(config.articleSelector);
+      $(`<option>${escapedText}</option>`).appendTo(this.config.articleSelector);
     });
-    $(config.articleSelector).val(this.excludes).trigger('change');
-    // $(config.articleSelector).select2('close');
+    $(this.config.articleSelector).val(this.excludes).trigger('change');
+    // $(this.config.articleSelector).select2('close');
   }
 
   /**
@@ -133,7 +129,7 @@ class TopViews extends Pv {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
     const platform = $('#platform-select').val(),
-      project = $(config.projectInput).val();
+      project = $(this.config.projectInput).val();
 
     if (endDate.diff(startDate, 'days') === 0) {
       startDate.subtract(3, 'days');
@@ -145,36 +141,14 @@ class TopViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of URL query string
-   */
-  parseQueryString() {
-    const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
-    let params = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i].split('=');
-
-      if (chunk[0] === 'excludes') {
-        params.excludes = chunk[1].split('|');
-      } else {
-        params[chunk[0]] = chunk[1];
-      }
-    }
-
-    return params;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseQueryString();
+    let startDate, endDate, params = this.parseQueryString('excludes');
 
-    $(config.projectInput).val(params.project || config.defaults.project);
+    $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
     this.patchUsage('tv');
@@ -186,12 +160,12 @@ class TopViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < config.minDate || endDate < config.minDate) {
+      if (startDate < this.config.minDate || endDate < this.config.minDate) {
         this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         this.resetView();
         return;
@@ -204,13 +178,13 @@ class TopViews extends Pv {
       this.daterangepicker.startDate = startDate;
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange(config.defaults.dateRange);
+      this.setSpecialRange(this.config.defaults.dateRange);
     }
 
     $('#platform-select').val(params.platform || 'all-access');
 
     if (!params.excludes || (params.excludes.length === 1 && !params.excludes[0])) {
-      this.excludes = config.defaults.excludes;
+      this.excludes = this.config.defaults.excludes;
     } else {
       this.excludes = params.excludes.map(exclude => exclude.replace(/_/g, ' '));
     }
@@ -231,13 +205,13 @@ class TopViews extends Pv {
    */
   pushParams() {
     let state = {
-      project: $(config.projectInput).val(),
+      project: $(this.config.projectInput).val(),
       platform: $('#platform-select').val()
     };
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange) {
@@ -260,7 +234,7 @@ class TopViews extends Pv {
    * @returns {null} nothing
    */
   resetArticleSelector() {
-    const articleSelector = $(config.articleSelector);
+    const articleSelector = $(this.config.articleSelector);
     articleSelector.off('change');
     articleSelector.val(null);
     articleSelector.html('');
@@ -293,7 +267,7 @@ class TopViews extends Pv {
    * @returns {null} - nothing
    */
   setupArticleSelector(excludes = this.excludes) {
-    const articleSelector = $(config.articleSelector);
+    const articleSelector = $(this.config.articleSelector);
 
     articleSelector.select2({
       data: [],
@@ -331,11 +305,11 @@ class TopViews extends Pv {
     pages = pages.map(page => {
       // page = page.replace(/ /g, '_');
       const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(config.articleSelector);
+      $('<option>' + escapedText + '</option>').appendTo(this.config.articleSelector);
       return page;
     });
-    $(config.articleSelector).select2('val', pages);
-    $(config.articleSelector).select2('close');
+    $(this.config.articleSelector).select2('val', pages);
+    $(this.config.articleSelector).select2('close');
 
     return pages;
   }
@@ -347,7 +321,7 @@ class TopViews extends Pv {
   setupDateRangeSelector() {
     super.setupDateRangeSelector();
 
-    const dateRangeSelector = $(config.dateRangeSelector);
+    const dateRangeSelector = $(this.config.dateRangeSelector);
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', function(e) {
@@ -373,10 +347,10 @@ class TopViews extends Pv {
 
     $('#platform-select').on('change', this.applyChanges.bind(this));
     $('.expand-chart').on('click', () => {
-      this.offset += config.pageSize;
+      this.offset += this.config.pageSize;
       this.drawData();
     });
-    $(config.dateRangeSelector).on('change', e => {
+    $(this.config.dateRangeSelector).on('change', e => {
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
         this.specialRange = null;
@@ -390,9 +364,9 @@ class TopViews extends Pv {
    * @returns {null} - nothing
    */
   setupProjectInput() {
-    $(config.projectInput).on('change', e => {
+    $(this.config.projectInput).on('change', e => {
       if (!e.target.value) {
-        e.target.value = config.defaults.project;
+        e.target.value = this.config.defaults.project;
         return;
       }
       if (this.validateProject()) return;
@@ -463,7 +437,7 @@ class TopViews extends Pv {
    * @returns {boolean} whether the currently input project is valid
    */
   validateProject() {
-    const project = $(config.projectInput).val();
+    const project = $(this.config.projectInput).val();
     if (siteDomains.includes(project)) {
       $('body').removeClass('invalid-project');
     } else {

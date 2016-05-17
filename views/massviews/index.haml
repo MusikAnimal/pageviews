@@ -45,6 +45,8 @@
             %div.col-lg-4.col-sm-4
               %label(for="agent_select")
                 = $I18N->msg( 'agent' )
+                %a.agents-help-link(href="/massviews/faq#agents")
+                  %span.glyphicon.glyphicon-question-sign
               %select.form-control#agent_select
                 %option(value="all-agents")
                   = $I18N->msg( 'all' )

@@ -14,20 +14,10 @@ const Pv = require('../shared/pv');
 /** Main SiteViews class */
 class SiteViews extends Pv {
   constructor() {
-    super();
+    super(config);
 
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
-    this.chartObj = null;
-    this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
     this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    this.params = null;
-    this.prevChartType = null;
     this.specialRange = null;
-    this.config = config;
-    this.colorsStyleEl = undefined;
-    this.siteMap = siteMap; // for debugging, as scope is accessible on localhost
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -37,9 +27,7 @@ class SiteViews extends Pv {
     window.siteSuggestionCallback = $.noop;
 
     /** need to export to global for chart templating */
-    window.formatNumber = this.formatNumber.bind(this);
     window.getTopviewsURL = this.getTopviewsURL.bind(this);
-    window.numDaysInRange = this.numDaysInRange.bind(this);
   }
 
   /**
@@ -55,17 +43,6 @@ class SiteViews extends Pv {
     this.setupDataSourceSelector();
     this.popParams();
     this.setupListeners();
-  }
-
-  /**
-   * Destroy previous chart, if needed.
-   * @returns {null} nothing
-   */
-  destroyChart() {
-    if (this.chartObj) {
-      this.chartObj.destroy();
-      delete this.chartObj;
-    }
   }
 
   /**
@@ -150,7 +127,7 @@ class SiteViews extends Pv {
     /** Extract the dates that are already in the timeseries */
     let alreadyThere = {};
     data.items.forEach(elem => {
-      let date = moment(elem.timestamp, config.timestampFormat);
+      let date = moment(elem.timestamp, this.config.timestampFormat);
       alreadyThere[date] = elem;
     });
     data.items = [];
@@ -160,9 +137,9 @@ class SiteViews extends Pv {
       if (alreadyThere[date]) {
         data.items.push(alreadyThere[date]);
       } else {
-        let edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
+        let edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
         data.items.push({
-          timestamp: date.format(config.timestampFormat),
+          timestamp: date.format(this.config.timestampFormat),
           [this.isPageviews() ? 'views' : 'devices']: edgeCase ? null : 0
         });
       }
@@ -180,14 +157,14 @@ class SiteViews extends Pv {
    */
   getCircularData(data, site, index) {
     const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
-      color = config.colors[index];
+      color = this.config.colors[index];
 
     return Object.assign(
       {
         label: site,
         value: values.reduce((a, b) => a + b)
       },
-      config.chartConfig[this.chartType].dataset(color)
+      this.config.chartConfig[this.chartType].dataset(color)
     );
   }
 
@@ -202,7 +179,7 @@ class SiteViews extends Pv {
    */
   getLinearData(data, site, index) {
     const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
-      color = config.colors[index % 10];
+      color = this.config.colors[index % 10];
 
     return Object.assign(
       {
@@ -210,7 +187,7 @@ class SiteViews extends Pv {
         data: values,
         sum: values.reduce((a, b) => a + b)
       },
-      config.chartConfig[this.chartType].dataset(color)
+      this.config.chartConfig[this.chartType].dataset(color)
     );
   }
 
@@ -234,34 +211,12 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of query string
-   */
-  parseQueryString() {
-    const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
-    let params = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i].split('=');
-
-      if (chunk[0] === 'sites') {
-        params.sites = chunk[1].split(/\||%7C/);
-      } else {
-        params[chunk[0]] = chunk[1];
-      }
-    }
-
-    return params;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseQueryString();
+    let startDate, endDate, params = this.parseQueryString('sites');
 
     this.patchUsage('sv');
 
@@ -272,12 +227,12 @@ class SiteViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < config.minDate || endDate < config.minDate) {
+      if (startDate < this.config.minDate || endDate < this.config.minDate) {
         this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         this.resetView();
         return;
@@ -290,24 +245,24 @@ class SiteViews extends Pv {
       this.daterangepicker.startDate = startDate;
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange(config.defaults.dateRange);
+      this.setSpecialRange(this.config.defaults.dateRange);
     }
 
-    $(config.dataSourceSelector).val(params.source || 'pageviews');
+    $(this.config.dataSourceSelector).val(params.source || 'pageviews');
 
     this.setupDataSourceSelector();
 
-    $(config.platformSelector).val(params.platform || 'all-access');
+    $(this.config.platformSelector).val(params.platform || 'all-access');
     if (params.source === 'pageviews') {
-      $(config.agentSelector).val();
+      $(this.config.agentSelector).val();
     } else {
-      $(config.dataSourceSelector).trigger('change');
+      $(this.config.dataSourceSelector).trigger('change');
     }
 
     this.resetSelect2();
 
     if (!params.sites || params.sites.length === 1 && !params.sites[0]) {
-      params.sites = config.defaults.projects;
+      params.sites = this.config.defaults.projects;
       this.setSelect2Defaults(params.sites);
     } else {
       if (params.sites.length === 1) {
@@ -324,17 +279,17 @@ class SiteViews extends Pv {
    */
   getParams(specialRange = true) {
     let params = {
-      platform: $(config.platformSelector).val(),
-      source: $(config.dataSourceSelector).val()
+      platform: $(this.config.platformSelector).val(),
+      source: $(this.config.dataSourceSelector).val()
     };
 
     if (this.isPageviews()) {
-      params.agent = $(config.agentSelector).val();
+      params.agent = $(this.config.agentSelector).val();
     }
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange && specialRange) {
@@ -348,7 +303,7 @@ class SiteViews extends Pv {
   }
 
   isPageviews() {
-    return $(config.dataSourceSelector).val() === 'pageviews';
+    return $(this.config.dataSourceSelector).val() === 'pageviews';
   }
 
   /**
@@ -357,7 +312,7 @@ class SiteViews extends Pv {
    * @returns {null} nothing
    */
   pushParams() {
-    const sites = $(config.select2Input).select2('val') || [];
+    const sites = $(this.config.select2Input).select2('val') || [];
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -385,7 +340,7 @@ class SiteViews extends Pv {
    * @returns {null} - nothing
    */
   setupSelect2() {
-    const select2Input = $(config.select2Input);
+    const select2Input = $(this.config.select2Input);
 
     let params = {
       ajax: {
@@ -419,7 +374,7 @@ class SiteViews extends Pv {
   setupDateRangeSelector() {
     super.setupDateRangeSelector();
 
-    const dateRangeSelector = $(config.dateRangeSelector);
+    const dateRangeSelector = $(this.config.dateRangeSelector);
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', e => {
@@ -447,7 +402,7 @@ class SiteViews extends Pv {
   }
 
   setPlatformOptionValues() {
-    $(config.platformSelector).find('option').each((index, el) => {
+    $(this.config.platformSelector).find('option').each((index, el) => {
       $(el).prop('value', this.isPageviews() ? $(el).data('value') : $(el).data('ud-value'));
     });
   }
@@ -455,20 +410,20 @@ class SiteViews extends Pv {
   setupDataSourceSelector() {
     this.setPlatformOptionValues();
 
-    $(config.dataSourceSelector).on('change', e => {
+    $(this.config.dataSourceSelector).on('change', e => {
       if (this.isPageviews()) {
         $('.platform-select--mobile-web').show();
-        $(config.agentSelector).prop('disabled', false);
+        $(this.config.agentSelector).prop('disabled', false);
       } else {
         $('.platform-select--mobile-web').hide();
-        $(config.agentSelector).val('user').prop('disabled', true);
+        $(this.config.agentSelector).val('user').prop('disabled', true);
       }
 
       this.setPlatformOptionValues();
 
       /** reset to all-access if currently on mobile-app for unique-devices (not pageviews) */
-      if ($(config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
-        $(config.platformSelector).val('all-sites'); // chart will automatically re-render
+      if ($(this.config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
+        $(this.config.platformSelector).val('all-sites'); // chart will automatically re-render
       } else {
         this.updateChart();
       }
@@ -497,19 +452,6 @@ class SiteViews extends Pv {
   }
 
   /**
-   * Set values of form based on localStorage or defaults, add listeners
-   * @returns {null} nothing
-   */
-  setupSettingsModal() {
-    /** fill in values, everything is either a checkbox or radio */
-    this.fillInSettings();
-
-    /** add listener */
-    $('.save-settings-btn').on('click', this.saveSettings.bind(this));
-    $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-  }
-
-  /**
    * The mother of all functions, where all the chart logic lives
    * Really needs to be broken out into several functions
    *
@@ -517,7 +459,7 @@ class SiteViews extends Pv {
    * @returns {null} - nothin
    */
   updateChart(force) {
-    let sites = $(config.select2Input).select2('val') || [];
+    let sites = $(this.config.select2Input).select2('val') || [];
 
     this.pushParams();
 
@@ -558,11 +500,11 @@ class SiteViews extends Pv {
       /** @type {String} Url to query the API. */
       const url = this.isPageviews() ? (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedSite}` +
-        `/${$(config.platformSelector).val()}/${$(config.agentSelector).val()}/daily` +
-        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       ) : (
-        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedSite}/${$(config.platformSelector).val()}/daily` +
-        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedSite}/${$(this.config.platformSelector).val()}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
 
       const promise = $.ajax({
@@ -576,7 +518,7 @@ class SiteViews extends Pv {
         if (this.isPageviews()) this.fillInZeros(data, startDate, endDate);
 
         /** Build the site's dataset. */
-        if (config.linearCharts.includes(this.chartType)) {
+        if (this.config.linearCharts.includes(this.chartType)) {
           datasets.push(this.getLinearData(data, site, index));
         } else {
           datasets.push(this.getCircularData(data, site, index));
@@ -585,7 +527,7 @@ class SiteViews extends Pv {
         /** fetch the labels for the x-axis on success if we haven't already */
         if (data.items && !labels.length) {
           labels = data.items.map(elem => {
-            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
+            return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
           });
         }
       }).fail(data => {
@@ -637,16 +579,16 @@ class SiteViews extends Pv {
 
       $('.chart-container').removeClass('loading');
       const options = Object.assign({},
-        config.chartConfig[this.chartType].opts,
-        config.globalChartOpts
+        this.config.chartConfig[this.chartType].opts,
+        this.config.globalChartOpts
       );
       const linearData = {labels: labels, datasets: sortedDatasets};
 
       $('.chart-container').html('');
       $('.chart-container').append("<canvas class='aqs-chart'>");
-      const context = $(config.chart)[0].getContext('2d');
+      const context = $(this.config.chart)[0].getContext('2d');
 
-      if (config.linearCharts.includes(this.chartType)) {
+      if (this.config.linearCharts.includes(this.chartType)) {
         this.chartObj = new Chart(context)[this.chartType](linearData, options);
       } else {
         this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);

@@ -14,19 +14,10 @@ const Pv = require('./shared/pv');
 /** Main PageViews class */
 class PageViews extends Pv {
   constructor() {
-    super();
+    super(config);
 
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || config.defaults.numericalFormatting;
-    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || config.defaults.autocomplete;
-    this.chartObj = null;
-    this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || config.defaults.chartType;
     this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
-    this.params = null;
-    this.prevChartType = null;
     this.specialRange = null;
-    this.config = config;
-    this.colorsStyleEl = undefined;
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -36,11 +27,8 @@ class PageViews extends Pv {
     window.articleSuggestionCallback = $.noop;
 
     /** need to export to global for chart templating */
-    window.formatNumber = this.formatNumber.bind(this);
-    window.getPageURL = this.getPageURL.bind(this);
     window.getLangviewsURL = this.getLangviewsURL.bind(this);
     window.getExpandedPageURL = this.getExpandedPageURL.bind(this);
-    window.numDaysInRange = this.numDaysInRange.bind(this);
     window.isMultilangProject = this.isMultilangProject.bind(this);
   }
 
@@ -58,17 +46,6 @@ class PageViews extends Pv {
     this.popParams();
     this.setupListeners();
     this.updateInterAppLinks();
-  }
-
-  /**
-   * Destroy previous chart, if needed.
-   * @returns {null} nothing
-   */
-  destroyChart() {
-    if (this.chartObj) {
-      this.chartObj.destroy();
-      delete this.chartObj;
-    }
   }
 
   /**
@@ -153,7 +130,7 @@ class PageViews extends Pv {
     /** Extract the dates that are already in the timeseries */
     let alreadyThere = {};
     data.items.forEach(elem => {
-      let date = moment(elem.timestamp, config.timestampFormat);
+      let date = moment(elem.timestamp, this.config.timestampFormat);
       alreadyThere[date] = elem;
     });
     data.items = [];
@@ -163,9 +140,9 @@ class PageViews extends Pv {
       if (alreadyThere[date]) {
         data.items.push(alreadyThere[date]);
       } else {
-        let edgeCase = date.isSame(config.maxDate) || date.isSame(moment(config.maxDate).subtract(1, 'days'));
+        let edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
         data.items.push({
-          timestamp: date.format(config.timestampFormat),
+          timestamp: date.format(this.config.timestampFormat),
           views: edgeCase ? null : 0
         });
       }
@@ -183,14 +160,14 @@ class PageViews extends Pv {
    */
   getCircularData(data, article, index) {
     const values = data.items.map(elem => elem.views),
-      color = config.colors[index];
+      color = this.config.colors[index];
 
     return Object.assign(
       {
         label: article.descore(),
         value: values.reduce((a, b) => a + b)
       },
-      config.chartConfig[this.chartType].dataset(color)
+      this.config.chartConfig[this.chartType].dataset(color)
     );
   }
 
@@ -214,7 +191,7 @@ class PageViews extends Pv {
    */
   getLinearData(data, article, index) {
     const values = data.items.map(elem => elem.views),
-      color = config.colors[index % 10];
+      color = this.config.colors[index % 10];
 
     return Object.assign(
       {
@@ -222,7 +199,7 @@ class PageViews extends Pv {
         data: values,
         sum: values.reduce((a, b) => a + b)
       },
-      config.chartConfig[this.chartType].dataset(color)
+      this.config.chartConfig[this.chartType].dataset(color)
     );
   }
 
@@ -264,36 +241,14 @@ class PageViews extends Pv {
   }
 
   /**
-   * Generate key/value pairs of URL query string
-   * @returns {Object} key/value pairs representation of query string
-   */
-  parseQueryString() {
-    const uri = decodeURI(location.search.slice(1)),
-      chunks = uri.split('&');
-    let params = {};
-
-    for (let i = 0; i < chunks.length; i++) {
-      let chunk = chunks[i].split('=');
-
-      if (chunk[0] === 'pages') {
-        params.pages = chunk[1].split(/\||%7C/);
-      } else {
-        params[chunk[0]] = chunk[1];
-      }
-    }
-
-    return params;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseQueryString();
+    let startDate, endDate, params = this.parseQueryString('pages');
 
-    $(config.projectInput).val(params.project || config.defaults.project);
+    $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
     this.patchUsage('pv');
@@ -305,12 +260,12 @@ class PageViews extends Pv {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
         this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(config.defaults.dateRange);
+        this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(config.defaults.daysAgo, 'days'));
+      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
       endDate = moment(params.end || Date.now());
-      if (startDate < config.minDate || endDate < config.minDate) {
+      if (startDate < this.config.minDate || endDate < this.config.minDate) {
         this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
         this.resetView();
         return;
@@ -323,10 +278,10 @@ class PageViews extends Pv {
       this.daterangepicker.startDate = startDate;
       this.daterangepicker.setEndDate(endDate);
     } else {
-      this.setSpecialRange(config.defaults.dateRange);
+      this.setSpecialRange(this.config.defaults.dateRange);
     }
 
-    $(config.platformSelector).val(params.platform || 'all-access');
+    $(this.config.platformSelector).val(params.platform || 'all-access');
     $('#agent-select').val(params.agent || 'user');
 
     this.resetSelect2();
@@ -405,8 +360,8 @@ class PageViews extends Pv {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(config.projectInput).val(),
-      platform: $(config.platformSelector).val(),
+      project: $(this.config.projectInput).val(),
+      platform: $(this.config.platformSelector).val(),
       agent: $('#agent-select').val()
     };
 
@@ -431,7 +386,7 @@ class PageViews extends Pv {
    * @returns {null} nothing
    */
   pushParams() {
-    const pages = $(config.select2Input).select2('val') || [],
+    const pages = $(this.config.select2Input).select2('val') || [],
       escapedPages = pages.join('|').replace(/[&%]/g, escape);
 
     if (window.history && window.history.replaceState) {
@@ -460,7 +415,7 @@ class PageViews extends Pv {
    * @returns {null} - nothing
    */
   setupSelect2() {
-    const select2Input = $(config.select2Input);
+    const select2Input = $(this.config.select2Input);
 
     let params = {
       ajax: this.getArticleSelectorAjax(),
@@ -506,7 +461,7 @@ class PageViews extends Pv {
   setupDateRangeSelector() {
     super.setupDateRangeSelector();
 
-    const dateRangeSelector = $(config.dateRangeSelector);
+    const dateRangeSelector = $(this.config.dateRangeSelector);
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', e => {
@@ -559,9 +514,9 @@ class PageViews extends Pv {
    * @returns {null} - nothing
    */
   setupProjectInput() {
-    $(config.projectInput).on('change', e => {
+    $(this.config.projectInput).on('change', e => {
       if (!e.target.value) {
-        e.target.value = config.defaults.project;
+        e.target.value = this.config.defaults.project;
         return;
       }
       if (this.validateProject()) return;
@@ -572,19 +527,6 @@ class PageViews extends Pv {
   }
 
   /**
-   * Set values of form based on localStorage or defaults, add listeners
-   * @returns {null} nothing
-   */
-  setupSettingsModal() {
-    /** fill in values, everything is either a checkbox or radio */
-    this.fillInSettings();
-
-    /** add listener */
-    $('.save-settings-btn').on('click', this.saveSettings.bind(this));
-    $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-  }
-
-  /**
    * The mother of all functions, where all the chart logic lives
    * Really needs to be broken out into several functions
    *
@@ -592,7 +534,7 @@ class PageViews extends Pv {
    * @returns {null} - nothin
    */
   updateChart(force) {
-    let articles = $(config.select2Input).select2('val') || [];
+    let articles = $(this.config.select2Input).select2('val') || [];
 
     this.pushParams();
 
@@ -632,8 +574,8 @@ class PageViews extends Pv {
       /** @type {String} Url to query the API. */
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(config.platformSelector).val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
-        `/${startDate.format(config.timestampFormat)}/${endDate.format(config.timestampFormat)}`
+        `/${$(this.config.platformSelector).val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({
         url: url,
@@ -646,7 +588,7 @@ class PageViews extends Pv {
         this.fillInZeros(data, startDate, endDate);
 
         /** Build the article's dataset. */
-        if (config.linearCharts.includes(this.chartType)) {
+        if (this.config.linearCharts.includes(this.chartType)) {
           datasets.push(this.getLinearData(data, article, index));
         } else {
           datasets.push(this.getCircularData(data, article, index));
@@ -655,7 +597,7 @@ class PageViews extends Pv {
         /** fetch the labels for the x-axis on success if we haven't already */
         if (data.items && !labels.length) {
           labels = data.items.map(elem => {
-            return moment(elem.timestamp, config.timestampFormat).format(this.dateFormat);
+            return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
           });
         }
       }).fail(data => {
@@ -707,16 +649,16 @@ class PageViews extends Pv {
 
       $('.chart-container').removeClass('loading');
       const options = Object.assign({},
-        config.chartConfig[this.chartType].opts,
-        config.globalChartOpts
+        this.config.chartConfig[this.chartType].opts,
+        this.config.globalChartOpts
       );
       const linearData = {labels: labels, datasets: sortedDatasets};
 
       $('.chart-container').html('');
       $('.chart-container').append("<canvas class='aqs-chart'>");
-      const context = $(config.chart)[0].getContext('2d');
+      const context = $(this.config.chart)[0].getContext('2d');
 
-      if (config.linearCharts.includes(this.chartType)) {
+      if (this.config.linearCharts.includes(this.chartType)) {
         this.chartObj = new Chart(context)[this.chartType](linearData, options);
       } else {
         this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
@@ -732,12 +674,12 @@ class PageViews extends Pv {
    * @returns {boolean} whether the currently input project is INvalid
    */
   validateProject() {
-    let project = $(config.projectInput).val();
+    let project = $(this.config.projectInput).val();
 
     /** Remove www hostnames since the pageviews API doesn't expect them. */
     if (project.startsWith('www.')) {
       project = project.substring(4);
-      $(config.projectInput).val(project);
+      $(this.config.projectInput).val(project);
     }
 
     if (siteDomains.includes(project)) {

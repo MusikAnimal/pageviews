@@ -89,6 +89,10 @@
         %button.btn.btn-primary(data-dismiss="modal" type="button")
           = $I18N->msg( 'ok' )
 
+- if ( strpos ( $_SERVER['PHP_SELF'], 'faq' ) !== false )
+  :javascript
+    if (location.hash) $(location.hash).addClass('flash');
+
 :javascript
   if(!window.noAdBlockers) {
     var noticeContent = document.getElementById('ad_blocker_notice');

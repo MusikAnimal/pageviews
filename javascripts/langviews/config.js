@@ -42,15 +42,10 @@ const config = {
       name: 'Validated'
     }
   },
-  cookieExpiry: 30, // num days
   dateLimit: 31, // num days
   dateRangeSelector: '#range_input',
   defaults: {
-    dateFormat: 'YYYY-MM-DD',
     dateRange: 'latest-20',
-    daysAgo: 20,
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true',
     project: 'en.wikipedia.org',
     params: {
       sort: 'views',
@@ -63,18 +58,8 @@ const config = {
       }
     }
   },
-  minDate: moment('2015-07-01'),
-  maxDate: moment().subtract(1, 'days'),
   platformSelector: '#platform_select',
   projectInput: '#project_input',
-  specialRanges: {
-    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
-    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    latest(offset = config.daysAgo) {
-      return [moment().subtract(offset, 'days').startOf('day'), config.maxDate];
-    }
-  },
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00'
 };
