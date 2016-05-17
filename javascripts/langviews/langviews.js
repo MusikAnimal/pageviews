@@ -1,4 +1,4 @@
-/*
+/**
  * Langviews Analysis tool
  * @file Main file for Langviews application
  * @author MusikAnimal
@@ -280,7 +280,7 @@ class LangViews extends Pv {
       interWikiKeys = Object.keys(interWikiData);
     // XXX: throttling
     let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
-      totalRequestCount = interWikiKeys.length;
+      totalRequestCount = interWikiKeys.length, failedPages = [];
 
     /** clear out existing data */
     this.langData = [];
@@ -326,7 +326,8 @@ class LangViews extends Pv {
       }).fail(errorData => {
         // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
+          failedPageLink = this.getPageLink(data.title, `${data.lang}.${this.baseProject}.org`);
 
         if (cassandraError) {
           if (failureRetries[dbName]) {
@@ -340,10 +341,14 @@ class LangViews extends Pv {
             totalRequestCount++;
             return this.rateLimit(makeRequest, 100, this)(dbName);
           }
-        }
 
-        const errorMessage = cassandraError ? $.i18n('api-error-timeout') : `${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`;
-        this.writeMessage(`${dbName}: ${errorMessage}`);
+          /** retries exceeded */
+          failedPages.push(failedPageLink);
+        } else {
+          this.writeMessage(
+            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+          );
+        }
 
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
@@ -352,6 +357,15 @@ class LangViews extends Pv {
         // XXX: throttling, totalRequestCount can just be interWikiKeys.length
         if (count === totalRequestCount) {
           dfd.resolve(this.langData);
+
+          if (failedPages.length) {
+            this.writeMessage($.i18n(
+              'api-error-timeout',
+              '<ul>' +
+              failedPages.map(failedPage => `<li>${failedPage}</li>`).join('') +
+              '</ul>'
+            ));
+          }
 
           /**
            * if there were no failures, assume the resource is now cached by the server

@@ -24,6 +24,22 @@ const config = {
     'Q17559452': {
       image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Art%C3%ADculo_bueno-blue.svg',
       name: 'Recommended article'
+    },
+    'Q17506997': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
+      name: 'Featured list'
+    },
+    'Q17580674': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
+      name: 'Featured portal'
+    },
+    'Q20748092': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Featured_article_star_-_check.svg',
+      name: 'Proofread'
+    },
+    'Q20748093': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+      name: 'Validated'
     }
   },
   cookieExpiry: 30, // num days

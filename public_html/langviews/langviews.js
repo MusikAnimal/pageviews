@@ -27,6 +27,22 @@ var config = {
     'Q17559452': {
       image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Art%C3%ADculo_bueno-blue.svg',
       name: 'Recommended article'
+    },
+    'Q17506997': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
+      name: 'Featured list'
+    },
+    'Q17580674': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
+      name: 'Featured portal'
+    },
+    'Q20748092': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Featured_article_star_-_check.svg',
+      name: 'Proofread'
+    },
+    'Q20748093': {
+      image: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+      name: 'Validated'
     }
   },
   cookieExpiry: 30, // num days
@@ -82,7 +98,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/*
+/**
  * Langviews Analysis tool
  * @file Main file for Langviews application
  * @author MusikAnimal
@@ -394,7 +410,8 @@ var LangViews = function (_Pv) {
           count = 0,
           hadFailure = undefined,
           failureRetries = {},
-          totalRequestCount = interWikiKeys.length;
+          totalRequestCount = interWikiKeys.length,
+          failedPages = [];
 
       /** clear out existing data */
       this.langData = [];
@@ -440,7 +457,8 @@ var LangViews = function (_Pv) {
         }).fail(function (errorData) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+          var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
+              failedPageLink = _this4.getPageLink(data.title, data.lang + '.' + _this4.baseProject + '.org');
 
           if (cassandraError) {
             if (failureRetries[dbName]) {
@@ -454,10 +472,12 @@ var LangViews = function (_Pv) {
               totalRequestCount++;
               return _this4.rateLimit(makeRequest, 100, _this4)(dbName);
             }
-          }
 
-          var errorMessage = cassandraError ? $.i18n('api-error-timeout') : $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title;
-          _this4.writeMessage(dbName + ': ' + errorMessage);
+            /** retries exceeded */
+            failedPages.push(failedPageLink);
+          } else {
+            _this4.writeMessage(failedPageLink + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+          }
 
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
@@ -466,6 +486,12 @@ var LangViews = function (_Pv) {
           // XXX: throttling, totalRequestCount can just be interWikiKeys.length
           if (count === totalRequestCount) {
             dfd.resolve(_this4.langData);
+
+            if (failedPages.length) {
+              _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
+                return '<li>' + failedPage + '</li>';
+              }).join('') + '</ul>'));
+            }
 
             /**
              * if there were no failures, assume the resource is now cached by the server
