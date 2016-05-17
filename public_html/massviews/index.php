@@ -118,7 +118,7 @@
           </div>
         </div>
         <output form="massview_form">
-          <header class="output-header">
+          <header class="output-header clearfix">
             <strong class="another-query">
               <span class="glyphicon glyphicon-chevron-left"></span>
               <?php echo $I18N->msg( 'another-query' ); ?>
@@ -126,9 +126,19 @@
             <h2 class="tm">
               <a class="massviews-input-name" target="_blank"></a>
               <small class="massviews-params"></small>
+              <span class="btn-group view-options pull-right">
+                <button class="active btn btn-default view-btn view-btn--list" type="button" href="#" data-value="list">
+                  <span class="glyphicon glyphicon-list view-options--list"></span>
+                  List
+                </button>
+                <button class="btn btn-default view-btn view-btn--chart" type="button" href="#" data-value="chart">
+                  <span class="glyphicon glyphicon-chart"></span>
+                  Chart
+                </button>
+              </span>
             </h2>
           </header>
-          <table class="table table-hover output-table">
+          <table class="list-view table table-hover output-table">
             <thead>
               <tr>
                 <th>#</th>
@@ -154,10 +164,22 @@
             </thead>
             <tbody id="mass_list"></tbody>
           </table>
+          <div class="chart-view chart-container">
+            <canvas class="aqs-chart"></canvas>
+          </div>
         </output>
         <div class="message-container col-lg-12"></div>
+        <div class="col-lg-12 tm clearfix chart-view" id="chart-legend"></div>
         <!-- Other links -->
         <div class="col-lg-12 data-links">
+          <span class="chart-view">
+            <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-th"></span>
+            <?php echo $I18N->msg( 'change-chart' ); ?></a>
+            &nbsp;&bullet;&nbsp;
+            <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
+            <?php echo $I18N->msg( 'settings' ); ?></a>
+            &nbsp;&bullet;&nbsp;
+          </span>
           <a class="permalink" href="/massviews"><span class="glyphicon glyphicon-link"></span>
           <?php echo $I18N->msg( 'permalink' ); ?></a>
           &nbsp;&bullet;&nbsp;
@@ -171,6 +193,7 @@
         <?php $currentApp = "massviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
+      <?php include "../_modals.php"; ?>
     </div>
   </body>
 </html>

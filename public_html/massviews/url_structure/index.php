@@ -98,6 +98,10 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-sort-direction', array( 'variables' => array( '<code>1</code>', '<code>-1</code>' ), 'parsemag' => true ) ); ?>
             </dd>
+            <dt>view</dt>
+            <dd>
+              <?php echo $I18N->msg( 'url-structure-view', array( 'variables' => array( '<code>list</code>', '<code>chart</code>' ), 'parsemag' => true ) ); ?>
+            </dd>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

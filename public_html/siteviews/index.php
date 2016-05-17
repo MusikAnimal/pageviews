@@ -109,7 +109,7 @@
           </div>
         </div>
         <!-- Chart -->
-        <div class="chart-container col-lg-12 loading">
+        <div class="chart-container loading">
           <canvas class="aqs-chart"></canvas>
         </div>
         <div class="message-container col-lg-12"></div>

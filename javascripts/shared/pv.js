@@ -41,6 +41,8 @@ class Pv {
       this.config.circularCharts.forEach(circularChart => {
         this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
+
+      Object.assign(Chart.defaults.global, {animation: false, responsive: true});
     }
 
     /** @type {null|Date} tracking of elapsed time */
@@ -163,9 +165,10 @@ class Pv {
    * @returns {Array} the date headings as strings
    */
   getDateHeadings(localized) {
-    const dateHeadings = [];
+    const dateHeadings = [],
+      endDate = moment(this.daterangepicker.endDate).add(1, 'd');
 
-    for (let date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
+    for (let date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
       if (localized) {
         dateHeadings.push(date.format(this.dateFormat));
       } else {
@@ -693,7 +696,7 @@ class Pv {
       this.resetSelect2();
     }
 
-    this.updateChart(true);
+    this.renderData(true);
   }
 
   /**
@@ -808,6 +811,17 @@ class Pv {
       document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
       location.reload();
     });
+
+    if (this.config.chart) {
+      this.setupSettingsModal();
+
+      /** changing of chart types */
+      $('.modal-chart-type a').on('click', e => {
+        this.chartType = $(e.currentTarget).data('type');
+        this.setLocalStorage('pageviews-chart-preference', this.chartType);
+        this.renderData();
+      });
+    }
   }
 
   /**

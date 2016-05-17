@@ -1,9 +1,9 @@
 @import 'mixins';
 
 // Fix chart position
-.aqs-chart {
-  margin-left: -12px;
-}
+// .aqs-chart {
+//   margin-left: -12px;
+// }
 
 @each $type in ('line' 'bar' 'pie' 'doughnut' 'radar' 'polararea') {
   .#{$type}-legend {

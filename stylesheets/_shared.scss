@@ -164,6 +164,7 @@ header {
 }
 
 footer {
+  clear: both;
   display: block;
   font-family: sans-serif;
   margin: 6px 0 20px;
@@ -219,8 +220,8 @@ footer {
 }
 
 .data-links {
-  height: 30px;
-  line-height: 30px;
+  // height: 30px;
+  // line-height: 30px;
   margin-top: 20px;
   position: relative;
 }
@@ -276,4 +277,15 @@ footer {
 @keyframes flash {
   0% { background-color: $flash; }
   100% { background-color: none; }
+}
+
+.glyphicon-chart {
+  background: url('/pageviews/images/glyphicons-42-charts.png');
+  background-size: cover;
+  height: 14px;
+  width: 14px;
+}
+
+.view-options--list {
+  color: $black;
 }

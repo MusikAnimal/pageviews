@@ -21,9 +21,14 @@ const config = {
       sourceProject: '',
       direction: 1,
       massData: [],
-      total: 0
+      total: 0,
+      view: 'list'
     }
   },
+  linearLegend: `
+    <strong><%= $.i18n('totals') %>:</strong>
+    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n('day') %>)
+  `,
   pageLimit: 500,
   platformSelector: '#platform_select',
   sourceButton: '#source_button',

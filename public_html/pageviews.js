@@ -98,7 +98,6 @@ var PageViews = function (_Pv) {
       this.setupProjectInput();
       this.setupDateRangeSelector();
       this.setupSelect2();
-      this.setupSettingsModal();
       this.setupSelect2Colors();
       this.popParams();
       this.setupListeners();
@@ -217,6 +216,8 @@ var PageViews = function (_Pv) {
           });
         }
       }
+
+      return data;
     }
 
     /**
@@ -512,7 +513,7 @@ var PageViews = function (_Pv) {
       $('.chart-container').html('');
       $('.chart-container').removeClass('loading');
       $('#chart-legend').html('');
-      $('.message-container').html('');
+      this.clearMessages();
       this.resetSelect2();
     }
 
@@ -535,7 +536,7 @@ var PageViews = function (_Pv) {
       };
 
       select2Input.select2(params);
-      select2Input.on('change', this.updateChart.bind(this));
+      select2Input.on('change', this.renderData.bind(this));
     }
 
     /**
@@ -600,7 +601,7 @@ var PageViews = function (_Pv) {
 
       dateRangeSelector.on('change', function (e) {
         _this6.setChartPointDetectionRadius();
-        _this6.updateChart();
+        _this6.renderData();
 
         /** clear out specialRange if it doesn't match our input */
         if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
@@ -617,22 +618,11 @@ var PageViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this7 = this;
-
       _get(Object.getPrototypeOf(PageViews.prototype), 'setupListeners', this).call(this);
 
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
-      $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
-
-      /** changing of chart types */
-      $('.modal-chart-type a').on('click', function (e) {
-        _this7.chartType = $(e.currentTarget).data('type');
-        _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
-        _this7.updateChart();
-      });
-
-      // window.onpopstate = popParams();
+      $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
     }
 
     /**
@@ -643,17 +633,17 @@ var PageViews = function (_Pv) {
   }, {
     key: 'setupProjectInput',
     value: function setupProjectInput() {
-      var _this8 = this;
+      var _this7 = this;
 
       $(this.config.projectInput).on('change', function (e) {
         if (!e.target.value) {
-          e.target.value = _this8.config.defaults.project;
+          e.target.value = _this7.config.defaults.project;
           return;
         }
-        if (_this8.validateProject()) return;
-        _this8.resetView();
+        if (_this7.validateProject()) return;
+        _this7.resetView();
 
-        _this8.updateInterAppLinks();
+        _this7.updateInterAppLinks();
       });
     }
 
@@ -666,9 +656,9 @@ var PageViews = function (_Pv) {
      */
 
   }, {
-    key: 'updateChart',
-    value: function updateChart(force) {
-      var _this9 = this,
+    key: 'renderData',
+    value: function renderData(force) {
+      var _this8 = this,
           _$;
 
       var articles = $(this.config.select2Input).select2('val') || [];
@@ -709,7 +699,7 @@ var PageViews = function (_Pv) {
       articles.forEach(function (article, index) {
         var uriEncodedArticle = encodeURIComponent(article);
         /** @type {String} Url to query the API. */
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this9.project + ('/' + $(_this9.config.platformSelector).val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(_this9.config.timestampFormat) + '/' + endDate.format(_this9.config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this8.project + ('/' + $(_this8.config.platformSelector).val() + '/' + $('#agent-select').val() + '/' + uriEncodedArticle + '/daily') + ('/' + startDate.format(_this8.config.timestampFormat) + '/' + endDate.format(_this8.config.timestampFormat));
         var promise = $.ajax({
           url: url,
           dataType: 'json'
@@ -718,24 +708,24 @@ var PageViews = function (_Pv) {
 
         promise.success(function (data) {
           // FIXME: these needs fixing too, sometimes doesn't show zero
-          _this9.fillInZeros(data, startDate, endDate);
+          data = _this8.fillInZeros(data, startDate, endDate);
 
           /** Build the article's dataset. */
-          if (_this9.config.linearCharts.includes(_this9.chartType)) {
-            datasets.push(_this9.getLinearData(data, article, index));
+          if (_this8.config.linearCharts.includes(_this8.chartType)) {
+            datasets.push(_this8.getLinearData(data, article, index));
           } else {
-            datasets.push(_this9.getCircularData(data, article, index));
+            datasets.push(_this8.getCircularData(data, article, index));
           }
 
           /** fetch the labels for the x-axis on success if we haven't already */
           if (data.items && !labels.length) {
             labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, _this9.config.timestampFormat).format(_this9.dateFormat);
+              return moment(elem.timestamp, _this8.config.timestampFormat).format(_this8.dateFormat);
             });
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this9.writeMessage('<a href=\'' + _this9.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + $.i18n('api-error-no-data'));
+            _this8.writeMessage('<a href=\'' + _this8.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + $.i18n('api-error-no-data'));
             articles = articles.filter(function (el) {
               return el !== article;
             });
@@ -759,7 +749,7 @@ var PageViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this9.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>', true);
+          return _this8.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>', true);
         }
 
         if (!articles.length) {
@@ -780,20 +770,20 @@ var PageViews = function (_Pv) {
         window.chartData = sortedDatasets;
 
         $('.chart-container').removeClass('loading');
-        var options = Object.assign({}, _this9.config.chartConfig[_this9.chartType].opts, _this9.config.globalChartOpts);
+        var options = Object.assign({}, _this8.config.chartConfig[_this8.chartType].opts, _this8.config.globalChartOpts);
         var linearData = { labels: labels, datasets: sortedDatasets };
 
         $('.chart-container').html('');
         $('.chart-container').append("<canvas class='aqs-chart'>");
-        var context = $(_this9.config.chart)[0].getContext('2d');
+        var context = $(_this8.config.chart)[0].getContext('2d');
 
-        if (_this9.config.linearCharts.includes(_this9.chartType)) {
-          _this9.chartObj = new Chart(context)[_this9.chartType](linearData, options);
+        if (_this8.config.linearCharts.includes(_this8.chartType)) {
+          _this8.chartObj = new Chart(context)[_this8.chartType](linearData, options);
         } else {
-          _this9.chartObj = new Chart(context)[_this9.chartType](sortedDatasets, options);
+          _this8.chartObj = new Chart(context)[_this8.chartType](sortedDatasets, options);
         }
 
-        $('#chart-legend').html(_this9.chartObj.generateLegend());
+        $('#chart-legend').html(_this8.chartObj.generateLegend());
         $('.data-links').show();
       });
     }
@@ -836,8 +826,6 @@ $(document).ready(function () {
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
-
-  $.extend(Chart.defaults.global, { animation: false, responsive: true });
 
   new PageViews();
 });
@@ -961,6 +949,45 @@ if (!Array.prototype.find) {
   };
 }
 
+// Array.fill
+if (!Array.prototype.fill) {
+  Array.prototype.fill = function (value) {
+
+    // Steps 1-2.
+    if (this === null) {
+      throw new TypeError('this is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // Steps 3-5.
+    var len = O.length >>> 0;
+
+    // Steps 6-7.
+    var start = arguments[1];
+    var relativeStart = start >> 0;
+
+    // Step 8.
+    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+    // Steps 9-10.
+    var end = arguments[2];
+    var relativeEnd = end === undefined ? len : end >> 0;
+
+    // Step 11.
+    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+    // Step 12.
+    while (k < final) {
+      O[k] = value;
+      k++;
+    }
+
+    // Step 13.
+    return O;
+  };
+}
+
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -1022,6 +1049,8 @@ var Pv = function () {
       this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
+
+      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
     }
 
     /** @type {null|Date} tracking of elapsed time */
@@ -1141,9 +1170,10 @@ var Pv = function () {
   }, {
     key: 'getDateHeadings',
     value: function getDateHeadings(localized) {
-      var dateHeadings = [];
+      var dateHeadings = [],
+          endDate = moment(this.daterangepicker.endDate).add(1, 'd');
 
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
         if (localized) {
           dateHeadings.push(date.format(this.dateFormat));
         } else {
@@ -1719,7 +1749,7 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.updateChart(true);
+      this.renderData(true);
     }
 
     /**
@@ -1871,6 +1901,17 @@ var Pv = function () {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+
+      if (this.config.chart) {
+        this.setupSettingsModal();
+
+        /** changing of chart types */
+        $('.modal-chart-type a').on('click', function (e) {
+          _this7.chartType = $(e.currentTarget).data('type');
+          _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
+          _this7.renderData();
+        });
+      }
     }
 
     /**
@@ -2132,7 +2173,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: false
+        bezierCurve: true
       },
       dataset: function dataset(color) {
         return {

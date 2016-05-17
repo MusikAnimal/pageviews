@@ -252,6 +252,7 @@ module.exports = function(grunt) {
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/bootstrap-typeahead.js',
             'vendor/javascripts/simpleStorage.js',
+            'vendor/javascripts/Chart.min.js',
             'public_html/massviews/massviews.js'
           ]),
           'public_html/massviews/application.css': coreCSSDependencies.concat([

@@ -84,7 +84,7 @@
             %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
 
         %output(form="massview_form")
-          %header.output-header
+          %header.output-header.clearfix
             %strong.another-query
               %span.glyphicon.glyphicon-chevron-left
               = $I18N->msg( 'another-query' )
@@ -92,7 +92,15 @@
               %a.massviews-input-name(target="_blank")
               %small.massviews-params
 
-          %table.table.table-hover.output-table
+              %span.btn-group.view-options.pull-right
+                %button.active.btn.btn-default.view-btn.view-btn--list(type="button" href="#" data-value="list")
+                  %span.glyphicon.glyphicon-list.view-options--list
+                  List
+                %button.btn.btn-default.view-btn.view-btn--chart(type="button" href="#" data-value="chart")
+                  %span.glyphicon.glyphicon-chart
+                  Chart
+
+          %table.list-view.table.table-hover.output-table
             %thead
               %tr
                 %th #
@@ -110,10 +118,25 @@
               %tr.output-totals
             %tbody#mass_list
 
+          %div.chart-view.chart-container
+            %canvas.aqs-chart
+
         %div.message-container.col-lg-12
+
+        %div.col-lg-12.tm.clearfix.chart-view#chart-legend
 
         / Other links
         %div.col-lg-12.data-links
+          %span.chart-view
+            %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
+              %span.glyphicon.glyphicon-th
+              = $I18N->msg( 'change-chart' )
+            &nbsp;&bullet;&nbsp;
+            %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
+              %span.glyphicon.glyphicon-wrench
+              = $I18N->msg( 'settings' )
+            &nbsp;&bullet;&nbsp;
+
           %a.permalink(href="/massviews")<
             %span.glyphicon.glyphicon-link
             = $I18N->msg( 'permalink' )
@@ -129,3 +152,5 @@
 
         - $currentApp = "massviews"
         - include "../_footer.php"
+
+      - include "../_modals.php"

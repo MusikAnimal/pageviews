@@ -1,7 +1,16 @@
 @import '../shared';
 @import '../mixins';
 @import '../list_view';
+@import '../chart_view';
 
 .massviews-params a {
   color: $bootstrap-gay;
+}
+
+.chart-view {
+  display: none;
+}
+
+.search-method-options {
+  display: none;
 }

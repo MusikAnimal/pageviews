@@ -38,7 +38,6 @@ class SiteViews extends Pv {
   initialize() {
     this.setupDateRangeSelector();
     this.setupSelect2();
-    this.setupSettingsModal();
     this.setupSelect2Colors();
     this.setupDataSourceSelector();
     this.popParams();
@@ -144,6 +143,8 @@ class SiteViews extends Pv {
         });
       }
     }
+
+    return data;
   }
 
   /**
@@ -364,7 +365,7 @@ class SiteViews extends Pv {
     };
 
     select2Input.select2(params);
-    select2Input.on('change', this.updateChart.bind(this));
+    select2Input.on('change', this.renderData.bind(this));
   }
 
   /**
@@ -392,7 +393,7 @@ class SiteViews extends Pv {
 
     dateRangeSelector.on('change', e => {
       this.setChartPointDetectionRadius();
-      this.updateChart();
+      this.renderData();
 
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
@@ -425,7 +426,7 @@ class SiteViews extends Pv {
       if ($(this.config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
         $(this.config.platformSelector).val('all-sites'); // chart will automatically re-render
       } else {
-        this.updateChart();
+        this.renderData();
       }
     });
   }
@@ -439,14 +440,7 @@ class SiteViews extends Pv {
 
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
-    $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
-
-    /** changing of chart types */
-    $('.modal-chart-type a').on('click', e => {
-      this.chartType = $(e.currentTarget).data('type');
-      this.setLocalStorage('pageviews-chart-preference', this.chartType);
-      this.updateChart();
-    });
+    $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
 
     // window.onpopstate = popParams();
   }
@@ -458,7 +452,7 @@ class SiteViews extends Pv {
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
    * @returns {null} - nothin
    */
-  updateChart(force) {
+  renderData(force) {
     let sites = $(this.config.select2Input).select2('val') || [];
 
     this.pushParams();
@@ -514,8 +508,9 @@ class SiteViews extends Pv {
       promises.push(promise);
 
       promise.success(data => {
-        // FIXME: these needs fixing too, sometimes doesn't show zero
-        if (this.isPageviews()) this.fillInZeros(data, startDate, endDate);
+        if (this.isPageviews()) {
+          data = this.fillInZeros(data, startDate, endDate);
+        }
 
         /** Build the site's dataset. */
         if (this.config.linearCharts.includes(this.chartType)) {
@@ -627,8 +622,6 @@ $(document).ready(() => {
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
-
-  $.extend(Chart.defaults.global, {animation: false, responsive: true});
 
   new SiteViews();
 });

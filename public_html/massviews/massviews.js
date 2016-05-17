@@ -24,9 +24,11 @@ var config = {
       sourceProject: '',
       direction: 1,
       massData: [],
-      total: 0
+      total: 0,
+      view: 'list'
     }
   },
+  linearLegend: '\n    <strong><%= $.i18n(\'totals\') %>:</strong>\n    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n(\'day\') %>)\n  ',
   pageLimit: 500,
   platformSelector: '#platform_select',
   sourceButton: '#source_button',
@@ -93,6 +95,9 @@ var MassViews = function (_Pv) {
       this.setupDateRangeSelector();
       this.popParams();
       this.setupListeners();
+
+      /** only show options for line, bar and radar charts */
+      $('.multi-page-chart-node').hide();
     }
 
     /**
@@ -142,6 +147,37 @@ var MassViews = function (_Pv) {
       $('.source-option').on('click', function (e) {
         return _this2.updateSourceInput(e.target);
       });
+
+      $('.view-btn').on('click', function (e) {
+        document.activeElement.blur();
+        _this2.view = e.currentTarget.dataset.value;
+        _this2.toggleView(_this2.view);
+      });
+    }
+  }, {
+    key: 'toggleView',
+    value: function toggleView(view) {
+      $('.view-btn').removeClass('active');
+      $('.view-btn--' + view).addClass('active');
+      $('.list-view, .chart-view').hide();
+      $('.' + view + '-view').show();
+
+      if (view === 'chart') {
+        this.destroyChart();
+        /** export built datasets to global scope Chart templates */
+        window.chartData = this.massData.datasets[0];
+
+        var options = Object.assign({}, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
+        this.assignMassDataChartOpts();
+
+        var context = $(this.config.chart)[0].getContext('2d');
+
+        this.chartObj = new Chart(context)[this.chartType](this.massData, options);
+
+        $('#chart-legend').html(this.chartObj.generateLegend());
+      }
+
+      this.pushParams();
     }
   }, {
     key: 'updateSourceInput',
@@ -199,6 +235,7 @@ var MassViews = function (_Pv) {
       if (!forCacheKey) {
         params.sort = this.sort;
         params.direction = this.direction;
+        params.view = this.view;
       }
 
       return params;
@@ -252,8 +289,9 @@ var MassViews = function (_Pv) {
     value: function renderData() {
       var _this3 = this;
 
+      var articleDatasets = this.massData.listData;
       /** sort ascending by current sort setting */
-      var sortedMassViews = this.massData.sort(function (a, b) {
+      var sortedMassViews = articleDatasets.sort(function (a, b) {
         var before = _this3.getSortProperty(a, _this3.sort),
             after = _this3.getSortProperty(b, _this3.sort);
 
@@ -270,15 +308,58 @@ var MassViews = function (_Pv) {
       var newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
       $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
 
-      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('unique-titles', this.massData.length) + '</th>\n       <th>' + this.formatNumber(this.total) + '</th>\n       <th>' + this.formatNumber(Math.round(this.total / this.numDaysInRange())) + ' / ' + $.i18n('day') + '</th>');
+      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('unique-titles', articleDatasets.length) + '</th>\n       <th>' + this.formatNumber(this.massData.sum) + '</th>\n       <th>' + this.formatNumber(Math.round(this.massData.average)) + ' / ' + $.i18n('day') + '</th>');
       $('#mass_list').html('');
 
       sortedMassViews.forEach(function (item, index) {
-        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.title + '" target="_blank">' + item.title.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.title) + '\'>' + _this3.formatNumber(item.views) + '</a></td>\n         <td>' + _this3.formatNumber(item.average) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
+        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n         <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
       });
 
       this.pushParams();
+      this.toggleView(this.view);
       this.setState('complete');
+    }
+
+    /**
+     * Fills in zeros to a timeseries, see:
+     * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+     *
+     * @param {object} items - entries fetched from Pageviews API
+     * @param {moment} startDate - start date of range to filter through
+     * @param {moment} endDate - end date of range
+     * @returns {array} 0 = dataset with zeros where nulls were,
+     *   1 = dates that met the edge case, meaning data is not yet available
+     */
+
+  }, {
+    key: 'fillInZeros',
+    value: function fillInZeros(items, startDate, endDate) {
+      var _this4 = this;
+
+      /** Extract the dates that are already in the timeseries */
+      var alreadyThere = {};
+      items.forEach(function (elem) {
+        var date = moment(elem.timestamp, _this4.config.timestampFormat);
+        alreadyThere[date] = elem;
+      });
+      var data = [],
+          datesWithoutData = [];
+
+      /** Reconstruct with zeros instead of nulls */
+      for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
+        if (alreadyThere[date]) {
+          data.push(alreadyThere[date]);
+        } else {
+          var edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+          data.push({
+            timestamp: date.format(this.config.timestampFormat),
+            views: edgeCase ? null : 0
+          });
+          if (edgeCase) datesWithoutData.push(date.format());
+        }
+      }
+
+      return [data, datesWithoutData];
     }
 
     /**
@@ -293,9 +374,9 @@ var MassViews = function (_Pv) {
     value: function getSortProperty(item, type) {
       switch (type) {
         case 'title':
-          return item.title;
+          return item.label;
         case 'views':
-          return Number(item.views);
+          return Number(item.sum);
       }
     }
 
@@ -333,7 +414,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'getPageViewsData',
     value: function getPageViewsData(project, pages) {
-      var _this4 = this;
+      var _this5 = this;
 
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day');
@@ -345,33 +426,20 @@ var MassViews = function (_Pv) {
           hadFailure = undefined,
           failureRetries = {},
           totalRequestCount = pages.length,
-          failedPages = [];
-
-      /** clear out existing data */
-      this.massData = [];
+          failedPages = [],
+          pageViewsData = [];
 
       var makeRequest = function makeRequest(page) {
         var uriEncodedPageName = encodeURIComponent(page);
-
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this4.config.platformSelector).val() + '/' + $(_this4.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this4.config.timestampFormat) + '/' + endDate.format(_this4.config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this5.config.platformSelector).val() + '/' + $(_this5.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this5.config.timestampFormat) + '/' + endDate.format(_this5.config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
         promise.done(function (pvData) {
-          var viewCounts = pvData.items.map(function (el) {
-            return el.views;
-          }),
-              views = viewCounts.reduce(function (a, b) {
-            return a + b;
-          });
-
-          _this4.massData.push({
+          pageViewsData.push({
             title: page,
-            views: views,
-            average: Math.round(views / _this4.numDaysInRange())
+            items: pvData.items
           });
-
-          _this4.total += views;
         }).fail(function (errorData) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
@@ -387,27 +455,27 @@ var MassViews = function (_Pv) {
             /** maximum of 3 retries */
             if (failureRetries[project] < 3) {
               totalRequestCount++;
-              return _this4.rateLimit(makeRequest, 100, _this4)(page);
+              return _this5.rateLimit(makeRequest, 100, _this5)(page);
             }
           }
 
           if (cassandraError) {
             failedPages.push(page);
           } else {
-            _this4.writeMessage(_this4.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            _this5.writeMessage(_this5.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
-          _this4.updateProgressBar(++count / totalRequestCount * 100);
+          _this5.updateProgressBar(++count / totalRequestCount * 100);
 
-          // XXX: throttling, totalRequestCount can just be interWikiKeys.length
+          // XXX: throttling
           if (count === totalRequestCount) {
-            dfd.resolve(_this4.massData);
+            dfd.resolve(pageViewsData);
 
             if (failedPages.length) {
-              _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
-                return '<li>' + _this4.getPageLink(failedPage, project) + '</li>';
+              _this5.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
+                return '<li>' + _this5.getPageLink(failedPage, project) + '</li>';
               }).join('') + '</ul>'));
             }
 
@@ -417,7 +485,7 @@ var MassViews = function (_Pv) {
              */
             // XXX: throttling
             if (!hadFailure) {
-              simpleStorage.set(_this4.getCacheKey(), true, { TTL: 600000 });
+              simpleStorage.set(_this5.getCacheKey(), true, { TTL: 600000 });
             }
           }
         });
@@ -436,6 +504,147 @@ var MassViews = function (_Pv) {
       });
 
       return dfd;
+    }
+
+    /**
+     * Build our mother data set, from which we can draw a chart,
+     *   render a list of data, whatever our heart desires :)
+     * @param  {string} label - label for the dataset (e.g. category:blah, page pile 24, etc)
+     * @param  {string} link - HTML anchor tag for the label
+     * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
+     * @return {object} mother data set, also stored in this.massData
+     */
+
+  }, {
+    key: 'buildMotherDataset',
+    value: function buildMotherDataset(label, link, datasets) {
+      var _this6 = this;
+
+      /**
+       * `datasets` structure:
+       *
+       * [{
+       *   title: page,
+       *   items: [
+       *     {
+       *       access: '',
+       *       agent: '',
+       *       article: '',
+       *       granularity: '',
+       *       project: '',
+       *       timestamp: '',
+       *       views: 10
+       *     }
+       *   ]
+       * }]
+       *
+       * output structure:
+       *
+       * {
+       *   labels: [''],
+       *   listData: [
+       *     {
+       *       label: '',
+       *       data: [1,2,3,4],
+       *       sum: 10,
+       *       average: 2,
+       *       ...
+       *       MERGE in this.config.chartConfig[this.chartType].dataset(this.config.colors[0])
+       *     }
+       *   ],
+       *   totalViewsSet: [1,2,3,4],
+       *   sum: 10,
+       *   average: 2,
+       *   datesWithoutData: ['2016-05-16T00:00:00-00:00']
+       * }
+       */
+
+      this.massData = {
+        labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
+        link: link, // for our own purposes
+        listData: []
+      };
+      var startDate = moment(this.daterangepicker.startDate),
+          endDate = moment(this.daterangepicker.endDate),
+          length = this.numDaysInRange();
+
+      var totalViewsSet = new Array(length).fill(0),
+          datesWithoutData = [];
+
+      datasets.forEach(function (dataset) {
+        var data = dataset.items.map(function (item) {
+          return item.views;
+        }),
+            sum = data.reduce(function (a, b) {
+          return a + b;
+        });
+
+        _this6.massData.listData.push({
+          data: data,
+          label: dataset.title,
+          sum: sum,
+          average: sum / length
+        });
+
+        /**
+         * Ensure we have data for each day, using null as the view count when data is actually not available yet
+         * See fillInZeros() comments for more info.
+         */
+
+        var _fillInZeros = _this6.fillInZeros(dataset.items, startDate, endDate);
+
+        var _fillInZeros2 = _slicedToArray(_fillInZeros, 2);
+
+        var viewsSet = _fillInZeros2[0];
+        var incompleteDates = _fillInZeros2[1];
+
+        incompleteDates.forEach(function (date) {
+          if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
+        });
+
+        totalViewsSet = totalViewsSet.map(function (num, i) {
+          return num + viewsSet[i].views;
+        });
+      });
+
+      // FIXME: for the dates that have incomplete data, still show what we have,
+      //   but make the bullet point red in the chart
+
+      var grandSum = totalViewsSet.reduce(function (a, b) {
+        return (a || 0) + (b || 0);
+      });
+
+      Object.assign(this.massData, {
+        datasets: [{
+          label: label,
+          data: totalViewsSet,
+          sum: grandSum,
+          average: grandSum / length
+        }],
+        datesWithoutData: datesWithoutData,
+        sum: grandSum, // nevermind the duplication
+        average: grandSum / length
+      });
+
+      if (datesWithoutData.length) {
+        var dateList = datesWithoutData.map(function (date) {
+          return moment(date).format(_this6.dateFormat);
+        });
+        // FIXME: i18N
+        this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
+      }
+
+      return this.massData;
+    }
+  }, {
+    key: 'assignMassDataChartOpts',
+    value: function assignMassDataChartOpts(props) {
+      var color = this.config.colors[0];
+      Object.assign(this.massData.datasets[0], this.config.chartConfig[this.chartType].dataset(color));
+
+      if (this.chartType === 'Line') {
+        this.massData.datasets[0].fillColor = color.replace(/,\s*\d\)/, ', 0.2)');
+      }
     }
   }, {
     key: 'getPileURL',
@@ -479,7 +688,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'getPagePile',
     value: function getPagePile(id) {
-      var _this5 = this;
+      var _this7 = this;
 
       var dfd = $.Deferred();
       var url = 'https://tools.wmflabs.org/pagepile/api.php?id=' + id + '&action=get_data&format=json&metadata=1';
@@ -491,9 +700,9 @@ var MassViews = function (_Pv) {
         var pages = Object.keys(data.pages);
 
         if (pages.length > 500) {
-          _this5.writeMessage('\n          ' + _this5.getPileLink(id) + ' contains ' + _this5.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + _this5.config.pageLimit + ' pages will be processed.\n          ');
+          _this7.writeMessage('\n          ' + _this7.getPileLink(id) + ' contains ' + _this7.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + _this7.config.pageLimit + ' pages will be processed.\n          ');
 
-          pages = pages.slice(0, _this5.config.pageLimit);
+          pages = pages.slice(0, _this7.config.pageLimit);
         }
 
         return dfd.resolve({
@@ -502,7 +711,7 @@ var MassViews = function (_Pv) {
           pages: pages
         });
       }).fail(function (error) {
-        return dfd.reject(_this5.getPileLink(id) + ': ' + $.i18n('api-error-no-data'));
+        return dfd.reject(_this7.getPileLink(id) + ': ' + $.i18n('api-error-no-data'));
       });
 
       return dfd;
@@ -572,6 +781,7 @@ var MassViews = function (_Pv) {
       $(this.config.agentSelector).val(params.agent || 'user');
       this.sort = params.sort || this.config.defaults.params.sort;
       this.direction = params.direction || this.config.defaults.params.direction;
+      this.view = params.view || this.config.defaults.params.view;
 
       /** start up processing if necessary params are present */
       if (this.config.validSources.includes(params.source) && params.target) {
@@ -609,6 +819,8 @@ var MassViews = function (_Pv) {
         case 'initial':
           this.clearMessages();
           this.assignDefaults();
+          this.destroyChart();
+          $('.list-view, .chart-view').hide();
           if (this.typeahead) this.typeahead.hide();
           $(this.config.sourceInput).val('').focus();
           if (typeof cb === 'function') cb.call(this);
@@ -638,14 +850,14 @@ var MassViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this6 = this;
+      var _this8 = this;
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
       /** transform this.config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
-        ranges[$.i18n(key)] = _this6.config.specialRanges[key];
+        ranges[$.i18n(key)] = _this8.config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
@@ -676,34 +888,34 @@ var MassViews = function (_Pv) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this6.daterangepicker.container,
+            container = _this8.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this6.specialRange = {
-          range: Object.keys(_this6.config.specialRanges)[index],
+        _this8.specialRange = {
+          range: Object.keys(_this8.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this6.specialRange = null;
+          _this8.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this6.daterangepicker.updateElement();
+          _this8.daterangepicker.updateElement();
         }
       });
     }
   }, {
     key: 'processPagePile',
     value: function processPagePile(cb) {
-      var _this7 = this;
+      var _this9 = this;
 
       var pileId = $(this.config.sourceInput).val();
 
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
-          return _this7.setState('initial', function () {
-            _this7.writeMessage($.i18n('massviews-empty-set', _this7.getPileLink(pileId)));
+          return _this9.setState('initial', function () {
+            _this9.writeMessage($.i18n('massviews-empty-set', _this9.getPileLink(pileId)));
           });
         }
 
@@ -712,30 +924,34 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        if (!_this7.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        if (!_this9.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
-        _this7.sourceProject = siteMap[pileData.wiki];
-        _this7.getPageViewsData(_this7.sourceProject, pileData.pages).done(function () {
-          $('.massviews-input-name').text('Page Pile #' + pileData.id).prop('href', _this7.getPileURL(pileData.id));
-          $('.massviews-params').html('\n          ' + $(_this7.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this7.sourceProject + '" target="_blank">' + _this7.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+        _this9.sourceProject = siteMap[pileData.wiki];
+        _this9.getPageViewsData(_this9.sourceProject, pileData.pages).done(function (pageViewsData) {
+          var label = 'Page Pile #' + pileData.id;
+
+          $('.massviews-input-name').text(label).prop('href', _this9.getPileURL(pileData.id));
+          $('.massviews-params').html('\n          ' + $(_this9.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this9.sourceProject + '" target="_blank">' + _this9.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+
+          _this9.buildMotherDataset(label, _this9.getPileLink(pileData.id), pageViewsData);
 
           cb();
         });
       }).fail(function (error) {
-        _this7.setState('initial');
+        _this9.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (typeof error === 'string') {
-          _this7.writeMessage(error);
+          _this9.writeMessage(error);
         } else {
-          _this7.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
+          _this9.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
     }
   }, {
     key: 'processCategory',
     value: function processCategory(cb) {
-      var _this8 = this;
+      var _this10 = this;
 
       var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
@@ -747,7 +963,7 @@ var MassViews = function (_Pv) {
 
       if (!category) {
         return this.setState('initial', function () {
-          _this8.writeMessage($.i18n('invalid-category-url'));
+          _this10.writeMessage($.i18n('invalid-category-url'));
         });
       }
 
@@ -768,8 +984,8 @@ var MassViews = function (_Pv) {
 
       promise.done(function (data) {
         if (!data.query.categorymembers.length) {
-          return _this8.setState('initial', function () {
-            _this8.writeMessage($.i18n('massviews-empty-set', categoryLink));
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('massviews-empty-set', categoryLink));
           });
         }
 
@@ -778,26 +994,27 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this8.setThrottle();
+        _this10.setThrottle();
 
         var pageNames = data.query.categorymembers.map(function (cat) {
           return cat.title;
         });
 
-        _this8.getPageViewsData(project, pageNames).done(function () {
+        _this10.getPageViewsData(project, pageNames).done(function (pageViewsData) {
           $('.massviews-input-name').html(categoryLink);
-          $('.massviews-params').html($(_this8.config.dateRangeSelector).val());
+          $('.massviews-params').html($(_this10.config.dateRangeSelector).val());
+          _this10.buildMotherDataset(category, categoryLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this8.setState('initial');
+        _this10.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && data.error) {
-          _this8.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
+          _this10.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
         } else {
-          _this8.writeMessage($.i18n('api-error-unknown', categoryLink));
+          _this10.writeMessage($.i18n('api-error-unknown', categoryLink));
         }
       });
     }
@@ -811,7 +1028,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this9 = this;
+      var _this11 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -830,11 +1047,11 @@ var MassViews = function (_Pv) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this9.updateProgressBar(100);
-        _this9.renderData();
+        _this11.updateProgressBar(100);
+        _this11.renderData();
 
         // XXX: throttling
-        _this9.setThrottle();
+        _this11.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {
@@ -1036,6 +1253,45 @@ if (!Array.prototype.find) {
   };
 }
 
+// Array.fill
+if (!Array.prototype.fill) {
+  Array.prototype.fill = function (value) {
+
+    // Steps 1-2.
+    if (this === null) {
+      throw new TypeError('this is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // Steps 3-5.
+    var len = O.length >>> 0;
+
+    // Steps 6-7.
+    var start = arguments[1];
+    var relativeStart = start >> 0;
+
+    // Step 8.
+    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+    // Steps 9-10.
+    var end = arguments[2];
+    var relativeEnd = end === undefined ? len : end >> 0;
+
+    // Step 11.
+    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+    // Step 12.
+    while (k < final) {
+      O[k] = value;
+      k++;
+    }
+
+    // Step 13.
+    return O;
+  };
+}
+
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -1097,6 +1353,8 @@ var Pv = function () {
       this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
+
+      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
     }
 
     /** @type {null|Date} tracking of elapsed time */
@@ -1216,9 +1474,10 @@ var Pv = function () {
   }, {
     key: 'getDateHeadings',
     value: function getDateHeadings(localized) {
-      var dateHeadings = [];
+      var dateHeadings = [],
+          endDate = moment(this.daterangepicker.endDate).add(1, 'd');
 
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
         if (localized) {
           dateHeadings.push(date.format(this.dateFormat));
         } else {
@@ -1794,7 +2053,7 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.updateChart(true);
+      this.renderData(true);
     }
 
     /**
@@ -1946,6 +2205,17 @@ var Pv = function () {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+
+      if (this.config.chart) {
+        this.setupSettingsModal();
+
+        /** changing of chart types */
+        $('.modal-chart-type a').on('click', function (e) {
+          _this7.chartType = $(e.currentTarget).data('type');
+          _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
+          _this7.renderData();
+        });
+      }
     }
 
     /**
@@ -2207,7 +2477,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: false
+        bezierCurve: true
       },
       dataset: function dataset(color) {
         return {

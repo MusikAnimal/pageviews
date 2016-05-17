@@ -83,7 +83,7 @@
         <p>
           <?php echo $I18N->msg( 'settings-notice' ); ?>
         </p>
-        <fieldset class="radio-list">
+        <fieldset class="radio-list search-method-options">
           <?php echo $I18N->msg( 'search-method' ); ?>
           <div class="radio">
             <label>

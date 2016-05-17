@@ -1030,6 +1030,45 @@ if (!Array.prototype.find) {
   };
 }
 
+// Array.fill
+if (!Array.prototype.fill) {
+  Array.prototype.fill = function (value) {
+
+    // Steps 1-2.
+    if (this === null) {
+      throw new TypeError('this is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // Steps 3-5.
+    var len = O.length >>> 0;
+
+    // Steps 6-7.
+    var start = arguments[1];
+    var relativeStart = start >> 0;
+
+    // Step 8.
+    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+    // Steps 9-10.
+    var end = arguments[2];
+    var relativeEnd = end === undefined ? len : end >> 0;
+
+    // Step 11.
+    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+    // Step 12.
+    while (k < final) {
+      O[k] = value;
+      k++;
+    }
+
+    // Step 13.
+    return O;
+  };
+}
+
 },{}],5:[function(require,module,exports){
 'use strict';
 
@@ -1091,6 +1130,8 @@ var Pv = function () {
       this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
+
+      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
     }
 
     /** @type {null|Date} tracking of elapsed time */
@@ -1210,9 +1251,10 @@ var Pv = function () {
   }, {
     key: 'getDateHeadings',
     value: function getDateHeadings(localized) {
-      var dateHeadings = [];
+      var dateHeadings = [],
+          endDate = moment(this.daterangepicker.endDate).add(1, 'd');
 
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
         if (localized) {
           dateHeadings.push(date.format(this.dateFormat));
         } else {
@@ -1788,7 +1830,7 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.updateChart(true);
+      this.renderData(true);
     }
 
     /**
@@ -1940,6 +1982,17 @@ var Pv = function () {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+
+      if (this.config.chart) {
+        this.setupSettingsModal();
+
+        /** changing of chart types */
+        $('.modal-chart-type a').on('click', function (e) {
+          _this7.chartType = $(e.currentTarget).data('type');
+          _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
+          _this7.renderData();
+        });
+      }
     }
 
     /**
@@ -2201,7 +2254,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: false
+        bezierCurve: true
       },
       dataset: function dataset(color) {
         return {

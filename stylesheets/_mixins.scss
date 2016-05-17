@@ -6,6 +6,7 @@ $bootstrap-text: #333;
 $link: #337ab7;
 $flash: #fbf8b2;
 $white: #fff;
+$black: #000;
 
 @mixin prefix($prop, $val) {
   @each $pre in -webkit-, -moz-, -ms-, -o- {

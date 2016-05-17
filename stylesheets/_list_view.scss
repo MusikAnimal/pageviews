@@ -1,4 +1,5 @@
 @import 'mixins';
+@import 'bootstrap';
 
 .data-links {
   display: none;
@@ -113,4 +114,34 @@ output {
 
 .progress {
   margin-bottom: 40px;
+}
+
+@media (max-width: $screen-md) {
+  .view-options.pull-right {
+    float: left !important; // scss-lint:disable ImportantRule
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 675px) {
+  .massviews-params {
+    display: block;
+    margin-top: 8px;
+  }
+
+  .elapsed-time {
+    display: block;
+    float: none !important; // scss-lint:disable ImportantRule
+    margin-top: 10px;
+  }
+
+  .lang-group {
+    float: left;
+    margin-bottom: 15px;
+    position: relative;
+  }
+
+  .interapp-links {
+    clear: both;
+  }
 }

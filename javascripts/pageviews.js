@@ -41,7 +41,6 @@ class PageViews extends Pv {
     this.setupProjectInput();
     this.setupDateRangeSelector();
     this.setupSelect2();
-    this.setupSettingsModal();
     this.setupSelect2Colors();
     this.popParams();
     this.setupListeners();
@@ -147,6 +146,8 @@ class PageViews extends Pv {
         });
       }
     }
+
+    return data;
   }
 
   /**
@@ -406,7 +407,7 @@ class PageViews extends Pv {
     $('.chart-container').html('');
     $('.chart-container').removeClass('loading');
     $('#chart-legend').html('');
-    $('.message-container').html('');
+    this.clearMessages();
     this.resetSelect2();
   }
 
@@ -426,7 +427,7 @@ class PageViews extends Pv {
     };
 
     select2Input.select2(params);
-    select2Input.on('change', this.updateChart.bind(this));
+    select2Input.on('change', this.renderData.bind(this));
   }
 
   /**
@@ -479,7 +480,7 @@ class PageViews extends Pv {
 
     dateRangeSelector.on('change', e => {
       this.setChartPointDetectionRadius();
-      this.updateChart();
+      this.renderData();
 
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
@@ -497,16 +498,7 @@ class PageViews extends Pv {
 
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
-    $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
-
-    /** changing of chart types */
-    $('.modal-chart-type a').on('click', e => {
-      this.chartType = $(e.currentTarget).data('type');
-      this.setLocalStorage('pageviews-chart-preference', this.chartType);
-      this.updateChart();
-    });
-
-    // window.onpopstate = popParams();
+    $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
   }
 
   /**
@@ -533,7 +525,7 @@ class PageViews extends Pv {
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
    * @returns {null} - nothin
    */
-  updateChart(force) {
+  renderData(force) {
     let articles = $(this.config.select2Input).select2('val') || [];
 
     this.pushParams();
@@ -585,7 +577,7 @@ class PageViews extends Pv {
 
       promise.success(data => {
         // FIXME: these needs fixing too, sometimes doesn't show zero
-        this.fillInZeros(data, startDate, endDate);
+        data = this.fillInZeros(data, startDate, endDate);
 
         /** Build the article's dataset. */
         if (this.config.linearCharts.includes(this.chartType)) {
@@ -652,7 +644,7 @@ class PageViews extends Pv {
         this.config.chartConfig[this.chartType].opts,
         this.config.globalChartOpts
       );
-      const linearData = {labels: labels, datasets: sortedDatasets};
+      const linearData = {labels, datasets: sortedDatasets};
 
       $('.chart-container').html('');
       $('.chart-container').append("<canvas class='aqs-chart'>");
@@ -704,8 +696,6 @@ $(document).ready(() => {
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
-
-  $.extend(Chart.defaults.global, {animation: false, responsive: true});
 
   new PageViews();
 });

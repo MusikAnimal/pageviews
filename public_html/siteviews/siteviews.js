@@ -117,6 +117,45 @@ if (!Array.prototype.find) {
   };
 }
 
+// Array.fill
+if (!Array.prototype.fill) {
+  Array.prototype.fill = function (value) {
+
+    // Steps 1-2.
+    if (this === null) {
+      throw new TypeError('this is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // Steps 3-5.
+    var len = O.length >>> 0;
+
+    // Steps 6-7.
+    var start = arguments[1];
+    var relativeStart = start >> 0;
+
+    // Step 8.
+    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+    // Steps 9-10.
+    var end = arguments[2];
+    var relativeEnd = end === undefined ? len : end >> 0;
+
+    // Step 11.
+    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+    // Step 12.
+    while (k < final) {
+      O[k] = value;
+      k++;
+    }
+
+    // Step 13.
+    return O;
+  };
+}
+
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -178,6 +217,8 @@ var Pv = function () {
       this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
+
+      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
     }
 
     /** @type {null|Date} tracking of elapsed time */
@@ -297,9 +338,10 @@ var Pv = function () {
   }, {
     key: 'getDateHeadings',
     value: function getDateHeadings(localized) {
-      var dateHeadings = [];
+      var dateHeadings = [],
+          endDate = moment(this.daterangepicker.endDate).add(1, 'd');
 
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
         if (localized) {
           dateHeadings.push(date.format(this.dateFormat));
         } else {
@@ -875,7 +917,7 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.updateChart(true);
+      this.renderData(true);
     }
 
     /**
@@ -1027,6 +1069,17 @@ var Pv = function () {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+
+      if (this.config.chart) {
+        this.setupSettingsModal();
+
+        /** changing of chart types */
+        $('.modal-chart-type a').on('click', function (e) {
+          _this7.chartType = $(e.currentTarget).data('type');
+          _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
+          _this7.renderData();
+        });
+      }
     }
 
     /**
@@ -1288,7 +1341,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: false
+        bezierCurve: true
       },
       dataset: function dataset(color) {
         return {
@@ -2412,7 +2465,6 @@ var SiteViews = function (_Pv) {
     value: function initialize() {
       this.setupDateRangeSelector();
       this.setupSelect2();
-      this.setupSettingsModal();
       this.setupSelect2Colors();
       this.setupDataSourceSelector();
       this.popParams();
@@ -2530,6 +2582,8 @@ var SiteViews = function (_Pv) {
           }, this.isPageviews() ? 'views' : 'devices', edgeCase ? null : 0));
         }
       }
+
+      return data;
     }
 
     /**
@@ -2788,7 +2842,7 @@ var SiteViews = function (_Pv) {
       };
 
       select2Input.select2(params);
-      select2Input.on('change', this.updateChart.bind(this));
+      select2Input.on('change', this.renderData.bind(this));
     }
 
     /**
@@ -2821,7 +2875,7 @@ var SiteViews = function (_Pv) {
 
       dateRangeSelector.on('change', function (e) {
         _this6.setChartPointDetectionRadius();
-        _this6.updateChart();
+        _this6.renderData();
 
         /** clear out specialRange if it doesn't match our input */
         if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
@@ -2860,7 +2914,7 @@ var SiteViews = function (_Pv) {
         if ($(_this8.config.platformSelector).val() === 'mobile-app' && !_this8.isPageviews()) {
           $(_this8.config.platformSelector).val('all-sites'); // chart will automatically re-render
         } else {
-            _this8.updateChart();
+            _this8.renderData();
           }
       });
     }
@@ -2873,20 +2927,11 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this9 = this;
-
       _get(Object.getPrototypeOf(SiteViews.prototype), 'setupListeners', this).call(this);
 
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
-      $('#platform-select, #agent-select').on('change', this.updateChart.bind(this));
-
-      /** changing of chart types */
-      $('.modal-chart-type a').on('click', function (e) {
-        _this9.chartType = $(e.currentTarget).data('type');
-        _this9.setLocalStorage('pageviews-chart-preference', _this9.chartType);
-        _this9.updateChart();
-      });
+      $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
 
       // window.onpopstate = popParams();
     }
@@ -2900,9 +2945,9 @@ var SiteViews = function (_Pv) {
      */
 
   }, {
-    key: 'updateChart',
-    value: function updateChart(force) {
-      var _this10 = this,
+    key: 'renderData',
+    value: function renderData(force) {
+      var _this9 = this,
           _$;
 
       var sites = $(this.config.select2Input).select2('val') || [];
@@ -2944,7 +2989,7 @@ var SiteViews = function (_Pv) {
         var uriEncodedSite = encodeURIComponent(site);
 
         /** @type {String} Url to query the API. */
-        var url = _this10.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedSite + ('/' + $(_this10.config.platformSelector).val() + '/' + $(_this10.config.agentSelector).val() + '/daily') + ('/' + startDate.format(_this10.config.timestampFormat) + '/' + endDate.format(_this10.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedSite + '/' + $(_this10.config.platformSelector).val() + '/daily' + ('/' + startDate.format(_this10.config.timestampFormat) + '/' + endDate.format(_this10.config.timestampFormat));
+        var url = _this9.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedSite + ('/' + $(_this9.config.platformSelector).val() + '/' + $(_this9.config.agentSelector).val() + '/daily') + ('/' + startDate.format(_this9.config.timestampFormat) + '/' + endDate.format(_this9.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedSite + '/' + $(_this9.config.platformSelector).val() + '/daily' + ('/' + startDate.format(_this9.config.timestampFormat) + '/' + endDate.format(_this9.config.timestampFormat));
 
         var promise = $.ajax({
           url: url,
@@ -2953,25 +2998,26 @@ var SiteViews = function (_Pv) {
         promises.push(promise);
 
         promise.success(function (data) {
-          // FIXME: these needs fixing too, sometimes doesn't show zero
-          if (_this10.isPageviews()) _this10.fillInZeros(data, startDate, endDate);
+          if (_this9.isPageviews()) {
+            data = _this9.fillInZeros(data, startDate, endDate);
+          }
 
           /** Build the site's dataset. */
-          if (_this10.config.linearCharts.includes(_this10.chartType)) {
-            datasets.push(_this10.getLinearData(data, site, index));
+          if (_this9.config.linearCharts.includes(_this9.chartType)) {
+            datasets.push(_this9.getLinearData(data, site, index));
           } else {
-            datasets.push(_this10.getCircularData(data, site, index));
+            datasets.push(_this9.getCircularData(data, site, index));
           }
 
           /** fetch the labels for the x-axis on success if we haven't already */
           if (data.items && !labels.length) {
             labels = data.items.map(function (elem) {
-              return moment(elem.timestamp, _this10.config.timestampFormat).format(_this10.dateFormat);
+              return moment(elem.timestamp, _this9.config.timestampFormat).format(_this9.dateFormat);
             });
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this10.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
+            _this9.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
             sites = sites.filter(function (el) {
               return el !== site;
             });
@@ -2995,7 +3041,7 @@ var SiteViews = function (_Pv) {
           var errorMessages = Array.from(new Set(errors)).map(function (error) {
             return '<li>' + error + '</li>';
           }).join('');
-          return _this10.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
+          return _this9.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
         }
 
         if (!sites.length) {
@@ -3016,20 +3062,20 @@ var SiteViews = function (_Pv) {
         window.chartData = sortedDatasets;
 
         $('.chart-container').removeClass('loading');
-        var options = Object.assign({}, _this10.config.chartConfig[_this10.chartType].opts, _this10.config.globalChartOpts);
+        var options = Object.assign({}, _this9.config.chartConfig[_this9.chartType].opts, _this9.config.globalChartOpts);
         var linearData = { labels: labels, datasets: sortedDatasets };
 
         $('.chart-container').html('');
         $('.chart-container').append("<canvas class='aqs-chart'>");
-        var context = $(_this10.config.chart)[0].getContext('2d');
+        var context = $(_this9.config.chart)[0].getContext('2d');
 
-        if (_this10.config.linearCharts.includes(_this10.chartType)) {
-          _this10.chartObj = new Chart(context)[_this10.chartType](linearData, options);
+        if (_this9.config.linearCharts.includes(_this9.chartType)) {
+          _this9.chartObj = new Chart(context)[_this9.chartType](linearData, options);
         } else {
-          _this10.chartObj = new Chart(context)[_this10.chartType](sortedDatasets, options);
+          _this9.chartObj = new Chart(context)[_this9.chartType](sortedDatasets, options);
         }
 
-        $('#chart-legend').html(_this10.chartObj.generateLegend());
+        $('#chart-legend').html(_this9.chartObj.generateLegend());
         $('.data-links').show();
       });
     }
@@ -3045,7 +3091,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'validateProjects',
     value: function validateProjects() {
-      var _this11 = this;
+      var _this10 = this;
 
       var projects = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
@@ -3053,7 +3099,7 @@ var SiteViews = function (_Pv) {
         if (siteDomains.includes(project)) {
           return true;
         } else {
-          _this11.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
+          _this10.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
           return false;
         }
       });
@@ -3070,8 +3116,6 @@ $(document).ready(function () {
   } else if (document.location.hash) {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
-
-  $.extend(Chart.defaults.global, { animation: false, responsive: true });
 
   new SiteViews();
 });
