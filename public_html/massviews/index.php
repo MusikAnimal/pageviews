@@ -85,24 +85,24 @@
               </label>
               <div class="input-group">
                 <div class="input-group-btn">
-                  <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
-                    <?php echo $I18N->msg( 'page-pile-id' ); ?>
+                  <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
+                    <?php echo $I18N->msg( 'category-url' ); ?>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li>
-                      <a class="source-option" href="#" data-value="pagepile">
-                        <?php echo $I18N->msg( 'page-pile-id' ); ?>
-                      </a>
-                    </li>
                     <li>
                       <a class="source-option" href="#" data-value="category">
                         <?php echo $I18N->msg( 'category-url' ); ?>
                       </a>
                     </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="pagepile">
+                        <?php echo $I18N->msg( 'page-pile-id' ); ?>
+                      </a>
+                    </li>
                   </ul>
                 </div>
-                <input class="form-control input-control source-input" id="source_input" type="number" min="0" placeholder="12345" required="required">
+                <input class="form-control input-control source-input" id="source_input" min="0" required="required">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right">
                     <?php echo $I18N->msg( 'submit' ); ?>

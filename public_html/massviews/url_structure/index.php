@@ -23,7 +23,7 @@
           <?php $pagePileExample = "<pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
           <?php $categoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
           <?php $wikiCategoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;{{urlencode:{{fullurl}}}}</pre>"; ?>
-          <?php echo $I18N->msg( 'url-structure-example-massviews', array( 'variables' => array( $pagePileExample, $categoryExample, $wikiCategoryExample ), 'parsemag' => true ) ); ?>
+          <?php echo $I18N->msg( 'url-structure-massviews-example', array( 'variables' => array( $pagePileExample, $categoryExample, $wikiCategoryExample ), 'parsemag' => true ) ); ?>
         </div>
         <div>
           <h3>

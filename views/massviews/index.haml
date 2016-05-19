@@ -64,17 +64,17 @@
                 = $I18N->msg( 'source' )
               %div.input-group
                 %div.input-group-btn
-                  %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="pagepile" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
-                    = $I18N->msg( 'page-pile-id' )
+                  %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
+                    = $I18N->msg( 'category-url' )
                     %span.caret
                   %ul.dropdown-menu
                     %li
-                      %a.source-option(href="#" data-value="pagepile")
-                        = $I18N->msg( 'page-pile-id' )
-                    %li
                       %a.source-option(href="#" data-value="category")
                         = $I18N->msg( 'category-url' )
-                %input.form-control.input-control.source-input#source_input(type="number" min="0" placeholder="12345" required="required")
+                    %li
+                      %a.source-option(href="#" data-value="pagepile")
+                        = $I18N->msg( 'page-pile-id' )
+                %input.form-control.input-control.source-input#source_input(min="0" required="required")
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right
                     = $I18N->msg( 'submit' )

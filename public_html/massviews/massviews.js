@@ -21,6 +21,7 @@ var config = {
     project: 'en.wikipedia.org',
     params: {
       sort: 'views',
+      source: 'category',
       sourceProject: '',
       direction: 1,
       massData: [],
@@ -30,12 +31,21 @@ var config = {
   },
   linearLegend: '\n    <strong><%= $.i18n(\'totals\') %>:</strong>\n    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n(\'day\') %>)\n  ',
   pageLimit: 500,
+  placeholders: {
+    category: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+    pagepile: '12345'
+  },
   platformSelector: '#platform_select',
   sourceButton: '#source_button',
   sourceInput: '#source_input',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
-  validSources: ['pagepile', 'category']
+  validParams: {
+    direction: ['-1', '1'],
+    sort: ['title', 'views'],
+    source: ['pagepile', 'category'],
+    view: ['list', 'chart']
+  }
 };
 
 module.exports = config;
@@ -187,9 +197,9 @@ var MassViews = function (_Pv) {
       $('#source_button').data('value', source).html(node.textContent + ' <span class=\'caret\'></span>');
 
       if (source === 'category') {
-        $(this.config.sourceInput).prop('type', 'text').prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York').val('');
+        $(this.config.sourceInput).prop('type', 'text').prop('placeholder', this.config.placeholders.category).val('');
       } else {
-        $(this.config.sourceInput).prop('type', 'number').prop('placeholder', '12345').val('');
+        $(this.config.sourceInput).prop('type', 'number').prop('placeholder', this.config.placeholders.pagepile).val('');
       }
 
       $(this.config.sourceInput).focus();
@@ -700,7 +710,7 @@ var MassViews = function (_Pv) {
         var pages = Object.keys(data.pages);
 
         if (pages.length > 500) {
-          _this7.writeMessage('\n          ' + _this7.getPileLink(id) + ' contains ' + _this7.n(pages.length) + ' pages.\n          For performance reasons, only the first ' + _this7.config.pageLimit + ' pages will be processed.\n          ');
+          _this7.writeMessage($.i18n('massviews-oversized-set', _this7.getPileLink(id), _this7.n(pages.length), _this7.config.pageLimit));
 
           pages = pages.slice(0, _this7.config.pageLimit);
         }
@@ -746,6 +756,8 @@ var MassViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
+      var _this8 = this;
+
       var startDate = undefined,
           endDate = undefined,
           params = this.parseQueryString();
@@ -779,13 +791,21 @@ var MassViews = function (_Pv) {
 
       $(this.config.platformSelector).val(params.platform || 'all-access');
       $(this.config.agentSelector).val(params.agent || 'user');
-      this.sort = params.sort || this.config.defaults.params.sort;
-      this.direction = params.direction || this.config.defaults.params.direction;
-      this.view = params.view || this.config.defaults.params.view;
+
+      /** import params or set defaults if invalid */
+      ['sort', 'direction', 'view', 'source'].forEach(function (key) {
+        var value = params[key];
+        if (value && _this8.config.validParams[key].includes(value)) {
+          params[key] = value;
+        } else {
+          params[key] = _this8.config.defaults.params[key];
+        }
+      });
+
+      this.updateSourceInput($('.source-option[data-value=' + params.source + ']')[0]);
 
       /** start up processing if necessary params are present */
-      if (this.config.validSources.includes(params.source) && params.target) {
-        this.updateSourceInput($('.source-option[data-value=' + params.source + ']')[0]);
+      if (params.target) {
         $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
         this.processInput();
       } else {
@@ -850,14 +870,14 @@ var MassViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this8 = this;
+      var _this9 = this;
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
       /** transform this.config.specialRanges to have i18n as keys */
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
-        ranges[$.i18n(key)] = _this8.config.specialRanges[key];
+        ranges[$.i18n(key)] = _this9.config.specialRanges[key];
       });
 
       dateRangeSelector.daterangepicker({
@@ -888,34 +908,34 @@ var MassViews = function (_Pv) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this8.daterangepicker.container,
+            container = _this9.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this8.specialRange = {
-          range: Object.keys(_this8.config.specialRanges)[index],
+        _this9.specialRange = {
+          range: Object.keys(_this9.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this8.specialRange = null;
+          _this9.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this8.daterangepicker.updateElement();
+          _this9.daterangepicker.updateElement();
         }
       });
     }
   }, {
     key: 'processPagePile',
     value: function processPagePile(cb) {
-      var _this9 = this;
+      var _this10 = this;
 
       var pileId = $(this.config.sourceInput).val();
 
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
-          return _this9.setState('initial', function () {
-            _this9.writeMessage($.i18n('massviews-empty-set', _this9.getPileLink(pileId)));
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('massviews-empty-set', _this10.getPileLink(pileId)));
           });
         }
 
@@ -924,34 +944,34 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        if (!_this9.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        if (!_this10.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
-        _this9.sourceProject = siteMap[pileData.wiki];
-        _this9.getPageViewsData(_this9.sourceProject, pileData.pages).done(function (pageViewsData) {
+        _this10.sourceProject = siteMap[pileData.wiki];
+        _this10.getPageViewsData(_this10.sourceProject, pileData.pages).done(function (pageViewsData) {
           var label = 'Page Pile #' + pileData.id;
 
-          $('.massviews-input-name').text(label).prop('href', _this9.getPileURL(pileData.id));
-          $('.massviews-params').html('\n          ' + $(_this9.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this9.sourceProject + '" target="_blank">' + _this9.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+          $('.massviews-input-name').text(label).prop('href', _this10.getPileURL(pileData.id));
+          $('.massviews-params').html('\n          ' + $(_this10.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this10.sourceProject + '" target="_blank">' + _this10.sourceProject.replace(/.org$/, '') + '</a>\n          ');
 
-          _this9.buildMotherDataset(label, _this9.getPileLink(pileData.id), pageViewsData);
+          _this10.buildMotherDataset(label, _this10.getPileLink(pileData.id), pageViewsData);
 
           cb();
         });
       }).fail(function (error) {
-        _this9.setState('initial');
+        _this10.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (typeof error === 'string') {
-          _this9.writeMessage(error);
+          _this10.writeMessage(error);
         } else {
-          _this9.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
+          _this10.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
     }
   }, {
     key: 'processCategory',
     value: function processCategory(cb) {
-      var _this10 = this;
+      var _this11 = this;
 
       var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
@@ -963,7 +983,7 @@ var MassViews = function (_Pv) {
 
       if (!category) {
         return this.setState('initial', function () {
-          _this10.writeMessage($.i18n('invalid-category-url'));
+          _this11.writeMessage($.i18n('invalid-category-url'));
         });
       }
 
@@ -976,17 +996,28 @@ var MassViews = function (_Pv) {
           format: 'json',
           list: 'categorymembers',
           cmlimit: 500,
-          cmtitle: category
+          cmtitle: category,
+          prop: 'categoryinfo',
+          titles: category
         }
       });
       var categoryLink = this.getPageLink(category, project);
       this.sourceProject = project; // for caching purposes
 
       promise.done(function (data) {
-        if (!data.query.categorymembers.length) {
-          return _this10.setState('initial', function () {
-            _this10.writeMessage($.i18n('massviews-empty-set', categoryLink));
+        var size = data.query.pages[Object.keys(data.query.pages)[0]].categoryinfo.size;
+        var pages = data.query.categorymembers;
+
+        if (!pages.length) {
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('massviews-empty-set', categoryLink));
           });
+        }
+
+        if (size > 500) {
+          _this11.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this11.n(size), _this11.config.pageLimit));
+
+          pages = pages.slice(0, _this11.config.pageLimit);
         }
 
         /**
@@ -994,27 +1025,27 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this10.setThrottle();
+        _this11.setThrottle();
 
-        var pageNames = data.query.categorymembers.map(function (cat) {
+        var pageNames = pages.map(function (cat) {
           return cat.title;
         });
 
-        _this10.getPageViewsData(project, pageNames).done(function (pageViewsData) {
+        _this11.getPageViewsData(project, pageNames).done(function (pageViewsData) {
           $('.massviews-input-name').html(categoryLink);
-          $('.massviews-params').html($(_this10.config.dateRangeSelector).val());
-          _this10.buildMotherDataset(category, categoryLink, pageViewsData);
+          $('.massviews-params').html($(_this11.config.dateRangeSelector).val());
+          _this11.buildMotherDataset(category, categoryLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this10.setState('initial');
+        _this11.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && data.error) {
-          _this10.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
+          _this11.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
         } else {
-          _this10.writeMessage($.i18n('api-error-unknown', categoryLink));
+          _this11.writeMessage($.i18n('api-error-unknown', categoryLink));
         }
       });
     }
@@ -1028,7 +1059,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this11 = this;
+      var _this12 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -1047,11 +1078,11 @@ var MassViews = function (_Pv) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this11.updateProgressBar(100);
-        _this11.renderData();
+        _this12.updateProgressBar(100);
+        _this12.renderData();
 
         // XXX: throttling
-        _this11.setThrottle();
+        _this12.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {

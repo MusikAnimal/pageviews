@@ -111,11 +111,11 @@ class MassViews extends Pv {
 
     if (source === 'category') {
       $(this.config.sourceInput).prop('type', 'text')
-        .prop('placeholder', 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York')
+        .prop('placeholder', this.config.placeholders.category)
         .val('');
     } else {
       $(this.config.sourceInput).prop('type', 'number')
-        .prop('placeholder', '12345')
+        .prop('placeholder', this.config.placeholders.pagepile)
         .val('');
     }
 
@@ -575,10 +575,7 @@ class MassViews extends Pv {
 
       if (pages.length > 500) {
         this.writeMessage(
-          `
-          ${this.getPileLink(id)} contains ${this.n(pages.length)} pages.
-          For performance reasons, only the first ${this.config.pageLimit} pages will be processed.
-          `
+          $.i18n('massviews-oversized-set', this.getPileLink(id), this.n(pages.length), this.config.pageLimit)
         );
 
         pages = pages.slice(0, this.config.pageLimit);
@@ -652,13 +649,21 @@ class MassViews extends Pv {
 
     $(this.config.platformSelector).val(params.platform || 'all-access');
     $(this.config.agentSelector).val(params.agent || 'user');
-    this.sort = params.sort || this.config.defaults.params.sort;
-    this.direction = params.direction || this.config.defaults.params.direction;
-    this.view = params.view || this.config.defaults.params.view;
+
+    /** import params or set defaults if invalid */
+    ['sort', 'direction', 'view', 'source'].forEach(key => {
+      const value = params[key];
+      if (value && this.config.validParams[key].includes(value)) {
+        params[key] = value;
+      } else {
+        params[key] = this.config.defaults.params[key];
+      }
+    });
+
+    this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
 
     /** start up processing if necessary params are present */
-    if (this.config.validSources.includes(params.source) && params.target) {
-      this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
+    if (params.target) {
       $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
       this.processInput();
     } else {
@@ -859,17 +864,30 @@ class MassViews extends Pv {
         format: 'json',
         list: 'categorymembers',
         cmlimit: 500,
-        cmtitle: category
+        cmtitle: category,
+        prop: 'categoryinfo',
+        titles: category
       }
     });
     const categoryLink = this.getPageLink(category, project);
     this.sourceProject = project; // for caching purposes
 
     promise.done(data => {
-      if (!data.query.categorymembers.length) {
+      const size = data.query.pages[Object.keys(data.query.pages)[0]].categoryinfo.size;
+      let pages = data.query.categorymembers;
+
+      if (!pages.length) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('massviews-empty-set', categoryLink));
         });
+      }
+
+      if (size > 500) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set', categoryLink, this.n(size), this.config.pageLimit)
+        );
+
+        pages = pages.slice(0, this.config.pageLimit);
       }
 
       /**
@@ -879,7 +897,7 @@ class MassViews extends Pv {
        */
       this.setThrottle();
 
-      const pageNames = data.query.categorymembers.map(cat => cat.title);
+      const pageNames = pages.map(cat => cat.title);
 
       this.getPageViewsData(project, pageNames).done(pageViewsData => {
         $('.massviews-input-name').html(categoryLink);
