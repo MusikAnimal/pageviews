@@ -221,7 +221,7 @@ class MassViews extends Pv {
 
     $('.output-totals').html(
       `<th scope='row'>${$.i18n('totals')}</th>
-       <th>${$.i18n('unique-titles', articleDatasets.length)}</th>
+       <th>${$.i18n('num-pages', articleDatasets.length)}</th>
        <th>${this.formatNumber(this.massData.sum)}</th>
        <th>${this.formatNumber(Math.round(this.massData.average))} / ${$.i18n('day')}</th>`
     );
@@ -230,7 +230,7 @@ class MassViews extends Pv {
     sortedMassViews.forEach((item, index) => {
       $('#mass_list').append(
         `<tr>
-         <th scope='row'>${index + 1}</th>
+         <th scope='row'>${item.index + 1}</th>
          <td><a href="https://${this.sourceProject}/wiki/${item.label}" target="_blank">${item.label.descore()}</a></td>
          <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
          <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
@@ -287,6 +287,8 @@ class MassViews extends Pv {
    */
   getSortProperty(item, type) {
     switch (type) {
+    case 'original':
+      return item.index;
     case 'title':
       return item.label;
     case 'views':
@@ -451,6 +453,7 @@ class MassViews extends Pv {
      *       data: [1,2,3,4],
      *       sum: 10,
      *       average: 2,
+     *       index: 0
      *       ...
      *       MERGE in this.config.chartConfig[this.chartType].dataset(this.config.colors[0])
      *     }
@@ -474,7 +477,7 @@ class MassViews extends Pv {
     let totalViewsSet = new Array(length).fill(0),
       datesWithoutData = [];
 
-    datasets.forEach(dataset => {
+    datasets.forEach((dataset, index) => {
       const data = dataset.items.map(item => item.views),
         sum = data.reduce((a, b) => a + b);
 
@@ -482,7 +485,8 @@ class MassViews extends Pv {
         data,
         label: dataset.title,
         sum,
-        average: sum / length
+        average: sum / length,
+        index
       });
 
       /**
@@ -981,12 +985,12 @@ class MassViews extends Pv {
     let csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
 
     // Add the rows to the CSV
-    this.massData.forEach(page => {
-      let pageName = '"' + page.title.descore().replace(/"/g, '""') + '"';
+    this.massData.listData.forEach(page => {
+      let pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
       csvContent += [
         pageName,
-        page.views,
+        page.sum,
         page.average
       ].join(',') + '\n';
     });

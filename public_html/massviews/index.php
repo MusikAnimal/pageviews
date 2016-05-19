@@ -141,7 +141,12 @@
           <table class="list-view table table-hover output-table">
             <thead>
               <tr>
-                <th>#</th>
+                <th>
+                  <span class="sort-link sort-link--original" data-type="<?php echo 'original'; ?>">
+                    #
+                    <span class="glyphicon glyphicon-sort"></span>
+                  </span>
+                </th>
                 <th>
                   <span class="sort-link sort-link--title" data-type="<?php echo 'title'; ?>">
                     <?php echo $I18N->msg( 'page-title' ); ?>

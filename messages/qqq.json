@@ -207,5 +207,6 @@
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"page-pile-id": "Label for the 'Page Pile ID' input field on the Massviews tool. The proper noun 'Page Pile' should not be translated.",
 	"category-url": "Label for the 'Category URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki category.",
-	"elapsed-time": "Message saying the amount of time the operation took. $1 is the number of seconds."
+	"elapsed-time": "Message saying the amount of time the operation took. $1 is the number of seconds.",
+	"num-pages": "Text simply indicating a number of pages. $1 is the number. This is used as a label in the Massviews app, indicating how many pages are in the collection."
 }

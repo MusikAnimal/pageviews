@@ -103,7 +103,10 @@
           %table.list-view.table.table-hover.output-table
             %thead
               %tr
-                %th #
+                %th
+                  %span.sort-link.sort-link--original(data-type='original')
+                    #
+                    %span.glyphicon.glyphicon-sort
                 %th
                   %span.sort-link.sort-link--title(data-type='title')
                     = $I18N->msg( 'page-title' )

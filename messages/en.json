@@ -200,5 +200,6 @@
 	"source": "Source",
 	"page-pile-id": "Page Pile ID",
 	"category-url": "Category URL",
-	"elapsed-time": "Elapsed time: $1 seconds"
+	"elapsed-time": "Elapsed time: $1 seconds",
+	"num-pages": "$1 pages"
 }

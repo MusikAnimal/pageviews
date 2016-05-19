@@ -20,10 +20,10 @@ var config = {
     dateRange: 'latest-20',
     project: 'en.wikipedia.org',
     params: {
-      sort: 'views',
+      sort: 'original',
       source: 'category',
       sourceProject: '',
-      direction: 1,
+      direction: -1,
       massData: [],
       total: 0,
       view: 'list'
@@ -42,7 +42,7 @@ var config = {
   timestampFormat: 'YYYYMMDD00',
   validParams: {
     direction: ['-1', '1'],
-    sort: ['title', 'views'],
+    sort: ['title', 'views', 'original'],
     source: ['pagepile', 'category'],
     view: ['list', 'chart']
   }
@@ -318,11 +318,11 @@ var MassViews = function (_Pv) {
       var newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
       $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
 
-      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('unique-titles', articleDatasets.length) + '</th>\n       <th>' + this.formatNumber(this.massData.sum) + '</th>\n       <th>' + this.formatNumber(Math.round(this.massData.average)) + ' / ' + $.i18n('day') + '</th>');
+      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('num-pages', articleDatasets.length) + '</th>\n       <th>' + this.formatNumber(this.massData.sum) + '</th>\n       <th>' + this.formatNumber(Math.round(this.massData.average)) + ' / ' + $.i18n('day') + '</th>');
       $('#mass_list').html('');
 
       sortedMassViews.forEach(function (item, index) {
-        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n         <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
+        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (item.index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n         <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
       });
 
       this.pushParams();
@@ -383,6 +383,8 @@ var MassViews = function (_Pv) {
     key: 'getSortProperty',
     value: function getSortProperty(item, type) {
       switch (type) {
+        case 'original':
+          return item.index;
         case 'title':
           return item.label;
         case 'views':
@@ -558,6 +560,7 @@ var MassViews = function (_Pv) {
        *       data: [1,2,3,4],
        *       sum: 10,
        *       average: 2,
+       *       index: 0
        *       ...
        *       MERGE in this.config.chartConfig[this.chartType].dataset(this.config.colors[0])
        *     }
@@ -581,7 +584,7 @@ var MassViews = function (_Pv) {
       var totalViewsSet = new Array(length).fill(0),
           datesWithoutData = [];
 
-      datasets.forEach(function (dataset) {
+      datasets.forEach(function (dataset, index) {
         var data = dataset.items.map(function (item) {
           return item.views;
         }),
@@ -593,7 +596,8 @@ var MassViews = function (_Pv) {
           data: data,
           label: dataset.title,
           sum: sum,
-          average: sum / length
+          average: sum / length,
+          index: index
         });
 
         /**
@@ -1119,10 +1123,10 @@ var MassViews = function (_Pv) {
       var csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
 
       // Add the rows to the CSV
-      this.massData.forEach(function (page) {
-        var pageName = '"' + page.title.descore().replace(/"/g, '""') + '"';
+      this.massData.listData.forEach(function (page) {
+        var pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
-        csvContent += [pageName, page.views, page.average].join(',') + '\n';
+        csvContent += [pageName, page.sum, page.average].join(',') + '\n';
       });
 
       // Output the CSV file to the browser
