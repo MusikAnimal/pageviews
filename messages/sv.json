@@ -160,9 +160,14 @@
 	"projects-placeholder": "Skriv projektnamn...",
 	"statistics": "Statistik",
 	"most-viewed-pages": "Mest besökta sidor",
+	"topviews-data-approx": "All toppvisningsdata är <a href='/topviews/faq#data_caveat'>ungefärlig</a>.",
 	"unique-devices": "Unika enheter",
 	"massviews-title": "Massvisningsanalys",
 	"massviews-empty-set": "$1 innehåller inte några sidor!",
 	"url-structure-sort-massviews": "Vilka kolumner att sorter. Antingen $1 eller $2",
-	"massviews-description": "Importera en lista över sidor och analysera sidvisningarna"
+	"massviews-description": "Importera en lista över sidor och analysera sidvisningarna",
+	"invalid-category-url": "Ogiltigt kategori! Ange den fullständiga wiki-adressen till kategorin.",
+	"source": "Källa",
+	"category-url": "Kategori-adress",
+	"elapsed-time": "Förfluten tid: $1 sekunder"
 }

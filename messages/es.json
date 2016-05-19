@@ -3,7 +3,8 @@
 		"authors": [
 			"Kaldari",
 			"Macofe",
-			"Peter Bowman"
+			"Peter Bowman",
+			"GamemOfAnime"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -98,7 +99,8 @@
 	"select2-no-results": "No se han encontrado resultados",
 	"select2-searching": "Buscando...",
 	"help-translate": "Ayúdanos a traducir",
-	"api-error": "Hubo un problema al cargar los datos de la API.",
+	"api-error": "Error al consultar a $1.",
+	"api-error-unknown": "Ocurrió un error desconocido al consultar $1",
 	"api-error-no-data": "No se encontraron resultados.",
 	"topviews-title": "Análisis de las más vistas",
 	"excluded-pages": "Páginas excluidas",
@@ -124,7 +126,9 @@
 	"faq-chart-type-title": "No me gusta este tipo de gráfico",
 	"faq-try-tool": "Prueba $1",
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
+	"faq-topviews-data-approx-title": "Los datos parecen ligeramente erroneos",
 	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
+	"faq-throttle-wait-body": "la API de Wikimedia Páginas vistas sólo puede manejar tantas solicitudes durante una ventana de tiempo. Con el fin de garantizar la API no falla y se obtiene todos los datos que necesita, se ven obligados a esperar $1 segundos después de utilizar la herramienta antes de poder utilizarlo de nuevo .",
 	"url-structure-parameters": "Parámetros",
 	"url-structure-parameters-order": "Puede usarse en cualquier orden",
 	"url-structure-project": "$1 u otro válido $2",
@@ -143,5 +147,11 @@
 	"projects-placeholder": "Escribe nombres de proyectos...",
 	"statistics": "Estadísticas",
 	"most-viewed-pages": "Páginas más vistas",
-	"unique-devices": "Dispositivos únicos"
+	"unique-devices": "Dispositivos únicos",
+	"massviews-empty-set": "¡$1 no contiene ninguna página!",
+	"url-structure-sort-massviews": "Columna que se desea ordenar. Ya sea $1 o $2",
+	"invalid-category-url": "Categoría no válida. Escribe el URL wiki completo de la categoría.",
+	"source": "Fuente",
+	"category-url": "URL de la categoría",
+	"elapsed-time": "Tiempo transcurrido: $1 segundos"
 }

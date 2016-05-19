@@ -151,6 +151,10 @@
 	"faq-source-title": "什麼是「資料數據來源」？",
 	"faq-source-pageviews": "為該項目所接收到的瀏覽次數",
 	"faq-source-unique-devices": "為瀏覽該網站各設備的數量",
+	"faq-page-pile-title": "什麼是頁面堆疊？",
+	"faq-page-pile-body": "$1為管控各項對應維基媒體專案頁面的清單。您可自行創建清單並將此匯入到大量瀏覽項目以分析那些專案的瀏覽次數。",
+	"faq-throttle-wait-title": "為何再次使用此查詢工具時；必須先等上$1秒？",
+	"faq-throttle-wait-body": "此維基媒體頁面瀏覽次數API應用程式於一定時段內只能一定程度的多筆請求。而為確保此API能不出錯產生出您所需的數據資料，因此若想再次使用此工具作查詢時；強制要求您必須先等上$1秒後才可使用。",
 	"url-structure-example": "想取得您所指定的維基百科條目最新數據內容；並使用預設選項，請使用：\n$1\n將$2替換成有效的$3。$4會呈現出頁面相關連結",
 	"url-structure-example-siteviews": "要以預設方式獲取您在維基上指定的條目最新數據資料，請使用$1",
 	"url-structure-topviews-example": "想顯示出維基上最多瀏覽頁面的預設清單內容，請使用：\n$1\n將$2替換成有效的$3。您也可使用$4把指定的頁面項目從畫面上排除，例如首頁。",
@@ -173,6 +177,7 @@
 	"url-structure-sort": "所要排序的欄位。為$1，$2，$3或$4之一",
 	"url-structure-sort-direction": "排列順序。$1為遞減，$2為遞增",
 	"url-structure-source": "$1（頁面總瀏覽數）或$2（瀏覽過此頁面的各設備數量）",
+	"url-structure-example-massviews": "用於頁面堆疊的範例網址：$1是用於分類的範例網址：$2要將您維基上的分類頁面連結至大量瀏覽，請使用：$3",
 	"default": "預設",
 	"all-languages": "頁面各語言版本統計",
 	"history": "頁面修訂歷史",
@@ -191,5 +196,10 @@
 	"massviews-title": "大量瀏覽分析",
 	"massviews-empty-set": "$1不包含頁面！",
 	"url-structure-sort-massviews": "選擇要排序的欄位，爲$1或$2其一。",
-	"massviews-description": "匯入一份用於分析瀏覽次數的頁面列表"
+	"massviews-description": "匯入一份用於分析瀏覽次數的頁面列表",
+	"invalid-category-url": "內容無效！請輸入此分類項目在維基上的完整網址",
+	"source": "來源",
+	"page-pile-id": "頁面堆疊ID",
+	"category-url": "分類項目網址",
+	"elapsed-time": "花費時間：$1秒"
 }

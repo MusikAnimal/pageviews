@@ -103,6 +103,7 @@
 	"faq-line-chart-title": "Trudno najechać kursorem myszy na punkty wykresu liniowego",
 	"faq-multi-lang-title": "Chcę zobaczyć dane dla strony we wszystkich językach projektu",
 	"faq-try-tool": "Spróbuj $1",
+	"faq-throttle-wait-title": "Dlaczego muszę czekać $1 sekund, zanim będą mógł użyć narzędzia ponownie?",
 	"url-structure-parameters": "Parametry",
 	"url-structure-special-range-latest": "Ostatnie 20 dni danych",
 	"url-structure-special-range-latest-n": "gdzie <i>N</i> jest liczbą. Na przykład <code>latest-30</code> pokaże dane z ostatnich 30 dni",
@@ -115,5 +116,6 @@
 	"projects": "Projekty",
 	"statistics": "Statystyki",
 	"most-viewed-pages": "Najczęściej odwiedzane strony",
-	"massviews-empty-set": "$1 nie zawiera stron!"
+	"massviews-empty-set": "$1 nie zawiera stron!",
+	"source": "Źródło"
 }

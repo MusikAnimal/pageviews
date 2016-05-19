@@ -97,5 +97,7 @@
 	"projects": "المشاريع",
 	"projects-placeholder": "أدخل أسماء المشاريع...",
 	"statistics": "الإحصاءات",
-	"most-viewed-pages": "أكثر الصفحات زيارة"
+	"most-viewed-pages": "أكثر الصفحات زيارة",
+	"invalid-category-url": "تصنيف غير صالح! برجاء إدخال المسار الكامل للتصنيف.",
+	"source": "المصدر"
 }
