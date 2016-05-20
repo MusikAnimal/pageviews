@@ -659,8 +659,10 @@ class MassViews extends Pv {
       const value = params[key];
       if (value && this.config.validParams[key].includes(value)) {
         params[key] = value;
+        this[key] = value;
       } else {
         params[key] = this.config.defaults.params[key];
+        this[key] = this.config.defaults.params[key];
       }
     });
 

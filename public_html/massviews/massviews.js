@@ -801,8 +801,10 @@ var MassViews = function (_Pv) {
         var value = params[key];
         if (value && _this8.config.validParams[key].includes(value)) {
           params[key] = value;
+          _this8[key] = value;
         } else {
           params[key] = _this8.config.defaults.params[key];
+          _this8[key] = _this8.config.defaults.params[key];
         }
       });
 
