@@ -774,7 +774,7 @@ class MassViews extends Pv {
     $('.daterangepicker').append(
       $('<div>')
         .addClass('daterange-notice')
-        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>"))
+        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>", `${$.i18n('july')} 2015`))
     );
 
     /**
@@ -868,16 +868,32 @@ class MassViews extends Pv {
         format: 'json',
         list: 'categorymembers',
         cmlimit: 500,
-        cmtitle: category,
+        cmtitle: decodeURIComponent(category),
         prop: 'categoryinfo',
-        titles: category
+        titles: decodeURIComponent(category)
       }
     });
-    const categoryLink = this.getPageLink(category, project);
+    const categoryLink = this.getPageLink(decodeURIComponent(category), project);
     this.sourceProject = project; // for caching purposes
 
     promise.done(data => {
-      const size = data.query.pages[Object.keys(data.query.pages)[0]].categoryinfo.size;
+      if (data.error) {
+        return this.setState('initial', () => {
+          this.writeMessage(
+            `${$.i18n('api-error', 'Category API')}: ${data.error.info}`
+          );
+        });
+      }
+
+      const queryKey = Object.keys(data.query.pages)[0];
+
+      if (queryKey === '-1') {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const size = data.query.pages[queryKey].categoryinfo.size;
       let pages = data.query.categorymembers;
 
       if (!pages.length) {

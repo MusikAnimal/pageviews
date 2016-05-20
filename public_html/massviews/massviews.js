@@ -901,7 +901,7 @@ var MassViews = function (_Pv) {
       });
 
       /** so people know why they can't query data older than August 2015 */
-      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>")));
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>", $.i18n('july') + ' 2015')));
 
       /**
        * The special date range options (buttons the right side of the daterange picker)
@@ -1000,16 +1000,30 @@ var MassViews = function (_Pv) {
           format: 'json',
           list: 'categorymembers',
           cmlimit: 500,
-          cmtitle: category,
+          cmtitle: decodeURIComponent(category),
           prop: 'categoryinfo',
-          titles: category
+          titles: decodeURIComponent(category)
         }
       });
-      var categoryLink = this.getPageLink(category, project);
+      var categoryLink = this.getPageLink(decodeURIComponent(category), project);
       this.sourceProject = project; // for caching purposes
 
       promise.done(function (data) {
-        var size = data.query.pages[Object.keys(data.query.pages)[0]].categoryinfo.size;
+        if (data.error) {
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info);
+          });
+        }
+
+        var queryKey = Object.keys(data.query.pages)[0];
+
+        if (queryKey === '-1') {
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('api-error-no-data'));
+          });
+        }
+
+        var size = data.query.pages[queryKey].categoryinfo.size;
         var pages = data.query.categorymembers;
 
         if (!pages.length) {
