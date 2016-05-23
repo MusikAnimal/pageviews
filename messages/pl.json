@@ -59,7 +59,7 @@
 	"save": "Zapisz",
 	"apply": "Zatwierdź",
 	"article-placeholder": "Wpisz nazwy stron...",
-	"date-notice": "$1 dostarcza dane począwszy od sierpnia 2015. Dla wcześniejszych danych spróbuj $2.",
+	"date-notice": "$1 dostarcza dane począwszy od $3. Dla wcześniejszych danych spróbuj $2.",
 	"invalid-params": "Nieprawidłowe parametry!",
 	"param-error-2": "Data początkowa musi być wcześniejsza od daty końcowej.",
 	"totals": "W sumie",

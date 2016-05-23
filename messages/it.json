@@ -175,5 +175,6 @@
 	"topviews-false-positive": "Alcune delle pagine elencate possono essere be <a href='/topviews/faq#false_positive'>falsi positivi</a>.",
 	"unique-devices": "Dispositivi unici",
 	"massviews-empty-set": "$1 non contiene pagine!",
-	"elapsed-time": "Tempo trascorso: $1 secondi"
+	"elapsed-time": "Tempo trascorso: $1 secondi",
+	"num-pages": "$1 pagine"
 }

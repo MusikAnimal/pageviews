@@ -103,6 +103,7 @@
 	"api-error-no-data": "Keine Daten gefunden.",
 	"api-error-timeout": "Aufgrund des API-Fehlers konnten die folgenden Seiten nicht verarbeitet werden:\n$1\nBitte warte einige Minuten und versuche es erneut.",
 	"api-throttle-wait": "Bitte warte $1 Sekunden, bevor du eine weitere Anfrage sendest.<br/>Entschuldigung für die Unannehmlichkeit. Dies ist eine vorübergehende Drosselungstaktik.<br/>Siehe $2 für weitere Informationen.",
+	"api-incomplete-data": "Einige Daten sind noch nicht verfügbar für die Daten: $1",
 	"topviews-title": "Topviews Analysis",
 	"excluded-pages": "Ausgeschlossene Seiten",
 	"show-more": "Mehr anzeigen",
@@ -175,7 +176,8 @@
 	"url-structure-sort": "Die zu sortierende Spalte. Eines von $1, $2, $3 oder $4",
 	"url-structure-sort-direction": "Die Sortierreihenfolge. $1 für absteigend, $2 für aufsteigend",
 	"url-structure-source": "Entweder $1 (gesamte Seitenaufrufe) oder $2 (Anzahl der eindeutigen Geräte, die die Seite besucht haben)",
-	"url-structure-example-massviews": "Beispiel-URL für PagePile: $1 Beispiel-URL für eine Kategorie: $2 Um auf Massviews auf einer Kategorieseite auf deinem Wiki zu verlinken, verwende: $3",
+	"url-structure-massviews-example": "Beispiel-URL für PagePile: $1 Beispiel-URL für eine Kategorie: $2 Um auf Massviews auf einer Kategorieseite auf deinem Wiki zu verlinken, verwende: $3",
+	"url-structure-view": "$1, um die Daten als eine Liste anzusehen oder $2, um die Daten als ein Diagramm anzusehen.",
 	"default": "Standard",
 	"all-languages": "Alle Sprachen",
 	"history": "Versionsgeschichte",
@@ -193,11 +195,13 @@
 	"unique-devices": "Eindeutige Geräte",
 	"massviews-title": "Massviews Analysis",
 	"massviews-empty-set": "$1 enthält keine Seiten!",
+	"massviews-oversized-set": "$1 enthält $2 Seiten. Aus Leistungsgründen werden nur die ersten $3 Seiten verarbeitet.",
 	"url-structure-sort-massviews": "Welche Spalte sortiert werden soll. Entweder $1 oder $2.",
 	"massviews-description": "Importiert eine Liste mit Seiten und analysiert die Seitenaufrufe",
 	"invalid-category-url": "Ungültige Kategorie! Bitte gib die vollständige Wiki-URL der Kategorie ein.",
 	"source": "Quelle",
 	"page-pile-id": "„Page Pile“-Kennung",
 	"category-url": "Kategorie-URL",
-	"elapsed-time": "Verstrichene Zeit: $1 Sekunden"
+	"elapsed-time": "Verstrichene Zeit: $1 Sekunden",
+	"num-pages": "$1 Seiten"
 }

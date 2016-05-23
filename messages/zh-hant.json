@@ -105,6 +105,7 @@
 	"api-error-no-data": "查無資料",
 	"api-error-timeout": "由於API應用程式出現問題，以下頁面暫無法處理：\n$1\n請等待數分鐘後在重新執行一次試試。",
 	"api-throttle-wait": "請等待$1秒後再提交另一份查詢請求。<br/>此爲限制臨時使用流量上的規範，若給您帶來不便還煩請諒解。<br/>您可查看$2以獲得更多此方面的訊息。",
+	"api-incomplete-data": "部分數據資料在以下日期無法獲取：$1",
 	"topviews-title": "最多瀏覽頁面排行分析",
 	"excluded-pages": "剔除頁面",
 	"show-more": "顯示更多內容",
@@ -177,7 +178,8 @@
 	"url-structure-sort": "所要排序的欄位。為$1，$2，$3或$4之一",
 	"url-structure-sort-direction": "排列順序。$1為遞減，$2為遞增",
 	"url-structure-source": "$1（頁面總瀏覽數）或$2（瀏覽過此頁面的各設備數量）",
-	"url-structure-example-massviews": "用於頁面堆疊的範例網址：$1是用於分類的範例網址：$2要將您維基上的分類頁面連結至大量瀏覽，請使用：$3",
+	"url-structure-massviews-example": "頁面堆疊網址範例：$1為用於分類網址範例：在您維基上要讓$2連結至大量瀏覽分類頁面，請使用：$3",
+	"url-structure-view": "用$1將數據資料以清單方式檢視，或是用$2以圖表格式呈現。",
 	"default": "預設",
 	"all-languages": "頁面各語言版本統計",
 	"history": "頁面修訂歷史",
@@ -195,11 +197,13 @@
 	"unique-devices": "各設備",
 	"massviews-title": "大量瀏覽分析",
 	"massviews-empty-set": "$1不包含頁面！",
+	"massviews-oversized-set": "$1包含$2個頁面。因網頁效率因素關係，只有前$3個頁面會被處理。",
 	"url-structure-sort-massviews": "選擇要排序的欄位，爲$1或$2其一。",
 	"massviews-description": "匯入一份用於分析瀏覽次數的頁面列表",
 	"invalid-category-url": "內容無效！請輸入此分類項目在維基上的完整網址",
 	"source": "來源",
 	"page-pile-id": "頁面堆疊ID",
 	"category-url": "分類項目網址",
-	"elapsed-time": "花費時間：$1秒"
+	"elapsed-time": "花費時間：$1秒",
+	"num-pages": "$1個頁面"
 }

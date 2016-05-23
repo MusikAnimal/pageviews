@@ -108,6 +108,7 @@
 	"api-error-no-data": "Aucune donnée trouvée.",
 	"api-error-timeout": "Du fait d’une erreur de l’API, les pages suivantes n’ont pas pu être traitées :\n$1\nVeuillez attendre plusieurs minutes et réessayer.",
 	"api-throttle-wait": "Veuillez attendre $1 secondes avant de soumettre une autre requête.<br/>Désolé pour la gêne occasionnée. Il s’agit d’une tactique de limitation temporaire.<br/>Voyez $2 pour plus d’informations.",
+	"api-incomplete-data": "Certaines données ne sont pas encore disponibles pour les dates: $1",
 	"topviews-title": "Analyse générale",
 	"excluded-pages": "Pages exclues",
 	"show-more": "Afficher plus",
@@ -180,7 +181,8 @@
 	"url-structure-sort": "La colonne à trier. Une valeur parmi $1, $2, $3 ou $4",
 	"url-structure-sort-direction": "Le sens du tri. $1 pour descendant, $2 pour ascendant",
 	"url-structure-source": "Soit $1 (total de pages vues) ou $2 (nombre de machines uniques qui ont vu la page)",
-	"url-structure-example-massviews": "URL exemple pour PagePile : $1 URL d’exemple pour une catégorie : $2 Pour faire un lien à Massviews sur une page de catégorie de votre wiki, utilisez : $3",
+	"url-structure-massviews-example": "URL exemple pour PagePile : $1 URL exemple pour une catégorie : $2 Pour lier à Massviews sur une page de catégorie de votre wiki, utilisez : $3",
+	"url-structure-view": "$1 pour voir les donées en format liste, $2 pour voir les données en format graphique",
 	"default": "Par défaut",
 	"all-languages": "Toutes les langues",
 	"history": "Historique",
@@ -198,11 +200,13 @@
 	"unique-devices": "Machines uniques",
 	"massviews-title": "Analyse des affichages de masse",
 	"massviews-empty-set": "$1 ne contient aucune page !",
+	"massviews-oversized-set": "$1 contient $2 pages. Pour des raisons de performance, seules les $3 premières pages seront traitées.",
 	"url-structure-sort-massviews": "Quelle colonne trier. $1 ou $2",
 	"massviews-description": "Importer une liste de pages et analyser les visites",
 	"invalid-category-url": "Catégorie non valide ! Veuillez entrer l’URL complète du wiki de la catégorie.",
 	"source": "Source",
 	"page-pile-id": "ID de la pile de pages",
 	"category-url": "URL de la catégorie",
-	"elapsed-time": "Temps écoulé : $1 secondes"
+	"elapsed-time": "Temps écoulé : $1 secondes",
+	"num-pages": "$1 pages"
 }

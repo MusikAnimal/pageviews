@@ -4,7 +4,8 @@
 			"Kaldari",
 			"Macofe",
 			"Peter Bowman",
-			"GamemOfAnime"
+			"GamemOfAnime",
+			"Rubentl134"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -102,6 +103,7 @@
 	"api-error": "Error al consultar a $1.",
 	"api-error-unknown": "Ocurrió un error desconocido al consultar $1",
 	"api-error-no-data": "No se encontraron resultados.",
+	"api-incomplete-data": "Algunos datos todavía no están disponibles para las fechas: $1",
 	"topviews-title": "Análisis de las más vistas",
 	"excluded-pages": "Páginas excluidas",
 	"show-more": "Mostrar más",
@@ -136,6 +138,7 @@
 	"url-structure-special-range-latest": "Datos de los últimos 20 días",
 	"url-structure-platform": "Uno de $1, $2, $3 o $4",
 	"url-structure-sort-direction": "La dirección de ordenación. $1 para descendente, $2 para ascendente",
+	"url-structure-view": "$1 para ver los datos como lista, o $2 para ver los datos como gráfico",
 	"default": "Predeterminado",
 	"all-languages": "Todos los idiomas",
 	"history": "Historial",
@@ -153,5 +156,6 @@
 	"invalid-category-url": "Categoría no válida. Escribe el URL wiki completo de la categoría.",
 	"source": "Fuente",
 	"category-url": "URL de la categoría",
-	"elapsed-time": "Tiempo transcurrido: $1 segundos"
+	"elapsed-time": "Tiempo transcurrido: $1 segundos",
+	"num-pages": "$1 páginas"
 }

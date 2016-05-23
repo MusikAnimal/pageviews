@@ -118,7 +118,12 @@
 	"average": "ค่าเฉลี่ย",
 	"submit": "ส่งข้อมูล",
 	"num-languages": "ภาษา$1",
+	"unique-titles": "$1 หัวเรื่องเฉพาะ",
 	"faq-return-to": "ย้อนกลับไปยัง $1",
+	"faq-old-data-title": "ทำไมฉันถึงไม่สามารถดูข้อมูลที่เก่ากว่า $1 ได้",
+	"faq-todays-date-title": "ทำไมฉันถึงไม่สามารถดูข้อมูลของวันนี้ได้",
+	"faq-chart-type-title": "ฉันไม่ชอบชนิดแผนภูมินี้",
+	"faq-top-viewed-title": "ฉันต้องการดูการเข้าชมหน้าสูงสุดภายในพิสัยของวัน",
 	"faq-try-tool": "ลอง $1",
 	"faq-source-title": "อะไรคือ \"แหล่งที่มาข้อมูล\"",
 	"url-structure-parameters": "พารามิเตอร์",
@@ -138,5 +143,6 @@
 	"massviews-title": "การวิเคราะห์มวลการเข้าชม",
 	"source": "แหล่งที่มา",
 	"category-url": "หมวดหมู่ URL",
-	"elapsed-time": "เวลาล่วงผ่าน: $1 วินาที"
+	"elapsed-time": "เวลาล่วงผ่าน: $1 วินาที",
+	"num-pages": "$1 หน้า"
 }

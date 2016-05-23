@@ -78,7 +78,7 @@
 	"select2-no-results": "Näischt fonnt",
 	"select2-searching": "Sichen...",
 	"help-translate": "Hëlleft iwwersetzen",
-	"api-error": "Et gpouf e Problem beim Luede vun Donnéeën vun der API.",
+	"api-error": "Feeler beim Ofruff vu(n) $1",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
 	"excluded-pages": "Ausgeschloss Säiten",
 	"show-more": "Méi weisen",
@@ -105,5 +105,7 @@
 	"note": "Notiz",
 	"projects": "Projeten",
 	"statistics": "Statistiken",
-	"source": "Quell"
+	"massviews-empty-set": "$1 huet keng Säiten!",
+	"source": "Quell",
+	"num-pages": "$1 Säiten"
 }

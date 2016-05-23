@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"ANDROBETA"
+			"ANDROBETA",
+			"Minisarm"
 		]
 	},
 	"title": "Analiza vizualizărilor paginii",
@@ -195,5 +196,6 @@
 	"source": "Sursă",
 	"page-pile-id": "ID-ul Page Pile",
 	"category-url": "URL-ul categoriei",
-	"elapsed-time": "Timpul scurs: $1 secunde"
+	"elapsed-time": "Timpul scurs: $1 secunde",
+	"num-pages": "$1 (de) pagini"
 }

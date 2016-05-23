@@ -102,6 +102,7 @@
 	"api-error-no-data": "找不到数据。",
 	"api-error-timeout": "由于API故障，以下页面不能处理：\n$1\n请等待数分钟并重试。",
 	"api-throttle-wait": "请在提交另一个请求前等待$1秒。<br/>给您带来的不便尽请谅解。这是一次临时限流策略。<br/>参见$2以获取更多信息。",
+	"api-incomplete-data": "一些数据尚不可用于这些日期：$1",
 	"topviews-title": "最多浏览分析",
 	"excluded-pages": "排除的页面",
 	"show-more": "显示更多",
@@ -174,7 +175,8 @@
 	"url-structure-sort": "要排序的列。$1、$2、$3或$4之一",
 	"url-structure-sort-direction": "排序方向。$1递减，$2递增",
 	"url-structure-source": "$1（页面总访问量）或者$2（访问此页面的单一设备数量）",
-	"url-structure-example-massviews": "用于页面堆的示例URL：$1 用于分类的示例URL：$2 要在您wiki上的分类页面链接大量浏览数据，使用：$3",
+	"url-structure-massviews-example": "用于页面堆的示例URL：$1 用于分类的示例URL：$2 要在您wiki上的分类页面链接大量浏览数据，使用：$3",
+	"url-structure-view": "$1以作为列表查看数据，或$2以作为图表查看数据",
 	"default": "默认",
 	"all-languages": "所有语言",
 	"history": "历史",
@@ -192,11 +194,13 @@
 	"unique-devices": "单一设备",
 	"massviews-title": "大量浏览分析",
 	"massviews-empty-set": "$1不包含页面！",
+	"massviews-oversized-set": "$1包含$2个页面。由于性能原因，只有前$3个页面会被处理。",
 	"url-structure-sort-massviews": "要排序的列。$1或$2之一",
 	"massviews-description": "导入页面列表并分析页面浏览",
 	"invalid-category-url": "无效分类！请输入分类的完整wiki URL。",
 	"source": "来源",
 	"page-pile-id": "页面堆ID",
 	"category-url": "分类URL",
-	"elapsed-time": "运行时间：$1秒"
+	"elapsed-time": "运行时间：$1秒",
+	"num-pages": "$1个页面"
 }

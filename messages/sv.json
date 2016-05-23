@@ -99,9 +99,11 @@
 	"select2-no-results": "Inga resultat hittades",
 	"select2-searching": "Söker...",
 	"help-translate": "Hjälp till att översätta",
-	"api-error": "Ett problem uppstod när data skulle läsas in från API.",
+	"api-error": "Fel uppstod när $1 anropades",
 	"api-error-unknown": "Ett okänt problem uppstod när en begäran gjordes i $1.",
 	"api-error-no-data": "Ingen data hittades.",
+	"api-error-timeout": "P.g.a. ett fel i API kunde följande sidor inte behandlas:\n$1\nVänta några minuter och försök igen.",
+	"api-incomplete-data": "En del data är ännu inte tillgänglig för dessa datum: $1",
 	"topviews-title": "Toppvisningsanalys",
 	"excluded-pages": "Exkluderade sidor",
 	"show-more": "Visa mer",
@@ -139,6 +141,7 @@
 	"faq-source-title": "Vad är \"Datakällor\"?",
 	"faq-source-pageviews": "är det totala antalet sidbesök som projektet får",
 	"faq-source-unique-devices": "är antalet unika enheter som besöker webbplatsen.",
+	"faq-throttle-wait-title": "Varför måste jag vänta $1 sekunder innan jag kan använda verktyget igen?",
 	"url-structure-parameters": "Parametrar",
 	"url-structure-parameters-order": "Kan användas i valfri ordning",
 	"url-structure-project": "$1 eller annan giltig $2",
@@ -148,6 +151,7 @@
 	"url-structure-platform": "En av $1, $2, $3 eller $4",
 	"url-structure-sort": "Vilken kolumn att sortera. En av $1, $2, $3 eller $4",
 	"url-structure-sort-direction": "Sorteringsriktningen. $1 för fallande, $2 för stigande",
+	"url-structure-view": "$1 för att visa data som en lista eller $2 för att visa data som ett diagram",
 	"default": "Standard",
 	"all-languages": "Alla språk",
 	"history": "Historik",
@@ -169,5 +173,6 @@
 	"invalid-category-url": "Ogiltigt kategori! Ange den fullständiga wiki-adressen till kategorin.",
 	"source": "Källa",
 	"category-url": "Kategori-adress",
-	"elapsed-time": "Förfluten tid: $1 sekunder"
+	"elapsed-time": "Förfluten tid: $1 sekunder",
+	"num-pages": "$1 sidor"
 }

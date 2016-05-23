@@ -3,7 +3,8 @@
 		"authors": [
 			"Luk3",
 			"Dianakc",
-			"Macofe"
+			"Macofe",
+			"Anderson Costa"
 		]
 	},
 	"title": "Visualizações da página",
@@ -88,7 +89,7 @@
 	"select2-min-chars": "Por favor, entre $1 ou mais caracteres.",
 	"select2-max-chars": "Por favor, exclua $1 caracter",
 	"select2-loading": "Carregando mais resultados...",
-	"select2-max-items": "Você só pode selecionar $1 item",
+	"select2-max-items": "Você só pode selecionar $1 itens",
 	"select2-no-results": "Nenhum resultado encontrado",
 	"select2-searching": "Pesquisando...",
 	"help-translate": "Ajude a traduzir",
