@@ -104,5 +104,21 @@
 	"topviews-title": "Аналіз найбольшых праглядаў",
 	"excluded-pages": "Выключаныя старонкі",
 	"show-more": "Паказаць больш",
-	"language": "Мова"
+	"language": "Мова",
+	"topviews": "Найбольш папулярныя старонкі",
+	"siteviews": "Прагляды сайтамі",
+	"submit": "Адправіць",
+	"num-languages": "$1 мовы",
+	"faq-return-to": "Вярнуцца да $1",
+	"url-structure-parameters": "Параметры",
+	"default": "Па змаўчанні",
+	"all-languages": "Усе мовы",
+	"history": "Гісторыя",
+	"info": "Інфармацыя",
+	"note": "Заўвага",
+	"projects": "Праекты",
+	"statistics": "Статыстыка",
+	"most-viewed-pages": "Найбольш праглядальныя старонкі",
+	"unique-devices": "Унікальныя прылады",
+	"source": "Крыніца"
 }

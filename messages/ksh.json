@@ -93,5 +93,7 @@
 	"history": "Väsjohne",
 	"info": "Aanjahbe",
 	"note": "Aanmerkong",
-	"unsupported-browser-error": "Mer künne ni met $1 un äldere Vääsiohne ömjonn. Bes esu johd un <a href='http://browsehappy.com/'>besorsch en neuje Väsjohn vun däm Brauser</a>."
+	"unsupported-browser-error": "Mer künne ni met $1 un äldere Vääsiohne ömjonn. Bes esu johd un <a href='http://browsehappy.com/'>besorsch en neuje Väsjohn vun däm Brauser</a>.",
+	"source": "Quäll",
+	"category-url": "Dä Saachjrobb ier <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Uniform Ressource Locator\">URL</i>"
 }
