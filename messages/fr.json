@@ -8,7 +8,8 @@
 			"C13m3n7",
 			"Gomoko",
 			"TradFr",
-			"Yasten"
+			"Yasten",
+			"Trial"
 		]
 	},
 	"title": "Analyse des pages vues",
@@ -201,7 +202,7 @@
 	"massviews-title": "Analyse des affichages de masse",
 	"massviews-empty-set": "$1 ne contient aucune page !",
 	"massviews-oversized-set": "$1 contient $2 pages. Pour des raisons de performance, seules les $3 premières pages seront traitées.",
-	"url-structure-sort-massviews": "Quelle colonne trier. Soit $1 ou $2",
+	"url-structure-sort-massviews": "Quelle colonne trier : soit $1 soit $2.",
 	"massviews-description": "Importer une liste de pages et analyser les visites",
 	"invalid-category-url": "Catégorie non valide ! Veuillez entrer l’URL complète du wiki de la catégorie.",
 	"source": "Source",

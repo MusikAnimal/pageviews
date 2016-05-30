@@ -102,5 +102,6 @@
 	"average": "Média",
 	"submit": "Enviar",
 	"num-languages": "$1 idiomas",
-	"unique-titles": "$1 títulos únicos"
+	"unique-titles": "$1 títulos únicos",
+	"num-pages": "$1 páginas"
 }
