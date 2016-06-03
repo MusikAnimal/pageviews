@@ -35,7 +35,7 @@
             <ul class="faq-ul">
               <li>
                 <?php $pagePileId = $I18N->msg( 'page-pile-id' ); ?>
-                <?php $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>$pagePileId</a>"; ?>
+                <?php $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"; ?>
                 <i><?php echo $pagePileId; ?></i>
                 <?php echo $I18N->msg( 'faq-massviews-sources-pagepile', array( 'variables' => array( $pagePileLink ) ) ); ?>
               </li>
