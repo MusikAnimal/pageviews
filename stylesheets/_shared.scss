@@ -1,4 +1,8 @@
 @import 'mixins';
+$select2-selection: rgba(255, 255, 255, .8);
+$select2-dropdown: rgba(0, 0, 0, .075);
+$form-control-bg: rgba(255, 255, 255, .7);
+$faq-entry-bg: rgba(255, 255, 255, .5);
 
 body {
   background: url('/pageviews/images/gradient.png');
@@ -21,12 +25,12 @@ hr {
 input,
 select {
   // scss-lint:disable ImportantRule
-  background: rgba(255, 255, 255, .7) !important;
+  background: $form-control-bg !important;
 }
 
 .select2-selection {
   // scss-lint:disable ImportantRule
-  background: rgba(255, 255, 255, .8) !important;
+  background: $select2-selection !important;
 }
 
 .rtl {
@@ -155,7 +159,7 @@ a:focus {
 .select2-container--default .select2-selection--multiple,
 .select2-dropdown {
   border-color: $gray;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  box-shadow: inset 0 1px 1px $select2-dropdown;
 }
 
 header {
@@ -226,7 +230,7 @@ footer {
   position: relative;
 }
 
-.agents-ul {
+.faq-ul {
   list-style-type: disc;
   padding-left: 20px;
 }
@@ -259,10 +263,10 @@ footer {
 }
 
 .list-group-item {
-  background: rgba(255, 255, 255, .5);
+  background: $faq-entry-bg;
 }
 
-.agents-help-link {
+.help-link {
   color: $bootstrap-text;
 
   span {

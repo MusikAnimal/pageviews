@@ -14,7 +14,7 @@
             <?php echo $I18N->msg( 'topviews-title' ); ?>
           </strong>
           <small class="app-description">
-            Most viewed pages of a project
+            <?php echo $I18N->msg( 'topviews-description' ); ?>
           </small>
         </h4>
       </header>

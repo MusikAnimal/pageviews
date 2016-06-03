@@ -14,7 +14,7 @@
             <?php echo $I18N->msg( 'siteviews-title' ); ?>
           </strong>
           <small class="app-description">
-            Analysis of total pageviews across multiple projects
+            <?php echo $I18N->msg( 'siteviews-description' ); ?>
           </small>
         </h4>
       </header>
@@ -79,7 +79,7 @@
           <div class="col-lg-2 col-sm-2">
             <label for="agent-select">
               <?php echo $I18N->msg( 'agent' ); ?>
-              <a class="agents-help-link" href="/siteviews/faq#agents">
+              <a class="help-link" href="/siteviews/faq#agents">
                 <span class="glyphicon glyphicon-question-sign"></span>
               </a>
             </label>

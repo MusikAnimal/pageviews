@@ -17,10 +17,10 @@ const config = {
     dateRange: 'latest-20',
     project: 'en.wikipedia.org',
     params: {
-      sort: 'original',
+      sort: 'views',
       source: 'category',
       sourceProject: '',
-      direction: -1,
+      direction: 1,
       massData: [],
       total: 0,
       view: 'list'

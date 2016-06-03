@@ -14,7 +14,7 @@
             <?php echo $I18N->msg( 'langviews-title' ); ?>
           </strong>
           <small class="app-description">
-            Pageviews of an article across all languages
+            <?php echo $I18N->msg( 'langviews-description' ); ?>
           </small>
         </h4>
       </header>
@@ -64,7 +64,7 @@
             <div class="col-lg-3 col-sm-2">
               <label for="agent_select">
                 <?php echo $I18N->msg( 'agent' ); ?>
-                <a class="agents-help-link" href="/langviews/faq#agents">
+                <a class="help-link" href="/langviews/faq#agents">
                   <span class="glyphicon glyphicon-question-sign"></span>
                 </a>
               </label>

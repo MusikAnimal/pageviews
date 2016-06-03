@@ -45,7 +45,7 @@
             %div.col-lg-4.col-sm-4
               %label(for="agent_select")
                 = $I18N->msg( 'agent' )
-                %a.agents-help-link(href="/massviews/faq#agents")
+                %a.help-link(href="/massviews/faq#agents")
                   %span.glyphicon.glyphicon-question-sign
               %select.form-control#agent_select
                 %option(value="all-agents")
@@ -62,6 +62,8 @@
             %div.col-lg-12
               %label(for="source_input")
                 = $I18N->msg( 'source' )
+                %a.help-link(href="/massviews/faq#sources")
+                  %span.glyphicon.glyphicon-question-sign
               %div.input-group
                 %div.input-group-btn
                   %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
@@ -104,9 +106,7 @@
             %thead
               %tr
                 %th
-                  %span.sort-link.sort-link--original(data-type='original')
-                    #
-                    %span.glyphicon.glyphicon-sort
+                  %span #
                 %th
                   %span.sort-link.sort-link--title(data-type='title')
                     = $I18N->msg( 'page-title' )

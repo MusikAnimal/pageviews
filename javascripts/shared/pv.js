@@ -599,7 +599,7 @@ class Pv {
       elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
     $('.elapsed-time').attr('datetime', endTime.format())
-      .text(`Elapsed time: ${elapsedTime / 1000} seconds`);
+      .text($.i18n('elapsed-time', elapsedTime / 1000));
 
     return elapsedTime;
   }

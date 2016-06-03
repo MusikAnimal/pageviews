@@ -40,12 +40,12 @@ const templates = {
             </div>
             <div class="linear-legend--links">
               <% if (isMultilangProject()) { %>
-                <a href="<%= getLangviewsURL(chartData[i].label) %>">All languages</a>
+                <a href="<%= getLangviewsURL(chartData[i].label) %>"><%= $.i18n('all-languages') %></a>
                 &bullet;
               <% } %>
-              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank">History</a>
+              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank"><%= $.i18n('history') %></a>
               &bullet;
-              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank">Info</a>
+              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank"><%= $.i18n('info') %></a>
             </div>
           </span>
         <% } %>
@@ -68,12 +68,12 @@ const templates = {
           </div>
           <div class="linear-legend--links">
             <% if (isMultilangProject()) { %>
-              <a href="<%= getLangviewsURL(segments[i].label) %>">All languages</a>
+              <a href="<%= getLangviewsURL(segments[i].label) %>"><%= $.i18n('all-languages') %></a>
               &bullet;
             <% } %>
-            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=history" target="_blank">History</a>
+            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=history" target="_blank"><%= $.i18n('history') %></a>
             &bullet;
-            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=info" target="_blank">Info</a>
+            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=info" target="_blank"><%= $.i18n('info') %></a>
           </div>
         </span>
       <% } %>

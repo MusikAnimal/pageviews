@@ -230,7 +230,7 @@ class MassViews extends Pv {
     sortedMassViews.forEach((item, index) => {
       $('#mass_list').append(
         `<tr>
-         <th scope='row'>${item.index + 1}</th>
+         <th scope='row'>${index + 1}</th>
          <td><a href="https://${this.sourceProject}/wiki/${item.label}" target="_blank">${item.label.descore()}</a></td>
          <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
          <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>

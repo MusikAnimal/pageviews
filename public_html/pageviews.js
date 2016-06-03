@@ -339,8 +339,8 @@ var PageViews = function (_Pv) {
     value: function popParams() {
       var _this4 = this;
 
-      var startDate = undefined,
-          endDate = undefined,
+      var startDate = void 0,
+          endDate = void 0,
           params = this.parseQueryString('pages');
 
       $(this.config.projectInput).val(params.project || this.config.defaults.project);
@@ -937,7 +937,7 @@ if (!Array.prototype.find) {
     var list = Object(this);
     var length = list.length >>> 0;
     var thisArg = arguments[1];
-    var value = undefined;
+    var value = void 0;
 
     for (var i = 0; i < length; i++) {
       value = list[i];
@@ -1637,7 +1637,7 @@ var Pv = function () {
       var endTime = moment(),
           elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
-      $('.elapsed-time').attr('datetime', endTime.format()).text('Elapsed time: ' + elapsedTime / 1000 + ' seconds');
+      $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
 
       return elapsedTime;
     }
@@ -1656,7 +1656,7 @@ var Pv = function () {
     key: 'rateLimit',
     value: function rateLimit(fn, delay, context) {
       var queue = [],
-          timer = undefined;
+          timer = void 0;
 
       var processQueue = function processQueue() {
         var item = queue.shift();
@@ -1809,8 +1809,8 @@ var Pv = function () {
     key: 'setSpecialRange',
     value: function setSpecialRange(type) {
       var rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
-      var startDate = undefined,
-          endDate = undefined;
+      var startDate = void 0,
+          endDate = void 0;
 
       if (type.includes('latest-')) {
         var offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
@@ -2173,7 +2173,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: true
+        bezierCurve: false
       },
       dataset: function dataset(color) {
         return {
@@ -3212,8 +3212,8 @@ module.exports = siteMap;
  * @type {Object}
  */
 var templates = {
-  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      <% if (isMultilangProject()) { %>\n        &bullet;\n        <a href=\"<%= getLangviewsURL(chartData[0].label) %>\"><%= $.i18n('all-languages') %></a>\n      <% } %>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=history\" target=\"_blank\"><%= $.i18n('history') %></a>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=info\" target=\"_blank\"><%= $.i18n('info') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"<%= getPageURL(chartData[i].label) %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <% if (isMultilangProject()) { %>\n                <a href=\"<%= getLangviewsURL(chartData[i].label) %>\">All languages</a>\n                &bullet;\n              <% } %>\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=history\" target=\"_blank\">History</a>\n              &bullet;\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=info\" target=\"_blank\">Info</a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
-  circularLegend: "\n    <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>\n    <div class=\"linear-legend--totals\">\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n    </div>\n    <div class=\"linear-legends\">\n      <% for (var i=0; i<segments.length; i++) { %>\n        <span class=\"linear-legend\">\n          <div class=\"linear-legend--label\" style=\"background-color:<%= segments[i].fillColor %>\">\n            <a href=\"<%= getPageURL(segments[i].label) %>\" target=\"_blank\"><%= segments[i].label %></a>\n          </div>\n          <div class=\"linear-legend--counts\">\n            <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)\n          </div>\n          <div class=\"linear-legend--links\">\n            <% if (isMultilangProject()) { %>\n              <a href=\"<%= getLangviewsURL(segments[i].label) %>\">All languages</a>\n              &bullet;\n            <% } %>\n            <a href=\"<%= getExpandedPageURL(segments[i].label) %>&action=history\" target=\"_blank\">History</a>\n            &bullet;\n            <a href=\"<%= getExpandedPageURL(segments[i].label) %>&action=info\" target=\"_blank\">Info</a>\n          </div>\n        </span>\n      <% } %>\n    </div>\n    "
+  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      <% if (isMultilangProject()) { %>\n        &bullet;\n        <a href=\"<%= getLangviewsURL(chartData[0].label) %>\"><%= $.i18n('all-languages') %></a>\n      <% } %>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=history\" target=\"_blank\"><%= $.i18n('history') %></a>\n      &bullet;\n      <a href=\"<%= getPageURL(chartData[0].label) %>?action=info\" target=\"_blank\"><%= $.i18n('info') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"<%= getPageURL(chartData[i].label) %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <% if (isMultilangProject()) { %>\n                <a href=\"<%= getLangviewsURL(chartData[i].label) %>\"><%= $.i18n('all-languages') %></a>\n                &bullet;\n              <% } %>\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=history\" target=\"_blank\"><%= $.i18n('history') %></a>\n              &bullet;\n              <a href=\"<%= getExpandedPageURL(chartData[i].label) %>&action=info\" target=\"_blank\"><%= $.i18n('info') %></a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
+  circularLegend: "\n    <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>\n    <div class=\"linear-legend--totals\">\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n    </div>\n    <div class=\"linear-legends\">\n      <% for (var i=0; i<segments.length; i++) { %>\n        <span class=\"linear-legend\">\n          <div class=\"linear-legend--label\" style=\"background-color:<%= segments[i].fillColor %>\">\n            <a href=\"<%= getPageURL(segments[i].label) %>\" target=\"_blank\"><%= segments[i].label %></a>\n          </div>\n          <div class=\"linear-legend--counts\">\n            <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)\n          </div>\n          <div class=\"linear-legend--links\">\n            <% if (isMultilangProject()) { %>\n              <a href=\"<%= getLangviewsURL(segments[i].label) %>\"><%= $.i18n('all-languages') %></a>\n              &bullet;\n            <% } %>\n            <a href=\"<%= getExpandedPageURL(segments[i].label) %>&action=history\" target=\"_blank\"><%= $.i18n('history') %></a>\n            &bullet;\n            <a href=\"<%= getExpandedPageURL(segments[i].label) %>&action=info\" target=\"_blank\"><%= $.i18n('info') %></a>\n          </div>\n        </span>\n      <% } %>\n    </div>\n    "
 };
 
 module.exports = templates;

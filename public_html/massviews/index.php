@@ -57,7 +57,7 @@
             <div class="col-lg-4 col-sm-4">
               <label for="agent_select">
                 <?php echo $I18N->msg( 'agent' ); ?>
-                <a class="agents-help-link" href="/massviews/faq#agents">
+                <a class="help-link" href="/massviews/faq#agents">
                   <span class="glyphicon glyphicon-question-sign"></span>
                 </a>
               </label>
@@ -82,6 +82,9 @@
             <div class="col-lg-12">
               <label for="source_input">
                 <?php echo $I18N->msg( 'source' ); ?>
+                <a class="help-link" href="/massviews/faq#sources">
+                  <span class="glyphicon glyphicon-question-sign"></span>
+                </a>
               </label>
               <div class="input-group">
                 <div class="input-group-btn">
@@ -142,10 +145,7 @@
             <thead>
               <tr>
                 <th>
-                  <span class="sort-link sort-link--original" data-type="<?php echo 'original'; ?>">
-                    #
-                    <span class="glyphicon glyphicon-sort"></span>
-                  </span>
+                  <span>#</span>
                 </th>
                 <th>
                   <span class="sort-link sort-link--title" data-type="<?php echo 'title'; ?>">

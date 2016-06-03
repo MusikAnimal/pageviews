@@ -12,7 +12,7 @@
           %strong
             = $I18N->msg( 'langviews-title' )
           %small.app-description
-            Pageviews of an article across all languages
+            = $I18N->msg( 'langviews-description' )
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -51,7 +51,7 @@
             %div.col-lg-3.col-sm-2
               %label(for="agent_select")
                 = $I18N->msg( 'agent' )
-                %a.agents-help-link(href="/langviews/faq#agents")
+                %a.help-link(href="/langviews/faq#agents")
                   %span.glyphicon.glyphicon-question-sign
               %select.form-control#agent_select
                 %option(value="all-agents")

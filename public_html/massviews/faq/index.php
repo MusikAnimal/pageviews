@@ -28,14 +28,23 @@
               <?php echo $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) ); ?>
             </p>
           </li>
-          <li class="list-group-item">
+          <li class="list-group-item" id="sources">
             <p>
-              <strong><?php echo $I18N->msg( 'faq-page-pile-title' ); ?></strong>
+              <strong><?php echo $I18N->msg( 'faq-massviews-sources-title' ); ?></strong>
             </p>
-            <p>
-              <?php $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"; ?>
-              <?php echo $I18N->msg( 'faq-page-pile-body', array( 'variables' => array( $pagePileLink ) ) ); ?>
-            </p>
+            <ul class="faq-ul">
+              <li>
+                <?php $pagePileId = $I18N->msg( 'page-pile-id' ); ?>
+                <?php $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>$pagePileId</a>"; ?>
+                <i><?php echo $pagePileId; ?></i>
+                <?php echo $I18N->msg( 'faq-massviews-sources-pagepile', array( 'variables' => array( $pagePileLink ) ) ); ?>
+              </li>
+              <li>
+                <?php $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"; ?>
+                <i><?php echo $I18N->msg( 'category-url' ); ?></i>
+                <?php echo $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) ); ?>
+              </li>
+            </ul>
           </li>
           <li class="list-group-item">
             <?php $backfillDate = $I18N->msg( 'july' ) . ' 2015'; ?>
@@ -58,7 +67,7 @@
             <p>
               <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
             </p>
-            <ul class="agents-ul">
+            <ul class="faq-ul">
               <li>
                 <i><?php echo $I18N->msg( 'user' ); ?></i>
                 <?php echo $I18N->msg( 'faq-agents-user' ); ?>

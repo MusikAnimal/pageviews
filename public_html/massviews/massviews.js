@@ -20,10 +20,10 @@ var config = {
     dateRange: 'latest-20',
     project: 'en.wikipedia.org',
     params: {
-      sort: 'original',
+      sort: 'views',
       source: 'category',
       sourceProject: '',
-      direction: -1,
+      direction: 1,
       massData: [],
       total: 0,
       view: 'list'
@@ -322,7 +322,7 @@ var MassViews = function (_Pv) {
       $('#mass_list').html('');
 
       sortedMassViews.forEach(function (item, index) {
-        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (item.index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n         <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
+        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n         <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
       });
 
       this.pushParams();
@@ -435,7 +435,7 @@ var MassViews = function (_Pv) {
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
-          hadFailure = undefined,
+          hadFailure = void 0,
           failureRetries = {},
           totalRequestCount = pages.length,
           failedPages = [],
@@ -740,7 +740,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'getWikiPageFromURL',
     value: function getWikiPageFromURL(url) {
-      var matches = undefined;
+      var matches = void 0;
 
       if (url.includes('?')) {
         matches = url.match(/\/\/(.*?)\/w\/.*\?(?:.*\b)?title=(.*?)(?:&|$)/);
@@ -762,8 +762,8 @@ var MassViews = function (_Pv) {
     value: function popParams() {
       var _this8 = this;
 
-      var startDate = undefined,
-          endDate = undefined,
+      var startDate = void 0,
+          endDate = void 0,
           params = this.parseQueryString();
 
       this.patchUsage('mv');
@@ -1292,7 +1292,7 @@ if (!Array.prototype.find) {
     var list = Object(this);
     var length = list.length >>> 0;
     var thisArg = arguments[1];
-    var value = undefined;
+    var value = void 0;
 
     for (var i = 0; i < length; i++) {
       value = list[i];
@@ -1992,7 +1992,7 @@ var Pv = function () {
       var endTime = moment(),
           elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
-      $('.elapsed-time').attr('datetime', endTime.format()).text('Elapsed time: ' + elapsedTime / 1000 + ' seconds');
+      $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
 
       return elapsedTime;
     }
@@ -2011,7 +2011,7 @@ var Pv = function () {
     key: 'rateLimit',
     value: function rateLimit(fn, delay, context) {
       var queue = [],
-          timer = undefined;
+          timer = void 0;
 
       var processQueue = function processQueue() {
         var item = queue.shift();
@@ -2164,8 +2164,8 @@ var Pv = function () {
     key: 'setSpecialRange',
     value: function setSpecialRange(type) {
       var rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
-      var startDate = undefined,
-          endDate = undefined;
+      var startDate = void 0,
+          endDate = void 0;
 
       if (type.includes('latest-')) {
         var offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
@@ -2528,7 +2528,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: true
+        bezierCurve: false
       },
       dataset: function dataset(color) {
         return {

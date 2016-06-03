@@ -82,8 +82,7 @@
 
       %div.modal-body
         - $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
-        - $maintainer = "maintainers";
-        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api, $maintainer ), 'parsemag' => true ) );
+        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api ), 'parsemag' => true ) );
 
       %div.modal-footer
         %button.btn.btn-primary(data-dismiss="modal" type="button")

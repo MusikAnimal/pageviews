@@ -20,12 +20,19 @@
               %strong= $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ) ) )
             %p
               = $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ) ) )
-          %li.list-group-item
+          %li.list-group-item(id="sources")
             %p
-              %strong= $I18N->msg( 'faq-page-pile-title' )
-            %p
-              - $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"
-              = $I18N->msg( 'faq-page-pile-body', array( 'variables' => array( $pagePileLink ) ) )
+              %strong= $I18N->msg( 'faq-massviews-sources-title' )
+            %ul.faq-ul
+              %li
+                - $pagePileId = $I18N->msg( 'page-pile-id' )
+                - $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>$pagePileId</a>"
+                %i= $pagePileId
+                = $I18N->msg( 'faq-massviews-sources-pagepile', array( 'variables' => array( $pagePileLink ) ) )
+              %li
+                - $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"
+                %i= $I18N->msg( 'category-url' )
+                = $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) )
           %li.list-group-item
             - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
             %p
@@ -40,7 +47,7 @@
           %li.list-group-item(id="agents")
             %p
               %strong= $I18N->msg( 'faq-agents-title' )
-            %ul.agents-ul
+            %ul.faq-ul
               %li
                 %i= $I18N->msg( 'user' )
                 = $I18N->msg( 'faq-agents-user' )

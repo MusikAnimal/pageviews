@@ -49,7 +49,7 @@
             <p>
               <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
             </p>
-            <ul class="agents-ul">
+            <ul class="faq-ul">
               <li>
                 <i><?php echo $I18N->msg( 'user' ); ?></i>
                 <?php echo $I18N->msg( 'faq-agents-user' ); ?>

@@ -12,7 +12,7 @@
           %strong
             = $I18N->msg( 'title' )
           %small.app-description
-            Analysis of pageviews across multiple pages
+            = $I18N->msg( 'pageviews-description' )
 
       %main.col-lg-10.col-lg-offset-1
         / Site notice
@@ -58,7 +58,7 @@
           %div.col-lg-2.col-sm-2
             %label(for="agent-select")
               = $I18N->msg( 'agent' )
-              %a.agents-help-link(href="/pageviews/faq#agents")
+              %a.help-link(href="/pageviews/faq#agents")
                 %span.glyphicon.glyphicon-question-sign
             %select.form-control#agent-select
               %option(value="all-agents")

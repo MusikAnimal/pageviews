@@ -25,7 +25,7 @@ const pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: true
+        bezierCurve: false
       },
       dataset(color) {
         return {

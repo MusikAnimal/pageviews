@@ -386,7 +386,7 @@ var LangViews = function (_Pv) {
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
-          hadFailure = undefined,
+          hadFailure = void 0,
           failureRetries = {},
           totalRequestCount = interWikiKeys.length,
           failedPages = [];
@@ -588,8 +588,8 @@ var LangViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var startDate = undefined,
-          endDate = undefined,
+      var startDate = void 0,
+          endDate = void 0,
           params = this.parseQueryString('pages');
 
       $(this.config.projectInput).val(params.project || this.config.defaults.project);
@@ -1018,7 +1018,7 @@ if (!Array.prototype.find) {
     var list = Object(this);
     var length = list.length >>> 0;
     var thisArg = arguments[1];
-    var value = undefined;
+    var value = void 0;
 
     for (var i = 0; i < length; i++) {
       value = list[i];
@@ -1718,7 +1718,7 @@ var Pv = function () {
       var endTime = moment(),
           elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
-      $('.elapsed-time').attr('datetime', endTime.format()).text('Elapsed time: ' + elapsedTime / 1000 + ' seconds');
+      $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
 
       return elapsedTime;
     }
@@ -1737,7 +1737,7 @@ var Pv = function () {
     key: 'rateLimit',
     value: function rateLimit(fn, delay, context) {
       var queue = [],
-          timer = undefined;
+          timer = void 0;
 
       var processQueue = function processQueue() {
         var item = queue.shift();
@@ -1890,8 +1890,8 @@ var Pv = function () {
     key: 'setSpecialRange',
     value: function setSpecialRange(type) {
       var rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
-      var startDate = undefined,
-          endDate = undefined;
+      var startDate = void 0,
+          endDate = void 0;
 
       if (type.includes('latest-')) {
         var offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
@@ -2254,7 +2254,7 @@ var pvConfig = {
   chartConfig: {
     Line: {
       opts: {
-        bezierCurve: true
+        bezierCurve: false
       },
       dataset: function dataset(color) {
         return {
