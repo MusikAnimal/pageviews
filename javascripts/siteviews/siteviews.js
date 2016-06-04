@@ -464,6 +464,7 @@ class SiteViews extends Pv {
 
     if (!sites.length) {
       this.resetView();
+      this.focusSelect2();
       return;
     }
 

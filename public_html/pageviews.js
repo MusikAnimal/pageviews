@@ -386,6 +386,8 @@ var PageViews = function (_Pv) {
         if (this.project === 'en.wikipedia') {
           params.pages = ['Cat', 'Dog'];
           this.setSelect2Defaults(params.pages);
+        } else {
+          this.focusSelect2();
         }
       } else if (this.normalized) {
         params.pages = this.underscorePageNames(params.pages);
@@ -672,6 +674,7 @@ var PageViews = function (_Pv) {
 
       if (!articles.length) {
         this.resetView();
+        this.focusSelect2();
         return;
       }
 
@@ -1143,6 +1146,18 @@ var Pv = function () {
           el.checked = _this2[el.name] === el.value;
         }
       });
+    }
+
+    /**
+     * Add focus to Select2 input field
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'focusSelect2',
+    value: function focusSelect2() {
+      $('.select2-selection').trigger('click');
+      $('.select2-search__field').focus();
     }
 
     /**

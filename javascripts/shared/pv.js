@@ -147,6 +147,15 @@ class Pv {
   }
 
   /**
+   * Add focus to Select2 input field
+   * @returns {null} nothing
+   */
+  focusSelect2() {
+    $('.select2-selection').trigger('click');
+    $('.select2-search__field').focus();
+  }
+
+  /**
    * Format number based on current settings, e.g. localize with comma delimeters
    * @param {number|string} num - number to format
    * @returns {string} formatted number

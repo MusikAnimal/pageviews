@@ -292,6 +292,8 @@ class PageViews extends Pv {
       if (this.project === 'en.wikipedia') {
         params.pages = ['Cat', 'Dog'];
         this.setSelect2Defaults(params.pages);
+      } else {
+        this.focusSelect2();
       }
     } else if (this.normalized) {
       params.pages = this.underscorePageNames(params.pages);
@@ -537,6 +539,7 @@ class PageViews extends Pv {
 
     if (!articles.length) {
       this.resetView();
+      this.focusSelect2();
       return;
     }
 
