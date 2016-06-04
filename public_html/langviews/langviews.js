@@ -45,7 +45,7 @@ var config = {
       name: 'Validated'
     }
   },
-  dateLimit: 31, // num days
+  dateLimit: 90, // num days
   dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
