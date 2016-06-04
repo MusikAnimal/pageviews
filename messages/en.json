@@ -197,14 +197,14 @@
 	"massviews-oversized-set": "$1 contains $2 pages. For performance reasons, only the first $3 pages will be processed.",
 	"url-structure-sort-massviews": "Which column to sort. Either $1 or $2",
 	"pageviews-description": "Analysis of pageviews across multiple pages",
-  "topviews-description": "Most viewed pages of a project",
-  "langviews-description": "Pageviews of an article across all languages",
+	"topviews-description": "Most viewed pages of a project",
+	"langviews-description": "Pageviews of an article across all languages",
 	"massviews-description": "Import a list of pages and analyze the pageviews",
-  "siteviews-description": "Analysis of total pageviews across multiple projects",
+	"siteviews-description": "Analysis of total pageviews across multiple projects",
 	"invalid-category-url": "Invalid category! Please enter the full wiki URL of the category.",
 	"source": "Source",
 	"page-pile-id": "Page Pile ID",
 	"category-url": "Category URL",
-	"elapsed-time": "Elapsed time: $1 {{PLURAL|$1|second|seconds}}",
+	"elapsed-time": "Elapsed time: $1 {{PLURAL:$1|second|seconds}}",
 	"num-pages": "$1 {{PLURAL:$1|page|pages}}"
 }
