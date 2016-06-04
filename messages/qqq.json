@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Kaldari",
+			"MusikAnimal",
 			"Liuxinyu970226",
 			"Nike",
 			"Robby",
@@ -101,7 +102,6 @@
 	"select2-loading": "Notice telling the user that more results are loading",
 	"select2-max-items": "Notice telling the user that they can't select any more items. $1 is a number.",
 	"select2-no-results": "Notice telling the user that no results were found",
-	"select2-searching": "Displayed while a search is occurring",
 	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
 	"api-error": "Generic error message for when something went wrong while querying an API. $1 is the name of the API. This message is followed by the error returned by the API.",
 	"api-error-unknown": "Error message saying an unknown error occurred when querying an API. $1 is the name of the API.",

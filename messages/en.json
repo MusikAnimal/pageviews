@@ -95,7 +95,6 @@
 	"select2-loading": "Loading more results…",
 	"select2-max-items": "You can only select $1 items",
 	"select2-no-results": "No results found",
-	"select2-searching": "Searching…",
 	"help-translate": "Help translate",
 	"api-error": "Error querying $1",
 	"api-error-unknown": "An unknown error occurred when querying $1",
