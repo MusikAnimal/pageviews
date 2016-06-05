@@ -80,6 +80,10 @@
             %dt view
             %dd
               = $I18N->msg( 'url-structure-view', array( 'variables' => array( '<code>list</code>', '<code>chart</code>' ), 'parsemag' => true ) )
+            %dt subjectpage
+            %dd
+              - $faqLink = "<a href='/massviews/faq#category_subject_toggle'>" . $I18N->msg( 'category-subject-toggle' ) . "</a>"
+              = $I18N->msg( 'url-structure-subjectpage', array( 'variables' => array( $faqLink, '<code>1</code>', '<code>0</code>' ), 'parsemag' => true ) )
 
         %div.col-lg-12.text-center.tm
           %a(href="/massviews")

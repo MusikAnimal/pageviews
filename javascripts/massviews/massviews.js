@@ -113,10 +113,12 @@ class MassViews extends Pv {
       $(this.config.sourceInput).prop('type', 'text')
         .prop('placeholder', this.config.placeholders.category)
         .val('');
+      $('.category-subject-toggle').show();
     } else {
       $(this.config.sourceInput).prop('type', 'number')
         .prop('placeholder', this.config.placeholders.pagepile)
         .val('');
+      $('.category-subject-toggle').hide();
     }
 
     $(this.config.sourceInput).focus();
@@ -141,7 +143,7 @@ class MassViews extends Pv {
       platform: $(this.config.platformSelector).val(),
       agent: $(this.config.agentSelector).val(),
       source: $(this.config.sourceButton).data('value'),
-      target: $(this.config.sourceInput).val()
+      target: $(this.config.sourceInput).val().score()
     };
 
     /**
@@ -154,6 +156,10 @@ class MassViews extends Pv {
     } else {
       params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+    }
+
+    if (params.source === 'category') {
+      params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
     }
 
     if (!forCacheKey) {
@@ -655,7 +661,7 @@ class MassViews extends Pv {
     $(this.config.agentSelector).val(params.agent || 'user');
 
     /** import params or set defaults if invalid */
-    ['sort', 'direction', 'view', 'source'].forEach(key => {
+    ['sort', 'direction', 'view', 'source', 'subjectpage'].forEach(key => {
       const value = params[key];
       if (value && this.config.validParams[key].includes(value)) {
         params[key] = value;
@@ -665,6 +671,10 @@ class MassViews extends Pv {
         this[key] = this.config.defaults.params[key];
       }
     });
+
+    if (params.subjectpage === '1') {
+      $('.category-subject-toggle--input').prop('checked', true);
+    }
 
     this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
 
@@ -861,19 +871,26 @@ class MassViews extends Pv {
       });
     }
 
+    let requestData = {
+      action: 'query',
+      format: 'json',
+      list: 'categorymembers',
+      cmlimit: 500,
+      cmtitle: decodeURIComponent(category),
+      prop: 'categoryinfo',
+      titles: decodeURIComponent(category)
+    };
+
+    if ($('.category-subject-toggle--input').is(':checked')) {
+      requestData.meta = 'siteinfo';
+      requestData.siprop = 'namespaces';
+    }
+
     const promise = $.ajax({
       url: `https://${project}/w/api.php`,
       jsonp: 'callback',
       dataType: 'jsonp',
-      data: {
-        action: 'query',
-        format: 'json',
-        list: 'categorymembers',
-        cmlimit: 500,
-        cmtitle: decodeURIComponent(category),
-        prop: 'categoryinfo',
-        titles: decodeURIComponent(category)
-      }
+      data: requestData
     });
     const categoryLink = this.getPageLink(decodeURIComponent(category), project);
     this.sourceProject = project; // for caching purposes
@@ -895,7 +912,8 @@ class MassViews extends Pv {
         });
       }
 
-      const size = data.query.pages[queryKey].categoryinfo.size;
+      const size = data.query.pages[queryKey].categoryinfo.size,
+        namespaces = data.query.namespaces;
       let pages = data.query.categorymembers;
 
       if (!pages.length) {
@@ -919,7 +937,7 @@ class MassViews extends Pv {
        */
       this.setThrottle();
 
-      const pageNames = pages.map(cat => cat.title);
+      const pageNames = this.mapCategoryPageNames(pages, namespaces);
 
       this.getPageViewsData(project, pageNames).done(pageViewsData => {
         $('.massviews-input-name').html(categoryLink);
@@ -940,6 +958,22 @@ class MassViews extends Pv {
         this.writeMessage($.i18n('api-error-unknown', categoryLink));
       }
     });
+  }
+
+  mapCategoryPageNames(pages, namespaces) {
+    let pageNames = [];
+
+    pages.forEach(page => {
+      if (namespaces && page.ns % 2 === 1) {
+        const namespace = namespaces[page.ns].canonical;
+        const subjectNamespace = namespaces[page.ns - 1].canonical || '';
+        pageNames.push(page.title.replace(namespace, subjectNamespace).replace(/^\:/, ''));
+      } else {
+        pageNames.push(page.title);
+      }
+    });
+
+    return pageNames;
   }
 
   /**

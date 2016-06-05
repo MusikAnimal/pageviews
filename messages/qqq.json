@@ -158,6 +158,8 @@
 	"faq-massviews-sources-title": "FAQ - title of the section explaining what the sources are in the Massviews tool.",
 	"faq-massviews-sources-pagepile": "FAQ - explanation of what the 'Page Pile ID' source in the Massviews tool is.",
 	"faq-massviews-sources-category-url": "FAQ - explanation of what the 'Category URL' source in the Massviews tool is.",
+	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",
+	"faq-massviews-subject-page-body": "FAQ - explanation of what the 'use subject page' option is",
 	"faq-throttle-wait-title": "FAQ - title of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
 	"faq-throttle-wait-body": "FAQ - body of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
@@ -184,6 +186,7 @@
 	"url-structure-source": "Documentation for the 'source' parameter. $1 and $2 are valid values",
 	"url-structure-massviews-example": "Example of how to link to Massviews Analysis. $1 is the example for Page Piles, $2 for categories, and $3 for linking on a category wiki page.",
 	"url-structure-view": "Documentation for the 'view' parameter. $1 is the value to show the data as a list, or $2 to show the data as a chart",
+	"url-structure-subjectpage": "Documentation for the 'subjectpage' parameter. $1 is a link to the FAQ entry for this option (the text of the link is the i18n message 'category-subject-toggle'). $2 is the value to enable the option, $2 is the value to disable it.",
 	"default": "Default\n{{Identical|Default}}",
 	"all-languages": "A link to show the article in the multilingual pageviews tool. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|All languages}}",
 	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|History}}",
@@ -213,5 +216,6 @@
 	"page-pile-id": "Label for the 'Page Pile ID' input field on the Massviews tool. The proper noun 'Page Pile' should not be translated.",
 	"category-url": "Label for the 'Category URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki category.",
 	"elapsed-time": "Message saying the amount of time the operation took. $1 is the number of seconds.",
-	"num-pages": "Text simply indicating a number of pages. $1 is the number. This is used as a label in the Massviews app, indicating how many pages are in the collection.\n{{Identical|Page}}"
+	"num-pages": "Text simply indicating a number of pages. $1 is the number. This is used as a label in the Massviews app, indicating how many pages are in the collection.\n{{Identical|Page}}",
+	"category-subject-toggle": "Option shown on Massviews when the 'Category URL' source is selected. This option tells the tool to use the subject page of any talk pages in the category."
 }

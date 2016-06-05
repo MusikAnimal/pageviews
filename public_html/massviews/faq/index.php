@@ -46,6 +46,14 @@
               </li>
             </ul>
           </li>
+          <li class="list-group-item" id="category_subject_toggle">
+            <p>
+              <strong><?php echo $I18N->msg( 'faq-massviews-subject-page-title', array( 'variables' => array( $I18N->msg( 'category-subject-toggle' ) ) ) ); ?></strong>
+            </p>
+            <p>
+              <?php echo $I18N->msg( 'faq-massviews-subject-page-body' ); ?>
+            </p>
+          </li>
           <li class="list-group-item">
             <?php $backfillDate = $I18N->msg( 'july' ) . ' 2015'; ?>
             <p>

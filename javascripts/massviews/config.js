@@ -23,7 +23,8 @@ const config = {
       direction: 1,
       massData: [],
       total: 0,
-      view: 'list'
+      view: 'list',
+      subjectpage: 0
     }
   },
   linearLegend: `
@@ -44,7 +45,8 @@ const config = {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
     source: ['pagepile', 'category'],
-    view: ['list', 'chart']
+    view: ['list', 'chart'],
+    subjectpage: ['0', '1']
   }
 };
 

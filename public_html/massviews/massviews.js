@@ -26,7 +26,8 @@ var config = {
       direction: 1,
       massData: [],
       total: 0,
-      view: 'list'
+      view: 'list',
+      subjectpage: 0
     }
   },
   linearLegend: '\n    <strong><%= $.i18n(\'totals\') %>:</strong>\n    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n(\'day\') %>)\n  ',
@@ -44,7 +45,8 @@ var config = {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
     source: ['pagepile', 'category'],
-    view: ['list', 'chart']
+    view: ['list', 'chart'],
+    subjectpage: ['0', '1']
   }
 };
 
@@ -198,8 +200,10 @@ var MassViews = function (_Pv) {
 
       if (source === 'category') {
         $(this.config.sourceInput).prop('type', 'text').prop('placeholder', this.config.placeholders.category).val('');
+        $('.category-subject-toggle').show();
       } else {
         $(this.config.sourceInput).prop('type', 'number').prop('placeholder', this.config.placeholders.pagepile).val('');
+        $('.category-subject-toggle').hide();
       }
 
       $(this.config.sourceInput).focus();
@@ -227,7 +231,7 @@ var MassViews = function (_Pv) {
         platform: $(this.config.platformSelector).val(),
         agent: $(this.config.agentSelector).val(),
         source: $(this.config.sourceButton).data('value'),
-        target: $(this.config.sourceInput).val()
+        target: $(this.config.sourceInput).val().score()
       };
 
       /**
@@ -240,6 +244,10 @@ var MassViews = function (_Pv) {
       } else {
         params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
         params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      }
+
+      if (params.source === 'category') {
+        params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
       }
 
       if (!forCacheKey) {
@@ -797,7 +805,7 @@ var MassViews = function (_Pv) {
       $(this.config.agentSelector).val(params.agent || 'user');
 
       /** import params or set defaults if invalid */
-      ['sort', 'direction', 'view', 'source'].forEach(function (key) {
+      ['sort', 'direction', 'view', 'source', 'subjectpage'].forEach(function (key) {
         var value = params[key];
         if (value && _this8.config.validParams[key].includes(value)) {
           params[key] = value;
@@ -807,6 +815,10 @@ var MassViews = function (_Pv) {
           _this8[key] = _this8.config.defaults.params[key];
         }
       });
+
+      if (params.subjectpage === '1') {
+        $('.category-subject-toggle--input').prop('checked', true);
+      }
 
       this.updateSourceInput($('.source-option[data-value=' + params.source + ']')[0]);
 
@@ -993,19 +1005,26 @@ var MassViews = function (_Pv) {
         });
       }
 
+      var requestData = {
+        action: 'query',
+        format: 'json',
+        list: 'categorymembers',
+        cmlimit: 500,
+        cmtitle: decodeURIComponent(category),
+        prop: 'categoryinfo',
+        titles: decodeURIComponent(category)
+      };
+
+      if ($('.category-subject-toggle--input').is(':checked')) {
+        requestData.meta = 'siteinfo';
+        requestData.siprop = 'namespaces';
+      }
+
       var promise = $.ajax({
         url: 'https://' + project + '/w/api.php',
         jsonp: 'callback',
         dataType: 'jsonp',
-        data: {
-          action: 'query',
-          format: 'json',
-          list: 'categorymembers',
-          cmlimit: 500,
-          cmtitle: decodeURIComponent(category),
-          prop: 'categoryinfo',
-          titles: decodeURIComponent(category)
-        }
+        data: requestData
       });
       var categoryLink = this.getPageLink(decodeURIComponent(category), project);
       this.sourceProject = project; // for caching purposes
@@ -1025,7 +1044,8 @@ var MassViews = function (_Pv) {
           });
         }
 
-        var size = data.query.pages[queryKey].categoryinfo.size;
+        var size = data.query.pages[queryKey].categoryinfo.size,
+            namespaces = data.query.namespaces;
         var pages = data.query.categorymembers;
 
         if (!pages.length) {
@@ -1047,9 +1067,7 @@ var MassViews = function (_Pv) {
          */
         _this11.setThrottle();
 
-        var pageNames = pages.map(function (cat) {
-          return cat.title;
-        });
+        var pageNames = _this11.mapCategoryPageNames(pages, namespaces);
 
         _this11.getPageViewsData(project, pageNames).done(function (pageViewsData) {
           $('.massviews-input-name').html(categoryLink);
@@ -1068,6 +1086,23 @@ var MassViews = function (_Pv) {
           _this11.writeMessage($.i18n('api-error-unknown', categoryLink));
         }
       });
+    }
+  }, {
+    key: 'mapCategoryPageNames',
+    value: function mapCategoryPageNames(pages, namespaces) {
+      var pageNames = [];
+
+      pages.forEach(function (page) {
+        if (namespaces && page.ns % 2 === 1) {
+          var namespace = namespaces[page.ns].canonical;
+          var subjectNamespace = namespaces[page.ns - 1].canonical || '';
+          pageNames.push(page.title.replace(namespace, subjectNamespace).replace(/^\:/, ''));
+        } else {
+          pageNames.push(page.title);
+        }
+      });
+
+      return pageNames;
     }
 
     /**

@@ -102,6 +102,11 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-view', array( 'variables' => array( '<code>list</code>', '<code>chart</code>' ), 'parsemag' => true ) ); ?>
             </dd>
+            <dt>subjectpage</dt>
+            <dd>
+              <?php $faqLink = "<a href='/massviews/faq#category_subject_toggle'>" . $I18N->msg( 'category-subject-toggle' ) . "</a>"; ?>
+              <?php echo $I18N->msg( 'url-structure-subjectpage', array( 'variables' => array( $faqLink, '<code>1</code>', '<code>0</code>' ), 'parsemag' => true ) ); ?>
+            </dd>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

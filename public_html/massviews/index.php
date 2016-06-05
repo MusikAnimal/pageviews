@@ -86,7 +86,17 @@
                   <span class="glyphicon glyphicon-question-sign"></span>
                 </a>
               </label>
-              <div class="input-group">
+              <div class="checkbox pull-right category-subject-toggle">
+                <label>
+                  <input class="category-subject-toggle--input" type="checkbox">
+                    <?php echo $I18N->msg( 'category-subject-toggle' ); ?>
+                  </input>
+                  <a class="help-link" href="/massviews/faq#category_subject_toggle">
+                    <span class="glyphicon glyphicon-question-sign"></span>
+                  </a>
+                </label>
+              </div>
+              <div class="input-group clearfix">
                 <div class="input-group-btn">
                   <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
                     <?php echo $I18N->msg( 'category-url' ); ?>

@@ -33,6 +33,11 @@
                 - $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"
                 %i= $I18N->msg( 'category-url' )
                 = $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) )
+          %li.list-group-item(id="category_subject_toggle")
+            %p
+              %strong= $I18N->msg( 'faq-massviews-subject-page-title', array( 'variables' => array( $I18N->msg( 'category-subject-toggle' ) ) ) )
+            %p
+              = $I18N->msg( 'faq-massviews-subject-page-body' )
           %li.list-group-item
             - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
             %p
