@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Liuxinyu970226",
-			"Yfdyh000"
+			"Yfdyh000",
+			"Lebenschirmvanmidorij"
 		]
 	},
 	"title": "页面浏览分析",
@@ -39,7 +40,7 @@
 	"url-structure": "URL结构",
 	"view-source": "查看源代码",
 	"report-issue": "报告问题",
-	"disclaimer-text": "数据已从$1检索。该API仍被列为<b>实验版</b>。这意味着功能<i>可能</i><b>在未事先警告的情况下随时损坏</b>。页面浏览分析的$2将通过API更改努力保持更新，但在API作为稳定版本发布前，我们不能保证工具无限期稳定。",
+	"disclaimer-text": "数据已从$1检索。该API仍被列为<b>实验版</b>。这意味着功能可能<b>在未事先警告的情况下随时损坏</b>。页面浏览分析的维护人员将通过API更改努力保持更新，但在API作为稳定版本发布前，我们不能保证工具无限期稳定。",
 	"rest-api": "维基媒体REST API",
 	"maintainer": "维护人员",
 	"ok": "确定",
@@ -95,7 +96,6 @@
 	"select2-loading": "正在加载更多结果…",
 	"select2-max-items": "您只可以选择$1个项目",
 	"select2-no-results": "没有找到结果",
-	"select2-searching": "正在搜索…",
 	"help-translate": "帮助翻译",
 	"api-error": "查询$1时出错",
 	"api-error-unknown": "查询$1时发生未知错误",
@@ -149,8 +149,9 @@
 	"faq-source-title": "什么是“数据来源”？",
 	"faq-source-pageviews": "是项目收到的页面访问总数。",
 	"faq-source-unique-devices": "是访问网站的单一设备数量。",
-	"faq-page-pile-title": "什么是页面堆？",
-	"faq-page-pile-body": "$1管理维基媒体项目上的页面列表。您可以创建列表，并将其导入至大量浏览以分析页面浏览数据。",
+	"faq-massviews-sources-title": "什么是“来源”？",
+	"faq-massviews-sources-pagepile": "是由$1创建的一系列页面的数字ID。您可以创建列表并将其导入进大量浏览工具，以分析它们的页面浏览统计。",
+	"faq-massviews-sources-category-url": "是分类页面的完整URL，例如$1。",
 	"faq-throttle-wait-title": "为什么在我可以再次使用工具前需等待$1秒？",
 	"faq-throttle-wait-body": "维基媒体页面浏览API只能在同一时间段处理这么多请求。为了确保API不会失败，并且您可以获取您需要的所有数据，在您使用工具后，再次使用它之前，您被迫等待$1秒。",
 	"url-structure-example": "要获取您wiki上指定条目的最新数据，并使用默认选项，请使用：\n$1\n将$2替换为有效的$3。$4将决定链接放置的页面",
@@ -196,11 +197,15 @@
 	"massviews-empty-set": "$1不包含页面！",
 	"massviews-oversized-set": "$1包含$2个页面。由于性能原因，只有前$3个页面会被处理。",
 	"url-structure-sort-massviews": "要排序的列。$1或$2之一",
+	"pageviews-description": "跨多个页面的页面浏览分析",
+	"topviews-description": "一个项目中最多访问的页面",
+	"langviews-description": "一个条目跨所有语言的页面浏览信息",
 	"massviews-description": "导入页面列表并分析页面浏览",
+	"siteviews-description": "跨多个项目的总计页面浏览分析",
 	"invalid-category-url": "无效分类！请输入分类的完整wiki URL。",
 	"source": "来源",
 	"page-pile-id": "页面堆ID",
 	"category-url": "分类URL",
-	"elapsed-time": "运行时间：$1秒",
-	"num-pages": "$1个页面"
+	"elapsed-time": "运行时间：$1{{PLURAL:$1|秒}}",
+	"num-pages": "$1个{{PLURAL:$1|页面}}"
 }

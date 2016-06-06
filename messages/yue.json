@@ -86,6 +86,5 @@
 	"select2-max-chars": "請刪走$1個字",
 	"select2-loading": "載入緊更多結果...",
 	"select2-max-items": "你只可以揀$1項",
-	"select2-no-results": "搵唔到",
-	"select2-searching": "搵緊..."
+	"select2-no-results": "搵唔到"
 }

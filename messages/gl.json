@@ -96,7 +96,6 @@
 	"select2-loading": "Cargando máis resultados...",
 	"select2-max-items": "Só pode seleccionar $1 obxecto",
 	"select2-no-results": "Non se atopou ningún resultado",
-	"select2-searching": "Buscando…",
 	"help-translate": "Axudar coas traducións",
 	"api-error": "Houbo un problema ao cargar os datos da API.",
 	"api-error-no-data": "Non se atoparon datos.",

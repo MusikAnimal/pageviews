@@ -94,7 +94,6 @@
 	"select2-loading": "Emaitza gehiago kargatzen...",
 	"select2-max-items": "$1 elementu soilik aukera dezakezu",
 	"select2-no-results": "Ez da emaitzarik aurkitu",
-	"select2-searching": "Bilatzen...",
 	"help-translate": "Lagundu euskaratzen",
 	"api-error": "Arazo bat gertatu da datuak APItik kargatzerakoan.",
 	"api-error-no-data": "Ez da daturik aurkitu.",

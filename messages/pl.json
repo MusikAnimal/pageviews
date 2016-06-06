@@ -88,7 +88,6 @@
 	"select2-loading": "Trwa ładowanie wyników...",
 	"select2-max-items": "Możesz wybrać tylko $1 elementów",
 	"select2-no-results": "Brak wyników",
-	"select2-searching": "Wyszukiwanie...",
 	"help-translate": "Pomóż w tłumaczeniu",
 	"api-error-no-data": "Nie znaleziono danych.",
 	"show-more": "Pokaż więcej",
@@ -117,5 +116,7 @@
 	"statistics": "Statystyki",
 	"most-viewed-pages": "Najczęściej odwiedzane strony",
 	"massviews-empty-set": "$1 nie zawiera stron!",
-	"source": "Źródło"
+	"source": "Źródło",
+	"elapsed-time": "Czas, który upłynął: $1 {{PLURAL:$1|sekunda|sekundy|sekund}}",
+	"num-pages": "$1 {{PLURAL:$1|strona|strony|stron}}"
 }

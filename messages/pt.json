@@ -94,7 +94,6 @@
 	"select2-loading": "A carregar mais resultados...",
 	"select2-max-items": "Pode apenas selecionar $1 item",
 	"select2-no-results": "Não foram encontrados resultados",
-	"select2-searching": "A pesquisar...",
 	"help-translate": "Ajude a traduzir",
 	"api-error": "Ocorreu um problema no carregamento de dados da API.",
 	"api-error-no-data": "Não foram encontrados dados.",

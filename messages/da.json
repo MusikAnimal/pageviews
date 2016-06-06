@@ -93,7 +93,6 @@
 	"select2-loading": "Indlæser flere resultater...",
 	"select2-max-items": "Du kan kun vælge $1 element",
 	"select2-no-results": "Ingen resultater blev fundet",
-	"select2-searching": "Søger...",
 	"help-translate": "Hjælp til med at oversætte",
 	"api-error": "Et problem opstod under indlæsningen af data fra API'en.",
 	"api-error-no-data": "Ingen data blev fundet.",

@@ -95,7 +95,6 @@
 	"select2-loading": "Henter flere treff...",
 	"select2-max-items": "Du kan bare velge $1 element",
 	"select2-no-results": "Ingen resultater funnet",
-	"select2-searching": "søker...",
 	"help-translate": "Hjelp til med oversetting",
 	"api-error": "Mystisk feil oppstod da $1",
 	"api-error-unknown": "En ukjent feil oppstod under spørring: $1",

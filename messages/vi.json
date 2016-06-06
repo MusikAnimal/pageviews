@@ -96,7 +96,6 @@
 	"select2-loading": "Đang tải thêm kết quả…",
 	"select2-max-items": "Bạn chỉ được chọn tối đa $1 mục",
 	"select2-no-results": "Không tìm thấy kết quả",
-	"select2-searching": "Đang tìm…",
 	"help-translate": "Giúp biên dịch",
 	"api-error": "Lỗi khi truy vấn $1",
 	"api-error-unknown": "Xuất hiện lỗi không rõ khi truy vấn $1",

@@ -76,7 +76,6 @@
 	"select2-loading": "Méi Resultater gi gelueden...",
 	"select2-max-items": "Dir kënnt nëmmen $1 Elementer eraussichen",
 	"select2-no-results": "Näischt fonnt",
-	"select2-searching": "Sichen...",
 	"help-translate": "Hëlleft iwwersetzen",
 	"api-error": "Feeler beim Ofruff vu(n) $1",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
@@ -92,6 +91,7 @@
 	"faq-chart-type-title": "Ech hunn dës Form vun Diagramm net gär",
 	"faq-try-tool": "Probéiert $1",
 	"faq-bug-report-title": "Ech hunn en Ufro fir eng Funktioun oder e Feeler ze mellen",
+	"faq-massviews-sources-title": "Wat sinn d'''Quellen''?",
 	"url-structure-parameters": "Parameteren",
 	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
 	"url-structure-project": "$1 oder aner valabel $2",
@@ -107,6 +107,7 @@
 	"statistics": "Statistiken",
 	"most-viewed-pages": "Meescht gekuckt Säiten",
 	"massviews-empty-set": "$1 huet keng Säiten!",
+	"topviews-description": "Meescht gekuckt Säite vun engem Projet",
 	"source": "Quell",
-	"num-pages": "$1 Säiten"
+	"num-pages": "$1 {{PLURAL:$1|Säit|Säiten}}"
 }

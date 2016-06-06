@@ -93,7 +93,6 @@
 	"select2-loading": "Carga plus resultatos…",
 	"select2-max-items": "Tu pote seliger solmente $1 elementos",
 	"select2-no-results": "Nulle resultato trovate",
-	"select2-searching": "Recerca in curso…",
 	"help-translate": "Adjutar a traducer",
 	"api-error": "Un problema ha occurrite durante le cargamento de datos ab le API.",
 	"api-error-no-data": "Nulle dato trovate.",

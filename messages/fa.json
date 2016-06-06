@@ -88,7 +88,6 @@
 	"select2-loading": "بارگیری نتایج بیشتر ...",
 	"select2-max-items": "شما فقط می‌توانید $1 مورد را انتخاب کنید.",
 	"select2-no-results": "نتیجه‌ای پیدا نشد",
-	"select2-searching": "در حال جستجو...",
 	"help-translate": "کمک به ترجمه",
 	"api-error": "خطا در کوئری‌گیری $1",
 	"api-error-no-data": "هیچ داده‌ای یافت نشد.",

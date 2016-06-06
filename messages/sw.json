@@ -90,7 +90,6 @@
 	"select2-loading": "Napakua matokeo zaidi . . .",
 	"select2-max-items": "Unaweza kuchagua $1 pekee",
 	"select2-no-results": "Hakuna matokeo",
-	"select2-searching": "tunatafuta..",
 	"help-translate": "Saidia tafsiri",
 	"api-error": "Kulikuwa na tatizo kuchukua data kutoka API",
 	"api-error-no-data": "Hakuna data",

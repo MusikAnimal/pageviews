@@ -76,7 +76,6 @@
 	"select2-loading": "Mih Äjehpneße lahde&nbsp;&hellip;",
 	"select2-max-items": "Mer kann blohß {{PLURAL:$1|ein Saach|$1 Saache|nix}} ußwähle.",
 	"select2-no-results": "Nix jefonge",
-	"select2-searching": "Aam söhke …",
 	"help-translate": "Hellef beim Övversäze",
 	"api-error-no-data": "Kein Dahte jefonge.",
 	"api-incomplete-data": "Et paa Dahte sin nt ze han för de Dahte: $1",
@@ -89,6 +88,7 @@
 	"faq-agents-title": "Wat sind de „Ajänte“?",
 	"faq-try-tool": "Vesöhk $1",
 	"faq-bug-report-title": "Esch well Verbäßerong aanrähje udder ene Fähler mällde",
+	"faq-throttle-wait-title": "Waröm moss_esch {{PLURAL:$1|en Sekond|$1 Sekonde|kein Sekond}} wahde, ih dadd_esch dat Wärkzüsch norr_en oprohfe kann?",
 	"url-structure-parameters": "Parramehtere",
 	"url-structure-parameters-order": "Kam_mer en jehde Reihjefollsch bruche",
 	"url-structure-onwiki-link": "Öm Lengk op heh di Sigg em Wikki ze maache, nemm $1",
@@ -108,5 +108,6 @@
 	"most-viewed-pages": "De mihts aanjelohrte Sigge",
 	"source": "Quäll",
 	"category-url": "Dä Saachjrobb ier <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Uniform Ressource Locator\">URL</i>",
+	"elapsed-time": "Verjange Zigg: {{PLURAL:$1|Ein Sekond|$1 Sekonde|Kein Sekond}}",
 	"num-pages": "$1 Sigge  <!-- https://phabricator.wikimedia.org/T136299 -->"
 }

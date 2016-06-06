@@ -97,7 +97,6 @@
 	"select2-loading": "Läser in fler resultat...",
 	"select2-max-items": "Du kan endast markera $1 element",
 	"select2-no-results": "Inga resultat hittades",
-	"select2-searching": "Söker...",
 	"help-translate": "Hjälp till att översätta",
 	"api-error": "Fel uppstod när $1 anropades",
 	"api-error-unknown": "Ett okänt problem uppstod när en begäran gjordes i $1.",
@@ -147,7 +146,7 @@
 	"faq-source-title": "Vad är \"Datakällor\"?",
 	"faq-source-pageviews": "är det totala antalet sidbesök som projektet får",
 	"faq-source-unique-devices": "är antalet unika enheter som besöker webbplatsen.",
-	"faq-page-pile-body": "$1 hanterar listor över sidor på Wikimedia-projekt. Du kan skapa listor och import dem till Massvisningar för att analysera deras sidbesök.",
+	"faq-massviews-sources-title": "Vilka är \"källorna\"?",
 	"faq-throttle-wait-title": "Varför måste jag vänta $1 sekunder innan jag kan använda verktyget igen?",
 	"url-structure-example-siteviews": "Använd följande för att få den senaste datan på en angiven artikel med standardalternativen:\n$1",
 	"url-structure-topviews-example": "Använd följande för att visa standardlistan över de mest besökta sidorna på din wiki:\n$1\nersätter $2 med en giltig $3. Du kan även använda $4 för att exkludera vissa sidor från resultatet, t.ex. huvudsidan.",
@@ -185,10 +184,12 @@
 	"massviews-empty-set": "$1 innehåller inte några sidor!",
 	"massviews-oversized-set": "$1 innehåller $2 sidor. Av prestandaskäl kommer bara de $3 första sidorna att behandlas.",
 	"url-structure-sort-massviews": "Vilka kolumner att sorter. Antingen $1 eller $2",
+	"topviews-description": "Mest besökta sidorna i ett projekt",
+	"langviews-description": "Sidbesök för en artikel på alla språk",
 	"massviews-description": "Importera en lista över sidor och analysera sidvisningarna",
 	"invalid-category-url": "Ogiltigt kategori! Ange den fullständiga wiki-adressen till kategorin.",
 	"source": "Källa",
 	"category-url": "Kategori-adress",
-	"elapsed-time": "Förfluten tid: $1 sekunder",
-	"num-pages": "$1 sidor"
+	"elapsed-time": "Förfluten tid: $1 {{PLURAL|$1|sekund|sekunder}}",
+	"num-pages": "$1 {{PLURAL:$1|sida|sidor}}"
 }

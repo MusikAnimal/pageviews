@@ -97,7 +97,6 @@
 	"select2-loading": "Ідзе загрузка вынікаў...",
 	"select2-max-items": "Вы можаце выбраць толькі $1 аб'ект",
 	"select2-no-results": "Нічога не знойдзена",
-	"select2-searching": "Пошук...",
 	"help-translate": "Дапамажыце перакласці",
 	"api-error": "Памылка пры запампоўцы дадзеных з API.",
 	"api-error-no-data": "Няма дадзеных.",
