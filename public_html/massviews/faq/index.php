@@ -44,6 +44,11 @@
                 <i><?php echo $I18N->msg( 'category-url' ); ?></i>
                 <?php echo $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) ); ?>
               </li>
+              <li>
+                <?php $templateLink = "<a href='https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'>https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games</a>"; ?>
+                <i><?php echo $I18N->msg( 'template-url' ); ?></i>
+                <?php echo $I18N->msg( 'faq-massviews-sources-template-url', array( 'variables' => array( $templateLink ) ) ); ?>
+              </li>
             </ul>
           </li>
           <li class="list-group-item" id="category_subject_toggle">

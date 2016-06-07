@@ -109,15 +109,13 @@ class MassViews extends Pv {
 
     $('#source_button').data('value', source).html(`${node.textContent} <span class='caret'></span>`);
 
+    $(this.config.sourceInput).prop('type', this.config.sources[source].type)
+      .prop('placeholder', this.config.sources[source].placeholder)
+      .val('');
+
     if (source === 'category') {
-      $(this.config.sourceInput).prop('type', 'text')
-        .prop('placeholder', this.config.placeholders.category)
-        .val('');
       $('.category-subject-toggle').show();
     } else {
-      $(this.config.sourceInput).prop('type', 'number')
-        .prop('placeholder', this.config.placeholders.pagepile)
-        .val('');
       $('.category-subject-toggle').hide();
     }
 
@@ -922,7 +920,7 @@ class MassViews extends Pv {
         });
       }
 
-      if (size > 500) {
+      if (size > this.config.pageLimit) {
         this.writeMessage(
           $.i18n('massviews-oversized-set', categoryLink, this.n(size), this.config.pageLimit)
         );
@@ -956,6 +954,90 @@ class MassViews extends Pv {
         );
       } else {
         this.writeMessage($.i18n('api-error-unknown', categoryLink));
+      }
+    });
+  }
+
+  processTemplate(cb) {
+    const [project, template] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+
+    if (!template) {
+      return this.setState('initial', () => {
+        this.writeMessage($.i18n('invalid-template-url'));
+      });
+    }
+
+    const promise = $.ajax({
+      url: `https://${project}/w/api.php`,
+      jsonp: 'callback',
+      dataType: 'jsonp',
+      data: {
+        action: 'query',
+        format: 'json',
+        tilimit: 500,
+        titles: decodeURIComponent(template),
+        prop: 'transcludedin'
+      }
+    });
+    const templateLink = this.getPageLink(decodeURIComponent(template), project);
+    this.sourceProject = project; // for caching purposes
+
+    promise.done(data => {
+      if (data.error) {
+        return this.setState('initial', () => {
+          this.writeMessage(
+            `${$.i18n('api-error', 'Transclusion API')}: ${data.error.info}`
+          );
+        });
+      }
+
+      const queryKey = Object.keys(data.query.pages)[0];
+
+      if (queryKey === '-1') {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const pages = data.query.pages[queryKey].transcludedin.map(page => page.title);
+
+      if (!pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', templateLink));
+        });
+      }
+
+      // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+      if (data.continue) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set-unknown', templateLink, 500)
+        );
+      }
+
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      this.setThrottle();
+
+      this.getPageViewsData(project, pages).done(pageViewsData => {
+        $('.massviews-input-name').html(templateLink);
+        $('.massviews-params').html($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(template, templateLink, pageViewsData);
+
+        cb();
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && data.error) {
+        this.writeMessage(
+          $.i18n('api-error', templateLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', templateLink));
       }
     });
   }
@@ -1015,6 +1097,9 @@ class MassViews extends Pv {
       break;
     case 'category':
       this.processCategory(cb);
+      break;
+    case 'transclusions':
+      this.processTemplate(cb);
       break;
     }
   }

@@ -32,9 +32,19 @@ const config = {
     <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n('day') %>)
   `,
   pageLimit: 500,
-  placeholders: {
-    category: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
-    pagepile: '12345'
+  sources: {
+    category: {
+      placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+      type: 'text'
+    },
+    pagepile: {
+      placeholder: '12345',
+      type: 'number'
+    },
+    transclusions: {
+      placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+      type: 'text'
+    }
   },
   platformSelector: '#platform_select',
   sourceButton: '#source_button',

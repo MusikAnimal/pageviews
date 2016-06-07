@@ -34,18 +34,13 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              One of <code>pagepile</code> or <code>category</code>
+              <?php echo $I18N->msg( 'url-structure-massviews-source', array( 'variables' => array( '<code>pagepile</code>', '<code>category</code>', '<code>transclusions</code>' ) ) ); ?>
             </dd>
             <dt>target</dt>
             <dd>
-              The Page Pile ID, or full URL to a category. If a question mark <code>?</code> is in the URL, it <strong>must be encoded</strong>.
+              <?php echo $I18N->msg( 'url-structure-massviews-target' ); ?>
               <br>
-              For instance, <strong>do not use</strong>:
-              <pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>
-              Instead use:
-              <pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>
-              Or you could simply use the shorter wiki URL:
-              <pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>
+              <?php echo $I18N->msg( 'url-structure-massviews-target-example', array( 'variables' => array( '<pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>', '<pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>', '<pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>' ) ) ); ?>
             </dd>
             <dt>range</dt>
             <dd>

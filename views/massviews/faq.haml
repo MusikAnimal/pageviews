@@ -33,6 +33,10 @@
                 - $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"
                 %i= $I18N->msg( 'category-url' )
                 = $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) )
+              %li
+                - $templateLink = "<a href='https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'>https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games</a>"
+                %i= $I18N->msg( 'template-url' )
+                = $I18N->msg( 'faq-massviews-sources-template-url', array( 'variables' => array( $templateLink ) ) )
           %li.list-group-item(id="category_subject_toggle")
             %p
               %strong= $I18N->msg( 'faq-massviews-subject-page-title', array( 'variables' => array( $I18N->msg( 'category-subject-toggle' ) ) ) )

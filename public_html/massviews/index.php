@@ -113,6 +113,11 @@
                         <?php echo $I18N->msg( 'page-pile-id' ); ?>
                       </a>
                     </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="transclusions">
+                        <?php echo $I18N->msg( 'template-url' ); ?>
+                      </a>
+                    </li>
                   </ul>
                 </div>
                 <input class="form-control input-control source-input" id="source_input" min="0" required="required">

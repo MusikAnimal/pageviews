@@ -32,9 +32,19 @@ var config = {
   },
   linearLegend: '\n    <strong><%= $.i18n(\'totals\') %>:</strong>\n    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n(\'day\') %>)\n  ',
   pageLimit: 500,
-  placeholders: {
-    category: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
-    pagepile: '12345'
+  sources: {
+    category: {
+      placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+      type: 'text'
+    },
+    pagepile: {
+      placeholder: '12345',
+      type: 'number'
+    },
+    transclusions: {
+      placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+      type: 'text'
+    }
   },
   platformSelector: '#platform_select',
   sourceButton: '#source_button',
@@ -198,11 +208,11 @@ var MassViews = function (_Pv) {
 
       $('#source_button').data('value', source).html(node.textContent + ' <span class=\'caret\'></span>');
 
+      $(this.config.sourceInput).prop('type', this.config.sources[source].type).prop('placeholder', this.config.sources[source].placeholder).val('');
+
       if (source === 'category') {
-        $(this.config.sourceInput).prop('type', 'text').prop('placeholder', this.config.placeholders.category).val('');
         $('.category-subject-toggle').show();
       } else {
-        $(this.config.sourceInput).prop('type', 'number').prop('placeholder', this.config.placeholders.pagepile).val('');
         $('.category-subject-toggle').hide();
       }
 
@@ -1054,7 +1064,7 @@ var MassViews = function (_Pv) {
           });
         }
 
-        if (size > 500) {
+        if (size > _this11.config.pageLimit) {
           _this11.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this11.n(size), _this11.config.pageLimit));
 
           pages = pages.slice(0, _this11.config.pageLimit);
@@ -1088,6 +1098,95 @@ var MassViews = function (_Pv) {
       });
     }
   }, {
+    key: 'processTemplate',
+    value: function processTemplate(cb) {
+      var _this12 = this;
+
+      var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+
+      var _getWikiPageFromURL4 = _slicedToArray(_getWikiPageFromURL3, 2);
+
+      var project = _getWikiPageFromURL4[0];
+      var template = _getWikiPageFromURL4[1];
+
+
+      if (!template) {
+        return this.setState('initial', function () {
+          _this12.writeMessage($.i18n('invalid-template-url'));
+        });
+      }
+
+      var promise = $.ajax({
+        url: 'https://' + project + '/w/api.php',
+        jsonp: 'callback',
+        dataType: 'jsonp',
+        data: {
+          action: 'query',
+          format: 'json',
+          tilimit: 500,
+          titles: decodeURIComponent(template),
+          prop: 'transcludedin'
+        }
+      });
+      var templateLink = this.getPageLink(decodeURIComponent(template), project);
+      this.sourceProject = project; // for caching purposes
+
+      promise.done(function (data) {
+        if (data.error) {
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info);
+          });
+        }
+
+        var queryKey = Object.keys(data.query.pages)[0];
+
+        if (queryKey === '-1') {
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('api-error-no-data'));
+          });
+        }
+
+        var pages = data.query.pages[queryKey].transcludedin.map(function (page) {
+          return page.title;
+        });
+
+        if (!pages.length) {
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('massviews-empty-set', templateLink));
+          });
+        }
+
+        // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+        if (data.continue) {
+          _this12.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
+        }
+
+        /**
+         * XXX: throttling
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        _this12.setThrottle();
+
+        _this12.getPageViewsData(project, pages).done(function (pageViewsData) {
+          $('.massviews-input-name').html(templateLink);
+          $('.massviews-params').html($(_this12.config.dateRangeSelector).val());
+          _this12.buildMotherDataset(template, templateLink, pageViewsData);
+
+          cb();
+        });
+      }).fail(function (data) {
+        _this12.setState('initial');
+
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (data && data.error) {
+          _this12.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
+        } else {
+          _this12.writeMessage($.i18n('api-error-unknown', templateLink));
+        }
+      });
+    }
+  }, {
     key: 'mapCategoryPageNames',
     value: function mapCategoryPageNames(pages, namespaces) {
       var pageNames = [];
@@ -1114,7 +1213,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this12 = this;
+      var _this13 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -1133,11 +1232,11 @@ var MassViews = function (_Pv) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this12.updateProgressBar(100);
-        _this12.renderData();
+        _this13.updateProgressBar(100);
+        _this13.renderData();
 
         // XXX: throttling
-        _this12.setThrottle();
+        _this13.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {
@@ -1146,6 +1245,9 @@ var MassViews = function (_Pv) {
           break;
         case 'category':
           this.processCategory(cb);
+          break;
+        case 'transclusions':
+          this.processTemplate(cb);
           break;
       }
     }
