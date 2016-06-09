@@ -129,6 +129,8 @@
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
 	"faq-topviews-data-approx-title": "Los datos parecen ligeramente erroneos",
 	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
+	"faq-massviews-sources-title": "¿Qué son las \"Fuentes\"?",
+	"faq-massviews-subject-page-title": "¿Qué es la opción \"$1\"?",
 	"faq-throttle-wait-body": "la API de Wikimedia Páginas vistas sólo puede manejar tantas solicitudes durante una ventana de tiempo. Con el fin de garantizar la API no falla y se obtiene todos los datos que necesita, se ven obligados a esperar $1 segundos después de utilizar la herramienta antes de poder utilizarlo de nuevo .",
 	"url-structure-parameters": "Parámetros",
 	"url-structure-parameters-order": "Puede usarse en cualquier orden",
@@ -137,6 +139,7 @@
 	"url-structure-special-range-latest": "Datos de los últimos 20 días",
 	"url-structure-platform": "Uno de $1, $2, $3 o $4",
 	"url-structure-sort-direction": "La dirección de ordenación. $1 para descendente, $2 para ascendente",
+	"url-structure-massviews-source": "Uno de $1, $2 o $3",
 	"url-structure-view": "$1 para ver los datos como lista, o $2 para ver los datos como gráfico",
 	"default": "Predeterminado",
 	"all-languages": "Todos los idiomas",
@@ -151,11 +154,13 @@
 	"most-viewed-pages": "Páginas más vistas",
 	"unique-devices": "Dispositivos únicos",
 	"massviews-empty-set": "¡$1 no contiene ninguna página!",
+	"massviews-oversized-set-unknown": "$1 contiene más de $2 páginas. Por motivos de rendimiento, sólo las primeras $2 páginas se procesarán.",
 	"url-structure-sort-massviews": "Columna que se desea ordenar. Ya sea $1 o $2",
 	"topviews-description": "Páginas más vistas de un proyecto",
 	"invalid-category-url": "Categoría no válida. Escribe el URL wiki completo de la categoría.",
+	"invalid-template-url": "¡Plantilla no válida! Escribe el URL wiki completo de la plantilla o la página.",
 	"source": "Fuente",
 	"category-url": "URL de la categoría",
-	"elapsed-time": "Tiempo transcurrido: $1 {{PLURAL|$1|segundo|segundos}}",
-	"num-pages": "$1 páginas"
+	"elapsed-time": "Tiempo transcurrido: $1 {{PLURAL:$1|segundo|segundos}}",
+	"num-pages": "$1 {{PLURAL:$1|página|páginas}}"
 }
