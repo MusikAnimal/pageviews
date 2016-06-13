@@ -16,6 +16,44 @@ String.prototype.score = function () {
   return this.replace(/ /g, '_');
 };
 
+/*
+ * HOT PATCH for Chart.js getElementsAtEvent
+ * https://github.com/chartjs/Chart.js/issues/2299
+ * TODO: remove me when this gets implemented into Charts.js core
+ */
+if (typeof Chart !== 'undefined') {
+  Chart.Controller.prototype.getElementsAtEvent = function (e) {
+    var helpers = Chart.helpers;
+    var eventPosition = helpers.getRelativePosition(e, this.chart);
+    var elementsArray = [];
+
+    var found = function () {
+      if (this.data.datasets) {
+        for (var i = 0; i < this.data.datasets.length; i++) {
+          var key = Object.keys(this.data.datasets[i]._meta)[0];
+          for (var j = 0; j < this.data.datasets[i]._meta[key].data.length; j++) {
+            /* eslint-disable max-depth */
+            if (this.data.datasets[i]._meta[key].data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
+              return this.data.datasets[i]._meta[key].data[j];
+            }
+          }
+        }
+      }
+    }.call(this);
+
+    if (!found) {
+      return elementsArray;
+    }
+
+    helpers.each(this.data.datasets, function (dataset, dsIndex) {
+      var key = Object.keys(dataset._meta)[0];
+      elementsArray.push(dataset._meta[key].data[found._index]);
+    });
+
+    return elementsArray;
+  };
+}
+
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -161,66 +199,69 @@ if (!Array.prototype.fill) {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
-var pvConfig = require('./pv_config');
+var PvConfig = require('./pv_config');
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
 
-var Pv = function () {
+var Pv = function (_PvConfig) {
+  _inherits(Pv, _PvConfig);
+
   function Pv(appConfig) {
-    var _this = this;
-
     _classCallCheck(this, Pv);
 
     /** assign initial class properties */
-    this.config = Object.assign({}, pvConfig, appConfig);
 
-    /** must manually assign defaults as Object.assign is shallow */
-    this.config.defaults = Object.assign({}, pvConfig.defaults, appConfig.defaults);
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this));
 
-    this.colorsStyleEl = undefined;
-    this.storage = {}; // used as fallback when localStorage is not supported
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
-    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
-    this.params = null;
+    var defaults = _this.config.defaults;
+    _this.config = Object.assign({}, _this.config, appConfig);
+    _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+
+    _this.colorsStyleEl = undefined;
+    _this.storage = {}; // used as fallback when localStorage is not supported
+    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || _this.config.defaults.localizeDateFormat;
+    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || _this.config.defaults.numericalFormatting;
+    _this.bezierCurve = _this.getFromLocalStorage('pageviews-settings-bezierCurve') || _this.config.defaults.bezierCurve;
+    _this.autocomplete = _this.getFromLocalStorage('pageviews-settings-autocomplete') || _this.config.defaults.autocomplete;
+    _this.params = null;
 
     /** some chart-specific set up */
-    if (this.config.chart) {
-      this.chartObj = null;
-      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
-      this.prevChartType = null;
+    if (_this.config.chart) {
+      _this.chartObj = null;
+      _this.chartType = _this.getFromLocalStorage('pageviews-chart-preference') || _this.config.defaults.chartType;
+      _this.prevChartType = null;
+      _this.autoLogDetection = true; // track whether logarithmic scale checkbox was manually checked
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!this.config.linearCharts.includes(this.chartType) || !this.config.circularCharts.includes(this.chartType)) {
-        this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType);
-        this.chartType = this.config.defaults.chartType;
+      if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
+        _this.setLocalStorage('pageviews-chart-preference', _this.config.defaults.chartType);
+        _this.chartType = _this.config.defaults.chartType;
       }
 
-      /** need to export to global for chart templating */
-      window.formatNumber = this.formatNumber.bind(this);
-      window.numDaysInRange = this.numDaysInRange.bind(this);
-      window.getPageURL = this.getPageURL.bind(this);
-
       /** copy over app-specific chart templates */
-      this.config.linearCharts.forEach(function (linearChart) {
+      _this.config.linearCharts.forEach(function (linearChart) {
         _this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
       });
-      this.config.circularCharts.forEach(function (circularChart) {
+      _this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
 
@@ -228,19 +269,19 @@ var Pv = function () {
     }
 
     /** @type {null|Date} tracking of elapsed time */
-    this.processStart = null;
+    _this.processStart = null;
 
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
-      window.app = this;
+      window.app = _this;
     } else {
-      this.splash();
+      _this.splash();
     }
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
+      _this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
     }
 
     /**
@@ -254,7 +295,8 @@ var Pv = function () {
     }
     $.i18n({
       locale: i18nLang
-    }).load(messagesToLoad).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(_this.initialize.bind(_this));
+    return _this;
   }
 
   _createClass(Pv, [{
@@ -296,7 +338,7 @@ var Pv = function () {
     value: function destroyChart() {
       if (this.chartObj) {
         this.chartObj.destroy();
-        delete this.chartObj;
+        $('#chart-legend').html('');
       }
     }
 
@@ -340,7 +382,8 @@ var Pv = function () {
   }, {
     key: 'formatNumber',
     value: function formatNumber(num) {
-      if (this.numericalFormatting === 'true') {
+      var numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+      if (numericalFormatting === 'true') {
         return this.n(num);
       } else {
         return num;
@@ -642,14 +685,38 @@ var Pv = function () {
     }
 
     /**
-     * Test if the current project is a multilingual project
-     * @returns {Boolean} is multilingual or not
+     * Get a value from localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to retrieve
+     * @returns {Mixed} stored value
      */
 
   }, {
-    key: 'isMultilangProject',
-    value: function isMultilangProject() {
-      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
+    key: 'getFromLocalStorage',
+    value: function getFromLocalStorage(key) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.getItem(key);
+      } catch (err) {
+        return storage[key];
+      }
+    }
+
+    /**
+     * Set a value to localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to set
+     * @param {Mixed} value - value to store
+     * @returns {Mixed} stored value
+     */
+
+  }, {
+    key: 'setLocalStorage',
+    value: function setLocalStorage(key, value) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.setItem(key, value);
+      } catch (err) {
+        return storage[key] = value;
+      }
     }
 
     /**
@@ -667,15 +734,79 @@ var Pv = function () {
     }
 
     /**
-     * Check if Intl is supported
-     *
-     * @returns {boolean} whether the browser (presumably) supports date locale operations
+     * Are we currently in logarithmic mode?
+     * @returns {Boolean} true or false
      */
 
   }, {
-    key: 'localeSupported',
-    value: function localeSupported() {
-      return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === 'object';
+    key: 'isLogarithmic',
+    value: function isLogarithmic() {
+      return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
+    }
+
+    /**
+     * Test if the current chart type supports a logarithmic scale
+     * @returns {Boolean} log-friendly or not
+     */
+
+  }, {
+    key: 'isLogarithmicCapable',
+    value: function isLogarithmicCapable() {
+      return ['line', 'bar'].includes(this.chartType);
+    }
+
+    /**
+     * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
+     * @param  {Array} datasets - pageviews
+     * @return {Boolean} yes or no
+     */
+
+  }, {
+    key: 'shouldBeLogarithmic',
+    value: function shouldBeLogarithmic(datasets) {
+      var _ref;
+
+      var sets = [];
+      // convert NaNs and nulls to zeros
+      datasets.forEach(function (dataset) {
+        sets.push(dataset.map(function (val) {
+          return val || 0;
+        }));
+      });
+
+      // overall max value
+      var maxValue = Math.max.apply(Math, _toConsumableArray((_ref = []).concat.apply(_ref, sets)));
+      var logarithmicNeeded = false;
+
+      sets.forEach(function (set) {
+        set.push(maxValue);
+
+        var sum = set.reduce(function (a, b) {
+          return a + b;
+        }),
+            average = sum / set.length;
+        var theil = 0;
+        set.forEach(function (v) {
+          return theil += v ? v * Math.log(v / average) : 0;
+        });
+
+        if (theil / sum > 0.5) {
+          return logarithmicNeeded = true;
+        }
+      });
+
+      return logarithmicNeeded;
+    }
+
+    /**
+     * Test if the current project is a multilingual project
+     * @returns {Boolean} is multilingual or not
+     */
+
+  }, {
+    key: 'isMultilangProject',
+    value: function isMultilangProject() {
+      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
     }
 
     /**
@@ -881,8 +1012,21 @@ var Pv = function () {
       select2Input.select2('val', null);
       select2Input.select2('data', null);
       select2Input.select2('destroy');
-      $('.data-links').hide();
       this.setupSelect2();
+    }
+
+    /**
+     * Change alpha level of an rgba value
+     *
+     * @param {string} value - rgba value
+     * @param {float|string} alpha - transparency as float value
+     * @returns {string} rgba value
+     */
+
+  }, {
+    key: 'rgba',
+    value: function rgba(value, alpha) {
+      return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
     }
 
     /**
@@ -935,27 +1079,27 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.renderData(true);
+      this.processInput(true);
     }
 
     /**
      * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-     * @returns {null} nothing
+     * @returns {Number} radius
      */
 
   }, {
     key: 'setChartPointDetectionRadius',
     value: function setChartPointDetectionRadius() {
-      if (this.chartType !== 'Line') return;
+      if (this.chartType !== 'line') return;
 
       if (this.numDaysInRange() > 50) {
-        Chart.defaults.Line.pointHitDetectionRadius = 3;
+        Chart.defaults.global.elements.point.hitRadius = 3;
       } else if (this.numDaysInRange() > 30) {
-        Chart.defaults.Line.pointHitDetectionRadius = 5;
+        Chart.defaults.global.elements.point.hitRadius = 5;
       } else if (this.numDaysInRange() > 20) {
-        Chart.defaults.Line.pointHitDetectionRadius = 10;
+        Chart.defaults.global.elements.point.hitRadius = 10;
       } else {
-        Chart.defaults.Line.pointHitDetectionRadius = 20;
+        Chart.defaults.global.elements.point.hitRadius = 30;
       }
     }
 
@@ -1008,14 +1152,14 @@ var Pv = function () {
         startDate = _config$specialRanges2[0];
         endDate = _config$specialRanges2[1];
       } else if (rangeIndex >= 0) {
-        var _ref = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+        var _ref2 = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
         /** treat 'latest' as a function */
 
 
-        var _ref2 = _slicedToArray(_ref, 2);
+        var _ref3 = _slicedToArray(_ref2, 2);
 
-        startDate = _ref2[0];
-        endDate = _ref2[1];
+        startDate = _ref3[0];
+        endDate = _ref3[1];
 
         $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
       } else {
@@ -1088,14 +1232,24 @@ var Pv = function () {
         location.reload();
       });
 
+      var rerenderFunc = ['langviews', 'massviews'].includes(this.app) ? this.renderData : this.processInput;
+
       if (this.config.chart) {
         this.setupSettingsModal();
 
         /** changing of chart types */
         $('.modal-chart-type a').on('click', function (e) {
           _this7.chartType = $(e.currentTarget).data('type');
+
+          $('.logarithmic-scale').toggle(_this7.isLogarithmicCapable());
+
           _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
-          _this7.renderData();
+          rerenderFunc.call(_this7);
+        });
+
+        $(this.config.logarithmicCheckbox).on('click', function () {
+          _this7.autoLogDetection = false;
+          rerenderFunc.call(_this7, true);
         });
       }
     }
@@ -1114,41 +1268,6 @@ var Pv = function () {
       /** add listener */
       $('.save-settings-btn').on('click', this.saveSettings.bind(this));
       $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-    }
-
-    /**
-     * Get a value from localStorage, using a temporary storage if localStorage is not supported
-     * @param {string} key - key for the value to retrieve
-     * @returns {Mixed} stored value
-     */
-
-  }, {
-    key: 'getFromLocalStorage',
-    value: function getFromLocalStorage(key) {
-      // See if localStorage is supported and enabled
-      try {
-        return localStorage.getItem(key);
-      } catch (err) {
-        return this.storage[key];
-      }
-    }
-
-    /**
-     * Set a value to localStorage, using a temporary storage if localStorage is not supported
-     * @param {string} key - key for the value to set
-     * @param {Mixed} value - value to store
-     * @returns {Mixed} stored value
-     */
-
-  }, {
-    key: 'setLocalStorage',
-    value: function setLocalStorage(key, value) {
-      // See if localStorage is supported and enabled
-      try {
-        return localStorage.setItem(key, value);
-      } catch (err) {
-        return this.storage[key] = value;
-      }
     }
 
     /**
@@ -1222,7 +1341,7 @@ var Pv = function () {
   }, {
     key: 'splash',
     value: function splash() {
-      var style = 'background: #222; color: #bada55; padding: 4px; font-family:dejavu sans mono';
+      var style = 'background: #eee; color: #555; padding: 4px; font-family:monospace';
       console.log('%c      ___            __ _                     _                             ', style);
       console.log('%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ', style);
       console.log('%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ', style);
@@ -1325,12 +1444,16 @@ var Pv = function () {
   }]);
 
   return Pv;
-}();
+}(PvConfig);
 
 module.exports = Pv;
 
 },{"./pv_config":4}],4:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * @file Shared config amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
@@ -1340,136 +1463,274 @@ module.exports = Pv;
  */
 
 /**
- * Change alpha level of an rgba value
- *
- * @param {string} value - rgba value
- * @param {float|string} alpha - transparency as float value
- * @returns {string} rgba value
- */
-var rgba = function rgba(value, alpha) {
-  return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
-};
-
-/**
  * Configuration for all Pageviews applications.
  * Some properties may be overriden by app-specific configs
  * @type {Object}
  */
-var pvConfig = {
-  chartConfig: {
-    Line: {
-      opts: {
-        bezierCurve: false
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: 'rgba(0,0,0,0)',
-          pointColor: color,
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          pointStrokeColor: '#fff',
-          strokeColor: color
-        };
-      }
-    },
-    Bar: {
-      opts: {
-        barDatasetSpacing: 0,
-        barValueSpacing: 0
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: rgba(color, 0.5),
-          highlightFill: rgba(color, 0.75),
-          highlightStroke: color,
-          strokeColor: rgba(color, 0.8)
-        };
-      }
-    },
-    Pie: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    Doughnut: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    PolarArea: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    Radar: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          fillColor: rgba(color, 0.1),
-          pointColor: color,
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          strokeColor: color
-        };
-      }
-    }
-  },
-  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
-  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-  cookieExpiry: 30, // num days
-  defaults: {
-    autocomplete: 'autocomplete',
-    chartType: 'Line',
-    daysAgo: 20,
-    dateFormat: 'YYYY-MM-DD',
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true'
-  },
-  globalChartOpts: {
-    animation: true,
-    animationEasing: 'easeInOutQuart',
-    animationSteps: 30,
-    labelsFilter: function labelsFilter(value, index, labels) {
-      if (labels.length >= 60) {
-        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
-      } else {
-        return false;
-      }
-    },
-    multiTooltipTemplate: '<%= formatNumber(value) %>',
-    scaleLabel: '<%= formatNumber(value) %>',
-    tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
-  },
-  linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-07-01').startOf('day'),
-  maxDate: moment().subtract(1, 'days').startOf('day'),
-  specialRanges: {
-    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
-    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    latest: function latest() {
-      var offset = arguments.length <= 0 || arguments[0] === undefined ? pvConfig.daysAgo : arguments[0];
 
-      return [moment().subtract(offset, 'days').startOf('day'), pvConfig.maxDate];
-    }
-  },
-  timestampFormat: 'YYYYMMDD00'
-};
+var PvConfig = function () {
+  function PvConfig() {
+    var _this = this;
 
-module.exports = pvConfig;
+    _classCallCheck(this, PvConfig);
+
+    var self = this;
+
+    this.config = {
+      chartConfig: {
+        line: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatNumber(value);
+                  }
+                }
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: 'rgba(0,0,0,0)',
+              borderWidth: 2,
+              borderColor: color,
+              pointColor: color,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.2),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverBorderWidth: 2,
+              pointHoverRadius: 5,
+              tension: self.bezierCurve === 'true' ? 0.4 : 0
+            };
+          }
+        },
+        bar: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatNumber(value);
+                  }
+                }
+              }],
+              xAxes: [{
+                barPercentage: 1.0,
+                categoryPercentage: 0.85
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.6),
+              borderColor: self.rgba(color, 0.9),
+              borderWidth: 2,
+              hoverBackgroundColor: self.rgba(color, 0.75),
+              hoverBorderColor: color
+            };
+          }
+        },
+        radar: {
+          opts: {
+            scale: {
+              ticks: {
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.1),
+              borderColor: color,
+              borderWidth: 2,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.8),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverRadius: 5
+            };
+          }
+        },
+        pie: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        doughnut: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        polarArea: {
+          opts: {
+            scale: {
+              ticks: {
+                beginAtZero: true,
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.7),
+              hoverBackgroundColor: self.rgba(color, 0.9)
+            };
+          }
+        }
+      },
+      circularCharts: ['pie', 'doughnut', 'polarArea'],
+      colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
+      cookieExpiry: 30, // num days
+      defaults: {
+        autocomplete: 'autocomplete',
+        chartType: 'line',
+        daysAgo: 20,
+        dateFormat: 'YYYY-MM-DD',
+        localizeDateFormat: 'true',
+        numericalFormatting: 'true',
+        bezierCurve: 'false'
+      },
+      globalChartOpts: {
+        animation: {
+          duration: 500,
+          easing: 'easeInOutQuart'
+        },
+        hover: {
+          animationDuration: 0
+        },
+        legend: {
+          display: false
+        }
+      },
+      linearCharts: ['line', 'bar', 'radar'],
+      linearOpts: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              callback: function callback(value) {
+                return _this.formatNumber(value);
+              }
+            }
+          }]
+        },
+        legendCallback: function legendCallback(chart) {
+          return _this.config.linearLegend(chart.data.datasets, self);
+        }
+      },
+      minDate: moment('2015-07-01').startOf('day'),
+      maxDate: moment().subtract(1, 'days').startOf('day'),
+      specialRanges: {
+        'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+        'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+        'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        latest: function latest() {
+          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.defaults.daysAgo : arguments[0];
+
+          return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
+        }
+      },
+      timestampFormat: 'YYYYMMDD00'
+    };
+  }
+
+  _createClass(PvConfig, [{
+    key: 'linearTooltips',
+    get: function get() {
+      var _this2 = this;
+
+      return {
+        mode: 'label',
+        callbacks: {
+          label: function label(tooltipItem) {
+            if (Number.isNaN(tooltipItem.yLabel)) {
+              return ' ' + $.i18n('unknown');
+            } else {
+              return ' ' + _this2.formatNumber(tooltipItem.yLabel);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+  }, {
+    key: 'circularTooltips',
+    get: function get() {
+      var _this3 = this;
+
+      return {
+        callbacks: {
+          label: function label(tooltipItem, chartInstance) {
+            var value = chartInstance.datasets[tooltipItem.datasetIndex].data[tooltipItem.index],
+                label = chartInstance.labels[tooltipItem.index];
+
+            if (Number.isNaN(value)) {
+              return label + ': ' + $.i18n('unknown');
+            } else {
+              return label + ': ' + _this3.formatNumber(value);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+  }]);
+
+  return PvConfig;
+}();
+
+module.exports = PvConfig;
 
 },{}],5:[function(require,module,exports){
 'use strict';
@@ -2409,9 +2670,10 @@ var config = {
     projects: ['fr.wikipedia.org', 'de.wikipedia.org']
   },
   linearLegend: templates.linearLegend,
+  logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  select2Input: '.aqs-site-selector'
+  select2Input: '.aqs-select2-selector'
 };
 
 module.exports = config;
@@ -2422,6 +2684,8 @@ module.exports = config;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -2456,6 +2720,8 @@ var SiteViews = function (_Pv) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SiteViews).call(this, config));
 
+    _this.app = 'siteviews';
+
     _this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
     _this.specialRange = null;
 
@@ -2465,9 +2731,6 @@ var SiteViews = function (_Pv) {
      * not critical and can be avoided with this empty function.
      */
     window.siteSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.getTopviewsURL = _this.getTopviewsURL.bind(_this);
     return _this;
   }
 
@@ -2508,7 +2771,7 @@ var SiteViews = function (_Pv) {
         dataRows[index] = [date];
       });
 
-      chartData.forEach(function (site) {
+      this.chartObj.data.datasets.forEach(function (site) {
         // Build an array of site titles for use in the CSV header
         var siteTitle = '"' + site.label.replace(/"/g, '""') + '"';
         titles.push(siteTitle);
@@ -2544,7 +2807,7 @@ var SiteViews = function (_Pv) {
 
       var data = [];
 
-      chartData.forEach(function (site, index) {
+      this.chartObj.data.datasets.forEach(function (site, index) {
         var entry = {
           site: site.label.replace(/"/g, '\"').replace(/'/g, "\'"),
           color: site.strokeColor,
@@ -2622,13 +2885,16 @@ var SiteViews = function (_Pv) {
       var values = data.items.map(function (elem) {
         return _this4.isPageviews() ? elem.views : elem.devices;
       }),
-          color = this.config.colors[index];
+          color = this.config.colors[index],
+          value = values.reduce(function (a, b) {
+        return a + b;
+      }),
+          average = Math.round(value / values.length);
 
       return Object.assign({
         label: site,
-        value: values.reduce(function (a, b) {
-          return a + b;
-        })
+        value: value,
+        average: average
       }, this.config.chartConfig[this.chartType].dataset(color));
     }
 
@@ -2650,14 +2916,20 @@ var SiteViews = function (_Pv) {
       var values = data.items.map(function (elem) {
         return _this5.isPageviews() ? elem.views : elem.devices;
       }),
+          sum = values.reduce(function (a, b) {
+        return a + b;
+      }),
+          average = Math.round(sum / values.length),
+          max = Math.max.apply(Math, _toConsumableArray(values)),
           color = this.config.colors[index % 10];
 
       return Object.assign({
         label: site,
         data: values,
-        sum: values.reduce(function (a, b) {
-          return a + b;
-        })
+        sum: sum,
+        average: average,
+        max: max,
+        color: color
       }, this.config.chartConfig[this.chartType].dataset(color));
     }
 
@@ -2813,17 +3085,22 @@ var SiteViews = function (_Pv) {
 
     /**
      * Removes chart, messages, and resets site selections
+     * @param {boolean} [select2] whether or not to clear the Select2 input
      * @returns {null} nothing
      */
 
   }, {
     key: 'resetView',
     value: function resetView() {
-      $('.chart-container').html('');
+      var select2 = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
       $('.chart-container').removeClass('loading');
-      $('#chart-legend').html('');
-      $('.message-container').html('');
+      $('.data-links').addClass('invisible');
+      $(this.config.chart).hide();
+      this.destroyChart();
+      this.clearMessages();
       this.resetSelect2();
+      if (select2) this.resetSelect2();
     }
 
     /**
@@ -2860,7 +3137,7 @@ var SiteViews = function (_Pv) {
       };
 
       select2Input.select2(params);
-      select2Input.on('change', this.renderData.bind(this));
+      select2Input.on('change', this.processInput.bind(this));
     }
 
     /**
@@ -2893,7 +3170,7 @@ var SiteViews = function (_Pv) {
 
       dateRangeSelector.on('change', function (e) {
         _this6.setChartPointDetectionRadius();
-        _this6.renderData();
+        _this6.processInput();
 
         /** clear out specialRange if it doesn't match our input */
         if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
@@ -2932,7 +3209,7 @@ var SiteViews = function (_Pv) {
         if ($(_this8.config.platformSelector).val() === 'mobile-app' && !_this8.isPageviews()) {
           $(_this8.config.platformSelector).val('all-sites'); // chart will automatically re-render
         } else {
-            _this8.renderData();
+            _this8.processInput();
           }
       });
     }
@@ -2949,26 +3226,20 @@ var SiteViews = function (_Pv) {
 
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
-      $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
-
-      // window.onpopstate = popParams();
+      $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
     }
 
     /**
-     * The mother of all functions, where all the chart logic lives
-     * Really needs to be broken out into several functions
-     *
+     * Query the API for each site, building up the datasets and then calling renderData
      * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
      * @returns {null} - nothin
      */
 
   }, {
-    key: 'renderData',
-    value: function renderData(force) {
+    key: 'processInput',
+    value: function processInput(force) {
       var _this9 = this,
           _$;
-
-      var sites = $(this.config.select2Input).select2('val') || [];
 
       this.pushParams();
 
@@ -2977,126 +3248,189 @@ var SiteViews = function (_Pv) {
         return;
       }
 
-      if (!sites.length) {
-        this.resetView();
-        this.focusSelect2();
-        return;
+      /** @type {Object} everything we need to keep track of for the promises */
+      var xhrData = {
+        sites: $(config.select2Input).select2('val') || [],
+        labels: [], // Labels (dates) for the x-axis.
+        datasets: [], // Data for each site timeseries
+        errors: [], // Queue up errors to show after all requests have been made
+        promises: []
+      };
+
+      if (!xhrData.sites.length) {
+        return this.resetView();
       }
 
       this.params = location.search;
       this.prevChartType = this.chartType;
       this.clearMessages(); // clear out old error messages
+      this.destroyChart();
+      $('.chart-container').addClass('loading');
 
       /** Collect parameters from inputs. */
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day');
 
-      this.destroyChart();
-      $('.message-container').html('');
-      $('.chart-container').addClass('loading');
-
-      var labels = []; // Labels (dates) for the x-axis.
-      var datasets = []; // Data for each site timeseries
-      var errors = []; // Queue up errors to show after all requests have been made
-      var promises = [];
-
       /**
        * Asynchronously collect the data from Analytics Query Service API,
        * process it to Chart.js format and initialize the chart.
        */
-      sites.forEach(function (site, index) {
+      xhrData.sites.forEach(function (site, index) {
         var uriEncodedSite = encodeURIComponent(site);
 
         /** @type {String} Url to query the API. */
         var url = _this9.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedSite + ('/' + $(_this9.config.platformSelector).val() + '/' + $(_this9.config.agentSelector).val() + '/daily') + ('/' + startDate.format(_this9.config.timestampFormat) + '/' + endDate.format(_this9.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedSite + '/' + $(_this9.config.platformSelector).val() + '/daily' + ('/' + startDate.format(_this9.config.timestampFormat) + '/' + endDate.format(_this9.config.timestampFormat));
-
         var promise = $.ajax({
           url: url,
           dataType: 'json'
         });
-        promises.push(promise);
+        xhrData.promises.push(promise);
 
-        promise.success(function (data) {
+        promise.success(function (successData) {
           if (_this9.isPageviews()) {
-            data = _this9.fillInZeros(data, startDate, endDate);
+            successData = _this9.fillInZeros(successData, startDate, endDate);
           }
 
           /** Build the site's dataset. */
           if (_this9.config.linearCharts.includes(_this9.chartType)) {
-            datasets.push(_this9.getLinearData(data, site, index));
+            xhrData.datasets.push(_this9.getLinearData(successData, site, index));
           } else {
-            datasets.push(_this9.getCircularData(data, site, index));
+            xhrData.datasets.push(_this9.getCircularData(successData, site, index));
           }
 
           /** fetch the labels for the x-axis on success if we haven't already */
-          if (data.items && !labels.length) {
-            labels = data.items.map(function (elem) {
+          if (successData.items && !xhrData.labels.length) {
+            xhrData.labels = successData.items.map(function (elem) {
               return moment(elem.timestamp, _this9.config.timestampFormat).format(_this9.dateFormat);
             });
           }
         }).fail(function (data) {
           if (data.status === 404) {
             _this9.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
-            sites = sites.filter(function (el) {
+            xhrData.sites = xhrData.sites.filter(function (el) {
               return el !== site;
             });
 
-            if (!sites.length) {
+            if (!xhrData.sites.length) {
               $('.chart-container').html('');
               $('.chart-container').removeClass('loading');
             }
           } else {
-            errors.push(data.responseJSON.detail[0]);
+            xhrData.errors.push(data.responseJSON.detail[0]);
           }
         });
       });
 
-      (_$ = $).when.apply(_$, promises).always(function (data) {
-        $('#chart-legend').html(''); // clear old chart legend
+      (_$ = $).when.apply(_$, _toConsumableArray(xhrData.promises)).always(this.renderData.bind(this, xhrData));
+    }
 
-        if (errors.length && errors.length === sites.length) {
-          /** something went wrong */
-          $('.chart-container').removeClass('loading');
-          var errorMessages = Array.from(new Set(errors)).map(function (error) {
-            return '<li>' + error + '</li>';
-          }).join('');
-          return _this9.writeMessage($.i18n('api-error') + '<ul>' + errorMessages + '</ul><br/>' + $.i18n('api-error-contact'), true);
-        }
+    /**
+     * Update the chart with data provided by processInput()
+     * @param {Object} xhrData - data as constructed by processInput()
+     * @returns {null} - nothin
+     */
 
-        if (!sites.length) {
-          return;
-        } else if (sites.length === 1) {
-          $('.multi-page-chart-node').hide();
-        } else {
-          $('.multi-page-chart-node').show();
-        }
+  }, {
+    key: 'renderData',
+    value: function renderData(xhrData) {
+      var _this10 = this;
 
-        /** preserve order of datasets due to asyn calls */
-        var sortedDatasets = new Array(sites.length);
-        datasets.forEach(function (dataset) {
-          sortedDatasets[sites.indexOf(dataset.label)] = dataset;
-        });
+      $('#chart-legend').html(''); // clear old chart legend
 
-        /** export built datasets to global scope Chart templates */
-        window.chartData = sortedDatasets;
-
+      if (xhrData.errors.length && xhrData.errors.length === xhrData.sites.length) {
+        /** something went wrong */
         $('.chart-container').removeClass('loading');
-        var options = Object.assign({}, _this9.config.chartConfig[_this9.chartType].opts, _this9.config.globalChartOpts);
-        var linearData = { labels: labels, datasets: sortedDatasets };
+        var errorMessages = Array.from(new Set(xhrData.errors)).map(function (error) {
+          return '<li>' + error + '</li>';
+        }).join('');
+        return this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>', true);
+      }
 
-        $('.chart-container').html('');
-        $('.chart-container').append("<canvas class='aqs-chart'>");
-        var context = $(_this9.config.chart)[0].getContext('2d');
+      if (!xhrData.sites.length) {
+        return;
+      } else if (xhrData.sites.length === 1) {
+        $('.multi-page-chart-node').hide();
+      } else {
+        $('.multi-page-chart-node').show();
+      }
 
-        if (_this9.config.linearCharts.includes(_this9.chartType)) {
-          _this9.chartObj = new Chart(context)[_this9.chartType](linearData, options);
-        } else {
-          _this9.chartObj = new Chart(context)[_this9.chartType](sortedDatasets, options);
-        }
+      if (this.autoLogDetection) {
+        var shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(function (set) {
+          return set.data;
+        }));
+        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+      }
 
-        $('#chart-legend').html(_this9.chartObj.generateLegend());
-        $('.data-links').show();
+      /** preserve order of datasets due to asyn calls */
+      var sortedDatasets = new Array(xhrData.sites.length);
+      xhrData.datasets.forEach(function (dataset) {
+        if (_this10.isLogarithmic()) dataset.data = dataset.data.map(function (view) {
+          return view || null;
+        });
+        sortedDatasets[xhrData.sites.indexOf(dataset.label)] = dataset;
       });
+
+      var options = Object.assign({ scales: {} }, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
+
+      if (this.isLogarithmic()) {
+        options.scales = Object.assign({}, options.scales, {
+          yAxes: [{
+            type: 'logarithmic',
+            ticks: {
+              callback: function callback(value, index, arr) {
+                var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
+
+                if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                  return _this10.formatNumber(value);
+                } else {
+                  return '';
+                }
+              }
+            }
+          }]
+        });
+      }
+
+      $('.chart-container').removeClass('loading').html('').append("<canvas class='aqs-chart'>");
+      this.setChartPointDetectionRadius();
+      var context = $(this.config.chart)[0].getContext('2d');
+
+      if (this.config.linearCharts.includes(this.chartType)) {
+        var linearData = { labels: xhrData.labels, datasets: sortedDatasets };
+
+        this.chartObj = new Chart(context, {
+          type: this.chartType,
+          data: linearData,
+          options: options
+        });
+      } else {
+        this.chartObj = new Chart(context, {
+          type: this.chartType,
+          data: {
+            labels: sortedDatasets.map(function (d) {
+              return d.label;
+            }),
+            datasets: [{
+              data: sortedDatasets.map(function (d) {
+                return d.value;
+              }),
+              backgroundColor: sortedDatasets.map(function (d) {
+                return d.backgroundColor;
+              }),
+              hoverBackgroundColor: sortedDatasets.map(function (d) {
+                return d.hoverBackgroundColor;
+              }),
+              averages: sortedDatasets.map(function (d) {
+                return d.average;
+              })
+            }]
+          },
+          options: options
+        });
+      }
+
+      $('#chart-legend').html(this.chartObj.generateLegend());
+      $('.data-links').removeClass('invisible');
     }
 
     /**
@@ -3110,7 +3444,7 @@ var SiteViews = function (_Pv) {
   }, {
     key: 'validateProjects',
     value: function validateProjects() {
-      var _this10 = this;
+      var _this11 = this;
 
       var projects = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
@@ -3118,7 +3452,7 @@ var SiteViews = function (_Pv) {
         if (siteDomains.includes(project)) {
           return true;
         } else {
-          _this10.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
+          _this11.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
           return false;
         }
       });
@@ -3140,10 +3474,10 @@ $(document).ready(function () {
 });
 
 },{"../shared/pv":3,"../shared/site_map":5,"./config":6}],8:[function(require,module,exports){
-"use strict";
+'use strict';
 
 /**
- * @file Templates used by Chart.js
+ * @file Templates used by Chart.js for Siteviews app
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  */
@@ -3155,8 +3489,44 @@ $(document).ready(function () {
  * @type {Object}
  */
 var templates = {
-  linearLegend: "\n    <% if (chartData.length === 1) { %>\n      <strong><%= $.i18n('totals') %>:</strong>\n      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      &bullet;\n      <a href=\"https://<%= chartData[0].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n      &bullet;\n      <a href=\"<%= getTopviewsURL(chartData[0].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n    <% } else { %>\n      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>\n      <div class=\"linear-legend--totals\">\n        <strong><%= $.i18n('totals') %>:</strong>\n        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)\n      </div>\n      <div class=\"linear-legends\">\n        <% for (var i=0; i<chartData.length; i++) { %>\n          <span class=\"linear-legend\">\n            <div class=\"linear-legend--label\" style=\"background-color:<%= chartData[i].strokeColor %>\">\n              <a href=\"https://<%= chartData[i].label %>\" target=\"_blank\"><%= chartData[i].label %></a>\n            </div>\n            <div class=\"linear-legend--counts\">\n              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)\n            </div>\n            <div class=\"linear-legend--links\">\n              <a href=\"https://<%= chartData[i].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>\" target=\"_blank\"><%= $.i18n('statistics') %></a>\n              &bullet;\n              <a href=\"<%= getTopviewsURL(chartData[i].label) %>\" target=\"_blank\"><%= $.i18n('most-viewed-pages') %></a>\n            </div>\n          </span>\n        <% } %>\n      </div>\n    <% } %>",
-  circularLegend: "\n    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>\n    <ul class=\"<%=name.toLowerCase()%>-legend\">\n      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>\n      <% for (var i=0; i<segments.length; i++) { %>\n        <li>\n          <span class=\"indic\" style=\"background-color:<%=segments[i].fillColor%>\">\n            <a href='https://<%= segments[i].label %>'><%=segments[i].label%></a>\n          </span>\n          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)\n        </li>\n      <% } %>\n    </ul>\n    "
+  linearLegend: function linearLegend(datasets, scope) {
+    var markup = '';
+
+    if (datasets.length === 1) {
+      var dataset = datasets[0];
+      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="https://' + dataset.label + '/wiki/Special:Statistics?uselang=<' + i18nLang + '" target="_blank">' + $.i18n('statistics') + '</a>\n        &bullet;\n        <a href="' + scope.getTopviewsURL(dataset.label) + '" target="_blank">' + $.i18n('most-viewed-pages') + '</a>\n      </div>';
+    }
+
+    if (datasets.length > 1) {
+      var total = datasets.reduce(function (a, b) {
+        return a + b.sum;
+      }, 0);
+      markup = '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(total) + ' (' + scope.formatNumber(Math.round(total / scope.numDaysInRange())) + '/' + $.i18n('day') + ')\n      </div>';
+    }
+    markup += '<div class="linear-legends">';
+
+    for (var i = 0; i < datasets.length; i++) {
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + scope.rgba(datasets[i].color, 0.8) + '">\n            <a href="https://' + datasets[i].label + '" target="_blank">' + datasets[i].label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(datasets[i].sum) + ' (' + scope.formatNumber(datasets[i].average) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="https://' + datasets[i].label + '/wiki/Special:Statistics?uselang=' + i18nLang + '" target="_blank">' + $.i18n('statistics') + '</a>\n            &bullet;\n            <a href="' + scope.getTopviewsURL(datasets[0].label) + '" target="_blank">' + $.i18n('most-viewed-pages') + '</a>\n          </div>\n        </span>\n      ';
+    }
+    return markup += '</div>';
+  },
+
+  circularLegend: function circularLegend(datasets, scope) {
+    var dataset = datasets[0],
+        total = dataset.data.reduce(function (a, b) {
+      return a + b;
+    });
+    var markup = '<div class="linear-legend--totals">\n      <strong>' + $.i18n('totals') + ':</strong>\n      ' + scope.formatNumber(total) + ' (' + scope.formatNumber(Math.round(total / scope.numDaysInRange())) + '/' + $.i18n('day') + ')\n    </div>';
+
+    markup += '<div class="linear-legends">';
+
+    for (var i = 0; i < dataset.data.length; i++) {
+      var metaKey = Object.keys(dataset._meta)[0];
+      var label = dataset._meta[metaKey].data[i]._view.label;
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + dataset.backgroundColor[i] + '">\n            <a href="https://' + label + '" target="_blank">' + label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(dataset.data[i]) + ' (' + scope.formatNumber(dataset.averages[i]) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="https://' + label + '/wiki/Special:Statistics?uselang=' + i18nLang + '" target="_blank">' + $.i18n('statistics') + '</a>\n            &bullet;\n            <a href="' + scope.getTopviewsURL(label) + '" target="_blank">' + $.i18n('most-viewed-pages') + '</a>\n          </div>\n        </span>\n      ';
+    }
+    return markup += '</div>';
+  }
 };
 
 module.exports = templates;

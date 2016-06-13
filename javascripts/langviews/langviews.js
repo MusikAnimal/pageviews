@@ -15,6 +15,7 @@ const Pv = require('../shared/pv');
 class LangViews extends Pv {
   constructor() {
     super(config);
+    this.app = 'langviews';
   }
 
   /**

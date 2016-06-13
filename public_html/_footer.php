@@ -107,7 +107,7 @@
 <?php } ?>
 <script type="text/javascript">
 //<![CDATA[
-  if(!window.noAdBlockers) {
+  if ( !window.noAdBlockers ) {
     var noticeContent = document.getElementById('ad_blocker_notice');
     document.querySelector('body').innerHTML = noticeContent.innerHTML;
   }

@@ -14,7 +14,7 @@ module.exports = {
     client.click('.select2-results__option:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
     client.pause(500);
-    client.execute('return $(".aqs-article-selector").val()', [], response => {
+    client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(_.isEqual(
         response.value,
         ['Cat', 'Dog', 'Sea_lion']
@@ -107,8 +107,8 @@ module.exports = {
     client.execute('return $(".aqs-project-input").val("")');
     client.setValue('#project-input', ['de.wikipedia.org']);
     client.execute('return $(".aqs-project-input").trigger("change")');
-    client.expect.element('.aqs-chart').to.not.be.present.after(1000);
-    client.execute('return $(".aqs-article-selector").val()', [], response => {
+    client.expect.element('.aqs-chart').to.not.be.visible.after(1000);
+    client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(response.value).to.equal(null);
     });
   },
@@ -119,7 +119,7 @@ module.exports = {
     client.click('.select2-results__option:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
-    client.execute('return [$(".aqs-article-selector").val(), location.search]', [], response => {
+    client.execute('return [$(".aqs-select2-selector").val(), location.search]', [], response => {
       client.expect(_.isEqual(
         response.value[0],
         ['Google']

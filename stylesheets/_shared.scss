@@ -110,15 +110,21 @@ select {
   padding-bottom: 10px;
 }
 
+// scss-lint:disable ImportantRule
+.aqs-select2-selector {
+  height: 34px !important;
+}
+
 // Avoid select2 collapsing with narrow screens
 // scss-lint:disable ImportantRule
-.aqs-article-selector,
 .select2-container {
   width: 100% !important;
 }
 
 .chart-container {
   min-height: 100px;
+  position: relative;
+  width: 100%;
 }
 
 a:focus {
@@ -224,10 +230,15 @@ footer {
 }
 
 .data-links {
-  // height: 30px;
-  // line-height: 30px;
-  margin-top: 20px;
-  position: relative;
+  padding-bottom: 15px;
+
+  .btn {
+    margin-left: 10px;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
 }
 
 .faq-ul {
@@ -292,4 +303,42 @@ footer {
 
 .view-options--list {
   color: $black;
+}
+
+.download-btn-group {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+
+  .input-group-addon {
+    background: transparent;
+    display: inline-block;
+    font-size: 12px;
+    height: 30px;
+  }
+
+  .input-group-btn {
+    margin-left: -4px;
+  }
+
+  > * {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+.download-csv {
+  border-radius: 0;
+  margin-right: -1px !important;
+}
+
+.download-json {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.logarithmic-scale {
+  height: 30px;
+  line-height: 30px;
+  margin: 0;
 }

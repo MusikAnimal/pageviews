@@ -1,5 +1,5 @@
 /**
- * @file Templates used by Chart.js
+ * @file Templates used by Chart.js for Siteviews app
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  */
@@ -11,52 +11,81 @@
  * @type {Object}
  */
 const templates = {
-  linearLegend: `
-    <% if (chartData.length === 1) { %>
-      <strong><%= $.i18n('totals') %>:</strong>
-      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
-      &bullet;
-      <a href="https://<%= chartData[0].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>" target="_blank"><%= $.i18n('statistics') %></a>
-      &bullet;
-      <a href="<%= getTopviewsURL(chartData[0].label) %>" target="_blank"><%= $.i18n('most-viewed-pages') %></a>
-    <% } else { %>
-      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>
-      <div class="linear-legend--totals">
-        <strong><%= $.i18n('totals') %>:</strong>
-        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)
-      </div>
-      <div class="linear-legends">
-        <% for (var i=0; i<chartData.length; i++) { %>
-          <span class="linear-legend">
-            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">
-              <a href="https://<%= chartData[i].label %>" target="_blank"><%= chartData[i].label %></a>
-            </div>
-            <div class="linear-legend--counts">
-              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
-            </div>
-            <div class="linear-legend--links">
-              <a href="https://<%= chartData[i].label %>/wiki/Special:Statistics?uselang=<%= i18nLang %>" target="_blank"><%= $.i18n('statistics') %></a>
-              &bullet;
-              <a href="<%= getTopviewsURL(chartData[i].label) %>" target="_blank"><%= $.i18n('most-viewed-pages') %></a>
-            </div>
-          </span>
-        <% } %>
-      </div>
-    <% } %>`,
-  circularLegend: `
-    <b><%= $.i18n('totals') %></b> <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>
-    <ul class="<%=name.toLowerCase()%>-legend">
-      <% if(chartData.length > 1) { %><li><%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)</li><% } %>
-      <% for (var i=0; i<segments.length; i++) { %>
-        <li>
-          <span class="indic" style="background-color:<%=segments[i].fillColor%>">
-            <a href='https://<%= segments[i].label %>'><%=segments[i].label%></a>
-          </span>
-          <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)
-        </li>
-      <% } %>
-    </ul>
-    `
+  linearLegend: (datasets, scope) => {
+    let markup = '';
+
+    if (datasets.length === 1) {
+      const dataset = datasets[0];
+      return `<div class="linear-legend--totals">
+        <strong>${$.i18n('totals')}:</strong>
+        ${scope.formatNumber(dataset.sum)} (${scope.formatNumber(dataset.average)}/${$.i18n('day')})
+        &bullet;
+        <a href="https://${dataset.label}/wiki/Special:Statistics?uselang=<${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
+        &bullet;
+        <a href="${scope.getTopviewsURL(dataset.label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
+      </div>`;
+    }
+
+    if (datasets.length > 1) {
+      const total = datasets.reduce((a,b) => a + b.sum, 0);
+      markup = `<div class="linear-legend--totals">
+        <strong>${$.i18n('totals')}:</strong>
+        ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
+      </div>`;
+    }
+    markup += '<div class="linear-legends">';
+
+    for (let i = 0; i < datasets.length; i++) {
+      markup += `
+        <span class="linear-legend">
+          <div class="linear-legend--label" style="background-color:${scope.rgba(datasets[i].color, 0.8)}">
+            <a href="https://${(datasets[i].label)}" target="_blank">${datasets[i].label}</a>
+          </div>
+          <div class="linear-legend--counts">
+            ${scope.formatNumber(datasets[i].sum)} (${scope.formatNumber(datasets[i].average)}/${$.i18n('day')})
+          </div>
+          <div class="linear-legend--links">
+            <a href="https://${datasets[i].label}/wiki/Special:Statistics?uselang=${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
+            &bullet;
+            <a href="${scope.getTopviewsURL(datasets[0].label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
+          </div>
+        </span>
+      `;
+    }
+    return markup += '</div>';
+  },
+
+  circularLegend(datasets, scope) {
+    const dataset = datasets[0],
+      total = dataset.data.reduce((a,b) => a + b);
+    let markup = `<div class="linear-legend--totals">
+      <strong>${$.i18n('totals')}:</strong>
+      ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
+    </div>`;
+
+    markup += '<div class="linear-legends">';
+
+    for (let i = 0; i < dataset.data.length; i++) {
+      const metaKey = Object.keys(dataset._meta)[0];
+      const label = dataset._meta[metaKey].data[i]._view.label;
+      markup += `
+        <span class="linear-legend">
+          <div class="linear-legend--label" style="background-color:${dataset.backgroundColor[i]}">
+            <a href="https://${label}" target="_blank">${label}</a>
+          </div>
+          <div class="linear-legend--counts">
+            ${scope.formatNumber(dataset.data[i])} (${scope.formatNumber(dataset.averages[i])}/${$.i18n('day')})
+          </div>
+          <div class="linear-legend--links">
+            <a href="https://${label}/wiki/Special:Statistics?uselang=${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
+            &bullet;
+            <a href="${scope.getTopviewsURL(label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
+          </div>
+        </span>
+      `;
+    }
+    return markup += '</div>';
+  }
 };
 
 module.exports = templates;

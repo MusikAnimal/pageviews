@@ -16,7 +16,7 @@ module.exports = {
     client.click('.js-test-bar-chart');
     client.expect.element('.aqs-chart').to.be.visible.after(1000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
-      client.expect(response.value).to.equal('Bar');
+      client.expect(response.value).to.equal('bar');
     });
     client.pause(1000);
 
@@ -26,7 +26,7 @@ module.exports = {
     client.click('.js-test-pie-chart');
     client.expect.element('.aqs-chart').to.be.visible.after(1000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
-      client.expect(response.value).to.equal('Pie');
+      client.expect(response.value).to.equal('pie');
     });
     client.pause(1000);
 
@@ -36,7 +36,7 @@ module.exports = {
     client.click('.js-test-line-chart');
     client.expect.element('.aqs-chart').to.be.visible.after(1000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
-      client.expect(response.value).to.equal('Line');
+      client.expect(response.value).to.equal('line');
     });
   },
   'Changing settings updates view and sets localStorage': client => {

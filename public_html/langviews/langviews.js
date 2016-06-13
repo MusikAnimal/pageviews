@@ -104,7 +104,10 @@ var LangViews = function (_Pv) {
   function LangViews() {
     _classCallCheck(this, LangViews);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(LangViews).call(this, config));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(LangViews).call(this, config));
+
+    _this.app = 'langviews';
+    return _this;
   }
 
   /**
@@ -929,6 +932,44 @@ String.prototype.score = function () {
   return this.replace(/ /g, '_');
 };
 
+/*
+ * HOT PATCH for Chart.js getElementsAtEvent
+ * https://github.com/chartjs/Chart.js/issues/2299
+ * TODO: remove me when this gets implemented into Charts.js core
+ */
+if (typeof Chart !== 'undefined') {
+  Chart.Controller.prototype.getElementsAtEvent = function (e) {
+    var helpers = Chart.helpers;
+    var eventPosition = helpers.getRelativePosition(e, this.chart);
+    var elementsArray = [];
+
+    var found = function () {
+      if (this.data.datasets) {
+        for (var i = 0; i < this.data.datasets.length; i++) {
+          var key = Object.keys(this.data.datasets[i]._meta)[0];
+          for (var j = 0; j < this.data.datasets[i]._meta[key].data.length; j++) {
+            /* eslint-disable max-depth */
+            if (this.data.datasets[i]._meta[key].data[j].inLabelRange(eventPosition.x, eventPosition.y)) {
+              return this.data.datasets[i]._meta[key].data[j];
+            }
+          }
+        }
+      }
+    }.call(this);
+
+    if (!found) {
+      return elementsArray;
+    }
+
+    helpers.each(this.data.datasets, function (dataset, dsIndex) {
+      var key = Object.keys(dataset._meta)[0];
+      elementsArray.push(dataset._meta[key].data[found._index]);
+    });
+
+    return elementsArray;
+  };
+}
+
 },{}],4:[function(require,module,exports){
 'use strict';
 
@@ -1074,66 +1115,69 @@ if (!Array.prototype.fill) {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
-var pvConfig = require('./pv_config');
+var PvConfig = require('./pv_config');
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
 
-var Pv = function () {
+var Pv = function (_PvConfig) {
+  _inherits(Pv, _PvConfig);
+
   function Pv(appConfig) {
-    var _this = this;
-
     _classCallCheck(this, Pv);
 
     /** assign initial class properties */
-    this.config = Object.assign({}, pvConfig, appConfig);
 
-    /** must manually assign defaults as Object.assign is shallow */
-    this.config.defaults = Object.assign({}, pvConfig.defaults, appConfig.defaults);
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this));
 
-    this.colorsStyleEl = undefined;
-    this.storage = {}; // used as fallback when localStorage is not supported
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
-    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
-    this.params = null;
+    var defaults = _this.config.defaults;
+    _this.config = Object.assign({}, _this.config, appConfig);
+    _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+
+    _this.colorsStyleEl = undefined;
+    _this.storage = {}; // used as fallback when localStorage is not supported
+    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || _this.config.defaults.localizeDateFormat;
+    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || _this.config.defaults.numericalFormatting;
+    _this.bezierCurve = _this.getFromLocalStorage('pageviews-settings-bezierCurve') || _this.config.defaults.bezierCurve;
+    _this.autocomplete = _this.getFromLocalStorage('pageviews-settings-autocomplete') || _this.config.defaults.autocomplete;
+    _this.params = null;
 
     /** some chart-specific set up */
-    if (this.config.chart) {
-      this.chartObj = null;
-      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
-      this.prevChartType = null;
+    if (_this.config.chart) {
+      _this.chartObj = null;
+      _this.chartType = _this.getFromLocalStorage('pageviews-chart-preference') || _this.config.defaults.chartType;
+      _this.prevChartType = null;
+      _this.autoLogDetection = true; // track whether logarithmic scale checkbox was manually checked
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!this.config.linearCharts.includes(this.chartType) || !this.config.circularCharts.includes(this.chartType)) {
-        this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType);
-        this.chartType = this.config.defaults.chartType;
+      if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
+        _this.setLocalStorage('pageviews-chart-preference', _this.config.defaults.chartType);
+        _this.chartType = _this.config.defaults.chartType;
       }
 
-      /** need to export to global for chart templating */
-      window.formatNumber = this.formatNumber.bind(this);
-      window.numDaysInRange = this.numDaysInRange.bind(this);
-      window.getPageURL = this.getPageURL.bind(this);
-
       /** copy over app-specific chart templates */
-      this.config.linearCharts.forEach(function (linearChart) {
+      _this.config.linearCharts.forEach(function (linearChart) {
         _this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
       });
-      this.config.circularCharts.forEach(function (circularChart) {
+      _this.config.circularCharts.forEach(function (circularChart) {
         _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
       });
 
@@ -1141,19 +1185,19 @@ var Pv = function () {
     }
 
     /** @type {null|Date} tracking of elapsed time */
-    this.processStart = null;
+    _this.processStart = null;
 
     /** assign app instance to window for debugging on local environment */
     if (location.host === 'localhost') {
-      window.app = this;
+      window.app = _this;
     } else {
-      this.splash();
+      _this.splash();
     }
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
+      _this.addSiteNotice('warning', 'This is a staging environment. For the actual ' + document.title + ',\n         see <a href=\'' + actualPathName + '\'>' + location.hostname + actualPathName + '</a>');
     }
 
     /**
@@ -1167,7 +1211,8 @@ var Pv = function () {
     }
     $.i18n({
       locale: i18nLang
-    }).load(messagesToLoad).then(this.initialize.bind(this));
+    }).load(messagesToLoad).then(_this.initialize.bind(_this));
+    return _this;
   }
 
   _createClass(Pv, [{
@@ -1209,7 +1254,7 @@ var Pv = function () {
     value: function destroyChart() {
       if (this.chartObj) {
         this.chartObj.destroy();
-        delete this.chartObj;
+        $('#chart-legend').html('');
       }
     }
 
@@ -1253,7 +1298,8 @@ var Pv = function () {
   }, {
     key: 'formatNumber',
     value: function formatNumber(num) {
-      if (this.numericalFormatting === 'true') {
+      var numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+      if (numericalFormatting === 'true') {
         return this.n(num);
       } else {
         return num;
@@ -1555,14 +1601,38 @@ var Pv = function () {
     }
 
     /**
-     * Test if the current project is a multilingual project
-     * @returns {Boolean} is multilingual or not
+     * Get a value from localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to retrieve
+     * @returns {Mixed} stored value
      */
 
   }, {
-    key: 'isMultilangProject',
-    value: function isMultilangProject() {
-      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
+    key: 'getFromLocalStorage',
+    value: function getFromLocalStorage(key) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.getItem(key);
+      } catch (err) {
+        return storage[key];
+      }
+    }
+
+    /**
+     * Set a value to localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to set
+     * @param {Mixed} value - value to store
+     * @returns {Mixed} stored value
+     */
+
+  }, {
+    key: 'setLocalStorage',
+    value: function setLocalStorage(key, value) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.setItem(key, value);
+      } catch (err) {
+        return storage[key] = value;
+      }
     }
 
     /**
@@ -1580,15 +1650,79 @@ var Pv = function () {
     }
 
     /**
-     * Check if Intl is supported
-     *
-     * @returns {boolean} whether the browser (presumably) supports date locale operations
+     * Are we currently in logarithmic mode?
+     * @returns {Boolean} true or false
      */
 
   }, {
-    key: 'localeSupported',
-    value: function localeSupported() {
-      return (typeof Intl === 'undefined' ? 'undefined' : _typeof(Intl)) === 'object';
+    key: 'isLogarithmic',
+    value: function isLogarithmic() {
+      return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
+    }
+
+    /**
+     * Test if the current chart type supports a logarithmic scale
+     * @returns {Boolean} log-friendly or not
+     */
+
+  }, {
+    key: 'isLogarithmicCapable',
+    value: function isLogarithmicCapable() {
+      return ['line', 'bar'].includes(this.chartType);
+    }
+
+    /**
+     * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
+     * @param  {Array} datasets - pageviews
+     * @return {Boolean} yes or no
+     */
+
+  }, {
+    key: 'shouldBeLogarithmic',
+    value: function shouldBeLogarithmic(datasets) {
+      var _ref;
+
+      var sets = [];
+      // convert NaNs and nulls to zeros
+      datasets.forEach(function (dataset) {
+        sets.push(dataset.map(function (val) {
+          return val || 0;
+        }));
+      });
+
+      // overall max value
+      var maxValue = Math.max.apply(Math, _toConsumableArray((_ref = []).concat.apply(_ref, sets)));
+      var logarithmicNeeded = false;
+
+      sets.forEach(function (set) {
+        set.push(maxValue);
+
+        var sum = set.reduce(function (a, b) {
+          return a + b;
+        }),
+            average = sum / set.length;
+        var theil = 0;
+        set.forEach(function (v) {
+          return theil += v ? v * Math.log(v / average) : 0;
+        });
+
+        if (theil / sum > 0.5) {
+          return logarithmicNeeded = true;
+        }
+      });
+
+      return logarithmicNeeded;
+    }
+
+    /**
+     * Test if the current project is a multilingual project
+     * @returns {Boolean} is multilingual or not
+     */
+
+  }, {
+    key: 'isMultilangProject',
+    value: function isMultilangProject() {
+      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
     }
 
     /**
@@ -1794,8 +1928,21 @@ var Pv = function () {
       select2Input.select2('val', null);
       select2Input.select2('data', null);
       select2Input.select2('destroy');
-      $('.data-links').hide();
       this.setupSelect2();
+    }
+
+    /**
+     * Change alpha level of an rgba value
+     *
+     * @param {string} value - rgba value
+     * @param {float|string} alpha - transparency as float value
+     * @returns {string} rgba value
+     */
+
+  }, {
+    key: 'rgba',
+    value: function rgba(value, alpha) {
+      return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
     }
 
     /**
@@ -1848,27 +1995,27 @@ var Pv = function () {
         this.resetSelect2();
       }
 
-      this.renderData(true);
+      this.processInput(true);
     }
 
     /**
      * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-     * @returns {null} nothing
+     * @returns {Number} radius
      */
 
   }, {
     key: 'setChartPointDetectionRadius',
     value: function setChartPointDetectionRadius() {
-      if (this.chartType !== 'Line') return;
+      if (this.chartType !== 'line') return;
 
       if (this.numDaysInRange() > 50) {
-        Chart.defaults.Line.pointHitDetectionRadius = 3;
+        Chart.defaults.global.elements.point.hitRadius = 3;
       } else if (this.numDaysInRange() > 30) {
-        Chart.defaults.Line.pointHitDetectionRadius = 5;
+        Chart.defaults.global.elements.point.hitRadius = 5;
       } else if (this.numDaysInRange() > 20) {
-        Chart.defaults.Line.pointHitDetectionRadius = 10;
+        Chart.defaults.global.elements.point.hitRadius = 10;
       } else {
-        Chart.defaults.Line.pointHitDetectionRadius = 20;
+        Chart.defaults.global.elements.point.hitRadius = 30;
       }
     }
 
@@ -1921,14 +2068,14 @@ var Pv = function () {
         startDate = _config$specialRanges2[0];
         endDate = _config$specialRanges2[1];
       } else if (rangeIndex >= 0) {
-        var _ref = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+        var _ref2 = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
         /** treat 'latest' as a function */
 
 
-        var _ref2 = _slicedToArray(_ref, 2);
+        var _ref3 = _slicedToArray(_ref2, 2);
 
-        startDate = _ref2[0];
-        endDate = _ref2[1];
+        startDate = _ref3[0];
+        endDate = _ref3[1];
 
         $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
       } else {
@@ -2001,14 +2148,24 @@ var Pv = function () {
         location.reload();
       });
 
+      var rerenderFunc = ['langviews', 'massviews'].includes(this.app) ? this.renderData : this.processInput;
+
       if (this.config.chart) {
         this.setupSettingsModal();
 
         /** changing of chart types */
         $('.modal-chart-type a').on('click', function (e) {
           _this7.chartType = $(e.currentTarget).data('type');
+
+          $('.logarithmic-scale').toggle(_this7.isLogarithmicCapable());
+
           _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
-          _this7.renderData();
+          rerenderFunc.call(_this7);
+        });
+
+        $(this.config.logarithmicCheckbox).on('click', function () {
+          _this7.autoLogDetection = false;
+          rerenderFunc.call(_this7, true);
         });
       }
     }
@@ -2027,41 +2184,6 @@ var Pv = function () {
       /** add listener */
       $('.save-settings-btn').on('click', this.saveSettings.bind(this));
       $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-    }
-
-    /**
-     * Get a value from localStorage, using a temporary storage if localStorage is not supported
-     * @param {string} key - key for the value to retrieve
-     * @returns {Mixed} stored value
-     */
-
-  }, {
-    key: 'getFromLocalStorage',
-    value: function getFromLocalStorage(key) {
-      // See if localStorage is supported and enabled
-      try {
-        return localStorage.getItem(key);
-      } catch (err) {
-        return this.storage[key];
-      }
-    }
-
-    /**
-     * Set a value to localStorage, using a temporary storage if localStorage is not supported
-     * @param {string} key - key for the value to set
-     * @param {Mixed} value - value to store
-     * @returns {Mixed} stored value
-     */
-
-  }, {
-    key: 'setLocalStorage',
-    value: function setLocalStorage(key, value) {
-      // See if localStorage is supported and enabled
-      try {
-        return localStorage.setItem(key, value);
-      } catch (err) {
-        return this.storage[key] = value;
-      }
     }
 
     /**
@@ -2135,7 +2257,7 @@ var Pv = function () {
   }, {
     key: 'splash',
     value: function splash() {
-      var style = 'background: #222; color: #bada55; padding: 4px; font-family:dejavu sans mono';
+      var style = 'background: #eee; color: #555; padding: 4px; font-family:monospace';
       console.log('%c      ___            __ _                     _                             ', style);
       console.log('%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ', style);
       console.log('%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ', style);
@@ -2238,12 +2360,16 @@ var Pv = function () {
   }]);
 
   return Pv;
-}();
+}(PvConfig);
 
 module.exports = Pv;
 
 },{"./pv_config":6}],6:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * @file Shared config amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
@@ -2253,136 +2379,274 @@ module.exports = Pv;
  */
 
 /**
- * Change alpha level of an rgba value
- *
- * @param {string} value - rgba value
- * @param {float|string} alpha - transparency as float value
- * @returns {string} rgba value
- */
-var rgba = function rgba(value, alpha) {
-  return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
-};
-
-/**
  * Configuration for all Pageviews applications.
  * Some properties may be overriden by app-specific configs
  * @type {Object}
  */
-var pvConfig = {
-  chartConfig: {
-    Line: {
-      opts: {
-        bezierCurve: false
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: 'rgba(0,0,0,0)',
-          pointColor: color,
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          pointStrokeColor: '#fff',
-          strokeColor: color
-        };
-      }
-    },
-    Bar: {
-      opts: {
-        barDatasetSpacing: 0,
-        barValueSpacing: 0
-      },
-      dataset: function dataset(color) {
-        return {
-          fillColor: rgba(color, 0.5),
-          highlightFill: rgba(color, 0.75),
-          highlightStroke: color,
-          strokeColor: rgba(color, 0.8)
-        };
-      }
-    },
-    Pie: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    Doughnut: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    PolarArea: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          color: color,
-          highlight: rgba(color, 0.8)
-        };
-      }
-    },
-    Radar: {
-      opts: {},
-      dataset: function dataset(color) {
-        return {
-          fillColor: rgba(color, 0.1),
-          pointColor: color,
-          pointStrokeColor: '#fff',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: color,
-          strokeColor: color
-        };
-      }
-    }
-  },
-  circularCharts: ['Pie', 'Doughnut', 'PolarArea'],
-  colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-  cookieExpiry: 30, // num days
-  defaults: {
-    autocomplete: 'autocomplete',
-    chartType: 'Line',
-    daysAgo: 20,
-    dateFormat: 'YYYY-MM-DD',
-    localizeDateFormat: 'true',
-    numericalFormatting: 'true'
-  },
-  globalChartOpts: {
-    animation: true,
-    animationEasing: 'easeInOutQuart',
-    animationSteps: 30,
-    labelsFilter: function labelsFilter(value, index, labels) {
-      if (labels.length >= 60) {
-        return (index + 1) % Math.ceil(labels.length / 60 * 2) !== 0;
-      } else {
-        return false;
-      }
-    },
-    multiTooltipTemplate: '<%= formatNumber(value) %>',
-    scaleLabel: '<%= formatNumber(value) %>',
-    tooltipTemplate: '<%if (label){%><%=label%>: <%}%><%= formatNumber(value) %>'
-  },
-  linearCharts: ['Line', 'Bar', 'Radar'],
-  minDate: moment('2015-07-01').startOf('day'),
-  maxDate: moment().subtract(1, 'days').startOf('day'),
-  specialRanges: {
-    'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-    'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
-    'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    latest: function latest() {
-      var offset = arguments.length <= 0 || arguments[0] === undefined ? pvConfig.daysAgo : arguments[0];
 
-      return [moment().subtract(offset, 'days').startOf('day'), pvConfig.maxDate];
-    }
-  },
-  timestampFormat: 'YYYYMMDD00'
-};
+var PvConfig = function () {
+  function PvConfig() {
+    var _this = this;
 
-module.exports = pvConfig;
+    _classCallCheck(this, PvConfig);
+
+    var self = this;
+
+    this.config = {
+      chartConfig: {
+        line: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatNumber(value);
+                  }
+                }
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: 'rgba(0,0,0,0)',
+              borderWidth: 2,
+              borderColor: color,
+              pointColor: color,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.2),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverBorderWidth: 2,
+              pointHoverRadius: 5,
+              tension: self.bezierCurve === 'true' ? 0.4 : 0
+            };
+          }
+        },
+        bar: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatNumber(value);
+                  }
+                }
+              }],
+              xAxes: [{
+                barPercentage: 1.0,
+                categoryPercentage: 0.85
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.6),
+              borderColor: self.rgba(color, 0.9),
+              borderWidth: 2,
+              hoverBackgroundColor: self.rgba(color, 0.75),
+              hoverBorderColor: color
+            };
+          }
+        },
+        radar: {
+          opts: {
+            scale: {
+              ticks: {
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.linearLegend(chart.data.datasets, self);
+            },
+            tooltips: this.linearTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.1),
+              borderColor: color,
+              borderWidth: 2,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.8),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverRadius: 5
+            };
+          }
+        },
+        pie: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        doughnut: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        polarArea: {
+          opts: {
+            scale: {
+              ticks: {
+                beginAtZero: true,
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.circularLegend(chart.data.datasets, self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.7),
+              hoverBackgroundColor: self.rgba(color, 0.9)
+            };
+          }
+        }
+      },
+      circularCharts: ['pie', 'doughnut', 'polarArea'],
+      colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
+      cookieExpiry: 30, // num days
+      defaults: {
+        autocomplete: 'autocomplete',
+        chartType: 'line',
+        daysAgo: 20,
+        dateFormat: 'YYYY-MM-DD',
+        localizeDateFormat: 'true',
+        numericalFormatting: 'true',
+        bezierCurve: 'false'
+      },
+      globalChartOpts: {
+        animation: {
+          duration: 500,
+          easing: 'easeInOutQuart'
+        },
+        hover: {
+          animationDuration: 0
+        },
+        legend: {
+          display: false
+        }
+      },
+      linearCharts: ['line', 'bar', 'radar'],
+      linearOpts: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              callback: function callback(value) {
+                return _this.formatNumber(value);
+              }
+            }
+          }]
+        },
+        legendCallback: function legendCallback(chart) {
+          return _this.config.linearLegend(chart.data.datasets, self);
+        }
+      },
+      minDate: moment('2015-07-01').startOf('day'),
+      maxDate: moment().subtract(1, 'days').startOf('day'),
+      specialRanges: {
+        'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+        'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+        'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        latest: function latest() {
+          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.defaults.daysAgo : arguments[0];
+
+          return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
+        }
+      },
+      timestampFormat: 'YYYYMMDD00'
+    };
+  }
+
+  _createClass(PvConfig, [{
+    key: 'linearTooltips',
+    get: function get() {
+      var _this2 = this;
+
+      return {
+        mode: 'label',
+        callbacks: {
+          label: function label(tooltipItem) {
+            if (Number.isNaN(tooltipItem.yLabel)) {
+              return ' ' + $.i18n('unknown');
+            } else {
+              return ' ' + _this2.formatNumber(tooltipItem.yLabel);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+  }, {
+    key: 'circularTooltips',
+    get: function get() {
+      var _this3 = this;
+
+      return {
+        callbacks: {
+          label: function label(tooltipItem, chartInstance) {
+            var value = chartInstance.datasets[tooltipItem.datasetIndex].data[tooltipItem.index],
+                label = chartInstance.labels[tooltipItem.index];
+
+            if (Number.isNaN(value)) {
+              return label + ': ' + $.i18n('unknown');
+            } else {
+              return label + ': ' + _this3.formatNumber(value);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+  }]);
+
+  return PvConfig;
+}();
+
+module.exports = PvConfig;
 
 },{}],7:[function(require,module,exports){
 'use strict';

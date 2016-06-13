@@ -168,7 +168,7 @@
           <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
           &middot;
           <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
-          <time class="elapsed-time pull-right"></time>
+          <span class="elapsed-time pull-right"></span>
         </div>
         <?php $currentApp = "langviews"; ?>
         <?php include "../_footer.php"; ?>

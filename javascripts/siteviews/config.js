@@ -22,9 +22,10 @@ const config = {
     projects: ['fr.wikipedia.org', 'de.wikipedia.org']
   },
   linearLegend: templates.linearLegend,
+  logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  select2Input: '.aqs-site-selector'
+  select2Input: '.aqs-select2-selector'
 };
 
 module.exports = config;

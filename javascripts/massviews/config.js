@@ -27,10 +27,11 @@ const config = {
       subjectpage: 0
     }
   },
-  linearLegend: `
-    <strong><%= $.i18n('totals') %>:</strong>
-    <%= formatNumber(chartData.sum) %> (<%= formatNumber(Math.round(chartData.average)) %>/<%= $.i18n('day') %>)
-  `,
+  linearLegend: (datasets, scope) => {
+    return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.massData.sum)}
+      (${scope.formatNumber(Math.round(scope.massData.average))}/${$.i18n('day')})`;
+  },
+  logarithmicCheckbox: '.logarithmic-scale-option',
   pageLimit: 500,
   sources: {
     category: {
@@ -54,7 +55,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category'],
+    source: ['pagepile', 'category', 'transclusions'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

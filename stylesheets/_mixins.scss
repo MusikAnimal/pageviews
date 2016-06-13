@@ -15,7 +15,7 @@ $black: #000;
   #{$prop}: #{$val};
 }
 
-@mixin center($direction, $position: 'absolute') {
+@mixin center($direction: '', $position: 'absolute') {
   position: unquote($position);
 
   @if($direction == 'vertical') {

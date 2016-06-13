@@ -1,25 +1,27 @@
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
-const pvConfig = require('./pv_config');
+const PvConfig = require('./pv_config');
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews) */
-class Pv {
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
+class Pv extends PvConfig {
   constructor(appConfig) {
-    /** assign initial class properties */
-    this.config = Object.assign({}, pvConfig, appConfig);
+    super();
 
-    /** must manually assign defaults as Object.assign is shallow */
-    this.config.defaults = Object.assign({}, pvConfig.defaults, appConfig.defaults);
+    /** assign initial class properties */
+    const defaults = this.config.defaults;
+    this.config = Object.assign({}, this.config, appConfig);
+    this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
 
     this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
     this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
     this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+    this.bezierCurve = this.getFromLocalStorage('pageviews-settings-bezierCurve') || this.config.defaults.bezierCurve;
     this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
     this.params = null;
 
@@ -28,17 +30,13 @@ class Pv {
       this.chartObj = null;
       this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
       this.prevChartType = null;
+      this.autoLogDetection = true; // track whether logarithmic scale checkbox was manually checked
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!this.config.linearCharts.includes(this.chartType) || !this.config.circularCharts.includes(this.chartType)) {
+      if (!this.config.linearCharts.includes(this.chartType) && !this.config.circularCharts.includes(this.chartType)) {
         this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType);
         this.chartType = this.config.defaults.chartType;
       }
-
-      /** need to export to global for chart templating */
-      window.formatNumber = this.formatNumber.bind(this);
-      window.numDaysInRange = this.numDaysInRange.bind(this);
-      window.getPageURL = this.getPageURL.bind(this);
 
       /** copy over app-specific chart templates */
       this.config.linearCharts.forEach(linearChart => {
@@ -134,7 +132,7 @@ class Pv {
   destroyChart() {
     if (this.chartObj) {
       this.chartObj.destroy();
-      delete this.chartObj;
+      $('#chart-legend').html('');
     }
   }
 
@@ -167,7 +165,8 @@ class Pv {
    * @returns {string} formatted number
    */
   formatNumber(num) {
-    if (this.numericalFormatting === 'true') {
+    const numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+    if (numericalFormatting === 'true') {
       return this.n(num);
     } else {
       return num;
@@ -458,11 +457,32 @@ class Pv {
   }
 
   /**
-   * Test if the current project is a multilingual project
-   * @returns {Boolean} is multilingual or not
+   * Get a value from localStorage, using a temporary storage if localStorage is not supported
+   * @param {string} key - key for the value to retrieve
+   * @returns {Mixed} stored value
    */
-  isMultilangProject() {
-    return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(this.project);
+  getFromLocalStorage(key) {
+    // See if localStorage is supported and enabled
+    try {
+      return localStorage.getItem(key);
+    } catch (err) {
+      return storage[key];
+    }
+  }
+
+  /**
+   * Set a value to localStorage, using a temporary storage if localStorage is not supported
+   * @param {string} key - key for the value to set
+   * @param {Mixed} value - value to store
+   * @returns {Mixed} stored value
+   */
+  setLocalStorage(key, value) {
+    // See if localStorage is supported and enabled
+    try {
+      return localStorage.setItem(key, value);
+    } catch (err) {
+      return storage[key] = value;
+    }
   }
 
   /**
@@ -476,12 +496,59 @@ class Pv {
   }
 
   /**
-   * Check if Intl is supported
-   *
-   * @returns {boolean} whether the browser (presumably) supports date locale operations
+   * Are we currently in logarithmic mode?
+   * @returns {Boolean} true or false
    */
-  localeSupported() {
-    return typeof Intl === 'object';
+  isLogarithmic() {
+    return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
+  }
+
+  /**
+   * Test if the current chart type supports a logarithmic scale
+   * @returns {Boolean} log-friendly or not
+   */
+  isLogarithmicCapable() {
+    return ['line', 'bar'].includes(this.chartType);
+  }
+
+  /**
+   * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
+   * @param  {Array} datasets - pageviews
+   * @return {Boolean} yes or no
+   */
+  shouldBeLogarithmic(datasets) {
+    let sets = [];
+    // convert NaNs and nulls to zeros
+    datasets.forEach(dataset => {
+      sets.push(dataset.map(val => val || 0));
+    });
+
+    // overall max value
+    const maxValue = Math.max(...[].concat(...sets));
+    let logarithmicNeeded = false;
+
+    sets.forEach(set => {
+      set.push(maxValue);
+
+      const sum = set.reduce((a, b) => a + b),
+        average = sum / set.length;
+      let theil = 0;
+      set.forEach(v => theil += v ? v * Math.log(v / average) : 0);
+
+      if (theil / sum > 0.5) {
+        return logarithmicNeeded = true;
+      }
+    });
+
+    return logarithmicNeeded;
+  }
+
+  /**
+   * Test if the current project is a multilingual project
+   * @returns {Boolean} is multilingual or not
+   */
+  isMultilangProject() {
+    return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(this.project);
   }
 
   /**
@@ -665,8 +732,18 @@ class Pv {
     select2Input.select2('val', null);
     select2Input.select2('data', null);
     select2Input.select2('destroy');
-    $('.data-links').hide();
     this.setupSelect2();
+  }
+
+  /**
+   * Change alpha level of an rgba value
+   *
+   * @param {string} value - rgba value
+   * @param {float|string} alpha - transparency as float value
+   * @returns {string} rgba value
+   */
+  rgba(value, alpha) {
+    return value.replace(/,\s*\d\)/, `, ${alpha})`);
   }
 
   /**
@@ -711,24 +788,24 @@ class Pv {
       this.resetSelect2();
     }
 
-    this.renderData(true);
+    this.processInput(true);
   }
 
   /**
    * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-   * @returns {null} nothing
+   * @returns {Number} radius
    */
   setChartPointDetectionRadius() {
-    if (this.chartType !== 'Line') return;
+    if (this.chartType !== 'line') return;
 
     if (this.numDaysInRange() > 50) {
-      Chart.defaults.Line.pointHitDetectionRadius = 3;
+      Chart.defaults.global.elements.point.hitRadius = 3;
     } else if (this.numDaysInRange() > 30) {
-      Chart.defaults.Line.pointHitDetectionRadius = 5;
+      Chart.defaults.global.elements.point.hitRadius = 5;
     } else if (this.numDaysInRange() > 20) {
-      Chart.defaults.Line.pointHitDetectionRadius = 10;
+      Chart.defaults.global.elements.point.hitRadius = 10;
     } else {
-      Chart.defaults.Line.pointHitDetectionRadius = 20;
+      Chart.defaults.global.elements.point.hitRadius = 30;
     }
   }
 
@@ -827,14 +904,24 @@ class Pv {
       location.reload();
     });
 
+    const rerenderFunc = ['langviews', 'massviews'].includes(this.app) ? this.renderData : this.processInput;
+
     if (this.config.chart) {
       this.setupSettingsModal();
 
       /** changing of chart types */
       $('.modal-chart-type a').on('click', e => {
         this.chartType = $(e.currentTarget).data('type');
+
+        $('.logarithmic-scale').toggle(this.isLogarithmicCapable());
+
         this.setLocalStorage('pageviews-chart-preference', this.chartType);
-        this.renderData();
+        rerenderFunc.call(this);
+      });
+
+      $(this.config.logarithmicCheckbox).on('click', () => {
+        this.autoLogDetection = false;
+        rerenderFunc.call(this, true);
       });
     }
   }
@@ -850,35 +937,6 @@ class Pv {
     /** add listener */
     $('.save-settings-btn').on('click', this.saveSettings.bind(this));
     $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
-  }
-
-  /**
-   * Get a value from localStorage, using a temporary storage if localStorage is not supported
-   * @param {string} key - key for the value to retrieve
-   * @returns {Mixed} stored value
-   */
-  getFromLocalStorage(key) {
-    // See if localStorage is supported and enabled
-    try {
-      return localStorage.getItem(key);
-    } catch (err) {
-      return this.storage[key];
-    }
-  }
-
-  /**
-   * Set a value to localStorage, using a temporary storage if localStorage is not supported
-   * @param {string} key - key for the value to set
-   * @param {Mixed} value - value to store
-   * @returns {Mixed} stored value
-   */
-  setLocalStorage(key, value) {
-    // See if localStorage is supported and enabled
-    try {
-      return localStorage.setItem(key, value);
-    } catch (err) {
-      return this.storage[key] = value;
-    }
   }
 
   /**
@@ -971,7 +1029,7 @@ class Pv {
    * @returns {String} output
    */
   splash() {
-    const style = 'background: #222; color: #bada55; padding: 4px; font-family:dejavu sans mono';
+    const style = 'background: #eee; color: #555; padding: 4px; font-family:monospace';
     console.log('%c      ___            __ _                     _                             ', style);
     console.log('%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ', style);
     console.log('%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ', style);

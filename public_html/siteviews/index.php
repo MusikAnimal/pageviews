@@ -105,9 +105,10 @@
             <label for="site-input">
               <?php echo $I18N->msg( 'projects' ); ?>
             </label>
-            <select class="aqs-site-selector col-lg-12" id="site-input" multiple="multiple"></select>
+            <select class="aqs-select2-selector col-lg-12" id="site-input" multiple="multiple"></select>
           </div>
         </div>
+        <?php include "../_data_links.php"; ?>
         <!-- Chart -->
         <div class="chart-container loading">
           <canvas class="aqs-chart"></canvas>
@@ -115,23 +116,6 @@
         <div class="message-container col-lg-12"></div>
         <!-- Legend -->
         <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
-        <!-- Other links -->
-        <div class="col-lg-12 data-links">
-          <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-th"></span>
-          <?php echo $I18N->msg( 'change-chart' ); ?></a>
-          &nbsp;&bullet;&nbsp;
-          <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
-          <?php echo $I18N->msg( 'settings' ); ?></a>
-          &nbsp;&bullet;&nbsp;
-          <a class="permalink" href="#"><span class="glyphicon glyphicon-link"></span>
-          <?php echo $I18N->msg( 'permalink' ); ?></a>
-          &nbsp;&bullet;&nbsp;
-          <span class="glyphicon glyphicon-download-alt"></span>
-          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
-          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
-          &middot;
-          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
-        </div>
         <?php $currentApp = "siteviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>

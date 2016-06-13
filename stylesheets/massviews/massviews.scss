@@ -7,12 +7,28 @@
   color: $bootstrap-gay;
 }
 
-.chart-view {
+.search-method-options {
   display: none;
 }
 
-.search-method-options {
-  display: none;
+.list-mode {
+  .chart-specific {
+    display: none;
+
+    ~ .btn-settings {
+      margin: 0;
+    }
+  }
+
+  // scss-lint:disable ImportantRule
+  .output-table .chart-view {
+    display: none !important;
+  }
+}
+
+// scss-lint:disable ImportantRule
+.chart-mode .list-view {
+  display: none !important;
 }
 
 .category-subject-toggle {

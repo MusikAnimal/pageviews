@@ -20,9 +20,10 @@ const config = {
     project: 'en.wikipedia.org'
   },
   linearLegend: templates.linearLegend,
+  logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  select2Input: '.aqs-article-selector'
+  select2Input: '.aqs-select2-selector'
 };
 
 module.exports = config;

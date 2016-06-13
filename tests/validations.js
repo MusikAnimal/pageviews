@@ -8,8 +8,8 @@ module.exports = {
       .execute('return $(".aqs-project-input").trigger("change")')
       .pause(500)
       .assert.containsText('.error-message', 'en.nonexistent.org')
-      .assert.cssClassPresent('.select2-selection--multiple', 'disabled')
-      .assert.elementNotPresent('canvas')
-      .end();
+      .assert.cssClassPresent('.select2-selection--multiple', 'disabled');
+    client.expect.element('canvas').to.not.be.visible;
+    client.end();
   }
 };

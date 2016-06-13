@@ -46,7 +46,8 @@ module.exports = function(grunt) {
     'public_html/_footer.php': 'views/_footer.haml',
     'public_html/_lang_selector.php': 'views/_lang_selector.haml',
     'public_html/_modals.php': 'views/_modals.haml',
-    'public_html/_browser_check.php': 'views/_browser_check.haml'
+    'public_html/_browser_check.php': 'views/_browser_check.haml',
+    'public_html/_data_links.php': 'views/_data_links.haml'
   };
   let uglifyTask = {
     options: {

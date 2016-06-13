@@ -156,6 +156,7 @@
               </span>
             </h2>
           </header>
+          <?php include "../_data_links.php"; ?>
           <table class="list-view table table-hover output-table">
             <thead>
               <tr>
@@ -189,26 +190,9 @@
           </div>
         </output>
         <div class="message-container col-lg-12"></div>
-        <div class="col-lg-12 tm clearfix chart-view" id="chart-legend"></div>
-        <!-- Other links -->
-        <div class="col-lg-12 data-links">
-          <span class="chart-view">
-            <a class="js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-th"></span>
-            <?php echo $I18N->msg( 'change-chart' ); ?></a>
-            &nbsp;&bullet;&nbsp;
-            <a class="js-test-settings" data-target="#settings-modal" data-toggle="modal" href="#"><span class="glyphicon glyphicon-wrench"></span>
-            <?php echo $I18N->msg( 'settings' ); ?></a>
-            &nbsp;&bullet;&nbsp;
-          </span>
-          <a class="permalink" href="/massviews"><span class="glyphicon glyphicon-link"></span>
-          <?php echo $I18N->msg( 'permalink' ); ?></a>
-          &nbsp;&bullet;&nbsp;
-          <span class="glyphicon glyphicon-download-alt"></span>
-          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
-          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
-          &middot;
-          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
-          <time class="elapsed-time pull-right"></time>
+        <div class="col-lg-12 tm clearfix chart-view">
+          <span id="chart-legend"></span>
+          <span class="elapsed-time pull-right"></span>
         </div>
         <?php $currentApp = "massviews"; ?>
         <?php include "../_footer.php"; ?>

@@ -15,6 +15,7 @@ const Pv = require('../shared/pv');
 class TopViews extends Pv {
   constructor() {
     super(config);
+    this.app = 'topviews';
 
     this.excludes = [];
     this.offset = 0;

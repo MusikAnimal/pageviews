@@ -25,7 +25,7 @@
 	"page": "Page",
 	"pages": "Pages",
 	"page-title": "Page title",
-	"change-chart": "Change chart type",
+	"change-chart": "Chart type",
 	"settings": "Settings",
 	"download": "Download as $1",
 	"csv": "CSV",
@@ -217,5 +217,7 @@
 	"elapsed-time": "Elapsed time: $1 {{PLURAL:$1|second|seconds}}",
 	"num-pages": "$1 {{PLURAL:$1|page|pages}}",
 	"category-subject-toggle": "Use subject page instead of talk page",
-	"template-url": "Template URL"
+	"template-url": "Template URL",
+	"logarithmic-scale": "Logarithmic scale",
+	"bezier-curve-option": "Use Bézier curve on line charts"
 }

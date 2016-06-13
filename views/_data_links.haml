@@ -1,0 +1,26 @@
+%div.row.data-links.invisible
+  %div.col-lg-12
+    %button.btn.btn-default.btn-sm.chart-specific.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal")<
+      %span.glyphicon.glyphicon-th
+      = $I18N->msg( 'change-chart' )
+    %button.btn.btn-default.btn-sm.btn-settings.js-test-settings(data-target="#settings-modal" data-toggle="modal")<
+      %span.glyphicon.glyphicon-wrench
+      = $I18N->msg( 'settings' )
+    %a.btn.btn-default.btn-sm.permalink(href="")<
+      %span.glyphicon.glyphicon-link
+      = $I18N->msg( 'permalink' )
+    %span.download-btn-group
+      %span.input-group-addon
+        %span.glyphicon.glyphicon-download-alt
+        Download
+      %span.input-group-btn
+        %button.btn.btn-default.btn-sm.download-csv
+          = $I18N->msg( 'csv' )
+      %span.input-group-btn
+        %button.btn.btn-default.btn-sm.download-json<
+          = $I18N->msg( 'json' )
+
+    %span.pull-right.chart-specific
+      %label.logarithmic-scale
+        %input.logarithmic-scale-option(type="checkbox")
+        = $I18N->msg( 'logarithmic-scale' )

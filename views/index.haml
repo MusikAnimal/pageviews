@@ -75,10 +75,9 @@
           %div.col-lg-12
             %label(for="article-input")
               = $I18N->msg( 'pages' )
-            / Button trigger modal
-            / %a.pull-right{href: "#", "data-toggle": "modal", "data-target": "#import-modal"}
-            / Import
-            %select.aqs-article-selector.col-lg-12#article-input(multiple="multiple")
+            %select.aqs-select2-selector.col-lg-12#article-input(multiple="multiple")
+
+        - include "_data_links.php"
 
         / Chart
         %div.chart-container.loading
@@ -88,27 +87,6 @@
 
         / Legend
         %div.col-lg-12.tm.clearfix#chart-legend
-
-        / Other links
-        %div.col-lg-12.data-links
-          %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
-            %span.glyphicon.glyphicon-th
-            = $I18N->msg( 'change-chart' )
-          &nbsp;&bullet;&nbsp;
-          %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
-            %span.glyphicon.glyphicon-wrench
-            = $I18N->msg( 'settings' )
-          &nbsp;&bullet;&nbsp;
-          %a.permalink(href="#")<
-            %span.glyphicon.glyphicon-link
-            = $I18N->msg( 'permalink' )
-          &nbsp;&bullet;&nbsp;
-          %span.glyphicon.glyphicon-download-alt
-          - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
-          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
-          &middot;
-          %a.download-json(href="#")<
-            = $I18N->msg( 'json' )
 
         - $currentApp = "pageviews"
         - include "_footer.php"

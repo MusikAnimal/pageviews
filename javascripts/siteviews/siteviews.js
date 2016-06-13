@@ -15,6 +15,7 @@ const Pv = require('../shared/pv');
 class SiteViews extends Pv {
   constructor() {
     super(config);
+    this.app = 'siteviews';
 
     this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
     this.specialRange = null;
@@ -25,9 +26,6 @@ class SiteViews extends Pv {
      * not critical and can be avoided with this empty function.
      */
     window.siteSuggestionCallback = $.noop;
-
-    /** need to export to global for chart templating */
-    window.getTopviewsURL = this.getTopviewsURL.bind(this);
   }
 
   /**
@@ -60,7 +58,7 @@ class SiteViews extends Pv {
       dataRows[index] = [date];
     });
 
-    chartData.forEach(site => {
+    this.chartObj.data.datasets.forEach(site => {
       // Build an array of site titles for use in the CSV header
       let siteTitle = '"' + site.label.replace(/"/g, '""') + '"';
       titles.push(siteTitle);
@@ -91,7 +89,7 @@ class SiteViews extends Pv {
   exportJSON() {
     let data = [];
 
-    chartData.forEach((site, index) => {
+    this.chartObj.data.datasets.forEach((site, index) => {
       let entry = {
         site: site.label.replace(/"/g, '\"').replace(/'/g, "\'"),
         color: site.strokeColor,
@@ -136,7 +134,7 @@ class SiteViews extends Pv {
       if (alreadyThere[date]) {
         data.items.push(alreadyThere[date]);
       } else {
-        let edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+        const edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
         data.items.push({
           timestamp: date.format(this.config.timestampFormat),
           [this.isPageviews() ? 'views' : 'devices']: edgeCase ? null : 0
@@ -158,12 +156,15 @@ class SiteViews extends Pv {
    */
   getCircularData(data, site, index) {
     const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
-      color = this.config.colors[index];
+      color = this.config.colors[index],
+      value = values.reduce((a, b) => a + b),
+      average = Math.round(value / values.length);
 
     return Object.assign(
       {
         label: site,
-        value: values.reduce((a, b) => a + b)
+        value,
+        average
       },
       this.config.chartConfig[this.chartType].dataset(color)
     );
@@ -180,13 +181,19 @@ class SiteViews extends Pv {
    */
   getLinearData(data, site, index) {
     const values = data.items.map(elem => this.isPageviews() ? elem.views : elem.devices),
+      sum = values.reduce((a, b) => a + b),
+      average = Math.round(sum / values.length),
+      max = Math.max(...values),
       color = this.config.colors[index % 10];
 
     return Object.assign(
       {
         label: site,
         data: values,
-        sum: values.reduce((a, b) => a + b)
+        sum,
+        average,
+        max,
+        color
       },
       this.config.chartConfig[this.chartType].dataset(color)
     );
@@ -326,14 +333,17 @@ class SiteViews extends Pv {
 
   /**
    * Removes chart, messages, and resets site selections
+   * @param {boolean} [select2] whether or not to clear the Select2 input
    * @returns {null} nothing
    */
-  resetView() {
-    $('.chart-container').html('');
+  resetView(select2 = false) {
     $('.chart-container').removeClass('loading');
-    $('#chart-legend').html('');
-    $('.message-container').html('');
+    $('.data-links').addClass('invisible');
+    $(this.config.chart).hide();
+    this.destroyChart();
+    this.clearMessages();
     this.resetSelect2();
+    if (select2) this.resetSelect2();
   }
 
   /**
@@ -365,7 +375,7 @@ class SiteViews extends Pv {
     };
 
     select2Input.select2(params);
-    select2Input.on('change', this.renderData.bind(this));
+    select2Input.on('change', this.processInput.bind(this));
   }
 
   /**
@@ -393,7 +403,7 @@ class SiteViews extends Pv {
 
     dateRangeSelector.on('change', e => {
       this.setChartPointDetectionRadius();
-      this.renderData();
+      this.processInput();
 
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
@@ -426,7 +436,7 @@ class SiteViews extends Pv {
       if ($(this.config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
         $(this.config.platformSelector).val('all-sites'); // chart will automatically re-render
       } else {
-        this.renderData();
+        this.processInput();
       }
     });
   }
@@ -440,21 +450,15 @@ class SiteViews extends Pv {
 
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
-    $('#platform-select, #agent-select').on('change', this.renderData.bind(this));
-
-    // window.onpopstate = popParams();
+    $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
   }
 
   /**
-   * The mother of all functions, where all the chart logic lives
-   * Really needs to be broken out into several functions
-   *
+   * Query the API for each site, building up the datasets and then calling renderData
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
    * @returns {null} - nothin
    */
-  renderData(force) {
-    let sites = $(this.config.select2Input).select2('val') || [];
-
+  processInput(force) {
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
@@ -462,34 +466,34 @@ class SiteViews extends Pv {
       return;
     }
 
-    if (!sites.length) {
-      this.resetView();
-      this.focusSelect2();
-      return;
+    /** @type {Object} everything we need to keep track of for the promises */
+    let xhrData = {
+      sites: $(config.select2Input).select2('val') || [],
+      labels: [], // Labels (dates) for the x-axis.
+      datasets: [], // Data for each site timeseries
+      errors: [], // Queue up errors to show after all requests have been made
+      promises: []
+    };
+
+    if (!xhrData.sites.length) {
+      return this.resetView();
     }
 
     this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
+    this.destroyChart();
+    $('.chart-container').addClass('loading');
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
-    this.destroyChart();
-    $('.message-container').html('');
-    $('.chart-container').addClass('loading');
-
-    let labels = []; // Labels (dates) for the x-axis.
-    let datasets = []; // Data for each site timeseries
-    let errors = []; // Queue up errors to show after all requests have been made
-    let promises = [];
-
     /**
      * Asynchronously collect the data from Analytics Query Service API,
      * process it to Chart.js format and initialize the chart.
      */
-    sites.forEach((site, index) => {
+    xhrData.sites.forEach((site, index) => {
       const uriEncodedSite = encodeURIComponent(site);
 
       /** @type {String} Url to query the API. */
@@ -501,28 +505,27 @@ class SiteViews extends Pv {
         `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedSite}/${$(this.config.platformSelector).val()}/daily` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
-
       const promise = $.ajax({
         url: url,
         dataType: 'json'
       });
-      promises.push(promise);
+      xhrData.promises.push(promise);
 
-      promise.success(data => {
+      promise.success(successData => {
         if (this.isPageviews()) {
-          data = this.fillInZeros(data, startDate, endDate);
+          successData = this.fillInZeros(successData, startDate, endDate);
         }
 
         /** Build the site's dataset. */
         if (this.config.linearCharts.includes(this.chartType)) {
-          datasets.push(this.getLinearData(data, site, index));
+          xhrData.datasets.push(this.getLinearData(successData, site, index));
         } else {
-          datasets.push(this.getCircularData(data, site, index));
+          xhrData.datasets.push(this.getCircularData(successData, site, index));
         }
 
         /** fetch the labels for the x-axis on success if we haven't already */
-        if (data.items && !labels.length) {
-          labels = data.items.map(elem => {
+        if (successData.items && !xhrData.labels.length) {
+          xhrData.labels = successData.items.map(elem => {
             return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
           });
         }
@@ -531,68 +534,115 @@ class SiteViews extends Pv {
           this.writeMessage(
             `<a href='https://${site}'>${site}</a> - ${$.i18n('api-error-no-data')}`
           );
-          sites = sites.filter(el => el !== site);
+          xhrData.sites = xhrData.sites.filter(el => el !== site);
 
-          if (!sites.length) {
+          if (!xhrData.sites.length) {
             $('.chart-container').html('');
             $('.chart-container').removeClass('loading');
           }
         } else {
-          errors.push(data.responseJSON.detail[0]);
+          xhrData.errors.push(data.responseJSON.detail[0]);
         }
       });
     });
 
-    $.when(...promises).always(data => {
-      $('#chart-legend').html(''); // clear old chart legend
+    $.when(...xhrData.promises).always(this.renderData.bind(this, xhrData));
+  }
 
-      if (errors.length && errors.length === sites.length) {
-        /** something went wrong */
-        $('.chart-container').removeClass('loading');
-        const errorMessages = Array.from(new Set(errors)).map(error => `<li>${error}</li>`).join('');
-        return this.writeMessage(
-          `${$.i18n('api-error')}<ul>${errorMessages}</ul><br/>${$.i18n('api-error-contact')}`,
-          true
-        );
-      }
+  /**
+   * Update the chart with data provided by processInput()
+   * @param {Object} xhrData - data as constructed by processInput()
+   * @returns {null} - nothin
+   */
+  renderData(xhrData) {
+    $('#chart-legend').html(''); // clear old chart legend
 
-      if (!sites.length) {
-        return;
-      } else if (sites.length === 1) {
-        $('.multi-page-chart-node').hide();
-      } else {
-        $('.multi-page-chart-node').show();
-      }
-
-      /** preserve order of datasets due to asyn calls */
-      let sortedDatasets = new Array(sites.length);
-      datasets.forEach(dataset => {
-        sortedDatasets[sites.indexOf(dataset.label)] = dataset;
-      });
-
-      /** export built datasets to global scope Chart templates */
-      window.chartData = sortedDatasets;
-
+    if (xhrData.errors.length && xhrData.errors.length === xhrData.sites.length) {
+      /** something went wrong */
       $('.chart-container').removeClass('loading');
-      const options = Object.assign({},
-        this.config.chartConfig[this.chartType].opts,
-        this.config.globalChartOpts
+      const errorMessages = Array.from(new Set(xhrData.errors)).map(error => `<li>${error}</li>`).join('');
+      return this.writeMessage(
+        `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`,
+        true
       );
-      const linearData = {labels: labels, datasets: sortedDatasets};
+    }
 
-      $('.chart-container').html('');
-      $('.chart-container').append("<canvas class='aqs-chart'>");
-      const context = $(this.config.chart)[0].getContext('2d');
+    if (!xhrData.sites.length) {
+      return;
+    } else if (xhrData.sites.length === 1) {
+      $('.multi-page-chart-node').hide();
+    } else {
+      $('.multi-page-chart-node').show();
+    }
 
-      if (this.config.linearCharts.includes(this.chartType)) {
-        this.chartObj = new Chart(context)[this.chartType](linearData, options);
-      } else {
-        this.chartObj = new Chart(context)[this.chartType](sortedDatasets, options);
-      }
+    if (this.autoLogDetection) {
+      const shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(set => set.data));
+      $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+    }
 
-      $('#chart-legend').html(this.chartObj.generateLegend());
-      $('.data-links').show();
+    /** preserve order of datasets due to asyn calls */
+    let sortedDatasets = new Array(xhrData.sites.length);
+    xhrData.datasets.forEach(dataset => {
+      if (this.isLogarithmic()) dataset.data = dataset.data.map(view => view || null);
+      sortedDatasets[xhrData.sites.indexOf(dataset.label)] = dataset;
     });
+
+    let options = Object.assign(
+      {scales: {}},
+      this.config.chartConfig[this.chartType].opts,
+      this.config.globalChartOpts
+    );
+
+    if (this.isLogarithmic()) {
+      options.scales = Object.assign({}, options.scales, {
+        yAxes: [{
+          type: 'logarithmic',
+          ticks: {
+            callback: (value, index, arr) => {
+              const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+
+              if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                return this.formatNumber(value);
+              } else {
+                return '';
+              }
+            }
+          }
+        }]
+      });
+    }
+
+    $('.chart-container').removeClass('loading')
+      .html('').append("<canvas class='aqs-chart'>");
+    this.setChartPointDetectionRadius();
+    const context = $(this.config.chart)[0].getContext('2d');
+
+    if (this.config.linearCharts.includes(this.chartType)) {
+      const linearData = {labels: xhrData.labels, datasets: sortedDatasets};
+
+      this.chartObj = new Chart(context, {
+        type: this.chartType,
+        data: linearData,
+        options
+      });
+    } else {
+      this.chartObj = new Chart(context, {
+        type: this.chartType,
+        data: {
+          labels: sortedDatasets.map(d => d.label),
+          datasets: [{
+            data: sortedDatasets.map(d => d.value),
+            backgroundColor: sortedDatasets.map(d => d.backgroundColor),
+            hoverBackgroundColor: sortedDatasets.map(d => d.hoverBackgroundColor),
+            averages: sortedDatasets.map(d => d.average)
+          }]
+        },
+        options
+      });
+    }
+
+    $('#chart-legend').html(this.chartObj.generateLegend());
+    $('.data-links').removeClass('invisible');
   }
 
   /**

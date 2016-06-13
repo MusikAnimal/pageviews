@@ -1,5 +1,5 @@
 /**
- * @file Templates used by Chart.js
+ * @file Templates used by Chart.js for Pageviews app
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  */
@@ -11,74 +11,86 @@
  * @type {Object}
  */
 const templates = {
-  linearLegend: `
-    <% if (chartData.length === 1) { %>
-      <strong><%= $.i18n('totals') %>:</strong>
-      <%= formatNumber(chartData[0].sum) %> (<%= formatNumber(Math.round(chartData[0].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
-      <% if (isMultilangProject()) { %>
+  linearLegend(datasets, scope) {
+    let markup = '';
+    if (datasets.length === 1) {
+      const dataset = datasets[0];
+      return `<div class="linear-legend--totals">
+        <strong>${$.i18n('totals')}:</strong>
+        ${scope.formatNumber(dataset.sum)} (${scope.formatNumber(dataset.average)}/${$.i18n('day')})
         &bullet;
-        <a href="<%= getLangviewsURL(chartData[0].label) %>"><%= $.i18n('all-languages') %></a>
-      <% } %>
-      &bullet;
-      <a href="<%= getPageURL(chartData[0].label) %>?action=history" target="_blank"><%= $.i18n('history') %></a>
-      &bullet;
-      <a href="<%= getPageURL(chartData[0].label) %>?action=info" target="_blank"><%= $.i18n('info') %></a>
-    <% } else { %>
-      <% var total = chartData.reduce(function(a,b) { return a + b.sum }, 0); %>
-      <div class="linear-legend--totals">
-        <strong><%= $.i18n('totals') %>:</strong>
-        <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)
-      </div>
-      <div class="linear-legends">
-        <% for (var i=0; i<chartData.length; i++) { %>
-          <span class="linear-legend">
-            <div class="linear-legend--label" style="background-color:<%= chartData[i].strokeColor %>">
-              <a href="<%= getPageURL(chartData[i].label) %>" target="_blank"><%= chartData[i].label %></a>
-            </div>
-            <div class="linear-legend--counts">
-              <%= formatNumber(chartData[i].sum) %> (<%= formatNumber(Math.round(chartData[i].sum / numDaysInRange())) %>/<%= $.i18n('day') %>)
-            </div>
-            <div class="linear-legend--links">
-              <% if (isMultilangProject()) { %>
-                <a href="<%= getLangviewsURL(chartData[i].label) %>"><%= $.i18n('all-languages') %></a>
-                &bullet;
-              <% } %>
-              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=history" target="_blank"><%= $.i18n('history') %></a>
-              &bullet;
-              <a href="<%= getExpandedPageURL(chartData[i].label) %>&action=info" target="_blank"><%= $.i18n('info') %></a>
-            </div>
-          </span>
-        <% } %>
-      </div>
-    <% } %>`,
-  circularLegend: `
-    <% var total = chartData.reduce(function(a,b){ return a + b.value }, 0); %>
-    <div class="linear-legend--totals">
-      <strong><%= $.i18n('totals') %>:</strong>
-      <%= formatNumber(total) %> (<%= formatNumber(Math.round(total / numDaysInRange())) %>/<%= $.i18n('day') %>)
-    </div>
-    <div class="linear-legends">
-      <% for (var i=0; i<segments.length; i++) { %>
+        <a href="${scope.getLangviewsURL(dataset.label)}" target="_blank">All languages</a>
+        &bullet;
+        <a href="${scope.getExpandedPageURL(dataset.label)}&action=history" target="_blank">History</a>
+        &bullet;
+        <a href="${scope.getExpandedPageURL(dataset.label)}&action=info" target="_blank">Info</a>
+      </div>`;
+    }
+
+    if (datasets.length > 1) {
+      const total = datasets.reduce((a,b) => a + b.sum, 0);
+      markup = `<div class="linear-legend--totals">
+        <strong>${$.i18n('totals')}:</strong>
+        ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
+      </div>`;
+    }
+    markup += '<div class="linear-legends">';
+
+    for (let i = 0; i < datasets.length; i++) {
+      markup += `
         <span class="linear-legend">
-          <div class="linear-legend--label" style="background-color:<%= segments[i].fillColor %>">
-            <a href="<%= getPageURL(segments[i].label) %>" target="_blank"><%= segments[i].label %></a>
+          <div class="linear-legend--label" style="background-color:${scope.rgba(datasets[i].color, 0.8)}">
+            <a href="${scope.getPageURL(datasets[i].label)}" target="_blank">${datasets[i].label}</a>
           </div>
           <div class="linear-legend--counts">
-            <%= formatNumber(chartData[i].value) %> (<%= formatNumber(Math.round(chartData[i].value / numDaysInRange())) %>/<%= $.i18n('day') %>)
+            ${scope.formatNumber(datasets[i].sum)} (${scope.formatNumber(datasets[i].average)}/${$.i18n('day')})
           </div>
           <div class="linear-legend--links">
-            <% if (isMultilangProject()) { %>
-              <a href="<%= getLangviewsURL(segments[i].label) %>"><%= $.i18n('all-languages') %></a>
-              &bullet;
-            <% } %>
-            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=history" target="_blank"><%= $.i18n('history') %></a>
+            <a href="${scope.getLangviewsURL(datasets[i].label)}" target="_blank">All languages</a>
             &bullet;
-            <a href="<%= getExpandedPageURL(segments[i].label) %>&action=info" target="_blank"><%= $.i18n('info') %></a>
+            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=history" target="_blank">History</a>
+            &bullet;
+            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=info" target="_blank">Info</a>
           </div>
         </span>
-      <% } %>
-    </div>
-    `
+      `;
+    }
+    return markup += '</div>';
+  },
+
+  circularLegend(datasets, scope) {
+    const dataset = datasets[0],
+      total = dataset.data.reduce((a,b) => a + b);
+    let markup = `<div class="linear-legend--totals">
+      <strong>${$.i18n('totals')}:</strong>
+      ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
+    </div>`;
+
+    markup += '<div class="linear-legends">';
+
+    for (let i = 0; i < dataset.data.length; i++) {
+      const metaKey = Object.keys(dataset._meta)[0];
+      const label = dataset._meta[metaKey].data[i]._view.label;
+      markup += `
+        <span class="linear-legend">
+          <div class="linear-legend--label" style="background-color:${dataset.backgroundColor[i]}">
+            <a href="${scope.getPageURL(label)}" target="_blank">${label}</a>
+          </div>
+          <div class="linear-legend--counts">
+            ${scope.formatNumber(dataset.data[i])} (${scope.formatNumber(dataset.averages[i])}/${$.i18n('day')})
+          </div>
+          <div class="linear-legend--links">
+            <a href="${scope.getLangviewsURL(label)}" target="_blank">All languages</a>
+            &bullet;
+            <a href="${scope.getExpandedPageURL(label)}&action=history" target="_blank">History</a>
+            &bullet;
+            <a href="${scope.getExpandedPageURL(label)}&action=info" target="_blank">Info</a>
+          </div>
+        </span>
+      `;
+    }
+    return markup += '</div>';
+  }
 };
 
 module.exports = templates;

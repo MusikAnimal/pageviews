@@ -15,6 +15,7 @@ const Pv = require('../shared/pv');
 class MassViews extends Pv {
   constructor() {
     super(config);
+    this.app = 'massviews';
   }
 
   /**
@@ -80,23 +81,50 @@ class MassViews extends Pv {
   toggleView(view) {
     $('.view-btn').removeClass('active');
     $(`.view-btn--${view}`).addClass('active');
-    $('.list-view, .chart-view').hide();
-    $(`.${view}-view`).show();
+    $('output').removeClass('list-mode')
+      .removeClass('chart-mode')
+      .addClass(`${view}-mode`);
 
     if (view === 'chart') {
       this.destroyChart();
-      /** export built datasets to global scope Chart templates */
-      window.chartData = this.massData.datasets[0];
 
-      const options = Object.assign({},
+      let options = Object.assign({},
         this.config.chartConfig[this.chartType].opts,
         this.config.globalChartOpts
       );
       this.assignMassDataChartOpts();
+      this.setChartPointDetectionRadius();
+
+      if (this.autoLogDetection) {
+        const shouldBeLogarithmic = this.shouldBeLogarithmic([this.massData.datasets[0].data]);
+        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+      }
+
+      if (this.isLogarithmic()) {
+        options.scales = Object.assign({}, options.scales, {
+          yAxes: [{
+            type: 'logarithmic',
+            ticks: {
+              callback: (value, index, arr) => {
+                const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+
+                if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                  return this.formatNumber(value);
+                } else {
+                  return '';
+                }
+              }
+            }
+          }]
+        });
+      }
 
       const context = $(this.config.chart)[0].getContext('2d');
-
-      this.chartObj = new Chart(context)[this.chartType](this.massData, options);
+      this.chartObj = new Chart(context, {
+        type: this.chartType,
+        data: this.massData,
+        options
+      });
 
       $('#chart-legend').html(this.chartObj.generateLegend());
     }
@@ -205,6 +233,7 @@ class MassViews extends Pv {
    */
   renderData() {
     const articleDatasets = this.massData.listData;
+
     /** sort ascending by current sort setting */
     const sortedMassViews = articleDatasets.sort((a, b) => {
       const before = this.getSortProperty(a, this.sort),
@@ -709,6 +738,7 @@ class MassViews extends Pv {
       this.assignDefaults();
       this.destroyChart();
       $('.list-view, .chart-view').hide();
+      $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
       $(this.config.sourceInput).val('').focus();
       if (typeof cb === 'function') cb.call(this);
@@ -724,6 +754,7 @@ class MassViews extends Pv {
       /** stop hidden animation for slight performance improvement */
       this.updateProgressBar(0);
       $('.progress-bar').removeClass('active');
+      $('.data-links').removeClass('invisible');
       break;
     case 'invalid':
       break;

@@ -111,6 +111,8 @@
                   %span.glyphicon.glyphicon-chart
                   Chart
 
+          - include "../_data_links.php"
+
           %table.list-view.table.table-hover.output-table
             %thead
               %tr
@@ -135,32 +137,9 @@
 
         %div.message-container.col-lg-12
 
-        %div.col-lg-12.tm.clearfix.chart-view#chart-legend
-
-        / Other links
-        %div.col-lg-12.data-links
-          %span.chart-view
-            %a.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal" href="#")<
-              %span.glyphicon.glyphicon-th
-              = $I18N->msg( 'change-chart' )
-            &nbsp;&bullet;&nbsp;
-            %a.js-test-settings(data-target="#settings-modal" data-toggle="modal" href="#")<
-              %span.glyphicon.glyphicon-wrench
-              = $I18N->msg( 'settings' )
-            &nbsp;&bullet;&nbsp;
-
-          %a.permalink(href="/massviews")<
-            %span.glyphicon.glyphicon-link
-            = $I18N->msg( 'permalink' )
-          &nbsp;&bullet;&nbsp;
-          %span.glyphicon.glyphicon-download-alt
-          - $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"
-          = $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) )
-          &middot;
-          %a.download-json(href="#")<
-            = $I18N->msg( 'json' )
-
-          %time.elapsed-time.pull-right
+        %div.col-lg-12.tm.clearfix.chart-view
+          %span#chart-legend
+          %span.elapsed-time.pull-right
 
         - $currentApp = "massviews"
         - include "../_footer.php"
