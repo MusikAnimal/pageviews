@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kiwi128"
+			"Kiwi128",
+			"Macofe"
 		]
 	},
 	"title": "Ko te Tātaritanga o Ngā Titiro ki ngā Whārangi Ipurangi",
@@ -169,6 +170,6 @@
 	"source": "Ūkaipō",
 	"page-pile-id": "Nama Page Pile",
 	"category-url": "Hononga momo",
-	"elapsed-time": "Te roa o te wā hipa: {{PLURAL:$1|kotahi|$1 ngā}} hēkene",
+	"elapsed-time": "",
 	"num-pages": "{{PLURAL:$1|Kotahi|E rua ngā|E toru ngā|E whā ngā|E rima ngā|E ono ngā|E whitu ngā|E waru ngā|E iwa ngā|$1 ngā|0=Kāhore ngā}} whārangi ipurangi"
 }

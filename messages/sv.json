@@ -190,6 +190,6 @@
 	"invalid-category-url": "Ogiltigt kategori! Ange den fullständiga wiki-adressen till kategorin.",
 	"source": "Källa",
 	"category-url": "Kategori-adress",
-	"elapsed-time": "Förfluten tid: $1 {{PLURAL|$1|sekund|sekunder}}",
+	"elapsed-time": "Förfluten tid: $1 {{PLURAL:$1|sekund|sekunder}}",
 	"num-pages": "$1 {{PLURAL:$1|sida|sidor}}"
 }

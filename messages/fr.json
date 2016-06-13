@@ -188,7 +188,7 @@
 	"url-structure-massviews-example": "URL exemple pour PagePile : $1 URL exemple pour une catégorie : $2 Pour lier à Massviews sur une page de catégorie de votre wiki, utilisez : $3",
 	"url-structure-massviews-source": "Une des valeurs $1, $2 ou $3",
 	"url-structure-massviews-target": "L’ID de pile de page, ou l’URL complète d’une catégorie. Si un point d’interrogation <code>?</code> est dans l’URL, il <strong>doit être encodé</strong>.",
-	"url-structure-massviews-target-example": "Par exemple, <strong>ne pas utiliser</strong>:\n$1\nAu lieu, utiliser :\n$2\nOu vous pouvez simplement utiliser l'URL plus courte du wiki :\n$3",
+	"url-structure-massviews-target-example": "Par exemple, <strong>ne pas utiliser</strong>:\n$1\nA la place, utiliser :\n$2\nOu vous pouvez simplement utiliser l'URL raccourcie du wiki :\n$3",
 	"url-structure-view": "$1 pour voir les donées en format liste, $2 pour voir les données en format graphique",
 	"url-structure-subjectpage": "Met l’option « $1 » quand des catégories sont utilisées comme source. Utiliser $2 pour l’activer, ou $3 pour le désactiver (par défaut).",
 	"default": "Par défaut",

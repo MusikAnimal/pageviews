@@ -98,6 +98,7 @@
 	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
 	"url-structure-platform": "Eng vu(n) $1, $2, $3 oder $4",
+	"url-structure-massviews-source": "Eng vu(n) $1, $2 oder $3",
 	"default": "Standard",
 	"all-languages": "All Sproochen",
 	"history": "Versiounen",

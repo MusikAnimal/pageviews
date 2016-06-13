@@ -95,6 +95,7 @@
 	"url-structure-special-range": "Ene äxtra Berätt, dä mer för de genoue Wääte $1 un $2 nämme kann. Dat kann sin:",
 	"url-structure-special-range-latest": "De läzde 20 Daascg et Dahte",
 	"url-structure-platform": "Eins vun $1, $2, $3 udder $4",
+	"url-structure-massviews-source": "Eijns vun $1, $2, udder $3",
 	"url-structure-view": "$1, öm di Dahte als Leß ze sinn, udder $2, öm di Dahte als e Dijajramm ze belohre.",
 	"default": "Schtandatt",
 	"all-languages": "Alle Schprohche",
@@ -109,5 +110,6 @@
 	"source": "Quäll",
 	"category-url": "Dä Saachjrobb ier <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Uniform Ressource Locator\">URL</i>",
 	"elapsed-time": "Verjange Zigg: {{PLURAL:$1|Ein Sekond|$1 Sekonde|Kein Sekond}}",
-	"num-pages": "$1 Sigge  <!-- https://phabricator.wikimedia.org/T136299 -->"
+	"num-pages": "$1 Sigge  <!-- https://phabricator.wikimedia.org/T136299 -->",
+	"template-url": "De Schablohn ier <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Uniform Ressource Locator\">URL</i>"
 }
