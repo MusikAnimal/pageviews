@@ -210,7 +210,7 @@
 	"pageviews-description": "跨多個頁面的瀏覽次數分析",
 	"topviews-description": "該項目中瀏覽次數最多頁面",
 	"langviews-description": "此條目在所有其它語言維基百科下的瀏覽次數",
-	"massviews-description": "匯入一份用於分析瀏覽次數的頁面列表",
+	"massviews-description": "導入一份用於分析瀏覽次數的頁面列表",
 	"siteviews-description": "跨多個項目的總瀏覽次數分析",
 	"invalid-category-url": "內容無效！請輸入此分類項目在維基上的完整網址",
 	"invalid-template-url": "無效模板！請輸入模板或頁面在維基上的完整網址。",
