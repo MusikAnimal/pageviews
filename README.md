@@ -49,7 +49,7 @@ IE10 and Safari 8 and below are not supported.
 All assets and views are ultimated placed in `public_html`. With the exception of images, you won't need to make any manual modifications to this directory.
 
 ### Structure
-The repo currently contains two (and eventually three) separate applications, that share code with each other. The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). Partials of any kind are prepended with underscores (e.g. `_footer.php`).
+The repo contains five separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews and Massviews). The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). Partials of any kind are prepended with underscores (e.g. `_footer.php`).
 
 #### JavaScripts
 Each app has it's own `config.js`, which are constants for application-wide use. When the JS files are compiled, they are concatenated into a single `application.js` that lives within the directory for that app inside `public_html`. If you compile for non-production source maps will be included.
@@ -70,7 +70,7 @@ Each page has it's own `.scss` file that imports dependencies.
 The views within `/views` are written in [Haml](https://github.com/arnaud-lb/MtHaml) and compiled to PHP files in `/public_html`. `grunt watch` can be configured to do this whenever you hit save on any view (same is true of JavaScript and Sass).
 
 ### Local
-Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews. To save time, you can run `grunt browserify` to compile only the JavaScript, `grunt haml` for the views, or `grunt sass` for the SASS.
+Run `grunt pageviews` for the main Pageviews app, or `grunt topviews` for Topviews, etc. To save time, you can run `grunt browserify` to compile only the JavaScript, `grunt haml` for the views, or `grunt sass` for the SASS.
 
 ### Production
 Before making a pull request or pushing to master, remember to run `grunt production` so the assets are minified and concatenated.
