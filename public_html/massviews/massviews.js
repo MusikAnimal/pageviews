@@ -1529,6 +1529,12 @@ var Pv = function () {
       this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
       this.prevChartType = null;
 
+      /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
+      if (!this.config.linearCharts.includes(this.chartType) || !this.config.circularCharts.includes(this.chartType)) {
+        this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType);
+        this.chartType = this.config.defaults.chartType;
+      }
+
       /** need to export to global for chart templating */
       window.formatNumber = this.formatNumber.bind(this);
       window.numDaysInRange = this.numDaysInRange.bind(this);
