@@ -104,5 +104,7 @@
 	"language": "Idioma",
 	"badges": "Emblemas",
 	"pageviews": "Visualizações de página",
-	"submit": "Submeter"
+	"submit": "Submeter",
+	"elapsed-time": "Tempo decorrido: $1 {{PLURAL:$1|segundo|segundos}}",
+	"num-pages": "$1 {{PLURAL:$1|página|páginas}}"
 }

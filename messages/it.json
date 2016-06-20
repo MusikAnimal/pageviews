@@ -4,7 +4,8 @@
 			"Beta16",
 			"Federico Mugnaini",
 			"Ricordisamoa",
-			"Matteocng"
+			"Matteocng",
+			"Einreiher"
 		]
 	},
 	"title": "Analisi di visualizzazioni delle pagine",
@@ -170,7 +171,7 @@
 	"url-structure-sort-direction": "La direzione di ordinamento. $1 per discendente, $2 per ascendente",
 	"url-structure-source": "Uno tra $1 (totale visualizzazioni pagina) o $2 (numero di dispositivi unici che hanno visualizzato la pagina)",
 	"url-structure-massviews-source": "Uno tra $1, $2 o $3",
-	"url-structure-massviews-target": "L'ID Page Pile, o l'URL completo ad una categoria. Se nell'URL è presente un punto interrogativo <code>?</code>, <strong>deve essere codificato</strong>.",
+	"url-structure-massviews-target": "L'ID Page Pile, o l'URL completo di una categoria. Se nell'URL è presente un punto interrogativo <code>?</code>, quest'ultimo <strong>deve essere codificato</strong>.",
 	"url-structure-massviews-target-example": "Per esempio, <strong>non utilizzare</strong>:\n$1\nUtilizza invece:\n$2\nO puoi semplicemente utilizzare l'URL wiki abbreviato:\n$3",
 	"url-structure-view": "$1 per visualizzare i dati in un elenco, o $2 per visualizzare i dati in un grafico",
 	"url-structure-subjectpage": "Imposta l'opzione \"$1\" quando si utilizzano le categorie come sorgente. Usa $2 per attivare o $3 per disattivare (impostazione predefinita).",
@@ -192,7 +193,7 @@
 	"massviews-title": "Analisi di visualizzazioni di massa",
 	"massviews-empty-set": "$1 non contiene pagine!",
 	"massviews-oversized-set": "$1 contiene $2 pagine. Per motivi di prestazioni, solo le prime $3 pagine verranno elaborate.",
-	"massviews-oversized-set-unknown": "$1 contiene più di $2 pagine. Per motivi di prestazioni, solo le prime $2 pagine verranno elaborate.",
+	"massviews-oversized-set-unknown": "$1 contiene più di $2 pagine. Per motivi di prestazioni verranno elaborate solo le prime $2 pagine.",
 	"url-structure-sort-massviews": "Quale colonna ordinare. Una tra $1  e $2.",
 	"pageviews-description": "Analisi delle visualizzazioni delle pagine per più pagine",
 	"topviews-description": "Pagine più viste di un progetto",
