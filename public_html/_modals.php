@@ -105,7 +105,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <div class="chart-specific">
+          <div class="other-options-label">
             <?php echo $I18N->msg( 'other-options' ); ?>
           </div>
           <div class="checkbox">

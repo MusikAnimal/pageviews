@@ -11,26 +11,10 @@
   display: none;
 }
 
-.list-mode {
-  .chart-specific {
-    display: none;
-
-    ~ .btn-settings {
-      margin: 0;
-    }
-  }
-
-  // scss-lint:disable ImportantRule
-  .output-table .chart-view {
-    display: none !important;
-  }
-}
-
-// scss-lint:disable ImportantRule
-.chart-mode .list-view {
-  display: none !important;
-}
-
 .category-subject-toggle {
   margin: 0;
+}
+
+.other-options-label {
+  display: none;
 }

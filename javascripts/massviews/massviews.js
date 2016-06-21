@@ -737,7 +737,7 @@ class MassViews extends Pv {
       this.clearMessages();
       this.assignDefaults();
       this.destroyChart();
-      $('.list-view, .chart-view').hide();
+      $('output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
       $(this.config.sourceInput).val('').focus();
@@ -1150,17 +1150,13 @@ class MassViews extends Pv {
    * @returns {string} CSV content
    */
   exportCSV() {
-    let csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
+    let csvContent = `data:text/csv;charset=utf-8,Title,${this.getDateHeadings(false).join(',')}\n`;
 
     // Add the rows to the CSV
     this.massData.listData.forEach(page => {
-      let pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
+      const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
-      csvContent += [
-        pageName,
-        page.sum,
-        page.average
-      ].join(',') + '\n';
+      csvContent += [pageName].concat(page.data).join(',') + '\n';
     });
 
     // Output the CSV file to the browser
@@ -1173,7 +1169,7 @@ class MassViews extends Pv {
    * @returns {string} stringified JSON
    */
   exportJSON() {
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData),
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData.listData),
       encodedUri = encodeURI(jsonContent);
     window.open(encodedUri);
 

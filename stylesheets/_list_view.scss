@@ -42,10 +42,6 @@ main {
       display: block;
     }
 
-    .output-table {
-      display: table;
-    }
-
     .data-links {
       display: block;
     }
@@ -70,13 +66,32 @@ output {
     padding: 0;
   }
 
-  .output-table {
+  .output-table td {
+    position: relative;
+  }
+}
+
+.list-view,
+.chart-view {
+  display: none;
+}
+
+.list-mode {
+  .chart-specific {
     display: none;
 
-    td {
-      position: relative;
+    ~ .btn-settings {
+      margin: 0;
     }
   }
+
+  .list-view {
+    display: table;
+  }
+}
+
+.chart-mode .chart-view {
+  display: block;
 }
 
 .sort-link {

@@ -902,7 +902,7 @@ var MassViews = function (_Pv) {
           this.clearMessages();
           this.assignDefaults();
           this.destroyChart();
-          $('.list-view, .chart-view').hide();
+          $('output').removeClass('list-mode').removeClass('chart-mode');
           $('.data-links').addClass('invisible');
           if (this.typeahead) this.typeahead.hide();
           $(this.config.sourceInput).val('').focus();
@@ -1309,13 +1309,13 @@ var MassViews = function (_Pv) {
   }, {
     key: 'exportCSV',
     value: function exportCSV() {
-      var csvContent = 'data:text/csv;charset=utf-8,Title,Pageviews,Average\n';
+      var csvContent = 'data:text/csv;charset=utf-8,Title,' + this.getDateHeadings(false).join(',') + '\n';
 
       // Add the rows to the CSV
       this.massData.listData.forEach(function (page) {
         var pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
-        csvContent += [pageName, page.sum, page.average].join(',') + '\n';
+        csvContent += [pageName].concat(page.data).join(',') + '\n';
       });
 
       // Output the CSV file to the browser
@@ -1331,7 +1331,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'exportJSON',
     value: function exportJSON() {
-      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData),
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData.listData),
           encodedUri = encodeURI(jsonContent);
       window.open(encodedUri);
 
