@@ -784,13 +784,6 @@ var PageViews = function (_Pv) {
         $('.multi-page-chart-node').show();
       }
 
-      if (this.autoLogDetection) {
-        var shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(function (set) {
-          return set.data;
-        }));
-        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
-      }
-
       /** preserve order of datasets due to asyn calls */
       var sortedDatasets = new Array(xhrData.articles.length);
       xhrData.datasets.forEach(function (dataset) {
@@ -800,6 +793,12 @@ var PageViews = function (_Pv) {
         sortedDatasets[xhrData.articles.indexOf(dataset.label.score())] = dataset;
       });
 
+      if (this.autoLogDetection) {
+        var shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(function (set) {
+          return set.data;
+        }));
+        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+      }
       var options = Object.assign({ scales: {} }, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
 
       if (this.isLogarithmic()) {
@@ -1672,6 +1671,10 @@ var Pv = function (_PvConfig) {
     key: 'shouldBeLogarithmic',
     value: function shouldBeLogarithmic(datasets) {
       var _ref;
+
+      if (!this.isLogarithmicCapable()) {
+        return false;
+      }
 
       var sets = [];
       // convert NaNs and nulls to zeros

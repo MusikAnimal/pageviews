@@ -20,8 +20,8 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"; ?>
-          <?php echo $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
+          <?php $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"; ?>
+          <?php echo $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $siteviewsLink ), 'parsemag' => true ) ); ?>
         </div>
         <div>
           <h3>

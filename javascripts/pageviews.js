@@ -643,11 +643,6 @@ class PageViews extends Pv {
       $('.multi-page-chart-node').show();
     }
 
-    if (this.autoLogDetection) {
-      const shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(set => set.data));
-      $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
-    }
-
     /** preserve order of datasets due to asyn calls */
     let sortedDatasets = new Array(xhrData.articles.length);
     xhrData.datasets.forEach(dataset => {
@@ -655,6 +650,10 @@ class PageViews extends Pv {
       sortedDatasets[xhrData.articles.indexOf(dataset.label.score())] = dataset;
     });
 
+    if (this.autoLogDetection) {
+      const shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(set => set.data));
+      $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+    }
     let options = Object.assign(
       {scales: {}},
       this.config.chartConfig[this.chartType].opts,

@@ -517,6 +517,10 @@ class Pv extends PvConfig {
    * @return {Boolean} yes or no
    */
   shouldBeLogarithmic(datasets) {
+    if (!this.isLogarithmicCapable()) {
+      return false;
+    }
+
     let sets = [];
     // convert NaNs and nulls to zeros
     datasets.forEach(dataset => {

@@ -46,14 +46,14 @@
           <!-- Advanced options -->
           <div class="col-lg-3 col-sm-3">
             <label for="data-source-select">
-              Data source
+              Metric
             </label>
             <select class="form-control" id="data-source-select">
               <option value="pageviews">
-                Pageviews
+                <?php echo $I18N->msg( 'pageviews' ); ?>
               </option>
               <option value="unique-devices">
-                Unique devices
+                <?php echo $I18N->msg( 'unique-devices' ); ?>
               </option>
             </select>
           </div>

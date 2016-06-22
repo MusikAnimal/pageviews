@@ -106,10 +106,10 @@
               %span.btn-group.view-options.pull-right
                 %button.active.btn.btn-default.view-btn.view-btn--list(type="button" href="#" data-value="list")
                   %span.glyphicon.glyphicon-list.view-options--list
-                  List
+                  = $I18N->msg( 'list' )
                 %button.btn.btn-default.view-btn.view-btn--chart(type="button" href="#" data-value="chart")
                   %span.glyphicon.glyphicon-chart
-                  Chart
+                  = $I18N->msg( 'chart' )
 
           - include "../_data_links.php"
 

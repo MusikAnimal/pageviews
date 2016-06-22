@@ -16,8 +16,8 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $pageviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"
-          = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
+          - $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"
+          = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $siteviewsLink ), 'parsemag' => true ) )
 
         %div
           %h3

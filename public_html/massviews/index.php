@@ -147,11 +147,11 @@
               <span class="btn-group view-options pull-right">
                 <button class="active btn btn-default view-btn view-btn--list" type="button" href="#" data-value="list">
                   <span class="glyphicon glyphicon-list view-options--list"></span>
-                  List
+                  <?php echo $I18N->msg( 'list' ); ?>
                 </button>
                 <button class="btn btn-default view-btn view-btn--chart" type="button" href="#" data-value="chart">
                   <span class="glyphicon glyphicon-chart"></span>
-                  Chart
+                  <?php echo $I18N->msg( 'chart' ); ?>
                 </button>
               </span>
             </h2>

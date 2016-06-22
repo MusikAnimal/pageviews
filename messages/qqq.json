@@ -226,5 +226,7 @@
 	"category-subject-toggle": "Option shown on Massviews when the 'Category URL' source is selected. This option tells the tool to use the subject page of any talk pages in the category.",
 	"template-url": "Label for the 'Template URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki template.",
 	"logarithmic-scale": "Label to show the chart using a logarithmic scale. Translation may easily be found on Wikidata, see https://www.wikidata.org/wiki/Q937378\n{{Identical|Logarithmic scale}}",
-	"bezier-curve-option": "Label for option to plot line charts using the Bézier curve"
+	"bezier-curve-option": "Label for option to plot line charts using the Bézier curve",
+	"list": "Label for the button to show the 'list view' of Massviews. 'Table' might also be a fitting translation.\n{{Identical|List}}",
+	"chart": "Label for the button to show the 'chart view' of Massviews.\n{{Identical|Chart}}"
 }

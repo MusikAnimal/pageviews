@@ -2126,6 +2126,10 @@ var Pv = function (_PvConfig) {
     value: function shouldBeLogarithmic(datasets) {
       var _ref;
 
+      if (!this.isLogarithmicCapable()) {
+        return false;
+      }
+
       var sets = [];
       // convert NaNs and nulls to zeros
       datasets.forEach(function (dataset) {
