@@ -3498,7 +3498,7 @@ var templates = {
 
     if (datasets.length === 1) {
       var dataset = datasets[0];
-      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="https://' + dataset.label + '/wiki/Special:Statistics?uselang=<' + i18nLang + '" target="_blank">' + $.i18n('statistics') + '</a>\n        &bullet;\n        <a href="' + scope.getTopviewsURL(dataset.label) + '" target="_blank">' + $.i18n('most-viewed-pages') + '</a>\n      </div>';
+      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="https://' + dataset.label + '/wiki/Special:Statistics?uselang=' + i18nLang + '" target="_blank">' + $.i18n('statistics') + '</a>\n        &bullet;\n        <a href="' + scope.getTopviewsURL(dataset.label) + '" target="_blank">' + $.i18n('most-viewed-pages') + '</a>\n      </div>';
     }
 
     if (datasets.length > 1) {

@@ -20,7 +20,7 @@ const templates = {
         <strong>${$.i18n('totals')}:</strong>
         ${scope.formatNumber(dataset.sum)} (${scope.formatNumber(dataset.average)}/${$.i18n('day')})
         &bullet;
-        <a href="https://${dataset.label}/wiki/Special:Statistics?uselang=<${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
+        <a href="https://${dataset.label}/wiki/Special:Statistics?uselang=${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
         &bullet;
         <a href="${scope.getTopviewsURL(dataset.label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
       </div>`;
