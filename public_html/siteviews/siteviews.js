@@ -2903,7 +2903,7 @@ var SiteViews = function (_Pv) {
     }
 
     /**
-     * Get data formatted for a linear chart (Line, Bar, Radar)
+     * Get data formatted for a linear chart (line, bar, radar)
      *
      * @param {object} data - data just before we are ready to render the chart
      * @param {string} site - title of site
@@ -3023,7 +3023,7 @@ var SiteViews = function (_Pv) {
         this.setSelect2Defaults(params.sites);
       } else {
         if (params.sites.length === 1) {
-          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
+          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'bar';
         }
         this.setSelect2Defaults(params.sites);
       }

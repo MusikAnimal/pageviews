@@ -262,7 +262,7 @@ var PageViews = function (_Pv) {
     }
 
     /**
-     * Get data formatted for a linear chart (Line, Bar, Radar)
+     * Get data formatted for a linear chart (line, bar, radar)
      *
      * @param {object} data - data just before we are ready to render the chart
      * @param {string} article - title of page
@@ -408,7 +408,7 @@ var PageViews = function (_Pv) {
           params.pages = data;
 
           if (params.pages.length === 1) {
-            _this4.chartType = _this4.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
+            _this4.chartType = _this4.getFromLocalStorage('pageviews-chart-preference') || 'bar';
           }
 
           _this4.setSelect2Defaults(_this4.underscorePageNames(params.pages));

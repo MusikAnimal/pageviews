@@ -181,7 +181,7 @@ class PageViews extends Pv {
   }
 
   /**
-   * Get data formatted for a linear chart (Line, Bar, Radar)
+   * Get data formatted for a linear chart (line, bar, radar)
    *
    * @param {object} data - data just before we are ready to render the chart
    * @param {string} article - title of page
@@ -310,7 +310,7 @@ class PageViews extends Pv {
         params.pages = data;
 
         if (params.pages.length === 1) {
-          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'Bar';
+          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'bar';
         }
 
         this.setSelect2Defaults(this.underscorePageNames(params.pages));
