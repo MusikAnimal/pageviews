@@ -139,7 +139,7 @@
 	"faq-multi-lang-title": "I want to see data for a page across all languages of a project",
 	"faq-try-tool": "Try $1",
 	"faq-bug-report-title": "I have a feature request or bug to report",
-	"faq-bug-report-body": "Please review the requests listed on <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a>. If you have a new request, creating a new issue there is preferred, but you may also contact the maintainers directly.",
+	"faq-bug-report-body": "If you would like to use a wiki to provide feedback, use the <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> on Meta. You can also report issues on <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> and <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-topviews-data-approx-title": "The data seems slightly off",
 	"faq-topviews-data-approx-body": "The $1 only provides the most viewed pages on a per-day basis. Topviews Analysis works by querying data for the top 1000 viewed pages for each day in the given date range, then giving you the sum of this data. This means that if a certain page was not in the top 1000 at some point during the given date range, the total views you see might be inaccurate. For the top 10 most viewed pages, this usually is a trivial difference, but the further you go down the list the more inaccurate the data might become.",
 	"faq-topviews-false-positive-title": "Why do some random pages have such high view counts?",
