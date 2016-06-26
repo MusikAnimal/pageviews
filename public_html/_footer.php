@@ -70,7 +70,7 @@
       &middot;
       <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
       &middot;
-      <a href="https://github.com/MusikAnimal/pageviews/issues"><?php echo $I18N->msg( 'report-issue' ); ?></a>
+      <a href="https://meta.wikimedia.org/wiki/Talk:Community_Tech/Pageview_stats_tool"><?php echo $I18N->msg( 'report-issue' ); ?></a>
     </div>
   </div>
 </footer>
