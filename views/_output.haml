@@ -1,0 +1,47 @@
+%div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
+  %div.progress
+    %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
+
+%output.clearfix(form="langviews_form")
+  %header.output-header.clearfix
+    %strong.another-query
+      %span.glyphicon.glyphicon-chevron-left
+      = $I18N->msg( 'another-query' )
+    %h2.tm
+      %a.output-title(target="_blank")
+      %small.output-params
+
+      %span.btn-group.view-options.pull-right
+        %button.active.btn.btn-default.view-btn.view-btn--list(type="button" href="#" data-value="list")
+          %span.glyphicon.glyphicon-list.view-options--list
+          = $I18N->msg( 'list' )
+        %button.btn.btn-default.view-btn.view-btn--chart(type="button" href="#" data-value="chart")
+          %span.glyphicon.glyphicon-chart
+          = $I18N->msg( 'chart' )
+
+  - include "_data_links.php"
+
+  %table.list-view.table.table-hover.output-table
+    %thead
+      %tr
+        %th
+          %span #
+        - foreach( $columns as $column => $translation )
+          %th
+            %span(class="sort-link sort-link--#{$column}" data-type="#{$column}")
+              = $I18N->msg( $translation )
+              %span.glyphicon.glyphicon-sort
+        %th
+          %span
+            = $I18N->msg( 'average' )
+      %tr.output-totals
+    %tbody#output_list
+
+  %div.chart-view.chart-container
+    %canvas.aqs-chart
+
+  %div.col-lg-12.tm.clearfix.legend-elapsed-time
+    %span#chart-legend.chart-view.pull-left
+    %span.elapsed-time.pull-right
+
+%div.message-container.col-lg-12

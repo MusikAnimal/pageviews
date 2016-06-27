@@ -122,6 +122,18 @@
           </div>
           <div class="checkbox">
             <label>
+              <input class="js-test-bezier-curve" name="autoLogDetection" type="checkbox">
+              <?php echo $I18N->msg( 'autolog-option' ); ?>
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input class="js-test-bezier-curve" name="rememberChart" type="checkbox">
+              <?php echo $I18N->msg( 'remember-chart-option' ); ?>
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
               <input class="js-test-bezier-curve" name="bezierCurve" type="checkbox">
               <?php echo $I18N->msg( 'bezier-curve-option' ); ?>
             </label>

@@ -15,6 +15,7 @@
 var config = {
   agentSelector: '#agent_select',
   chart: '.aqs-chart',
+  dateLimit: 31, // num days
   dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
@@ -24,14 +25,14 @@ var config = {
       source: 'category',
       sourceProject: '',
       direction: 1,
-      massData: [],
+      outputData: [],
       total: 0,
       view: 'list',
       subjectpage: 0
     }
   },
   linearLegend: function linearLegend(datasets, scope) {
-    return '<strong>' + $.i18n('totals') + ':</strong> ' + scope.formatNumber(scope.massData.sum) + '\n      (' + scope.formatNumber(Math.round(scope.massData.average)) + '/' + $.i18n('day') + ')';
+    return '<strong>' + $.i18n('totals') + ':</strong> ' + scope.formatNumber(scope.outputData.sum) + '\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
   pageLimit: 500,
@@ -94,11 +95,13 @@ var siteDomains = Object.keys(siteMap).map(function (key) {
   return siteMap[key];
 });
 var Pv = require('../shared/pv');
+var ChartHelpers = require('../shared/chart_helpers');
+var ListHelpers = require('../shared/list_helpers');
 
 /** Main MassViews class */
 
-var MassViews = function (_Pv) {
-  _inherits(MassViews, _Pv);
+var MassViews = function (_mix$with) {
+  _inherits(MassViews, _mix$with);
 
   function MassViews() {
     _classCallCheck(this, MassViews);
@@ -129,18 +132,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Copy default values over to class instance
-     * Use JSON stringify/parsing so to make a deep clone of the defaults
-     * @return {null} Nothing
-     */
-
-  }, {
-    key: 'assignDefaults',
-    value: function assignDefaults() {
-      Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-    }
-
-    /**
      * Add general event listeners
      * @returns {null} nothing
      */
@@ -152,7 +143,7 @@ var MassViews = function (_Pv) {
 
       _get(Object.getPrototypeOf(MassViews.prototype), 'setupListeners', this).call(this);
 
-      $('#massviews_form').on('submit', function (e) {
+      $('#pv_form').on('submit', function (e) {
         e.preventDefault(); // prevent page from reloading
         _this2.processInput();
       });
@@ -181,58 +172,6 @@ var MassViews = function (_Pv) {
         _this2.view = e.currentTarget.dataset.value;
         _this2.toggleView(_this2.view);
       });
-    }
-  }, {
-    key: 'toggleView',
-    value: function toggleView(view) {
-      var _this3 = this;
-
-      $('.view-btn').removeClass('active');
-      $('.view-btn--' + view).addClass('active');
-      $('output').removeClass('list-mode').removeClass('chart-mode').addClass(view + '-mode');
-
-      if (view === 'chart') {
-        this.destroyChart();
-
-        var options = Object.assign({}, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
-        this.assignMassDataChartOpts();
-        this.setChartPointDetectionRadius();
-
-        if (this.autoLogDetection) {
-          var shouldBeLogarithmic = this.shouldBeLogarithmic([this.massData.datasets[0].data]);
-          $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
-        }
-
-        if (this.isLogarithmic()) {
-          options.scales = Object.assign({}, options.scales, {
-            yAxes: [{
-              type: 'logarithmic',
-              ticks: {
-                callback: function callback(value, index, arr) {
-                  var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
-
-                  if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-                    return _this3.formatNumber(value);
-                  } else {
-                    return '';
-                  }
-                }
-              }
-            }]
-          });
-        }
-
-        var context = $(this.config.chart)[0].getContext('2d');
-        this.chartObj = new Chart(context, {
-          type: this.chartType,
-          data: this.massData,
-          options: options
-        });
-
-        $('#chart-legend').html(this.chartObj.generateLegend());
-      }
-
-      this.pushParams();
     }
   }, {
     key: 'updateSourceInput',
@@ -303,20 +242,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Get params needed to create a permanent link of visible data
-     * @return {Object} hash of params
-     */
-
-  }, {
-    key: 'getPermaLink',
-    value: function getPermaLink() {
-      var params = this.getParams(true);
-      params.sort = this.sort;
-      params.direction = this.direction;
-      return params;
-    }
-
-    /**
      * Push relevant class properties to the query string
      * @param  {Boolean} clear - wheter to clear the query string entirely
      * @return {null} nothing
@@ -334,7 +259,6 @@ var MassViews = function (_Pv) {
       }
 
       /** only certain characters within the page name are escaped */
-      // const page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
       window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
 
       $('.permalink').prop('href', '/massviews?' + $.param(this.getPermaLink()));
@@ -348,85 +272,21 @@ var MassViews = function (_Pv) {
   }, {
     key: 'renderData',
     value: function renderData() {
-      var _this4 = this;
+      var _this3 = this;
 
-      var articleDatasets = this.massData.listData;
+      _get(Object.getPrototypeOf(MassViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
+        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-pages', sortedDatasets.length) + '</th>\n         <th>' + _this3.formatNumber(_this3.outputData.sum) + '</th>\n         <th>' + _this3.formatNumber(Math.round(_this3.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
+        $('#output_list').html('');
 
-      /** sort ascending by current sort setting */
-      var sortedMassViews = articleDatasets.sort(function (a, b) {
-        var before = _this4.getSortProperty(a, _this4.sort),
-            after = _this4.getSortProperty(b, _this4.sort);
-
-        if (before < after) {
-          return _this4.direction;
-        } else if (before > after) {
-          return -_this4.direction;
-        } else {
-          return 0;
-        }
+        sortedDatasets.forEach(function (item, index) {
+          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label.score() + '" target="_blank">' + item.label.descore() + '</a></td>\n           <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n           <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
+        });
       });
-
-      $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-      var newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-      $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
-
-      $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n       <th>' + $.i18n('num-pages', articleDatasets.length) + '</th>\n       <th>' + this.formatNumber(this.massData.sum) + '</th>\n       <th>' + this.formatNumber(Math.round(this.massData.average)) + ' / ' + $.i18n('day') + '</th>');
-      $('#mass_list').html('');
-
-      sortedMassViews.forEach(function (item, index) {
-        $('#mass_list').append('<tr>\n         <th scope=\'row\'>' + (index + 1) + '</th>\n         <td><a href="https://' + _this4.sourceProject + '/wiki/' + item.label + '" target="_blank">' + item.label.descore() + '</a></td>\n         <td><a target="_blank" href=\'' + _this4.getPageviewsURL(_this4.sourceProject, item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n         <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n         </tr>');
-      });
-
-      this.pushParams();
-      this.toggleView(this.view);
-      this.setState('complete');
-    }
-
-    /**
-     * Fills in zeros to a timeseries, see:
-     * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
-     *
-     * @param {object} items - entries fetched from Pageviews API
-     * @param {moment} startDate - start date of range to filter through
-     * @param {moment} endDate - end date of range
-     * @returns {array} 0 = dataset with zeros where nulls were,
-     *   1 = dates that met the edge case, meaning data is not yet available
-     */
-
-  }, {
-    key: 'fillInZeros',
-    value: function fillInZeros(items, startDate, endDate) {
-      var _this5 = this;
-
-      /** Extract the dates that are already in the timeseries */
-      var alreadyThere = {};
-      items.forEach(function (elem) {
-        var date = moment(elem.timestamp, _this5.config.timestampFormat);
-        alreadyThere[date] = elem;
-      });
-      var data = [],
-          datesWithoutData = [];
-
-      /** Reconstruct with zeros instead of nulls */
-      for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-        if (alreadyThere[date]) {
-          data.push(alreadyThere[date]);
-        } else {
-          var edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
-          data.push({
-            timestamp: date.format(this.config.timestampFormat),
-            views: edgeCase ? null : 0
-          });
-          if (edgeCase) datesWithoutData.push(date.format());
-        }
-      }
-
-      return [data, datesWithoutData];
     }
 
     /**
      * Get value of given langview entry for the purposes of column sorting
-     * @param  {object} item - langview entry within this.massData
+     * @param  {object} item - langview entry within this.outputData
      * @param  {String} type - type of property to get
      * @return {String|Number} - value
      */
@@ -445,31 +305,8 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Link to /pageviews for given article and chosen daterange
-     * @param {String} project - base project, e.g. en.wikipedia.org
-     * @param {String} page - page name
-     * @returns {String} URL
-     */
-    // FIXME: should include agent and platform, and use special ranges as currently specified
-
-  }, {
-    key: 'getPageviewsURL',
-    value: function getPageviewsURL(project, page) {
-      var startDate = moment(this.daterangepicker.startDate),
-          endDate = moment(this.daterangepicker.endDate);
-      var platform = $(this.config.platformSelector).val();
-
-      if (endDate.diff(startDate, 'days') === 0) {
-        startDate.subtract(3, 'days');
-        endDate.add(3, 'days');
-      }
-
-      return '/pageviews#start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + page);
-    }
-
-    /**
      * Loop through given pages and query the pageviews API for each
-     *   Also updates this.massData with result
+     *   Also updates this.outputData with result
      * @param  {string} project - project such as en.wikipedia.org
      * @param  {Object} pages - as given by the getPagePile promise
      * @return {Deferred} - Promise resolving with data ready to be rendered to view
@@ -478,7 +315,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'getPageViewsData',
     value: function getPageViewsData(project, pages) {
-      var _this6 = this;
+      var _this4 = this;
 
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day');
@@ -495,7 +332,7 @@ var MassViews = function (_Pv) {
 
       var makeRequest = function makeRequest(page) {
         var uriEncodedPageName = encodeURIComponent(page);
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this4.config.platformSelector).val() + '/' + $(_this4.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this4.config.timestampFormat) + '/' + endDate.format(_this4.config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -519,27 +356,27 @@ var MassViews = function (_Pv) {
             /** maximum of 3 retries */
             if (failureRetries[project] < 3) {
               totalRequestCount++;
-              return _this6.rateLimit(makeRequest, 100, _this6)(page);
+              return _this4.rateLimit(makeRequest, 100, _this4)(page);
             }
           }
 
           if (cassandraError) {
             failedPages.push(page);
           } else {
-            _this6.writeMessage(_this6.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            _this4.writeMessage(_this4.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
-          _this6.updateProgressBar(++count / totalRequestCount * 100);
+          _this4.updateProgressBar(++count / totalRequestCount * 100);
 
           // XXX: throttling
           if (count === totalRequestCount) {
             dfd.resolve(pageViewsData);
 
             if (failedPages.length) {
-              _this6.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
-                return '<li>' + _this6.getPageLink(failedPage, project) + '</li>';
+              _this4.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
+                return '<li>' + _this4.getPageLink(failedPage, project) + '</li>';
               }).join('') + '</ul>'));
             }
 
@@ -549,7 +386,7 @@ var MassViews = function (_Pv) {
              */
             // XXX: throttling
             if (!hadFailure) {
-              simpleStorage.set(_this6.getCacheKey(), true, { TTL: 600000 });
+              simpleStorage.set(_this4.getCacheKey(), true, { TTL: 600000 });
             }
           }
         });
@@ -576,13 +413,13 @@ var MassViews = function (_Pv) {
      * @param  {string} label - label for the dataset (e.g. category:blah, page pile 24, etc)
      * @param  {string} link - HTML anchor tag for the label
      * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
-     * @return {object} mother data set, also stored in this.massData
+     * @return {object} mother data set, also stored in this.outputData
      */
 
   }, {
     key: 'buildMotherDataset',
     value: function buildMotherDataset(label, link, datasets) {
-      var _this7 = this;
+      var _this5 = this;
 
       /**
        * `datasets` structure:
@@ -624,7 +461,7 @@ var MassViews = function (_Pv) {
        * }
        */
 
-      this.massData = {
+      this.outputData = {
         labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
         link: link, // for our own purposes
         listData: []
@@ -644,7 +481,7 @@ var MassViews = function (_Pv) {
           return a + b;
         });
 
-        _this7.massData.listData.push({
+        _this5.outputData.listData.push({
           data: data,
           label: dataset.title,
           sum: sum,
@@ -657,7 +494,7 @@ var MassViews = function (_Pv) {
          * See fillInZeros() comments for more info.
          */
 
-        var _fillInZeros = _this7.fillInZeros(dataset.items, startDate, endDate);
+        var _fillInZeros = _this5.fillInZeros(dataset.items, startDate, endDate);
 
         var _fillInZeros2 = _slicedToArray(_fillInZeros, 2);
 
@@ -680,7 +517,7 @@ var MassViews = function (_Pv) {
         return (a || 0) + (b || 0);
       });
 
-      Object.assign(this.massData, {
+      Object.assign(this.outputData, {
         datasets: [{
           label: label,
           data: totalViewsSet,
@@ -694,23 +531,13 @@ var MassViews = function (_Pv) {
 
       if (datesWithoutData.length) {
         var dateList = datesWithoutData.map(function (date) {
-          return moment(date).format(_this7.dateFormat);
+          return moment(date).format(_this5.dateFormat);
         });
         // FIXME: i18N
         this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
       }
 
-      return this.massData;
-    }
-  }, {
-    key: 'assignMassDataChartOpts',
-    value: function assignMassDataChartOpts(props) {
-      var color = this.config.colors[0];
-      Object.assign(this.massData.datasets[0], this.config.chartConfig[this.chartType].dataset(color));
-
-      if (this.chartType === 'Line') {
-        this.massData.datasets[0].fillColor = color.replace(/,\s*\d\)/, ', 0.2)');
-      }
+      return this.outputData;
     }
   }, {
     key: 'getPileURL',
@@ -724,28 +551,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Return cache key for current params
-     * @return {String} key
-     */
-
-  }, {
-    key: 'getCacheKey',
-    value: function getCacheKey() {
-      return 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true)));
-    }
-
-    /**
-     * Check simple storage to see if a request with the current params would be cached
-     * @return {Boolean} cached or not
-     */
-
-  }, {
-    key: 'isRequestCached',
-    value: function isRequestCached() {
-      return simpleStorage.hasKey(this.getCacheKey());
-    }
-
-    /**
      * Get list of pages from Page Pile API given id
      * @param  {Number} id - PagePile ID
      * @return {Deferred} - Promise resolving with page names
@@ -754,7 +559,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'getPagePile',
     value: function getPagePile(id) {
-      var _this8 = this;
+      var _this6 = this;
 
       var dfd = $.Deferred();
       var url = 'https://tools.wmflabs.org/pagepile/api.php?id=' + id + '&action=get_data&format=json&metadata=1';
@@ -766,9 +571,9 @@ var MassViews = function (_Pv) {
         var pages = Object.keys(data.pages);
 
         if (pages.length > 500) {
-          _this8.writeMessage($.i18n('massviews-oversized-set', _this8.getPileLink(id), _this8.n(pages.length), _this8.config.pageLimit));
+          _this6.writeMessage($.i18n('massviews-oversized-set', _this6.getPileLink(id), _this6.formatNumber(pages.length), _this6.config.pageLimit));
 
-          pages = pages.slice(0, _this8.config.pageLimit);
+          pages = pages.slice(0, _this6.config.pageLimit);
         }
 
         return dfd.resolve({
@@ -777,7 +582,7 @@ var MassViews = function (_Pv) {
           pages: pages
         });
       }).fail(function (error) {
-        return dfd.reject(_this8.getPileLink(id) + ': ' + $.i18n('api-error-no-data'));
+        return dfd.reject(_this6.getPileLink(id) + ': ' + $.i18n('api-error-no-data'));
       });
 
       return dfd;
@@ -812,7 +617,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this9 = this;
+      var _this7 = this;
 
       var startDate = void 0,
           endDate = void 0,
@@ -851,12 +656,12 @@ var MassViews = function (_Pv) {
       /** import params or set defaults if invalid */
       ['sort', 'direction', 'view', 'source', 'subjectpage'].forEach(function (key) {
         var value = params[key];
-        if (value && _this9.config.validParams[key].includes(value)) {
+        if (value && _this7.config.validParams[key].includes(value)) {
           params[key] = value;
-          _this9[key] = value;
+          _this7[key] = value;
         } else {
-          params[key] = _this9.config.defaults.params[key];
-          _this9[key] = _this9.config.defaults.params[key];
+          params[key] = _this7.config.defaults.params[key];
+          _this7[key] = _this7.config.defaults.params[key];
         }
       });
 
@@ -873,14 +678,6 @@ var MassViews = function (_Pv) {
       } else {
         this.setState('initial');
       }
-    }
-  }, {
-    key: 'getState',
-    value: function getState() {
-      var classList = $('main')[0].classList;
-      return this.config.formStates.filter(function (stateName) {
-        return classList.contains(stateName);
-      })[0];
     }
 
     /**
@@ -925,81 +722,17 @@ var MassViews = function (_Pv) {
           break;
       }
     }
-
-    /**
-     * sets up the daterange selector and adds listeners
-     * @returns {null} - nothing
-     */
-
-  }, {
-    key: 'setupDateRangeSelector',
-    value: function setupDateRangeSelector() {
-      var _this10 = this;
-
-      var dateRangeSelector = $(this.config.dateRangeSelector);
-
-      /** transform this.config.specialRanges to have i18n as keys */
-      var ranges = {};
-      Object.keys(this.config.specialRanges).forEach(function (key) {
-        ranges[$.i18n(key)] = _this10.config.specialRanges[key];
-      });
-
-      dateRangeSelector.daterangepicker({
-        locale: {
-          format: this.dateFormat,
-          applyLabel: $.i18n('apply'),
-          cancelLabel: $.i18n('cancel'),
-          customRangeLabel: $.i18n('custom-range'),
-          dateLimit: { days: 31 },
-          daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
-          monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
-        },
-        startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
-        minDate: this.config.minDate,
-        maxDate: this.config.maxDate,
-        ranges: ranges
-      });
-
-      /** so people know why they can't query data older than August 2015 */
-      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>", $.i18n('july') + ' 2015')));
-
-      /**
-       * The special date range options (buttons the right side of the daterange picker)
-       *
-       * WARNING: we're unable to add class names or data attrs to the range options,
-       * so checking which was clicked is hardcoded based on the index of the LI,
-       * as defined in this.config.specialRanges
-       */
-      $('.daterangepicker .ranges li').on('click', function (e) {
-        var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this10.daterangepicker.container,
-            inputs = container.find('.daterangepicker_input input');
-        _this10.specialRange = {
-          range: Object.keys(_this10.config.specialRanges)[index],
-          value: inputs[0].value + ' - ' + inputs[1].value
-        };
-      });
-
-      dateRangeSelector.on('apply.daterangepicker', function (e, action) {
-        if (action.chosenLabel === $.i18n('custom-range')) {
-          _this10.specialRange = null;
-
-          /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this10.daterangepicker.updateElement();
-        }
-      });
-    }
   }, {
     key: 'processPagePile',
     value: function processPagePile(cb) {
-      var _this11 = this;
+      var _this8 = this;
 
       var pileId = $(this.config.sourceInput).val();
 
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
-          return _this11.setState('initial', function () {
-            _this11.writeMessage($.i18n('massviews-empty-set', _this11.getPileLink(pileId)));
+          return _this8.setState('initial', function () {
+            _this8.writeMessage($.i18n('massviews-empty-set', _this8.getPileLink(pileId)));
           });
         }
 
@@ -1008,34 +741,34 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        if (!_this11.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
+        if (!_this8.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
-        _this11.sourceProject = siteMap[pileData.wiki];
-        _this11.getPageViewsData(_this11.sourceProject, pileData.pages).done(function (pageViewsData) {
+        _this8.sourceProject = siteMap[pileData.wiki];
+        _this8.getPageViewsData(_this8.sourceProject, pileData.pages).done(function (pageViewsData) {
           var label = 'Page Pile #' + pileData.id;
 
-          $('.massviews-input-name').text(label).prop('href', _this11.getPileURL(pileData.id));
-          $('.massviews-params').html('\n          ' + $(_this11.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this11.sourceProject + '" target="_blank">' + _this11.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+          $('.output-title').text(label).prop('href', _this8.getPileURL(pileData.id));
+          $('.output-params').html('\n          ' + $(_this8.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this8.sourceProject + '" target="_blank">' + _this8.sourceProject.replace(/.org$/, '') + '</a>\n          ');
 
-          _this11.buildMotherDataset(label, _this11.getPileLink(pileData.id), pageViewsData);
+          _this8.buildMotherDataset(label, _this8.getPileLink(pileData.id), pageViewsData);
 
           cb();
         });
       }).fail(function (error) {
-        _this11.setState('initial');
+        _this8.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (typeof error === 'string') {
-          _this11.writeMessage(error);
+          _this8.writeMessage(error);
         } else {
-          _this11.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
+          _this8.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
     }
   }, {
     key: 'processCategory',
     value: function processCategory(cb) {
-      var _this12 = this;
+      var _this9 = this;
 
       var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
@@ -1047,7 +780,7 @@ var MassViews = function (_Pv) {
 
       if (!category) {
         return this.setState('initial', function () {
-          _this12.writeMessage($.i18n('invalid-category-url'));
+          _this9.writeMessage($.i18n('invalid-category-url'));
         });
       }
 
@@ -1077,16 +810,16 @@ var MassViews = function (_Pv) {
 
       promise.done(function (data) {
         if (data.error) {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info);
+          return _this9.setState('initial', function () {
+            _this9.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info);
           });
         }
 
         var queryKey = Object.keys(data.query.pages)[0];
 
         if (queryKey === '-1') {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('api-error-no-data'));
+          return _this9.setState('initial', function () {
+            _this9.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -1095,15 +828,15 @@ var MassViews = function (_Pv) {
         var pages = data.query.categorymembers;
 
         if (!pages.length) {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('massviews-empty-set', categoryLink));
+          return _this9.setState('initial', function () {
+            _this9.writeMessage($.i18n('massviews-empty-set', categoryLink));
           });
         }
 
-        if (size > _this12.config.pageLimit) {
-          _this12.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this12.n(size), _this12.config.pageLimit));
+        if (size > _this9.config.pageLimit) {
+          _this9.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this9.formatNumber(size), _this9.config.pageLimit));
 
-          pages = pages.slice(0, _this12.config.pageLimit);
+          pages = pages.slice(0, _this9.config.pageLimit);
         }
 
         /**
@@ -1111,32 +844,32 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this12.setThrottle();
+        _this9.setThrottle();
 
-        var pageNames = _this12.mapCategoryPageNames(pages, namespaces);
+        var pageNames = _this9.mapCategoryPageNames(pages, namespaces);
 
-        _this12.getPageViewsData(project, pageNames).done(function (pageViewsData) {
-          $('.massviews-input-name').html(categoryLink);
-          $('.massviews-params').html($(_this12.config.dateRangeSelector).val());
-          _this12.buildMotherDataset(category, categoryLink, pageViewsData);
+        _this9.getPageViewsData(project, pageNames).done(function (pageViewsData) {
+          $('.output-title').html(categoryLink);
+          $('.output-params').html($(_this9.config.dateRangeSelector).val());
+          _this9.buildMotherDataset(category, categoryLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this12.setState('initial');
+        _this9.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && data.error) {
-          _this12.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
+          _this9.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
         } else {
-          _this12.writeMessage($.i18n('api-error-unknown', categoryLink));
+          _this9.writeMessage($.i18n('api-error-unknown', categoryLink));
         }
       });
     }
   }, {
     key: 'processTemplate',
     value: function processTemplate(cb) {
-      var _this13 = this;
+      var _this10 = this;
 
       var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
@@ -1148,7 +881,7 @@ var MassViews = function (_Pv) {
 
       if (!template) {
         return this.setState('initial', function () {
-          _this13.writeMessage($.i18n('invalid-template-url'));
+          _this10.writeMessage($.i18n('invalid-template-url'));
         });
       }
 
@@ -1169,16 +902,16 @@ var MassViews = function (_Pv) {
 
       promise.done(function (data) {
         if (data.error) {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info);
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info);
           });
         }
 
         var queryKey = Object.keys(data.query.pages)[0];
 
         if (queryKey === '-1') {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('api-error-no-data'));
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -1187,14 +920,14 @@ var MassViews = function (_Pv) {
         });
 
         if (!pages.length) {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('massviews-empty-set', templateLink));
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('massviews-empty-set', templateLink));
           });
         }
 
         // in this case we are limited by the API to 500 pages, not this.config.pageLimit
         if (data.continue) {
-          _this13.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
+          _this10.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
         }
 
         /**
@@ -1202,23 +935,23 @@ var MassViews = function (_Pv) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this13.setThrottle();
+        _this10.setThrottle();
 
-        _this13.getPageViewsData(project, pages).done(function (pageViewsData) {
-          $('.massviews-input-name').html(templateLink);
-          $('.massviews-params').html($(_this13.config.dateRangeSelector).val());
-          _this13.buildMotherDataset(template, templateLink, pageViewsData);
+        _this10.getPageViewsData(project, pages).done(function (pageViewsData) {
+          $('.output-title').html(templateLink);
+          $('.output-params').html($(_this10.config.dateRangeSelector).val());
+          _this10.buildMotherDataset(template, templateLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this13.setState('initial');
+        _this10.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && data.error) {
-          _this13.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
+          _this10.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
         } else {
-          _this13.writeMessage($.i18n('api-error-unknown', templateLink));
+          _this10.writeMessage($.i18n('api-error-unknown', templateLink));
         }
       });
     }
@@ -1249,7 +982,7 @@ var MassViews = function (_Pv) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this14 = this;
+      var _this11 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -1268,11 +1001,11 @@ var MassViews = function (_Pv) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this14.updateProgressBar(100);
-        _this14.renderData();
+        _this11.updateProgressBar(100);
+        _this11.renderData();
 
         // XXX: throttling
-        _this14.setThrottle();
+        _this11.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {
@@ -1289,18 +1022,6 @@ var MassViews = function (_Pv) {
     }
 
     /**
-     * Set value of progress bar
-     * @param  {Number} value - percentage as float
-     * @return {null} nothing
-     */
-
-  }, {
-    key: 'updateProgressBar',
-    value: function updateProgressBar(value) {
-      $('.progress-bar').css('width', value.toFixed(2) + '%');
-    }
-
-    /**
      * Exports current mass data to CSV format and loads it in a new tab
      * With the prepended data:text/csv this should cause the browser to download the data
      * @returns {string} CSV content
@@ -1312,7 +1033,7 @@ var MassViews = function (_Pv) {
       var csvContent = 'data:text/csv;charset=utf-8,Title,' + this.getDateHeadings(false).join(',') + '\n';
 
       // Add the rows to the CSV
-      this.massData.listData.forEach(function (page) {
+      this.outputData.listData.forEach(function (page) {
         var pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
         csvContent += [pageName].concat(page.data).join(',') + '\n';
@@ -1322,21 +1043,6 @@ var MassViews = function (_Pv) {
       var encodedUri = encodeURI(csvContent);
       window.open(encodedUri);
     }
-
-    /**
-     * Exports current mass data to JSON format and loads it in a new tab
-     * @returns {string} stringified JSON
-     */
-
-  }, {
-    key: 'exportJSON',
-    value: function exportJSON() {
-      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData.listData),
-          encodedUri = encodeURI(jsonContent);
-      window.open(encodedUri);
-
-      return jsonContent;
-    }
   }, {
     key: 'baseProject',
     get: function get() {
@@ -1345,7 +1051,7 @@ var MassViews = function (_Pv) {
   }]);
 
   return MassViews;
-}(Pv);
+}(mix(Pv).with(ChartHelpers, ListHelpers));
 
 $(document).ready(function () {
   /** assume hash params are supposed to be query params */
@@ -1358,8 +1064,636 @@ $(document).ready(function () {
   new MassViews();
 });
 
-},{"../shared/pv":5,"../shared/site_map":7,"./config":1}],3:[function(require,module,exports){
+},{"../shared/chart_helpers":3,"../shared/list_helpers":5,"../shared/pv":7,"../shared/site_map":9,"./config":1}],3:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @file Shared chart-specific logic
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+/**
+ * Shared chart-specific logic
+ * @param {class} superclass - base class
+ * @returns {null} class extending superclass
+ */
+var ChartHelpers = function ChartHelpers(superclass) {
+  return function (_superclass) {
+    _inherits(_class, _superclass);
+
+    function _class(appConfig) {
+      _classCallCheck(this, _class);
+
+      // leave if there's no chart configured
+
+      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+
+      if (!_this.config.chart) return _possibleConstructorReturn(_this);
+
+      _this.chartObj = null;
+      _this.prevChartType = null;
+      _this.setInitialChartType();
+
+      /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
+      if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
+        _this.setLocalStorage('pageviews-chart-preference', _this.config.defaults.chartType());
+        _this.chartType = _this.config.defaults.chartType();
+      }
+
+      /** copy over app-specific chart templates */
+      _this.config.linearCharts.forEach(function (linearChart) {
+        _this.config.chartConfig[linearChart].opts.legendTemplate = _this.config.linearLegend;
+      });
+      _this.config.circularCharts.forEach(function (circularChart) {
+        _this.config.chartConfig[circularChart].opts.legendTemplate = _this.config.circularLegend;
+      });
+
+      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
+
+      /** changing of chart types */
+      $('.modal-chart-type a').on('click', function (e) {
+        _this.chartType = $(e.currentTarget).data('type');
+
+        $('.logarithmic-scale').toggle(_this.isLogarithmicCapable());
+
+        if (_this.rememberChart === 'true') {
+          _this.setLocalStorage('pageviews-chart-preference', _this.chartType);
+        }
+
+        _this.isChartApp() ? _this.processInput() : _this.renderData();
+      });
+
+      $(_this.config.logarithmicCheckbox).on('click', function () {
+        _this.autoLogDetection = 'false';
+        _this.isChartApp() ? _this.processInput(true) : _this.renderData();
+      });
+      return _this;
+    }
+
+    /**
+     * Set the default chart type or the one from localStorage, based on settings
+     * @param {Number} [numDatasets] - number of datasets
+     * @returns {null} nothing
+     */
+
+
+    _createClass(_class, [{
+      key: 'setInitialChartType',
+      value: function setInitialChartType(numDatasets) {
+        if (this.rememberChart === 'true') {
+          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
+        } else {
+          this.chartType = this.config.defaults.chartType(numDatasets);
+        }
+      }
+
+      /**
+       * Destroy previous chart, if needed.
+       * @returns {null} nothing
+       */
+
+    }, {
+      key: 'destroyChart',
+      value: function destroyChart() {
+        if (this.chartObj) {
+          this.chartObj.destroy();
+          $('#chart-legend').html('');
+        }
+      }
+
+      /**
+       * Exports current chart data to CSV format and loads it in a new tab
+       * With the prepended data:text/csv this should cause the browser to download the data
+       * @returns {string} CSV content
+       */
+
+    }, {
+      key: 'exportCSV',
+      value: function exportCSV() {
+        var csvContent = 'data:text/csv;charset=utf-8,Date,';
+        var titles = [];
+        var dataRows = [];
+        var dates = this.getDateHeadings(false);
+
+        // Begin constructing the dataRows array by populating it with the dates
+        dates.forEach(function (date, index) {
+          dataRows[index] = [date];
+        });
+
+        this.chartObj.data.datasets.forEach(function (site) {
+          // Build an array of site titles for use in the CSV header
+          var siteTitle = '"' + site.label.replace(/"/g, '""') + '"';
+          titles.push(siteTitle);
+
+          // Populate the dataRows array with the data for this site
+          dates.forEach(function (date, index) {
+            dataRows[index].push(site.data[index]);
+          });
+        });
+
+        // Finish the CSV header
+        csvContent = csvContent + titles.join(',') + '\n';
+
+        // Add the rows to the CSV
+        dataRows.forEach(function (data) {
+          csvContent += data.join(',') + '\n';
+        });
+
+        // Output the CSV file to the browser
+        var encodedUri = encodeURI(csvContent);
+        window.open(encodedUri);
+      }
+
+      /**
+       * Exports current chart data to JSON format and loads it in a new tab
+       * @returns {string} stringified JSON
+       */
+
+    }, {
+      key: 'exportJSON',
+      value: function exportJSON() {
+        var _this2 = this;
+
+        var data = [];
+
+        this.chartObj.data.datasets.forEach(function (page, index) {
+          var entry = {
+            page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
+            color: page.strokeColor,
+            sum: page.sum,
+            daily_average: Math.round(page.sum / _this2.numDaysInRange())
+          };
+
+          _this2.getDateHeadings(false).forEach(function (heading, index) {
+            entry[heading.replace(/\\/, '')] = page.data[index];
+          });
+
+          data.push(entry);
+        });
+
+        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
+            encodedUri = encodeURI(jsonContent);
+        window.open(encodedUri);
+
+        return jsonContent;
+      }
+
+      /**
+       * Fills in zero value to a timeseries, see:
+       * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+       *
+       * @param {object} data fetched from API
+       * @param {moment} startDate - start date of range to filter through
+       * @param {moment} endDate - end date of range
+       * @returns {object} dataset with zeros where nulls where
+       */
+
+    }, {
+      key: 'fillInZeros',
+      value: function fillInZeros(data, startDate, endDate) {
+        var _this3 = this;
+
+        /** Extract the dates that are already in the timeseries */
+        var alreadyThere = {};
+        data.items.forEach(function (elem) {
+          var date = moment(elem.timestamp, _this3.config.timestampFormat);
+          alreadyThere[date] = elem;
+        });
+        data.items = [];
+
+        /** Reconstruct with zeros instead of nulls */
+        for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
+          if (alreadyThere[date]) {
+            data.items.push(alreadyThere[date]);
+          } else {
+            var edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+            data.items.push(_defineProperty({
+              timestamp: date.format(this.config.timestampFormat)
+            }, this.isPageviews() ? 'views' : 'devices', edgeCase ? null : 0));
+          }
+        }
+
+        return data;
+      }
+
+      /**
+       * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
+       *
+       * @param {object} data - data just before we are ready to render the chart
+       * @param {string} entity - title of entity (page or site)
+       * @param {integer} index - where we are in the list of entities to show
+       *    used for colour selection
+       * @returns {object} - ready for chart rendering
+       */
+
+    }, {
+      key: 'getCircularData',
+      value: function getCircularData(data, entity, index) {
+        var _this4 = this;
+
+        var values = data.items.map(function (elem) {
+          return _this4.isPageviews() ? elem.views : elem.devices;
+        }),
+            color = this.config.colors[index],
+            value = values.reduce(function (a, b) {
+          return a + b;
+        }),
+            average = Math.round(value / values.length);
+
+        return Object.assign({
+          label: entity.descore(),
+          value: value,
+          average: average
+        }, this.config.chartConfig[this.chartType].dataset(color));
+      }
+
+      /**
+       * Get data formatted for a linear chart (line, bar, radar)
+       *
+       * @param {object} data - data just before we are ready to render the chart
+       * @param {string} entity - title of entity
+       * @param {integer} index - where we are in the list of entities to show
+       *    used for colour selection
+       * @returns {object} - ready for chart rendering
+       */
+
+    }, {
+      key: 'getLinearData',
+      value: function getLinearData(data, entity, index) {
+        var _this5 = this;
+
+        var values = data.items.map(function (elem) {
+          return _this5.isPageviews() ? elem.views : elem.devices;
+        }),
+            sum = values.reduce(function (a, b) {
+          return a + b;
+        }),
+            average = Math.round(sum / values.length),
+            max = Math.max.apply(Math, _toConsumableArray(values)),
+            color = this.config.colors[index % 10];
+
+        return Object.assign({
+          label: entity.descore(),
+          data: values,
+          sum: sum,
+          average: average,
+          max: max,
+          color: color
+        }, this.config.chartConfig[this.chartType].dataset(color));
+      }
+
+      /**
+       * Get params needed to create a permanent link of visible data
+       * @return {Object} hash of params
+       */
+
+    }, {
+      key: 'getPermaLink',
+      value: function getPermaLink() {
+        var params = this.getParams(false);
+        delete params.range;
+        return params;
+      }
+
+      /**
+       * Are we currently in logarithmic mode?
+       * @returns {Boolean} true or false
+       */
+
+    }, {
+      key: 'isLogarithmic',
+      value: function isLogarithmic() {
+        return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
+      }
+
+      /**
+       * Test if the current chart type supports a logarithmic scale
+       * @returns {Boolean} log-friendly or not
+       */
+
+    }, {
+      key: 'isLogarithmicCapable',
+      value: function isLogarithmicCapable() {
+        return ['line', 'bar'].includes(this.chartType);
+      }
+
+      /**
+       * Are we trying to show data on pageviews (as opposed to unique devices)?
+       * @return {Boolean} true or false
+       */
+
+    }, {
+      key: 'isPageviews',
+      value: function isPageviews() {
+        return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+      }
+
+      /**
+       * Removes chart, messages, and resets site selections
+       * @param {boolean} [select2] whether or not to clear the Select2 input
+       * @returns {null} nothing
+       */
+
+    }, {
+      key: 'resetView',
+      value: function resetView() {
+        var select2 = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+        try {
+          /** these can fail sometimes */
+          this.destroyChart();
+          if (select2) this.resetSelect2();
+        } catch (e) {// nothing
+        } finally {
+          this.stopSpinny();
+          $('.data-links').addClass('invisible');
+          $(this.config.chart).hide();
+          this.clearMessages();
+        }
+      }
+
+      /**
+       * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
+       * @returns {Number} radius
+       */
+
+    }, {
+      key: 'setChartPointDetectionRadius',
+      value: function setChartPointDetectionRadius() {
+        if (this.chartType !== 'line') return;
+
+        if (this.numDaysInRange() > 50) {
+          Chart.defaults.global.elements.point.hitRadius = 3;
+        } else if (this.numDaysInRange() > 30) {
+          Chart.defaults.global.elements.point.hitRadius = 5;
+        } else if (this.numDaysInRange() > 20) {
+          Chart.defaults.global.elements.point.hitRadius = 10;
+        } else {
+          Chart.defaults.global.elements.point.hitRadius = 30;
+        }
+      }
+
+      /**
+       * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
+       * @param  {Array} datasets - pageviews
+       * @return {Boolean} yes or no
+       */
+
+    }, {
+      key: 'shouldBeLogarithmic',
+      value: function shouldBeLogarithmic(datasets) {
+        var _ref;
+
+        if (!this.isLogarithmicCapable()) {
+          return false;
+        }
+
+        var sets = [];
+        // convert NaNs and nulls to zeros
+        datasets.forEach(function (dataset) {
+          sets.push(dataset.map(function (val) {
+            return val || 0;
+          }));
+        });
+
+        // overall max value
+        var maxValue = Math.max.apply(Math, _toConsumableArray((_ref = []).concat.apply(_ref, sets)));
+        var logarithmicNeeded = false;
+
+        sets.forEach(function (set) {
+          set.push(maxValue);
+
+          var sum = set.reduce(function (a, b) {
+            return a + b;
+          }),
+              average = sum / set.length;
+          var theil = 0;
+          set.forEach(function (v) {
+            return theil += v ? v * Math.log(v / average) : 0;
+          });
+
+          if (theil / sum > 0.5) {
+            return logarithmicNeeded = true;
+          }
+        });
+
+        return logarithmicNeeded;
+      }
+
+      /**
+       * sets up the daterange selector and adds listeners
+       * @returns {null} - nothing
+       */
+
+    }, {
+      key: 'setupDateRangeSelector',
+      value: function setupDateRangeSelector() {
+        var _this6 = this;
+
+        _get(Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
+
+        /** prevent duplicate setup since the list view apps also use charts */
+        if (!this.isChartApp()) return;
+
+        var dateRangeSelector = $(this.config.dateRangeSelector);
+
+        /** the "Latest N days" links */
+        $('.date-latest a').on('click', function (e) {
+          _this6.setSpecialRange('latest-' + $(e.target).data('value'));
+        });
+
+        dateRangeSelector.on('change', function (e) {
+          _this6.setChartPointDetectionRadius();
+          _this6.processInput();
+
+          /** clear out specialRange if it doesn't match our input */
+          if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
+            _this6.specialRange = null;
+          }
+        });
+      }
+
+      /**
+       * Update the chart with data provided by processInput()
+       * @param {Object} xhrData - data as constructed by processInput()
+       * @returns {null} - nothin
+       */
+
+    }, {
+      key: 'updateChart',
+      value: function updateChart(xhrData) {
+        var _this7 = this;
+
+        $('#chart-legend').html(''); // clear old chart legend
+
+        // show pending error messages if present, exiting if fatal
+        if (this.showErrors(xhrData)) return;
+
+        if (!xhrData.entities.length) {
+          return;
+        } else if (xhrData.entities.length === 1) {
+          $('.multi-page-chart-node').hide();
+        } else {
+          $('.multi-page-chart-node').show();
+        }
+
+        if (this.autoLogDetection === 'true') {
+          var shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(function (set) {
+            return set.data;
+          }));
+          $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+        }
+
+        /** preserve order of datasets due to asyn calls */
+        var sortedDatasets = new Array(xhrData.entities.length);
+        xhrData.datasets.forEach(function (dataset) {
+          if (_this7.isLogarithmic()) dataset.data = dataset.data.map(function (view) {
+            return view || null;
+          });
+          sortedDatasets[xhrData.entities.indexOf(dataset.label.score())] = dataset;
+        });
+
+        var options = Object.assign({ scales: {} }, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
+
+        if (this.isLogarithmic()) {
+          options.scales = Object.assign({}, options.scales, {
+            yAxes: [{
+              type: 'logarithmic',
+              ticks: {
+                callback: function callback(value, index, arr) {
+                  var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
+
+                  if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                    return _this7.formatNumber(value);
+                  } else {
+                    return '';
+                  }
+                }
+              }
+            }]
+          });
+        }
+
+        this.stopSpinny();
+
+        try {
+          $('.chart-container').html('').append("<canvas class='aqs-chart'>");
+          this.setChartPointDetectionRadius();
+          var context = $(this.config.chart)[0].getContext('2d');
+
+          if (this.config.linearCharts.includes(this.chartType)) {
+            var linearData = { labels: xhrData.labels, datasets: sortedDatasets };
+
+            this.chartObj = new Chart(context, {
+              type: this.chartType,
+              data: linearData,
+              options: options
+            });
+          } else {
+            this.chartObj = new Chart(context, {
+              type: this.chartType,
+              data: {
+                labels: sortedDatasets.map(function (d) {
+                  return d.label;
+                }),
+                datasets: [{
+                  data: sortedDatasets.map(function (d) {
+                    return d.value;
+                  }),
+                  backgroundColor: sortedDatasets.map(function (d) {
+                    return d.backgroundColor;
+                  }),
+                  hoverBackgroundColor: sortedDatasets.map(function (d) {
+                    return d.hoverBackgroundColor;
+                  }),
+                  averages: sortedDatasets.map(function (d) {
+                    return d.average;
+                  })
+                }]
+              },
+              options: options
+            });
+          }
+        } catch (err) {
+          return this.showErrors(err);
+        }
+
+        $('#chart-legend').html(this.chartObj.generateLegend());
+        $('.data-links').removeClass('invisible');
+      }
+
+      /**
+       * Show errors built in this.processInput
+       * @param {object|Error} xhrData - as built by this.processInput, or just a single Error object
+       * @returns {boolean} whether or not fatal errors occured
+       */
+
+    }, {
+      key: 'showErrors',
+      value: function showErrors(xhrData) {
+        var _this8 = this;
+
+        /** build necessary data structure if we were given an error object */
+        if (xhrData instanceof Error) {
+          xhrData = {
+            errors: [],
+            fatalErrors: [xhrData]
+          };
+        }
+
+        if (xhrData.errors.length && xhrData.errors.length === xhrData.entities.length || xhrData.fatalErrors.length) {
+          if (xhrData.errors.length) {
+            var errorMessages = xhrData.errors.unique().map(function (error) {
+              return '<li>' + error + '</li>';
+            }).join('');
+            this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
+          }
+
+          if (xhrData.fatalErrors.length) {
+            this.resetView(true);
+            var fatalErrorMessages = xhrData.fatalErrors.map(function (err) {
+              return err.toString();
+            }).unique();
+            fatalErrorMessages.forEach(function (message) {
+              _this8.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + message + '</code>');
+            });
+            this.writeMessage($.i18n('error-please-report', this.getBugReportURL(fatalErrorMessages)));
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }]);
+
+    return _class;
+  }(superclass);
+};
+
+module.exports = ChartHelpers;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
  * @file Core JavaScript extensions, either to native JS or a library.
@@ -1376,11 +1710,48 @@ String.prototype.score = function () {
   return this.replace(/ /g, '_');
 };
 
+// remove duplicate values from Array
+Array.prototype.unique = function () {
+  return this.filter(function (value, index, array) {
+    return array.indexOf(value) === index;
+  });
+};
+
+// Improve syntax to emulate mixins in ES6
+window.mix = function (superclass) {
+  return new MixinBuilder(superclass);
+};
+
+var MixinBuilder = function () {
+  function MixinBuilder(superclass) {
+    _classCallCheck(this, MixinBuilder);
+
+    this.superclass = superclass;
+  }
+
+  _createClass(MixinBuilder, [{
+    key: 'with',
+    value: function _with() {
+      for (var _len = arguments.length, mixins = Array(_len), _key = 0; _key < _len; _key++) {
+        mixins[_key] = arguments[_key];
+      }
+
+      return mixins.reduce(function (c, mixin) {
+        return mixin(c);
+      }, this.superclass);
+    }
+  }]);
+
+  return MixinBuilder;
+}();
+
 /*
  * HOT PATCH for Chart.js getElementsAtEvent
  * https://github.com/chartjs/Chart.js/issues/2299
  * TODO: remove me when this gets implemented into Charts.js core
  */
+
+
 if (typeof Chart !== 'undefined') {
   Chart.Controller.prototype.getElementsAtEvent = function (e) {
     var helpers = Chart.helpers;
@@ -1414,7 +1785,324 @@ if (typeof Chart !== 'undefined') {
   };
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @file Shared list-specific logic
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+/**
+ * Shared list-specific logic
+ * @param {class} superclass - base class
+ * @returns {null} class extending superclass
+ */
+var ListHelpers = function ListHelpers(superclass) {
+  return function (_superclass) {
+    _inherits(_class, _superclass);
+
+    function _class(appConfig) {
+      _classCallCheck(this, _class);
+
+      return _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+    }
+
+    /**
+     * Copy default values over to class instance
+     * Use JSON stringify/parsing so to make a deep clone of the defaults
+     * @return {null} Nothing
+     */
+
+
+    _createClass(_class, [{
+      key: 'assignDefaults',
+      value: function assignDefaults() {
+        Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
+      }
+
+      /**
+       * Prepare chart options before showing chart view, based on current chart type
+       * @return {null} Nothing
+       */
+
+    }, {
+      key: 'assignOutputDataChartOpts',
+      value: function assignOutputDataChartOpts() {
+        var color = this.config.colors[0];
+        Object.assign(this.outputData.datasets[0], this.config.chartConfig[this.chartType].dataset(color));
+
+        if (this.chartType === 'line') {
+          this.outputData.datasets[0].fillColor = color.replace(/,\s*\d\)/, ', 0.2)');
+        }
+      }
+
+      /**
+       * Exports current lang data to JSON format and loads it in a new tab
+       * @returns {string} stringified JSON
+       */
+
+    }, {
+      key: 'exportJSON',
+      value: function exportJSON() {
+        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData),
+            encodedUri = encodeURI(jsonContent);
+        window.open(encodedUri);
+
+        return jsonContent;
+      }
+
+      /**
+       * Fills in zeros to a timeseries, see:
+       * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+       *
+       * @param {object} items - entries fetched from Pageviews API
+       * @param {moment} startDate - start date of range to filter through
+       * @param {moment} endDate - end date of range
+       * @returns {array} 0 = dataset with zeros where nulls were,
+       *   1 = dates that met the edge case, meaning data is not yet available
+       */
+
+    }, {
+      key: 'fillInZeros',
+      value: function fillInZeros(items, startDate, endDate) {
+        var _this2 = this;
+
+        /** Extract the dates that are already in the timeseries */
+        var alreadyThere = {};
+        items.forEach(function (elem) {
+          var date = moment(elem.timestamp, _this2.config.timestampFormat);
+          alreadyThere[date] = elem;
+        });
+        var data = [],
+            datesWithoutData = [];
+
+        /** Reconstruct with zeros instead of nulls */
+        for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
+          if (alreadyThere[date]) {
+            data.push(alreadyThere[date]);
+          } else {
+            var edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+            data.push({
+              timestamp: date.format(this.config.timestampFormat),
+              views: edgeCase ? null : 0
+            });
+            if (edgeCase) datesWithoutData.push(date.format());
+          }
+        }
+
+        return [data, datesWithoutData];
+      }
+
+      /**
+       * Return cache key for current params
+       * @return {String} key
+       */
+
+    }, {
+      key: 'getCacheKey',
+      value: function getCacheKey() {
+        return 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true)));
+      }
+
+      /**
+       * Link to /pageviews for given article and chosen daterange
+       * @param {String} project - base project, e.g. en.wikipedia.org
+       * @param {String} page - page name
+       * @returns {String} URL
+       */
+      // FIXME: should include agent and platform, and use special ranges as currently specified
+
+    }, {
+      key: 'getPageviewsURL',
+      value: function getPageviewsURL(project, page) {
+        var startDate = moment(this.daterangepicker.startDate),
+            endDate = moment(this.daterangepicker.endDate);
+        var platform = $(this.config.platformSelector).val();
+
+        if (endDate.diff(startDate, 'days') === 0) {
+          startDate.subtract(3, 'days');
+          endDate.add(3, 'days');
+        }
+
+        return '/pageviews?start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + page);
+      }
+
+      /**
+       * Get params needed to create a permanent link of visible data
+       * @return {Object} hash of params
+       */
+
+    }, {
+      key: 'getPermaLink',
+      value: function getPermaLink() {
+        var params = this.getParams(true);
+        params.sort = this.sort;
+        params.direction = this.direction;
+        return params;
+      }
+
+      /**
+       * Get current class name of <output>, representing the current state of the form
+       * @return {String} state, one of this.config.formStates
+       */
+
+    }, {
+      key: 'getState',
+      value: function getState() {
+        var classList = $('main')[0].classList;
+        return this.config.formStates.filter(function (stateName) {
+          return classList.contains(stateName);
+        })[0];
+      }
+
+      /**
+       * Check simple storage to see if a request with the current params would be cached
+       * @return {Boolean} cached or not
+       */
+
+    }, {
+      key: 'isRequestCached',
+      value: function isRequestCached() {
+        return simpleStorage.hasKey(this.getCacheKey());
+      }
+
+      /**
+       * Render list of output data into view
+       * @param {function} cb - block to call between initial setup and showing the output
+       * @returns {null} nothing
+       */
+
+    }, {
+      key: 'renderData',
+      value: function renderData(cb) {
+        var _this3 = this;
+
+        var articleDatasets = this.outputData.listData;
+
+        /** sort ascending by current sort setting */
+        var sortedDatasets = articleDatasets.sort(function (a, b) {
+          var before = _this3.getSortProperty(a, _this3.sort),
+              after = _this3.getSortProperty(b, _this3.sort);
+
+          if (before < after) {
+            return _this3.direction;
+          } else if (before > after) {
+            return -_this3.direction;
+          } else {
+            return 0;
+          }
+        });
+
+        $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+        var newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+        $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
+
+        cb(sortedDatasets);
+
+        this.pushParams();
+        this.toggleView(this.view);
+        /**
+         * Setting the state to complete will call this.processEnded
+         * We only want to this the first time, not after changing chart types, etc.
+         */
+        if (this.getState() !== 'complete') this.setState('complete');
+      }
+
+      /**
+       * Toggle or set chart vs list view. All of the normal chart logic lives here
+       * @param  {String} view - which view to set, either chart or list
+       * @return {null} Nothing
+       */
+
+    }, {
+      key: 'toggleView',
+      value: function toggleView(view) {
+        var _this4 = this;
+
+        $('.view-btn').removeClass('active');
+        $('.view-btn--' + view).addClass('active');
+        $('output').removeClass('list-mode').removeClass('chart-mode').addClass(view + '-mode');
+
+        if (view === 'chart') {
+          this.destroyChart();
+
+          /** don't use circule charts */
+          if (this.config.circularCharts.includes(this.chartType)) {
+            this.chartType = 'bar';
+          }
+
+          var options = Object.assign({}, this.config.chartConfig[this.chartType].opts, this.config.globalChartOpts);
+          this.assignOutputDataChartOpts();
+          this.setChartPointDetectionRadius();
+
+          if (this.autoLogDetection === 'true') {
+            var shouldBeLogarithmic = this.shouldBeLogarithmic([this.outputData.datasets[0].data]);
+            $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+          }
+
+          if (this.isLogarithmic()) {
+            options.scales = Object.assign({}, options.scales, {
+              yAxes: [{
+                type: 'logarithmic',
+                ticks: {
+                  callback: function callback(value, index, arr) {
+                    var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
+
+                    if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
+                      return _this4.formatNumber(value);
+                    } else {
+                      return '';
+                    }
+                  }
+                }
+              }]
+            });
+          }
+
+          var context = $(this.config.chart)[0].getContext('2d');
+          this.chartObj = new Chart(context, {
+            type: this.chartType,
+            data: this.outputData,
+            options: options
+          });
+
+          $('#chart-legend').html(this.chartObj.generateLegend());
+        }
+
+        this.pushParams();
+      }
+
+      /**
+       * Set value of progress bar
+       * @param  {Number} value - percentage as float
+       * @return {null} nothing
+       */
+
+    }, {
+      key: 'updateProgressBar',
+      value: function updateProgressBar(value) {
+        $('.progress-bar').css('width', value.toFixed(2) + '%');
+      }
+    }]);
+
+    return _class;
+  }(superclass);
+};
+
+module.exports = ListHelpers;
+
+},{}],6:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1554,14 +2242,12 @@ if (!Array.prototype.fill) {
   };
 }
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1590,7 +2276,7 @@ var Pv = function (_PvConfig) {
 
     /** assign initial class properties */
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
 
     var defaults = _this.config.defaults;
     _this.config = Object.assign({}, _this.config, appConfig);
@@ -1598,35 +2284,13 @@ var Pv = function (_PvConfig) {
 
     _this.colorsStyleEl = undefined;
     _this.storage = {}; // used as fallback when localStorage is not supported
-    _this.localizeDateFormat = _this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || _this.config.defaults.localizeDateFormat;
-    _this.numericalFormatting = _this.getFromLocalStorage('pageviews-settings-numericalFormatting') || _this.config.defaults.numericalFormatting;
-    _this.bezierCurve = _this.getFromLocalStorage('pageviews-settings-bezierCurve') || _this.config.defaults.bezierCurve;
-    _this.autocomplete = _this.getFromLocalStorage('pageviews-settings-autocomplete') || _this.config.defaults.autocomplete;
+
+    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'rememberChart'].forEach(function (setting) {
+      _this[setting] = _this.getFromLocalStorage('pageviews-settings-' + setting) || _this.config.defaults[setting];
+    });
+    _this.setupSettingsModal();
+
     _this.params = null;
-
-    /** some chart-specific set up */
-    if (_this.config.chart) {
-      _this.chartObj = null;
-      _this.chartType = _this.getFromLocalStorage('pageviews-chart-preference') || _this.config.defaults.chartType;
-      _this.prevChartType = null;
-      _this.autoLogDetection = true; // track whether logarithmic scale checkbox was manually checked
-
-      /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
-        _this.setLocalStorage('pageviews-chart-preference', _this.config.defaults.chartType);
-        _this.chartType = _this.config.defaults.chartType;
-      }
-
-      /** copy over app-specific chart templates */
-      _this.config.linearCharts.forEach(function (linearChart) {
-        _this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
-      });
-      _this.config.circularCharts.forEach(function (circularChart) {
-        _this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
-      });
-
-      Object.assign(Chart.defaults.global, { animation: false, responsive: true });
-    }
 
     /** @type {null|Date} tracking of elapsed time */
     _this.processStart = null;
@@ -1688,27 +2352,13 @@ var Pv = function (_PvConfig) {
      */
 
   }, {
-    key: 'destroyChart',
+    key: 'fillInSettings',
 
-
-    /**
-     * Destroy previous chart, if needed.
-     * @returns {null} nothing
-     */
-    value: function destroyChart() {
-      if (this.chartObj) {
-        this.chartObj.destroy();
-        $('#chart-legend').html('');
-      }
-    }
 
     /**
      * Fill in values within settings modal with what's in the session object
      * @returns {null} nothing
      */
-
-  }, {
-    key: 'fillInSettings',
     value: function fillInSettings() {
       var _this2 = this;
 
@@ -2062,6 +2712,18 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get URL to file a report on Meta, preloaded with permalink
+     * @param {Array} [messages] captured error messages
+     * @return {String} URL
+     */
+
+  }, {
+    key: 'getBugReportURL',
+    value: function getBugReportURL(messages) {
+      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + ('&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape));
+    }
+
+    /**
      * Set a value to localStorage, using a temporary storage if localStorage is not supported
      * @param {string} key - key for the value to set
      * @param {Mixed} value - value to store
@@ -2094,72 +2756,14 @@ var Pv = function (_PvConfig) {
     }
 
     /**
-     * Are we currently in logarithmic mode?
-     * @returns {Boolean} true or false
+     * Is this one of the chart-view apps (that does not have a list view)?
+     * @return {Boolean} true or false
      */
 
   }, {
-    key: 'isLogarithmic',
-    value: function isLogarithmic() {
-      return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
-    }
-
-    /**
-     * Test if the current chart type supports a logarithmic scale
-     * @returns {Boolean} log-friendly or not
-     */
-
-  }, {
-    key: 'isLogarithmicCapable',
-    value: function isLogarithmicCapable() {
-      return ['line', 'bar'].includes(this.chartType);
-    }
-
-    /**
-     * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
-     * @param  {Array} datasets - pageviews
-     * @return {Boolean} yes or no
-     */
-
-  }, {
-    key: 'shouldBeLogarithmic',
-    value: function shouldBeLogarithmic(datasets) {
-      var _ref;
-
-      if (!this.isLogarithmicCapable()) {
-        return false;
-      }
-
-      var sets = [];
-      // convert NaNs and nulls to zeros
-      datasets.forEach(function (dataset) {
-        sets.push(dataset.map(function (val) {
-          return val || 0;
-        }));
-      });
-
-      // overall max value
-      var maxValue = Math.max.apply(Math, _toConsumableArray((_ref = []).concat.apply(_ref, sets)));
-      var logarithmicNeeded = false;
-
-      sets.forEach(function (set) {
-        set.push(maxValue);
-
-        var sum = set.reduce(function (a, b) {
-          return a + b;
-        }),
-            average = sum / set.length;
-        var theil = 0;
-        set.forEach(function (v) {
-          return theil += v ? v * Math.log(v / average) : 0;
-        });
-
-        if (theil / sum > 0.5) {
-          return logarithmicNeeded = true;
-        }
-      });
-
-      return logarithmicNeeded;
+    key: 'isChartApp',
+    value: function isChartApp() {
+      return !['langviews', 'massviews'].includes(this.app);
     }
 
     /**
@@ -2447,27 +3051,6 @@ var Pv = function (_PvConfig) {
     }
 
     /**
-     * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-     * @returns {Number} radius
-     */
-
-  }, {
-    key: 'setChartPointDetectionRadius',
-    value: function setChartPointDetectionRadius() {
-      if (this.chartType !== 'line') return;
-
-      if (this.numDaysInRange() > 50) {
-        Chart.defaults.global.elements.point.hitRadius = 3;
-      } else if (this.numDaysInRange() > 30) {
-        Chart.defaults.global.elements.point.hitRadius = 5;
-      } else if (this.numDaysInRange() > 20) {
-        Chart.defaults.global.elements.point.hitRadius = 10;
-      } else {
-        Chart.defaults.global.elements.point.hitRadius = 30;
-      }
-    }
-
-    /**
      * Directly set items in Select2
      * Currently is not able to remove underscore from page names
      *
@@ -2516,14 +3099,14 @@ var Pv = function (_PvConfig) {
         startDate = _config$specialRanges2[0];
         endDate = _config$specialRanges2[1];
       } else if (rangeIndex >= 0) {
-        var _ref2 = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+        var _ref = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
         /** treat 'latest' as a function */
 
 
-        var _ref3 = _slicedToArray(_ref2, 2);
+        var _ref2 = _slicedToArray(_ref, 2);
 
-        startDate = _ref3[0];
-        endDate = _ref3[1];
+        startDate = _ref2[0];
+        endDate = _ref2[1];
 
         $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
       } else {
@@ -2595,27 +3178,6 @@ var Pv = function (_PvConfig) {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
-
-      var rerenderFunc = ['langviews', 'massviews'].includes(this.app) ? this.renderData : this.processInput;
-
-      if (this.config.chart) {
-        this.setupSettingsModal();
-
-        /** changing of chart types */
-        $('.modal-chart-type a').on('click', function (e) {
-          _this7.chartType = $(e.currentTarget).data('type');
-
-          $('.logarithmic-scale').toggle(_this7.isLogarithmicCapable());
-
-          _this7.setLocalStorage('pageviews-chart-preference', _this7.chartType);
-          rerenderFunc.call(_this7);
-        });
-
-        $(this.config.logarithmicCheckbox).on('click', function () {
-          _this7.autoLogDetection = false;
-          rerenderFunc.call(_this7, true);
-        });
-      }
     }
 
     /**
@@ -2690,6 +3252,15 @@ var Pv = function (_PvConfig) {
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
+
+      $(this.config.dateRangeSelector).on('apply.daterangepicker', function (e, action) {
+        if (action.chosenLabel === $.i18n('custom-range')) {
+          _this8.specialRange = null;
+
+          /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+          _this8.daterangepicker.updateElement();
+        }
+      });
     }
   }, {
     key: 'setThrottle',
@@ -2723,6 +3294,37 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Add the loading indicator class and set the safeguard timeout
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'startSpinny',
+    value: function startSpinny() {
+      var _this9 = this;
+
+      $('.chart-container').addClass('loading');
+      clearTimeout(this.timeout);
+
+      this.timeout = setTimeout(function (err) {
+        _this9.resetView();
+        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out', _this9.getBugReportURL()) + '\n      ', true);
+      }, 10 * 1000);
+    }
+
+    /**
+     * Remove loading indicator class and clear the safeguard timeout
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'stopSpinny',
+    value: function stopSpinny() {
+      $('.chart-container').removeClass('loading');
+      clearTimeout(this.timeout);
+    }
+
+    /**
      * Replace spaces with underscores
      *
      * @param {array} pages - array of page names
@@ -2745,15 +3347,15 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'updateInterAppLinks',
     value: function updateInterAppLinks() {
-      var _this9 = this;
+      var _this10 = this;
 
       $('.interapp-link').each(function (i, link) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this9.project + '.org';
+          link.href = url + '?sites=' + _this10.project + '.org';
         } else {
-          link.href = url + '?project=' + _this9.project + '.org';
+          link.href = url + '?project=' + _this10.project + '.org';
         }
       });
     }
@@ -2812,7 +3414,7 @@ var Pv = function (_PvConfig) {
 
 module.exports = Pv;
 
-},{"./pv_config":6}],6:[function(require,module,exports){
+},{"./pv_config":8}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2820,7 +3422,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * @file Shared config amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @file Shared config amongst all apps
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
@@ -2829,7 +3431,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Configuration for all Pageviews applications.
  * Some properties may be overriden by app-specific configs
- * @type {Object}
  */
 
 var PvConfig = function () {
@@ -2993,12 +3594,16 @@ var PvConfig = function () {
       cookieExpiry: 30, // num days
       defaults: {
         autocomplete: 'autocomplete',
-        chartType: 'line',
+        chartType: function chartType(numDatasets) {
+          return numDatasets > 1 ? 'line' : 'bar';
+        },
         daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
-        bezierCurve: 'false'
+        bezierCurve: 'false',
+        autoLogDetection: 'true',
+        rememberChart: 'true'
       },
       globalChartOpts: {
         animation: {
@@ -3096,7 +3701,7 @@ var PvConfig = function () {
 
 module.exports = PvConfig;
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4007,4 +4612,4 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}]},{},[3,4,5,6,7,2]);
+},{}]},{},[3,4,5,6,7,8,9,2]);

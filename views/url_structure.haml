@@ -27,51 +27,20 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            %dt project
-            %dd
-              - $defaultProject = "<code>en.wikipedia.org</code> (" . strtolower( $I18N->msg( 'default' ) ) . ") "
-              = $I18N->msg( 'url-structure-project', array( 'variables' => array( $defaultProject, $sitematrixLink ), 'parsemag' => true ) )
+            - include "../url_parts/project.php"
             %dt pages
             %dd
               = $I18N->msg( 'url-structure-pages' )
               %br
               = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
-            %dt range
-            %dd
-              = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
-              %ul.special-ranges
-                %li
-                  %code latest
-                  = "(" . strtolower( $I18N->msg( 'default' ) ) . ")"
-                  = $I18N->msg( 'url-structure-special-range-latest' )
-                %li
-                  %code latest-<i>N</i>
-                  = $I18N->msg( 'url-structure-special-range-latest-n' )
-                %li
-                  %code last-week
-                  = $I18N->msg( 'last-week' )
-                %li
-                  %code this-month
-                  = $I18N->msg( 'this-month' )
-                %li
-                  %code last-month
-                  = $I18N->msg( 'last-month' )
-            %dt start
-            %dd
-              = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) )
-            %dt end
-            %dd
-              = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
-            %dt platform
-            %dd
-              = $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) )
-            %dt agent
-            %dd
-              = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
+            - $defaultRange = 'latest'
+            - include "../url_parts/date_ranges.php"
+            - include "../url_parts/platform.php"
+            - include "../url_parts/agent.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/pageviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
 
         - $currentApp = "pageviews";
-        -include "../_footer.php";
+        - include "../_footer.php";

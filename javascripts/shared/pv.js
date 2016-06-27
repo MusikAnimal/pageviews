@@ -10,7 +10,7 @@ const PvConfig = require('./pv_config');
 /** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
 class Pv extends PvConfig {
   constructor(appConfig) {
-    super();
+    super(appConfig);
 
     /** assign initial class properties */
     const defaults = this.config.defaults;
@@ -19,35 +19,13 @@ class Pv extends PvConfig {
 
     this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
-    this.localizeDateFormat = this.getFromLocalStorage('pageviews-settings-localizeDateFormat') || this.config.defaults.localizeDateFormat;
-    this.numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
-    this.bezierCurve = this.getFromLocalStorage('pageviews-settings-bezierCurve') || this.config.defaults.bezierCurve;
-    this.autocomplete = this.getFromLocalStorage('pageviews-settings-autocomplete') || this.config.defaults.autocomplete;
+
+    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'rememberChart'].forEach(setting => {
+      this[setting] = this.getFromLocalStorage(`pageviews-settings-${setting}`) || this.config.defaults[setting];
+    });
+    this.setupSettingsModal();
+
     this.params = null;
-
-    /** some chart-specific set up */
-    if (this.config.chart) {
-      this.chartObj = null;
-      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType;
-      this.prevChartType = null;
-      this.autoLogDetection = true; // track whether logarithmic scale checkbox was manually checked
-
-      /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!this.config.linearCharts.includes(this.chartType) && !this.config.circularCharts.includes(this.chartType)) {
-        this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType);
-        this.chartType = this.config.defaults.chartType;
-      }
-
-      /** copy over app-specific chart templates */
-      this.config.linearCharts.forEach(linearChart => {
-        this.config.chartConfig[linearChart].opts.legendTemplate = appConfig.linearLegend;
-      });
-      this.config.circularCharts.forEach(circularChart => {
-        this.config.chartConfig[circularChart].opts.legendTemplate = appConfig.circularLegend;
-      });
-
-      Object.assign(Chart.defaults.global, {animation: false, responsive: true});
-    }
 
     /** @type {null|Date} tracking of elapsed time */
     this.processStart = null;
@@ -123,17 +101,6 @@ class Pv extends PvConfig {
    */
   get daterangepicker() {
     return $(this.config.dateRangeSelector).data('daterangepicker');
-  }
-
-  /**
-   * Destroy previous chart, if needed.
-   * @returns {null} nothing
-   */
-  destroyChart() {
-    if (this.chartObj) {
-      this.chartObj.destroy();
-      $('#chart-legend').html('');
-    }
   }
 
   /**
@@ -471,6 +438,17 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Get URL to file a report on Meta, preloaded with permalink
+   * @param {Array} [messages] captured error messages
+   * @return {String} URL
+   */
+  getBugReportURL(messages) {
+    return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' +
+      `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${$('.permalink').prop('href').replace(/[&%]\'/g, escape)}` +
+      `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}`;
+  }
+
+  /**
    * Set a value to localStorage, using a temporary storage if localStorage is not supported
    * @param {string} key - key for the value to set
    * @param {Mixed} value - value to store
@@ -496,55 +474,11 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Are we currently in logarithmic mode?
-   * @returns {Boolean} true or false
+   * Is this one of the chart-view apps (that does not have a list view)?
+   * @return {Boolean} true or false
    */
-  isLogarithmic() {
-    return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
-  }
-
-  /**
-   * Test if the current chart type supports a logarithmic scale
-   * @returns {Boolean} log-friendly or not
-   */
-  isLogarithmicCapable() {
-    return ['line', 'bar'].includes(this.chartType);
-  }
-
-  /**
-   * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
-   * @param  {Array} datasets - pageviews
-   * @return {Boolean} yes or no
-   */
-  shouldBeLogarithmic(datasets) {
-    if (!this.isLogarithmicCapable()) {
-      return false;
-    }
-
-    let sets = [];
-    // convert NaNs and nulls to zeros
-    datasets.forEach(dataset => {
-      sets.push(dataset.map(val => val || 0));
-    });
-
-    // overall max value
-    const maxValue = Math.max(...[].concat(...sets));
-    let logarithmicNeeded = false;
-
-    sets.forEach(set => {
-      set.push(maxValue);
-
-      const sum = set.reduce((a, b) => a + b),
-        average = sum / set.length;
-      let theil = 0;
-      set.forEach(v => theil += v ? v * Math.log(v / average) : 0);
-
-      if (theil / sum > 0.5) {
-        return logarithmicNeeded = true;
-      }
-    });
-
-    return logarithmicNeeded;
+  isChartApp() {
+    return !['langviews', 'massviews'].includes(this.app);
   }
 
   /**
@@ -796,24 +730,6 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
-   * @returns {Number} radius
-   */
-  setChartPointDetectionRadius() {
-    if (this.chartType !== 'line') return;
-
-    if (this.numDaysInRange() > 50) {
-      Chart.defaults.global.elements.point.hitRadius = 3;
-    } else if (this.numDaysInRange() > 30) {
-      Chart.defaults.global.elements.point.hitRadius = 5;
-    } else if (this.numDaysInRange() > 20) {
-      Chart.defaults.global.elements.point.hitRadius = 10;
-    } else {
-      Chart.defaults.global.elements.point.hitRadius = 30;
-    }
-  }
-
-  /**
    * Directly set items in Select2
    * Currently is not able to remove underscore from page names
    *
@@ -907,27 +823,6 @@ class Pv extends PvConfig {
       document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
       location.reload();
     });
-
-    const rerenderFunc = ['langviews', 'massviews'].includes(this.app) ? this.renderData : this.processInput;
-
-    if (this.config.chart) {
-      this.setupSettingsModal();
-
-      /** changing of chart types */
-      $('.modal-chart-type a').on('click', e => {
-        this.chartType = $(e.currentTarget).data('type');
-
-        $('.logarithmic-scale').toggle(this.isLogarithmicCapable());
-
-        this.setLocalStorage('pageviews-chart-preference', this.chartType);
-        rerenderFunc.call(this);
-      });
-
-      $(this.config.logarithmicCheckbox).on('click', () => {
-        this.autoLogDetection = false;
-        rerenderFunc.call(this, true);
-      });
-    }
   }
 
   /**
@@ -1022,6 +917,15 @@ class Pv extends PvConfig {
         value: `${inputs[0].value} - ${inputs[1].value}`
       };
     });
+
+    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
+      if (action.chosenLabel === $.i18n('custom-range')) {
+        this.specialRange = null;
+
+        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+        this.daterangepicker.updateElement();
+      }
+    });
   }
 
   setThrottle() {
@@ -1048,6 +952,31 @@ class Pv extends PvConfig {
     console.log('%c  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ', style);
     console.log('%c                                                                            ', style);
     console.log(`%c  Copyright © ${new Date().getFullYear()} MusikAnimal, Kaldari, Marcel Ruiz Forns                  `, style);
+  }
+
+  /**
+   * Add the loading indicator class and set the safeguard timeout
+   * @returns {null} nothing
+   */
+  startSpinny() {
+    $('.chart-container').addClass('loading');
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(err => {
+      this.resetView();
+      this.writeMessage(`<strong>${$.i18n('fatal-error')}</strong>:
+        ${$.i18n('error-timed-out', this.getBugReportURL())}
+      `, true);
+    }, 10 * 1000);
+  }
+
+  /**
+   * Remove loading indicator class and clear the safeguard timeout
+   * @returns {null} nothing
+   */
+  stopSpinny() {
+    $('.chart-container').removeClass('loading');
+    clearTimeout(this.timeout);
   }
 
   /**

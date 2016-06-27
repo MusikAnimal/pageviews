@@ -13,6 +13,25 @@ String.prototype.score = function() {
   return this.replace(/ /g, '_');
 };
 
+// remove duplicate values from Array
+Array.prototype.unique = function() {
+  return this.filter(function(value, index, array) {
+    return array.indexOf(value) === index;
+  });
+};
+
+// Improve syntax to emulate mixins in ES6
+window.mix = superclass => new MixinBuilder(superclass);
+class MixinBuilder {
+  constructor(superclass) {
+    this.superclass = superclass;
+  }
+
+  with(...mixins) {
+    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+  }
+}
+
 /*
  * HOT PATCH for Chart.js getElementsAtEvent
  * https://github.com/chartjs/Chart.js/issues/2299

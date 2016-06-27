@@ -10,9 +10,11 @@ const config = require('./config');
 const siteMap = require('../shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
+const ChartHelpers = require('../shared/chart_helpers');
+const ListHelpers = require('../shared/list_helpers');
 
 /** Main MassViews class */
-class MassViews extends Pv {
+class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   constructor() {
     super(config);
     this.app = 'massviews';
@@ -34,22 +36,13 @@ class MassViews extends Pv {
   }
 
   /**
-   * Copy default values over to class instance
-   * Use JSON stringify/parsing so to make a deep clone of the defaults
-   * @return {null} Nothing
-   */
-  assignDefaults() {
-    Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-  }
-
-  /**
    * Add general event listeners
    * @returns {null} nothing
    */
   setupListeners() {
     super.setupListeners();
 
-    $('#massviews_form').on('submit', e => {
+    $('#pv_form').on('submit', e => {
       e.preventDefault(); // prevent page from reloading
       this.processInput();
     });
@@ -76,60 +69,6 @@ class MassViews extends Pv {
       this.view = e.currentTarget.dataset.value;
       this.toggleView(this.view);
     });
-  }
-
-  toggleView(view) {
-    $('.view-btn').removeClass('active');
-    $(`.view-btn--${view}`).addClass('active');
-    $('output').removeClass('list-mode')
-      .removeClass('chart-mode')
-      .addClass(`${view}-mode`);
-
-    if (view === 'chart') {
-      this.destroyChart();
-
-      let options = Object.assign({},
-        this.config.chartConfig[this.chartType].opts,
-        this.config.globalChartOpts
-      );
-      this.assignMassDataChartOpts();
-      this.setChartPointDetectionRadius();
-
-      if (this.autoLogDetection) {
-        const shouldBeLogarithmic = this.shouldBeLogarithmic([this.massData.datasets[0].data]);
-        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
-      }
-
-      if (this.isLogarithmic()) {
-        options.scales = Object.assign({}, options.scales, {
-          yAxes: [{
-            type: 'logarithmic',
-            ticks: {
-              callback: (value, index, arr) => {
-                const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
-
-                if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-                  return this.formatNumber(value);
-                } else {
-                  return '';
-                }
-              }
-            }
-          }]
-        });
-      }
-
-      const context = $(this.config.chart)[0].getContext('2d');
-      this.chartObj = new Chart(context, {
-        type: this.chartType,
-        data: this.massData,
-        options
-      });
-
-      $('#chart-legend').html(this.chartObj.generateLegend());
-    }
-
-    this.pushParams();
   }
 
   updateSourceInput(node) {
@@ -198,17 +137,6 @@ class MassViews extends Pv {
   }
 
   /**
-   * Get params needed to create a permanent link of visible data
-   * @return {Object} hash of params
-   */
-  getPermaLink() {
-    let params = this.getParams(true);
-    params.sort = this.sort;
-    params.direction = this.direction;
-    return params;
-  }
-
-  /**
    * Push relevant class properties to the query string
    * @param  {Boolean} clear - wheter to clear the query string entirely
    * @return {null} nothing
@@ -221,7 +149,6 @@ class MassViews extends Pv {
     }
 
     /** only certain characters within the page name are escaped */
-    // const page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
     window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
 
     $('.permalink').prop('href', `/massviews?${$.param(this.getPermaLink())}`);
@@ -232,89 +159,31 @@ class MassViews extends Pv {
    * @returns {null} nothing
    */
   renderData() {
-    const articleDatasets = this.massData.listData;
-
-    /** sort ascending by current sort setting */
-    const sortedMassViews = articleDatasets.sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
-
-    $('.output-totals').html(
-      `<th scope='row'>${$.i18n('totals')}</th>
-       <th>${$.i18n('num-pages', articleDatasets.length)}</th>
-       <th>${this.formatNumber(this.massData.sum)}</th>
-       <th>${this.formatNumber(Math.round(this.massData.average))} / ${$.i18n('day')}</th>`
-    );
-    $('#mass_list').html('');
-
-    sortedMassViews.forEach((item, index) => {
-      $('#mass_list').append(
-        `<tr>
-         <th scope='row'>${index + 1}</th>
-         <td><a href="https://${this.sourceProject}/wiki/${item.label}" target="_blank">${item.label.descore()}</a></td>
-         <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
-         <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
-         </tr>`
+    super.renderData(sortedDatasets => {
+      $('.output-totals').html(
+        `<th scope='row'>${$.i18n('totals')}</th>
+         <th>${$.i18n('num-pages', sortedDatasets.length)}</th>
+         <th>${this.formatNumber(this.outputData.sum)}</th>
+         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
       );
+      $('#output_list').html('');
+
+      sortedDatasets.forEach((item, index) => {
+        $('#output_list').append(
+          `<tr>
+           <th scope='row'>${index + 1}</th>
+           <td><a href="https://${this.sourceProject}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
+           <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
+           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           </tr>`
+        );
+      });
     });
-
-    this.pushParams();
-    this.toggleView(this.view);
-    this.setState('complete');
-  }
-
-  /**
-   * Fills in zeros to a timeseries, see:
-   * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
-   *
-   * @param {object} items - entries fetched from Pageviews API
-   * @param {moment} startDate - start date of range to filter through
-   * @param {moment} endDate - end date of range
-   * @returns {array} 0 = dataset with zeros where nulls were,
-   *   1 = dates that met the edge case, meaning data is not yet available
-   */
-  fillInZeros(items, startDate, endDate) {
-    /** Extract the dates that are already in the timeseries */
-    let alreadyThere = {};
-    items.forEach(elem => {
-      let date = moment(elem.timestamp, this.config.timestampFormat);
-      alreadyThere[date] = elem;
-    });
-    let data = [], datesWithoutData = [];
-
-    /** Reconstruct with zeros instead of nulls */
-    for (let date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-      if (alreadyThere[date]) {
-        data.push(alreadyThere[date]);
-      } else {
-        let edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
-        data.push({
-          timestamp: date.format(this.config.timestampFormat),
-          views: edgeCase ? null : 0
-        });
-        if (edgeCase) datesWithoutData.push(date.format());
-      }
-    }
-
-    return [data, datesWithoutData];
   }
 
   /**
    * Get value of given langview entry for the purposes of column sorting
-   * @param  {object} item - langview entry within this.massData
+   * @param  {object} item - langview entry within this.outputData
    * @param  {String} type - type of property to get
    * @return {String|Number} - value
    */
@@ -330,29 +199,8 @@ class MassViews extends Pv {
   }
 
   /**
-   * Link to /pageviews for given article and chosen daterange
-   * @param {String} project - base project, e.g. en.wikipedia.org
-   * @param {String} page - page name
-   * @returns {String} URL
-   */
-  // FIXME: should include agent and platform, and use special ranges as currently specified
-  getPageviewsURL(project, page) {
-    let startDate = moment(this.daterangepicker.startDate),
-      endDate = moment(this.daterangepicker.endDate);
-    const platform = $(this.config.platformSelector).val();
-
-    if (endDate.diff(startDate, 'days') === 0) {
-      startDate.subtract(3, 'days');
-      endDate.add(3, 'days');
-    }
-
-    return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
-      `&end=${endDate.format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${page}`;
-  }
-
-  /**
    * Loop through given pages and query the pageviews API for each
-   *   Also updates this.massData with result
+   *   Also updates this.outputData with result
    * @param  {string} project - project such as en.wikipedia.org
    * @param  {Object} pages - as given by the getPagePile promise
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
@@ -455,7 +303,7 @@ class MassViews extends Pv {
    * @param  {string} label - label for the dataset (e.g. category:blah, page pile 24, etc)
    * @param  {string} link - HTML anchor tag for the label
    * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
-   * @return {object} mother data set, also stored in this.massData
+   * @return {object} mother data set, also stored in this.outputData
    */
   buildMotherDataset(label, link, datasets) {
     /**
@@ -498,7 +346,7 @@ class MassViews extends Pv {
      * }
      */
 
-    this.massData = {
+    this.outputData = {
       labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
       link, // for our own purposes
       listData: []
@@ -514,7 +362,7 @@ class MassViews extends Pv {
       const data = dataset.items.map(item => item.views),
         sum = data.reduce((a, b) => a + b);
 
-      this.massData.listData.push({
+      this.outputData.listData.push({
         data,
         label: dataset.title,
         sum,
@@ -539,7 +387,7 @@ class MassViews extends Pv {
 
     const grandSum = totalViewsSet.reduce((a, b) => (a || 0) + (b || 0));
 
-    Object.assign(this.massData, {
+    Object.assign(this.outputData, {
       datasets: [{
         label,
         data: totalViewsSet,
@@ -557,16 +405,7 @@ class MassViews extends Pv {
       this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
     }
 
-    return this.massData;
-  }
-
-  assignMassDataChartOpts(props) {
-    const color = this.config.colors[0];
-    Object.assign(this.massData.datasets[0], this.config.chartConfig[this.chartType].dataset(color));
-
-    if (this.chartType === 'Line') {
-      this.massData.datasets[0].fillColor = color.replace(/,\s*\d\)/, ', 0.2)');
-    }
+    return this.outputData;
   }
 
   getPileURL(id) {
@@ -575,24 +414,6 @@ class MassViews extends Pv {
 
   getPileLink(id) {
     return `<a href='${this.getPileURL(id)}' target='_blank'>Page Pile ${id}</a>`;
-  }
-
-  /**
-   * Return cache key for current params
-   * @return {String} key
-   */
-  getCacheKey() {
-    return `lv-cache-${this.hashCode(
-      JSON.stringify(this.getParams(true))
-    )}`;
-  }
-
-  /**
-   * Check simple storage to see if a request with the current params would be cached
-   * @return {Boolean} cached or not
-   */
-  isRequestCached() {
-    return simpleStorage.hasKey(this.getCacheKey());
   }
 
   /**
@@ -612,7 +433,7 @@ class MassViews extends Pv {
 
       if (pages.length > 500) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', this.getPileLink(id), this.n(pages.length), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', this.getPileLink(id), this.formatNumber(pages.length), this.config.pageLimit)
         );
 
         pages = pages.slice(0, this.config.pageLimit);
@@ -714,13 +535,6 @@ class MassViews extends Pv {
     }
   }
 
-  getState() {
-    const classList = $('main')[0].classList;
-    return this.config.formStates.filter(stateName => {
-      return classList.contains(stateName);
-    })[0];
-  }
-
   /**
    * Helper to set a CSS class on the `main` node,
    *   styling the document based on a 'state'
@@ -761,90 +575,6 @@ class MassViews extends Pv {
     }
   }
 
-  /**
-   * sets up the daterange selector and adds listeners
-   * @returns {null} - nothing
-   */
-  setupDateRangeSelector() {
-    const dateRangeSelector = $(this.config.dateRangeSelector);
-
-    /** transform this.config.specialRanges to have i18n as keys */
-    let ranges = {};
-    Object.keys(this.config.specialRanges).forEach(key => {
-      ranges[$.i18n(key)] = this.config.specialRanges[key];
-    });
-
-    dateRangeSelector.daterangepicker({
-      locale: {
-        format: this.dateFormat,
-        applyLabel: $.i18n('apply'),
-        cancelLabel: $.i18n('cancel'),
-        customRangeLabel: $.i18n('custom-range'),
-        dateLimit: { days: 31 },
-        daysOfWeek: [
-          $.i18n('su'),
-          $.i18n('mo'),
-          $.i18n('tu'),
-          $.i18n('we'),
-          $.i18n('th'),
-          $.i18n('fr'),
-          $.i18n('sa')
-        ],
-        monthNames: [
-          $.i18n('january'),
-          $.i18n('february'),
-          $.i18n('march'),
-          $.i18n('april'),
-          $.i18n('may'),
-          $.i18n('june'),
-          $.i18n('july'),
-          $.i18n('august'),
-          $.i18n('september'),
-          $.i18n('october'),
-          $.i18n('november'),
-          $.i18n('december')
-        ]
-      },
-      startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
-      minDate: this.config.minDate,
-      maxDate: this.config.maxDate,
-      ranges: ranges
-    });
-
-    /** so people know why they can't query data older than August 2015 */
-    $('.daterangepicker').append(
-      $('<div>')
-        .addClass('daterange-notice')
-        .html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>", `${$.i18n('july')} 2015`))
-    );
-
-    /**
-     * The special date range options (buttons the right side of the daterange picker)
-     *
-     * WARNING: we're unable to add class names or data attrs to the range options,
-     * so checking which was clicked is hardcoded based on the index of the LI,
-     * as defined in this.config.specialRanges
-     */
-    $('.daterangepicker .ranges li').on('click', e => {
-      const index = $('.daterangepicker .ranges li').index(e.target),
-        container = this.daterangepicker.container,
-        inputs = container.find('.daterangepicker_input input');
-      this.specialRange = {
-        range: Object.keys(this.config.specialRanges)[index],
-        value: `${inputs[0].value} - ${inputs[1].value}`
-      };
-    });
-
-    dateRangeSelector.on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === $.i18n('custom-range')) {
-        this.specialRange = null;
-
-        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-        this.daterangepicker.updateElement();
-      }
-    });
-  }
-
   processPagePile(cb) {
     const pileId = $(this.config.sourceInput).val();
 
@@ -866,8 +596,8 @@ class MassViews extends Pv {
       this.getPageViewsData(this.sourceProject, pileData.pages).done(pageViewsData => {
         const label = `Page Pile #${pileData.id}`;
 
-        $('.massviews-input-name').text(label).prop('href', this.getPileURL(pileData.id));
-        $('.massviews-params').html(
+        $('.output-title').text(label).prop('href', this.getPileURL(pileData.id));
+        $('.output-params').html(
           `
           ${$(this.config.dateRangeSelector).val()}
           &mdash;
@@ -953,7 +683,7 @@ class MassViews extends Pv {
 
       if (size > this.config.pageLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', categoryLink, this.n(size), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', categoryLink, this.formatNumber(size), this.config.pageLimit)
         );
 
         pages = pages.slice(0, this.config.pageLimit);
@@ -969,8 +699,8 @@ class MassViews extends Pv {
       const pageNames = this.mapCategoryPageNames(pages, namespaces);
 
       this.getPageViewsData(project, pageNames).done(pageViewsData => {
-        $('.massviews-input-name').html(categoryLink);
-        $('.massviews-params').html($(this.config.dateRangeSelector).val());
+        $('.output-title').html(categoryLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(category, categoryLink, pageViewsData);
 
         cb();
@@ -1053,8 +783,8 @@ class MassViews extends Pv {
       this.setThrottle();
 
       this.getPageViewsData(project, pages).done(pageViewsData => {
-        $('.massviews-input-name').html(templateLink);
-        $('.massviews-params').html($(this.config.dateRangeSelector).val());
+        $('.output-title').html(templateLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(template, templateLink, pageViewsData);
 
         cb();
@@ -1136,15 +866,6 @@ class MassViews extends Pv {
   }
 
   /**
-   * Set value of progress bar
-   * @param  {Number} value - percentage as float
-   * @return {null} nothing
-   */
-  updateProgressBar(value) {
-    $('.progress-bar').css('width', `${value.toFixed(2)}%`);
-  }
-
-  /**
    * Exports current mass data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
    * @returns {string} CSV content
@@ -1153,7 +874,7 @@ class MassViews extends Pv {
     let csvContent = `data:text/csv;charset=utf-8,Title,${this.getDateHeadings(false).join(',')}\n`;
 
     // Add the rows to the CSV
-    this.massData.listData.forEach(page => {
+    this.outputData.listData.forEach(page => {
       const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
       csvContent += [pageName].concat(page.data).join(',') + '\n';
@@ -1162,18 +883,6 @@ class MassViews extends Pv {
     // Output the CSV file to the browser
     const encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
-  }
-
-  /**
-   * Exports current mass data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
-   */
-  exportJSON() {
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.massData.listData),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
-
-    return jsonContent;
   }
 }
 

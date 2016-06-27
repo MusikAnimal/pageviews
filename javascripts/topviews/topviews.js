@@ -59,7 +59,8 @@ class TopViews extends Pv {
    * @returns {null} nothing
    */
   drawData() {
-    $('.chart-container').removeClass('loading').html('');
+    this.stopSpinny();
+    $('.chart-container').html('');
     $('.show-more').show();
 
     let count = 0, index = 0;
@@ -78,7 +79,7 @@ class TopViews extends Pv {
          <span class='topview-entry--rank'>${++count}</span>
          <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
          <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.n(item.views)}</a></div>`
+         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
       );
     }
 
@@ -155,6 +156,7 @@ class TopViews extends Pv {
    * @returns {null} nothing
    */
   popParams() {
+    this.startSpinny();
     let startDate, endDate, params = this.parseQueryString('excludes');
 
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
@@ -261,7 +263,8 @@ class TopViews extends Pv {
     this.offset = 0;
     this.pageData = [];
     this.pageNames = [];
-    $('.chart-container').removeClass('loading').html('');
+    this.stopSpinny();
+    $('.chart-container').html('');
     $('.show-more').show();
     $('.message-container').html('');
     if (clearSelector) {
@@ -391,7 +394,7 @@ class TopViews extends Pv {
   initData() {
     let dfd = $.Deferred();
 
-    $('.chart-container').addClass('loading');
+    this.startSpinny();
     $('.show-more').hide();
 
     /** Collect parameters from inputs. */

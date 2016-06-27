@@ -90,6 +90,16 @@
 
           %div.checkbox
             %label
+              %input.js-test-bezier-curve(name="autoLogDetection" type="checkbox")
+              = $I18N->msg( 'autolog-option' )
+
+          %div.checkbox
+            %label
+              %input.js-test-bezier-curve(name="rememberChart" type="checkbox")
+              = $I18N->msg( 'remember-chart-option' )
+
+          %div.checkbox
+            %label
               %input.js-test-bezier-curve(name="bezierCurve" type="checkbox")
               = $I18N->msg( 'bezier-curve-option' )
 

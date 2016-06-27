@@ -66,7 +66,7 @@
             <label for="article-input">
               <?php echo $I18N->msg( 'excluded-pages' ); ?>
             </label>
-            <select class="aqs-article-selector col-lg-12" id="article-input" multiple="multiple"></select>
+            <select class="aqs-select2-selector col-lg-12 invisible" id="article-input" multiple="multiple"></select>
           </div>
         </div>
         <!-- Chart -->

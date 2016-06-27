@@ -4,7 +4,7 @@
         "title": "Pageviews Analysis",
         "description": "Analysis of pageviews across multiple pages",
         "url": "https://tools.wmflabs.org/pageviews",
-        "keywords": "pageviews, page views, traffic, visitors, statistics",
+        "keywords": "pageviews,page views,traffic,visitors,statistics,stats,views",
         "author": "MusikAnimal, Kaldari, Marcel Ruiz Forns",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -13,31 +13,35 @@
         "title": "Langviews Analysis",
         "description": "Pageviews of an article across all languages",
         "url": "https://tools.wmflabs.org/langviews",
+        "keywords": "langviews,pageviews,page views,traffic,visitors,statistics,stats,views",
         "author": "MusikAnimal",
-        "repository": "https://github.com/MusikAnimal/langviews"
+        "repository": "https://github.com/MusikAnimal/pageviews"
     },
     {
         "name" : "topveiws",
         "title": "Topviews Analysis",
         "description": "Most viewed pages of a project",
         "url": "https://tools.wmflabs.org/topviews",
+        "keywords": "topviews,pageviews,page views,traffic,visitors,statistics,stats,views",
         "author": "MusikAnimal",
-        "repository": "https://github.com/MusikAnimal/topviews"
+        "repository": "https://github.com/MusikAnimal/pageviews"
     },
     {
         "name" : "siteviews",
         "title": "Siteviews Analysis",
         "description": "Analysis of total pageviews across multiple projects",
         "url": "https://tools.wmflabs.org/siteviews",
+        "keywords": "siteviews,pageviews,page views,traffic,visitors,statistics,stats,views",
         "author": "MusikAnimal",
-        "repository": "https://github.com/MusikAnimal/siteviews"
+        "repository": "https://github.com/MusikAnimal/pageviews"
     },
     {
         "name" : "massviews",
         "title": "Massviews Analysis",
         "description": "Import a list of pages and analyze the pageviews",
         "url": "https://tools.wmflabs.org/massviews",
+        "keywords": "massviews,pageviews,page views,traffic,visitors,statistics,stats,views,glam",
         "author": "MusikAnimal",
-        "repository": "https://github.com/MusikAnimal/massviews"
+        "repository": "https://github.com/MusikAnimal/pageviews"
     }
 ]

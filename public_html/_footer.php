@@ -64,8 +64,6 @@
     <div>
       <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
       &middot;
-      <a href="#" data-toggle="modal" data-target="#disclaimer-modal"><?php echo $I18N->msg( 'disclaimer' ); ?></a>
-      &middot;
       <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
       &middot;
       <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
@@ -74,29 +72,6 @@
     </div>
   </div>
 </footer>
-<div id="disclaimer-modal" class="modal fade" role="dialog" tabindex="-1">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button class="close" arialabel="Close" data-dismiss="modal" type="button">
-          <span ariahidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">
-          <?php echo $I18N->msg( 'disclaimer' ); ?>
-        </h4>
-      </div>
-      <div class="modal-body">
-        <?php $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>"; ?>
-        <?php echo $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api ), 'parsemag' => true ) );; ?>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" data-dismiss="modal" type="button">
-          <?php echo $I18N->msg( 'ok' ); ?>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 <?php if ( strpos ( $_SERVER['PHP_SELF'], 'faq' ) !== false ) { ?>
   <script type="text/javascript">
   //<![CDATA[

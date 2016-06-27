@@ -12,7 +12,7 @@ const pv = require('../shared/pv');
  * @type {Object}
  */
 const config = {
-  articleSelector: '.aqs-article-selector',
+  articleSelector: '.aqs-select2-selector',
   dateRangeSelector: '.aqs-date-range-selector',
   dateLimit: 31, // num days
   defaults: {

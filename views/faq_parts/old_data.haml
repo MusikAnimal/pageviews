@@ -1,0 +1,6 @@
+%li.list-group-item(id="old_data")
+  - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
+  %p
+    %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
+  %p
+    = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )

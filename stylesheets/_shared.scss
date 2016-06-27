@@ -112,6 +112,7 @@ select {
 
 // scss-lint:disable ImportantRule
 .aqs-select2-selector {
+  display: block;
   height: 34px !important;
 }
 
@@ -191,7 +192,8 @@ footer {
 }
 
 .heart {
-  color: $red;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-size: 12px;
 }
 
 .ad-block-notice {

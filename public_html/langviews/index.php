@@ -25,7 +25,7 @@
             <?php include "../_browser_check.php"; ?>
           </div>
         </div>
-        <form id="langviews_form">
+        <form id="pv_form">
           <div class="row aqs-row options">
             <!-- Date range selector -->
             <div class="col-lg-3 col-sm-4">
@@ -87,11 +87,11 @@
           <!-- Article URL input -->
           <div class="row aqs-row article-input-row">
             <div class="col-lg-12">
-              <label for="article_input">
+              <label for="source_input">
                 <?php echo $I18N->msg( 'page' ); ?>
               </label>
               <div class="input-group">
-                <input class="form-control input-control" id="article_input" placeholder="Star Wars" required="required" autocomplete="off">
+                <input class="form-control input-control" id="source_input" placeholder="Star Wars" required="required" autocomplete="off">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right" id="article_submit">
                     <?php echo $I18N->msg( 'submit' ); ?>
@@ -101,78 +101,19 @@
             </div>
           </div>
         </form>
-        <div class="col-lg-5 col-sm-8 center-block progress-bar--wrapper">
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-          </div>
-          <div class="progress-text text-center"></div>
-        </div>
-        <output form="langviews_form">
-          <header class="output-header">
-            <strong class="another-query">
-              <span class="glyphicon glyphicon-chevron-left"></span>
-              <?php echo $I18N->msg( 'another-query' ); ?>
-            </strong>
-            <h2 class="tm">
-              <a class="langviews-page-name" target="_blank"></a>
-              <small class="langviews-params"></small>
-            </h2>
-          </header>
-          <table class="table table-hover output-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>
-                  <span class="sort-link sort-link--lang" data-type="<?php echo 'lang'; ?>">
-                    <?php echo $I18N->msg( 'language' ); ?>
-                    <span class="glyphicon glyphicon-sort"></span>
-                  </span>
-                </th>
-                <th>
-                  <span class="sort-link sort-link--title" data-type="<?php echo 'title'; ?>">
-                    <?php echo $I18N->msg( 'page-title' ); ?>
-                    <span class="glyphicon glyphicon-sort"></span>
-                  </span>
-                </th>
-                <th>
-                  <span class="sort-link sort-link--badges" data-type="<?php echo 'badges'; ?>">
-                    <?php echo $I18N->msg( 'badges' ); ?>
-                    <span class="glyphicon glyphicon-sort"></span>
-                  </span>
-                </th>
-                <th>
-                  <span class="sort-link sort-link--views" data-type="<?php echo 'views'; ?>">
-                    <?php echo $I18N->msg( 'pageviews' ); ?>
-                    <span class="glyphicon glyphicon-sort"></span>
-                  </span>
-                </th>
-                <th>
-                  <span>
-                    <?php echo $I18N->msg( 'average' ); ?>
-                  </span>
-                </th>
-              </tr>
-              <tr class="output-totals"></tr>
-            </thead>
-            <tbody id="lang_list"></tbody>
-          </table>
-        </output>
-        <div class="message-container col-lg-12"></div>
-        <!-- Other links -->
-        <div class="col-lg-12 data-links">
-          <a class="permalink" href="/massviews"><span class="glyphicon glyphicon-link"></span>
-          <?php echo $I18N->msg( 'permalink' ); ?></a>
-          &nbsp;&bullet;&nbsp;
-          <span class="glyphicon glyphicon-download-alt"></span>
-          <?php $csvlink = "<a class='download-csv' href='#'>" . $I18N->msg( 'csv' ) . "</a>"; ?>
-          <?php echo $I18N->msg( 'download', array( 'variables' => array( $csvlink ), 'parsemag' => true ) ); ?>
-          &middot;
-          <a class="download-json" href="#"><?php echo $I18N->msg( 'json' ); ?></a>
-          <span class="elapsed-time pull-right"></span>
-        </div>
+        <?php
+          $columns = array(
+            'lang' => 'language',
+            'title' => 'page-title',
+            'badges' => 'badges',
+            'views' => 'pageviews'
+          );
+        ?>
+        <?php include "../_output.php"; ?>
         <?php $currentApp = "langviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
+      <?php include "../_modals.php"; ?>
     </div>
   </body>
 </html>

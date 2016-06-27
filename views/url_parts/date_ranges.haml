@@ -1,0 +1,31 @@
+- $defaultMsg = "(" . strtolower( $I18N->msg( 'default' ) ) . ")"
+
+%dt range
+%dd
+  = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
+  %ul.special-ranges
+    %li
+      %code latest
+      = $defaultRange === 'latest' ? $defaultMsg : ''
+      = $I18N->msg( 'url-structure-special-range-latest' )
+    %li
+      %code latest-<i>N</i>
+      = $I18N->msg( 'url-structure-special-range-latest-n' )
+    %li
+      %code last-week
+      = $defaultRange === 'last-week' ? $defaultMsg : ''
+      = $I18N->msg( 'last-week' )
+    %li
+      %code this-month
+      = $defaultRange === 'this-month' ? $defaultMsg : ''
+      = $I18N->msg( 'this-month' )
+    %li
+      %code last-month
+      = $defaultRange === 'last-month' ? $defaultMsg : ''
+      = $I18N->msg( 'last-month' )
+%dt start
+%dd
+  = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) )
+%dt end
+%dd
+  = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )

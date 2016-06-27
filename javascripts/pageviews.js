@@ -10,9 +10,10 @@ const config = require('./config');
 const siteMap = require('./shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('./shared/pv');
+const ChartHelpers = require('./shared/chart_helpers');
 
 /** Main PageViews class */
-class PageViews extends Pv {
+class PageViews extends mix(Pv).with(ChartHelpers) {
   constructor() {
     super(config);
     this.app = 'pageviews';
@@ -44,179 +45,12 @@ class PageViews extends Pv {
   }
 
   /**
-   * Exports current chart data to CSV format and loads it in a new tab
-   * With the prepended data:text/csv this should cause the browser to download the data
-   * @returns {string} CSV content
-   */
-  exportCSV() {
-    let csvContent = 'data:text/csv;charset=utf-8,Date,';
-    let titles = [];
-    let dataRows = [];
-    let dates = this.getDateHeadings(false);
-
-    // Begin constructing the dataRows array by populating it with the dates
-    dates.forEach((date, index) => {
-      dataRows[index] = [date];
-    });
-
-    this.chartObj.data.datasets.forEach(page => {
-      // Build an array of page titles for use in the CSV header
-      let pageTitle = '"' + page.label.replace(/"/g, '""') + '"';
-      titles.push(pageTitle);
-
-      // Populate the dataRows array with the data for this page
-      dates.forEach((date, index) => {
-        dataRows[index].push(page.data[index]);
-      });
-    });
-
-    // Finish the CSV header
-    csvContent = csvContent + titles.join(',') + '\n';
-
-    // Add the rows to the CSV
-    dataRows.forEach(data => {
-      csvContent += data.join(',') + '\n';
-    });
-
-    // Output the CSV file to the browser
-    const encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
-  }
-
-  /**
-   * Exports current chart data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
-   */
-  exportJSON() {
-    let data = [];
-
-    this.chartObj.data.datasets.forEach((page, index) => {
-      let entry = {
-        page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
-        color: page.strokeColor,
-        sum: page.sum,
-        daily_average: Math.round(page.sum / this.numDaysInRange())
-      };
-
-      this.getDateHeadings(false).forEach((heading, index) => {
-        entry[heading.replace(/\\/,'')] = page.data[index];
-      });
-
-      data.push(entry);
-    });
-
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
-
-    return jsonContent;
-  }
-
-  /**
-   * Fills in zero value to a timeseries, see:
-   * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
-   *
-   * @param {object} data fetched from API
-   * @param {moment} startDate - start date of range to filter through
-   * @param {moment} endDate - end date of range
-   * @returns {object} dataset with zeros where nulls where
-   */
-  fillInZeros(data, startDate, endDate) {
-    /** Extract the dates that are already in the timeseries */
-    let alreadyThere = {};
-    data.items.forEach(elem => {
-      let date = moment(elem.timestamp, this.config.timestampFormat);
-      alreadyThere[date] = elem;
-    });
-    data.items = [];
-
-    /** Reconstruct with zeros instead of nulls */
-    for (let date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-      if (alreadyThere[date]) {
-        data.items.push(alreadyThere[date]);
-      } else {
-        const edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
-        data.items.push({
-          timestamp: date.format(this.config.timestampFormat),
-          views: edgeCase ? null : 0
-        });
-      }
-    }
-
-    return data;
-  }
-
-  /**
-   * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
-   *
-   * @param {object} data - data just before we are ready to render the chart
-   * @param {string} article - title of page
-   * @param {integer} index - where we are in the list of pages to show
-   *    used for colour selection
-   * @returns {object} - ready for chart rendering
-   */
-  getCircularData(data, article, index) {
-    const values = data.items.map(elem => elem.views),
-      color = this.config.colors[index],
-      value = values.reduce((a, b) => a + b),
-      average = Math.round(value / values.length);
-
-    return Object.assign(
-      {
-        label: article.descore(),
-        value,
-        average
-      },
-      this.config.chartConfig[this.chartType].dataset(color)
-    );
-  }
-
-  /**
    * Link to /langviews for given page and chosen daterange
    * @param {String} page - page title
    * @returns {String} URL
    */
   getLangviewsURL(page) {
     return `/langviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
-  }
-
-  /**
-   * Get data formatted for a linear chart (line, bar, radar)
-   *
-   * @param {object} data - data just before we are ready to render the chart
-   * @param {string} article - title of page
-   * @param {integer} index - where we are in the list of pages to show
-   *    used for colour selection
-   * @returns {object} - ready for chart rendering
-   */
-  getLinearData(data, article, index) {
-    const values = data.items.map(elem => elem.views),
-      sum = values.reduce((a, b) => a + b),
-      average = Math.round(sum / values.length),
-      max = Math.max(...values),
-      color = this.config.colors[index % 10];
-
-    return Object.assign(
-      {
-        label: article.descore(),
-        data: values,
-        sum,
-        average,
-        max,
-        color
-      },
-      this.config.chartConfig[this.chartType].dataset(color)
-    );
-  }
-
-  /**
-   * Get params needed to create a permanent link of visible data
-   * @return {Object} hash of params
-   */
-  getPermaLink() {
-    let params = this.getParams(false);
-    delete params.range;
-    return params;
   }
 
   /**
@@ -252,6 +86,8 @@ class PageViews extends Pv {
    * @returns {null} nothing
    */
   popParams() {
+    this.startSpinny();
+
     let startDate, endDate, params = this.parseQueryString('pages');
 
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
@@ -306,13 +142,8 @@ class PageViews extends Pv {
     } else {
       this.normalizePageNames(params.pages).then(data => {
         this.normalized = true;
-
         params.pages = data;
-
-        if (params.pages.length === 1) {
-          this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || 'bar';
-        }
-
+        this.setInitialChartType(params.pages.length);
         this.setSelect2Defaults(this.underscorePageNames(params.pages));
       });
     }
@@ -407,20 +238,6 @@ class PageViews extends Pv {
   }
 
   /**
-   * Removes chart, messages, and resets article selections
-   * @param {boolean} [select2] whether or not to clear the Select2 input
-   * @returns {null} nothing
-   */
-  resetView(select2 = false) {
-    $('.chart-container').removeClass('loading');
-    $('.data-links').addClass('invisible');
-    $(this.config.chart).hide();
-    this.destroyChart();
-    this.clearMessages();
-    if (select2) this.resetSelect2();
-  }
-
-  /**
    * Sets up the article selector and adds listener to update chart
    * @returns {null} - nothing
    */
@@ -436,7 +253,13 @@ class PageViews extends Pv {
     };
 
     $select2Input.select2(params);
-    $select2Input.on('change', this.processInput.bind(this));
+    $select2Input.on('change', e => {
+      if ($(e.target).val()) {
+        this.processInput();
+      } else {
+        this.resetView();
+      }
+    });
   }
 
   /**
@@ -462,39 +285,6 @@ class PageViews extends Pv {
     } else {
       return null;
     }
-  }
-
-  /**
-   * sets up the daterange selector and adds listeners
-   * @returns {null} - nothing
-   */
-  setupDateRangeSelector() {
-    super.setupDateRangeSelector();
-
-    const dateRangeSelector = $(this.config.dateRangeSelector);
-
-    /** the "Latest N days" links */
-    $('.date-latest a').on('click', e => {
-      this.setSpecialRange(`latest-${$(e.target).data('value')}`);
-    });
-
-    dateRangeSelector.on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === $.i18n('custom-range')) {
-        this.specialRange = null;
-
-        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-        this.daterangepicker.updateElement();
-      }
-    });
-
-    dateRangeSelector.on('change', e => {
-      this.processInput();
-
-      /** clear out specialRange if it doesn't match our input */
-      if (this.specialRange && this.specialRange.value !== e.target.value) {
-        this.specialRange = null;
-      }
-    });
   }
 
   /**
@@ -532,31 +322,29 @@ class PageViews extends Pv {
    * @returns {null} - nothin
    */
   processInput(force) {
+    const entities = $(config.select2Input).select2('val') || [];
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
+    if (!force && (location.search === this.params && this.prevChartType === this.chartType || !entities.length)) {
       return;
     }
 
     /** @type {Object} everything we need to keep track of for the promises */
     let xhrData = {
-      articles: $(config.select2Input).select2('val') || [],
+      entities,
       labels: [], // Labels (dates) for the x-axis.
       datasets: [], // Data for each article timeseries
       errors: [], // Queue up errors to show after all requests have been made
+      fatalErrors: [], // Unrecoverable JavaScript errors
       promises: []
     };
-
-    if (!xhrData.articles.length) {
-      return this.resetView();
-    }
 
     this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
     this.destroyChart();
-    $('.chart-container').addClass('loading');
+    this.startSpinny(); // show spinny and capture against fatal errors
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate.startOf('day'),
@@ -566,7 +354,7 @@ class PageViews extends Pv {
      * Asynchronously collect the data from RESTBase API,
      * process it to Chart.js format and initialize the chart.
      */
-    xhrData.articles.forEach((article, index) => {
+    xhrData.entities.forEach((article, index) => {
       const uriEncodedArticle = encodeURIComponent(article);
 
       /** @type {String} Url to query the API. */
@@ -582,135 +370,39 @@ class PageViews extends Pv {
       xhrData.promises.push(promise);
 
       promise.success(successData => {
-        successData = this.fillInZeros(successData, startDate, endDate);
+        try {
+          successData = this.fillInZeros(successData, startDate, endDate);
 
-        /** Build the article's dataset. */
-        if (this.config.linearCharts.includes(this.chartType)) {
-          xhrData.datasets.push(this.getLinearData(successData, article, index));
-        } else {
-          xhrData.datasets.push(this.getCircularData(successData, article, index));
-        }
+          /** Build the article's dataset. */
+          if (this.config.linearCharts.includes(this.chartType)) {
+            xhrData.datasets.push(this.getLinearData(successData, article, index));
+          } else {
+            xhrData.datasets.push(this.getCircularData(successData, article, index));
+          }
 
-        /** fetch the labels for the x-axis on success if we haven't already */
-        if (successData.items && !xhrData.labels.length) {
-          xhrData.labels = successData.items.map(elem => {
-            return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
-          });
+          /** fetch the labels for the x-axis on success if we haven't already */
+          if (successData.items && !xhrData.labels.length) {
+            xhrData.labels = successData.items.map(elem => {
+              return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
+            });
+          }
+        } catch (err) {
+          return xhrData.fatalErrors.push(err);
         }
       }).fail(data => {
-        if (data.status === 404) {
+        if (data.status === 404) { // page does not exist
           this.writeMessage(
             `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${$.i18n('api-error-no-data')}`
           );
-          xhrData.articles = xhrData.articles.filter(el => el !== article);
-
-          if (!xhrData.articles.length) {
-            $('.chart-container').html('');
-            $('.chart-container').removeClass('loading');
-          }
+          // remove this article from the list of entities to analyze
+          xhrData.entities = xhrData.entities.filter(el => el !== article);
         } else {
           xhrData.errors.push(data.responseJSON.title);
         }
       });
     });
 
-    $.when(...xhrData.promises).always(this.renderData.bind(this, xhrData));
-  }
-
-  /**
-   * Update the chart with data provided by processInput()
-   * @param {Object} xhrData - data as constructed by processInput()
-   * @returns {null} - nothin
-   */
-  renderData(xhrData) {
-    $('#chart-legend').html(''); // clear old chart legend
-
-    if (xhrData.errors.length && xhrData.errors.length === xhrData.articles.length) {
-      /** something went wrong */
-      $('.chart-container').removeClass('loading');
-      const errorMessages = Array.from(new Set(xhrData.errors)).map(error => `<li>${error}</li>`).join('');
-      return this.writeMessage(
-        `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`,
-        true
-      );
-    }
-
-    if (!xhrData.articles.length) {
-      return;
-    } else if (xhrData.articles.length === 1) {
-      $('.multi-page-chart-node').hide();
-    } else {
-      $('.multi-page-chart-node').show();
-    }
-
-    if (this.autoLogDetection) {
-      const shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(set => set.data));
-      $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
-    }
-
-    /** preserve order of datasets due to asyn calls */
-    let sortedDatasets = new Array(xhrData.articles.length);
-    xhrData.datasets.forEach(dataset => {
-      if (this.isLogarithmic()) dataset.data = dataset.data.map(view => view || null);
-      sortedDatasets[xhrData.articles.indexOf(dataset.label.score())] = dataset;
-    });
-
-    let options = Object.assign(
-      {scales: {}},
-      this.config.chartConfig[this.chartType].opts,
-      this.config.globalChartOpts
-    );
-
-    if (this.isLogarithmic()) {
-      options.scales = Object.assign({}, options.scales, {
-        yAxes: [{
-          type: 'logarithmic',
-          ticks: {
-            callback: (value, index, arr) => {
-              const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
-
-              if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-                return this.formatNumber(value);
-              } else {
-                return '';
-              }
-            }
-          }
-        }]
-      });
-    }
-
-    $('.chart-container').removeClass('loading')
-      .html('').append("<canvas class='aqs-chart'>");
-    this.setChartPointDetectionRadius();
-    const context = $(this.config.chart)[0].getContext('2d');
-
-    if (this.config.linearCharts.includes(this.chartType)) {
-      const linearData = {labels: xhrData.labels, datasets: sortedDatasets};
-
-      this.chartObj = new Chart(context, {
-        type: this.chartType,
-        data: linearData,
-        options
-      });
-    } else {
-      this.chartObj = new Chart(context, {
-        type: this.chartType,
-        data: {
-          labels: sortedDatasets.map(d => d.label),
-          datasets: [{
-            data: sortedDatasets.map(d => d.value),
-            backgroundColor: sortedDatasets.map(d => d.backgroundColor),
-            hoverBackgroundColor: sortedDatasets.map(d => d.hoverBackgroundColor),
-            averages: sortedDatasets.map(d => d.average)
-          }]
-        },
-        options
-      });
-    }
-
-    $('#chart-legend').html(this.chartObj.generateLegend());
-    $('.data-links').removeClass('invisible');
+    $.when(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
   }
 
   /**

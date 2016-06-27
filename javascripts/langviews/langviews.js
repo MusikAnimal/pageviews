@@ -10,9 +10,11 @@ const config = require('./config');
 const siteMap = require('../shared/site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
+const ChartHelpers = require('../shared/chart_helpers');
+const ListHelpers = require('../shared/list_helpers');
 
 /** Main LangViews class */
-class LangViews extends Pv {
+class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   constructor() {
     super(config);
     this.app = 'langviews';
@@ -29,15 +31,9 @@ class LangViews extends Pv {
     this.popParams();
     this.setupListeners();
     this.updateInterAppLinks();
-  }
 
-  /**
-   * Copy default values over to class instance
-   * Use JSON stringify/parsing so to make a deep clone of the defaults
-   * @return {null} Nothing
-   */
-  assignDefaults() {
-    Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
+    /** only show options for line, bar and radar charts */
+    $('.multi-page-chart-node').hide();
   }
 
   /**
@@ -47,9 +43,9 @@ class LangViews extends Pv {
   setupListeners() {
     super.setupListeners();
 
-    $('#langviews_form').on('submit', e => {
+    $('#pv_form').on('submit', e => {
       e.preventDefault(); // prevent page from reloading
-      this.processArticle();
+      this.processInput();
     });
 
     $('.another-query').on('click', () => {
@@ -71,6 +67,141 @@ class LangViews extends Pv {
 
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
+
+    $('.view-btn').on('click', e => {
+      document.activeElement.blur();
+      this.view = e.currentTarget.dataset.value;
+      this.toggleView(this.view);
+    });
+  }
+
+  /**
+   * Build our mother data set, from which we can draw a chart,
+   *   render a list of data, whatever our heart desires :)
+   * @param  {string} label - label for the dataset (e.g. category:blah, page pile 24, etc)
+   * @param  {string} link - HTML anchor tag for the label
+   * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
+   * @return {object} mother data set, also stored in this.outputData
+   */
+  buildMotherDataset(label, link, datasets) {
+    /**
+     * `datasets` structure:
+     *
+     * [{
+     *   title: page,
+     *   items: [
+     *     {
+     *       access: '',
+     *       agent: '',
+     *       article: '',
+     *       granularity: '',
+     *       project: '',
+     *       timestamp: '',
+     *       views: 10
+     *     }
+     *   ]
+     * }]
+     *
+     * output structure:
+     *
+     * {
+     *   labels: [''],
+     *   listData: [
+     *     {
+     *       label: '',
+     *       data: [1,2,3,4],
+     *       sum: 10,
+     *       average: 2,
+     *       index: 0
+     *       ...
+     *       MERGE in this.config.chartConfig[this.chartType].dataset(this.config.colors[0])
+     *     }
+     *   ],
+     *   totalViewsSet: [1,2,3,4],
+     *   sum: 10,
+     *   average: 2,
+     *   datesWithoutData: ['2016-05-16T00:00:00-00:00']
+     * }
+     */
+
+    this.outputData = {
+      labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
+      link, // for our own purposes
+      listData: []
+    };
+    const startDate = moment(this.daterangepicker.startDate),
+      endDate = moment(this.daterangepicker.endDate),
+      length = this.numDaysInRange();
+
+    let totalViewsSet = new Array(length).fill(0),
+      datesWithoutData = [],
+      totalBadges = {},
+      totalTitles = [];
+
+    datasets.forEach((dataset, index) => {
+      const data = dataset.items.map(item => item.views),
+        sum = data.reduce((a, b) => a + b);
+
+      dataset.badges.forEach(badge => {
+        if (totalBadges[badge] === undefined) {
+          totalBadges[badge] = 1;
+        } else {
+          totalBadges[badge] += 1;
+        }
+      });
+
+      totalTitles.push(dataset.title);
+
+      this.outputData.listData.push({
+        data,
+        badges: dataset.badges,
+        lang: dataset.lang,
+        dbName: dataset.dbName,
+        label: dataset.title,
+        url: dataset.url,
+        sum,
+        average: sum / length,
+        index
+      });
+
+      /**
+       * Ensure we have data for each day, using null as the view count when data is actually not available yet
+       * See fillInZeros() comments for more info.
+       */
+      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
+      incompleteDates.forEach(date => {
+        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
+      });
+
+      totalViewsSet = totalViewsSet.map((num, i) => num + viewsSet[i].views);
+    });
+
+    // FIXME: for the dates that have incomplete data, still show what we have,
+    //   but make the bullet point red in the chart
+
+    const grandSum = totalViewsSet.reduce((a, b) => (a || 0) + (b || 0));
+
+    Object.assign(this.outputData, {
+      datasets: [{
+        label,
+        data: totalViewsSet,
+        sum: grandSum,
+        average: grandSum / length
+      }],
+      datesWithoutData,
+      sum: grandSum, // nevermind the duplication
+      average: grandSum / length,
+      badges: totalBadges,
+      titles: totalTitles.unique()
+    });
+
+    if (datesWithoutData.length) {
+      const dateList = datesWithoutData.map(date => moment(date).format(this.dateFormat));
+      // FIXME: i18N
+      this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
+    }
+
+    return this.outputData;
   }
 
   /**
@@ -85,7 +216,7 @@ class LangViews extends Pv {
    * @returns {Typeahead} instance
    */
   get typeahead() {
-    return $(this.config.articleInput).data('typeahead');
+    return $(this.config.sourceInput).data('typeahead');
   }
 
   /**
@@ -113,24 +244,15 @@ class LangViews extends Pv {
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
-    if (forCacheKey) {
-      params.page = $(this.config.articleInput).val();
-    } else {
+    /** only certain characters within the page name are escaped */
+    params.page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
+
+    if (!forCacheKey) {
       params.sort = this.sort;
       params.direction = this.direction;
+      params.view = this.view;
     }
 
-    return params;
-  }
-
-  /**
-   * Get params needed to create a permanent link of visible data
-   * @return {Object} hash of params
-   */
-  getPermaLink() {
-    let params = this.getParams(true);
-    params.sort = this.sort;
-    params.direction = this.direction;
     return params;
   }
 
@@ -146,9 +268,7 @@ class LangViews extends Pv {
       return history.replaceState(null, document.title, location.href.split('?')[0]);
     }
 
-    /** only certain characters within the page name are escaped */
-    const page = $(this.config.articleInput).val().score().replace(/[&%]/g, escape);
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${page}`);
+    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}`);
 
     $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}`);
   }
@@ -170,63 +290,44 @@ class LangViews extends Pv {
    * @returns {null} nothing
    */
   renderData() {
-    /** sort ascending by current sort setting */
-    const sortedLangViews = this.langData.sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
+    super.renderData(sortedDatasets => {
+      const totalBadgesMarkup = Object.keys(this.outputData.badges).map(badge => {
+        return `<span class='nowrap'>${this.getBadgeMarkup(badge)} &times; ${this.outputData.badges[badge]}</span>`;
+      }).join(', ');
 
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
-
-    const totalBadgesMarkup = Object.keys(this.totals.badges).map(badge => {
-      return `<span class='nowrap'>${this.getBadgeMarkup(badge)} &times; ${this.totals.badges[badge]}</span>`;
-    }).join(', ');
-
-    $('.output-totals').html(
-      `<th scope='row'>${$.i18n('totals')}</th>
-       <th>${$.i18n('num-languages', this.langData.length)}</th>
-       <th>${$.i18n('unique-titles', this.totals.titles.length)}</th>
-       <th>${totalBadgesMarkup}</th>
-       <th>${this.n(this.totals.views)}</th>
-       <th>${this.n(Math.round(this.totals.views / this.numDaysInRange()))} / ${$.i18n('day')}</th>`
-    );
-    $('#lang_list').html('');
-
-    sortedLangViews.forEach((item, index) => {
-      let badgeMarkup = '';
-      if (item.badges) {
-        badgeMarkup = item.badges.map(this.getBadgeMarkup.bind(this)).join();
-      }
-
-      $('#lang_list').append(
-        `<tr>
-         <th scope='row'>${index + 1}</th>
-         <td>${item.lang}</td>
-         <td><a href="${item.url}" target="_blank">${item.pageName}</a></td>
-         <td>${badgeMarkup}</td>
-         <td><a href='${this.getPageviewsURL(item.lang, this.baseProject, item.pageName)}'>${this.n(item.views)}</a></td>
-         <td>${this.n(item.average)} / ${$.i18n('day')}</td>
-         </tr>`
+      $('.output-totals').html(
+        `<th scope='row'>${$.i18n('totals')}</th>
+         <th>${$.i18n('num-languages', sortedDatasets.length)}</th>
+         <th>${$.i18n('unique-titles', this.outputData.titles.length)}</th>
+         <th>${totalBadgesMarkup}</th>
+         <th>${this.formatNumber(this.outputData.sum)}</th>
+         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
       );
-    });
+      $('#output_list').html('');
 
-    this.pushParams();
-    this.setState('complete');
+      sortedDatasets.forEach((item, index) => {
+        let badgeMarkup = '';
+        if (item.badges) {
+          badgeMarkup = item.badges.map(this.getBadgeMarkup.bind(this)).join();
+        }
+
+        $('#output_list').append(
+          `<tr>
+           <th scope='row'>${index + 1}</th>
+           <td>${item.lang}</td>
+           <td><a href="${item.url}" target="_blank">${item.label}</a></td>
+           <td>${badgeMarkup}</td>
+           <td><a target='_blank' href='${this.getPageviewsURL(`${item.lang}.${this.baseProject}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>
+           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           </tr>`
+        );
+      });
+    });
   }
 
   /**
    * Get value of given langview entry for the purposes of column sorting
-   * @param  {object} item - langview entry within this.langData
+   * @param  {object} item - langview entry within this.outputData
    * @param  {String} type - type of property to get
    * @return {String|Number} - value
    */
@@ -235,39 +336,17 @@ class LangViews extends Pv {
     case 'lang':
       return item.lang;
     case 'title':
-      return item.pageName;
+      return item.label;
     case 'badges':
       return item.badges.sort().join('');
     case 'views':
-      return Number(item.views);
+      return Number(item.sum);
     }
-  }
-
-  /**
-   * Link to /pageviews for given article and chosen daterange
-   * @param {String} lang - two character language code
-   * @param {String} project - base project without lang, e.g. wikipedia.org
-   * @param {String} article - page name
-   * @returns {String} URL
-   */
-  // FIXME: should include agent and platform, and use special ranges as currently specified
-  getPageviewsURL(lang, project, article) {
-    let startDate = moment(this.daterangepicker.startDate),
-      endDate = moment(this.daterangepicker.endDate);
-    const platform = $(this.config.platformSelector).val();
-
-    if (endDate.diff(startDate, 'days') === 0) {
-      startDate.subtract(3, 'days');
-      endDate.add(3, 'days');
-    }
-
-    return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
-      `&end=${endDate.format('YYYY-MM-DD')}&project=${lang}.${project}.org&platform=${platform}&pages=${article}`;
   }
 
   /**
    * Loop through given interwiki data and query the pageviews API for each
-   *   Also updates this.langData with result
+   *   Also updates this.outputData with result
    * @param  {Object} interWikiData - as given by the getInterwikiData promise
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
    */
@@ -277,10 +356,7 @@ class LangViews extends Pv {
       interWikiKeys = Object.keys(interWikiData);
     // XXX: throttling
     let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
-      totalRequestCount = interWikiKeys.length, failedPages = [];
-
-    /** clear out existing data */
-    this.langData = [];
+      totalRequestCount = interWikiKeys.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = dbName => {
       const data = interWikiData[dbName],
@@ -295,30 +371,13 @@ class LangViews extends Pv {
       promises.push(promise);
 
       promise.done(pvData => {
-        const viewCounts = pvData.items.map(el => el.views),
-          views = viewCounts.reduce((a, b) => a + b);
-
-        this.langData.push({
+        pageViewsData.push({
           badges: data.badges,
           dbName,
           lang: data.lang,
-          pageName: data.title,
-          views,
+          title: data.title,
           url: data.url,
-          average: Math.round(views / this.numDaysInRange())
-        });
-
-        /** keep track of unique badges/titles and total pageviews */
-        this.totals.views += views;
-        if (!this.totals.titles.includes(data.title)) {
-          this.totals.titles.push(data.title);
-        }
-        data.badges.forEach(badge => {
-          if (this.totals.badges[badge] === undefined) {
-            this.totals.badges[badge] = 1;
-          } else {
-            this.totals.badges[badge] += 1;
-          }
+          items: pvData.items
         });
       }).fail(errorData => {
         // XXX: throttling
@@ -353,7 +412,7 @@ class LangViews extends Pv {
 
         // XXX: throttling, totalRequestCount can just be interWikiKeys.length
         if (count === totalRequestCount) {
-          dfd.resolve(this.langData);
+          dfd.resolve(pageViewsData);
 
           if (failedPages.length) {
             this.writeMessage($.i18n(
@@ -389,24 +448,6 @@ class LangViews extends Pv {
     });
 
     return dfd;
-  }
-
-  /**
-   * Return cache key for current params
-   * @return {String} key
-   */
-  getCacheKey() {
-    return `lv-cache-${this.hashCode(
-      JSON.stringify(this.getParams(true))
-    )}`;
-  }
-
-  /**
-   * Check simple storage to see if a request with the current params would be cached
-   * @return {Boolean} cached or not
-   */
-  isRequestCached() {
-    return simpleStorage.hasKey(this.getCacheKey());
   }
 
   /**
@@ -504,21 +545,24 @@ class LangViews extends Pv {
 
     $(this.config.platformSelector).val(params.platform || 'all-access');
     $(this.config.agentSelector).val(params.agent || 'user');
-    this.sort = params.sort || this.config.defaults.params.sort;
-    this.direction = params.direction || this.config.defaults.params.direction;
+
+    /** import params or set defaults if invalid */
+    ['sort', 'direction', 'view'].forEach(key => {
+      const value = params[key];
+      if (value && this.config.validParams[key].includes(value)) {
+        params[key] = value;
+        this[key] = value;
+      } else {
+        params[key] = this.config.defaults.params[key];
+        this[key] = this.config.defaults.params[key];
+      }
+    });
 
     /** start up processing if page name is present */
     if (params.page) {
-      $(this.config.articleInput).val(decodeURIComponent(params.page).descore());
-      this.processArticle();
+      $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
+      this.processInput();
     }
-  }
-
-  getState() {
-    const classList = $('main')[0].classList;
-    return this.config.formStates.filter(stateName => {
-      return classList.contains(stateName);
-    })[0];
   }
 
   /**
@@ -535,8 +579,11 @@ class LangViews extends Pv {
     case 'initial':
       this.clearMessages();
       this.assignDefaults();
+      this.destroyChart();
+      $('output').removeClass('list-mode').removeClass('chart-mode');
+      $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
-      $(this.config.articleInput).val('').focus();
+      $(this.config.sourceInput).val('').focus();
       break;
     case 'processing':
       this.processStarted();
@@ -549,6 +596,7 @@ class LangViews extends Pv {
       /** stop hidden animation for slight performance improvement */
       this.updateProgressBar(0);
       $('.progress-bar').removeClass('active');
+      $('.data-links').removeClass('invisible');
       break;
     case 'invalid':
       break;
@@ -556,28 +604,11 @@ class LangViews extends Pv {
   }
 
   /**
-   * sets up the daterange selector and adds listeners
-   * @returns {null} - nothing
-   */
-  setupDateRangeSelector() {
-    super.setupDateRangeSelector();
-
-    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === $.i18n('custom-range')) {
-        this.specialRange = null;
-
-        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-        this.daterangepicker.updateElement();
-      }
-    });
-  }
-
-  /**
    * Process the langviews for the article and options entered
    * Called when submitting the form
    * @return {null} nothing
    */
-  processArticle() {
+  processInput() {
     // XXX: throttling
     /** allow resubmission of queries that are cached */
     if (!this.isRequestCached()) {
@@ -595,7 +626,7 @@ class LangViews extends Pv {
       }
     }
 
-    const page = $(this.config.articleInput).val();
+    const page = $(this.config.sourceInput).val();
 
     this.setState('processing');
 
@@ -609,9 +640,11 @@ class LangViews extends Pv {
        */
       this.setThrottle();
 
-      this.getPageViewsData(interWikiData).done(() => {
-        $('.langviews-page-name').text(page).prop('href', this.getPageURL(page));
-        $('.langviews-params').text($(this.config.dateRangeSelector).val());
+      this.getPageViewsData(interWikiData).done(pageViewsData => {
+        const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
+        $('.output-title').html(pageLink);
+        $('.output-params').text($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(page, pageLink, pageViewsData);
         this.updateProgressBar(100);
         this.renderData();
 
@@ -638,10 +671,10 @@ class LangViews extends Pv {
    * Called in validateProject, which is called in popParams when the app is first loaded
    * @return {null} Nothing
    */
-  setupArticleInput() {
+  setupsourceInput() {
     if (this.typeahead) this.typeahead.destroy();
 
-    $(this.config.articleInput).typeahead({
+    $(this.config.sourceInput).typeahead({
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         timeout: 200,
@@ -664,15 +697,6 @@ class LangViews extends Pv {
   }
 
   /**
-   * Set value of progress bar
-   * @param  {Number} value - percentage as float
-   * @return {null} nothing
-   */
-  updateProgressBar(value) {
-    $('.progress-bar').css('width', `${value.toFixed(2)}%`);
-  }
-
-  /**
    * Validate the currently entered project. Called when the value is changed
    * @return {boolean} true if validation failed
    */
@@ -691,48 +715,34 @@ class LangViews extends Pv {
     this.setState('initial');
 
     /** kill and re-init typeahead to point to new project */
-    this.setupArticleInput();
+    this.setupsourceInput();
 
     return false;
   }
 
   /**
-   * Exports current mass data to CSV format and loads it in a new tab
+   * Exports current lang data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
    * @returns {string} CSV content
    */
   exportCSV() {
-    let csvContent = 'data:text/csv;charset=utf-8,Language,Title,Badges,Pageviews,Average\n';
+    let csvContent = `data:text/csv;charset=utf-8,Language,Title,Badges,${this.getDateHeadings(false).join(',')}\n`;
 
     // Add the rows to the CSV
-    this.langData.forEach(page => {
-      const pageName = '"' + page.pageName.descore().replace(/"/g, '""') + '"',
+    this.outputData.listData.forEach(page => {
+      const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"',
         badges = '"' + page.badges.map(badge => this.config.badges[badge].name.replace(/"/g, '""')) + '"';
 
       csvContent += [
         page.lang,
         pageName,
-        badges,
-        page.views,
-        page.average
-      ].join(',') + '\n';
+        badges
+      ].concat(page.data).join(',') + '\n';
     });
 
     // Output the CSV file to the browser
     const encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
-  }
-
-  /**
-   * Exports current mass data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
-   */
-  exportJSON() {
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.langData),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
-
-    return jsonContent;
   }
 }
 

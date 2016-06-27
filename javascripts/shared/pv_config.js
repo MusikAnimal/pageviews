@@ -1,5 +1,5 @@
 /**
- * @file Shared config amongst all apps (Pageviews, Topviews, Langviews, Siteviews)
+ * @file Shared config amongst all apps
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
@@ -8,7 +8,6 @@
 /**
  * Configuration for all Pageviews applications.
  * Some properties may be overriden by app-specific configs
- * @type {Object}
  */
 class PvConfig {
   constructor() {
@@ -147,12 +146,14 @@ class PvConfig {
       cookieExpiry: 30, // num days
       defaults: {
         autocomplete: 'autocomplete',
-        chartType: 'line',
+        chartType: numDatasets => numDatasets > 1 ? 'line' : 'bar',
         daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
-        bezierCurve: 'false'
+        bezierCurve: 'false',
+        autoLogDetection: 'true',
+        rememberChart: 'true'
       },
       globalChartOpts: {
         animation: {

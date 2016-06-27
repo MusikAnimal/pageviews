@@ -70,20 +70,18 @@
                 = $I18N->msg( 'user' )
               %option(value="spider")
                 = $I18N->msg( 'spider' )
-              %option(value="bot")
-                = $I18N->msg( 'bot' )
 
         / Site selector
         %div.row.aqs-row
           %div.col-lg-12
             %label(for="site-input")
               = $I18N->msg( 'projects' )
-            %select.aqs-select2-selector.col-lg-12#site-input(multiple="multiple")
+            %select.aqs-select2-selector.col-lg-12.invisible#site-input(multiple="multiple")
 
         - include "../_data_links.php"
 
         / Chart
-        %div.chart-container.loading
+        %div.chart-container
           %canvas.aqs-chart
 
         %div.message-container.col-lg-12

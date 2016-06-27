@@ -138,7 +138,7 @@
 	"faq-agents-user": "FAQ - explanation of the 'User' agent option",
 	"faq-agents-spider": "FAQ - explanation of the 'Spider' agent option",
 	"faq-agents-bot": "FAQ - explanation of the 'Bot' agent option. Here the \"scrape\" means \"To extract data by automated means from a format not intended to be machine-readable, such as a screenshot or a formatted web page.\".",
-	"faq-chart-type-title": "FAQ - title of the section explaining how to change the chart type",
+	"faq-chart-type-title": "FAQ - title of the section explaining how to change the chart type. $1 is the message 'change-chart', which is the label of the button in the interface.",
 	"faq-chart-type-body": "FAQ - body of the section explaining how to change the chart type",
 	"faq-line-chart-title": "FAQ - title of the section explaining how to better interact with the line chart",
 	"faq-line-chart-body": "FAQ - body of the section explaining how to better interact with the line chart",
@@ -228,5 +228,7 @@
 	"logarithmic-scale": "Label to show the chart using a logarithmic scale. Translation may easily be found on Wikidata, see https://www.wikidata.org/wiki/Q937378\n{{Identical|Logarithmic scale}}",
 	"bezier-curve-option": "Label for option to plot line charts using the Bézier curve",
 	"list": "Label for the button to show the 'list view' of Massviews. 'Table' might also be a fitting translation.\n{{Identical|List}}",
-	"chart": "Label for the button to show the 'chart view' of Massviews.\n{{Identical|Chart}}"
+	"chart": "Label for the button to show the 'chart view' of Massviews.\n{{Identical|Chart}}",
+	"autolog-option": "Label for option to automatically use a logarithmic scale if it would better illustrate the data.",
+	"remember-chart-option": "Label for option to remember chart preference across sessions."
 }

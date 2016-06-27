@@ -15,35 +15,10 @@
 
       %main.col-lg-10.col-lg-offset-1
         %ul.list-group
-          %li.list-group-item
-            - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
-            %p
-              %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
-            %p
-              = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-todays-date-title' )
-            %p
-              = $I18N->msg( 'faq-todays-date-body' )
-          %li.list-group-item(id="agents")
-            %p
-              %strong= $I18N->msg( 'faq-agents-title' )
-            %ul.faq-ul
-              %li
-                %i= $I18N->msg( 'user' )
-                = $I18N->msg( 'faq-agents-user' )
-              %li
-                %i= $I18N->msg( 'spider' )
-                = $I18N->msg( 'faq-agents-spider' )
-              %li
-                %i= $I18N->msg( 'bot' )
-                = $I18N->msg( 'faq-agents-bot' )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-chart-type-title' )
-            %p
-              = $I18N->msg( 'faq-chart-type-body' )
+          - include "../faq_parts/old_data.php"
+          - include "../faq_parts/todays_data.php"
+          - include "../faq_parts/agents.php"
+          - include "../faq_parts/chart_type.php"
           %li.list-group-item
             %p
               %strong= $I18N->msg( 'faq-line-chart-title' )
@@ -59,11 +34,7 @@
               %strong= $I18N->msg( 'faq-multi-lang-title' )
             %p
               = $I18N->msg( 'faq-try-tool', array( 'variables' => array( "<a href='/langviews'>" . $I18N->msg( 'langviews-title' ) . "</a>" ), 'parsemag' => true ) )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-bug-report-title' )
-            %p
-              = $I18N->msg( 'faq-bug-report-body' )
+          - include "../faq_parts/feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/pageviews")

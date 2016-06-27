@@ -47,8 +47,15 @@ module.exports = function(grunt) {
     'public_html/_lang_selector.php': 'views/_lang_selector.haml',
     'public_html/_modals.php': 'views/_modals.haml',
     'public_html/_browser_check.php': 'views/_browser_check.haml',
-    'public_html/_data_links.php': 'views/_data_links.haml'
+    'public_html/_data_links.php': 'views/_data_links.haml',
+    'public_html/_output.php': 'views/_output.haml'
   };
+  ['old_data', 'todays_data', 'agents', 'chart_type', 'feedback', 'throttle'].forEach(faqPart => {
+    hamlFiles[`public_html/faq_parts/${faqPart}.php`] = `views/faq_parts/${faqPart}.haml`;
+  });
+  ['project', 'date_ranges', 'platform', 'agent'].forEach(urlPart => {
+    hamlFiles[`public_html/url_parts/${urlPart}.php`] = `views/url_parts/${urlPart}.haml`;
+  });
   let uglifyTask = {
     options: {
       compress: true
@@ -206,6 +213,7 @@ module.exports = function(grunt) {
             'vendor/javascripts/daterangepicker.min.js',
             'vendor/javascripts/bootstrap-typeahead.js',
             'vendor/javascripts/simpleStorage.js',
+            'vendor/javascripts/Chart.min.js',
             'public_html/langviews/langviews.js'
           ]),
           'public_html/langviews/application.css': coreCSSDependencies.concat([

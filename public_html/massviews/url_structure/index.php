@@ -42,49 +42,10 @@
               <br>
               <?php echo $I18N->msg( 'url-structure-massviews-target-example', array( 'variables' => array( '<pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>', '<pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>', '<pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>' ) ) ); ?>
             </dd>
-            <dt>range</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
-              <ul class="special-ranges">
-                <li>
-                  <code>latest</code>
-                  <?php echo "(" . strtolower( $I18N->msg( 'default' ) ) . ")"; ?>
-                  <?php echo $I18N->msg( 'url-structure-special-range-latest' ); ?>
-                </li>
-                <li>
-                  <code>latest-<i>N</i></code>
-                  <?php echo $I18N->msg( 'url-structure-special-range-latest-n' ); ?>
-                </li>
-                <li>
-                  <code>last-week</code>
-                  <?php echo $I18N->msg( 'last-week' ); ?>
-                </li>
-                <li>
-                  <code>this-month</code>
-                  <?php echo $I18N->msg( 'this-month' ); ?>
-                </li>
-                <li>
-                  <code>last-month</code>
-                  <?php echo $I18N->msg( 'last-month' ); ?>
-                </li>
-              </ul>
-            </dd>
-            <dt>start</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
-            </dd>
-            <dt>end</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
-            </dd>
-            <dt>platform</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) ); ?>
-            </dd>
-            <dt>agent</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) ); ?>
-            </dd>
+            <?php $defaultRange = 'latest'; ?>
+            <?php include "../../url_parts/date_ranges.php"; ?>
+            <?php include "../../url_parts/platform.php"; ?>
+            <?php include "../../url_parts/agent.php"; ?>
             <dt>sort</dt>
             <dd>
               <?php echo $I18N->msg( 'url-structure-sort-massviews', array( 'variables' => array( '<code>title</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>

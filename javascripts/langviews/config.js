@@ -11,7 +11,7 @@
  */
 const config = {
   agentSelector: '#agent_select',
-  articleInput: '#article_input',
+  chart: '.aqs-chart',
   badges: {
     'Q17437796': {
       image: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Cscr-featured.svg',
@@ -50,17 +50,25 @@ const config = {
     params: {
       sort: 'views',
       direction: 1,
-      langData: [],
-      totals: {
-        titles: [],
-        badges: {},
-        views: 0
-      }
+      outputData: [],
+      total: 0,
+      view: 'list'
     }
   },
+  linearLegend: (datasets, scope) => {
+    return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.outputData.sum)}
+      (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
+  },
+  logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform_select',
   projectInput: '#project_input',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
-  timestampFormat: 'YYYYMMDD00'
+  sourceInput: '#source_input',
+  timestampFormat: 'YYYYMMDD00',
+  validParams: {
+    direction: ['-1', '1'],
+    sort: ['title', 'views', 'badges', 'lang'],
+    view: ['list', 'chart']
+  }
 };
 module.exports = config;

@@ -15,11 +15,7 @@
 
       %main.col-lg-10.col-lg-offset-1
         %ul.list-group
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ), 'parsemag' => true ) )
-            %p
-              = $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ), 'parsemag' => true ) )
+          - include "../../faq_parts/throttle.php"
           %li.list-group-item(id="sources")
             %p
               %strong= $I18N->msg( 'faq-massviews-sources-title' )
@@ -42,35 +38,10 @@
               %strong= $I18N->msg( 'faq-massviews-subject-page-title', array( 'variables' => array( $I18N->msg( 'category-subject-toggle' ) ) ) )
             %p
               = $I18N->msg( 'faq-massviews-subject-page-body' )
-          %li.list-group-item
-            - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
-            %p
-              %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
-            %p
-              = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-todays-date-title' )
-            %p
-              = $I18N->msg( 'faq-todays-date-body' )
-          %li.list-group-item(id="agents")
-            %p
-              %strong= $I18N->msg( 'faq-agents-title' )
-            %ul.faq-ul
-              %li
-                %i= $I18N->msg( 'user' )
-                = $I18N->msg( 'faq-agents-user' )
-              %li
-                %i= $I18N->msg( 'spider' )
-                = $I18N->msg( 'faq-agents-spider' )
-              %li
-                %i= $I18N->msg( 'bot' )
-                = $I18N->msg( 'faq-agents-bot' )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-bug-report-title' )
-            %p
-              = $I18N->msg( 'faq-bug-report-body' )
+          - include "../../faq_parts/old_data.php"
+          - include "../../faq_parts/todays_data.php"
+          - include "../../faq_parts/agents.php"
+          - include "../../faq_parts/feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/massviews")

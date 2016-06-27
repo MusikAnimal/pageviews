@@ -59,9 +59,6 @@
       %a(href="/#{$currentApp}/faq")<
         = $I18N->msg( 'faq' )
       &middot;
-      %a(href="#" data-toggle="modal" data-target="#disclaimer-modal")<
-        = $I18N->msg( 'disclaimer' )
-      &middot;
       %a(href="/#{$currentApp}/url_structure")<
         = $I18N->msg( 'url-structure' )
       &middot;
@@ -70,23 +67,6 @@
       &middot;
       %a(href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis")<
         = $I18N->msg( 'report-issue' )
-
-%div#disclaimer-modal.modal.fade(role="dialog" tabindex="-1")
-  %div.modal-dialog(role="document")
-    %div.modal-content
-      %div.modal-header
-        %button.close(arialabel="Close" data-dismiss="modal" type="button")
-          %span(ariahidden="true") &times;
-        %h4.modal-title
-          = $I18N->msg( 'disclaimer' )
-
-      %div.modal-body
-        - $api = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>" . $I18N->msg( 'rest-api' ) . "</a>";
-        = $I18N->msg( 'disclaimer-text', array( 'variables' => array( $api ), 'parsemag' => true ) );
-
-      %div.modal-footer
-        %button.btn.btn-primary(data-dismiss="modal" type="button")
-          = $I18N->msg( 'ok' )
 
 - if ( strpos ( $_SERVER['PHP_SELF'], 'faq' ) !== false )
   :javascript

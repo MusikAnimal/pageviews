@@ -20,7 +20,7 @@
           %div.site-notice
             - include "../_browser_check.php"
 
-        %form#massviews_form
+        %form#pv_form
           %div.row.aqs-row.options
             / Date range selector
             %div.col-lg-4.col-sm-4
@@ -90,56 +90,12 @@
                   %button.btn.btn-primary.pull-right
                     = $I18N->msg( 'submit' )
 
-        %div.col-lg-5.col-sm-8.center-block.progress-bar--wrapper
-          %div.progress
-            %div.progress-bar.progress-bar-striped.active(role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%")
-
-        %output(form="massview_form")
-          %header.output-header.clearfix
-            %strong.another-query
-              %span.glyphicon.glyphicon-chevron-left
-              = $I18N->msg( 'another-query' )
-            %h2.tm
-              %a.massviews-input-name(target="_blank")
-              %small.massviews-params
-
-              %span.btn-group.view-options.pull-right
-                %button.active.btn.btn-default.view-btn.view-btn--list(type="button" href="#" data-value="list")
-                  %span.glyphicon.glyphicon-list.view-options--list
-                  = $I18N->msg( 'list' )
-                %button.btn.btn-default.view-btn.view-btn--chart(type="button" href="#" data-value="chart")
-                  %span.glyphicon.glyphicon-chart
-                  = $I18N->msg( 'chart' )
-
-          - include "../_data_links.php"
-
-          %table.list-view.table.table-hover.output-table
-            %thead
-              %tr
-                %th
-                  %span #
-                %th
-                  %span.sort-link.sort-link--title(data-type='title')
-                    = $I18N->msg( 'page-title' )
-                    %span.glyphicon.glyphicon-sort
-                %th
-                  %span.sort-link.sort-link--views(data-type='views')
-                    = $I18N->msg( 'pageviews' )
-                    %span.glyphicon.glyphicon-sort
-                %th
-                  %span
-                    = $I18N->msg( 'average' )
-              %tr.output-totals
-            %tbody#mass_list
-
-          %div.chart-view.chart-container
-            %canvas.aqs-chart
-
-        %div.message-container.col-lg-12
-
-        %div.col-lg-12.tm.clearfix.chart-view
-          %span#chart-legend
-          %span.elapsed-time.pull-right
+        :php
+          $columns = array(
+            'title' => 'page-title',
+            'views' => 'pageviews'
+          );
+        - include "../_output.php"
 
         - $currentApp = "massviews"
         - include "../_footer.php"

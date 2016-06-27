@@ -12,6 +12,7 @@
 const config = {
   agentSelector: '#agent_select',
   chart: '.aqs-chart',
+  dateLimit: 31, // num days
   dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
@@ -21,15 +22,15 @@ const config = {
       source: 'category',
       sourceProject: '',
       direction: 1,
-      massData: [],
+      outputData: [],
       total: 0,
       view: 'list',
       subjectpage: 0
     }
   },
   linearLegend: (datasets, scope) => {
-    return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.massData.sum)}
-      (${scope.formatNumber(Math.round(scope.massData.average))}/${$.i18n('day')})`;
+    return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.outputData.sum)}
+      (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
   pageLimit: 500,

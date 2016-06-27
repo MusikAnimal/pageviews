@@ -30,22 +30,9 @@
               = $I18N->msg( 'faq-topviews-false-positive-body1')
             %p
               = $I18N->msg( 'faq-topviews-false-positive-body2')
-          %li.list-group-item
-            - $backfillDate = $I18N->msg( 'july' ) . ' 2015'
-            %p
-              %strong= $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) )
-            %p
-              = $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-todays-date-title' )
-            %p
-              = $I18N->msg( 'faq-todays-date-body' )
-          %li.list-group-item
-            %p
-              %strong= $I18N->msg( 'faq-bug-report-title' )
-            %p
-              = $I18N->msg( 'faq-bug-report-body' )
+          - include "../../faq_parts/old_data.php"
+          - include "../../faq_parts/todays_data.php"
+          - include "../../faq_parts/feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")

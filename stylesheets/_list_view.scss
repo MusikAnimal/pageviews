@@ -57,6 +57,7 @@ main {
 output {
   @include prefix(transform, translateY(500px));
   @include prefix(transition, all 500ms ease);
+  margin-bottom: 10px;
   opacity: 0;
   padding: 0;
 
@@ -74,6 +75,17 @@ output {
 .list-view,
 .chart-view {
   display: none;
+}
+
+.legend-elapsed-time {
+  display: none;
+}
+
+.list-mode,
+.chart-mode {
+  .legend-elapsed-time {
+    display: block;
+  }
 }
 
 .list-mode {
@@ -133,21 +145,29 @@ output {
 
 @media (max-width: $screen-md) {
   .view-options.pull-right {
-    float: left !important; // scss-lint:disable ImportantRule
+    display: block;
+    float: none !important; // scss-lint:disable ImportantRule
     margin: 10px 0;
+
+    &::after {
+      clear: both;
+      content: '';
+      display: block;
+    }
   }
 }
 
-@media (max-width: 675px) {
-  .massviews-params {
+@media (max-width: $screen-sm) {
+  .output-params {
     display: block;
     margin-top: 8px;
   }
 
   .elapsed-time {
+    clear: both;
     display: block;
     float: none !important; // scss-lint:disable ImportantRule
-    margin-top: 10px;
+    padding-top: 10px;
   }
 
   .lang-group {

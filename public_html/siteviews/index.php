@@ -93,9 +93,6 @@
               <option value="spider">
                 <?php echo $I18N->msg( 'spider' ); ?>
               </option>
-              <option value="bot">
-                <?php echo $I18N->msg( 'bot' ); ?>
-              </option>
             </select>
           </div>
         </div>
@@ -105,12 +102,12 @@
             <label for="site-input">
               <?php echo $I18N->msg( 'projects' ); ?>
             </label>
-            <select class="aqs-select2-selector col-lg-12" id="site-input" multiple="multiple"></select>
+            <select class="aqs-select2-selector col-lg-12 invisible" id="site-input" multiple="multiple"></select>
           </div>
         </div>
         <?php include "../_data_links.php"; ?>
         <!-- Chart -->
-        <div class="chart-container loading">
+        <div class="chart-container">
           <canvas class="aqs-chart"></canvas>
         </div>
         <div class="message-container col-lg-12"></div>

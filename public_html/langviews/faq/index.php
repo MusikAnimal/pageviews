@@ -20,58 +20,11 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
-          <li class="list-group-item">
-            <p>
-              <strong><?php echo $I18N->msg( 'faq-throttle-wait-title', array( 'variables' => array( 90 ), 'parsemag' => true ) ); ?></strong>
-            </p>
-            <p>
-              <?php echo $I18N->msg( 'faq-throttle-wait-body', array( 'variables' => array( 90 ), 'parsemag' => true ) ); ?>
-            </p>
-          </li>
-          <li class="list-group-item">
-            <?php $backfillDate = $I18N->msg( 'july' ) . ' 2015'; ?>
-            <p>
-              <strong><?php echo $I18N->msg( 'faq-old-data-title', array( 'variables' => array( $backfillDate ) ) ); ?></strong>
-            </p>
-            <p>
-              <?php echo $I18N->msg( 'faq-old-data-body', array( 'variables' => array( $backfillDate ) ) ); ?>
-            </p>
-          </li>
-          <li class="list-group-item">
-            <p>
-              <strong><?php echo $I18N->msg( 'faq-todays-date-title' ); ?></strong>
-            </p>
-            <p>
-              <?php echo $I18N->msg( 'faq-todays-date-body' ); ?>
-            </p>
-          </li>
-          <li class="list-group-item" id="agents">
-            <p>
-              <strong><?php echo $I18N->msg( 'faq-agents-title' ); ?></strong>
-            </p>
-            <ul class="faq-ul">
-              <li>
-                <i><?php echo $I18N->msg( 'user' ); ?></i>
-                <?php echo $I18N->msg( 'faq-agents-user' ); ?>
-              </li>
-              <li>
-                <i><?php echo $I18N->msg( 'spider' ); ?></i>
-                <?php echo $I18N->msg( 'faq-agents-spider' ); ?>
-              </li>
-              <li>
-                <i><?php echo $I18N->msg( 'bot' ); ?></i>
-                <?php echo $I18N->msg( 'faq-agents-bot' ); ?>
-              </li>
-            </ul>
-          </li>
-          <li class="list-group-item">
-            <p>
-              <strong><?php echo $I18N->msg( 'faq-bug-report-title' ); ?></strong>
-            </p>
-            <p>
-              <?php echo $I18N->msg( 'faq-bug-report-body' ); ?>
-            </p>
-          </li>
+          <?php include "../../faq_parts/throttle.php"; ?>
+          <?php include "../../faq_parts/old_data.php"; ?>
+          <?php include "../../faq_parts/todays_data.php"; ?>
+          <?php include "../../faq_parts/agents.php"; ?>
+          <?php include "../../faq_parts/feedback.php"; ?>
         </ul>
         <div class="col-lg-12 text-center tm">
           <a href="/langviews">
