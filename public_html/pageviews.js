@@ -1035,7 +1035,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         if (this.showErrors(xhrData)) return;
 
         if (!xhrData.entities.length) {
-          return;
+          return this.stopSpinny();
         } else if (xhrData.entities.length === 1) {
           $('.multi-page-chart-node').hide();
         } else {
@@ -2208,8 +2208,11 @@ var Pv = function (_PvConfig) {
 
   }, {
     key: 'getBugReportURL',
-    value: function getBugReportURL(messages) {
-      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + ('&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape));
+    value: function getBugReportURL() {
+      var messages = arguments.length <= 0 || arguments[0] === undefined ? ['Uknown error occurred'] : arguments[0];
+
+      var preloadParams = messages ? '&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape) : '';
+      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + preloadParams;
     }
 
     /**
@@ -2797,7 +2800,7 @@ var Pv = function (_PvConfig) {
 
       this.timeout = setTimeout(function (err) {
         _this9.resetView();
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out', _this9.getBugReportURL()) + '\n      ', true);
+        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out', _this9.getBugReportURL(['Operation timed out'])) + '\n      ', true);
       }, 10 * 1000);
     }
 

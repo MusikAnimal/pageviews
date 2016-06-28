@@ -442,10 +442,11 @@ class Pv extends PvConfig {
    * @param {Array} [messages] captured error messages
    * @return {String} URL
    */
-  getBugReportURL(messages) {
+  getBugReportURL(messages = ['Uknown error occurred']) {
+    const preloadParams = messages ? `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}` : '';
     return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' +
       `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${$('.permalink').prop('href').replace(/[&%]\'/g, escape)}` +
-      `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}`;
+      preloadParams;
   }
 
   /**
@@ -965,7 +966,7 @@ class Pv extends PvConfig {
     this.timeout = setTimeout(err => {
       this.resetView();
       this.writeMessage(`<strong>${$.i18n('fatal-error')}</strong>:
-        ${$.i18n('error-timed-out', this.getBugReportURL())}
+        ${$.i18n('error-timed-out', this.getBugReportURL(['Operation timed out']))}
       `, true);
     }, 10 * 1000);
   }
