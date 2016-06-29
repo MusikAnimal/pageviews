@@ -158,6 +158,7 @@ var PageViews = function (_mix$with) {
     value: function popParams() {
       var _this2 = this;
 
+      /** show loading indicator and add error handling for timeouts */
       this.startSpinny();
 
       var startDate = void 0,
@@ -2700,9 +2701,14 @@ var Pv = function (_PvConfig) {
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
-      /** transform this.config.specialRanges to have i18n as keys */
+      /**
+       * Transform this.config.specialRanges to have i18n as keys
+       * This is what is shown as the special ranges (Last month, etc.) in the datepicker menu
+       * @type {Object}
+       */
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
+        if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
         ranges[$.i18n(key)] = _this8.config.specialRanges[key];
       });
 

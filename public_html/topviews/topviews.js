@@ -2145,9 +2145,14 @@ var Pv = function (_PvConfig) {
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
-      /** transform this.config.specialRanges to have i18n as keys */
+      /**
+       * Transform this.config.specialRanges to have i18n as keys
+       * This is what is shown as the special ranges (Last month, etc.) in the datepicker menu
+       * @type {Object}
+       */
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
+        if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
         ranges[$.i18n(key)] = _this8.config.specialRanges[key];
       });
 

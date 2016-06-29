@@ -846,9 +846,14 @@ class Pv extends PvConfig {
   setupDateRangeSelector() {
     const dateRangeSelector = $(this.config.dateRangeSelector);
 
-    /** transform this.config.specialRanges to have i18n as keys */
+    /**
+     * Transform this.config.specialRanges to have i18n as keys
+     * This is what is shown as the special ranges (Last month, etc.) in the datepicker menu
+     * @type {Object}
+     */
     let ranges = {};
     Object.keys(this.config.specialRanges).forEach(key => {
+      if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
       ranges[$.i18n(key)] = this.config.specialRanges[key];
     });
 

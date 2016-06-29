@@ -86,6 +86,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @returns {null} nothing
    */
   popParams() {
+    /** show loading indicator and add error handling for timeouts */
     this.startSpinny();
 
     let startDate, endDate, params = this.parseQueryString('pages');
