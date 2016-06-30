@@ -136,6 +136,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         this.setSelect2Defaults(params.pages);
       } else {
         this.focusSelect2();
+        this.stopSpinny();
       }
     } else if (this.normalized) {
       params.pages = this.underscorePageNames(params.pages);
@@ -144,10 +145,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       this.normalizePageNames(params.pages).then(data => {
         this.normalized = true;
         params.pages = data;
-        this.setInitialChartType(params.pages.length);
         this.setSelect2Defaults(this.underscorePageNames(params.pages));
       });
     }
+    this.setInitialChartType(params.pages.length);
   }
 
   /**

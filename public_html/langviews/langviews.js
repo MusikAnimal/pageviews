@@ -976,7 +976,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
       _this.chartObj = null;
       _this.prevChartType = null;
-      _this.setInitialChartType();
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
       if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {

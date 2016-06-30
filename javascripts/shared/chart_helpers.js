@@ -19,7 +19,6 @@ const ChartHelpers = superclass => class extends superclass {
 
     this.chartObj = null;
     this.prevChartType = null;
-    this.setInitialChartType();
 
     /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
     if (!this.config.linearCharts.includes(this.chartType) && !this.config.circularCharts.includes(this.chartType)) {

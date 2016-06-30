@@ -210,6 +210,7 @@ var PageViews = function (_mix$with) {
           this.setSelect2Defaults(params.pages);
         } else {
           this.focusSelect2();
+          this.stopSpinny();
         }
       } else if (this.normalized) {
         params.pages = this.underscorePageNames(params.pages);
@@ -218,10 +219,10 @@ var PageViews = function (_mix$with) {
         this.normalizePageNames(params.pages).then(function (data) {
           _this2.normalized = true;
           params.pages = data;
-          _this2.setInitialChartType(params.pages.length);
           _this2.setSelect2Defaults(_this2.underscorePageNames(params.pages));
         });
       }
+      this.setInitialChartType(params.pages.length);
     }
 
     /**
@@ -600,7 +601,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
       _this.chartObj = null;
       _this.prevChartType = null;
-      _this.setInitialChartType();
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
       if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
