@@ -2591,7 +2591,18 @@ var Pv = function (_PvConfig) {
       var messages = arguments.length <= 0 || arguments[0] === undefined ? ['Uknown error occurred'] : arguments[0];
 
       var preloadParams = messages ? '&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape) : '';
-      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + preloadParams;
+      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + ('&preloadparams[]=' + this.getUserAgent()) + preloadParams;
+    }
+
+    /**
+     * Get user agent, if supported
+     * @returns {string} user-agent
+     */
+
+  }, {
+    key: 'getUserAgent',
+    value: function getUserAgent() {
+      return navigator.userAgent ? navigator.userAgent : 'Unknown';
     }
 
     /**

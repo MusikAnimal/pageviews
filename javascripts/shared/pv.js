@@ -446,7 +446,15 @@ class Pv extends PvConfig {
     const preloadParams = messages ? `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}` : '';
     return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' +
       `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${$('.permalink').prop('href').replace(/[&%]\'/g, escape)}` +
-      preloadParams;
+      `&preloadparams[]=${this.getUserAgent()}` + preloadParams;
+  }
+
+  /**
+   * Get user agent, if supported
+   * @returns {string} user-agent
+   */
+  getUserAgent() {
+    return navigator.userAgent ? navigator.userAgent : 'Unknown';
   }
 
   /**

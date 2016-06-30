@@ -97,7 +97,7 @@
 	"select2-no-results": "No results found",
 	"help-translate": "Help translate",
 	"fatal-error": "Fatal error",
-	"error-timed-out": "Operation timed out. Please refresh the page to try again or <a target='_blank' href='$1'>report this issue</a>",
+	"error-timed-out": "Operation timed out. Please <strong>refresh the page</strong> to try again or <a target='_blank' href='$1'>report this issue</a>",
 	"error-please-report": "Please <a target='_blank' href='$1'>report this issue</a>",
 	"api-error": "Error querying $1",
 	"api-error-unknown": "An unknown error occurred when querying $1",
