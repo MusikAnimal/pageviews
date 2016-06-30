@@ -397,8 +397,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
           );
           // remove this article from the list of entities to analyze
           xhrData.entities = xhrData.entities.filter(el => el !== article);
-        } else {
+        } else if (data.responseJSON) {
           xhrData.errors.push(data.responseJSON.title);
+        } else {
+          xhrData.errors.push('Unknown error');
         }
       });
     });

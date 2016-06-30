@@ -1542,6 +1542,11 @@ var ChartHelpers = function ChartHelpers(superclass) {
               _this8.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + message + '</code>');
             });
             this.writeMessage($.i18n('error-please-report', this.getBugReportURL(fatalErrorMessages)));
+
+            if (location.host === 'localhost') {
+              throw xhrData.fatalErrors[0];
+            }
+
             return true;
           }
         }
@@ -2188,8 +2193,22 @@ var Pv = function (_PvConfig) {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(_this.initialize.bind(_this));
+
+    // this.addGlobalErrorHandling();
     return _this;
   }
+
+  // addGlobalErrorHandling() {
+  //   window.onerror = (msg, url, line, col, error) => {
+  //     /** col & error are new to the HTML 5 spec and may not be supported in every browser. */
+  //     let extra = col ? '\ncolumn: ' + col : '';
+  //     extra += error ? '\nerror: ' + error : '';
+
+  //     // You can view the information in an alert to see things working like this:
+  //     const errorMessage = `Error: ${msg}\nurl: ${url}\nline: ${line + extra}`;
+  //     console.log(errorMessage);
+  //   };
+  // }
 
   _createClass(Pv, [{
     key: 'addSiteNotice',
@@ -2591,7 +2610,7 @@ var Pv = function (_PvConfig) {
       var messages = arguments.length <= 0 || arguments[0] === undefined ? ['Uknown error occurred'] : arguments[0];
 
       var preloadParams = messages ? '&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape) : '';
-      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + $('.permalink').prop('href').replace(/[&%]\'/g, escape)) + ('&preloadparams[]=' + this.getUserAgent()) + preloadParams;
+      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + encodeURIComponent(document.location.href)) + ('&preloadparams[]=' + this.getUserAgent()) + preloadParams;
     }
 
     /**
@@ -3195,7 +3214,7 @@ var Pv = function (_PvConfig) {
 
       this.timeout = setTimeout(function (err) {
         _this9.resetView();
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out', _this9.getBugReportURL(['Operation timed out'])) + '\n      ', true);
+        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this9.getBugReportURL(['Operation timed out'])) + '\n      ', true);
       }, 10 * 1000);
     }
 

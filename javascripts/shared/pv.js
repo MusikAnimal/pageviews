@@ -60,7 +60,21 @@ class Pv extends PvConfig {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
+
+    // this.addGlobalErrorHandling();
   }
+
+  // addGlobalErrorHandling() {
+  //   window.onerror = (msg, url, line, col, error) => {
+  //     /** col & error are new to the HTML 5 spec and may not be supported in every browser. */
+  //     let extra = col ? '\ncolumn: ' + col : '';
+  //     extra += error ? '\nerror: ' + error : '';
+
+  //     // You can view the information in an alert to see things working like this:
+  //     const errorMessage = `Error: ${msg}\nurl: ${url}\nline: ${line + extra}`;
+  //     console.log(errorMessage);
+  //   };
+  // }
 
   addSiteNotice(level, message, title, autodismiss) {
     title = title ? `<strong>${title}</strong> ` : '';
@@ -445,7 +459,7 @@ class Pv extends PvConfig {
   getBugReportURL(messages = ['Uknown error occurred']) {
     const preloadParams = messages ? `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}` : '';
     return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' +
-      `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${$('.permalink').prop('href').replace(/[&%]\'/g, escape)}` +
+      `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${encodeURIComponent(document.location.href)}` +
       `&preloadparams[]=${this.getUserAgent()}` + preloadParams;
   }
 
@@ -979,7 +993,8 @@ class Pv extends PvConfig {
     this.timeout = setTimeout(err => {
       this.resetView();
       this.writeMessage(`<strong>${$.i18n('fatal-error')}</strong>:
-        ${$.i18n('error-timed-out', this.getBugReportURL(['Operation timed out']))}
+        ${$.i18n('error-timed-out')}
+        ${$.i18n('error-please-report', this.getBugReportURL(['Operation timed out']))}
       `, true);
     }, 10 * 1000);
   }

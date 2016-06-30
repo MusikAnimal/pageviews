@@ -491,6 +491,11 @@ const ChartHelpers = superclass => class extends superclass {
           );
         });
         this.writeMessage($.i18n('error-please-report', this.getBugReportURL(fatalErrorMessages)));
+
+        if (location.host === 'localhost') {
+          throw xhrData.fatalErrors[0];
+        }
+
         return true;
       }
     }
