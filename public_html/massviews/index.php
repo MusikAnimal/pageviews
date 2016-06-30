@@ -1,12 +1,13 @@
 <!-- Massviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
+<?php $currentApp = "massviews"; ?>
 <!DOCTYPE html>
 <html>
   <head>
     <?php include '../_head.php'; ?>
     <title><?php echo $I18N->msg( 'massviews-title' ); ?></title>
   </head>
-  <body>
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -122,7 +123,7 @@
                 </div>
                 <input class="form-control input-control source-input" id="source_input" min="0" required="required">
                 <span class="input-group-btn">
-                  <button class="btn btn-primary pull-right">
+                  <button class="btn btn-primary pull-right btn-submit">
                     <?php echo $I18N->msg( 'submit' ); ?>
                   </button>
                 </span>
@@ -137,7 +138,6 @@
           );
         ?>
         <?php include "../_output.php"; ?>
-        <?php $currentApp = "massviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
       <?php include "../_modals.php"; ?>

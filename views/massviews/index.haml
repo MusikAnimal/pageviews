@@ -1,11 +1,12 @@
 / Massviews Analysis tool
 / Copyright 2016 MusikAnimal
+- $currentApp = "massviews"
 !!!
 %html
   %head
     - include '../_head.php'
     %title= $I18N->msg( 'massviews-title' )
-  %body
+  %body(class="#{$rtl} #{$currentApp}")
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -87,7 +88,7 @@
                         = $I18N->msg( 'template-url' )
                 %input.form-control.input-control.source-input#source_input(min="0" required="required")
                 %span.input-group-btn
-                  %button.btn.btn-primary.pull-right
+                  %button.btn.btn-primary.pull-right.btn-submit
                     = $I18N->msg( 'submit' )
 
         :php
@@ -96,8 +97,6 @@
             'views' => 'pageviews'
           );
         - include "../_output.php"
-
-        - $currentApp = "massviews"
         - include "../_footer.php"
 
       - include "../_modals.php"

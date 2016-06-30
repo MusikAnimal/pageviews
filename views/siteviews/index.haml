@@ -1,11 +1,12 @@
 / Siteviews Analysis tool
 / Copyright 2016 MusikAnimal
+- $currentApp = "siteviews"
 !!!
 %html
   %head
     - include '../_head.php'
     %title= $I18N->msg( 'siteviews-title' )
-  %body(class=$rtl)
+  %body(class="#{$rtl} #{$currentApp}")
     %div.container
       %header.col-lg-10.col-lg-offset-1.text-center
         %h4
@@ -89,7 +90,6 @@
         / Legend
         %div.col-lg-12.tm.clearfix#chart-legend
 
-        - $currentApp = "siteviews"
         - include "../_footer.php"
 
       - include "../_modals.php"

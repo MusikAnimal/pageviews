@@ -122,7 +122,7 @@
 	"submit": "Submit",
 	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
 	"num-languages": "$1 languages",
-	"unique-titles": "$1 unique {{PLURAL|$1|title|titles}}",
+	"unique-titles": "$1 unique {{PLURAL:$1|title|titles}}",
 	"invalid-project": "$1 is not a <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a>",
 	"invalid-lang-project": "$1 is either invalid or not a multilingual project",
 	"faq-return-to": "Return to $1",

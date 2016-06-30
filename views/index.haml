@@ -1,11 +1,12 @@
 / Pageviews Analysis tool
 / Copyright 2016 MusikAnimal
+- $currentApp = "pageviews"
 !!!
 %html
   %head
     - include '_head.php'
     %title= $I18N->msg( 'title' )
-  %body(class=$rtl)
+  %body(class="#{$rtl} #{$currentApp}")
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -88,7 +89,6 @@
         / Legend
         %div.col-lg-12.tm.clearfix#chart-legend
 
-        - $currentApp = "pageviews"
         - include "_footer.php"
 
       - include "_modals.php"

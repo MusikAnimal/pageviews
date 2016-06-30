@@ -1,12 +1,13 @@
 <!-- Topviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
+<?php $currentApp = "topviews"; ?>
 <!DOCTYPE html>
 <html>
   <head>
     <?php include "../_head.php"; ?>
     <title><?php echo $I18N->msg( 'topviews-title' ); ?></title>
   </head>
-  <body>
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -85,7 +86,6 @@
         <div class="message-container col-lg-10"></div>
         <!-- Other links -->
         <div class="col-lg-10 data-links"></div>
-        <?php $currentApp = "topviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
     </div>

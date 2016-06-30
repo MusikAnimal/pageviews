@@ -1,6 +1,6 @@
 <div class="row data-links invisible">
   <div class="col-lg-12">
-    <button class="btn btn-default btn-sm chart-specific js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal"><span class="glyphicon glyphicon-th"></span>
+    <button class="btn btn-default btn-sm btn-chart-type chart-specific js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal"><span class="glyphicon glyphicon-th"></span>
     <?php echo $I18N->msg( 'change-chart' ); ?></button>
     <button class="btn btn-default btn-sm btn-settings js-test-settings" data-target="#settings-modal" data-toggle="modal"><span class="glyphicon glyphicon-wrench"></span>
     <?php echo $I18N->msg( 'settings' ); ?></button>

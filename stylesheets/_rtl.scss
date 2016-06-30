@@ -1,0 +1,144 @@
+// scss-lint:disable ImportantRule
+// scss-lint:disable SelectorDepth
+// scss-lint:disable QualifyingElement
+// scss-lint:disable SelectorFormat
+// scss-lint:disable IdSelector
+
+.container {
+  direction: rtl;
+}
+
+.chart-container {
+  direction: rtl;
+}
+
+.date-latest,
+.pull-right {
+  float: left !important;
+}
+
+.pull-left {
+  float: right !important;
+}
+
+.lang-group {
+  left: 0;
+  right: initial;
+
+  .dropdown-menu {
+    left: 0;
+    right: auto;
+    text-align: right;
+  }
+}
+
+button.close {
+  float: left;
+}
+
+.checkbox label,
+.radio label {
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+input[type=radio],
+input[type=checkbox] {
+  margin-left: auto;
+  margin-right: -20px;
+}
+
+.modal-footer {
+  text-align: left;
+}
+
+.select2-container .select2-search--inline {
+  float: right;
+}
+
+.select2-selection__choice {
+  float: right !important;
+}
+
+.select2-results__option {
+  text-align: right;
+}
+
+.daterangepicker .ranges {
+  text-align: right;
+}
+
+.daterange-notice {
+  text-align: right;
+}
+
+.input-mini {
+  text-align: right;
+}
+
+.daterangepicker .calendar th {
+  max-width: 32px;
+  white-space: initial;
+}
+
+.download-btn-group {
+  .input-group-addon {
+    border-radius: 0 3px 3px 0;
+    border-right: 1px solid $gray;
+    margin-left: -4px;
+  }
+
+  .download-json {
+    border-radius: 3px 0 0 3px;
+    border-right: 0;
+  }
+}
+
+.btn-chart-type {
+  margin-left: 10px !important;
+}
+
+.topview-entry--remove {
+  left: initial;
+  right: 10px;
+}
+
+.topview-entry--rank {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+.typeahead {
+  text-align: right;
+}
+
+#source_input {
+  direction: rtl;
+}
+
+.list-view {
+  text-align: left;
+}
+
+.glyphicon-chevron-left {
+  transform: rotate(180deg);
+}
+
+
+.list-mode .btn-settings {
+  margin-left: 10px !important;
+}
+
+#source_button {
+  border-left: 0;
+  border-radius: 0 3px 3px 0 !important;
+}
+
+.btn-submit {
+  border-radius: 3px 0 0 3px !important;
+}
+
+.output-title {
+  float: right;
+  margin-left: 10px;
+}

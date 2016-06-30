@@ -3694,9 +3694,10 @@ var TopViews = function (_Pv) {
         if (this.excludes.includes(item.article)) continue;
         if (!this.max) this.max = item.views;
 
-        var width = 100 * (item.views / this.max);
+        var width = 100 * (item.views / this.max),
+            direction = !!i18nRtl ? 'to left' : 'to right';
 
-        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(to right, #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         <a class=\'topview-entry--label\' href="' + this.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\'>' + this.formatNumber(item.views) + '</a></div>');
+        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         <a class=\'topview-entry--label\' href="' + this.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\'>' + this.formatNumber(item.views) + '</a></div>');
       }
 
       this.pushParams();

@@ -1,12 +1,13 @@
 <!-- Langviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
+<?php $currentApp = "langviews"; ?>
 <!DOCTYPE html>
 <html>
   <head>
     <?php include '../_head.php'; ?>
     <title><?php echo $I18N->msg( 'langviews-title' ); ?></title>
   </head>
-  <body>
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -93,7 +94,7 @@
               <div class="input-group">
                 <input class="form-control input-control" id="source_input" placeholder="Star Wars" required="required" autocomplete="off">
                 <span class="input-group-btn">
-                  <button class="btn btn-primary pull-right" id="article_submit">
+                  <button class="btn btn-primary btn-submit pull-right">
                     <?php echo $I18N->msg( 'submit' ); ?>
                   </button>
                 </span>
@@ -110,7 +111,6 @@
           );
         ?>
         <?php include "../_output.php"; ?>
-        <?php $currentApp = "langviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
       <?php include "../_modals.php"; ?>

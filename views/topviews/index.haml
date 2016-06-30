@@ -1,11 +1,12 @@
 / Topviews Analysis tool
 / Copyright 2016 MusikAnimal
+- $currentApp = "topviews"
 !!!
 %html
   %head
     - include "../_head.php"
     %title= $I18N->msg( 'topviews-title' )
-  %body
+  %body(class="#{$rtl} #{$currentApp}")
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -69,5 +70,4 @@
         / Other links
         %div.col-lg-10.data-links
 
-        - $currentApp = "topviews";
         - include "../_footer.php"

@@ -1,12 +1,13 @@
 <!-- Siteviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
+<?php $currentApp = "siteviews"; ?>
 <!DOCTYPE html>
 <html>
   <head>
     <?php include '../_head.php'; ?>
     <title><?php echo $I18N->msg( 'siteviews-title' ); ?></title>
   </head>
-  <body class="<?php echo $rtl; ?>">
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <div class="container">
       <header class="col-lg-10 col-lg-offset-1 text-center">
         <h4>
@@ -113,7 +114,6 @@
         <div class="message-container col-lg-12"></div>
         <!-- Legend -->
         <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
-        <?php $currentApp = "siteviews"; ?>
         <?php include "../_footer.php"; ?>
       </main>
       <?php include "../_modals.php"; ?>

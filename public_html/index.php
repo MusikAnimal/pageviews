@@ -1,12 +1,13 @@
 <!-- Pageviews Analysis tool -->
 <!-- Copyright 2016 MusikAnimal -->
+<?php $currentApp = "pageviews"; ?>
 <!DOCTYPE html>
 <html>
   <head>
     <?php include '_head.php'; ?>
     <title><?php echo $I18N->msg( 'title' ); ?></title>
   </head>
-  <body class="<?php echo $rtl; ?>">
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -110,7 +111,6 @@
         <div class="message-container col-lg-12"></div>
         <!-- Legend -->
         <div class="col-lg-12 tm clearfix" id="chart-legend"></div>
-        <?php $currentApp = "pageviews"; ?>
         <?php include "_footer.php"; ?>
       </main>
       <?php include "_modals.php"; ?>
