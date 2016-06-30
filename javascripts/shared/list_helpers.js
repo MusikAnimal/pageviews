@@ -172,9 +172,15 @@ const ListHelpers = superclass => class extends superclass {
     const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
     $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
-    cb(sortedDatasets);
+    try {
+      cb(sortedDatasets);
+    } catch (err) {
+      this.setState('complete');
+      this.showFatalErrors([err]);
+    } finally {
+      this.pushParams();
+    }
 
-    this.pushParams();
     this.toggleView(this.view);
     /**
      * Setting the state to complete will call this.processEnded

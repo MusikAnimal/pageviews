@@ -641,8 +641,13 @@ class Pv extends PvConfig {
     const endTime = moment(),
       elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
-    $('.elapsed-time').attr('datetime', endTime.format())
-      .text($.i18n('elapsed-time', elapsedTime / 1000));
+    /** FIXME: report this bug: some languages don't parse PLURAL correctly ('he' for example) with the English fallback message */
+    try {
+      $('.elapsed-time').attr('datetime', endTime.format())
+        .text($.i18n('elapsed-time', elapsedTime / 1000));
+    } catch (e) {
+      // intentionall nothing, everything will still show
+    }
 
     return elapsedTime;
   }
@@ -958,6 +963,20 @@ class Pv extends PvConfig {
 
   setThrottle() {
     if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
+  }
+
+  showFatalErrors(messages) {
+    this.clearMessages();
+    messages.forEach(message => {
+      this.writeMessage(
+        `<strong>${$.i18n('fatal-error')}</strong>: <code>${message}</code>`
+      );
+    });
+    this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
+
+    if (location.host === 'localhost') {
+      throw messages[0];
+    }
   }
 
   /**

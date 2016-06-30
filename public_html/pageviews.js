@@ -1139,8 +1139,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
-        var _this8 = this;
-
         /** build necessary data structure if we were given an error object */
         if (xhrData instanceof Error) {
           xhrData = {
@@ -1162,14 +1160,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
             var fatalErrorMessages = xhrData.fatalErrors.map(function (err) {
               return err.toString();
             }).unique();
-            fatalErrorMessages.forEach(function (message) {
-              _this8.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + message + '</code>');
-            });
-            this.writeMessage($.i18n('error-please-report', this.getBugReportURL(fatalErrorMessages)));
-
-            if (location.host === 'localhost') {
-              throw xhrData.fatalErrors[0];
-            }
+            this.showFatalErrors(fatalErrorMessages);
 
             return true;
           }
@@ -1505,9 +1496,15 @@ var ListHelpers = function ListHelpers(superclass) {
         var newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
         $('.sort-link--' + this.sort + ' span').addClass(newSortClassName).removeClass('glyphicon-sort');
 
-        cb(sortedDatasets);
+        try {
+          cb(sortedDatasets);
+        } catch (err) {
+          this.setState('complete');
+          this.showFatalErrors([err]);
+        } finally {
+          this.pushParams();
+        }
 
-        this.pushParams();
         this.toggleView(this.view);
         /**
          * Setting the state to complete will call this.processEnded
@@ -2447,7 +2444,12 @@ var Pv = function (_PvConfig) {
       var endTime = moment(),
           elapsedTime = endTime.diff(this.processStart, 'milliseconds');
 
-      $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
+      /** FIXME: report this bug: some languages don't parse PLURAL correctly ('he' for example) with the English fallback message */
+      try {
+        $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
+      } catch (e) {
+        // intentionall nothing, everything will still show
+      }
 
       return elapsedTime;
     }
@@ -2797,6 +2799,21 @@ var Pv = function (_PvConfig) {
     value: function setThrottle() {
       if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
     }
+  }, {
+    key: 'showFatalErrors',
+    value: function showFatalErrors(messages) {
+      var _this9 = this;
+
+      this.clearMessages();
+      messages.forEach(function (message) {
+        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + message + '</code>');
+      });
+      this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
+
+      if (location.host === 'localhost') {
+        throw messages[0];
+      }
+    }
 
     /**
      * Splash in console, just for fun
@@ -2831,14 +2848,14 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'startSpinny',
     value: function startSpinny() {
-      var _this9 = this;
+      var _this10 = this;
 
       $('.chart-container').addClass('loading');
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(function (err) {
-        _this9.resetView();
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this9.getBugReportURL(['Operation timed out'])) + '\n      ', true);
+        _this10.resetView();
+        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL(['Operation timed out'])) + '\n      ', true);
       }, 10 * 1000);
     }
 
@@ -2877,15 +2894,15 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'updateInterAppLinks',
     value: function updateInterAppLinks() {
-      var _this10 = this;
+      var _this11 = this;
 
       $('.interapp-link').each(function (i, link) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this10.project + '.org';
+          link.href = url + '?sites=' + _this11.project + '.org';
         } else {
-          link.href = url + '?project=' + _this10.project + '.org';
+          link.href = url + '?project=' + _this11.project + '.org';
         }
       });
     }

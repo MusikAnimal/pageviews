@@ -142,3 +142,9 @@ input[type=checkbox] {
   float: right;
   margin-left: 10px;
 }
+
+&.langviews {
+  #source_input {
+    border-radius: 0 3px 3px 0;
+  }
+}

@@ -484,16 +484,7 @@ const ChartHelpers = superclass => class extends superclass {
       if (xhrData.fatalErrors.length) {
         this.resetView(true);
         const fatalErrorMessages = xhrData.fatalErrors.map(err => err.toString()).unique();
-        fatalErrorMessages.forEach(message => {
-          this.writeMessage(
-            `<strong>${$.i18n('fatal-error')}</strong>: <code>${message}</code>`
-          );
-        });
-        this.writeMessage($.i18n('error-please-report', this.getBugReportURL(fatalErrorMessages)));
-
-        if (location.host === 'localhost') {
-          throw xhrData.fatalErrors[0];
-        }
+        this.showFatalErrors(fatalErrorMessages);
 
         return true;
       }

@@ -328,8 +328,12 @@
 
 			for ( i = 0; i < pluralForms.length; i++ ) {
 				if ( pluralRules[ pluralForms[ i ] ] ) {
-					if ( pluralRuleParser( pluralRules[ pluralForms[ i ] ], number ) ) {
+					if ( typeof pluralRuleParser === 'undefined' ) {
 						return pluralFormIndex;
+					} else {
+						if ( pluralRuleParser( pluralRules[ pluralForms[ i ] ], number ) ) {
+							return pluralFormIndex;
+						}
 					}
 
 					pluralFormIndex++;
