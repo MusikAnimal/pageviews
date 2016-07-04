@@ -233,5 +233,7 @@
 	"list": "Label for the button to show the 'list view' of Massviews. 'Table' might also be a fitting translation.\n{{Identical|List}}",
 	"chart": "Label for the button to show the 'chart view' of Massviews.\n{{Identical|Chart}}",
 	"autolog-option": "Label for option to automatically use a logarithmic scale if it would better illustrate the data.",
-	"remember-chart-option": "Label for option to remember chart preference across sessions."
+	"remember-chart-option": "Label for option to remember chart preference across sessions.",
+	"begin-at-zero": "Label to show the chart with x-axis starting at zero. This message should be brief, and essentially identical to 'Begin at zero'.",
+	"begin-at-zero-option": "Label for setting to always show the y-axis starting at zero"
 }

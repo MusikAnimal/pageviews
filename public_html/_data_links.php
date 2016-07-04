@@ -26,5 +26,11 @@
         <?php echo $I18N->msg( 'logarithmic-scale' ); ?>
       </label>
     </span>
+    <span class="pull-right chart-specific">
+      <label class="begin-at-zero">
+        <input class="begin-at-zero-option" type="checkbox">
+        <?php echo $I18N->msg( 'begin-at-zero' ); ?>
+      </label>
+    </span>
   </div>
 </div>

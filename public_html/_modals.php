@@ -128,6 +128,12 @@
           </div>
           <div class="checkbox">
             <label>
+              <input class="js-test-bezier-curve" name="beginAtZero" type="checkbox">
+              <?php echo $I18N->msg( 'begin-at-zero-option' ); ?>
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
               <input class="js-test-bezier-curve" name="rememberChart" type="checkbox">
               <?php echo $I18N->msg( 'remember-chart-option' ); ?>
             </label>

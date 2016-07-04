@@ -53,6 +53,22 @@ const ChartHelpers = superclass => class extends superclass {
       this.autoLogDetection = 'false';
       this.isChartApp() ? this.processInput(true) : this.renderData();
     });
+
+    /**
+     * disabled/enable begin at zero checkbox accordingly,
+     * but don't update chart since the log scale value can change pragmatically and not from user input
+     */
+    $(this.config.logarithmicCheckbox).on('change', () => {
+      $('.begin-at-zero').toggleClass('disabled', this.checked);
+    });
+
+    if (this.beginAtZero === 'true') {
+      $('.begin-at-zero-option').prop('checked', true);
+    }
+
+    $('.begin-at-zero-option').on('click', () => {
+      this.isChartApp() ? this.processInput(true) : this.renderData();
+    });
   }
 
   /**
@@ -218,6 +234,7 @@ const ChartHelpers = superclass => class extends superclass {
       sum = values.reduce((a, b) => a + b),
       average = Math.round(sum / values.length),
       max = Math.max(...values),
+      min = Math.min(...values),
       color = this.config.colors[index % 10];
 
     return Object.assign({
@@ -226,6 +243,7 @@ const ChartHelpers = superclass => class extends superclass {
       sum,
       average,
       max,
+      min,
       color
     }, this.config.chartConfig[this.chartType].dataset(color));
   }
@@ -430,6 +448,8 @@ const ChartHelpers = superclass => class extends superclass {
 
       if (this.config.linearCharts.includes(this.chartType)) {
         const linearData = {labels: xhrData.labels, datasets: sortedDatasets};
+
+        options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
 
         this.chartObj = new Chart(context, {
           type: this.chartType,

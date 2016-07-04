@@ -76,6 +76,22 @@ var ChartHelpers = function ChartHelpers(superclass) {
         _this.autoLogDetection = 'false';
         _this.isChartApp() ? _this.processInput(true) : _this.renderData();
       });
+
+      /**
+       * disabled/enable begin at zero checkbox accordingly,
+       * but don't update chart since the log scale value can change pragmatically and not from user input
+       */
+      $(_this.config.logarithmicCheckbox).on('change', function () {
+        $('.begin-at-zero').toggleClass('disabled', _this.checked);
+      });
+
+      if (_this.beginAtZero === 'true') {
+        $('.begin-at-zero-option').prop('checked', true);
+      }
+
+      $('.begin-at-zero-option').on('click', function () {
+        _this.isChartApp() ? _this.processInput(true) : _this.renderData();
+      });
       return _this;
     }
 
@@ -279,6 +295,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         }),
             average = Math.round(sum / values.length),
             max = Math.max.apply(Math, _toConsumableArray(values)),
+            min = Math.min.apply(Math, _toConsumableArray(values)),
             color = this.config.colors[index % 10];
 
         return Object.assign({
@@ -287,6 +304,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
           sum: sum,
           average: average,
           max: max,
+          min: min,
           color: color
         }, this.config.chartConfig[this.chartType].dataset(color));
       }
@@ -532,6 +550,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
           if (this.config.linearCharts.includes(this.chartType)) {
             var linearData = { labels: xhrData.labels, datasets: sortedDatasets };
+
+            options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
 
             this.chartObj = new Chart(context, {
               type: this.chartType,
@@ -1005,6 +1025,8 @@ var ListHelpers = function ListHelpers(superclass) {
             });
           }
 
+          options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+
           var context = $(this.config.chart)[0].getContext('2d');
           this.chartObj = new Chart(context, {
             type: this.chartType,
@@ -1220,7 +1242,7 @@ var Pv = function (_PvConfig) {
     _this.colorsStyleEl = undefined;
     _this.storage = {}; // used as fallback when localStorage is not supported
 
-    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'rememberChart'].forEach(function (setting) {
+    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(function (setting) {
       _this[setting] = _this.getFromLocalStorage('pageviews-settings-' + setting) || _this.config.defaults[setting];
     });
     _this.setupSettingsModal();
@@ -2015,6 +2037,10 @@ var Pv = function (_PvConfig) {
         this.resetSelect2();
       }
 
+      if (this.beginAtZero === 'true') {
+        $('.begin-at-zero-option').prop('checked', true);
+      }
+
       this.processInput(true);
     }
 
@@ -2591,6 +2617,7 @@ var PvConfig = function () {
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
+        beginAtZero: 'false',
         rememberChart: 'true'
       },
       globalChartOpts: {

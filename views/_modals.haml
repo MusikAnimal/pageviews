@@ -95,6 +95,11 @@
 
           %div.checkbox
             %label
+              %input.js-test-bezier-curve(name="beginAtZero" type="checkbox")
+              = $I18N->msg( 'begin-at-zero-option' )
+
+          %div.checkbox
+            %label
               %input.js-test-bezier-curve(name="rememberChart" type="checkbox")
               = $I18N->msg( 'remember-chart-option' )
 

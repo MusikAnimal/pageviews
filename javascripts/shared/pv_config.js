@@ -153,6 +153,7 @@ class PvConfig {
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
+        beginAtZero: 'false',
         rememberChart: 'true'
       },
       globalChartOpts: {

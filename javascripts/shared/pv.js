@@ -20,7 +20,7 @@ class Pv extends PvConfig {
     this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
 
-    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'rememberChart'].forEach(setting => {
+    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(setting => {
       this[setting] = this.getFromLocalStorage(`pageviews-settings-${setting}`) || this.config.defaults[setting];
     });
     this.setupSettingsModal();
@@ -752,6 +752,10 @@ class Pv extends PvConfig {
      */
     if ((this.autocomplete === 'no_autocomplete') !== wasAutocomplete) {
       this.resetSelect2();
+    }
+
+    if (this.beginAtZero === 'true') {
+      $('.begin-at-zero-option').prop('checked', true);
     }
 
     this.processInput(true);

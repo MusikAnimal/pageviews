@@ -226,5 +226,7 @@
 	"list": "List",
 	"chart": "Chart",
 	"autolog-option": "Automatically use logarithmic scale if applicable",
-	"remember-chart-option": "Remember chart preference"
+	"remember-chart-option": "Remember chart preference",
+	"begin-at-zero": "Begin at zero",
+	"begin-at-zero-option": "Always show the y-axis starting at zero"
 }
