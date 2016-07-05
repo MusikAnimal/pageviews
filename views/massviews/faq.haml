@@ -33,6 +33,9 @@
                 - $templateLink = "<a href='https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'>https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games</a>"
                 %i= $I18N->msg( 'template-url' )
                 = $I18N->msg( 'faq-massviews-sources-template-url', array( 'variables' => array( $templateLink ) ) )
+              %li
+                %i Quarry
+                = $I18N->msg( 'faq-massviews-sources-quarry', array( 'variables' => array( 'Quarry', 'page_title' ) ) )
           %li.list-group-item(id="category_subject_toggle")
             %p
               %strong= $I18N->msg( 'faq-massviews-subject-page-title', array( 'variables' => array( $I18N->msg( 'category-subject-toggle' ) ) ) )

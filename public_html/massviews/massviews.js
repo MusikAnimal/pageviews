@@ -48,6 +48,10 @@ var config = {
     transclusions: {
       placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
       type: 'text'
+    },
+    quarry: {
+      placeholder: '12345',
+      type: 'number'
     }
   },
   platformSelector: '#platform_select',
@@ -58,7 +62,7 @@ var config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category', 'transclusions'],
+    source: ['pagepile', 'category', 'transclusions', 'quarry'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
@@ -188,6 +192,14 @@ var MassViews = function (_mix$with) {
         $('.category-subject-toggle').hide();
       }
 
+      if (source === 'quarry') {
+        $('.massviews-source-input').addClass('quarry');
+        $('.quarry-project').prop('disabled', false);
+      } else {
+        $('.massviews-source-input').removeClass('quarry');
+        $('.quarry-project').prop('disabled', true);
+      }
+
       $(this.config.sourceInput).focus();
     }
 
@@ -230,6 +242,8 @@ var MassViews = function (_mix$with) {
 
       if (params.source === 'category') {
         params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
+      } else if (params.source === 'quarry') {
+        params.project = $('.quarry-project').val();
       }
 
       if (!forCacheKey) {
@@ -665,6 +679,14 @@ var MassViews = function (_mix$with) {
         }
       });
 
+      if (params.source === 'quarry') {
+        if (params.project) {
+          $('.quarry-project').val(params.project);
+        } else {
+          delete params.target; // don't process since if we don't have a project
+        }
+      }
+
       if (params.subjectpage === '1') {
         $('.category-subject-toggle--input').prop('checked', true);
       }
@@ -777,6 +799,7 @@ var MassViews = function (_mix$with) {
       var project = _getWikiPageFromURL2[0];
       var category = _getWikiPageFromURL2[1];
 
+      if (!this.validateProject(project)) return;
 
       if (!category) {
         return this.setState('initial', function () {
@@ -859,7 +882,7 @@ var MassViews = function (_mix$with) {
         _this9.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
-        if (data && data.error) {
+        if (data && typeof data.error === 'string') {
           _this9.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
         } else {
           _this9.writeMessage($.i18n('api-error-unknown', categoryLink));
@@ -878,6 +901,7 @@ var MassViews = function (_mix$with) {
       var project = _getWikiPageFromURL4[0];
       var template = _getWikiPageFromURL4[1];
 
+      if (!this.validateProject(project)) return;
 
       if (!template) {
         return this.setState('initial', function () {
@@ -948,12 +972,78 @@ var MassViews = function (_mix$with) {
         _this10.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
-        if (data && data.error) {
+        if (data && typeof data.error === 'string') {
           _this10.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
         } else {
           _this10.writeMessage($.i18n('api-error-unknown', templateLink));
         }
       });
+    }
+  }, {
+    key: 'processQuarry',
+    value: function processQuarry(cb) {
+      var _this11 = this;
+
+      var project = $('.quarry-project').val(),
+          id = $(this.config.sourceInput).val();
+      if (!this.validateProject(project)) return;
+
+      var url = 'https://quarry.wmflabs.org/query/' + id + '/result/latest/0/json',
+          quarryLink = '<a target=\'_blank\' href=\'https://quarry.wmflabs.org/query/' + id + '\'>Quarry ' + id + '</a>';
+
+      $.getJSON(url).done(function (data) {
+        var titleIndex = data.headers.indexOf('page_title');
+
+        if (titleIndex === -1) {
+          _this11.setState('initial');
+          return _this11.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
+        }
+
+        var titles = data.rows.map(function (row) {
+          return row[titleIndex];
+        });
+
+        if (titles.length > 500) {
+          _this11.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this11.formatNumber(titles.length), _this11.config.pageLimit));
+
+          titles = titles.slice(0, _this11.config.pageLimit);
+        }
+
+        _this11.setThrottle();
+
+        _this11.getPageViewsData(project, titles).done(function (pageViewsData) {
+          $('.output-title').html(quarryLink);
+          $('.output-params').html($(_this11.config.dateRangeSelector).val());
+          _this11.buildMotherDataset(id, quarryLink, pageViewsData);
+
+          cb();
+        });
+      }).error(function (data) {
+        _this11.setState('initial');
+        return _this11.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+      });
+    }
+
+    /**
+     * Validate given project and throw an error if invalid
+     * @param  {String} project - tha project
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject(project) {
+      if (!project) return true;
+
+      /** Remove www hostnames since the pageviews API doesn't expect them. */
+      project = project.replace(/^www\./, '');
+
+      if (siteDomains.includes(project)) return true;
+
+      this.setState('initial');
+      this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
+
+      return false;
     }
   }, {
     key: 'mapCategoryPageNames',
@@ -982,7 +1072,7 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this11 = this;
+      var _this12 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -1001,12 +1091,12 @@ var MassViews = function (_mix$with) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this11.updateProgressBar(100);
-        _this11.setInitialChartType();
-        _this11.renderData();
+        _this12.updateProgressBar(100);
+        _this12.setInitialChartType();
+        _this12.renderData();
 
         // XXX: throttling
-        _this11.setThrottle();
+        _this12.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {
@@ -1018,6 +1108,9 @@ var MassViews = function (_mix$with) {
           break;
         case 'transclusions':
           this.processTemplate(cb);
+          break;
+        case 'quarry':
+          this.processQuarry(cb);
           break;
       }
     }

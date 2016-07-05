@@ -58,8 +58,8 @@
                 %option(value="bot")
                   = $I18N->msg( 'bot' )
 
-          / Page Pile input
-          %div.row.aqs-row
+          / Source input
+          %div.row.aqs-row.massviews-source-input
             %div.col-lg-12
               %label(for="source_input")
                 = $I18N->msg( 'source' )
@@ -86,7 +86,11 @@
                     %li
                       %a.source-option(href="#" data-value="transclusions")
                         = $I18N->msg( 'template-url' )
+                    %li
+                      %a.source-option(href="#" data-value="quarry")
+                        Quarry
                 %input.form-control.input-control.source-input#source_input(min="0" required="required")
+                %input.form-control.input-control.quarry-project.col-lg-6(required="required" placeholder="en.wikipedia.org" disabled="disabled")
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right.btn-submit
                     = $I18N->msg( 'submit' )

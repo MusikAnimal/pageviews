@@ -86,6 +86,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.category-subject-toggle').hide();
     }
 
+    if (source === 'quarry') {
+      $('.massviews-source-input').addClass('quarry');
+      $('.quarry-project').prop('disabled', false);
+    } else {
+      $('.massviews-source-input').removeClass('quarry');
+      $('.quarry-project').prop('disabled', true);
+    }
+
     $(this.config.sourceInput).focus();
   }
 
@@ -125,6 +133,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (params.source === 'category') {
       params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
+    } else if (params.source === 'quarry') {
+      params.project = $('.quarry-project').val();
     }
 
     if (!forCacheKey) {
@@ -520,6 +530,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       }
     });
 
+    if (params.source === 'quarry') {
+      if (params.project) {
+        $('.quarry-project').val(params.project);
+      } else {
+        delete params.target; // don't process since if we don't have a project
+      }
+    }
+
     if (params.subjectpage === '1') {
       $('.category-subject-toggle--input').prop('checked', true);
     }
@@ -623,6 +641,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   processCategory(cb) {
     const [project, category] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+    if (!this.validateProject(project)) return;
 
     if (!category) {
       return this.setState('initial', () => {
@@ -709,7 +728,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.setState('initial');
 
       /** structured error comes back as a string, otherwise we don't know what happened */
-      if (data && data.error) {
+      if (data && typeof data.error === 'string') {
         this.writeMessage(
           $.i18n('api-error', categoryLink + ': ' + data.error)
         );
@@ -721,6 +740,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   processTemplate(cb) {
     const [project, template] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+    if (!this.validateProject(project)) return;
 
     if (!template) {
       return this.setState('initial', () => {
@@ -793,7 +813,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.setState('initial');
 
       /** structured error comes back as a string, otherwise we don't know what happened */
-      if (data && data.error) {
+      if (data && typeof data.error === 'string') {
         this.writeMessage(
           $.i18n('api-error', templateLink + ': ' + data.error)
         );
@@ -801,6 +821,69 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         this.writeMessage($.i18n('api-error-unknown', templateLink));
       }
     });
+  }
+
+  processQuarry(cb) {
+    const project = $('.quarry-project').val(),
+      id = $(this.config.sourceInput).val();
+    if (!this.validateProject(project)) return;
+
+    const url = `https://quarry.wmflabs.org/query/${id}/result/latest/0/json`,
+      quarryLink = `<a target='_blank' href='https://quarry.wmflabs.org/query/${id}'>Quarry ${id}</a>`;
+
+    $.getJSON(url).done(data => {
+      const titleIndex = data.headers.indexOf('page_title');
+
+      if (titleIndex === -1) {
+        this.setState('initial');
+        return this.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
+      }
+
+      let titles = data.rows.map(row => row[titleIndex]);
+
+      if (titles.length > 500) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set', quarryLink, this.formatNumber(titles.length), this.config.pageLimit)
+        );
+
+        titles = titles.slice(0, this.config.pageLimit);
+      }
+
+      this.setThrottle();
+
+      this.getPageViewsData(project, titles).done(pageViewsData => {
+        $('.output-title').html(quarryLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(id, quarryLink, pageViewsData);
+
+        cb();
+      });
+    }).error(data => {
+      this.setState('initial');
+      return this.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+    });
+  }
+
+  /**
+   * Validate given project and throw an error if invalid
+   * @param  {String} project - tha project
+   * @return {Boolean} true or false
+   */
+  validateProject(project) {
+    if (!project) return true;
+
+    /** Remove www hostnames since the pageviews API doesn't expect them. */
+    project = project.replace(/^www\./, '');
+
+    if (siteDomains.includes(project)) return true;
+
+    this.setState('initial');
+    this.writeMessage(
+      $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
+      true
+    );
+
+    return false;
   }
 
   mapCategoryPageNames(pages, namespaces) {
@@ -862,6 +945,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       break;
     case 'transclusions':
       this.processTemplate(cb);
+      break;
+    case 'quarry':
+      this.processQuarry(cb);
       break;
     }
   }

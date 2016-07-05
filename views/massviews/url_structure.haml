@@ -51,6 +51,10 @@
             %dd
               - $faqLink = "<a href='/massviews/faq#category_subject_toggle'>" . $I18N->msg( 'category-subject-toggle' ) . "</a>"
               = $I18N->msg( 'url-structure-subjectpage', array( 'variables' => array( $faqLink, '<code>1</code>', '<code>0</code>' ), 'parsemag' => true ) )
+            %dt project
+            %dd
+              - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
+              = $I18N->msg( 'url-structure-project', array( 'variables' => array( 'en.wikipedia.org', $sitematrixLink ), 'parsemag' => true ) )
 
         %div.col-lg-12.text-center.tm
           %a(href="/massviews")

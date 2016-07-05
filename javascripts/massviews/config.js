@@ -46,6 +46,10 @@ const config = {
     transclusions: {
       placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
       type: 'text'
+    },
+    quarry: {
+      placeholder: '12345',
+      type: 'number'
     }
   },
   platformSelector: '#platform_select',
@@ -56,7 +60,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category', 'transclusions'],
+    source: ['pagepile', 'category', 'transclusions', 'quarry'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

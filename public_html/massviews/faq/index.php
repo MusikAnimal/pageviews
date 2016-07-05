@@ -42,6 +42,10 @@
                 <i><?php echo $I18N->msg( 'template-url' ); ?></i>
                 <?php echo $I18N->msg( 'faq-massviews-sources-template-url', array( 'variables' => array( $templateLink ) ) ); ?>
               </li>
+              <li>
+                <i>Quarry</i>
+                <?php echo $I18N->msg( 'faq-massviews-sources-quarry', array( 'variables' => array( 'Quarry', 'page_title' ) ) ); ?>
+              </li>
             </ul>
           </li>
           <li class="list-group-item" id="category_subject_toggle">

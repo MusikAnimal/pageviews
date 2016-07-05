@@ -18,3 +18,20 @@
 .other-options-label {
   display: none;
 }
+
+.massviews-source-input {
+  .quarry-project {
+    display: none;
+  }
+
+  &.quarry {
+    .quarry-project {
+      display: inline-block;
+      width: 50%;
+    }
+
+    .source-input {
+      width: 50%;
+    }
+  }
+}

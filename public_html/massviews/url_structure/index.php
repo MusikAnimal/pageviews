@@ -63,6 +63,11 @@
               <?php $faqLink = "<a href='/massviews/faq#category_subject_toggle'>" . $I18N->msg( 'category-subject-toggle' ) . "</a>"; ?>
               <?php echo $I18N->msg( 'url-structure-subjectpage', array( 'variables' => array( $faqLink, '<code>1</code>', '<code>0</code>' ), 'parsemag' => true ) ); ?>
             </dd>
+            <dt>project</dt>
+            <dd>
+              <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+              <?php echo $I18N->msg( 'url-structure-project', array( 'variables' => array( 'en.wikipedia.org', $sitematrixLink ), 'parsemag' => true ) ); ?>
+            </dd>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

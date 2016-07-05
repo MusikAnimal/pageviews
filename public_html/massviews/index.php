@@ -78,8 +78,8 @@
               </select>
             </div>
           </div>
-          <!-- Page Pile input -->
-          <div class="row aqs-row">
+          <!-- Source input -->
+          <div class="row aqs-row massviews-source-input">
             <div class="col-lg-12">
               <label for="source_input">
                 <?php echo $I18N->msg( 'source' ); ?>
@@ -119,9 +119,15 @@
                         <?php echo $I18N->msg( 'template-url' ); ?>
                       </a>
                     </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="quarry">
+                        Quarry
+                      </a>
+                    </li>
                   </ul>
                 </div>
                 <input class="form-control input-control source-input" id="source_input" min="0" required="required">
+                <input class="form-control input-control quarry-project col-lg-6" required="required" placeholder="en.wikipedia.org" disabled="disabled">
                 <span class="input-group-btn">
                   <button class="btn btn-primary pull-right btn-submit">
                     <?php echo $I18N->msg( 'submit' ); ?>
