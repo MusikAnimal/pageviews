@@ -646,6 +646,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         $('.output-params').text($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(page, pageLink, pageViewsData);
         this.updateProgressBar(100);
+        this.setInitialChartType();
         this.renderData();
 
         /**

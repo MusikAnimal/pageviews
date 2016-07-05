@@ -846,6 +846,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const cb = () => {
       this.updateProgressBar(100);
+      this.setInitialChartType();
       this.renderData();
 
       // XXX: throttling

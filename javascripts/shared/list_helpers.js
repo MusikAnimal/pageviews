@@ -240,7 +240,11 @@ const ListHelpers = superclass => class extends superclass {
         });
       }
 
-      options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+      if (this.chartType === 'radar') {
+        options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+      } else {
+        options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+      }
 
       const context = $(this.config.chart)[0].getContext('2d');
       this.chartObj = new Chart(context, {

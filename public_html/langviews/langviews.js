@@ -795,6 +795,7 @@ var LangViews = function (_mix$with) {
           $('.output-params').text($(_this8.config.dateRangeSelector).val());
           _this8.buildMotherDataset(page, pageLink, pageViewsData);
           _this8.updateProgressBar(100);
+          _this8.setInitialChartType();
           _this8.renderData();
 
           /**
@@ -968,20 +969,19 @@ var ChartHelpers = function ChartHelpers(superclass) {
     function _class(appConfig) {
       _classCallCheck(this, _class);
 
-      // leave if there's no chart configured
-
       var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
-
-      if (!_this.config.chart) return _possibleConstructorReturn(_this);
 
       _this.chartObj = null;
       _this.prevChartType = null;
 
       /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-      if (!_this.config.linearCharts.includes(_this.chartType) && !_this.config.circularCharts.includes(_this.chartType)) {
+      var storedChartType = _this.getFromLocalStorage('pageviews-chart-preference');
+      if (!_this.config.linearCharts.includes(storedChartType) && !_this.config.circularCharts.includes(storedChartType)) {
         _this.setLocalStorage('pageviews-chart-preference', _this.config.defaults.chartType());
-        _this.chartType = _this.config.defaults.chartType();
       }
+
+      // leave if there's no chart configured
+      if (!_this.config.chart) return _possibleConstructorReturn(_this);
 
       /** copy over app-specific chart templates */
       _this.config.linearCharts.forEach(function (linearChart) {
@@ -1485,7 +1485,11 @@ var ChartHelpers = function ChartHelpers(superclass) {
           if (this.config.linearCharts.includes(this.chartType)) {
             var linearData = { labels: xhrData.labels, datasets: sortedDatasets };
 
-            options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+            if (this.chartType === 'radar') {
+              options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+            } else {
+              options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+            }
 
             this.chartObj = new Chart(context, {
               type: this.chartType,
@@ -1959,7 +1963,11 @@ var ListHelpers = function ListHelpers(superclass) {
             });
           }
 
-          options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+          if (this.chartType === 'radar') {
+            options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+          } else {
+            options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+          }
 
           var context = $(this.config.chart)[0].getContext('2d');
           this.chartObj = new Chart(context, {

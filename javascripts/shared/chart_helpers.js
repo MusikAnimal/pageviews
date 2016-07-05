@@ -14,17 +14,17 @@ const ChartHelpers = superclass => class extends superclass {
   constructor(appConfig) {
     super(appConfig);
 
-    // leave if there's no chart configured
-    if (!this.config.chart) return;
-
     this.chartObj = null;
     this.prevChartType = null;
 
     /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-    if (!this.config.linearCharts.includes(this.chartType) && !this.config.circularCharts.includes(this.chartType)) {
+    const storedChartType = this.getFromLocalStorage('pageviews-chart-preference');
+    if (!this.config.linearCharts.includes(storedChartType) && !this.config.circularCharts.includes(storedChartType)) {
       this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType());
-      this.chartType = this.config.defaults.chartType();
     }
+
+    // leave if there's no chart configured
+    if (!this.config.chart) return;
 
     /** copy over app-specific chart templates */
     this.config.linearCharts.forEach(linearChart => {
@@ -449,7 +449,11 @@ const ChartHelpers = superclass => class extends superclass {
       if (this.config.linearCharts.includes(this.chartType)) {
         const linearData = {labels: xhrData.labels, datasets: sortedDatasets};
 
-        options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+        if (this.chartType === 'radar') {
+          options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+        } else {
+          options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+        }
 
         this.chartObj = new Chart(context, {
           type: this.chartType,
