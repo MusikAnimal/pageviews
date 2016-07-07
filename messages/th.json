@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Pon44695",
-			"Macofe"
+			"Macofe",
+			"Bluegram"
 		]
 	},
 	"title": "การวิเคราะห์การเข้าชมหน้า",
@@ -25,7 +26,7 @@
 	"page": "หน้า",
 	"pages": "หน้า",
 	"page-title": "ชื่อหน้า",
-	"change-chart": "เปลี่ยนรูปแบบแผนภูมิ",
+	"change-chart": "รูปแบบแผนภูมิ",
 	"settings": "การตั้งค่า",
 	"download": "ดาวน์โหลดเป็น $1",
 	"csv": "CSV",
@@ -143,5 +144,7 @@
 	"source": "แหล่งที่มา",
 	"category-url": "หมวดหมู่ URL",
 	"elapsed-time": "เวลาล่วงผ่าน: $1 วินาที",
-	"num-pages": "$1 หน้า"
+	"num-pages": "$1 หน้า",
+	"list": "รายการ",
+	"chart": "แผนภูมิ"
 }

@@ -77,6 +77,7 @@
 	"select2-max-items": "Dir kënnt nëmmen $1 Elementer eraussichen",
 	"select2-no-results": "Näischt fonnt",
 	"help-translate": "Hëlleft iwwersetzen",
+	"fatal-error": "Fatale Feeler",
 	"api-error": "Feeler beim Ofruff vu(n) $1",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
 	"excluded-pages": "Ausgeschloss Säiten",
@@ -86,6 +87,7 @@
 	"average": "Duerchschnëtt",
 	"submit": "Späicheren",
 	"num-languages": "$1 Sproochen",
+	"unique-titles": "$1 verschidden {{PLURAL:$1|Titel|Titelen}}",
 	"faq-return-to": "Zréck op $1",
 	"faq-todays-date-title": "Firwat kann ech keng Donnéeë fir den Datum vun haut gesinn?",
 	"faq-chart-type-title": "Ech hunn dës Form vun Diagramm net gär",
@@ -110,5 +112,8 @@
 	"massviews-empty-set": "$1 huet keng Säiten!",
 	"topviews-description": "Meescht gekuckt Säite vun engem Projet",
 	"source": "Quell",
-	"num-pages": "$1 {{PLURAL:$1|Säit|Säiten}}"
+	"num-pages": "$1 {{PLURAL:$1|Säit|Säiten}}",
+	"list": "Lëscht",
+	"chart": "Diagramm",
+	"remember-chart-option": "Diagrammastellunge  verhalen"
 }

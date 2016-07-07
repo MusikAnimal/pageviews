@@ -4,7 +4,8 @@
 			"LordMsz",
 			"Mormegil",
 			"Macofe",
-			"Dvorapa"
+			"Dvorapa",
+			"Matěj Suchánek"
 		]
 	},
 	"title": "Analýza návštěv",
@@ -95,6 +96,9 @@
 	"select2-max-items": "Můžete vybrat pouze $1 položek",
 	"select2-no-results": "Nenalezeny žádné výsledky",
 	"help-translate": "Pomozte s překladem",
+	"fatal-error": "Kritická chyba",
+	"error-timed-out": "Operace trvala příliš dlouho.",
+	"error-please-report": "Prosím, <strong>obnovte stránku</strong> a zkuste to znovu nebo <a target='_blank' href='$1'>nahlaste tuto chybu</a>",
 	"api-error": "Nastal problém s načítáním dat z API.",
 	"api-error-no-data": "Nebyla nalezena žádná data.",
 	"topviews-title": "Analýza nejvíce zobrazovaných",
@@ -110,9 +114,22 @@
 	"submit": "Odeslat",
 	"hover-to-exclude": "Najeďte nad záznamy a klikněte na ✖ pro vyloučení ze zobrazení",
 	"num-languages": "$1 jazyků",
-	"unique-titles": "$1 jedinečných názvů",
+	"unique-titles": "$1 {{PLURAL:$1|jedinečný název|jedinečné názvy|jedinečných názvů}}",
 	"invalid-project": "$1 není <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>platný projekt</a>",
 	"invalid-lang-project": "Projekt $1 je buď neplatný nebo není vícejazyčný",
 	"faq-return-to": "Zpět na $1",
-	"faq-old-data-title": "Proč nemohu zobrazit data starší než srpen 2015?"
+	"faq-old-data-title": "Proč nemohu zobrazit data starší než srpen 2015?",
+	"faq-bug-report-body": "Pokud byste {{GENDER:|chtěl|chtěla|chtěl(a)}} odeslat svůj názor pomocí wiki, jděte na <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>příslušnou stránku</a> na Metě. Problémy můžete také hlásit na <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHubu</a> a ve <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricatoru</a>.",
+	"faq-massviews-sources-title": "Co jsou „Zdroje“?",
+	"faq-massviews-subject-page-title": "Co znamená možnost „$1“?",
+	"url-structure-massviews-source": "Jedna z $1, $2 nebo $3",
+	"elapsed-time": "Uplynulý čas: $1 {{PLURAL:$1|sekunda|sekundy|sekund}}",
+	"num-pages": "$1 {{PLURAL:$1|stránka|stránky|stránek}}",
+	"template-url": "URL šablony",
+	"logarithmic-scale": "Logaritmické měřítko",
+	"list": "Seznam",
+	"chart": "Tabulka",
+	"autolog-option": "Používejte logaritmické měřítko automaticky, pokud je platná.",
+	"begin-at-zero": "Začít od nuly",
+	"begin-at-zero-option": "Vždy zobrazit osu y začínající v nule"
 }

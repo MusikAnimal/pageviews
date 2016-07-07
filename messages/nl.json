@@ -25,7 +25,7 @@
 	"page": "Pagina",
 	"pages": "Pagina's",
 	"page-title": "Paginanaam",
-	"change-chart": "Diagramtype wijzigen",
+	"change-chart": "Diagramtype",
 	"settings": "Instellingen",
 	"download": "Downloaden als $1",
 	"csv": "CSV",
@@ -95,6 +95,8 @@
 	"average": "Gemiddeld",
 	"submit": "Verzenden",
 	"num-languages": "$1 talen",
+	"faq-try-tool": "Probeer $1",
+	"faq-massviews-sources-title": "Wat zijn de \"bronnen\"?",
 	"url-structure-parameters": "Parameters",
 	"default": "Standaard",
 	"all-languages": "Alle talen",
@@ -104,5 +106,12 @@
 	"permalink": "Permanente koppeling",
 	"projects": "Projecten",
 	"statistics": "Statistieken",
-	"most-viewed-pages": "Meest bekeken pagina's"
+	"most-viewed-pages": "Meest bekeken pagina's",
+	"unique-devices": "Unieke apparaten",
+	"massviews-empty-set": "$1 bevat geen pagina's!",
+	"source": "Bron",
+	"elapsed-time": "Verstreken tijd: $1 {{PLURAL:$1|seconde|seconden}}",
+	"num-pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
+	"list": "Lijst",
+	"chart": "Grafiek"
 }
