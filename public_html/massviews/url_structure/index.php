@@ -66,7 +66,7 @@
             <dt>project</dt>
             <dd>
               <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
-              <?php echo $I18N->msg( 'url-structure-project', array( 'variables' => array( 'en.wikipedia.org', $sitematrixLink ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-massviews-project', array( 'variables' => array( $sitematrixLink ), 'parsemag' => true ) ); ?>
             </dd>
           </dl>
         </div>
