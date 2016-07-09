@@ -166,7 +166,7 @@
 	"url-structure-parameters": "Parameters",
 	"url-structure-parameters-order": "Can be used in any order",
 	"url-structure-project": "$1 or other valid $2",
-	"url-structure-projects": "Valid $1 separted by a <code>|</code> characters, such as $2",
+	"url-structure-projects": "Valid $1 separated by a <code>|</code> characters, such as $2",
 	"url-structure-project-multilang": "The provided source project must be multilingual, such as $1 or $2",
 	"url-structure-page": "Escaped page name.",
 	"url-structure-pages": "Escaped page names separated by a pipe <code>|</code> such as <code>Cat|Dog</code> (default)",
