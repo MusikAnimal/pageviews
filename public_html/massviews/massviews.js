@@ -766,6 +766,17 @@ var MassViews = function (_mix$with) {
         if (!_this8.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
 
         _this8.sourceProject = siteMap[pileData.wiki];
+
+        /**
+         * remove Project: prefix if present, only for enwiki, for now,
+         * see https://phabricator.wikimedia.org/T135437
+         */
+        if (_this8.sourceProject === 'en.wikipedia.org') {
+          pileData.pages = pileData.pages.map(function (page) {
+            return page.replace(/^Project:Wikipedia:/, 'Wikipedia:');
+          });
+        }
+
         _this8.getPageViewsData(_this8.sourceProject, pileData.pages).done(function (pageViewsData) {
           var label = 'Page Pile #' + pileData.id;
 

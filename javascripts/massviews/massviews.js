@@ -611,6 +611,17 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
 
       this.sourceProject = siteMap[pileData.wiki];
+
+      /**
+       * remove Project: prefix if present, only for enwiki, for now,
+       * see https://phabricator.wikimedia.org/T135437
+       */
+      if (this.sourceProject === 'en.wikipedia.org') {
+        pileData.pages = pileData.pages.map(page => {
+          return page.replace(/^Project:Wikipedia:/, 'Wikipedia:');
+        });
+      }
+
       this.getPageViewsData(this.sourceProject, pileData.pages).done(pageViewsData => {
         const label = `Page Pile #${pileData.id}`;
 
