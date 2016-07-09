@@ -68,7 +68,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="settings-modal" role="dialog" tabindex="-1">
+<div class="modal fade settings-modal" id="settings-modal" role="dialog" tabindex="-1">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -120,25 +120,25 @@
               <?php echo $I18N->msg( 'localize-dates' ); ?>
             </label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox chart-specific">
             <label>
               <input class="js-test-bezier-curve" name="autoLogDetection" type="checkbox">
               <?php echo $I18N->msg( 'autolog-option' ); ?>
             </label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox chart-specific">
             <label>
               <input class="js-test-bezier-curve" name="beginAtZero" type="checkbox">
               <?php echo $I18N->msg( 'begin-at-zero-option' ); ?>
             </label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox chart-specific">
             <label>
               <input class="js-test-bezier-curve" name="rememberChart" type="checkbox">
               <?php echo $I18N->msg( 'remember-chart-option' ); ?>
             </label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox chart-specific">
             <label>
               <input class="js-test-bezier-curve" name="bezierCurve" type="checkbox">
               <?php echo $I18N->msg( 'bezier-curve-option' ); ?>

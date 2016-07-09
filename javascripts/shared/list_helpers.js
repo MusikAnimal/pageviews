@@ -253,7 +253,10 @@ const ListHelpers = superclass => class extends superclass {
         options
       });
 
+      $('.chart-specific').show();
       $('#chart-legend').html(this.chartObj.generateLegend());
+    } else {
+      $('.chart-specific').hide();
     }
 
     this.pushParams();

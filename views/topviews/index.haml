@@ -54,6 +54,18 @@
               = $I18N->msg( 'excluded-pages' )
             %select.aqs-select2-selector.col-lg-12.invisible#article-input(multiple="multiple")
 
+        / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
+        - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
+        %span(class="row search-topviews invisible #{$cols}")
+          %div.input-group
+            %label.input-group-addon(for="topviews_search_field")
+              = $I18N->msg( 'search' )
+            %span.glyphicon.glyphicon-search.topviews-search-icon
+            %input.form-control#topviews_search_field
+
+        %span.pull-right
+          - include "../_data_links.php"
+
         / Chart
         %div.col-lg-12
           %small.text-muted
@@ -67,7 +79,6 @@
 
         %div.message-container.col-lg-10
 
-        / Other links
-        %div.col-lg-10.data-links
-
         - include "../_footer.php"
+
+      - include "../_modals.php"

@@ -236,5 +236,6 @@
 	"autolog-option": "Label for option to automatically use a logarithmic scale if it would better illustrate the data.",
 	"remember-chart-option": "Label for option to remember chart preference across sessions.",
 	"begin-at-zero": "Label to show the chart with x-axis starting at zero. This message should be brief, and essentially identical to 'Begin at zero'.",
-	"begin-at-zero-option": "Label for setting to always show the y-axis starting at zero"
+	"begin-at-zero-option": "Label for setting to always show the y-axis starting at zero",
+	"search": "Label for the search field in the Topviews app.\n{{Identical|Search}}"
 }

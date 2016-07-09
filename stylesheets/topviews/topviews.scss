@@ -81,3 +81,24 @@ $gray: #ccc;
 .show-more {
   display: none;
 }
+
+.chart-specific {
+  display: none;
+}
+
+.search-method-options,
+.other-options-label {
+  display: none;
+}
+
+.search-topviews {
+  .glyphicon {
+    @include center('vertical');
+    right: 10px;
+  }
+
+  .topviews-search-icon.glyphicon-remove {
+    cursor: pointer;
+    z-index: 10;
+  }
+}

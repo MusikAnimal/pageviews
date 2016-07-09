@@ -89,12 +89,8 @@ output {
 }
 
 .list-mode {
-  .chart-specific {
-    display: none;
-
-    ~ .btn-settings {
-      margin: 0;
-    }
+  .chart-specific ~ .btn-settings {
+    margin: 0;
   }
 
   .list-view {

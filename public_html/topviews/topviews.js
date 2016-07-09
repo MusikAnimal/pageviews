@@ -1041,7 +1041,10 @@ var ListHelpers = function ListHelpers(superclass) {
             options: options
           });
 
+          $('.chart-specific').show();
           $('#chart-legend').html(this.chartObj.generateLegend());
+        } else {
+          $('.chart-specific').hide();
         }
 
         this.pushParams();
@@ -2033,19 +2036,22 @@ var Pv = function (_PvConfig) {
 
       this.daterangepicker.locale.format = this.dateFormat;
       this.daterangepicker.updateElement();
-      this.setupSelect2Colors();
 
-      /**
-       * If we changed to/from no_autocomplete we have to reset Select2 entirely
-       *   as setSelect2Defaults is super buggy due to Select2 constraints
-       * So let's only reset if we have to
-       */
-      if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
-        this.resetSelect2();
-      }
+      if (this.app !== 'topviews') {
+        this.setupSelect2Colors();
 
-      if (this.beginAtZero === 'true') {
-        $('.begin-at-zero-option').prop('checked', true);
+        /**
+         * If we changed to/from no_autocomplete we have to reset Select2 entirely
+         *   as setSelect2Defaults is super buggy due to Select2 constraints
+         * So let's only reset if we have to
+         */
+        if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
+          this.resetSelect2();
+        }
+
+        if (this.beginAtZero === 'true') {
+          $('.begin-at-zero-option').prop('checked', true);
+        }
       }
 
       this.processInput(true);
@@ -3661,6 +3667,7 @@ var config = {
     project: 'en.wikipedia.org'
   },
   pageSize: 20,
+  platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   timestampFormat: 'YYYYMMDD00'
 };
@@ -3737,8 +3744,8 @@ var TopViews = function (_Pv) {
      */
 
   }, {
-    key: 'applyChanges',
-    value: function applyChanges(force) {
+    key: 'processInput',
+    value: function processInput(force) {
       this.pushParams();
 
       /** prevent redundant querying */
@@ -3763,7 +3770,7 @@ var TopViews = function (_Pv) {
 
       this.stopSpinny();
       $('.chart-container').html('');
-      $('.show-more').show();
+      $('.expand-chart').show();
 
       var count = 0,
           index = 0;
@@ -3781,6 +3788,8 @@ var TopViews = function (_Pv) {
       }
 
       this.pushParams();
+      $('.data-links').removeClass('invisible');
+      $('.search-topviews').removeClass('invisible');
 
       $('.topview-entry--remove').off('click').on('click', function (e) {
         var pageName = _this2.pageNames[$(e.target).data('article-id')];
@@ -3788,10 +3797,20 @@ var TopViews = function (_Pv) {
         _this2.pushParams();
       });
     }
+
+    /**
+     * Add given page(s) to list of excluded pages and optionally re-render the view
+     * @param {Array|String} pages - page(s) to add to excludes
+     * @param {Boolean} [triggerChange] - whether or not to re-render the view
+     * @returns {null} nothing
+     */
+
   }, {
     key: 'addExclude',
     value: function addExclude(pages) {
       var _this3 = this;
+
+      var triggerChange = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
       if (!Array.isArray(pages)) pages = [pages];
 
@@ -3808,29 +3827,76 @@ var TopViews = function (_Pv) {
         $('<option>' + escapedText + '</option>').appendTo(_this3.config.articleSelector);
       });
 
-      $(this.config.articleSelector).val(this.excludes).trigger('change');
+      if (triggerChange) $(this.config.articleSelector).val(this.excludes).trigger('change');
       // $(this.config.articleSelector).select2('close');
     }
 
     /**
-     * Gets the date headings as strings - i18n compliant
-     * @param {boolean} localized - whether the dates should be localized per browser language
-     * @returns {Array} the date headings as strings
+     * Clear the topviews search
+     * @return {null} nothing
      */
 
   }, {
-    key: 'getDateHeadings',
-    value: function getDateHeadings(localized) {
-      var dateHeadings = [];
-
-      for (var date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
-        if (localized) {
-          dateHeadings.push(date.format(this.dateFormat));
-        } else {
-          dateHeadings.push(date.format('YYYY-MM-DD'));
-        }
+    key: 'clearSearch',
+    value: function clearSearch() {
+      if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
+        $('#topviews_search_field').val('');
+        $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+        this.drawData();
       }
-      return dateHeadings;
+    }
+
+    /**
+     * Exports current chart data to CSV format and loads it in a new tab
+     * With the prepended data:text/csv this should cause the browser to download the data
+     * @returns {string} CSV content
+     */
+
+  }, {
+    key: 'exportCSV',
+    value: function exportCSV() {
+      var _this4 = this;
+
+      var csvContent = 'data:text/csv;charset=utf-8,Page,Views\n';
+
+      this.pageData.forEach(function (entry) {
+        if (_this4.excludes.includes(entry.article)) return;
+        // Build an array of site titles for use in the CSV header
+        var title = '"' + entry.article.replace(/"/g, '""') + '"';
+
+        csvContent += title + ',' + entry.views + '\n';
+      });
+
+      // Output the CSV file to the browser
+      var encodedUri = encodeURI(csvContent);
+      window.open(encodedUri);
+    }
+
+    /**
+     * Exports current chart data to JSON format and loads it in a new tab
+     * @returns {string} stringified JSON
+     */
+
+  }, {
+    key: 'exportJSON',
+    value: function exportJSON() {
+      var _this5 = this;
+
+      var data = [];
+
+      this.pageData.forEach(function (entry, index) {
+        if (_this5.excludes.includes(entry.article)) return;
+        data.push({
+          page: entry.article,
+          views: entry.views
+        });
+      });
+
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
+          encodedUri = encodeURI(jsonContent);
+      window.open(encodedUri);
+
+      return jsonContent;
     }
 
     /**
@@ -3844,7 +3910,7 @@ var TopViews = function (_Pv) {
     value: function getPageviewsURL(article) {
       var startDate = moment(this.daterangepicker.startDate),
           endDate = moment(this.daterangepicker.endDate);
-      var platform = $('#platform-select').val(),
+      var platform = $(this.config.platformSelector).val(),
           project = $(this.config.projectInput).val();
 
       if (endDate.diff(startDate, 'days') === 0) {
@@ -3856,6 +3922,50 @@ var TopViews = function (_Pv) {
     }
 
     /**
+     * Get all user-inputted parameters except the pages
+     * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
+     * @return {Object} project, platform, excludes, etc.
+     */
+
+  }, {
+    key: 'getParams',
+    value: function getParams() {
+      var specialRange = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+      var params = {
+        project: $(this.config.projectInput).val(),
+        platform: $(this.config.platformSelector).val()
+      };
+
+      /**
+       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+       * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+       */
+      if (this.specialRange && specialRange) {
+        params.range = this.specialRange.range;
+      } else {
+        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      }
+
+      return params;
+    }
+
+    /**
+     * Get params needed to create a permanent link of visible data
+     * @return {Object} hash of params
+     */
+
+  }, {
+    key: 'getPermaLink',
+    value: function getPermaLink() {
+      var params = this.getParams(false);
+      delete params.range;
+      return params;
+    }
+
+    /**
      * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
@@ -3864,7 +3974,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this4 = this;
+      var _this6 = this;
 
       this.startSpinny();
       var startDate = void 0,
@@ -3904,7 +4014,7 @@ var TopViews = function (_Pv) {
         this.setSpecialRange(this.config.defaults.dateRange);
       }
 
-      $('#platform-select').val(params.platform || 'all-access');
+      $(this.config.platformSelector).val(params.platform || 'all-access');
 
       if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
         this.excludes = this.config.defaults.excludes;
@@ -3917,44 +4027,28 @@ var TopViews = function (_Pv) {
       this.params = location.search;
 
       this.initData().then(function () {
-        _this4.setupArticleSelector();
-        _this4.drawData();
-        _this4.setupListeners();
+        _this6.setupArticleSelector();
+        _this6.drawData();
+        _this6.setupListeners();
       });
     }
 
     /**
      * Replaces history state with new URL query string representing current user input
      * Called whenever we go to update the chart
-     * @returns {string|false} the new query param string or false if nothing has changed
+     * @returns {null} nothing
      */
 
   }, {
     key: 'pushParams',
     value: function pushParams() {
-      var state = {
-        project: $(this.config.projectInput).val(),
-        platform: $('#platform-select').val()
-      };
-
-      /**
-       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-       * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
-       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
-       */
-      if (this.specialRange) {
-        state.range = this.specialRange.range;
-      } else {
-        state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-        state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
-      }
+      var excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%]/g, escape);
 
       if (window.history && window.history.replaceState) {
-        var excludes = this.underscorePageNames(this.excludes);
-        window.history.replaceState({}, document.title, '?' + $.param(state) + '&excludes=' + excludes.join('|'));
+        window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&excludes=' + excludes);
       }
 
-      return state;
+      $('.permalink').prop('href', '?' + $.param(this.getPermaLink()) + '&excludes=' + excludes);
     }
 
     /**
@@ -3990,12 +4084,60 @@ var TopViews = function (_Pv) {
       this.pageNames = [];
       this.stopSpinny();
       $('.chart-container').html('');
-      $('.show-more').show();
+      $('.expand-chart').show();
       $('.message-container').html('');
       if (clearSelector) {
         this.resetArticleSelector();
         this.excludes = [];
       }
+    }
+
+    /**
+     * Search the topviews data for the given page title
+     * and restrict the view to the matches
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'searchTopviews',
+    value: function searchTopviews() {
+      var _this7 = this;
+
+      var query = $('#topviews_search_field').val();
+
+      if (!query) return this.clearSearch();
+
+      var matchedData = [],
+          count = 0;
+
+      // add ranking to pageData and fetch matches
+      this.pageData.forEach(function (entry, index) {
+        if (!_this7.excludes.includes(entry.article)) {
+          count++;
+          if (entry.article.includes(query)) {
+            entry.rank = count;
+            entry.index = index;
+            matchedData.push(entry);
+          }
+        }
+      });
+
+      $('.chart-container').html('');
+      $('.expand-chart').hide();
+      $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+
+      matchedData.forEach(function (item) {
+        var width = 100 * (item.views / _this7.max),
+            direction = !!i18nRtl ? 'to left' : 'to right';
+
+        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + item.index + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + item.rank + '</span>\n         <a class=\'topview-entry--label\' href="' + _this7.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + _this7.getPageviewsURL(item.article) + '\'>' + _this7.formatNumber(item.views) + '</a></div>');
+      });
+
+      $('.topview-entry--remove').off('click').on('click', function (e) {
+        var pageName = _this7.pageNames[$(e.target).data('article-id')];
+        _this7.addExclude(pageName);
+        _this7.searchTopviews(query, false);
+      });
     }
 
     /**
@@ -4007,7 +4149,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupArticleSelector',
     value: function setupArticleSelector() {
-      var _this5 = this;
+      var _this8 = this;
 
       var excludes = arguments.length <= 0 || arguments[0] === undefined ? this.excludes : arguments[0];
 
@@ -4023,9 +4165,9 @@ var TopViews = function (_Pv) {
       if (excludes.length) this.setArticleSelectorDefaults(excludes);
 
       articleSelector.on('change', function (e) {
-        _this5.excludes = $(e.target).val() || [];
-        _this5.max = null;
-        _this5.drawData();
+        _this8.excludes = $(e.target).val() || [];
+        _this8.max = null;
+        _this8.drawData();
         // $(this).select2().trigger('close');
       });
 
@@ -4049,12 +4191,12 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setArticleSelectorDefaults',
     value: function setArticleSelectorDefaults(pages) {
-      var _this6 = this;
+      var _this9 = this;
 
       pages = pages.map(function (page) {
         // page = page.replace(/ /g, '_');
         var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this6.config.articleSelector);
+        $('<option>' + escapedText + '</option>').appendTo(_this9.config.articleSelector);
         return page;
       });
       $(this.config.articleSelector).select2('val', pages);
@@ -4071,7 +4213,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this7 = this;
+      var _this10 = this;
 
       _get(Object.getPrototypeOf(TopViews.prototype), 'setupDateRangeSelector', this).call(this);
 
@@ -4084,10 +4226,10 @@ var TopViews = function (_Pv) {
 
       dateRangeSelector.on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this7.specialRange = null;
+          _this10.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this7.daterangepicker.updateElement();
+          _this10.daterangepicker.updateElement();
         }
       });
     }
@@ -4100,22 +4242,26 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this8 = this;
+      var _this11 = this;
 
       _get(Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
 
-      $('#platform-select').on('change', this.applyChanges.bind(this));
+      $(this.config.platformSelector).on('change', this.processInput.bind(this));
       $('.expand-chart').on('click', function () {
-        _this8.offset += _this8.config.pageSize;
-        _this8.drawData();
+        _this11.offset += _this11.config.pageSize;
+        _this11.drawData();
       });
       $(this.config.dateRangeSelector).on('change', function (e) {
         /** clear out specialRange if it doesn't match our input */
-        if (_this8.specialRange && _this8.specialRange.value !== e.target.value) {
-          _this8.specialRange = null;
+        if (_this11.specialRange && _this11.specialRange.value !== e.target.value) {
+          _this11.specialRange = null;
         }
-        _this8.applyChanges();
+        _this11.processInput();
       });
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
+      $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
+      $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
     }
 
     /**
@@ -4126,16 +4272,16 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupProjectInput',
     value: function setupProjectInput() {
-      var _this9 = this;
+      var _this12 = this;
 
       $(this.config.projectInput).on('change', function (e) {
         if (!e.target.value) {
-          e.target.value = _this9.config.defaults.project;
+          e.target.value = _this12.config.defaults.project;
           return;
         }
-        if (_this9.validateProject()) return;
-        _this9.resetView(false);
-        _this9.applyChanges(true).then(resetArticleSelector);
+        if (_this12.validateProject()) return;
+        _this12.resetView(false);
+        _this12.processInput(true).then(resetArticleSelector);
       });
     }
 
@@ -4148,17 +4294,17 @@ var TopViews = function (_Pv) {
     key: 'initData',
     value: function initData() {
       var _$,
-          _this10 = this;
+          _this13 = this;
 
       var dfd = $.Deferred();
 
       this.startSpinny();
-      $('.show-more').hide();
+      $('.expand-chart').hide();
 
       /** Collect parameters from inputs. */
       var startDate = this.daterangepicker.startDate,
           endDate = this.daterangepicker.endDate,
-          access = $('#platform-select').val();
+          access = $(this.config.platformSelector).val();
 
       var promises = [],
           initPageData = {};
@@ -4198,21 +4344,21 @@ var TopViews = function (_Pv) {
             views: initPageData[page]
           });
         }
-        _this10.pageData = sortable.sort(function (a, b) {
+        _this13.pageData = sortable.sort(function (a, b) {
           return b.views - a.views;
         });
 
         /** ...and build the pageNames array for Select2 */
-        _this10.pageNames = _this10.pageData.map(function (value) {
+        _this13.pageNames = _this13.pageData.map(function (value) {
           return value.article;
         });
 
-        if (_this10.excludes.length) {
-          return dfd.resolve(_this10.pageData);
+        if (_this13.excludes.length) {
+          return dfd.resolve(_this13.pageData);
         } else {
           /** find first 30 non-mainspace pages and exclude them */
-          _this10.filterByNamespace(_this10.pageNames.slice(0, 30)).done(function () {
-            return dfd.resolve(_this10.pageData);
+          _this13.filterByNamespace(_this13.pageNames.slice(0, 30)).done(function () {
+            return dfd.resolve(_this13.pageData);
           });
         }
       });
@@ -4228,7 +4374,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'filterByNamespace',
     value: function filterByNamespace(pages) {
-      var _this11 = this;
+      var _this14 = this;
 
       var ns = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
@@ -4263,7 +4409,7 @@ var TopViews = function (_Pv) {
                 excludes.push(normalizedTitle || title);
               }
             });
-            _this11.addExclude(excludes);
+            _this14.addExclude(excludes);
           })();
         }
 

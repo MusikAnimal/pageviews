@@ -46,7 +46,7 @@
         %button.btn.btn-default(data-dismiss="modal" type="button")
           = $I18N->msg( 'cancel' )
 
-%div.modal.fade#settings-modal(role="dialog" tabindex="-1")
+%div.modal.fade.settings-modal#settings-modal(role="dialog" tabindex="-1")
   %div.modal-dialog(role="document")
     %div.modal-content
       %div.modal-header
@@ -88,22 +88,22 @@
               %input.js-test-localize-dates(name="localizeDateFormat" type="checkbox")
               = $I18N->msg( 'localize-dates' )
 
-          %div.checkbox
+          %div.checkbox.chart-specific
             %label
               %input.js-test-bezier-curve(name="autoLogDetection" type="checkbox")
               = $I18N->msg( 'autolog-option' )
 
-          %div.checkbox
+          %div.checkbox.chart-specific
             %label
               %input.js-test-bezier-curve(name="beginAtZero" type="checkbox")
               = $I18N->msg( 'begin-at-zero-option' )
 
-          %div.checkbox
+          %div.checkbox.chart-specific
             %label
               %input.js-test-bezier-curve(name="rememberChart" type="checkbox")
               = $I18N->msg( 'remember-chart-option' )
 
-          %div.checkbox
+          %div.checkbox.chart-specific
             %label
               %input.js-test-bezier-curve(name="bezierCurve" type="checkbox")
               = $I18N->msg( 'bezier-curve-option' )
