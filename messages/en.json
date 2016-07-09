@@ -178,7 +178,7 @@
 	"url-structure-start-date": "Start date in the format $1<br/>Omit this parameter and the $2 parameter to show the most recent data",
 	"url-structure-end-date": "End date in the format $1, defaults to previous day",
 	"url-structure-platform": "One of $1, $2, $3 or $4",
-	"url-structure-agent": "One of $1 (human viewer, default), $2 (search engine crawlers), $3 (WMF bots) or $4 (user, spider and bot)",
+	"url-structure-agent": "One of $1 (human viewer, default), $2 (search engine crawlers), $3 (WMF bots) or $4 ($1, $2 and $3)",
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
 	"url-structure-source": "Either $1 (total page views) or $2 (number of unique devices that viewed the page)",
