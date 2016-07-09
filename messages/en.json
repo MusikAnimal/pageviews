@@ -182,7 +182,7 @@
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
 	"url-structure-source": "Either $1 (total page views) or $2 (number of unique devices that viewed the page)",
-	"url-structure-massviews-example": "Example URL for PagePile: $1 Example URL for a category: $2 To link to Massviews on a category page on your wiki, use: $3",
+	"url-structure-massviews-example": "Example URL for PagePile: $1\nExample URL for a category: $2\nTo link to Massviews on a category page on your wiki, use:\n$3",
 	"url-structure-massviews-source": "One of $1, $2 or $3",
 	"url-structure-massviews-target": "The Page Pile ID, or full URL to a category. If a question mark <code>?</code> is in the URL, it <strong>must be encoded</strong>.",
 	"url-structure-massviews-target-example": "For instance, <strong>do not use</strong>:\n$1\nInstead use:\n$2\nOr you could simply use the shorter wiki URL:\n$3",
