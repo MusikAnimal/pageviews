@@ -1976,7 +1976,10 @@ var ListHelpers = function ListHelpers(superclass) {
             options: options
           });
 
+          $('.chart-specific').show();
           $('#chart-legend').html(this.chartObj.generateLegend());
+        } else {
+          $('.chart-specific').hide();
         }
 
         this.pushParams();
@@ -2968,19 +2971,22 @@ var Pv = function (_PvConfig) {
 
       this.daterangepicker.locale.format = this.dateFormat;
       this.daterangepicker.updateElement();
-      this.setupSelect2Colors();
 
-      /**
-       * If we changed to/from no_autocomplete we have to reset Select2 entirely
-       *   as setSelect2Defaults is super buggy due to Select2 constraints
-       * So let's only reset if we have to
-       */
-      if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
-        this.resetSelect2();
-      }
+      if (this.app !== 'topviews') {
+        this.setupSelect2Colors();
 
-      if (this.beginAtZero === 'true') {
-        $('.begin-at-zero-option').prop('checked', true);
+        /**
+         * If we changed to/from no_autocomplete we have to reset Select2 entirely
+         *   as setSelect2Defaults is super buggy due to Select2 constraints
+         * So let's only reset if we have to
+         */
+        if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
+          this.resetSelect2();
+        }
+
+        if (this.beginAtZero === 'true') {
+          $('.begin-at-zero-option').prop('checked', true);
+        }
       }
 
       this.processInput(true);

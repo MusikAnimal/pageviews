@@ -41,7 +41,7 @@ class TopViews extends Pv {
    * @param {boolean} force - apply all user options even if we've detected nothing has changed
    * @returns {Deferred} deferred object from initData
    */
-  applyChanges(force) {
+  processInput(force) {
     this.pushParams();
 
     /** prevent redundant querying */
@@ -61,7 +61,7 @@ class TopViews extends Pv {
   drawData() {
     this.stopSpinny();
     $('.chart-container').html('');
-    $('.show-more').show();
+    $('.expand-chart').show();
 
     let count = 0, index = 0;
 
@@ -85,6 +85,8 @@ class TopViews extends Pv {
     }
 
     this.pushParams();
+    $('.data-links').removeClass('invisible');
+    $('.search-topviews').removeClass('invisible');
 
     $('.topview-entry--remove').off('click').on('click', e => {
       const pageName = this.pageNames[$(e.target).data('article-id')];
@@ -93,7 +95,13 @@ class TopViews extends Pv {
     });
   }
 
-  addExclude(pages) {
+  /**
+   * Add given page(s) to list of excluded pages and optionally re-render the view
+   * @param {Array|String} pages - page(s) to add to excludes
+   * @param {Boolean} [triggerChange] - whether or not to re-render the view
+   * @returns {null} nothing
+   */
+  addExclude(pages, triggerChange = true) {
     if (!Array.isArray(pages)) pages = [pages];
 
     pages.forEach(page => {
@@ -109,26 +117,63 @@ class TopViews extends Pv {
       $(`<option>${escapedText}</option>`).appendTo(this.config.articleSelector);
     });
 
-    $(this.config.articleSelector).val(this.excludes).trigger('change');
+    if (triggerChange) $(this.config.articleSelector).val(this.excludes).trigger('change');
     // $(this.config.articleSelector).select2('close');
   }
 
   /**
-   * Gets the date headings as strings - i18n compliant
-   * @param {boolean} localized - whether the dates should be localized per browser language
-   * @returns {Array} the date headings as strings
+   * Clear the topviews search
+   * @return {null} nothing
    */
-  getDateHeadings(localized) {
-    const dateHeadings = [];
-
-    for (let date = moment(this.daterangepicker.startDate); date.isBefore(this.daterangepicker.endDate); date.add(1, 'd')) {
-      if (localized) {
-        dateHeadings.push(date.format(this.dateFormat));
-      } else {
-        dateHeadings.push(date.format('YYYY-MM-DD'));
-      }
+  clearSearch() {
+    if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
+      $('#topviews_search_field').val('');
+      $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+      this.drawData();
     }
-    return dateHeadings;
+  }
+
+  /**
+   * Exports current chart data to CSV format and loads it in a new tab
+   * With the prepended data:text/csv this should cause the browser to download the data
+   * @returns {string} CSV content
+   */
+  exportCSV() {
+    let csvContent = 'data:text/csv;charset=utf-8,Page,Views\n';
+
+    this.pageData.forEach(entry => {
+      if (this.excludes.includes(entry.article)) return;
+      // Build an array of site titles for use in the CSV header
+      let title = '"' + entry.article.replace(/"/g, '""') + '"';
+
+      csvContent += `${title},${entry.views}\n`;
+    });
+
+    // Output the CSV file to the browser
+    const encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
+  }
+
+  /**
+   * Exports current chart data to JSON format and loads it in a new tab
+   * @returns {string} stringified JSON
+   */
+  exportJSON() {
+    let data = [];
+
+    this.pageData.forEach((entry, index) => {
+      if (this.excludes.includes(entry.article)) return;
+      data.push({
+        page: entry.article,
+        views: entry.views
+      });
+    });
+
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
+      encodedUri = encodeURI(jsonContent);
+    window.open(encodedUri);
+
+    return jsonContent;
   }
 
   /**
@@ -139,7 +184,7 @@ class TopViews extends Pv {
   getPageviewsURL(article) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
-    const platform = $('#platform-select').val(),
+    const platform = $(this.config.platformSelector).val(),
       project = $(this.config.projectInput).val();
 
     if (endDate.diff(startDate, 'days') === 0) {
@@ -149,6 +194,42 @@ class TopViews extends Pv {
 
     return `/pageviews#start=${startDate.format('YYYY-MM-DD')}` +
       `&end=${endDate.format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${article}`;
+  }
+
+  /**
+   * Get all user-inputted parameters except the pages
+   * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
+   * @return {Object} project, platform, excludes, etc.
+   */
+  getParams(specialRange = true) {
+    let params = {
+      project: $(this.config.projectInput).val(),
+      platform: $(this.config.platformSelector).val()
+    };
+
+    /**
+     * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
+     *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+     */
+    if (this.specialRange && specialRange) {
+      params.range = this.specialRange.range;
+    } else {
+      params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+      params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+    }
+
+    return params;
+  }
+
+  /**
+   * Get params needed to create a permanent link of visible data
+   * @return {Object} hash of params
+   */
+  getPermaLink() {
+    let params = this.getParams(false);
+    delete params.range;
+    return params;
   }
 
   /**
@@ -193,7 +274,7 @@ class TopViews extends Pv {
       this.setSpecialRange(this.config.defaults.dateRange);
     }
 
-    $('#platform-select').val(params.platform || 'all-access');
+    $(this.config.platformSelector).val(params.platform || 'all-access');
 
     if (!params.excludes || (params.excludes.length === 1 && !params.excludes[0])) {
       this.excludes = this.config.defaults.excludes;
@@ -213,32 +294,16 @@ class TopViews extends Pv {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
-   * @returns {string|false} the new query param string or false if nothing has changed
+   * @returns {null} nothing
    */
   pushParams() {
-    let state = {
-      project: $(this.config.projectInput).val(),
-      platform: $('#platform-select').val()
-    };
-
-    /**
-     * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
-     *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
-     */
-    if (this.specialRange) {
-      state.range = this.specialRange.range;
-    } else {
-      state.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-      state.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
-    }
+    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%]/g, escape);
 
     if (window.history && window.history.replaceState) {
-      const excludes = this.underscorePageNames(this.excludes);
-      window.history.replaceState({}, document.title, `?${$.param(state)}&excludes=${excludes.join('|')}`);
+      window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
     }
 
-    return state;
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&excludes=${excludes}`);
   }
 
   /**
@@ -266,12 +331,61 @@ class TopViews extends Pv {
     this.pageNames = [];
     this.stopSpinny();
     $('.chart-container').html('');
-    $('.show-more').show();
+    $('.expand-chart').show();
     $('.message-container').html('');
     if (clearSelector) {
       this.resetArticleSelector();
       this.excludes = [];
     }
+  }
+
+  /**
+   * Search the topviews data for the given page title
+   * and restrict the view to the matches
+   * @returns {null} nothing
+   */
+  searchTopviews() {
+    const query = $('#topviews_search_field').val();
+
+    if (!query) return this.clearSearch();
+
+    let matchedData = [], count = 0;
+
+    // add ranking to pageData and fetch matches
+    this.pageData.forEach((entry, index) => {
+      if (!this.excludes.includes(entry.article)) {
+        count++;
+        if (entry.article.includes(query)) {
+          entry.rank = count;
+          entry.index = index;
+          matchedData.push(entry);
+        }
+      }
+    });
+
+    $('.chart-container').html('');
+    $('.expand-chart').hide();
+    $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+
+    matchedData.forEach(item => {
+      const width = 100 * (item.views / this.max),
+        direction = !!i18nRtl ? 'to left' : 'to right';
+
+      $('.chart-container').append(
+        `<div class='topview-entry' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
+         <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index} aria-hidden='true'></span>
+         <span class='topview-entry--rank'>${item.rank}</span>
+         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+         <span class='topview-entry--leader'></span>
+         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
+      );
+    });
+
+    $('.topview-entry--remove').off('click').on('click', e => {
+      const pageName = this.pageNames[$(e.target).data('article-id')];
+      this.addExclude(pageName);
+      this.searchTopviews(query, false);
+    });
   }
 
   /**
@@ -358,7 +472,7 @@ class TopViews extends Pv {
   setupListeners() {
     super.setupListeners();
 
-    $('#platform-select').on('change', this.applyChanges.bind(this));
+    $(this.config.platformSelector).on('change', this.processInput.bind(this));
     $('.expand-chart').on('click', () => {
       this.offset += this.config.pageSize;
       this.drawData();
@@ -368,8 +482,12 @@ class TopViews extends Pv {
       if (this.specialRange && this.specialRange.value !== e.target.value) {
         this.specialRange = null;
       }
-      this.applyChanges();
+      this.processInput();
     });
+    $('.download-csv').on('click', this.exportCSV.bind(this));
+    $('.download-json').on('click', this.exportJSON.bind(this));
+    $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
+    $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
   }
 
   /**
@@ -384,7 +502,7 @@ class TopViews extends Pv {
       }
       if (this.validateProject()) return;
       this.resetView(false);
-      this.applyChanges(true).then(resetArticleSelector);
+      this.processInput(true).then(resetArticleSelector);
     });
   }
 
@@ -396,12 +514,12 @@ class TopViews extends Pv {
     let dfd = $.Deferred();
 
     this.startSpinny();
-    $('.show-more').hide();
+    $('.expand-chart').hide();
 
     /** Collect parameters from inputs. */
     const startDate = this.daterangepicker.startDate,
       endDate = this.daterangepicker.endDate,
-      access = $('#platform-select').val();
+      access = $(this.config.platformSelector).val();
 
     let promises = [], initPageData = {};
 

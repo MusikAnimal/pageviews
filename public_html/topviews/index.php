@@ -70,6 +70,20 @@
             <select class="aqs-select2-selector col-lg-12 invisible" id="article-input" multiple="multiple"></select>
           </div>
         </div>
+        <!-- FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line -->
+        <?php $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'; ?>
+        <span class="row search-topviews invisible <?php echo $cols; ?>">
+          <div class="input-group">
+            <label class="input-group-addon" for="topviews_search_field">
+              <?php echo $I18N->msg( 'search' ); ?>
+            </label>
+            <span class="glyphicon glyphicon-search topviews-search-icon"></span>
+            <input class="form-control" id="topviews_search_field">
+          </div>
+        </span>
+        <span class="pull-right">
+          <?php include "../_data_links.php"; ?>
+        </span>
         <!-- Chart -->
         <div class="col-lg-12">
           <small class="text-muted">
@@ -84,10 +98,9 @@
           </a>
         </div>
         <div class="message-container col-lg-10"></div>
-        <!-- Other links -->
-        <div class="col-lg-10 data-links"></div>
         <?php include "../_footer.php"; ?>
       </main>
+      <?php include "../_modals.php"; ?>
     </div>
   </body>
 </html>
