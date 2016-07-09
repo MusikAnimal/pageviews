@@ -105,6 +105,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     if (!params.sites || params.sites.length === 1 && !params.sites[0]) {
       params.sites = this.config.defaults.projects;
+      this.setInitialChartType(params.sites.length);
       this.setSelect2Defaults(params.sites);
     } else {
       this.setInitialChartType(params.sites.length);
