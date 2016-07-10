@@ -140,7 +140,7 @@
 	"faq-line-chart-body": "You can also hover over the date labels at the bottom to see data for each individual day. This is especially helpful on mobile. Simply tap and hold on a date label, and move your finger left and right to view data for each individual day.",
 	"faq-top-viewed-title": "I want to see the top viewed pages within a date range",
 	"faq-multi-lang-title": "I want to see data for a page across all languages of a project",
-	"faq-try-tool": "Try $1",
+	"faq-try-tool": "You can find this at $1.",
 	"faq-bug-report-title": "I have a feature request or bug to report",
 	"faq-bug-report-body": "If you would like to use a wiki to provide feedback, use the <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> on Meta. You can also report issues on <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> and <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-topviews-data-approx-title": "The data seems slightly off",
