@@ -331,7 +331,9 @@ class TopViews extends Pv {
     this.pageNames = [];
     this.stopSpinny();
     $('.chart-container').html('');
-    $('.expand-chart').show();
+    $('.expand-chart').hide();
+    $('.data-links').addClass('invisible');
+    $('.search-topviews').addClass('invisible');
     $('.message-container').html('');
     if (clearSelector) {
       this.resetArticleSelector();

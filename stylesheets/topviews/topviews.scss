@@ -60,6 +60,11 @@ $gray: #ccc;
   .expand-chart {
     display: none;
   }
+
+  .data-links,
+  .search-topviews {
+    visibility: hidden;
+  }
 }
 
 // prevent Select2 from opening/closing
