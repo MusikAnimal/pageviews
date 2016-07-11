@@ -115,5 +115,6 @@
 	"num-pages": "$1 {{PLURAL:$1|Säit|Säiten}}",
 	"list": "Lëscht",
 	"chart": "Diagramm",
-	"remember-chart-option": "Diagrammastellunge  verhalen"
+	"remember-chart-option": "Diagrammastellunge  verhalen",
+	"begin-at-zero": "Bei null ufänken"
 }

@@ -130,6 +130,7 @@
 	"list": "Seznam",
 	"chart": "Tabulka",
 	"autolog-option": "Používejte logaritmické měřítko automaticky, pokud je platná.",
+	"remember-chart-option": "Pamatovat si nastavení tabulek",
 	"begin-at-zero": "Začít od nuly",
 	"begin-at-zero-option": "Vždy zobrazit osu y začínající v nule"
 }

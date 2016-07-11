@@ -3,7 +3,8 @@
 		"authors": [
 			"Chrumps",
 			"Peter Bowman",
-			"Mateon1"
+			"Mateon1",
+			"WTM"
 		]
 	},
 	"title": "Analiza liczby odsłon",
@@ -84,7 +85,7 @@
 	"november": "Listopad",
 	"december": "Grudzień",
 	"select2-min-chars": "Wpisz $1 lub więcej znaków",
-	"select2-max-chars": "Proszę usunąć $1 znak(i/ów)",
+	"select2-max-chars": "Proszę usunąć $1 {{PLURAL|$1|znak|znaki|znaków}}",
 	"select2-loading": "Trwa ładowanie wyników...",
 	"select2-max-items": "Możesz wybrać tylko $1 elementów",
 	"select2-no-results": "Brak wyników",
@@ -111,7 +112,7 @@
 	"faq-massviews-sources-title": "Co to są „Źródła”?",
 	"faq-massviews-subject-page-title": "Co to jest opcja „$1”?",
 	"faq-throttle-wait-title": "Dlaczego muszę czekać $1 sekund, zanim będą mógł użyć narzędzia ponownie?",
-	"url-structure-example-siteviews": "Aby uzyskać najnowsze dane dotyczące ogólnej liczby odsłon wszystkich artykułów na wiki, z domyślnymi opcjami, użyj:",
+	"url-structure-example-siteviews": "Aby uzyskać najnowsze dane dotyczące ogólnej liczby odsłon wszystkich artykułów na wiki, z domyślnymi opcjami, użyj:\n$1",
 	"url-structure-parameters": "Parametry",
 	"url-structure-special-range-latest": "Ostatnie 20 dni danych",
 	"url-structure-special-range-latest-n": "gdzie <i>N</i> jest liczbą. Na przykład <code>latest-30</code> pokaże dane z ostatnich 30 dni",

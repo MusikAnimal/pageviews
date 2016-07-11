@@ -189,5 +189,7 @@
 	"list": "Ripanga",
 	"chart": "Tūtohi",
 	"autolog-option": "A te wā pai, whakamahiatia te āwhata logarithm",
-	"remember-chart-option": "Whakamaumaharatia ngā kōwhiringa o te tūtohi"
+	"remember-chart-option": "Whakamaumaharatia ngā kōwhiringa o te tūtohi",
+	"begin-at-zero": "Timata ki te kore",
+	"begin-at-zero-option": "I ngā wā katoa, timata ki te kore o te y-axis"
 }

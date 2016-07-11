@@ -89,5 +89,6 @@
 	"unique-devices": "Unikālās ierīces",
 	"source": "Avots",
 	"category-url": "Kategorijas URL",
-	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}"
+	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}",
+	"begin-at-zero": "Sākt no nulles"
 }
