@@ -357,7 +357,7 @@ class TopViews extends Pv {
     this.pageData.forEach((entry, index) => {
       if (!this.excludes.includes(entry.article)) {
         count++;
-        if (entry.article.includes(query)) {
+        if (new RegExp(query, 'i').test(entry.article)) {
           entry.rank = count;
           entry.index = index;
           matchedData.push(entry);

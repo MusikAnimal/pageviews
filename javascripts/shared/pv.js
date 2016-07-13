@@ -37,6 +37,8 @@ class Pv extends PvConfig {
       this.splash();
     }
 
+    this.debug = location.search.includes('debug=true');
+
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       const actualPathName = location.pathname.replace(/-test\/?/, '');
@@ -981,7 +983,7 @@ class Pv extends PvConfig {
     });
     this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
 
-    if (location.host === 'localhost') {
+    if (location.host === 'localhost' || this.debug) {
       throw messages[0];
     }
   }
@@ -1022,7 +1024,7 @@ class Pv extends PvConfig {
         ${$.i18n('error-timed-out')}
         ${$.i18n('error-please-report', this.getBugReportURL(['Operation timed out']))}
       `, true);
-    }, 10 * 1000);
+    }, 15 * 1000);
   }
 
   /**

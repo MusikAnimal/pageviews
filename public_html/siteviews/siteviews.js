@@ -1269,6 +1269,8 @@ var Pv = function (_PvConfig) {
       _this.splash();
     }
 
+    _this.debug = location.search.includes('debug=true');
+
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');
@@ -2290,7 +2292,7 @@ var Pv = function (_PvConfig) {
       });
       this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
 
-      if (location.host === 'localhost') {
+      if (location.host === 'localhost' || this.debug) {
         throw messages[0];
       }
     }
@@ -2336,7 +2338,7 @@ var Pv = function (_PvConfig) {
       this.timeout = setTimeout(function (err) {
         _this10.resetView();
         _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL(['Operation timed out'])) + '\n      ', true);
-      }, 10 * 1000);
+      }, 15 * 1000);
     }
 
     /**
