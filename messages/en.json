@@ -134,7 +134,7 @@
 	"faq-agents-user": "includes all people who view a page. Editors, anonymous editors, and our readers.",
 	"faq-agents-spider": "includes search engine \"<a href='https://en.wikipedia.org/wiki/Web_crawler'>web crawlers</a>\" like Google that read pages for the purposes of improving search results. Pages can receive significant views from web crawlers, which is why by default the tool shows data only from users.",
 	"faq-agents-bot": "includes any other automated programs that may scrape pages for other purposes.",
-	"faq-chart-type-title": "How can the change chart type be changed?",
+	"faq-chart-type-title": "How can I change the chart type?",
 	"faq-chart-type-body": "Click \"$1\" to choose amongst 6 different types. The app will remember your preference. By default, the application will show a bar chart when viewing data for a single page, and a line chart for multiple pages. Note that the pie, doughnut and polar area charts can only show data for total number of views within the daterange.",
 	"faq-line-chart-title": "It's hard to hover my mouse over the points of the line chart",
 	"faq-line-chart-body": "You can also hover over the date labels at the bottom to see data for each individual day. This is especially helpful on mobile. Simply tap and hold on a date label, and move your finger left and right to view data for each individual day.",
