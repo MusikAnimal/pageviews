@@ -113,5 +113,6 @@
 	"elapsed-time": "Verstreken tijd: $1 {{PLURAL:$1|seconde|seconden}}",
 	"num-pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
 	"list": "Lijst",
-	"chart": "Grafiek"
+	"chart": "Grafiek",
+	"search": "Zoeken"
 }

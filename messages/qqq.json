@@ -148,7 +148,7 @@
 	"faq-line-chart-body": "FAQ - body of the section explaining how to better interact with the line chart",
 	"faq-top-viewed-title": "FAQ - title of the section advertising the Topviews app",
 	"faq-multi-lang-title": "FAQ - title of the section advertising the Langviews app",
-	"faq-try-tool": "FAQ - link to 'try' the other tools (Langviews, Topviews). $1 is the link to the tool.\n{{Identical|Try}}",
+	"faq-try-tool": "FAQ - link to 'try' the other tools (Langviews, Topviews). $1 is the link to the tool.",
 	"faq-bug-report-title": "FAQ - title of the section explaining how to report a bug or request a feature",
 	"faq-bug-report-body": "FAQ - body of the section explaining how to report a bug or request a feature",
 	"faq-topviews-data-approx-title": "FAQ - title of the section explaining that Topviews data is approximate.",

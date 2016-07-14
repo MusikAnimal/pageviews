@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Medol",
-			"Paracel63"
+			"Paracel63",
+			"Macofe"
 		]
 	},
 	"title": "Anàlisi de pàgines vistes",
@@ -167,5 +168,7 @@
 	"logarithmic-scale": "Escala logarítmica",
 	"bezier-curve-option": "Utilitzar la corba de Bézier en els gràfics en línia",
 	"list": "Llista",
-	"chart": "Gràfic"
+	"chart": "Gràfic",
+	"begin-at-zero": "Començar de zero",
+	"search": "Cerca"
 }

@@ -3,7 +3,8 @@
 		"authors": [
 			"Banjo",
 			"Elisardojm",
-			"Toliño"
+			"Toliño",
+			"Macofe"
 		]
 	},
 	"title": "Análise de visitas ás páxinas",
@@ -117,5 +118,6 @@
 	"invalid-lang-project": "$1 é un proxecto inválido ou non multilingüe",
 	"faq-return-to": "Volver a $1",
 	"faq-old-data-title": "Por que non podo ver os datos previos a agosto de 2015?",
-	"faq-todays-date-title": "Por que non podo ver os datos da data de hoxe?"
+	"faq-todays-date-title": "Por que non podo ver os datos da data de hoxe?",
+	"search": "Procurar"
 }

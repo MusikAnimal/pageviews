@@ -141,7 +141,7 @@
 	"faq-line-chart-body": "Du kannst auch unten über die Datumsbeschriftungen fahren, um Daten für jeden einzelnen Tag anzusehen. Dies ist besonders hilfreich auf mobilen Geräten. Tippe einfach die Datumsbeschriftung an, halte sie und bewege deinen Finger nach links und rechts, um Daten für jeden einzelnen Tag anzusehen.",
 	"faq-top-viewed-title": "Ich möchte die meistbesuchten Seiten innerhalb eines Datumsbereichs ansehen",
 	"faq-multi-lang-title": "Ich möchte Daten für eine Seite von allen Sprachen eines Projektes ansehen",
-	"faq-try-tool": "Teste $1",
+	"faq-try-tool": "Du kannst dies bei $1 finden.",
 	"faq-bug-report-title": "Ich möchte einen Funktionswunsch oder Fehler melden",
 	"faq-bug-report-body": "Wenn du ein Wiki zum Geben von Rückmeldungen nutzen möchtest, verwende das <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">Feedback-Forum</a> auf Meta. Du kannst Fehler auch auf <a href=\"https://github.com/MusikAnimal/pageviews/issues\">GitHub</a> und <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\">Phabricator</a> melden.",
 	"faq-topviews-data-approx-title": "Die Daten scheinen eine geringe Abweichung zu haben",
@@ -232,5 +232,6 @@
 	"autolog-option": "Logarithmische Skala automatisch verwenden, falls anwendbar.",
 	"remember-chart-option": "Diagrammeinstellung speichern",
 	"begin-at-zero": "Bei null beginnen",
-	"begin-at-zero-option": "Immer die Y-Achse, beginnend bei null, anzeigen."
+	"begin-at-zero-option": "Immer die Y-Achse, beginnend bei null, anzeigen.",
+	"search": "Suchen"
 }

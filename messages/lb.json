@@ -82,6 +82,7 @@
 	"api-error-no-data": "Keng Donnéeë fonnt.",
 	"excluded-pages": "Ausgeschloss Säiten",
 	"show-more": "Méi weisen",
+	"another-query": "Eng aner Ufro auséieren",
 	"language": "Sprooch",
 	"badges": "Auszeechnungen",
 	"average": "Duerchschnëtt",
@@ -91,7 +92,7 @@
 	"faq-return-to": "Zréck op $1",
 	"faq-todays-date-title": "Firwat kann ech keng Donnéeë fir den Datum vun haut gesinn?",
 	"faq-chart-type-title": "Ech hunn dës Form vun Diagramm net gär",
-	"faq-try-tool": "Probéiert $1",
+	"faq-try-tool": "Dir kënnt dëst op $1 fannen.",
 	"faq-bug-report-title": "Ech hunn en Ufro fir eng Funktioun oder e Feeler ze mellen",
 	"faq-massviews-sources-title": "Wat sinn d'''Quellen''?",
 	"url-structure-parameters": "Parameteren",
@@ -116,5 +117,6 @@
 	"list": "Lëscht",
 	"chart": "Diagramm",
 	"remember-chart-option": "Diagrammastellunge  verhalen",
-	"begin-at-zero": "Bei null ufänken"
+	"begin-at-zero": "Bei null ufänken",
+	"search": "Sichen"
 }

@@ -144,5 +144,6 @@
 	"autolog-option": "Automatycznie użyj skali logarytmicznej, jeśli ma to zastosowanie",
 	"remember-chart-option": "Zapamiętaj preferencje wykresu",
 	"begin-at-zero": "Rozpocznij od zera",
-	"begin-at-zero-option": "Zawsze pokazuj oś y zaczynając od zera"
+	"begin-at-zero-option": "Zawsze pokazuj oś y zaczynając od zera",
+	"search": "Szukaj"
 }

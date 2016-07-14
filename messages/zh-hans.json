@@ -142,7 +142,7 @@
 	"faq-line-chart-body": "您也可以悬停在下方的日期标签上以显示每一天的数据。这在移动端特别有帮助。轻松点按并停在日期标签上，并将您的手指向左向右移动以显示每一天的数据。",
 	"faq-top-viewed-title": "我想查看一段日期范围内的最多浏览页面",
 	"faq-multi-lang-title": "我想查看一个页面跨项目语言的数据",
-	"faq-try-tool": "尝试$1",
+	"faq-try-tool": "您可在$1找到此工具。",
 	"faq-bug-report-title": "我有一个功能请求或错误要报告",
 	"faq-bug-report-body": "如果您愿意使用wiki提供反馈，请使用元维基上的<a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>反馈论坛</a>。您也可以在<a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a>和<a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>报告问题。",
 	"faq-topviews-data-approx-title": "数据似乎稍有偏差",
@@ -233,5 +233,6 @@
 	"autolog-option": "自动使用对数尺度（如果可以）",
 	"remember-chart-option": "记住图标参数设置",
 	"begin-at-zero": "从0开始",
-	"begin-at-zero-option": "总是显示y轴从0开始"
+	"begin-at-zero-option": "总是显示y轴从0开始",
+	"search": "搜索"
 }

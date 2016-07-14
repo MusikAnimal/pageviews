@@ -128,7 +128,7 @@
 	"faq-agents-title": "¿Qué son los \"Agentes\"?",
 	"faq-agents-user": "incluye a todas las personas que ven una página. Editores, editores anónimos y a nuestros lectores.",
 	"faq-chart-type-title": "No me gusta este tipo de gráfico",
-	"faq-try-tool": "Prueba $1",
+	"faq-try-tool": "Puedes encontrar esto en $1.",
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
 	"faq-topviews-data-approx-title": "Los datos parecen ligeramente erroneos",
 	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
@@ -172,5 +172,6 @@
 	"chart": "Gráfico",
 	"remember-chart-option": "Recordar preferencia de gráfico",
 	"begin-at-zero": "Empezar en cero",
-	"begin-at-zero-option": "Mostrar siempre el eje y empezando en cero"
+	"begin-at-zero-option": "Mostrar siempre el eje y empezando en cero",
+	"search": "Buscar"
 }

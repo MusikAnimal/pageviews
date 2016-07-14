@@ -177,7 +177,7 @@
 	"url-structure-project-multilang": "La source du projet fourni doit être multilingue. Par exemple $1 ou $2",
 	"url-structure-page": "Nom de page échappé.",
 	"url-structure-pages": "Noms de page échappés séparés par un caractère <code>|</code> comme <code>Chat|Chien</code> (par défaut)",
-	"url-structure-excludes": "Noms de page échappés à exclure de l’affichage, séparés par un caractère <code>|</code>, comme de faux-positifs ou des pages non pertinentes. Par exemple, <code>Main_page|Special:Search</code>",
+	"url-structure-excludes": "Noms de page échappés à exclure de l’affichage, séparés par le caractère <code>|</code>, comme de faux-positifs ou des pages non pertinentes. Par exemple, <code>Main_page|Special:Search</code>",
 	"url-structure-onwiki-link": "Pour être redirigé vers la page courante sur le wiki, utilisez $1",
 	"url-structure-special-range": "Un intervalle spécial à utiliser à la place exacte des dates $1 et $2. Il peut-être l'un des suivants:",
 	"url-structure-special-range-latest": "Les 20 derniers jours de données",

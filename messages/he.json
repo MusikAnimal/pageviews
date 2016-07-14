@@ -31,7 +31,7 @@
 	"settings": "הגדרות",
 	"download": "הורדה בתור $1",
 	"credits": "מובא אליכם על־ידי <bdi>$1</bdi>, <bdi>$2</bdi> ו־<bdi>$3</bdi>",
-	"hosted": "מתארח באמצעות $1 ב־$2.",
+	"hosted": "מתארח ב$1 ב־$2.",
 	"translation-credits": "התרגומים מסופקים על־ידי $1 ו־$2.",
 	"tool-labs": "Tool Labs",
 	"faq": "שו״ת",
@@ -140,7 +140,7 @@
 	"faq-line-chart-body": "באפשרותך גם לרחף מעל תוויות תאריך בתחתית כדי לראות נתונים עבור כל יום פרטני. זה מסייע במיוחד בניידים. צריך פשוט ללחוץ על תווית תאריך ולהזיז את האצבע שלך שמאלה ימינה כדי להציג נתונים עבור כל יום.",
 	"faq-top-viewed-title": "אני רוצה לראות את הדפים הנצפים ביותר בטווח תאריכים מסוים",
 	"faq-multi-lang-title": "אני רוצה לראות נתונים עבור דף בכל השפות של המיזם",
-	"faq-try-tool": "נסו $1",
+	"faq-try-tool": "אפשר למצוא את זה ב־$1.",
 	"faq-bug-report-title": "אני רוצה להציע הצעות לשיפור או לדווח על באג",
 	"faq-bug-report-body": "כדי לשלוח משוב באמצעות אתר ויקי, ניתן להשתמש ב<a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>טופס המשוב</a> שבמטא־ויקי. אפשר גם לדווח על בעיות ב־<a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> וב<a href='https://phabricator.wikimedia.org/project/profile/2045/'>פבריקטור</a>.",
 	"faq-topviews-data-approx-title": "הנתונים נראים לא כל־כך מדויקים",
@@ -231,5 +231,6 @@
 	"autolog-option": "להשתמש בסולם לוגריתמי באופן אוטומטי אם הוא מתאים",
 	"remember-chart-option": "לזכור את סוג התרשים שבחרתי",
 	"begin-at-zero": "להתחיל באפס",
-	"begin-at-zero-option": "תמיד להתחיל את ציר ה־y באפס"
+	"begin-at-zero-option": "תמיד להתחיל את ציר ה־y באפס",
+	"search": "חיפוש"
 }

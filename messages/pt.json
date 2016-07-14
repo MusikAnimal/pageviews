@@ -113,7 +113,7 @@
 	"unique-titles": "$1 {{PLURAL:$1|título único|títulos únicos}}",
 	"faq-return-to": "Voltar a $1",
 	"faq-chart-type-body": "Clique em \"$1\" para escolher entre 6 tipos diferentes. A aplicação vai lembrar as suas preferências; por padrão, mostrará um gráfico de barras quando visualizar dados de uma única página e um gráfico de linhas para várias. Observe que os gráficos circulares e em anel podem mostrar apenas os dados para o número total de visualizações dentro de um determinado intervalo.",
-	"faq-try-tool": "Experimente $1",
+	"faq-try-tool": "Pode encontrar isto em $1",
 	"faq-bug-report-body": "Caso queira fornecer comentários, utilize o <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">fórum</a> do Meta. Pode também relatar problemas no <a href=\"https://github.com/MusikAnimal/pageviews/issues\">GitHub</a> e <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\">Phabricator</a>.",
 	"url-structure-example-siteviews": "Para obter as mais recentes dados sobre o total de visualizações de página de todos os artigos da sua wiki, com opções pré-definidas, use:\n$1",
 	"url-structure-parameters": "Parâmetros",
@@ -132,5 +132,6 @@
 	"autolog-option": "Utilizar automaticamente escala logarítmica, se aplicável",
 	"remember-chart-option": "Lembrar preferência de gráfico",
 	"begin-at-zero": "Começar no zero",
-	"begin-at-zero-option": "Mostrar sempre o eixo do y a começar no zero"
+	"begin-at-zero-option": "Mostrar sempre o eixo do y a começar no zero",
+	"search": "Pesquisar"
 }
