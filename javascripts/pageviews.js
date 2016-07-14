@@ -401,12 +401,12 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         } else if (data.responseJSON) {
           xhrData.errors.push(data.responseJSON.title);
         } else {
-          xhrData.errors.push('Unknown error');
+          xhrData.errors.push('Unknown error'); // FIXME: i18n
         }
       });
     });
 
-    $.when(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
+    $.whenAll(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
   }
 
   /**

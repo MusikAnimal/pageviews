@@ -327,7 +327,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       });
     });
 
-    $.when(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
+    $.whenAll(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
   }
 
   /**

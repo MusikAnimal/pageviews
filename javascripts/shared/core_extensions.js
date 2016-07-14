@@ -69,3 +69,28 @@ if (typeof Chart !== 'undefined') {
     return elementsArray;
   };
 }
+
+$.whenAll = function() {
+  let dfd = $.Deferred(),
+    counter = 0,
+    state = 'resolved',
+    promises = new Array(...arguments);
+
+  const resolveOrReject = function() {
+    if (this.state === 'rejected') {
+      state = 'rejected';
+    }
+    counter++;
+
+    if (counter === promises.length) {
+      dfd[state === 'rejected' ? 'reject' : 'resolve']();
+    }
+
+  };
+
+  $.each(promises, (_i, promise) => {
+    promise.always(resolveOrReject);
+  });
+
+  return dfd.promise();
+};

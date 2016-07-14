@@ -507,12 +507,12 @@ var PageViews = function (_mix$with) {
           } else if (data.responseJSON) {
             xhrData.errors.push(data.responseJSON.title);
           } else {
-            xhrData.errors.push('Unknown error');
+            xhrData.errors.push('Unknown error'); // FIXME: i18n
           }
         });
       });
 
-      (_$ = $).when.apply(_$, _toConsumableArray(xhrData.promises)).always(this.updateChart.bind(this, xhrData));
+      (_$ = $).whenAll.apply(_$, _toConsumableArray(xhrData.promises)).always(this.updateChart.bind(this, xhrData));
     }
 
     /**
@@ -1295,6 +1295,30 @@ if (typeof Chart !== 'undefined') {
     return elementsArray;
   };
 }
+
+$.whenAll = function () {
+  var dfd = $.Deferred(),
+      counter = 0,
+      state = 'resolved',
+      promises = new (Function.prototype.bind.apply(Array, [null].concat(Array.prototype.slice.call(arguments))))();
+
+  var resolveOrReject = function resolveOrReject() {
+    if (this.state === 'rejected') {
+      state = 'rejected';
+    }
+    counter++;
+
+    if (counter === promises.length) {
+      dfd[state === 'rejected' ? 'reject' : 'resolve']();
+    }
+  };
+
+  $.each(promises, function (_i, promise) {
+    promise.always(resolveOrReject);
+  });
+
+  return dfd.promise();
+};
 
 },{}],5:[function(require,module,exports){
 'use strict';

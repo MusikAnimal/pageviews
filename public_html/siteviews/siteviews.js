@@ -737,6 +737,30 @@ if (typeof Chart !== 'undefined') {
   };
 }
 
+$.whenAll = function () {
+  var dfd = $.Deferred(),
+      counter = 0,
+      state = 'resolved',
+      promises = new (Function.prototype.bind.apply(Array, [null].concat(Array.prototype.slice.call(arguments))))();
+
+  var resolveOrReject = function resolveOrReject() {
+    if (this.state === 'rejected') {
+      state = 'rejected';
+    }
+    counter++;
+
+    if (counter === promises.length) {
+      dfd[state === 'rejected' ? 'reject' : 'resolve']();
+    }
+  };
+
+  $.each(promises, function (_i, promise) {
+    promise.always(resolveOrReject);
+  });
+
+  return dfd.promise();
+};
+
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -4061,7 +4085,7 @@ var SiteViews = function (_mix$with) {
         });
       });
 
-      (_$ = $).when.apply(_$, _toConsumableArray(xhrData.promises)).always(this.updateChart.bind(this, xhrData));
+      (_$ = $).whenAll.apply(_$, _toConsumableArray(xhrData.promises)).always(this.updateChart.bind(this, xhrData));
     }
 
     /**
