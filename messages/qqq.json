@@ -35,7 +35,7 @@
 	"page-title": "Heading for the column of page titles in the Langviews application\n{{Identical|Page title}}",
 	"change-chart": "Link that allows the user to choose a different type of chart",
 	"settings": "Link that opens an interface for the user to change their settings, for example, the date formatting\n{{Identical|Settings}}",
-	"download": "Link that downloads the pageview data to a file. $1 is the format of the file, for example 'CSV'.",
+	"download-label": "Label next to the download buttons.\n{{identical|Download}}",
 	"csv": "{{Optional}}\nLink for CSV file. See https://en.wikipedia.org/wiki/Comma-separated_values for information on what a CSV file is.\nCSV is the name of a file format; should not be translated.",
 	"json": "{{Optional}}\nLink for JSON file. See https://en.wikipedia.org/wiki/JSON for information on what a JSON file is.",
 	"credits": "Footer message crediting the programmers. $1, $2, and $3 are links to the programmers.",

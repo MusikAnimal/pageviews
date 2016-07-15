@@ -27,7 +27,7 @@
 	"page-title": "Page title",
 	"change-chart": "Chart type",
 	"settings": "Settings",
-	"download": "Download as $1",
+	"download-label": "Download",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "Brought to you by $1, $2, and $3.",
