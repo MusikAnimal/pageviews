@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Pyrros",
-			"Macofe"
+			"Macofe",
+			"Sarrus"
 		]
 	},
 	"title": "Analyse af sidevisninger",
@@ -25,7 +26,6 @@
 	"pages": "Sider",
 	"change-chart": "Skift diagramtype",
 	"settings": "Indstillinger",
-	"download": "Download som $1",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "Bragt til dig af $1, $2 og $3.",
@@ -103,5 +103,7 @@
 	"another-query": "Lav endnu en forespørgelse",
 	"language": "Sprog",
 	"pageviews": "Sidevisninger",
-	"average": "Middelværdi"
+	"average": "Middelværdi",
+	"num-languages": "$1 sprog",
+	"all-languages": "Alle sprog"
 }

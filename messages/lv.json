@@ -26,7 +26,6 @@
 	"page-title": "Lapas nosaukums",
 	"change-chart": "Mainīt diagrammas veidu",
 	"settings": "Iestatījumi",
-	"download": "Lejupielādēt kā $1",
 	"csv": "CSV",
 	"json": "JSON",
 	"faq": "BUJ",
@@ -90,5 +89,6 @@
 	"source": "Avots",
 	"category-url": "Kategorijas URL",
 	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}",
-	"begin-at-zero": "Sākt no nulles"
+	"begin-at-zero": "Sākt no nulles",
+	"search": "Meklēt"
 }

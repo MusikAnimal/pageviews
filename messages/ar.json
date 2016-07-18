@@ -4,7 +4,8 @@
 			"Maroen1990",
 			"محمد أحمد عبد الفتاح",
 			"Ayatun",
-			"Shbib Al-Subaie"
+			"Shbib Al-Subaie",
+			"Izoozo"
 		]
 	},
 	"title": "تحليل زيارات الصفحة",
@@ -28,7 +29,7 @@
 	"page-title": "عنوان الصفحة",
 	"change-chart": "غير نوع المخطط",
 	"settings": "الإعدادات",
-	"download": "تحميل بصيغة $1",
+	"download-label": "تنزيل",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "يقدمه لكم $1 و$2 و$3.",

@@ -22,7 +22,7 @@
 	"page-title": "Dä Sigg ier Övverschreff",
 	"change-chart": "De Zoot Dijaramm",
 	"settings": "Enschtällonge",
-	"download": "Als $1 eronger lahde",
+	"download-label": "Eronger lahde",
 	"csv": "<i lang='en'>CSV</i>",
 	"json": "<i lang='en' xml:lang='en' title='JavaScript Object Notation'>JSON</i>",
 	"credits": "Jemaat vum $1, $2 un $3",
@@ -90,7 +90,8 @@
 	"unique-titles": "{{PLURAL:$1|Eijn ongerscheidlijje Övverschreff|Övverschreff|$1 ongerscheidlijje Övverschreffte|Keijn Övverschreff}}",
 	"faq-return-to": "Jangk retuhr noh $1",
 	"faq-agents-title": "Wat sind de „Ajänte“?",
-	"faq-try-tool": "Vesöhk $1",
+	"faq-chart-type-title": "Wi kam_mer de Zoot Dijajramm änndere?",
+	"faq-try-tool": "Dat kam_mer fenge op ä Sigg $1",
 	"faq-bug-report-title": "Esch well Verbäßerong aanrähje udder ene Fähler mällde",
 	"faq-bug-report-body": "Wä jähn e Wikki för sing Rökmälldong hät, nemmp dat <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">Forrum</a> em Mettawikki derför. Mer kann och op <a href=\"https://github.com/MusikAnimal/pageviews/issues\"><i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"GitHub - ene Deens för et Zesammewerke beim Projrammehre, un esuh\">GitHub</i></a>, un em <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\"><i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Phabricator is a collaboration platform open to all Wikimedia and MediaWiki contributors with a focus on bug reporting and software projects.\">Phabricator</i></a> si Aanlijje loßwähde.",
 	"faq-throttle-wait-title": "Waröm moss_esch {{PLURAL:$1|en Sekond|$1 Sekonde|kein Sekond}} wahde, ih dadd_esch dat Wärkzüsch norr_en oprohfe kann?",
@@ -122,5 +123,7 @@
 	"bezier-curve-option": "Mohl en Kurv nohm Bézier op Dijaramme met Linnije",
 	"list": "Leß",
 	"chart": "Dijajramm",
-	"remember-chart-option": "Dem Diajramm sing Ennschtällonge faßhallde"
+	"remember-chart-option": "Dem Diajramm sing Ennschtällonge faßhallde",
+	"begin-at-zero": "fang beij Noll aan",
+	"search": "Söhke"
 }

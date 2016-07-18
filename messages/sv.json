@@ -31,7 +31,7 @@
 	"page-title": "Sidtitel",
 	"change-chart": "Diagramtyp",
 	"settings": "Inställningar",
-	"download": "Ladda ned som $1",
+	"download-label": "Ladda ned",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "Tillhandahålls av $1, $2 och $3.",
@@ -101,7 +101,7 @@
 	"select2-no-results": "Inga resultat hittades",
 	"help-translate": "Hjälp till att översätta",
 	"fatal-error": "Allvarligt fel",
-	"error-please-report": "Var god <a target='_blank' href='$1'>rapportera detta problem</a>",
+	"error-please-report": "Var god <strong>uppdatera sidan</strong> för att försöka igen eller <a target='_blank' href='$1'>rapportera detta problem</a>",
 	"api-error": "Fel uppstod när $1 anropades",
 	"api-error-unknown": "Ett okänt problem uppstod när en begäran gjordes i $1.",
 	"api-error-no-data": "Ingen data hittades.",
@@ -143,7 +143,7 @@
 	"faq-line-chart-body": "Du kan lägga muspekaren över datumetiketterna längst ned för att se data för varje enskild dag. Detta är särskilt användbart på mobiler. Tryck och håll ned fingret på en datumetikett, flytta sedan det vänster och höger för att se data för varje enskild dag.\nYou can also hover over the date labels at the bottom to see data for each individual day. This is especially helpful on mobile. Simply tap and hold on a date label, and move your finger left and right to view data for each individual day.",
 	"faq-top-viewed-title": "Jag vill se de mest visade sidorna inom ett datumintervall",
 	"faq-multi-lang-title": "Jag vill se data för en sida på alla språk i ett projekt",
-	"faq-try-tool": "Prova $1",
+	"faq-try-tool": "Du kan hitta detta på $1.",
 	"faq-bug-report-title": "Jag vill begära en funktion eller rapportera en bugg",
 	"faq-bug-report-body": "Gå igenom listan över begäran på <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a>. Om du har en ny begäran kan du skapa en ny fråga där, men du kan också kontakta de ansvariga.",
 	"faq-topviews-data-approx-title": "Datan verkar inte stämma helt och hållet",
@@ -217,5 +217,6 @@
 	"list": "Lista",
 	"chart": "Diagram",
 	"autolog-option": "Använd logaritmisk skala automatiskt om det går",
-	"remember-chart-option": "Kom ihåg diagramtyp"
+	"remember-chart-option": "Kom ihåg diagramtyp",
+	"search": "Sök"
 }
