@@ -507,8 +507,8 @@ const ChartHelpers = superclass => class extends superclass {
 
       if (xhrData.fatalErrors.length) {
         this.resetView(true);
-        const fatalErrorMessages = xhrData.fatalErrors.map(err => err.toString()).unique();
-        this.showFatalErrors(fatalErrorMessages);
+        const fatalErrors = xhrData.fatalErrors.unique();
+        this.showFatalErrors(fatalErrors);
 
         return true;
       }

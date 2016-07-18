@@ -37,7 +37,7 @@ class Pv extends PvConfig {
       this.splash();
     }
 
-    this.debug = location.search.includes('debug=true');
+    this.debug = location.search.includes('debug=true') || location.host === 'localhost';
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
@@ -455,14 +455,18 @@ class Pv extends PvConfig {
 
   /**
    * Get URL to file a report on Meta, preloaded with permalink
-   * @param {Array} [messages] captured error messages
+   * @param {String} phabPaste URL to auto-generated error report on Phabricator
    * @return {String} URL
    */
-  getBugReportURL(messages = ['Uknown error occurred']) {
-    const preloadParams = messages ? `&preloadparams[]=${messages.join('\n').replace(/[&%\']/g, escape)}` : '';
-    return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' +
-      `&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${encodeURIComponent(document.location.href)}` +
-      `&preloadparams[]=${this.getUserAgent()}` + preloadParams;
+  getBugReportURL(phabPaste) {
+    const reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
+      `&section=new&preloadtitle=${this.app.upcase()} bug report`;
+
+    if (phabPaste) {
+      return `${reportURL}&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${phabPaste}`;
+    } else {
+      return reportURL;
+    }
   }
 
   /**
@@ -974,17 +978,39 @@ class Pv extends PvConfig {
     if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
   }
 
-  showFatalErrors(messages) {
+  showFatalErrors(errors) {
     this.clearMessages();
-    messages.forEach(message => {
+    errors.forEach(error => {
       this.writeMessage(
-        `<strong>${$.i18n('fatal-error')}</strong>: <code>${message}</code>`
+        `<strong>${$.i18n('fatal-error')}</strong>: <code>${error}</code>`
       );
     });
-    this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
 
-    if (location.host === 'localhost' || this.debug) {
-      throw messages[0];
+    if (this.debug) {
+      throw errors[0];
+    } else if (errors && errors[0] && errors[0].stack) {
+      $.ajax({
+        method: 'POST',
+        url: '//tools.wmflabs.org/musikanimal/paste',
+        data: {
+          content: '' +
+            `\ndate:      ${moment().utc().format()}` +
+            `\ntool:      ${this.app}` +
+            `\nurl:       ${document.location.href}` +
+            `\nuserAgent: ${this.getUserAgent()}` +
+            `\ntrace:     ${errors[0].stack}`
+          ,
+          title: `Pageviews Analysis error report: ${errors[0]}`
+        }
+      }).done(data => {
+        if (data && data.result && data.result.objectName) {
+          this.writeMessage($.i18n('error-please-report', this.getBugReportURL(data.result.objectName)));
+        } else {
+          this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+        }
+      }).fail(() => {
+        this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+      });
     }
   }
 
@@ -1022,9 +1048,9 @@ class Pv extends PvConfig {
       this.resetView();
       this.writeMessage(`<strong>${$.i18n('fatal-error')}</strong>:
         ${$.i18n('error-timed-out')}
-        ${$.i18n('error-please-report', this.getBugReportURL(['Operation timed out']))}
+        ${$.i18n('error-please-report', this.getBugReportURL())}
       `, true);
-    }, 15 * 1000);
+    }, 20 * 1000);
   }
 
   /**
