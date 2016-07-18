@@ -46,11 +46,11 @@ const templates = {
             ${scope.formatNumber(datasets[i].sum)} (${scope.formatNumber(datasets[i].average)}/${$.i18n('day')})
           </div>
           <div class="linear-legend--links">
-            <a href="${scope.getLangviewsURL(datasets[i].label)}" target="_blank">All languages</a>
+            <a href="${scope.getLangviewsURL(datasets[i].label)}" target="_blank">${$.i18n('all-languages')}</a>
             &bullet;
-            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=history" target="_blank">History</a>
+            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=history" target="_blank">${$.i18n('history')}</a>
             &bullet;
-            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=info" target="_blank">Info</a>
+            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=info" target="_blank">${$.i18n('info')}</a>
           </div>
         </span>
       `;
