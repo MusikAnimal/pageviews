@@ -12,6 +12,9 @@ String.prototype.descore = function() {
 String.prototype.score = function() {
   return this.replace(/ /g, '_');
 };
+String.prototype.upcase = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
 
 // remove duplicate values from Array
 Array.prototype.unique = function() {
