@@ -1180,10 +1180,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
           if (xhrData.fatalErrors.length) {
             this.resetView(true);
-            var fatalErrorMessages = xhrData.fatalErrors.map(function (err) {
-              return err.toString();
-            }).unique();
-            this.showFatalErrors(fatalErrorMessages);
+            var fatalErrors = xhrData.fatalErrors.unique();
+            this.showFatalErrors(fatalErrors);
 
             return true;
           }
@@ -1219,6 +1217,9 @@ String.prototype.descore = function () {
 };
 String.prototype.score = function () {
   return this.replace(/ /g, '_');
+};
+String.prototype.upcase = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
 // remove duplicate values from Array
@@ -1852,7 +1853,7 @@ var Pv = function (_PvConfig) {
       _this.splash();
     }
 
-    _this.debug = location.search.includes('debug=true');
+    _this.debug = location.search.includes('debug=true') || location.host === 'localhost';
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
@@ -2279,17 +2280,20 @@ var Pv = function (_PvConfig) {
 
     /**
      * Get URL to file a report on Meta, preloaded with permalink
-     * @param {Array} [messages] captured error messages
+     * @param {String} phabPaste URL to auto-generated error report on Phabricator
      * @return {String} URL
      */
 
   }, {
     key: 'getBugReportURL',
-    value: function getBugReportURL() {
-      var messages = arguments.length <= 0 || arguments[0] === undefined ? ['Uknown error occurred'] : arguments[0];
+    value: function getBugReportURL(phabPaste) {
+      var reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' + ('&section=new&preloadtitle=' + this.app.upcase() + ' bug report');
 
-      var preloadParams = messages ? '&preloadparams[]=' + messages.join('\n').replace(/[&%\']/g, escape) : '';
-      return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new' + ('&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + encodeURIComponent(document.location.href)) + ('&preloadparams[]=' + this.getUserAgent()) + preloadParams;
+      if (phabPaste) {
+        return reportURL + '&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + phabPaste;
+      } else {
+        return reportURL;
+      }
     }
 
     /**
@@ -2866,17 +2870,34 @@ var Pv = function (_PvConfig) {
     }
   }, {
     key: 'showFatalErrors',
-    value: function showFatalErrors(messages) {
+    value: function showFatalErrors(errors) {
       var _this9 = this;
 
       this.clearMessages();
-      messages.forEach(function (message) {
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + message + '</code>');
+      errors.forEach(function (error) {
+        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
       });
-      this.writeMessage($.i18n('error-please-report', this.getBugReportURL(messages)));
 
-      if (location.host === 'localhost' || this.debug) {
-        throw messages[0];
+      if (this.debug) {
+        throw errors[0];
+      } else if (errors && errors[0] && errors[0].stack) {
+        $.ajax({
+          method: 'POST',
+          url: '//tools.wmflabs.org/musikanimal/paste',
+          data: {
+            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
+
+            title: 'Pageviews Analysis error report: ' + errors[0]
+          }
+        }).done(function (data) {
+          if (data && data.result && data.result.objectName) {
+            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL(data.result.objectName)));
+          } else {
+            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+          }
+        }).fail(function () {
+          _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+        });
       }
     }
 
@@ -2920,8 +2941,8 @@ var Pv = function (_PvConfig) {
 
       this.timeout = setTimeout(function (err) {
         _this10.resetView();
-        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL(['Operation timed out'])) + '\n      ', true);
-      }, 15 * 1000);
+        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL()) + '\n      ', true);
+      }, 20 * 1000);
     }
 
     /**
