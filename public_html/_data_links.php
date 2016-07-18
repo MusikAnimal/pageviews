@@ -9,7 +9,7 @@
     <span class="download-btn-group">
       <span class="input-group-addon">
         <span class="glyphicon glyphicon-download-alt"></span>
-        Download
+        <?php echo $I18N->msg( 'download-label' ); ?>
       </span>
       <span class="input-group-btn">
         <button class="btn btn-default btn-sm download-csv">

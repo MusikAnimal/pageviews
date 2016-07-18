@@ -4245,7 +4245,7 @@ var templates = {
     var markup = '';
     if (datasets.length === 1) {
       var dataset = datasets[0];
-      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="' + scope.getLangviewsURL(dataset.label) + '" target="_blank">All languages</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=history" target="_blank">History</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=info" target="_blank">Info</a>\n      </div>';
+      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="' + scope.getLangviewsURL(dataset.label) + '" target="_blank">' + $.i18n('all-languages') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=history" target="_blank">' + $.i18n('history') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=info" target="_blank">' + $.i18n('info') + '</a>\n      </div>';
     }
 
     if (datasets.length > 1) {
