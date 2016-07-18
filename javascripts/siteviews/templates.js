@@ -47,7 +47,7 @@ const templates = {
           <div class="linear-legend--links">
             <a href="https://${datasets[i].label}/wiki/Special:Statistics?uselang=${i18nLang}" target="_blank">${$.i18n('statistics')}</a>
             &bullet;
-            <a href="${scope.getTopviewsURL(datasets[0].label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
+            <a href="${scope.getTopviewsURL(datasets[i].label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
           </div>
         </span>
       `;
