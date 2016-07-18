@@ -19,11 +19,11 @@ const templates = {
         <strong>${$.i18n('totals')}:</strong>
         ${scope.formatNumber(dataset.sum)} (${scope.formatNumber(dataset.average)}/${$.i18n('day')})
         &bullet;
-        <a href="${scope.getLangviewsURL(dataset.label)}" target="_blank">All languages</a>
+        <a href="${scope.getLangviewsURL(dataset.label)}" target="_blank">${$.i18n('all-languages')}</a>
         &bullet;
-        <a href="${scope.getExpandedPageURL(dataset.label)}&action=history" target="_blank">History</a>
+        <a href="${scope.getExpandedPageURL(dataset.label)}&action=history" target="_blank">${$.i18n('history')}</a>
         &bullet;
-        <a href="${scope.getExpandedPageURL(dataset.label)}&action=info" target="_blank">Info</a>
+        <a href="${scope.getExpandedPageURL(dataset.label)}&action=info" target="_blank">${$.i18n('info')}</a>
       </div>`;
     }
 
