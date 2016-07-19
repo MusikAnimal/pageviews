@@ -663,6 +663,20 @@ String.prototype.score = function () {
 String.prototype.upcase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
+String.prototype.escape = function () {
+  var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+
+  return this.replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
+};
 
 // remove duplicate values from Array
 Array.prototype.unique = function () {
@@ -2434,9 +2448,9 @@ var Pv = function (_PvConfig) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project + '.org';
+          link.href = url + '?sites=' + _this11.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project + '.org';
+          link.href = url + '?project=' + _this11.project.escape() + '.org';
         }
       });
     }
@@ -4102,7 +4116,7 @@ var SiteViews = function (_mix$with) {
           }
         }).fail(function (data) {
           if (data.status === 404) {
-            _this4.writeMessage('<a href=\'https://' + site + '\'>' + site + '</a> - ' + $.i18n('api-error-no-data'));
+            _this4.writeMessage('<a href=\'https://' + site.escape() + '\'>' + site.escape() + '</a> - ' + $.i18n('api-error-no-data'));
             // remove this site from the list of entities to analyze
             xhrData.entities = xhrData.entities.filter(function (el) {
               return el !== site;
@@ -4135,7 +4149,7 @@ var SiteViews = function (_mix$with) {
         if (siteDomains.includes(project)) {
           return true;
         } else {
-          _this5.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'));
+          _this5.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'));
           return false;
         }
       });

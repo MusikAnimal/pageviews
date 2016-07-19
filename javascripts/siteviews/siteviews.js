@@ -317,7 +317,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       }).fail(data => {
         if (data.status === 404) {
           this.writeMessage(
-            `<a href='https://${site}'>${site}</a> - ${$.i18n('api-error-no-data')}`
+            `<a href='https://${site.escape()}'>${site.escape()}</a> - ${$.i18n('api-error-no-data')}`
           );
           // remove this site from the list of entities to analyze
           xhrData.entities = xhrData.entities.filter(el => el !== site);
@@ -343,7 +343,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         return true;
       } else {
         this.writeMessage(
-          $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`)
+          $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
         );
         return false;
       }

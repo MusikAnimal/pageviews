@@ -1084,9 +1084,9 @@ class Pv extends PvConfig {
       let url = link.href.split('?')[0];
 
       if (link.classList.contains('interapp-link--siteviews')) {
-        link.href = `${url}?sites=${this.project}.org`;
+        link.href = `${url}?sites=${this.project.escape()}.org`;
       } else {
-        link.href = `${url}?project=${this.project}.org`;
+        link.href = `${url}?project=${this.project.escape()}.org`;
       }
     });
   }

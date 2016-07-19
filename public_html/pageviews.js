@@ -499,7 +499,7 @@ var PageViews = function (_mix$with) {
         }).fail(function (data) {
           if (data.status === 404) {
             // page does not exist
-            _this6.writeMessage('<a href=\'' + _this6.getPageURL(article) + '\'>' + article.descore() + '</a> - ' + $.i18n('api-error-no-data'));
+            _this6.writeMessage('<a href=\'' + _this6.getPageURL(article) + '\'>' + article.descore().escape() + '</a> - ' + $.i18n('api-error-no-data'));
             // remove this article from the list of entities to analyze
             xhrData.entities = xhrData.entities.filter(function (el) {
               return el !== article;
@@ -536,7 +536,7 @@ var PageViews = function (_mix$with) {
         $('.select2-selection--multiple').removeClass('disabled');
       } else {
         this.resetView(true);
-        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
@@ -1221,6 +1221,20 @@ String.prototype.score = function () {
 };
 String.prototype.upcase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.escape = function () {
+  var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+
+  return this.replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
 };
 
 // remove duplicate values from Array
@@ -2993,9 +3007,9 @@ var Pv = function (_PvConfig) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project + '.org';
+          link.href = url + '?sites=' + _this11.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project + '.org';
+          link.href = url + '?project=' + _this11.project.escape() + '.org';
         }
       });
     }

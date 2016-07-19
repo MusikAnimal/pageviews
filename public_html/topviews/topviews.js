@@ -663,6 +663,20 @@ String.prototype.score = function () {
 String.prototype.upcase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
+String.prototype.escape = function () {
+  var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+
+  return this.replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
+};
 
 // remove duplicate values from Array
 Array.prototype.unique = function () {
@@ -2434,9 +2448,9 @@ var Pv = function (_PvConfig) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project + '.org';
+          link.href = url + '?sites=' + _this11.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project + '.org';
+          link.href = url + '?project=' + _this11.project.escape() + '.org';
         }
       });
     }

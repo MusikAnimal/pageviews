@@ -293,7 +293,7 @@ var MassViews = function (_mix$with) {
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {
-          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="https://' + _this3.sourceProject + '/wiki/' + item.label.score() + '" target="_blank">' + item.label.descore() + '</a></td>\n           <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n           <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
+          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="https://' + _this3.sourceProject.escape() + '/wiki/' + item.label.score() + '" target="_blank">' + item.label.descore() + '</a></td>\n           <td><a target="_blank" href=\'' + _this3.getPageviewsURL(_this3.sourceProject, item.label) + '\'>' + _this3.formatNumber(item.sum) + '</a></td>\n           <td>' + _this3.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
         });
       });
     }
@@ -781,7 +781,7 @@ var MassViews = function (_mix$with) {
           var label = 'Page Pile #' + pileData.id;
 
           $('.output-title').text(label).prop('href', _this8.getPileURL(pileData.id));
-          $('.output-params').html('\n          ' + $(_this8.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this8.sourceProject + '" target="_blank">' + _this8.sourceProject.replace(/.org$/, '') + '</a>\n          ');
+          $('.output-params').html('\n          ' + $(_this8.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this8.sourceProject.escape() + '" target="_blank">' + _this8.sourceProject.replace(/.org$/, '').escape() + '</a>\n          ');
 
           _this8.buildMotherDataset(label, _this8.getPileLink(pileData.id), pageViewsData);
 
@@ -1052,7 +1052,7 @@ var MassViews = function (_mix$with) {
       if (siteDomains.includes(project)) return true;
 
       this.setState('initial');
-      this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
+      this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
 
       return false;
     }
@@ -1833,6 +1833,20 @@ String.prototype.score = function () {
 };
 String.prototype.upcase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.escape = function () {
+  var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+
+  return this.replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
 };
 
 // remove duplicate values from Array
@@ -3605,9 +3619,9 @@ var Pv = function (_PvConfig) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project + '.org';
+          link.href = url + '?sites=' + _this11.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project + '.org';
+          link.href = url + '?project=' + _this11.project.escape() + '.org';
         }
       });
     }

@@ -466,7 +466,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         return dfd.reject(`${$.i18n('api-error', 'Wikidata')}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
-          `<a href='${this.getPageURL(pageName)}'>${pageName.descore()}</a> - ${$.i18n('api-error-no-data')}`
+          `<a href='${this.getPageURL(pageName).escape()}'>${pageName.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
         );
       }
 
@@ -706,7 +706,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (!this.isMultilangProject()) {
       this.writeMessage(
-        $.i18n('invalid-lang-project', `<a href='//${project}'>${project}</a>`),
+        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
         true
       );
       this.setState('invalid');

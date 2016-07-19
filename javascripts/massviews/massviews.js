@@ -182,7 +182,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td><a href="https://${this.sourceProject}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
+           <td><a href="https://${this.sourceProject.escape()}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
            <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
            <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
            </tr>`
@@ -630,7 +630,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           `
           ${$(this.config.dateRangeSelector).val()}
           &mdash;
-          <a href="https://${this.sourceProject}" target="_blank">${this.sourceProject.replace(/.org$/, '')}</a>
+          <a href="https://${this.sourceProject.escape()}" target="_blank">${this.sourceProject.replace(/.org$/, '').escape()}</a>
           `
         );
 
@@ -890,7 +890,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.setState('initial');
     this.writeMessage(
-      $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
+      $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
       true
     );
 

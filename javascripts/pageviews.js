@@ -394,7 +394,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       }).fail(data => {
         if (data.status === 404) { // page does not exist
           this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore()}</a> - ${$.i18n('api-error-no-data')}`
+            `<a href='${this.getPageURL(article)}'>${article.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
           );
           // remove this article from the list of entities to analyze
           xhrData.entities = xhrData.entities.filter(el => el !== article);
@@ -428,7 +428,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     } else {
       this.resetView(true);
       this.writeMessage(
-        $.i18n('invalid-project', `<a href='//${project}'>${project}</a>`),
+        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
         true
       );
       $('.select2-selection--multiple').addClass('disabled');
