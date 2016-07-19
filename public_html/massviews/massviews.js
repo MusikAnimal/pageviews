@@ -524,9 +524,6 @@ var MassViews = function (_mix$with) {
         });
       });
 
-      // FIXME: for the dates that have incomplete data, still show what we have,
-      //   but make the bullet point red in the chart
-
       var grandSum = totalViewsSet.reduce(function (a, b) {
         return (a || 0) + (b || 0);
       });
@@ -547,7 +544,6 @@ var MassViews = function (_mix$with) {
         var dateList = datesWithoutData.map(function (date) {
           return moment(date).format(_this5.dateFormat);
         });
-        // FIXME: i18N
         this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
       }
 
@@ -1480,6 +1476,111 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
+       * Mother function for querying the API and processing data
+       * @param  {Array}  entities - list of page names, or projects for Siteviews
+       * @return {Deferred} Promise resolving with pageviews data and errors, if present
+       */
+
+    }, {
+      key: 'getPageViewsData',
+      value: function getPageViewsData(entities) {
+        var _this6 = this;
+
+        var startDate = this.daterangepicker.startDate.startOf('day'),
+            endDate = this.daterangepicker.endDate.startOf('day');
+
+        var dfd = $.Deferred(),
+            count = 0,
+            failureRetries = {},
+            totalRequestCount = entities.length,
+            failedEntities = [];
+
+        /** @type {Object} everything we need to keep track of for the promises */
+        var xhrData = {
+          entities: entities,
+          labels: [], // Labels (dates) for the x-axis.
+          datasets: [], // Data for each article timeseries
+          errors: [], // Queue up errors to show after all requests have been made
+          fatalErrors: [], // Unrecoverable JavaScript errors
+          promises: []
+        };
+
+        var makeRequest = function makeRequest(entity, index) {
+          var uriEncodedEntityName = encodeURIComponent(entity);
+          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this6.project + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
+          var promise = $.ajax({ url: url, dataType: 'json' });
+          xhrData.promises.push(promise);
+
+          promise.done(function (successData) {
+            try {
+              successData = _this6.fillInZeros(successData, startDate, endDate);
+
+              /** Build the article's dataset. */
+              if (_this6.config.linearCharts.includes(_this6.chartType)) {
+                xhrData.datasets.push(_this6.getLinearData(successData, entity, index));
+              } else {
+                xhrData.datasets.push(_this6.getCircularData(successData, entity, index));
+              }
+
+              /** fetch the labels for the x-axis on success if we haven't already */
+              if (successData.items && !xhrData.labels.length) {
+                xhrData.labels = successData.items.map(function (elem) {
+                  return moment(elem.timestamp, _this6.config.timestampFormat).format(_this6.dateFormat);
+                });
+              }
+            } catch (err) {
+              return xhrData.fatalErrors.push(err);
+            }
+          }).fail(function (errorData) {
+            /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+            var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
+            if (cassandraError) {
+              if (failureRetries[_this6.project]) {
+                failureRetries[_this6.project]++;
+              } else {
+                failureRetries[_this6.project] = 1;
+              }
+
+              /** maximum of 3 retries */
+              if (failureRetries[_this6.project] < 3) {
+                totalRequestCount++;
+                return _this6.rateLimit(makeRequest, 100, _this6)(entity, index);
+              }
+            }
+
+            if (cassandraError) {
+              // remove this article from the list of entities to analyze
+              xhrData.entities = xhrData.entities.filter(function (el) {
+                return el !== article;
+              });
+
+              failedEntities.push(entity);
+            } else {
+              // FIXME: use getSiteLink for siteviews
+              _this6.writeMessage(_this6.getPageLink(entity, _this6.project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            }
+          }).always(function () {
+            if (++count === totalRequestCount) {
+              dfd.resolve(xhrData);
+
+              if (failedEntities.length) {
+                _this6.writeMessage($.i18n('api-error-timeout', '<ul>' + failedEntities.map(function (failedEntity) {
+                  return '<li>' + _this6.getPageLink(failedEntity, _this6.project) + '</li>';
+                }).join('') + '</ul>'));
+              }
+            }
+          });
+        };
+
+        entities.forEach(function (entity, index) {
+          return makeRequest(entity, index);
+        });
+
+        return dfd;
+      }
+
+      /**
        * Get params needed to create a permanent link of visible data
        * @return {Object} hash of params
        */
@@ -1625,7 +1726,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'setupDateRangeSelector',
       value: function setupDateRangeSelector() {
-        var _this6 = this;
+        var _this7 = this;
 
         _get(Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
 
@@ -1636,16 +1737,16 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
         /** the "Latest N days" links */
         $('.date-latest a').on('click', function (e) {
-          _this6.setSpecialRange('latest-' + $(e.target).data('value'));
+          _this7.setSpecialRange('latest-' + $(e.target).data('value'));
         });
 
         dateRangeSelector.on('change', function (e) {
-          _this6.setChartPointDetectionRadius();
-          _this6.processInput();
+          _this7.setChartPointDetectionRadius();
+          _this7.processInput();
 
           /** clear out specialRange if it doesn't match our input */
-          if (_this6.specialRange && _this6.specialRange.value !== e.target.value) {
-            _this6.specialRange = null;
+          if (_this7.specialRange && _this7.specialRange.value !== e.target.value) {
+            _this7.specialRange = null;
           }
         });
       }
@@ -1659,7 +1760,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'updateChart',
       value: function updateChart(xhrData) {
-        var _this7 = this;
+        var _this8 = this;
 
         $('#chart-legend').html(''); // clear old chart legend
 
@@ -1685,7 +1786,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         /** preserve order of datasets due to asyn calls */
         var sortedDatasets = new Array(xhrData.entities.length);
         xhrData.datasets.forEach(function (dataset) {
-          if (_this7.isLogarithmic()) dataset.data = dataset.data.map(function (view) {
+          if (_this8.isLogarithmic()) dataset.data = dataset.data.map(function (view) {
             return view || null;
           });
           sortedDatasets[xhrData.entities.indexOf(dataset.label.score())] = dataset;
@@ -1702,7 +1803,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
                   var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
 
                   if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-                    return _this7.formatNumber(value);
+                    return _this8.formatNumber(value);
                   } else {
                     return '';
                   }
@@ -1759,7 +1860,10 @@ var ChartHelpers = function ChartHelpers(superclass) {
             });
           }
         } catch (err) {
-          return this.showErrors(err);
+          return this.showErrors({
+            errors: [],
+            fatalErrors: [err]
+          });
         }
 
         $('#chart-legend').html(this.chartObj.generateLegend());
@@ -1768,35 +1872,33 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
       /**
        * Show errors built in this.processInput
-       * @param {object|Error} xhrData - as built by this.processInput, or just a single Error object
+       * @param {object} xhrData - as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
        * @returns {boolean} whether or not fatal errors occured
        */
 
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
-        /** build necessary data structure if we were given an error object */
-        if (xhrData instanceof Error) {
-          xhrData = {
-            errors: [],
-            fatalErrors: [xhrData]
-          };
+        if (xhrData.fatalErrors.length) {
+          this.resetView(true);
+          var fatalErrors = xhrData.fatalErrors.unique();
+          this.showFatalErrors(fatalErrors);
+
+          return true;
         }
 
-        if (xhrData.errors.length && xhrData.errors.length === xhrData.entities.length || xhrData.fatalErrors.length) {
-          if (xhrData.errors.length) {
-            var errorMessages = xhrData.errors.unique().map(function (error) {
-              return '<li>' + error + '</li>';
-            }).join('');
-            this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
-          }
+        if (xhrData.errors.length) {
+          var errorMessages = xhrData.errors.unique().map(function (error) {
+            return '<li>' + error + '</li>';
+          }).join('');
 
-          if (xhrData.fatalErrors.length) {
-            this.resetView(true);
-            var fatalErrors = xhrData.fatalErrors.unique();
-            this.showFatalErrors(fatalErrors);
+          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+          // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
 
-            return true;
+          this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
+
+          if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
+            return false; // everything failed!
           }
         }
 
@@ -3507,30 +3609,24 @@ var Pv = function (_PvConfig) {
 
       if (this.debug) {
         throw errors[0];
-      } else {
-        // } else if (errors && errors[0] && errors[0].stack) {
-        // $.ajax({
-        //   method: 'POST',
-        //   url: '//tools.wmflabs.org/musikanimal/paste',
-        //   data: {
-        //     content: '' +
-        //       `\ndate:      ${moment().utc().format()}` +
-        //       `\ntool:      ${this.app}` +
-        //       `\nurl:       ${document.location.href}` +
-        //       `\nuserAgent: ${this.getUserAgent()}` +
-        //       `\ntrace:     ${errors[0].stack}`
-        //     ,
-        //     title: `Pageviews Analysis error report: ${errors[0]}`
-        //   }
-        // }).done(data => {
-        //   if (data && data.result && data.result.objectName) {
-        //     this.writeMessage($.i18n('error-please-report', this.getBugReportURL(data.result.objectName)));
-        //   } else {
-        this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
-        //   }
-        // }).fail(() => {
-        //   this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
-        // });
+      } else if (errors && errors[0] && errors[0].stack) {
+        $.ajax({
+          method: 'POST',
+          url: '//tools.wmflabs.org/musikanimal/paste',
+          data: {
+            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
+
+            title: 'Pageviews Analysis error report: ' + errors[0]
+          }
+        }).done(function (data) {
+          if (data && data.result && data.result.objectName) {
+            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL(data.result.objectName)));
+          } else {
+            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+          }
+        }).fail(function () {
+          _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+        });
       }
     }
 

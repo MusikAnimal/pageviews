@@ -176,9 +176,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       totalViewsSet = totalViewsSet.map((num, i) => num + viewsSet[i].views);
     });
 
-    // FIXME: for the dates that have incomplete data, still show what we have,
-    //   but make the bullet point red in the chart
-
     const grandSum = totalViewsSet.reduce((a, b) => (a || 0) + (b || 0));
 
     Object.assign(this.outputData, {
@@ -197,7 +194,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (datesWithoutData.length) {
       const dateList = datesWithoutData.map(date => moment(date).format(this.dateFormat));
-      // FIXME: i18N
       this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
     }
 
@@ -515,7 +511,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
-    // FIXME: only run this when they actually submit
     this.patchUsage('lv');
 
     /**

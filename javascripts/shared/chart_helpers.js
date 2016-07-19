@@ -249,6 +249,106 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Mother function for querying the API and processing data
+   * @param  {Array}  entities - list of page names, or projects for Siteviews
+   * @return {Deferred} Promise resolving with pageviews data and errors, if present
+   */
+  getPageViewsData(entities) {
+    const startDate = this.daterangepicker.startDate.startOf('day'),
+      endDate = this.daterangepicker.endDate.startOf('day');
+
+    let dfd = $.Deferred(), count = 0, failureRetries = {},
+      totalRequestCount = entities.length, failedEntities = [];
+
+    /** @type {Object} everything we need to keep track of for the promises */
+    let xhrData = {
+      entities,
+      labels: [], // Labels (dates) for the x-axis.
+      datasets: [], // Data for each article timeseries
+      errors: [], // Queue up errors to show after all requests have been made
+      fatalErrors: [], // Unrecoverable JavaScript errors
+      promises: []
+    };
+
+    const makeRequest = (entity, index) => {
+      const uriEncodedEntityName = encodeURIComponent(entity);
+      const url = (
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+      );
+      const promise = $.ajax({ url, dataType: 'json' });
+      xhrData.promises.push(promise);
+
+      promise.done(successData => {
+        try {
+          successData = this.fillInZeros(successData, startDate, endDate);
+
+          /** Build the article's dataset. */
+          if (this.config.linearCharts.includes(this.chartType)) {
+            xhrData.datasets.push(this.getLinearData(successData, entity, index));
+          } else {
+            xhrData.datasets.push(this.getCircularData(successData, entity, index));
+          }
+
+          /** fetch the labels for the x-axis on success if we haven't already */
+          if (successData.items && !xhrData.labels.length) {
+            xhrData.labels = successData.items.map(elem => {
+              return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
+            });
+          }
+        } catch (err) {
+          return xhrData.fatalErrors.push(err);
+        }
+      }).fail(errorData => {
+        /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+
+        if (cassandraError) {
+          if (failureRetries[this.project]) {
+            failureRetries[this.project]++;
+          } else {
+            failureRetries[this.project] = 1;
+          }
+
+          /** maximum of 3 retries */
+          if (failureRetries[this.project] < 3) {
+            totalRequestCount++;
+            return this.rateLimit(makeRequest, 100, this)(entity, index);
+          }
+        }
+
+        if (cassandraError) {
+          // remove this article from the list of entities to analyze
+          xhrData.entities = xhrData.entities.filter(el => el !== article);
+
+          failedEntities.push(entity);
+        } else {
+          // FIXME: use getSiteLink for siteviews
+          this.writeMessage(`${this.getPageLink(entity, this.project)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+        }
+      }).always(() => {
+        if (++count === totalRequestCount) {
+          dfd.resolve(xhrData);
+
+          if (failedEntities.length) {
+            this.writeMessage($.i18n(
+              'api-error-timeout',
+              '<ul>' +
+              failedEntities.map(failedEntity => `<li>${this.getPageLink(failedEntity, this.project)}</li>`).join('') +
+              '</ul>'
+            ));
+          }
+        }
+      });
+    };
+
+    entities.forEach((entity, index) => makeRequest(entity, index));
+
+    return dfd;
+  }
+
+  /**
    * Get params needed to create a permanent link of visible data
    * @return {Object} hash of params
    */
@@ -477,7 +577,10 @@ const ChartHelpers = superclass => class extends superclass {
         });
       }
     } catch (err) {
-      return this.showErrors(err);
+      return this.showErrors({
+        errors: [],
+        fatalErrors: [err]
+      });
     }
 
     $('#chart-legend').html(this.chartObj.generateLegend());
@@ -486,32 +589,30 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Show errors built in this.processInput
-   * @param {object|Error} xhrData - as built by this.processInput, or just a single Error object
+   * @param {object} xhrData - as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
    * @returns {boolean} whether or not fatal errors occured
    */
   showErrors(xhrData) {
-    /** build necessary data structure if we were given an error object */
-    if (xhrData instanceof Error) {
-      xhrData = {
-        errors: [],
-        fatalErrors: [xhrData]
-      };
+    if (xhrData.fatalErrors.length) {
+      this.resetView(true);
+      const fatalErrors = xhrData.fatalErrors.unique();
+      this.showFatalErrors(fatalErrors);
+
+      return true;
     }
 
-    if ((xhrData.errors.length && xhrData.errors.length === xhrData.entities.length) || xhrData.fatalErrors.length) {
-      if (xhrData.errors.length) {
-        const errorMessages = xhrData.errors.unique().map(error => `<li>${error}</li>`).join('');
-        this.writeMessage(
-          `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`
-        );
-      }
+    if (xhrData.errors.length) {
+      const errorMessages = xhrData.errors.unique().map(error => `<li>${error}</li>`).join('');
 
-      if (xhrData.fatalErrors.length) {
-        this.resetView(true);
-        const fatalErrors = xhrData.fatalErrors.unique();
-        this.showFatalErrors(fatalErrors);
+      /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+      // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
 
-        return true;
+      this.writeMessage(
+        `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`
+      );
+
+      if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
+        return false; // everything failed!
       }
     }
 

@@ -12,6 +12,7 @@ const templates = require('./templates');
  * @type {Object}
  */
 const config = {
+  agentSelector: '#agent-select',
   chart: '.aqs-chart',
   circularLegend: templates.circularLegend,
   dateRangeSelector: '.aqs-date-range-selector',

@@ -332,81 +332,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    /** @type {Object} everything we need to keep track of for the promises */
-    let xhrData = {
-      entities,
-      labels: [], // Labels (dates) for the x-axis.
-      datasets: [], // Data for each article timeseries
-      errors: [], // Queue up errors to show after all requests have been made
-      fatalErrors: [], // Unrecoverable JavaScript errors
-      promises: []
-    };
-
     this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
 
-    /** Collect parameters from inputs. */
-    const startDate = this.daterangepicker.startDate.startOf('day'),
-      endDate = this.daterangepicker.endDate.startOf('day');
-
-    /**
-     * Asynchronously collect the data from RESTBase API,
-     * process it to Chart.js format and initialize the chart.
-     */
-    xhrData.entities.forEach((article, index) => {
-      const uriEncodedArticle = encodeURIComponent(article);
-
-      /** @type {String} Url to query the API. */
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(this.config.platformSelector).val()}/${$('#agent-select').val()}/${uriEncodedArticle}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({
-        url: url,
-        dataType: 'json'
-      });
-      xhrData.promises.push(promise);
-
-      promise.success(successData => {
-        try {
-          successData = this.fillInZeros(successData, startDate, endDate);
-
-          /** Build the article's dataset. */
-          if (this.config.linearCharts.includes(this.chartType)) {
-            xhrData.datasets.push(this.getLinearData(successData, article, index));
-          } else {
-            xhrData.datasets.push(this.getCircularData(successData, article, index));
-          }
-
-          /** fetch the labels for the x-axis on success if we haven't already */
-          if (successData.items && !xhrData.labels.length) {
-            xhrData.labels = successData.items.map(elem => {
-              return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
-            });
-          }
-        } catch (err) {
-          return xhrData.fatalErrors.push(err);
-        }
-      }).fail(data => {
-        if (data.status === 404) { // page does not exist
-          this.writeMessage(
-            `<a href='${this.getPageURL(article)}'>${article.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
-          );
-          // remove this article from the list of entities to analyze
-          xhrData.entities = xhrData.entities.filter(el => el !== article);
-        } else if (data.responseJSON) {
-          xhrData.errors.push(data.responseJSON.title);
-        } else {
-          xhrData.errors.push('Unknown error'); // FIXME: i18n
-        }
-      });
-    });
-
-    $.whenAll(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
+    this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
   }
 
   /**
