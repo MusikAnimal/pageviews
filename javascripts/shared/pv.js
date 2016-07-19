@@ -156,6 +156,14 @@ class Pv extends PvConfig {
     }
   }
 
+  formatYAxisNumber(num) {
+    if (num % 1 === 0) {
+      return this.formatNumber(num);
+    } else {
+      return null;
+    }
+  }
+
   /**
    * Gets the date headings as strings - i18n compliant
    * @param {boolean} localized - whether the dates should be localized per browser language

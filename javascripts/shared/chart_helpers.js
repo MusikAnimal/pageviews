@@ -26,6 +26,9 @@ const ChartHelpers = superclass => class extends superclass {
     // leave if there's no chart configured
     if (!this.config.chart) return;
 
+    /** @type {Boolean} add ability to disable auto-log detection */
+    this.noLogScale = location.search.includes('autolog=false');
+
     /** copy over app-specific chart templates */
     this.config.linearCharts.forEach(linearChart => {
       this.config.chartConfig[linearChart].opts.legendTemplate = this.config.linearLegend;
@@ -425,7 +428,7 @@ const ChartHelpers = superclass => class extends superclass {
    * @return {Boolean} yes or no
    */
   shouldBeLogarithmic(datasets) {
-    if (!this.isLogarithmicCapable()) {
+    if (!this.isLogarithmicCapable() || this.noLogScale) {
       return false;
     }
 
@@ -437,6 +440,9 @@ const ChartHelpers = superclass => class extends superclass {
 
     // overall max value
     const maxValue = Math.max(...[].concat(...sets));
+
+    if (maxValue <= 10) return false;
+
     let logarithmicNeeded = false;
 
     sets.forEach(set => {

@@ -189,6 +189,7 @@
 	"url-structure-massviews-project": "A valid $1 for the pages of Quarry results.",
 	"url-structure-view": "$1 to view the data as a list, or $2 to view the data as a chart",
 	"url-structure-subjectpage": "Sets the \"$1\" option when using categories as the source. Use $2 to enable, or $3 to disable (default).",
+	"url-structure-autolog": "Set to $1 to disable automatically setting the $2 option",
 	"default": "Default",
 	"all-languages": "All languages",
 	"history": "History",

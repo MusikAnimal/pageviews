@@ -53,7 +53,7 @@ module.exports = function(grunt) {
   ['old_data', 'todays_data', 'agents', 'chart_type', 'feedback', 'throttle'].forEach(faqPart => {
     hamlFiles[`public_html/faq_parts/${faqPart}.php`] = `views/faq_parts/${faqPart}.haml`;
   });
-  ['project', 'date_ranges', 'platform', 'agent'].forEach(urlPart => {
+  ['project', 'date_ranges', 'platform', 'agent', 'autolog'].forEach(urlPart => {
     hamlFiles[`public_html/url_parts/${urlPart}.php`] = `views/url_parts/${urlPart}.haml`;
   });
   let uglifyTask = {

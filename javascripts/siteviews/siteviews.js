@@ -140,6 +140,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
+    /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
+    if (this.noLogScale) params.autolog = 'false';
+
     return params;
   }
 

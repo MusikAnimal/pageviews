@@ -20,7 +20,7 @@ class PvConfig {
             scales: {
               yAxes: [{
                 ticks: {
-                  callback: value => this.formatNumber(value)
+                  callback: value => this.formatYAxisNumber(value)
                 }
               }]
             },
@@ -49,7 +49,7 @@ class PvConfig {
             scales: {
               yAxes: [{
                 ticks: {
-                  callback: value => this.formatNumber(value)
+                  callback: value => this.formatYAxisNumber(value)
                 }
               }],
               xAxes: [{

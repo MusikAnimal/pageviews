@@ -196,6 +196,7 @@
 	"url-structure-massviews-project": "Similar to the 'url-structure-project' message except indicates this parameter only applies to Quarry results. $1 is the message for 'project' that is a link to the sitematrix (list of valid projects).",
 	"url-structure-view": "Documentation for the 'view' parameter. $1 is the value to show the data as a list, or $2 to show the data as a chart",
 	"url-structure-subjectpage": "Documentation for the 'subjectpage' parameter. $1 is a link to the FAQ entry for this option (the text of the link is the i18n message 'category-subject-toggle'). $2 is the value to enable the option, $2 is the value to disable it.",
+	"url-structure-autolog": "Documentation for the 'autolog' parameter. $1 is the only valid value for this parameter, and $2 is the i18n message 'logarithmic-scale'.",
 	"default": "Default\n{{Identical|Default}}",
 	"all-languages": "A link to show the article in the multilingual pageviews tool. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|All languages}}",
 	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|History}}",

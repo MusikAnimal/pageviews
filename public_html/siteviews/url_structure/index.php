@@ -43,6 +43,7 @@
             </dd>
             <?php include "../../url_parts/platform.php"; ?>
             <?php include "../../url_parts/agent.php"; ?>
+            <?php include "../../url_parts/autolog.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

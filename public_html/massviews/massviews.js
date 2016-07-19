@@ -1215,6 +1215,9 @@ var ChartHelpers = function ChartHelpers(superclass) {
       // leave if there's no chart configured
       if (!_this.config.chart) return _possibleConstructorReturn(_this);
 
+      /** @type {Boolean} add ability to disable auto-log detection */
+      _this.noLogScale = location.search.includes('autolog=false');
+
       /** copy over app-specific chart templates */
       _this.config.linearCharts.forEach(function (linearChart) {
         _this.config.chartConfig[linearChart].opts.legendTemplate = _this.config.linearLegend;
@@ -1682,7 +1685,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
       value: function shouldBeLogarithmic(datasets) {
         var _ref;
 
-        if (!this.isLogarithmicCapable()) {
+        if (!this.isLogarithmicCapable() || this.noLogScale) {
           return false;
         }
 
@@ -1696,6 +1699,9 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
         // overall max value
         var maxValue = Math.max.apply(Math, _toConsumableArray((_ref = []).concat.apply(_ref, sets)));
+
+        if (maxValue <= 10) return false;
+
         var logarithmicNeeded = false;
 
         sets.forEach(function (set) {
@@ -2693,6 +2699,15 @@ var Pv = function (_PvConfig) {
         return this.n(num);
       } else {
         return num;
+      }
+    }
+  }, {
+    key: 'formatYAxisNumber',
+    value: function formatYAxisNumber(num) {
+      if (num % 1 === 0) {
+        return this.formatNumber(num);
+      } else {
+        return null;
       }
     }
 
@@ -3811,7 +3826,7 @@ var PvConfig = function () {
               yAxes: [{
                 ticks: {
                   callback: function callback(value) {
-                    return _this.formatNumber(value);
+                    return _this.formatYAxisNumber(value);
                   }
                 }
               }]
@@ -3844,7 +3859,7 @@ var PvConfig = function () {
               yAxes: [{
                 ticks: {
                   callback: function callback(value) {
-                    return _this.formatNumber(value);
+                    return _this.formatYAxisNumber(value);
                   }
                 }
               }],
