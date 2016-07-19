@@ -508,6 +508,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
             return set.data;
           }));
           $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+          $('.begin-at-zero').toggleClass('disabled', shouldBeLogarithmic);
         }
 
         /** preserve order of datasets due to asyn calls */
@@ -1721,7 +1722,7 @@ var Pv = function (_PvConfig) {
 
     /**
      * Get URL to file a report on Meta, preloaded with permalink
-     * @param {String} phabPaste URL to auto-generated error report on Phabricator
+     * @param {String} [phabPaste] URL to auto-generated error report on Phabricator
      * @return {String} URL
      */
 

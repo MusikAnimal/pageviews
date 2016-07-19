@@ -405,6 +405,7 @@ const ChartHelpers = superclass => class extends superclass {
     if (this.autoLogDetection === 'true') {
       const shouldBeLogarithmic = this.shouldBeLogarithmic(xhrData.datasets.map(set => set.data));
       $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+      $('.begin-at-zero').toggleClass('disabled', shouldBeLogarithmic);
     }
 
     /** preserve order of datasets due to asyn calls */
