@@ -3257,24 +3257,30 @@ var Pv = function (_PvConfig) {
 
       if (this.debug) {
         throw errors[0];
-      } else if (errors && errors[0] && errors[0].stack) {
-        $.ajax({
-          method: 'POST',
-          url: '//tools.wmflabs.org/musikanimal/paste',
-          data: {
-            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
-
-            title: 'Pageviews Analysis error report: ' + errors[0]
-          }
-        }).done(function (data) {
-          if (data && data.result && data.result.objectName) {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL(data.result.objectName)));
-          } else {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
-          }
-        }).fail(function () {
-          _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
-        });
+      } else {
+        // } else if (errors && errors[0] && errors[0].stack) {
+        // $.ajax({
+        //   method: 'POST',
+        //   url: '//tools.wmflabs.org/musikanimal/paste',
+        //   data: {
+        //     content: '' +
+        //       `\ndate:      ${moment().utc().format()}` +
+        //       `\ntool:      ${this.app}` +
+        //       `\nurl:       ${document.location.href}` +
+        //       `\nuserAgent: ${this.getUserAgent()}` +
+        //       `\ntrace:     ${errors[0].stack}`
+        //     ,
+        //     title: `Pageviews Analysis error report: ${errors[0]}`
+        //   }
+        // }).done(data => {
+        //   if (data && data.result && data.result.objectName) {
+        //     this.writeMessage($.i18n('error-please-report', this.getBugReportURL(data.result.objectName)));
+        //   } else {
+        this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+        //   }
+        // }).fail(() => {
+        //   this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+        // });
       }
     }
 
