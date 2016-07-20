@@ -876,12 +876,12 @@ var ChartHelpers = function ChartHelpers(superclass) {
               }
             }
 
-            if (cassandraError) {
-              // remove this article from the list of entities to analyze
-              xhrData.entities = xhrData.entities.filter(function (el) {
-                return el !== article;
-              });
+            // remove this article from the list of entities to analyze
+            xhrData.entities = xhrData.entities.filter(function (el) {
+              return el !== entity;
+            });
 
+            if (cassandraError) {
               failedEntities.push(entity);
             } else {
               // FIXME: use getSiteLink for siteviews
