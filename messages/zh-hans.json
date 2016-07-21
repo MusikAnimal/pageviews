@@ -125,7 +125,7 @@
 	"hover-to-exclude": "请悬停在记录上，并点击✖以从视图中排除",
 	"num-languages": "$1种语言",
 	"unique-titles": "$1个单一{{PLURAL:$1|标题}}",
-	"invalid-project": "$1不是一个<a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>有效的项目</a>",
+	"invalid-project": "$1不是一个<a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>有效的项目</a>，或目前不支持。",
 	"invalid-lang-project": "$1无效或不是一个多语言项目",
 	"faq-return-to": "返回至$1",
 	"faq-old-data-title": "为什么我不能查看早于$1的数据？",

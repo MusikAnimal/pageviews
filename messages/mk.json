@@ -123,7 +123,7 @@
 	"hover-to-exclude": "Одете над ставките и стиснете на ✖ за да не се прикажуваат",
 	"num-languages": "$1 јазици",
 	"unique-titles": "$1 {{PLURAL|$1|посебен наслов|посебни наслови}}",
-	"invalid-project": "$1 не претставува <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>важечки проект</a>",
+	"invalid-project": "$1 не претставува <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>важечки проект</a> или засега не е поддржана.",
 	"invalid-lang-project": "$1 е неважечки или не е повеќејазичен проект",
 	"faq-return-to": "Назад на $1",
 	"faq-old-data-title": "Зошто не можам да гледам податоци постари од $1?",

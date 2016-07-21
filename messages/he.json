@@ -123,7 +123,7 @@
 	"hover-to-exclude": "יש לעבור עם העכבר על עיולים וללחוץ על ✖ כדי להוציא אותם מהתצוגה",
 	"num-languages": "$1 שפות",
 	"unique-titles": "{{PLURAL:$1|כותרת ייחודית אחת|$1 כותרות ייחודיות}}",
-	"invalid-project": "$1 אינו <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>מיזם תקין</a>",
+	"invalid-project": "$1 הוא לא <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>מיזם תקין</a> או שהוא לא נתמך כעת.",
 	"invalid-lang-project": "$1 הוא מיזם שאינו תקין או אינו רב־לשוני",
 	"faq-return-to": "חזרה ל{{GRAMMAR:תחילית|$1}}",
 	"faq-old-data-title": "למה אין באפשרותי לראות נתונים ישנים יותר מ{{GRAMMAR:תחילית|$1}}?",

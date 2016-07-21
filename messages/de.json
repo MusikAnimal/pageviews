@@ -124,7 +124,7 @@
 	"hover-to-exclude": "Fahre mit der Maus über Einträge und klicke das ✖ an, um den Eintrag von der Ansicht auszuschließen.",
 	"num-languages": "$1 Sprachen",
 	"unique-titles": "{{PLURAL:$1|Ein eindeutiger Titel|$1 eindeutige Titel}}",
-	"invalid-project": "$1 ist kein <a href='//meta.wikimedia.org/w/api.php?action=sitematrix&formatversion=2'>gültiges Projekt</a>",
+	"invalid-project": "$1 ist kein <a href='//meta.wikimedia.org/w/api.php?action=sitematrix&formatversion=2'>gültiges Projekt</a> oder wird derzeit nicht unterstützt.",
 	"invalid-lang-project": "$1 ist entweder ungültig oder kein mehrsprachiges Projekt",
 	"faq-return-to": "Zurück zu $1",
 	"faq-old-data-title": "Warum kann ich keine Daten ansehen, die älter sind als vom $1?",
