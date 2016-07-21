@@ -1004,6 +1004,7 @@ class Pv extends PvConfig {
           content: '' +
             `\ndate:      ${moment().utc().format()}` +
             `\ntool:      ${this.app}` +
+            `\nchart:     ${this.chartType}` +
             `\nurl:       ${document.location.href}` +
             `\nuserAgent: ${this.getUserAgent()}` +
             `\ntrace:     ${errors[0].stack}`
