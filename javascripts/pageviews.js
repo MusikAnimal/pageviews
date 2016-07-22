@@ -135,6 +135,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         params.pages = ['Cat', 'Dog'];
         this.setSelect2Defaults(params.pages);
       } else {
+        params.pages = [];
         this.focusSelect2();
         this.stopSpinny();
       }
