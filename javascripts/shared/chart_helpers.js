@@ -338,7 +338,7 @@ const ChartHelpers = superclass => class extends superclass {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedEntities.map(failedEntity => `<li>${this.getPageLink(failedEntity, this.project)}</li>`).join('') +
+              failedEntities.map(failedEntity => `<li>${this.getPageLink(failedEntity, this.project.escape())}</li>`).join('') +
               '</ul>'
             ));
           }

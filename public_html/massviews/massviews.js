@@ -841,7 +841,7 @@ var MassViews = function (_mix$with) {
       promise.done(function (data) {
         if (data.error) {
           return _this9.setState('initial', function () {
-            _this9.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info);
+            _this9.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info.escape());
           });
         }
 
@@ -934,7 +934,7 @@ var MassViews = function (_mix$with) {
       promise.done(function (data) {
         if (data.error) {
           return _this10.setState('initial', function () {
-            _this10.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info);
+            _this10.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info.escape());
           });
         }
 
@@ -1569,7 +1569,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
               if (failedEntities.length) {
                 _this6.writeMessage($.i18n('api-error-timeout', '<ul>' + failedEntities.map(function (failedEntity) {
-                  return '<li>' + _this6.getPageLink(failedEntity, _this6.project) + '</li>';
+                  return '<li>' + _this6.getPageLink(failedEntity, _this6.project.escape()) + '</li>';
                 }).join('') + '</ul>'));
               }
             }
@@ -2757,7 +2757,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getPageLink',
     value: function getPageLink(page, project) {
-      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore() + '</a>';
+      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore().escape() + '</a>';
     }
 
     /**
@@ -2772,7 +2772,7 @@ var Pv = function (_PvConfig) {
     value: function getPageURL(page) {
       var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
 
-      return '//' + project.replace(/\.org$/, '') + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
+      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
     }
 
     /**
@@ -3629,7 +3629,7 @@ var Pv = function (_PvConfig) {
           method: 'POST',
           url: '//tools.wmflabs.org/musikanimal/paste',
           data: {
-            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
+            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nchart:     ' + this.chartType) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
 
             title: 'Pageviews Analysis error report: ' + errors[0]
           }

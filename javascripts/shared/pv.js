@@ -201,7 +201,7 @@ class Pv extends PvConfig {
    * @return {string} HTML markup
    */
   getPageLink(page, project) {
-    return `<a target="_blank" href="//${this.getPageURL(page, project)}">${page.descore()}</a>`;
+    return `<a target="_blank" href="//${this.getPageURL(page, project)}">${page.descore().escape()}</a>`;
   }
 
   /**
@@ -211,7 +211,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '')}.org/wiki/${encodeURIComponent(page.score()).replace(/'/, escape)}`;
+    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/'/, escape)}`;
   }
 
   /**

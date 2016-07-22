@@ -684,7 +684,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       if (data.error) {
         return this.setState('initial', () => {
           this.writeMessage(
-            `${$.i18n('api-error', 'Category API')}: ${data.error.info}`
+            `${$.i18n('api-error', 'Category API')}: ${data.error.info.escape()}`
           );
         });
       }
@@ -774,7 +774,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       if (data.error) {
         return this.setState('initial', () => {
           this.writeMessage(
-            `${$.i18n('api-error', 'Transclusion API')}: ${data.error.info}`
+            `${$.i18n('api-error', 'Transclusion API')}: ${data.error.info.escape()}`
           );
         });
       }
