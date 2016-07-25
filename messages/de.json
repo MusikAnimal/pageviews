@@ -190,6 +190,7 @@
 	"url-structure-massviews-project": "Eine gültige $1 für die Seiten der Quarry-Ergebnisse.",
 	"url-structure-view": "$1, um die Daten als eine Liste anzusehen oder $2, um die Daten als ein Diagramm anzusehen.",
 	"url-structure-subjectpage": "Legt die Option „$1“ bei der Verwendung von Kategorien als Quelle fest. $2 zur Aktivierung oder $3 zur Deaktivierung (Standard) verwenden.",
+	"url-structure-autolog": "Auf $1 festlegen, um die automatische Festlegung der Option $2 zu deaktivieren",
 	"default": "Standard",
 	"all-languages": "Alle Sprachen",
 	"history": "Versionsgeschichte",

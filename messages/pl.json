@@ -103,6 +103,7 @@
 	"average": "Średnia",
 	"submit": "Wyślij",
 	"unique-titles": "$1 {{PLURAL:$1|niepowtarzalny tytuł|niepowtarzalne tytuły|niepowtarzalnych tytułów}}",
+	"invalid-project": "$1 jest <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>niepoprawnym projektem</a> lub obecnie nieobsługiwanym.",
 	"faq-return-to": "Powrót do $1",
 	"faq-old-data-title": "Dlaczego nie mogę wyświetlić danych wcześniejszych niż $1?",
 	"faq-chart-type-title": "W jaki sposób mogę zmienić rodzaj wykresu?",

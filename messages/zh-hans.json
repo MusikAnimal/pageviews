@@ -191,6 +191,7 @@
 	"url-structure-massviews-project": "用于Quarry结果的有效$1。",
 	"url-structure-view": "$1以作为列表查看数据，或$2以作为图表查看数据",
 	"url-structure-subjectpage": "当使用分类作为来源时设置“$1”选项。使用$2启用，或$3禁用（默认）。",
+	"url-structure-autolog": "设置为$1以禁用自动设置$2选项",
 	"default": "默认",
 	"all-languages": "所有语言",
 	"history": "历史",

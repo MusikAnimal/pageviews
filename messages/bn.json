@@ -124,7 +124,7 @@
 	"hover-to-exclude": "ভুক্তির উপর মাউস নিন এবং দৃশ্য থেকে বাদ দিতে ✖ ক্লিক করুন",
 	"num-languages": "$1টি ভাষা",
 	"unique-titles": "$1টি একক {{PLURAL:$1|শিরোনাম}}",
-	"invalid-project": "$1 কোন <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>বৈধ প্রকল্প</a> নয়",
+	"invalid-project": "$1 কোন <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>বৈধ প্রকল্প</a> নয় বা বর্তমানে অসমর্থিত।",
 	"invalid-lang-project": "$1 হয় অবৈধ বা নাহয় একটি বহুভাষী প্রকল্প নয়",
 	"faq-return-to": "$1-এ ফেরত যান।",
 	"faq-old-data-title": "কেন আমি $1-র চেয়ে পুরোনো উপাত্ত দেখতে পারছি না?",

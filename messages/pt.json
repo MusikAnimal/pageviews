@@ -3,7 +3,8 @@
 		"authors": [
 			"Diniscoelho",
 			"Vitorvicentevalente",
-			"Macofe"
+			"Macofe",
+			"Jotomicron"
 		]
 	},
 	"title": "Análise de Visualizações de Página",
@@ -28,6 +29,7 @@
 	"page-title": "Título da página",
 	"change-chart": "Tipo de gráfico",
 	"settings": "Configurações",
+	"download-label": "Download",
 	"csv": "CSV",
 	"json": "JSON",
 	"credits": "Desenvolvido por $1, $2 e $3.",
@@ -68,6 +70,7 @@
 	"invalid-params": "Parâmetros inválidos!",
 	"param-error-1": "A API de Visualizações de Página não contem dados anteriores a $1. Desculpe.",
 	"param-error-2": "Data inicial tem que ser mais antiga do que data final.",
+	"param-error-3": "<code>intervalo</code> inválido: foi substituído pelo intervalo padrão. Veja a <a href='/pageviews/url_structure'>documentação</a> para mais informações.",
 	"totals": "Totais",
 	"day": "dia",
 	"su": "Dom",
@@ -99,7 +102,11 @@
 	"error-timed-out": "A operação excedeu o tempo limite.",
 	"error-please-report": "Por favor, <strong>atualize a página</strong> e tente novamente ou <a target=\"_blank\" href=\"$1\">reporte este problema</a>",
 	"api-error": "Erro na consulta de $1",
+	"api-error-unknown": "Ocorreu um erro desconhecido ao consultar $1",
 	"api-error-no-data": "Não foram encontrados dados.",
+	"api-error-timeout": "Devido à falha de API, as páginas a seguir não pôde ser processada:\n$1\nPor favor, aguarde alguns minutos e tente novamente.",
+	"api-throttle-wait": "Por favor aguarde $1 segundos antes de enviar outro pedido.<br />As nossas desculpas pelo inconveniente. Este é uma tática temporária de limitação do uso do servidor.<br />Veja $2 para obter mais informações.",
+	"api-incomplete-data": "Alguns dados ainda não está disponível para as datas $1",
 	"excluded-pages": "Páginas excluídas",
 	"show-more": "Mostrar mais",
 	"source-project": "Projeto de origem",
@@ -117,6 +124,10 @@
 	"url-structure-example-siteviews": "Para obter as mais recentes dados sobre o total de visualizações de página de todos os artigos da sua wiki, com opções pré-definidas, use:\n$1",
 	"url-structure-parameters": "Parâmetros",
 	"url-structure-massviews-source": "Um de $1, $2 ou $3",
+	"massviews-empty-set": "$1 não contém páginas!",
+	"massviews-oversized-set": "$1 contém $2 páginas. Por motivos de desempenho, apenas as primeiras $3 páginas serão processadas.",
+	"massviews-oversized-set-unknown": "$1 contém mais de $2 páginas. Por motivos de desempenho, apenas as primeiras $2 páginas serão processadas.",
+	"url-structure-sort-massviews": "Coluna para ordenar. $1 ou $2",
 	"pageviews-description": "Análise de visualizações em várias páginas",
 	"topviews-description": "As páginas mais visualizadas de um projeto",
 	"langviews-description": "Visualizações de página de um artigo, em todos os idiomas",

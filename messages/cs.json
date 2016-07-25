@@ -121,11 +121,12 @@
 	"hover-to-exclude": "Najeďte nad záznamy a klikněte na ✖ pro vyloučení ze zobrazení",
 	"num-languages": "$1 jazyků",
 	"unique-titles": "$1 {{PLURAL:$1|jedinečný název|jedinečné názvy|jedinečných názvů}}",
-	"invalid-project": "$1 není <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>platný projekt</a>",
+	"invalid-project": "$1 není <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>platný projekt</a> nebo momentálně není podporován.",
 	"invalid-lang-project": "Projekt $1 je buď neplatný nebo není vícejazyčný",
 	"faq-return-to": "Zpět na $1",
 	"faq-old-data-title": "Proč nemohu zobrazit data starší než srpen 2015?",
 	"faq-todays-date-title": "Proč nemohu zobrazit data z dnešního dne?",
+	"faq-try-tool": "To můžete najít na $1.",
 	"faq-bug-report-body": "Pokud byste {{GENDER:|chtěl|chtěla|chtěl(a)}} odeslat svůj názor pomocí wiki, jděte na <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>příslušnou stránku</a> na Metě. Problémy můžete také hlásit na <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHubu</a> a ve <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricatoru</a>.",
 	"faq-massviews-sources-title": "Co jsou „Zdroje“?",
 	"faq-massviews-subject-page-title": "Co znamená možnost „$1“?",
@@ -134,10 +135,12 @@
 	"num-pages": "$1 {{PLURAL:$1|stránka|stránky|stránek}}",
 	"template-url": "URL šablony",
 	"logarithmic-scale": "Logaritmické měřítko",
+	"bezier-curve-option": "Použít Bézierovu křivku na lineární grafy",
 	"list": "Seznam",
 	"chart": "Tabulka",
 	"autolog-option": "Používejte logaritmické měřítko automaticky, pokud je platná.",
 	"remember-chart-option": "Pamatovat si nastavení tabulek",
 	"begin-at-zero": "Začít od nuly",
-	"begin-at-zero-option": "Vždy zobrazit osu y začínající v nule"
+	"begin-at-zero-option": "Vždy zobrazit osu y začínající v nule",
+	"search": "Hledat"
 }
