@@ -326,7 +326,7 @@ var LangViews = function (_mix$with) {
         var dateList = datesWithoutData.map(function (date) {
           return moment(date).format(_this3.dateFormat);
         });
-        this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
+        this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
       }
 
       return this.outputData;

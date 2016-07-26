@@ -408,7 +408,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (datesWithoutData.length) {
       const dateList = datesWithoutData.map(date => moment(date).format(this.dateFormat));
-      this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; ')));
+      this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
     }
 
     return this.outputData;
