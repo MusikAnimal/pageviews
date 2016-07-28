@@ -119,7 +119,7 @@
 	"faq-old-data-body": "위키미디어 페이지뷰 API는 2015년 8월에 도입되었으며 $1까지의 데이터가 채워져 있습니다. 이 이전의 데이터를 보려면 <a href='http://stats.grok.se'>stats.grok.se</a>와 같은 외부 데이터에 의존해야 합니다. 이 외부 서비스가 작동하는지 여부는 이 도구외 무관한 부분으로 이 서비스를 관리하는 사람들의 권한 밖에 있습니다.",
 	"faq-todays-date-title": "오늘 날짜의 데이터를 왜 볼 수 없나요?",
 	"faq-chart-type-title": "차트 종류는 어떻게 바꾸나요?",
-	"faq-try-tool": "$1 시도",
+	"faq-try-tool": "$1에서 찾을 수 있습니다.",
 	"faq-bug-report-title": "기능 요청이나 보고할 버그가 있습니다.",
 	"faq-source-title": "\"데이터 소스\"가 무엇입니까?",
 	"faq-massviews-sources-title": "\"소스\"가 무엇입니까?",

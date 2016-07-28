@@ -73,6 +73,7 @@
 	"october": "Oktohber",
 	"november": "Novämber",
 	"december": "Dezämber",
+	"select2-max-chars": "Bes_esu_johd un donn {{PLURAL:$1|eij|$1|keij}} Zeijsche fott schmiiße",
 	"select2-loading": "Mih Äjehpneße lahde&nbsp;&hellip;",
 	"select2-max-items": "Mer kann blohß {{PLURAL:$1|ein Saach|$1 Saache|nix}} ußwähle.",
 	"select2-no-results": "Nix jefonge",

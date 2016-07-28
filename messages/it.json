@@ -126,7 +126,7 @@
 	"hover-to-exclude": "Passa il mouse sopra le voci e clicca sulla ✖ per escluderle dalla vista",
 	"num-languages": "$1 lingue",
 	"unique-titles": "$1 {{PLURAL:$1|titolo univoco|titoli univoci}}",
-	"invalid-project": "$1 non è un <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>progetto valido</a>",
+	"invalid-project": "$1 non è un <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>progetto valido</a> o non è attualmente supportato.",
 	"invalid-lang-project": "$1 non è valido o non è un progetto multilingue",
 	"faq-return-to": "Torna a $1",
 	"faq-old-data-title": "Perché non riesco a visualizzare i dati più vecchi di $1?",

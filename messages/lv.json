@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Papuass"
+			"Papuass",
+			"Silraks"
 		]
 	},
 	"title": "Lapu skatījumu analīze",
@@ -26,6 +27,7 @@
 	"page-title": "Lapas nosaukums",
 	"change-chart": "Mainīt diagrammas veidu",
 	"settings": "Iestatījumi",
+	"download-label": "Lejupielādēt",
 	"csv": "CSV",
 	"json": "JSON",
 	"faq": "BUJ",
@@ -72,6 +74,7 @@
 	"language": "Valoda",
 	"average": "Vidēji",
 	"num-languages": "$1 valodas",
+	"faq-return-to": "Atgriezties uz $1",
 	"faq-agents-title": "Kas ir \"aģenti\"?",
 	"faq-try-tool": "Izmēģini $1",
 	"url-structure-parameters": "Parametri",

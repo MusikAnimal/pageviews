@@ -115,7 +115,7 @@
 	"submit": "Enviar",
 	"hover-to-exclude": "Revise as entradas e prema na ✖ para excluílas da vista",
 	"num-languages": "$1 linguas",
-	"unique-titles": "$1 {{PLURAL:$1|título|títulos}} únicos",
+	"unique-titles": "$1 {{PLURAL:$1|título único|títulos únicos}}",
 	"invalid-project": "$1 non é un <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>proxecto válido</a>",
 	"invalid-lang-project": "$1 é un proxecto inválido ou non multilingüe",
 	"faq-return-to": "Volver a $1",
