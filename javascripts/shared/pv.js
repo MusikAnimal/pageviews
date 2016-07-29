@@ -201,7 +201,7 @@ class Pv extends PvConfig {
    * @return {string} HTML markup
    */
   getPageLink(page, project) {
-    return `<a target="_blank" href="//${this.getPageURL(page, project)}">${page.descore().escape()}</a>`;
+    return `<a target="_blank" href="${this.getPageURL(page, project)}">${page.descore().escape()}</a>`;
   }
 
   /**
@@ -515,7 +515,7 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isChartApp() {
-    return !['langviews', 'massviews'].includes(this.app);
+    return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
   }
 
   /**

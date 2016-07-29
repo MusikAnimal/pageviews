@@ -113,7 +113,7 @@
 	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
 	"api-throttle-wait": "Error message saying the user needs to wait $1 seconds before they can make submit another query. It also explains that this throttling is temporary. $2 is a link to the relevant Phabricator task",
 	"api-incomplete-data": "Error message saying that some data in the collection is not yet available for the given dates. $1 (***always treat as plural***) is the list of dates lacking data.",
-	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews-test/)",
+	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews/)",
 	"excluded-pages": "Pages that are excluded from the Topviews list",
 	"show-more": "Link to reveal more of the Topviews data",
 	"langviews-title": "The title of the Langviews tool. This is shown as a header at the top of the page.",
@@ -222,6 +222,7 @@
 	"langviews-description": "Brief description of the Langviews tool. Shown directly under the header.",
 	"massviews-description": "Brief description of the Massviews tool. Shown directly under the header.",
 	"siteviews-description": "Brief description of the Siteviews tool. Shown directly under the header.",
+	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
 	"invalid-category-url": "Error messages saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
 	"invalid-template-url": "Error messages saying the user inputted wiki URL is not a valid template or page. In this case it does not have to be in the Template namespace, rather it just needs to be a valid page.",
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
@@ -239,5 +240,9 @@
 	"remember-chart-option": "Label for option to remember chart preference across sessions.",
 	"begin-at-zero": "Label to show the chart with x-axis starting at zero. This message should be brief, and essentially identical to 'Begin at zero'.",
 	"begin-at-zero-option": "Label for setting to always show the y-axis starting at zero",
-	"search": "Label for the search field in the Topviews app.\n{{Identical|Search}}"
+	"search": "Label for the search field in the Topviews app.\n{{Identical|Search}}",
+	"redirectviews-title": "The title of the Redirectviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/redirects/)",
+	"num-sections": "Indicates the number of redirects to a section there were in the Redirectviews results. $1 is the actual number.",
+	"section": "Heading for the column of section titles in the Redirectviews application, as in the section of an article.\n{{Identical|Section}}",
+	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message."
 }

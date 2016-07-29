@@ -2757,7 +2757,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getPageLink',
     value: function getPageLink(page, project) {
-      return '<a target="_blank" href="//' + this.getPageURL(page, project) + '">' + page.descore().escape() + '</a>';
+      return '<a target="_blank" href="' + this.getPageURL(page, project) + '">' + page.descore().escape() + '</a>';
     }
 
     /**
@@ -3091,7 +3091,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'isChartApp',
     value: function isChartApp() {
-      return !['langviews', 'massviews'].includes(this.app);
+      return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
     }
 
     /**

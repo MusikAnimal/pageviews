@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   const coreCSSDependencies = [
     'vendor/stylesheets/bootstrap.min.css'
   ];
-  const apps = ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews'];
+  const apps = ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'];
 
   // set up initial structure of tasks
   let browserifyTasks = {
@@ -275,6 +275,30 @@ module.exports = function(grunt) {
           'public_html/massviews/url_structure/application.js': coreJSDependencies,
           'public_html/massviews/url_structure/application.css': coreCSSDependencies.concat([
             'public_html/massviews/url_structure.css'
+          ])
+        }
+      },
+      redirectviews: {
+        files: {
+          // order matters here
+          'public_html/redirectviews/application.js': coreJSDependencies.concat([
+            'vendor/javascripts/daterangepicker.min.js',
+            'vendor/javascripts/bootstrap-typeahead.js',
+            'vendor/javascripts/simpleStorage.js',
+            'vendor/javascripts/Chart.min.js',
+            'public_html/redirectviews/redirectviews.js'
+          ]),
+          'public_html/redirectviews/application.css': coreCSSDependencies.concat([
+            'vendor/stylesheets/daterangepicker.min.css',
+            'public_html/redirectviews/redirectviews.css'
+          ]),
+          'public_html/redirectviews/faq/application.js': coreJSDependencies,
+          'public_html/redirectviews/faq/application.css': coreCSSDependencies.concat([
+            'public_html/redirectviews/faq.css'
+          ]),
+          'public_html/redirectviews/url_structure/application.js': coreJSDependencies,
+          'public_html/redirectviews/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/redirectviews/url_structure.css'
           ])
         }
       }

@@ -1,0 +1,87 @@
+/ Redirect Analysis tool
+/ Copyright 2016 MusikAnimal
+- $currentApp = "redirectviews"
+!!!
+%html
+  %head
+    - include '../_head.php'
+    %title= $I18N->msg( 'redirectviews-title' )
+  %body(class="#{$rtl} #{$currentApp}")
+    %div.container
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'redirectviews-title' )
+          %small.app-description
+            = $I18N->msg( 'redirectviews-description' )
+
+      %main.col-lg-10.col-lg-offset-1
+        / Site notice
+        %div.text-center.site-notice-wrapper
+          %div.site-notice
+            - include "../_browser_check.php"
+
+        %form#pv_form
+          %div.row.aqs-row.options
+            / Date range selector
+            %div.col-lg-3.col-sm-4
+              %label(for="range_input")
+                = $I18N->msg( 'dates' )
+              %input.form-control.aqs-date-range-selector#range_input
+
+            / Project selector
+            %div.col-lg-3.col-sm-3
+              %label(for="project_input")
+                = $I18N->msg( 'source-project' )
+              %input.form-control#project_input(placeholder="en.wikipedia.org" required="required")
+
+            / Advanced options
+            %div.col-lg-3.col-sm-3
+              %label(for="platform_select")
+                = $I18N->msg( 'platform' )
+              %select.form-control#platform_select
+                %option(value="all-access")
+                  = $I18N->msg( 'all' )
+                %option(value="desktop")
+                  = $I18N->msg( 'desktop' )
+                %option(value="mobile-app")
+                  = $I18N->msg( 'mobile-app' )
+                %option(value="mobile-web")
+                  = $I18N->msg( 'mobile-web' )
+
+            %div.col-lg-3.col-sm-2
+              %label(for="agent_select")
+                = $I18N->msg( 'agent' )
+                %a.help-link(href="/redirectviews/faq#agents")
+                  %span.glyphicon.glyphicon-question-sign
+              %select.form-control#agent_select
+                %option(value="all-agents")
+                  = $I18N->msg( 'all' )
+                %option(selected="selected" value="user")
+                  = $I18N->msg( 'user' )
+                %option(value="spider")
+                  = $I18N->msg( 'spider' )
+                %option(value="bot")
+                  = $I18N->msg( 'bot' )
+
+          / Article URL input
+          %div.row.aqs-row.article-input-row
+            %div.col-lg-12
+              %label(for="source_input")
+                = $I18N->msg( 'page' )
+              %div.input-group
+                %input.form-control.input-control#source_input(placeholder="Star Wars" required="required" autocomplete="off")
+                %span.input-group-btn
+                  %button.btn.btn-primary.btn-submit.pull-right
+                    = $I18N->msg( 'submit' )
+
+        :php
+          $columns = array(
+            'title' => 'page-title',
+            'section' => 'section',
+            'views' => 'pageviews'
+          );
+        - include "../_output.php"
+        - include "../_footer.php"
+
+      - include "../_modals.php"
