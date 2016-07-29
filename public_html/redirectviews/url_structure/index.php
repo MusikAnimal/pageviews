@@ -3,7 +3,7 @@
   <head>
     <?php include '../../_head.php'; ?>
     <title>
-      <?php echo $I18N->msg( 'langviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
+      <?php echo $I18N->msg( 'redirectviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
   <body>
@@ -11,7 +11,7 @@
       <header class="col-lg-12 text-center">
         <h4>
           <strong>
-            <?php echo $I18N->msg( 'langviews-title' ); ?>
+            <?php echo $I18N->msg( 'redirectviews-title' ); ?>
           </strong>
           <small class="app-description">
             <?php echo $I18N->msg( 'url-structure' ); ?>
@@ -20,11 +20,11 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $langviewsLink = "<pre>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
+          <?php $redirectviewsLink = "<pre>//tools.wmflabs.org/redirectviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
           <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
-          <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $langviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
+          <?php echo $I18N->msg( 'url-structure-example', array( 'variables' => array( $redirectviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) ); ?>
         </div>
         <div>
           <h3>
@@ -53,7 +53,7 @@
             <?php include "../../url_parts/agent.php"; ?>
             <dt>sort</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-sort', array( 'variables' => array( '<code>lang</code>', '<code>title</code>', '<code>badges</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-sort-redirectviews', array( 'variables' => array( '<code>title</code>', '<code>section</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
             </dd>
             <dt>direction</dt>
             <dd>
@@ -62,11 +62,11 @@
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">
-          <a href="/langviews">
-            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) ); ?>
+          <a href="/redirectviews">
+            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'redirectviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $currentApp = "langviews"; ?>
+        <?php $currentApp = "redirectviews"; ?>
         <?php include "../../_footer.php"; ?>
       </main>
     </div>

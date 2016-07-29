@@ -182,6 +182,7 @@
 	"url-structure-agent": "One of $1 (human viewer, default), $2 (search engine crawlers), $3 (WMF bots) or $4 ($1, $2 and $3)",
 	"url-structure-sort": "Which column to sort. One of $1, $2, $3 or $4",
 	"url-structure-sort-direction": "The sort direction. $1 for descending, $2 for ascending",
+	"url-structure-sort-redirectviews": "Which column to sort. One of $1, $2 or $3",
 	"url-structure-source": "Either $1 (total page views) or $2 (number of unique devices that viewed the page)",
 	"url-structure-massviews-example": "Example URL for PagePile: $1\nExample URL for a category: $2\nTo link to Massviews on a category page on your wiki, use:\n$3",
 	"url-structure-massviews-source": "One of $1, $2 or $3",

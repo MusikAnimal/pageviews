@@ -750,17 +750,14 @@ var RedirectViews = function (_mix$with) {
           method: 'get',
           preDispatch: function preDispatch(query) {
             return {
-              action: 'query',
-              list: 'prefixsearch',
+              action: 'opensearch',
+              redirects: 'resolve',
               format: 'json',
-              pssearch: query
+              search: query
             };
           },
           preProcess: function preProcess(data) {
-            var results = data.query.prefixsearch.map(function (elem) {
-              return elem.title;
-            });
-            return results;
+            return data[1];
           }
         }
       });

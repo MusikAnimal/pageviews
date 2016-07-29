@@ -3,13 +3,13 @@
   %head
     - include '../../_head.php'
     %title
-      = $I18N->msg( 'langviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+      = $I18N->msg( 'redirectviews-title' ) . ' - ' . $I18N->msg( 'faq' )
   %body
     %div.container
       %header.col-lg-12.text-center
         %h4
           %strong
-            = $I18N->msg( 'langviews-title' )
+            = $I18N->msg( 'redirectviews-title' )
           %small.app-description
             = $I18N->msg( 'faq' )
 
@@ -22,8 +22,8 @@
           - include "../../faq_parts/feedback.php"
 
         %div.col-lg-12.text-center.tm
-          %a(href="/langviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) )
+          %a(href="/redirectviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'redirectviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "langviews";
+        - $currentApp = "redirectviews";
         - include "../../_footer.php"

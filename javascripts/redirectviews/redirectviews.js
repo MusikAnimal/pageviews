@@ -633,16 +633,13 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         method: 'get',
         preDispatch: query => {
           return {
-            action: 'query',
-            list: 'prefixsearch',
+            action: 'opensearch',
+            redirects: 'resolve',
             format: 'json',
-            pssearch: query
+            search: query
           };
         },
-        preProcess: data => {
-          const results = data.query.prefixsearch.map(elem => elem.title);
-          return results;
-        }
+        preProcess: data => data[1]
       }
     });
   }
