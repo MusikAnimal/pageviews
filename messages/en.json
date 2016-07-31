@@ -118,7 +118,7 @@
 	"topviews": "Topviews",
 	"siteviews": "Siteviews",
 	"massviews": "Massviews",
-	"redirectviews": "Redirectviews",
+	"redirectviews": "Redirect Views",
 	"average": "Average",
 	"submit": "Submit",
 	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
@@ -237,8 +237,9 @@
 	"begin-at-zero": "Begin at zero",
 	"begin-at-zero-option": "Always show the y-axis starting at zero",
 	"search": "Search",
-	"redirectviews-title": "Redirectviews Analysis",
+	"redirectviews-title": "Redirect Views",
 	"num-sections": "$1 sections",
 	"section": "Section",
-	"redirects": "$1 redirects"
+	"num-redirects": "$1 redirects",
+	"num-pageviews": "$1 pageviews"
 }

@@ -29,7 +29,7 @@ var config = {
     }
   },
   linearLegend: function linearLegend(datasets, scope) {
-    return '<strong>' + $.i18n('totals') + ':</strong>\n      ' + $.i18n('redirects', scope.outputData.listData.length) + '\n      &bullet;\n      ' + scope.formatNumber(scope.outputData.sum) + ' pageviews\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
+    return '<strong>' + $.i18n('totals') + ':</strong>\n      ' + $.i18n('num-redirects', scope.outputData.listData.length - 1) + '\n      &bullet;\n      ' + $.i18n('num-pageviews', scope.formatNumber(scope.outputData.sum)) + '\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform_select',
@@ -374,7 +374,7 @@ var RedirectViews = function (_mix$with) {
       var _this4 = this;
 
       _get(Object.getPrototypeOf(RedirectViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
-        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('unique-titles', _this4.outputData.titles.length) + '</th>\n         <th>' + $.i18n('num-sections', _this4.outputData.sectionCount) + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
+        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-redirects', _this4.outputData.titles.length - 1) + '</th>\n         <th>' + $.i18n('num-sections', _this4.outputData.sectionCount) + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {

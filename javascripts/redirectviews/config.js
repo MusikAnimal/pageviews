@@ -27,9 +27,9 @@ const config = {
   },
   linearLegend: (datasets, scope) => {
     return `<strong>${$.i18n('totals')}:</strong>
-      ${$.i18n('redirects', scope.outputData.listData.length)}
+      ${$.i18n('num-redirects', scope.outputData.listData.length - 1)}
       &bullet;
-      ${scope.formatNumber(scope.outputData.sum)} pageviews
+      ${$.i18n('num-pageviews', scope.formatNumber(scope.outputData.sum))}
       (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },
   logarithmicCheckbox: '.logarithmic-scale-option',

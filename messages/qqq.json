@@ -126,6 +126,7 @@
 	"topviews": "Abbreviated name of the Topviews application. This is used in the inter-app links in the footer",
 	"siteviews": "Abbreviated name of the Siteviews application. This is used in the inter-app links in the footer",
 	"massviews": "Abbreviated name of the Massviews application. This is used in the inter-app links in the footer",
+	"redirectviews": "Abbreviated name of the Redirect Views application. This is used in the inter-app links in the footer. For the Redirect Views app this message might be the same as 'redirectviews-title'",
 	"average": "Header of the average pageviews per day column in the Langviews application.\n{{Identical|Average}}",
 	"submit": "The text for the button to submit the form in the Langviews application.\n{{Identical|Submit}}",
 	"hover-to-exclude": "Placeholder in the input of the Topviews application, instructing to hover over entries and click on the X to exclude them from view",
@@ -160,9 +161,10 @@
 	"faq-source-pageviews": "FAQ - body of the section explaining what the 'source' options are.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
 	"faq-massviews-sources-title": "FAQ - title of the section explaining what the sources are in the Massviews tool.",
-	"faq-massviews-sources-pagepile": "FAQ - explanation of what the 'Page Pile ID' source in the Massviews tool is.",
-	"faq-massviews-sources-category-url": "FAQ - explanation of what the 'Category URL' source in the Massviews tool is.",
-	"faq-massviews-sources-template-url": "FAQ - explanation of what the 'Template URL' source in the Massviews tool is.",
+	"faq-massviews-sources-pagepile": "FAQ - explanation of what the 'Page Pile ID' source in the Massviews tool is. $1 is a link to the PagePile tool with the label 'PagePile'",
+	"faq-massviews-sources-category-url": "FAQ - explanation of what the 'Category URL' source in the Massviews tool is. $1 is a link to an example category.",
+	"faq-massviews-sources-template-url": "FAQ - explanation of what the 'Template URL' source in the Massviews tool is. $1 is a link to an example template.",
+	"faq-massviews-sources-quarry": "FAQ - explanation of what the 'Quarry' source in the Massviews tool is. $1 is the title of the Quarry tool (not translatable), and $2 is the name of the column that the Quarry dataset is required to have.",
 	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",
 	"faq-massviews-subject-page-body": "FAQ - explanation of what the 'use subject page' option is",
 	"faq-throttle-wait-title": "FAQ - title of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
@@ -226,6 +228,7 @@
 	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
 	"invalid-category-url": "Error messages saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
 	"invalid-template-url": "Error messages saying the user inputted wiki URL is not a valid template or page. In this case it does not have to be in the Template namespace, rather it just needs to be a valid page.",
+	"invalid-quarry-dataset": "Error message saying the Quarry dataset provided by the user is missing a required column. $1 is the name of the column that the dataset is required to have.",
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"page-pile-id": "Label for the 'Page Pile ID' input field on the Massviews tool. The proper noun 'Page Pile' should not be translated.",
 	"category-url": "Label for the 'Category URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki category.",
@@ -245,5 +248,6 @@
 	"redirectviews-title": "The title of the Redirectviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/redirects/)",
 	"num-sections": "Indicates the number of redirects to a section there were in the Redirectviews results. $1 is the actual number.",
 	"section": "Heading for the column of section titles in the Redirectviews application, as in the section of an article.\n{{Identical|Section}}",
-	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message."
+	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message.",
+	"num-pageviews": "Text indicating a number of pageviews. $1 is the number. Similar to the 'num-pages' message."
 }

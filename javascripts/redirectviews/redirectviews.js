@@ -268,7 +268,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     super.renderData(sortedDatasets => {
       $('.output-totals').html(
         `<th scope='row'>${$.i18n('totals')}</th>
-         <th>${$.i18n('unique-titles', this.outputData.titles.length)}</th>
+         <th>${$.i18n('num-redirects', this.outputData.titles.length - 1)}</th>
          <th>${$.i18n('num-sections', this.outputData.sectionCount)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
          <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
