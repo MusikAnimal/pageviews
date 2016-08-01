@@ -91,7 +91,10 @@
 	"help-translate": "Преведи",
 	"fatal-error": "Фатална грешка",
 	"api-error-no-data": "Нема података.",
+	"excluded-pages": "Изузете странице",
+	"show-more": "Прикажи више",
 	"langviews-title": "Анализа посећености по језицима",
+	"source-project": "Изворни пројекат",
 	"language": "Језик",
 	"badges": "Значке",
 	"pageviews": "Прегледа",
@@ -107,5 +110,6 @@
 	"list": "Списак",
 	"chart": "Графикон",
 	"remember-chart-option": "Упамти подешавање графикона",
-	"begin-at-zero": "Почни од нуле"
+	"begin-at-zero": "Почни од нуле",
+	"search": "Претрага"
 }

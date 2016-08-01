@@ -112,7 +112,7 @@
 	"average": "Bataz bestekoa",
 	"submit": "Bidali",
 	"num-languages": "$1 hizkuntzetan",
-	"unique-titles": "$1 {{PLURAL:$1|titulu}} bakar",
+	"unique-titles": "$1 {{{{PLURAL:$1|titulu}} bakar",
 	"faq-return-to": "$1-(e)ra itzuli",
 	"faq-old-data-title": "Zergatik ezin dut $1 baino datu zaharragoak ikusi?",
 	"faq-todays-date-title": "Zergatik ezin dut gaurko eguneko daturik ikusi?",

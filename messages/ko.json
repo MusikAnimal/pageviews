@@ -150,7 +150,7 @@
 	"siteviews-description": "여러 주제를 고려한 전체 조회수 분석",
 	"invalid-template-url": "부적절한 템플릿! 템플릿이나 페이지의 전체 위키주소를 넣어주세요.",
 	"elapsed-time": "지연 시간: $1 {{PLURAL:$1|초|초}}",
-	"num-pages": "$1{{PLURAL:$1|페이지|페이지}}",
+	"num-pages": "$1{{PLURAL:$1|페이지}}",
 	"category-subject-toggle": "대화 페이지 대신 주제 페이지 사용",
 	"template-url": "템플릿 URL",
 	"chart": "차트",
