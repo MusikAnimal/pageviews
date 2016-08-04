@@ -148,6 +148,7 @@
 	"topviews-description": "주제의 가장 많이 본 페이지",
 	"langviews-description": "모든 언어를 고려한 문서의 조회수",
 	"siteviews-description": "여러 주제를 고려한 전체 조회수 분석",
+	"redirectviews-description": "문서에 대한 모든 넘겨주기의 조회수",
 	"invalid-template-url": "부적절한 템플릿! 템플릿이나 페이지의 전체 위키주소를 넣어주세요.",
 	"elapsed-time": "지연 시간: $1 {{PLURAL:$1|초|초}}",
 	"num-pages": "$1{{PLURAL:$1|페이지}}",
@@ -155,5 +156,6 @@
 	"template-url": "템플릿 URL",
 	"chart": "차트",
 	"begin-at-zero": "0에서 시작",
-	"search": "검색"
+	"search": "검색",
+	"section": "문단"
 }

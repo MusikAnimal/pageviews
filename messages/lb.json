@@ -118,5 +118,8 @@
 	"chart": "Diagramm",
 	"remember-chart-option": "Diagrammastellunge  verhalen",
 	"begin-at-zero": "Bei null ufänken",
-	"search": "Sichen"
+	"search": "Sichen",
+	"num-sections": "$1 A bschnitter",
+	"section": "Abschnitt",
+	"num-redirects": "$1 Viruleedungen"
 }

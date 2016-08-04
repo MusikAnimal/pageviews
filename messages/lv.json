@@ -93,5 +93,9 @@
 	"category-url": "Kategorijas URL",
 	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}",
 	"begin-at-zero": "Sākt no nulles",
-	"search": "Meklēt"
+	"search": "Meklēt",
+	"num-sections": "$1 sadaļas",
+	"section": "Sadaļa",
+	"num-redirects": "$1 pāradresācijas",
+	"num-pageviews": "$1 lapas skatījumi"
 }

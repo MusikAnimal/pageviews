@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Incelemeelemani",
-			"Sayginer"
+			"Sayginer",
+			"1917 Ekim Devrimi"
 		]
 	},
 	"title": "Sayfa Görüntülemeleri Analizi",
@@ -27,6 +28,7 @@
 	"page-title": "Sayfa başlığı",
 	"change-chart": "Grafik türü",
 	"settings": "Ayarlar",
+	"download-label": "İndir",
 	"credits": "$1, $2 ve $3 olarak getirildi.",
 	"hosted": "Barındırılma $2 $1 tarafından sağlanır.",
 	"translation-credits": "Çeviriler $1 ve $2 tarafından sağlanmaktadır.",
@@ -115,12 +117,13 @@
 	"topviews": "En fazla görüntülenenler",
 	"siteviews": "Site Görüntülemeleri",
 	"massviews": "Sihirli Kelime ile Görüntülemeler",
+	"redirectviews": "Yönlendirmeleri görüntüle",
 	"average": "Ortalama",
 	"submit": "Gönder",
 	"hover-to-exclude": "Girdilerin üzerine gelin ve görünümlerden çıkarmak için ✖ simgesine tıklayın",
 	"num-languages": "$1 dil",
 	"unique-titles": "$1 tane {{PLURAL:$1|başlık|başlık}}",
-	"invalid-project": "$1 geçerli bir <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>proje</a> değildir",
+	"invalid-project": "$1 gçeçerli bir <a href=\"//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\">proje</a> değil ya da şu anda desteklenmiyor.",
 	"invalid-lang-project": "$1 geçerli, çok dilli ya da her iki türden biri değildir",
 	"faq-return-to": "$1 geri dön",
 	"faq-old-data-title": "Neden $1 daha eski verileri görüntüleyemiyorum?",
@@ -131,13 +134,13 @@
 	"faq-agents-user": "bir sayfayı görüntüleyen kullanıcı ve türleridir. Bunlar devriyeler, anonim ziyaretçiler ve diğer okuyucular olabilir.",
 	"faq-agents-spider": "ayrıca sayfaları, arama motorlarının \"<a href=\"https://tr.wikipedia.org/wiki/Arama_robotu\">arama robotları</a>\" gibi botlar (örneğin Google arama robotu) arama sonuçlarının iyileştirilmesi için ziyaret ederler. Sayfaların görüntülenme istatistiklerinde varsayılan olarak yalnızca kullanıcılardan gelen veriler gösterilir. Bu nedenle ajanların seçilmesi daha başka önemli bilgilerin elde edilmesine yardımcı olabilir.",
 	"faq-agents-bot": "başka amaçlar için sayfaları ziyaret eden diğer otomatik programlar da bulunmaktadır.",
-	"faq-chart-type-title": "Grafik türünü beğenmedim",
+	"faq-chart-type-title": "Grafik türünü nasıl değiştirebilirim?",
 	"faq-chart-type-body": "Farklı 6 türden bir grafik türü seçmek için \"$1\" tıklayın. Uygulama tercihinizi hatırlayacaktır. Varsayılan olarak tek bir sayfa istatistiklerinin görüntülenmesinde bir çubuk grafik gösterilmekte, daha fazla sayfanın istatistik bilgilerinin görüntülenmesinde ise çizgi grafik gösterimi kullanılmaktadır. Seçtiğiniz tarih aralığındaki toplam görüntüleme sayıları için dilerseniz pasta, içi boş pasta ve dairesel yaygın gibi grafik türlerini kullanabileceğinizi unutmayın.",
 	"faq-line-chart-title": "Çizgi grafik üzerindeki sayıları fare ile okuyabilmem çok zor",
 	"faq-line-chart-body": "Çizgi grafikte gösterilen tarihlerdeki verileri görebilmek için fare işaretçinizi, grafiğin altında bulunan tarihlerin üzerine getirebilirsiniz. Bu özellikle mobil cihazlar için çok kullanışlıdır. Yalnızca bir tarihin üzerine dokunun ve bilgileri görebilmek için parmağınızı sağa, sola kaydırın.",
 	"faq-top-viewed-title": "Ben bir tarih aralığındaki, en çok görüntülenen sayfaları görmek istiyorum",
 	"faq-multi-lang-title": "Bir sayfanın diğer tüm dillerdeki görüntüleme verilerini görmek istiyorum",
-	"faq-try-tool": "$1 deneyin",
+	"faq-try-tool": "$1 sonuçlarını bulabilirsin.",
 	"faq-bug-report-title": "Özel bir isteğim var veya bir hata bildirmek istiyorum",
 	"faq-bug-report-body": "Eğer geribildirim sağlamak için bir wiki kullanmak istiyorsanız, Meta'daki <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>geri bildirim forumunu</a> kullanabilirsiniz. Ayrıca <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> ve <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a> üzerinden de geri bildirimde bulunabilirsiniz.",
 	"faq-topviews-data-approx-title": "Bazı veriler çok az görünüyor",
