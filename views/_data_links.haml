@@ -9,16 +9,26 @@
     %a.btn.btn-default.btn-sm.permalink(href="")<
       %span.glyphicon.glyphicon-link
       = $I18N->msg( 'permalink' )
-    %span.download-btn-group
-      %span.input-group-addon
+    %span.btn-group.dropdown.download-btn-group
+      %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
         %span.glyphicon.glyphicon-download-alt
         = $I18N->msg( 'download-label' )
-      %span.input-group-btn
-        %button.btn.btn-default.btn-sm.download-csv
-          = $I18N->msg( 'csv' )
-      %span.input-group-btn
-        %button.btn.btn-default.btn-sm.download-json<
-          = $I18N->msg( 'json' )
+        %span.caret
+      %ul.dropdown-menu
+        %li
+          %a.download-csv(href="#")
+            = $I18N->msg( 'csv' )
+        %li
+          %a.download-json(href="#")
+            = $I18N->msg( 'json' )
+        %li.chart-specific
+          %a.download-png(href="#")
+            = $I18N->msg( 'png' )
+        %li.divider.chart-specific(role="separator")
+        %li.chart-specific
+          %a.print-chart(href="#")
+            %span.glyphicon.glyphicon-print
+            = $I18N->msg( 'print' )
 
     %span.pull-right.chart-specific
       %label.logarithmic-scale

@@ -120,6 +120,31 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Force download of given data, or open in a new tab if HTML5 <a> download attribute is not supported
+   * @param {String} data - Raw data prepended with data type, e.g. "data:text/csv;charset=utf-8,my data..."
+   * @param {String} extension - the file extension to use
+   * @returns {null} Nothing
+   */
+  downloadData(data, extension) {
+    const encodedUri = encodeURI(data);
+
+    // create HTML5 download element and force click so we can specify a filename
+    const link = document.createElement('a');
+    if (typeof link.download === 'string') {
+      document.body.appendChild(link); // Firefox requires the link to be in the body
+
+      const filename = `${this.getExportFilename()}.${extension}`;
+      link.download = filename;
+      link.href = encodedUri;
+      link.click();
+
+      document.body.removeChild(link); // remove the link when done
+    } else {
+      window.open(encodedUri); // open in new tab if download isn't supported (*cough* Safari)
+    }
+  }
+
+  /**
    * Fill in values within settings modal with what's in the session object
    * @returns {null} nothing
    */
@@ -192,6 +217,16 @@ class Pv extends PvConfig {
    */
   getExpandedPageURL(page) {
     return `//${this.project}.org/w/index.php?title=${encodeURIComponent(page.score()).replace(/'/, escape)}`;
+  }
+
+  /**
+   * Get informative filename without extension to be used for export options
+   * @return {string} filename without an extension
+   */
+  getExportFilename() {
+    const startDate = this.daterangepicker.startDate.startOf('day').format('YYYYMMDD'),
+      endDate = this.daterangepicker.endDate.startOf('day').format('YYYYMMDD');
+    return `${this.app}-${startDate}-${endDate}`;
   }
 
   /**
@@ -872,6 +907,10 @@ class Pv extends PvConfig {
       document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
       location.reload();
     });
+
+    /** download listeners */
+    $('.download-csv').on('click', this.exportCSV.bind(this));
+    $('.download-json').on('click', this.exportJSON.bind(this));
   }
 
   /**

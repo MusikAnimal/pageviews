@@ -6,19 +6,36 @@
     <?php echo $I18N->msg( 'settings' ); ?></button>
     <a class="btn btn-default btn-sm permalink" href=""><span class="glyphicon glyphicon-link"></span>
     <?php echo $I18N->msg( 'permalink' ); ?></a>
-    <span class="download-btn-group">
-      <span class="input-group-addon">
+    <span class="btn-group dropdown download-btn-group">
+      <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="glyphicon glyphicon-download-alt"></span>
         <?php echo $I18N->msg( 'download-label' ); ?>
-      </span>
-      <span class="input-group-btn">
-        <button class="btn btn-default btn-sm download-csv">
-          <?php echo $I18N->msg( 'csv' ); ?>
-        </button>
-      </span>
-      <span class="input-group-btn">
-        <button class="btn btn-default btn-sm download-json"><?php echo $I18N->msg( 'json' ); ?></button>
-      </span>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="download-csv" href="#">
+            <?php echo $I18N->msg( 'csv' ); ?>
+          </a>
+        </li>
+        <li>
+          <a class="download-json" href="#">
+            <?php echo $I18N->msg( 'json' ); ?>
+          </a>
+        </li>
+        <li class="chart-specific">
+          <a class="download-png" href="#">
+            <?php echo $I18N->msg( 'png' ); ?>
+          </a>
+        </li>
+        <li class="divider chart-specific" role="separator"></li>
+        <li class="chart-specific">
+          <a class="print-chart" href="#">
+            <span class="glyphicon glyphicon-print"></span>
+            <?php echo $I18N->msg( 'print' ); ?>
+          </a>
+        </li>
+      </ul>
     </span>
     <span class="pull-right chart-specific">
       <label class="logarithmic-scale">

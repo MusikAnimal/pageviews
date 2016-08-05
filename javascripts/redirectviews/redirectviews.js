@@ -38,6 +38,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Add general event listeners
+   * @override
    * @returns {null} nothing
    */
   setupListeners() {
@@ -64,9 +65,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.validateProject();
       this.updateInterAppLinks();
     });
-
-    $('.download-csv').on('click', this.exportCSV.bind(this));
-    $('.download-json').on('click', this.exportJSON.bind(this));
 
     $('.view-btn').on('click', e => {
       document.activeElement.blur();
@@ -204,6 +202,16 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   get typeahead() {
     return $(this.config.sourceInput).data('typeahead');
+  }
+
+  /**
+   * Get informative filename without extension to be used for export options
+   * @override
+   * @return {string} filename without an extension
+   */
+  getExportFilename() {
+    const params = this.getParams(true);
+    return `${this.outputData.source}-${params.start.replace(/-/g, '')}-${params.end.replace(/-/g, '')}`;
   }
 
   /**
@@ -449,7 +457,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       const redirects = [{
         title: pageName
-      }].concat(data.query.pages[0].redirects);
+      }].concat(data.query.pages[0].redirects || []);
 
       return dfd.resolve(redirects);
     });

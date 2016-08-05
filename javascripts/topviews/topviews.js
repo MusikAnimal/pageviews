@@ -136,7 +136,7 @@ class TopViews extends Pv {
   /**
    * Exports current chart data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
-   * @returns {string} CSV content
+   * @returns {null} nothing
    */
   exportCSV() {
     let csvContent = 'data:text/csv;charset=utf-8,Page,Views\n';
@@ -149,14 +149,12 @@ class TopViews extends Pv {
       csvContent += `${title},${entry.views}\n`;
     });
 
-    // Output the CSV file to the browser
-    const encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    this.downloadData(csvContent, 'csv');
   }
 
   /**
    * Exports current chart data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
+   * @returns {null} nothing
    */
   exportJSON() {
     let data = [];
@@ -169,11 +167,8 @@ class TopViews extends Pv {
       });
     });
 
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
-
-    return jsonContent;
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
+    this.downloadData(jsonContent, 'json');
   }
 
   /**
@@ -486,8 +481,6 @@ class TopViews extends Pv {
       }
       this.processInput();
     });
-    $('.download-csv').on('click', this.exportCSV.bind(this));
-    $('.download-json').on('click', this.exportJSON.bind(this));
     $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
     $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
   }

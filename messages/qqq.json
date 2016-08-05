@@ -38,6 +38,8 @@
 	"download-label": "Label next to the download buttons.\n{{identical|Download}}",
 	"csv": "{{Optional}}\nLink for CSV file. See https://en.wikipedia.org/wiki/Comma-separated_values for information on what a CSV file is.\nCSV is the name of a file format; should not be translated.",
 	"json": "{{Optional}}\nLink for JSON file. See https://en.wikipedia.org/wiki/JSON for information on what a JSON file is.",
+	"png": "{{Optional}}\nLink for PNG image file. See https://en.wikipedia.org/wiki/Portable_Network_Graphics for information on what a PNG image is.",
+	"print": "Link to print the chart.\n{{Identical|Print}}",
 	"credits": "Footer message crediting the programmers. $1, $2, and $3 are links to the programmers.",
 	"hosted": "Footer message about where the tool is hosted. $1 is a heart symbol (meaning 'love'). $2 is the name of the hosting service, for example, 'Tool Labs'.",
 	"translation-credits": "Footer message crediting translation tools translatewiki ($1) and Intution ($2)",

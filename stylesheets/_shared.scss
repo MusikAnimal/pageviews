@@ -243,30 +243,8 @@ footer {
   display: inline-block;
   margin-left: 10px;
   vertical-align: middle;
-
-  .input-group-addon {
-    background: transparent;
-    display: inline-block;
-    font-size: 12px;
-    height: 30px;
-  }
-
-  .input-group-btn {
-    margin-left: -4px;
-  }
-
-  > * {
-    display: inline-block;
-    width: auto;
-  }
 }
 
-.download-csv {
-  border-radius: 0;
-  margin-right: -1px !important;
-}
-
-.download-json {
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
+.glyphicon-print {
+  margin-right: 4px;
 }

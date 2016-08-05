@@ -38,6 +38,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Add general event listeners
+   * @override
    * @returns {null} nothing
    */
   setupListeners() {
@@ -64,9 +65,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.validateProject();
       this.updateInterAppLinks();
     });
-
-    $('.download-csv').on('click', this.exportCSV.bind(this));
-    $('.download-json').on('click', this.exportJSON.bind(this));
 
     $('.view-btn').on('click', e => {
       document.activeElement.blur();
@@ -283,6 +281,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Render list of langviews into view
+   * @override
    * @returns {null} nothing
    */
   renderData() {
@@ -719,7 +718,8 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Exports current lang data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
-   * @returns {string} CSV content
+   * @override
+   * @returns {null} nothing
    */
   exportCSV() {
     let csvContent = `data:text/csv;charset=utf-8,Language,Title,Badges,${this.getDateHeadings(false).join(',')}\n`;
@@ -736,9 +736,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       ].concat(page.data).join(',') + '\n';
     });
 
-    // Output the CSV file to the browser
-    const encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    this.downloadData(csvContent, 'csv');
   }
 }
 

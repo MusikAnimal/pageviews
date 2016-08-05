@@ -137,6 +137,7 @@ var MassViews = function (_mix$with) {
 
     /**
      * Add general event listeners
+     * @override
      * @returns {null} nothing
      */
 
@@ -163,9 +164,6 @@ var MassViews = function (_mix$with) {
         _this2.sort = sortType;
         _this2.renderData();
       });
-
-      $('.download-csv').on('click', this.exportCSV.bind(this));
-      $('.download-json').on('click', this.exportJSON.bind(this));
 
       $('.source-option').on('click', function (e) {
         return _this2.updateSourceInput(e.target);
@@ -280,6 +278,7 @@ var MassViews = function (_mix$with) {
 
     /**
      * Render list of massviews into view
+     * @override
      * @returns {null} nothing
      */
 
@@ -1125,7 +1124,8 @@ var MassViews = function (_mix$with) {
     /**
      * Exports current mass data to CSV format and loads it in a new tab
      * With the prepended data:text/csv this should cause the browser to download the data
-     * @returns {string} CSV content
+     * @override
+     * @returns {null} nothing
      */
 
   }, {
@@ -1140,9 +1140,7 @@ var MassViews = function (_mix$with) {
         csvContent += [pageName].concat(page.data).join(',') + '\n';
       });
 
-      // Output the CSV file to the browser
-      var encodedUri = encodeURI(csvContent);
-      window.open(encodedUri);
+      this.downloadData(csvContent, 'csv');
     }
   }, {
     key: 'baseProject',
@@ -1261,6 +1259,10 @@ var ChartHelpers = function ChartHelpers(superclass) {
       $('.begin-at-zero-option').on('click', function () {
         _this.isChartApp() ? _this.processInput(true) : _this.renderData();
       });
+
+      /** chart download listeners */
+      $('.download-png').on('click', _this.exportPNG.bind(_this));
+      $('.print-chart').on('click', _this.printChart.bind(_this));
       return _this;
     }
 
@@ -1298,7 +1300,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
       /**
        * Exports current chart data to CSV format and loads it in a new tab
        * With the prepended data:text/csv this should cause the browser to download the data
-       * @returns {string} CSV content
+       * @returns {null} Nothing
        */
 
     }, {
@@ -1333,14 +1335,12 @@ var ChartHelpers = function ChartHelpers(superclass) {
           csvContent += data.join(',') + '\n';
         });
 
-        // Output the CSV file to the browser
-        var encodedUri = encodeURI(csvContent);
-        window.open(encodedUri);
+        this.downloadData(csvContent, 'csv');
       }
 
       /**
        * Exports current chart data to JSON format and loads it in a new tab
-       * @returns {string} stringified JSON
+       * @returns {null} Nothing
        */
 
     }, {
@@ -1365,11 +1365,19 @@ var ChartHelpers = function ChartHelpers(superclass) {
           data.push(entry);
         });
 
-        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
-            encodedUri = encodeURI(jsonContent);
-        window.open(encodedUri);
+        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
+        this.downloadData(jsonContent, 'json');
+      }
 
-        return jsonContent;
+      /**
+       * Exports current data as PNG image, opening it in a new tab
+       * @returns {null} nothing
+       */
+
+    }, {
+      key: 'exportPNG',
+      value: function exportPNG() {
+        this.downloadData(this.chartObj.toBase64Image(), 'png');
       }
 
       /**
@@ -1627,6 +1635,20 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'isPageviews',
       value: function isPageviews() {
         return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+      }
+
+      /**
+       * Print the chart!
+       * @returns {null} Nothing
+       */
+
+    }, {
+      key: 'printChart',
+      value: function printChart() {
+        var tab = window.open();
+        tab.document.write('<img src="' + this.chartObj.toBase64Image() + '" />');
+        tab.print();
+        tab.close();
       }
 
       /**
@@ -2120,17 +2142,14 @@ var ListHelpers = function ListHelpers(superclass) {
 
       /**
        * Exports current lang data to JSON format and loads it in a new tab
-       * @returns {string} stringified JSON
+       * @returns {null} Nothing
        */
 
     }, {
       key: 'exportJSON',
       value: function exportJSON() {
-        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData),
-            encodedUri = encodeURI(jsonContent);
-        window.open(encodedUri);
-
-        return jsonContent;
+        var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData);
+        this.downloadData(jsonContent, 'json');
       }
 
       /**
@@ -2654,13 +2673,41 @@ var Pv = function (_PvConfig) {
      */
 
   }, {
-    key: 'fillInSettings',
+    key: 'downloadData',
 
+
+    /**
+     * Force download of given data, or open in a new tab if HTML5 <a> download attribute is not supported
+     * @param {String} data - Raw data prepended with data type, e.g. "data:text/csv;charset=utf-8,my data..."
+     * @param {String} extension - the file extension to use
+     * @returns {null} Nothing
+     */
+    value: function downloadData(data, extension) {
+      var encodedUri = encodeURI(data);
+
+      // create HTML5 download element and force click so we can specify a filename
+      var link = document.createElement('a');
+      if (typeof link.download === 'string') {
+        document.body.appendChild(link); // Firefox requires the link to be in the body
+
+        var filename = this.getExportFilename() + '.' + extension;
+        link.download = filename;
+        link.href = encodedUri;
+        link.click();
+
+        document.body.removeChild(link); // remove the link when done
+      } else {
+          window.open(encodedUri); // open in new tab if download isn't supported (*cough* Safari)
+        }
+    }
 
     /**
      * Fill in values within settings modal with what's in the session object
      * @returns {null} nothing
      */
+
+  }, {
+    key: 'fillInSettings',
     value: function fillInSettings() {
       var _this2 = this;
 
@@ -2745,6 +2792,19 @@ var Pv = function (_PvConfig) {
     key: 'getExpandedPageURL',
     value: function getExpandedPageURL(page) {
       return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page.score()).replace(/'/, escape);
+    }
+
+    /**
+     * Get informative filename without extension to be used for export options
+     * @return {string} filename without an extension
+     */
+
+  }, {
+    key: 'getExportFilename',
+    value: function getExportFilename() {
+      var startDate = this.daterangepicker.startDate.startOf('day').format('YYYYMMDD'),
+          endDate = this.daterangepicker.endDate.startOf('day').format('YYYYMMDD');
+      return this.app + '-' + startDate + '-' + endDate;
     }
 
     /**
@@ -3518,6 +3578,10 @@ var Pv = function (_PvConfig) {
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
+
+      /** download listeners */
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
     }
 
     /**

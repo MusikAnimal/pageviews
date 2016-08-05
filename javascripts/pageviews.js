@@ -304,13 +304,11 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * General place to add page-wide listeners
+   * @override
    * @returns {null} - nothing
    */
   setupListeners() {
     super.setupListeners();
-
-    $('.download-csv').on('click', this.exportCSV.bind(this));
-    $('.download-json').on('click', this.exportJSON.bind(this));
     $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
   }
 

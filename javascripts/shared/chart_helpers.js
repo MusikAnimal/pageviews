@@ -72,6 +72,10 @@ const ChartHelpers = superclass => class extends superclass {
     $('.begin-at-zero-option').on('click', () => {
       this.isChartApp() ? this.processInput(true) : this.renderData();
     });
+
+    /** chart download listeners */
+    $('.download-png').on('click', this.exportPNG.bind(this));
+    $('.print-chart').on('click', this.printChart.bind(this));
   }
 
   /**
@@ -101,7 +105,7 @@ const ChartHelpers = superclass => class extends superclass {
   /**
    * Exports current chart data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
-   * @returns {string} CSV content
+   * @returns {null} Nothing
    */
   exportCSV() {
     let csvContent = 'data:text/csv;charset=utf-8,Date,';
@@ -133,14 +137,12 @@ const ChartHelpers = superclass => class extends superclass {
       csvContent += data.join(',') + '\n';
     });
 
-    // Output the CSV file to the browser
-    const encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    this.downloadData(csvContent, 'csv');
   }
 
   /**
    * Exports current chart data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
+   * @returns {null} Nothing
    */
   exportJSON() {
     let data = [];
@@ -160,11 +162,16 @@ const ChartHelpers = superclass => class extends superclass {
       data.push(entry);
     });
 
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
+    this.downloadData(jsonContent, 'json');
+  }
 
-    return jsonContent;
+  /**
+   * Exports current data as PNG image, opening it in a new tab
+   * @returns {null} nothing
+   */
+  exportPNG() {
+    this.downloadData(this.chartObj.toBase64Image(), 'png');
   }
 
   /**
@@ -383,6 +390,19 @@ const ChartHelpers = superclass => class extends superclass {
    */
   isPageviews() {
     return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+  }
+
+  /**
+   * Print the chart!
+   * @returns {null} Nothing
+   */
+  printChart() {
+    let tab = window.open();
+    tab.document.write(
+      `<img src="${this.chartObj.toBase64Image()}" />`
+    );
+    tab.print();
+    tab.close();
   }
 
   /**

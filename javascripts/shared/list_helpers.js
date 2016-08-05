@@ -39,14 +39,11 @@ const ListHelpers = superclass => class extends superclass {
 
   /**
    * Exports current lang data to JSON format and loads it in a new tab
-   * @returns {string} stringified JSON
+   * @returns {null} Nothing
    */
   exportJSON() {
-    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData),
-      encodedUri = encodeURI(jsonContent);
-    window.open(encodedUri);
-
-    return jsonContent;
+    const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData);
+    this.downloadData(jsonContent, 'json');
   }
 
   /**
