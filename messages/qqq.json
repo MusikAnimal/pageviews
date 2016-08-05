@@ -222,8 +222,10 @@
 	"langviews-description": "Brief description of the Langviews tool. Shown directly under the header.",
 	"massviews-description": "Brief description of the Massviews tool. Shown directly under the header.",
 	"siteviews-description": "Brief description of the Siteviews tool. Shown directly under the header.",
-	"invalid-category-url": "Error messages saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
-	"invalid-template-url": "Error messages saying the user inputted wiki URL is not a valid template or page. In this case it does not have to be in the Template namespace, rather it just needs to be a valid page.",
+	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
+	"invalid-category-url": "Error message saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
+	"invalid-template-url": "Error message saying the user inputted wiki URL is not a valid template or page. In this case it does not have to be in the Template namespace, rather it just needs to be a valid page.",
+	"invalid-quarry-dataset": "Error message saying the user inputted a Quarry dataset without the required column. $1 is the name of the column that is required.",
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"page-pile-id": "Label for the 'Page Pile ID' input field on the Massviews tool. The proper noun 'Page Pile' should not be translated.",
 	"category-url": "Label for the 'Category URL' input field on the Massviews tool. This indicates they should enter a full URL to the wiki category.",
@@ -240,7 +242,10 @@
 	"begin-at-zero": "Label to show the chart with x-axis starting at zero. This message should be brief, and essentially identical to 'Begin at zero'.",
 	"begin-at-zero-option": "Label for setting to always show the y-axis starting at zero",
 	"search": "Label for the search field in the Topviews app.\n{{Identical|Search}}",
-	"num-sections": "{{Identical|Section}}",
-	"section": "{{Identical|Section}}",
-	"num-redirects": "{{Identical|Redirect}}"
+	"redirectviews-title": "The title of the Redirectviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/redirects/)",
+	"num-sections": "Indicates the number of redirects to a section there were in the Redirectviews results. $1 is the actual number.",
+	"section": "Heading for the column of section titles in the Redirectviews application, as in the section of an article.\n{{Identical|Section}}",
+	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message.",
+	"num-pageviews": "Text indicating a number of pageviews. $1 is the number. Similar to the 'num-pages' message.",
+	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}"
 }

@@ -29,7 +29,7 @@
       - include "_lang_selector.php"
 
       %div.interapp-links.bm
-        - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews' )
+        - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' )
         - $appLinks = array();
         - foreach( $apps as $app )
           - $i18nName = $app === 'pageviews' ? '' : $app . '-'

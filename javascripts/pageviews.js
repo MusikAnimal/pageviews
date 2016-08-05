@@ -54,6 +54,15 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
+   * Link to /redirectviews for given page and chosen daterange
+   * @param {String} page - page title
+   * @returns {String} URL
+   */
+  getRedirectviewsURL(page) {
+    return `/redirectviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
+  }
+
+  /**
    * Construct query for API based on what type of search we're doing
    * @param {Object} query - as returned from Select2 input
    * @returns {Object} query params to be handed off to API

@@ -117,6 +117,18 @@ var PageViews = function (_mix$with) {
     }
 
     /**
+     * Link to /redirectviews for given page and chosen daterange
+     * @param {String} page - page title
+     * @returns {String} URL
+     */
+
+  }, {
+    key: 'getRedirectviewsURL',
+    value: function getRedirectviewsURL(page) {
+      return '/redirectviews?' + $.param(this.getParams()) + '&page=' + page.replace(/[&%]/g, escape).score();
+    }
+
+    /**
      * Construct query for API based on what type of search we're doing
      * @param {Object} query - as returned from Select2 input
      * @returns {Object} query params to be handed off to API
@@ -4341,7 +4353,7 @@ var templates = {
     var markup = '';
     if (datasets.length === 1) {
       var dataset = datasets[0];
-      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="' + scope.getLangviewsURL(dataset.label) + '" target="_blank">' + $.i18n('all-languages') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=history" target="_blank">' + $.i18n('history') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=info" target="_blank">' + $.i18n('info') + '</a>\n      </div>';
+      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n        &bullet;\n        <a href="' + scope.getLangviewsURL(dataset.label) + '" target="_blank">' + $.i18n('all-languages') + '</a>\n        &bullet;\n        <a href="' + scope.getRedirectviewsURL(dataset.label) + '" target="_blank">' + $.i18n('redirects') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=history" target="_blank">' + $.i18n('history') + '</a>\n        &bullet;\n        <a href="' + scope.getExpandedPageURL(dataset.label) + '&action=info" target="_blank">' + $.i18n('info') + '</a>\n      </div>';
     }
 
     if (datasets.length > 1) {
@@ -4353,7 +4365,7 @@ var templates = {
     markup += '<div class="linear-legends">';
 
     for (var i = 0; i < datasets.length; i++) {
-      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + scope.rgba(datasets[i].color, 0.8) + '">\n            <a href="' + scope.getPageURL(datasets[i].label) + '" target="_blank">' + datasets[i].label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(datasets[i].sum) + ' (' + scope.formatNumber(datasets[i].average) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="' + scope.getLangviewsURL(datasets[i].label) + '" target="_blank">' + $.i18n('all-languages') + '</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(datasets[i].label) + '&action=history" target="_blank">' + $.i18n('history') + '</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(datasets[i].label) + '&action=info" target="_blank">' + $.i18n('info') + '</a>\n          </div>\n        </span>\n      ';
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + scope.rgba(datasets[i].color, 0.8) + '">\n            <a href="' + scope.getPageURL(datasets[i].label) + '" target="_blank">' + datasets[i].label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(datasets[i].sum) + ' (' + scope.formatNumber(datasets[i].average) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="' + scope.getLangviewsURL(datasets[i].label) + '" target="_blank">' + $.i18n('all-languages') + '</a>\n            &bullet;\n            <a href="' + scope.getRedirectviewsURL(datasets[i].label) + '" target="_blank">' + $.i18n('redirects') + '</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(datasets[i].label) + '&action=history" target="_blank">' + $.i18n('history') + '</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(datasets[i].label) + '&action=info" target="_blank">' + $.i18n('info') + '</a>\n          </div>\n        </span>\n      ';
     }
     return markup += '</div>';
   },
@@ -4369,7 +4381,7 @@ var templates = {
     for (var i = 0; i < dataset.data.length; i++) {
       var metaKey = Object.keys(dataset._meta)[0];
       var label = dataset._meta[metaKey].data[i]._view.label;
-      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + dataset.backgroundColor[i] + '">\n            <a href="' + scope.getPageURL(label) + '" target="_blank">' + label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(dataset.data[i]) + ' (' + scope.formatNumber(dataset.averages[i]) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="' + scope.getLangviewsURL(label) + '" target="_blank">All languages</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(label) + '&action=history" target="_blank">History</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(label) + '&action=info" target="_blank">Info</a>\n          </div>\n        </span>\n      ';
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + dataset.backgroundColor[i] + '">\n            <a href="' + scope.getPageURL(label) + '" target="_blank">' + label + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(dataset.data[i]) + ' (' + scope.formatNumber(dataset.averages[i]) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links">\n            <a href="' + scope.getLangviewsURL(label) + '" target="_blank">All languages</a>\n            &bullet;\n            <a href="' + scope.getRedirectviewsURL(label) + '" target="_blank">' + $.i18n('redirects') + '</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(label) + '&action=history" target="_blank">History</a>\n            &bullet;\n            <a href="' + scope.getExpandedPageURL(label) + '&action=info" target="_blank">Info</a>\n          </div>\n        </span>\n      ';
     }
     return markup += '</div>';
   }

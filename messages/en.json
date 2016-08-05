@@ -241,5 +241,6 @@
 	"num-sections": "$1 sections",
 	"section": "Section",
 	"num-redirects": "$1 redirects",
-	"num-pageviews": "$1 pageviews"
+	"num-pageviews": "$1 pageviews",
+	"redirects": "Redirects"
 }

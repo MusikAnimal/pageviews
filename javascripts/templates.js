@@ -21,6 +21,8 @@ const templates = {
         &bullet;
         <a href="${scope.getLangviewsURL(dataset.label)}" target="_blank">${$.i18n('all-languages')}</a>
         &bullet;
+        <a href="${scope.getRedirectviewsURL(dataset.label)}" target="_blank">${$.i18n('redirects')}</a>
+        &bullet;
         <a href="${scope.getExpandedPageURL(dataset.label)}&action=history" target="_blank">${$.i18n('history')}</a>
         &bullet;
         <a href="${scope.getExpandedPageURL(dataset.label)}&action=info" target="_blank">${$.i18n('info')}</a>
@@ -47,6 +49,8 @@ const templates = {
           </div>
           <div class="linear-legend--links">
             <a href="${scope.getLangviewsURL(datasets[i].label)}" target="_blank">${$.i18n('all-languages')}</a>
+            &bullet;
+            <a href="${scope.getRedirectviewsURL(datasets[i].label)}" target="_blank">${$.i18n('redirects')}</a>
             &bullet;
             <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=history" target="_blank">${$.i18n('history')}</a>
             &bullet;
@@ -81,6 +85,8 @@ const templates = {
           </div>
           <div class="linear-legend--links">
             <a href="${scope.getLangviewsURL(label)}" target="_blank">All languages</a>
+            &bullet;
+            <a href="${scope.getRedirectviewsURL(label)}" target="_blank">${$.i18n('redirects')}</a>
             &bullet;
             <a href="${scope.getExpandedPageURL(label)}&action=history" target="_blank">History</a>
             &bullet;
