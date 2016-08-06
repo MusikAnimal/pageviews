@@ -1,0 +1,6 @@
+%li.list-group-item(id="redirects")
+  %p
+    %strong= $I18N->msg( 'faq-redirects-title' )
+  %p
+    - $redirectViewsLink = "<a href='/redirectviews'>" . $I18N->msg( 'redirectviews' ) . "</a>"
+    = $I18N->msg( 'faq-redirects-body', array( 'variables' => array( $redirectViewsLink ) ) )
