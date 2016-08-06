@@ -141,6 +141,8 @@
 	"faq-old-data-body": "FAQ - body of the section about seeing old data",
 	"faq-todays-date-title": "FAQ - title of the section about data for today's date",
 	"faq-todays-date-body": "FAQ - body of the section about data for today's date",
+	"faq-redirects-title": "FAQ - title of the section about how redirects are counted",
+	"faq-redirects-body": "FAQ - body of the section about how redirects are counted. $1 is a link to the Redirect Views tool, with the message 'redirectviews' as the label.",
 	"faq-agents-title": "FAQ - title of the section explaining what the 'agent' options are",
 	"faq-agents-user": "FAQ - explanation of the 'User' agent option",
 	"faq-agents-spider": "FAQ - explanation of the 'Spider' agent option",
