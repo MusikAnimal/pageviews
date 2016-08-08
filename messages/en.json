@@ -246,5 +246,6 @@
 	"section": "Section",
 	"num-redirects": "$1 redirects",
 	"num-pageviews": "$1 pageviews",
-	"redirects": "Redirects"
+	"redirects": "Redirects",
+	"target": "target"
 }

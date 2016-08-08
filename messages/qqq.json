@@ -254,5 +254,6 @@
 	"section": "Heading for the column of section titles in the Redirectviews application, as in the section of an article.\n{{Identical|Section}}",
 	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message.",
 	"num-pageviews": "Text indicating a number of pageviews. $1 is the number. Similar to the 'num-pages' message.",
-	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}"
+	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}",
+	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}"
 }

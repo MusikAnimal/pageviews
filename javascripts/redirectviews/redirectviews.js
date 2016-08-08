@@ -284,6 +284,8 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('#output_list').html('');
 
       sortedDatasets.forEach((item, index) => {
+        const isSource = item.label === this.outputData.source;
+
         let sectionMarkup = '';
 
         if (item.section) {
@@ -294,7 +296,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td><a href="${item.url}" target="_blank">${item.label}</a></td>
+           <td><a href="${item.url}" target="_blank">${item.label}</a> ${isSource ? '(' + $.i18n('target') + ')' : ''}</td>
            <td>${sectionMarkup}</a></td>
            <td><a target='_blank' href='${this.getPageviewsURL(`${this.project}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>
            <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>

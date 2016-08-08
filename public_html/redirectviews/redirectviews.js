@@ -389,6 +389,8 @@ var RedirectViews = function (_mix$with) {
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {
+          var isSource = item.label === _this4.outputData.source;
+
           var sectionMarkup = '';
 
           if (item.section) {
@@ -396,7 +398,7 @@ var RedirectViews = function (_mix$with) {
             sectionMarkup = '<a href="' + sectionUrl + '" target="_blank">#' + item.section + '</a>';
           }
 
-          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="' + item.url + '" target="_blank">' + item.label + '</a></td>\n           <td>' + sectionMarkup + '</a></td>\n           <td><a target=\'_blank\' href=\'' + _this4.getPageviewsURL(_this4.project + '.org', item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
+          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="' + item.url + '" target="_blank">' + item.label + '</a> ' + (isSource ? '(' + $.i18n('target') + ')' : '') + '</td>\n           <td>' + sectionMarkup + '</a></td>\n           <td><a target=\'_blank\' href=\'' + _this4.getPageviewsURL(_this4.project + '.org', item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
         });
       });
     }
