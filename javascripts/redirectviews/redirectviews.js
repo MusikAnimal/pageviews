@@ -591,12 +591,14 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     this.setState('processing');
 
     this.getRedirects(page).done(redirectData => {
+      const numPages = redirectData.length;
+
       /**
        * XXX: throttling
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
        */
-      this.setThrottle();
+      if (numPages > 10) this.setThrottle();
 
       this.getPageViewsData(redirectData).done(pageViewsData => {
         const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
@@ -611,7 +613,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
          * XXX: throttling
          * Reset throttling again; the first one was in case they aborted
          */
-        this.setThrottle();
+        if (numPages > 10) this.setThrottle();
       });
     }).fail(error => {
       this.setState('initial');

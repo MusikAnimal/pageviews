@@ -873,7 +873,7 @@ var MassViews = function (_mix$with) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this9.setThrottle();
+        if (size > 10) _this9.setThrottle();
 
         var pageNames = _this9.mapCategoryPageNames(pages, namespaces);
 
@@ -965,7 +965,7 @@ var MassViews = function (_mix$with) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        _this10.setThrottle();
+        if (pages.length > 10) _this10.setThrottle();
 
         _this10.getPageViewsData(project, pages).done(function (pageViewsData) {
           $('.output-title').html(templateLink);
@@ -1015,7 +1015,7 @@ var MassViews = function (_mix$with) {
           titles = titles.slice(0, _this11.config.pageLimit);
         }
 
-        _this11.setThrottle();
+        if (titles.length > 10) _this11.setThrottle();
 
         _this11.getPageViewsData(project, titles).done(function (pageViewsData) {
           $('.output-title').html(quarryLink);
@@ -1100,9 +1100,6 @@ var MassViews = function (_mix$with) {
         _this12.updateProgressBar(100);
         _this12.setInitialChartType();
         _this12.renderData();
-
-        // XXX: throttling
-        _this12.setThrottle();
       };
 
       switch ($('#source_button').data('value')) {

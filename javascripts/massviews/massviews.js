@@ -719,7 +719,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
        */
-      this.setThrottle();
+      if (size > 10) this.setThrottle();
 
       const pageNames = this.mapCategoryPageNames(pages, namespaces);
 
@@ -806,7 +806,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
        */
-      this.setThrottle();
+      if (pages.length > 10) this.setThrottle();
 
       this.getPageViewsData(project, pages).done(pageViewsData => {
         $('.output-title').html(templateLink);
@@ -855,7 +855,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         titles = titles.slice(0, this.config.pageLimit);
       }
 
-      this.setThrottle();
+      if (titles.length > 10) this.setThrottle();
 
       this.getPageViewsData(project, titles).done(pageViewsData => {
         $('.output-title').html(quarryLink);
@@ -937,9 +937,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.updateProgressBar(100);
       this.setInitialChartType();
       this.renderData();
-
-      // XXX: throttling
-      this.setThrottle();
     };
 
     switch ($('#source_button').data('value')) {

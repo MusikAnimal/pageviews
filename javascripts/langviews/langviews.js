@@ -627,12 +627,15 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(this.config.projectInput).val());
 
     this.getInterwikiData(dbName, page).done(interWikiData => {
+      const numPages = Object.keys(interWikiData).length;
+
       /**
        * XXX: throttling
        * At this point we know we have data to process,
        *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       *   unless there were are querying for ten or less pages
        */
-      this.setThrottle();
+      if (numPages > 10) this.setThrottle();
 
       this.getPageViewsData(interWikiData).done(pageViewsData => {
         const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
@@ -647,7 +650,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
          * XXX: throttling
          * Reset throttling again; the first one was in case they aborted
          */
-        this.setThrottle();
+        if (numPages > 10) this.setThrottle();
       });
     }).fail(error => {
       this.setState('initial');

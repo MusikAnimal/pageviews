@@ -776,12 +776,15 @@ var LangViews = function (_mix$with) {
       });
 
       this.getInterwikiData(dbName, page).done(function (interWikiData) {
+        var numPages = Object.keys(interWikiData).length;
+
         /**
          * XXX: throttling
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         *   unless there were are querying for ten or less pages
          */
-        _this8.setThrottle();
+        if (numPages > 10) _this8.setThrottle();
 
         _this8.getPageViewsData(interWikiData).done(function (pageViewsData) {
           var pageLink = _this8.getPageLink(decodeURIComponent(page), _this8.project);
@@ -796,7 +799,7 @@ var LangViews = function (_mix$with) {
            * XXX: throttling
            * Reset throttling again; the first one was in case they aborted
            */
-          _this8.setThrottle();
+          if (numPages > 10) _this8.setThrottle();
         });
       }).fail(function (error) {
         _this8.setState('initial');
