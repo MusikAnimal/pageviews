@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Sjoerddebruin",
-			"Macofe"
+			"Macofe",
+			"MrLeopold"
 		]
 	},
 	"title": "Paginaweergaven-analyse",
@@ -29,6 +30,8 @@
 	"settings": "Instellingen",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Afdrukken",
 	"credits": "Gemaakt door $1, $2 en $3.",
 	"hosted": "Gehost met $1 op $2.",
 	"translation-credits": "Vertaling is mogelijk gemaakt door $1 en $2.",
@@ -91,11 +94,16 @@
 	"language": "Taal",
 	"badges": "Badges",
 	"pageviews": "Paginaweergaven",
+	"redirectviews": "Weergaven van doorverwijzingen",
 	"average": "Gemiddeld",
 	"submit": "Verzenden",
 	"num-languages": "$1 talen",
+	"faq-redirects-title": "Hoe worden doorverwijzingen geteld?",
+	"faq-redirects-body": "Als een gebruiker naar een doorverwijzing zoekt, dan wordt er een paginaweergave geregistreerd voor de doorverwijzing, maar niet voor de doelpagina. Als u de totale paginaweergaven van een artikel wilt bekijken, inclusief doorverwijzingen, probeer dan $1.",
 	"faq-try-tool": "Probeer $1",
 	"faq-massviews-sources-title": "Wat zijn de \"bronnen\"?",
+	"url-structure-example": "Om de nieuwste gegevens van een gegeven pagina op uw wiki te krijgen met de standaardopties, gebruik: $1\n$2 wordt vervangen door een geldige $3. $4 zal resulteren tot de pagina waar de link op is geplaatst",
+	"url-structure-example-siteviews": "Om de nieuwste gegevens van totale paginaweergaven van alle pagina's op uw wiki met de standaardopties te krijgen, gebruik: $1",
 	"url-structure-parameters": "Parameters",
 	"default": "Standaard",
 	"all-languages": "Alle talen",
@@ -108,10 +116,21 @@
 	"most-viewed-pages": "Meest bekeken pagina's",
 	"unique-devices": "Unieke apparaten",
 	"massviews-empty-set": "$1 bevat geen pagina's!",
+	"pageviews-description": "Vergelijking van paginaweergaven over meerdere pagina's",
+	"langviews-description": "Paginaweergaven van een pagina in alle talen",
+	"massviews-description": "Importeer een paginalijst en vergelijk de paginaweergaven",
+	"siteviews-description": "Vergelijking van paginaweergaven over meerdere projecten",
+	"redirectviews-description": "Paginaweergaven van alle doorverwijzingen naar een pagina",
 	"source": "Bron",
 	"elapsed-time": "Verstreken tijd: $1 {{PLURAL:$1|seconde|seconden}}",
 	"num-pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
 	"list": "Lijst",
 	"chart": "Grafiek",
-	"search": "Zoeken"
+	"search": "Zoeken",
+	"redirectviews-title": "Doorverwijzingsweergaven",
+	"num-sections": "$1 secties",
+	"section": "Sectie",
+	"num-redirects": "$1 doorverwijzingen",
+	"num-pageviews": "$1 paginaweergaven",
+	"redirects": "Doorverwijzingen"
 }

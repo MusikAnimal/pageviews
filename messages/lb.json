@@ -26,6 +26,8 @@
 	"download-label": "Eroflueden",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Drécken",
 	"translation-credits": "Iwwersetzunge erméiglecht duerch $1 a(n) $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "FAQ",
@@ -91,6 +93,7 @@
 	"unique-titles": "$1 verschidden {{PLURAL:$1|Titel|Titelen}}",
 	"faq-return-to": "Zréck op $1",
 	"faq-todays-date-title": "Firwat kann ech keng Donnéeë fir den Datum vun haut gesinn?",
+	"faq-redirects-title": "Wéi gi Viruleedunge gezielt.",
 	"faq-chart-type-title": "Wéi kann ech dës Form vun Diagramm änneren?",
 	"faq-try-tool": "Dir kënnt dëst op $1 fannen.",
 	"faq-bug-report-title": "Ech hunn en Ufro fir eng Funktioun oder e Feeler ze mellen",
@@ -121,5 +124,6 @@
 	"search": "Sichen",
 	"num-sections": "$1 A bschnitter",
 	"section": "Abschnitt",
-	"num-redirects": "$1 Viruleedungen"
+	"num-redirects": "$1 Viruleedungen",
+	"redirects": "Viruleedungen"
 }

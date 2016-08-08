@@ -37,6 +37,8 @@
 	"download-label": "Télécharger",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Imprimer",
 	"credits": "Vous a été fourni par $1, $2 et $3.",
 	"hosted": "Hébergé avec $1 sur $2 .",
 	"translation-credits": "Traductions proposées par $1 et $2.",
@@ -138,6 +140,8 @@
 	"faq-old-data-body": "L’API pageviews de Wikimédia a été introduite en août 2015 et inclut les données au $1. Vous devrez compter sur d’autres outils comme <a href='http://stats.grok.se'>stats.grok.se</a> pour afficher des données antérieures. Qu’ils fonctionnent ou non est malheureusement en dehors du périmètre de cet outil, et hors du contrôle des mainteneurs.",
 	"faq-todays-date-title": "Pourquoi ne puis-je pas afficher les données à la date d’aujourd’hui ?",
 	"faq-todays-date-body": "L’API pageviews de Wikimédia prend en général 24 heures pour remplir les données, parfois plus. Dans certains cas, vous pouvez aussi voir des données manquantes à la date d’hier, et qui seront laissées vides plutôt que d’afficher un compte de zéro vues.",
+	"faq-redirects-title": "Comment sont les redirections sont-elles comptées?",
+	"faq-redirects-body": "Si un utilisateur accède à une redirection, une page vue est enregistrée pour la redirection, mais pas pour la page cible. Si vous voulez obtenir le total de pages vues d'un article, y compris tous les redirections, essayez $1.",
 	"faq-agents-title": "Que sont les \"Agents\" ?",
 	"faq-agents-user": "comprend toutes les personnes qui ont affiché une page. Des éditeurs, des éditeurs anonymes, et nos lecteurs.",
 	"faq-agents-spider": "inclut le moteur de recherche « <a href='https://en.wikipedia.org/wiki/Web_crawler'>robots d’indexation</a> » comme Google qui lit les pages pour améliorer les résultats des recherches. Les pages peuvent être vues par des robots d’indexation, ce qui explique que, par défaut, l’outil n’affiche des données que pour les utilisateurs.",
@@ -248,5 +252,6 @@
 	"num-sections": "$1 sections",
 	"section": "Section",
 	"num-redirects": "$1 redirections",
-	"num-pageviews": "$1 pages vues"
+	"num-pageviews": "$1 pages vues",
+	"redirects": "Redirections"
 }

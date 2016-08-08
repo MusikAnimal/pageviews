@@ -3,7 +3,8 @@
 		"authors": [
 			"Incelemeelemani",
 			"Sayginer",
-			"1917 Ekim Devrimi"
+			"1917 Ekim Devrimi",
+			"MrSchipunov"
 		]
 	},
 	"title": "Sayfa Görüntülemeleri Analizi",
@@ -29,6 +30,8 @@
 	"change-chart": "Grafik türü",
 	"settings": "Ayarlar",
 	"download-label": "İndir",
+	"png": "PNG",
+	"print": "Yazdır",
 	"credits": "$1, $2 ve $3 olarak getirildi.",
 	"hosted": "Barındırılma $2 $1 tarafından sağlanır.",
 	"translation-credits": "Çeviriler $1 ve $2 tarafından sağlanmaktadır.",
@@ -117,7 +120,7 @@
 	"topviews": "En fazla görüntülenenler",
 	"siteviews": "Site Görüntülemeleri",
 	"massviews": "Sihirli Kelime ile Görüntülemeler",
-	"redirectviews": "Yönlendirmeleri görüntüle",
+	"redirectviews": "Görüntünlenmeleri Yönlendir",
 	"average": "Ortalama",
 	"submit": "Gönder",
 	"hover-to-exclude": "Girdilerin üzerine gelin ve görünümlerden çıkarmak için ✖ simgesine tıklayın",
@@ -231,5 +234,6 @@
 	"autolog-option": "Eğer uygunsa otomatik olarak logaritmik ölçek kullanın",
 	"remember-chart-option": "Grafik tercihini hatırlasın",
 	"begin-at-zero": "Sıfırdan başla",
-	"begin-at-zero-option": "Y eksenini her zaman sıfırdan başlayarak göster"
+	"begin-at-zero-option": "Y eksenini her zaman sıfırdan başlayarak göster",
+	"redirects": "Yönlendirmeler"
 }

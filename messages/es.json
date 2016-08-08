@@ -33,6 +33,7 @@
 	"download-label": "Descargar",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "Imprimir",
 	"credits": "Desarrollado por $1, $2 y $3.",
 	"hosted": "Alojado con $1 en $2.",
 	"translation-credits": "Las traducciones son impulsadas por $1 y $2.",
@@ -173,5 +174,9 @@
 	"remember-chart-option": "Recordar preferencia de gráfico",
 	"begin-at-zero": "Empezar en cero",
 	"begin-at-zero-option": "Mostrar siempre el eje y empezando en cero",
-	"search": "Buscar"
+	"search": "Buscar",
+	"num-sections": "$1 secciones",
+	"section": "Sección",
+	"num-redirects": "$1 redirecciones",
+	"redirects": "Redirecciones"
 }

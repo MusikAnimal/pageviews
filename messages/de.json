@@ -31,6 +31,8 @@
 	"download-label": "Herunterladen",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Drucken",
 	"credits": "Bereitgestellt von $1, $2 und $3.",
 	"hosted": "Gehostet mit $1 auf $2.",
 	"translation-credits": "Übersetzungen zur Verfügung gestellt von $1 und $2.",
@@ -132,6 +134,8 @@
 	"faq-old-data-body": "Die Wikimedia-Pageviews-API wurde im $1 eingeführt und enthält keine Daten vor diesem Zeitpunkt. Du musst dich auf andere Werkzeuge wie <a href=\"http://stats.grok.se\">stats.grok.se</a> verlassen, um ältere Daten anzusehen. Ob sie funktionieren oder nicht, liegt leider außerhalb des Verantwortungsbereichs dieses Werkzeugs und jenseits der Kontrolle der Instandhalter.",
 	"faq-todays-date-title": "Warum kann ich keine Daten für den heutigen Tag ansehen?",
 	"faq-todays-date-body": "Die Wikimedia-Pageviews-API benötigt zur Befüllung generell volle 24 Stunden, manchmal länger. In einigen Situationen kannst du sehen, dass Daten auch für den gestrigen Tag fehlen, die leer gelassen werden und nicht eine Anzahl von null Aufrufen anzeigen.",
+	"faq-redirects-title": "Wie werden Weiterleitungen gezählt?",
+	"faq-redirects-body": "Wenn ein Benutzer eine Weiterleitung aufruft, wird ein Seitenaufruf für die Weiterleitung registriert, jedoch nicht für die Zielseite. Falls du die gesamten Seitenaufrufe eines Artikels inklusive aller Weiterleitungen erhalten möchtest, versuche $1.",
 	"faq-agents-title": "Was sind die „Agenten“?",
 	"faq-agents-user": "Schließt alle Menschen ein, die eine Seite betrachten. Autoren, anonyme Autoren und unsere Leser.",
 	"faq-agents-spider": "Schließt <a href=\"https://de.wikipedia.org/wiki/Webcrawler\">Webcrawler</a> von Suchmaschinen wie Google ein, die Seiten zur Verbesserung der Suchergebnisse lesen. Seiten können erhebliche Aufrufe von Webcrawlern erhalten, deshalb zeigt das Werkzeug standardmäßig nur Daten von Benutzern an.",
@@ -242,5 +246,6 @@
 	"num-sections": "$1 Abschnitte",
 	"section": "Abschnitt",
 	"num-redirects": "$1 Weiterleitungen",
-	"num-pageviews": "$1 Seitenaufrufe"
+	"num-pageviews": "$1 Seitenaufrufe",
+	"redirects": "Weiterleitungen"
 }

@@ -30,6 +30,7 @@
 	"download-label": "Преузми",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "Штампај",
 	"credits": "Аутори $1, $2 и $3.",
 	"hosted": "Хостован са $1 на $2.",
 	"translation-credits": "За преводе су заслужни $1 и $2.",
@@ -111,5 +112,9 @@
 	"chart": "Графикон",
 	"remember-chart-option": "Упамти подешавање графикона",
 	"begin-at-zero": "Почни од нуле",
-	"search": "Претрага"
+	"search": "Претрага",
+	"num-sections": "Одељака: $1",
+	"section": "Преусмерење на одељак",
+	"num-redirects": "Преусмерења: $1",
+	"redirects": "Преусмерења"
 }

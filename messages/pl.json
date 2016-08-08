@@ -32,6 +32,8 @@
 	"download-label": "Pobierz",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Drukuj",
 	"translation-credits": "Tłumaczenia za pomocą $1 i $2.",
 	"tool-labs": "Tool Labs",
 	"faq": "FAQ",
@@ -146,5 +148,7 @@
 	"remember-chart-option": "Zapamiętaj preferencje wykresu",
 	"begin-at-zero": "Rozpocznij od zera",
 	"begin-at-zero-option": "Zawsze pokazuj oś y zaczynając od zera",
-	"search": "Szukaj"
+	"search": "Szukaj",
+	"section": "Sekcja",
+	"redirects": "Przekierowania"
 }

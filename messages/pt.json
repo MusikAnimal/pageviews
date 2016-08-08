@@ -33,6 +33,8 @@
 	"download-label": "Descarregar",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Imprimir",
 	"credits": "Desenvolvido por $1, $2 e $3.",
 	"hosted": "Hospedado com $1 em $2.",
 	"translation-credits": "Traduções por $1 e $2.",
@@ -131,6 +133,7 @@
 	"invalid-lang-project": "$1 é ou um projeto inválido ou não é multilingue",
 	"faq-return-to": "Voltar a $1",
 	"faq-old-data-title": "Porque não posso ver dados anteriores a $1?",
+	"faq-redirects-title": "Como são contados os redirecionamentos?",
 	"faq-chart-type-title": "Como posso alterar o tipo de gráfico?",
 	"faq-chart-type-body": "Clique em \"$1\" para escolher entre 6 tipos diferentes. A aplicação vai lembrar as suas preferências; por padrão, mostrará um gráfico de barras quando visualizar dados de uma única página e um gráfico de linhas para várias. Observe que os gráficos circulares e em anel podem mostrar apenas os dados para o número total de visualizações dentro de um determinado intervalo.",
 	"faq-try-tool": "Pode encontrar isto em $1",
@@ -164,5 +167,6 @@
 	"num-sections": "$1 secções",
 	"section": "Secção",
 	"num-redirects": "$1 redirecionamentos",
-	"num-pageviews": "$1 visualizações de página"
+	"num-pageviews": "$1 visualizações de página",
+	"redirects": "Redirecionamentos"
 }

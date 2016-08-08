@@ -30,6 +30,7 @@
 	"change-chart": "סוג התרשים",
 	"settings": "הגדרות",
 	"download-label": "הורדה",
+	"print": "הדפסה",
 	"credits": "מובא אליכם על־ידי <bdi>$1</bdi>, <bdi>$2</bdi> ו־<bdi>$3</bdi>",
 	"hosted": "מתארח ב$1 ב־$2.",
 	"translation-credits": "התרגומים מסופקים על־ידי $1 ו־$2.",
@@ -241,5 +242,6 @@
 	"num-sections": "$1 קטעים",
 	"section": "קטע",
 	"num-redirects": "$1 הפניות",
-	"num-pageviews": "$1 צפיות בדף"
+	"num-pageviews": "$1 צפיות בדף",
+	"redirects": "הפניות"
 }

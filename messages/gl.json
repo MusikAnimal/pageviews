@@ -151,6 +151,7 @@
 	"topviews-description": "Páxinas máis vistas dun proxecto",
 	"source": "Fonte",
 	"category-url": "URL da categoría",
+	"num-pages": "$1 {{PLURAL:$1|páxina|páxinas}}",
 	"template-url": "URL do modelo",
 	"logarithmic-scale": "Escala logarítmica",
 	"list": "Lista",

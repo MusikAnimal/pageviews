@@ -32,6 +32,8 @@
 	"download-label": "下载",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "打印",
 	"credits": "由$1、$2和$3为您呈现。",
 	"hosted": "$1有爱地托管于$2。",
 	"translation-credits": "翻译采用 $1 和 $2。",
@@ -243,5 +245,6 @@
 	"num-sections": "$1个章节",
 	"section": "章节",
 	"num-redirects": "$1个重定向",
-	"num-pageviews": "$1次页面浏览"
+	"num-pageviews": "$1次页面浏览",
+	"redirects": "重定向"
 }
