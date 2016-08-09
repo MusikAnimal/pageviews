@@ -1,0 +1,7 @@
+%li.list-group-item(id="redirects")
+  %p
+    %strong= $I18N->msg( 'faq-search-redirects-title' )
+  %p
+    - $redirectViewsLink = "<a href='/redirectviews'>" . $I18N->msg( 'redirectviews' ) . "</a>"
+    - $variables = array( $I18N->msg( 'autocompletion-redirects' ), $I18N->msg( 'settings' ), $redirectViewsLink )
+    = $I18N->msg( 'faq-search-redirects-body', array( 'variables' => $variables ) )

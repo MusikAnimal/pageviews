@@ -67,7 +67,6 @@
 	"autocompletion": "Label for autocompletion search option.",
 	"autocompletion-redirects": "Label for autocompletion with redirects search option.",
 	"no-autocompletion": "Label for option to disable autocompletion when searching",
-	"other-options": "Label for miscellaneous options in the settings interface",
 	"format-numbers": "Label for option to format numerical data according to the user's language, for example, '1,234' instead of '1234'",
 	"localize-dates": "Label for option to format dates according to the user's language, for example, '5/23/2015' instead of 2015-05-23",
 	"cancel": "Label for button\n{{Identical|Cancel}}",
@@ -141,6 +140,8 @@
 	"faq-old-data-body": "FAQ - body of the section about seeing old data",
 	"faq-todays-date-title": "FAQ - title of the section about data for today's date",
 	"faq-todays-date-body": "FAQ - body of the section about data for today's date",
+	"faq-search-redirects-title": "FAQ - title of the section about how to search for redirects",
+	"faq-search-redirects-body": "FAQ - body of the section about how to search for redirects. $1 is the label for the option to enable in the 'Settings' panel, and $2 is the message for the 'Settings' button. $3 is the link to the Redirect Views tool, with the message 'redirectviews' as the label.",
 	"faq-redirects-title": "FAQ - title of the section about how redirects are counted",
 	"faq-redirects-body": "FAQ - body of the section about how redirects are counted. $1 is a link to the Redirect Views tool, with the message 'redirectviews' as the label.",
 	"faq-agents-title": "FAQ - title of the section explaining what the 'agent' options are",
@@ -255,5 +256,7 @@
 	"num-redirects": "Text indicating a number of redirects. $1 is the number. Similar to the 'num-pages' message.",
 	"num-pageviews": "Text indicating a number of pageviews. $1 is the number. Similar to the 'num-pages' message.",
 	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}",
-	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}"
+	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}",
+	"localization": "Label for localization options in the settings interface.",
+	"chart-preferences": "Label for chart options in the settings interface."
 }

@@ -20,6 +20,7 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
+          <?php include "../../faq_parts/redirects.php"; ?>
           <?php include "../../faq_parts/throttle.php"; ?>
           <?php include "../../faq_parts/old_data.php"; ?>
           <?php include "../../faq_parts/todays_data.php"; ?>

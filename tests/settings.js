@@ -14,7 +14,7 @@ module.exports = {
     client.click('.js-test-change-chart');
     client.expect.element('#chart-type-modal').to.be.visible.after(1000);
     client.click('.js-test-bar-chart');
-    client.expect.element('.aqs-chart').to.be.visible.after(1000);
+    client.expect.element('.aqs-chart').to.be.visible.after(10000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
       client.expect(response.value).to.equal('bar');
     });
@@ -24,7 +24,7 @@ module.exports = {
     client.click('.js-test-change-chart');
     client.expect.element('#chart-type-modal').to.be.visible.after(1000);
     client.click('.js-test-pie-chart');
-    client.expect.element('.aqs-chart').to.be.visible.after(1000);
+    client.expect.element('.aqs-chart').to.be.visible.after(10000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
       client.expect(response.value).to.equal('pie');
     });
@@ -34,7 +34,7 @@ module.exports = {
     client.click('.js-test-change-chart');
     client.expect.element('#chart-type-modal').to.be.visible.after(1000);
     client.click('.js-test-line-chart');
-    client.expect.element('.aqs-chart').to.be.visible.after(1000);
+    client.expect.element('.aqs-chart').to.be.visible.after(10000);
     client.execute('return localStorage[\'pageviews-chart-preference\']', [], response => {
       client.expect(response.value).to.equal('line');
     });

@@ -107,7 +107,7 @@ module.exports = {
     client.execute('return $(".aqs-project-input").val("")');
     client.setValue('#project-input', ['de.wikipedia.org']);
     client.execute('return $(".aqs-project-input").trigger("change")');
-    client.expect.element('.aqs-chart').to.not.be.visible.after(1000);
+    client.expect.element('.aqs-chart').to.not.be.visible.after(10000);
     client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(response.value).to.equal(null);
     });

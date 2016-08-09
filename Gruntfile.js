@@ -50,7 +50,7 @@ module.exports = function(grunt) {
     'public_html/_data_links.php': 'views/_data_links.haml',
     'public_html/_output.php': 'views/_output.haml'
   };
-  ['old_data', 'todays_data', 'redirects', 'agents', 'chart_type', 'feedback', 'throttle'].forEach(faqPart => {
+  ['old_data', 'todays_data', 'redirects', 'search_redirects', 'agents', 'chart_type', 'feedback', 'throttle'].forEach(faqPart => {
     hamlFiles[`public_html/faq_parts/${faqPart}.php`] = `views/faq_parts/${faqPart}.haml`;
   });
   ['project', 'date_ranges', 'platform', 'agent', 'autolog'].forEach(urlPart => {

@@ -105,9 +105,7 @@
           </div>
         </fieldset>
         <fieldset>
-          <div class="other-options-label">
-            <?php echo $I18N->msg( 'other-options' ); ?>
-          </div>
+          <?php echo $I18N->msg( 'localization' ); ?>
           <div class="checkbox">
             <label>
               <input class="js-test-format-numbers" name="numericalFormatting" type="checkbox">
@@ -120,25 +118,28 @@
               <?php echo $I18N->msg( 'localize-dates' ); ?>
             </label>
           </div>
-          <div class="checkbox chart-specific">
+        </fieldset>
+        <fieldset class="chart-specific">
+          <?php echo $I18N->msg( 'chart-preferences' ); ?>
+          <div class="checkbox">
             <label>
               <input class="js-test-bezier-curve" name="autoLogDetection" type="checkbox">
               <?php echo $I18N->msg( 'autolog-option' ); ?>
             </label>
           </div>
-          <div class="checkbox chart-specific">
+          <div class="checkbox">
             <label>
               <input class="js-test-bezier-curve" name="beginAtZero" type="checkbox">
               <?php echo $I18N->msg( 'begin-at-zero-option' ); ?>
             </label>
           </div>
-          <div class="checkbox chart-specific">
+          <div class="checkbox">
             <label>
               <input class="js-test-bezier-curve" name="rememberChart" type="checkbox">
               <?php echo $I18N->msg( 'remember-chart-option' ); ?>
             </label>
           </div>
-          <div class="checkbox chart-specific">
+          <div class="checkbox">
             <label>
               <input class="js-test-bezier-curve" name="bezierCurve" type="checkbox">
               <?php echo $I18N->msg( 'bezier-curve-option' ); ?>

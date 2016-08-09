@@ -22,6 +22,7 @@
         <ul class="list-group">
           <?php include "../faq_parts/old_data.php"; ?>
           <?php include "../faq_parts/todays_data.php"; ?>
+          <?php include "../faq_parts/search_redirects.php"; ?>
           <?php include "../faq_parts/redirects.php"; ?>
           <?php include "../faq_parts/agents.php"; ?>
           <?php include "../faq_parts/chart_type.php"; ?>

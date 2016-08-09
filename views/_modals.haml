@@ -58,6 +58,7 @@
       %form.modal-body
         %p
           = $I18N->msg( 'settings-notice' )
+
         %fieldset.radio-list.search-method-options
           = $I18N->msg( 'search-method' )
           %div.radio
@@ -76,8 +77,7 @@
               = $I18N->msg( 'no-autocompletion' )
 
         %fieldset
-          %div.other-options-label
-            = $I18N->msg( 'other-options' )
+          = $I18N->msg( 'localization' )
           %div.checkbox
             %label
               %input.js-test-format-numbers(name="numericalFormatting" type="checkbox")
@@ -88,22 +88,24 @@
               %input.js-test-localize-dates(name="localizeDateFormat" type="checkbox")
               = $I18N->msg( 'localize-dates' )
 
-          %div.checkbox.chart-specific
+        %fieldset.chart-specific
+          = $I18N->msg( 'chart-preferences' )
+          %div.checkbox
             %label
               %input.js-test-bezier-curve(name="autoLogDetection" type="checkbox")
               = $I18N->msg( 'autolog-option' )
 
-          %div.checkbox.chart-specific
+          %div.checkbox
             %label
               %input.js-test-bezier-curve(name="beginAtZero" type="checkbox")
               = $I18N->msg( 'begin-at-zero-option' )
 
-          %div.checkbox.chart-specific
+          %div.checkbox
             %label
               %input.js-test-bezier-curve(name="rememberChart" type="checkbox")
               = $I18N->msg( 'remember-chart-option' )
 
-          %div.checkbox.chart-specific
+          %div.checkbox
             %label
               %input.js-test-bezier-curve(name="bezierCurve" type="checkbox")
               = $I18N->msg( 'bezier-curve-option' )
