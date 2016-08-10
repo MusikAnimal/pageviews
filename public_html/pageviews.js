@@ -214,27 +214,47 @@ var PageViews = function (_mix$with) {
 
       this.resetSelect2();
 
+      /**
+       * Normalizes the page names then sets the Select2 defaults,
+       *   which triggers the Select2 listener and renders the chart
+       * @param {Array} pages - pages to pass to Massviews
+       * @return {null} nothing
+       */
+      var normalizeAndSetDefaults = function normalizeAndSetDefaults(pages) {
+        if (_this2.normalized) {
+          pages = _this2.underscorePageNames(pages);
+          _this2.setSelect2Defaults(pages);
+        } else {
+          _this2.normalizePageNames(pages).then(function (data) {
+            _this2.normalized = true;
+            pages = data;
+            _this2.setSelect2Defaults(_this2.underscorePageNames(pages));
+          });
+        }
+      };
+
+      // set up default pages if none were passed in
       if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
         // only set default of Cat and Dog for enwiki
         if (this.project === 'en.wikipedia') {
           params.pages = ['Cat', 'Dog'];
-          this.setSelect2Defaults(params.pages);
+          this.setInitialChartType(params.pages.length);
+          normalizeAndSetDefaults(params.pages);
         } else {
-          params.pages = [];
+          // leave Select2 empty and put focus on it so they can type in pages
           this.focusSelect2();
-          this.stopSpinny();
+          this.stopSpinny(); // manually hide spinny since we aren't drawing the chart
+          this.setInitialChartType();
         }
-      } else if (this.normalized) {
-        params.pages = this.underscorePageNames(params.pages);
-        this.setSelect2Defaults(params.pages);
-      } else {
-        this.normalizePageNames(params.pages).then(function (data) {
-          _this2.normalized = true;
-          params.pages = data;
-          _this2.setSelect2Defaults(_this2.underscorePageNames(params.pages));
-        });
-      }
-      this.setInitialChartType(params.pages.length);
+        // If there's more than 10 articles attempt to create a PagePile and open it in Massviews
+      } else if (params.pages.length > 10) {
+          // If a PagePile is successfully created we are redirected to Massviews and the promise is never resolved,
+          //   otherwise we just take the first 10 and process as we would normally
+          this.massviewsRedirectWithPagePile(params.pages).then(normalizeAndSetDefaults);
+        } else {
+          this.setInitialChartType(params.pages.length);
+          normalizeAndSetDefaults(params.pages);
+        }
     }
 
     /**
@@ -453,9 +473,13 @@ var PageViews = function (_mix$with) {
         return;
       }
 
+      // clear out old error messages unless the is the first time rendering the chart
+      if (this.prevChartType) {
+        this.clearMessages();
+      }
+
       this.params = location.search;
       this.prevChartType = this.chartType;
-      this.clearMessages(); // clear out old error messages
       this.destroyChart();
       this.startSpinny(); // show spinny and capture against fatal errors
 
@@ -489,6 +513,43 @@ var PageViews = function (_mix$with) {
         $('.select2-selection--multiple').addClass('disabled');
         return true;
       }
+    }
+
+    /**
+     * Create a PagePile with given pages using the API and redirect to Massviews.
+     * This is used when the user passes in more than 10 pages
+     * @param {Array} pages - pages to convert to a PagePile and open in Massviews
+     * @returns {Deferred} promise resolved only if creation of PagePile failed
+     */
+
+  }, {
+    key: 'massviewsRedirectWithPagePile',
+    value: function massviewsRedirectWithPagePile(pages) {
+      var _this7 = this;
+
+      var dfd = $.Deferred(),
+          dbName = Object.keys(siteMap).find(function (key) {
+        return siteMap[key] === _this7.project + '.org';
+      });
+
+      $.ajax({
+        url: '//tools.wmflabs.org/pagepile/api.php',
+        data: {
+          action: 'create_pile_with_data',
+          wiki: dbName,
+          data: pages.join('\n')
+        }
+      }).success(function (pileData) {
+        var params = _this7.getParams();
+        delete params.project;
+        document.location = '/massviews?overflow=1&' + $.param(params) + '&source=pagepile&target=' + pileData.pile.id;
+      }).fail(function () {
+        // just grab first 10 pages and throw an error
+        _this7.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
+        dfd.resolve(pages.slice(0, 10));
+      });
+
+      return dfd;
     }
   }]);
 
@@ -618,7 +679,9 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
     _createClass(_class, [{
       key: 'setInitialChartType',
-      value: function setInitialChartType(numDatasets) {
+      value: function setInitialChartType() {
+        var numDatasets = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
         if (this.rememberChart === 'true') {
           this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
         } else {
@@ -1970,44 +2033,46 @@ var Pv = function (_PvConfig) {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(_this.initialize.bind(_this));
-
-    // this.addGlobalErrorHandling();
     return _this;
   }
 
-  // addGlobalErrorHandling() {
-  //   window.onerror = (msg, url, line, col, error) => {
-  //     /** col & error are new to the HTML 5 spec and may not be supported in every browser. */
-  //     let extra = col ? '\ncolumn: ' + col : '';
-  //     extra += error ? '\nerror: ' + error : '';
+  /**
+   * Add a site notice (Bootstrap alert)
+   * @param {String} level - one of 'success', 'info', 'warning' or 'danger'
+   * @param {String} message - message to show
+   * @param {String} [title] - will appear in bold and in front of the message
+   * @param {Boolean} [dismissable] - whether or not to add a X
+   *   that allows the user to dismiss the notice
+   * @returns {null} nothing
+   */
 
-  //     // You can view the information in an alert to see things working like this:
-  //     const errorMessage = `Error: ${msg}\nurl: ${url}\nline: ${line + extra}`;
-  //     console.log(errorMessage);
-  //   };
-  // }
 
   _createClass(Pv, [{
     key: 'addSiteNotice',
-    value: function addSiteNotice(level, message, title, autodismiss) {
+    value: function addSiteNotice(level, message, title, dismissable) {
       title = title ? '<strong>' + title + '</strong> ' : '';
-      autodismiss = autodismiss ? ' autodismiss' : '';
-      $('.site-notice').append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
-      $('.site-notice-wrapper').show();
+
+      var markup = title + message;
+
+      /** add relevant CSS class and dismiss link if dismissable */
+      if (dismissable) {
+        dismissable = ' alert-dismissable';
+        markup = '\n        <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n          <span aria-hidden="true">&times;</span>\n        </button>' + markup;
+      } else {
+        dismissable = '';
+      }
+
+      $('.site-notice').append('<div class=\'alert alert-' + level + dismissable + '\'>' + markup + '</div>');
+    }
+  }, {
+    key: 'clearSiteNotices',
+    value: function clearSiteNotices() {
+      $('.site-notice').html('');
     }
   }, {
     key: 'clearMessages',
     value: function clearMessages() {
       $('.message-container').html('');
-    }
-  }, {
-    key: 'clearSiteNotices',
-    value: function clearSiteNotices() {
-      $('.site-notice .autodismiss').remove();
-
-      if (!$('.site-notice .alert').length) {
-        $('.site-notice-wrapper').hide();
-      }
     }
 
     /**

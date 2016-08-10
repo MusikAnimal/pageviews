@@ -224,6 +224,7 @@
 	"massviews-empty-set": "An error message saying that $1 (a category or page pile) contains no pages",
 	"massviews-oversized-set": "An error message saying $1 (a category or page pile) contains too many pages to process. $2 is the total number of requested pages, $3 is the number of pages that will actually be processed.",
 	"massviews-oversized-set-unknown": "An error message saying $1 (a data source) contains too many pages to process. Same as the 'massviews-oversized-set' except here we don't know how many there are total. $2 is the number of pages that will actually be processed.",
+	"massviews-redirect": "Notice saying the user was redirected from the Pageviews app because they requested too many pages. $1 is the translation for 'title' (Pageviews app name), $2 is the number pages Pageviews can handle, and $3 is a link to the PagePile that was created.",
 	"url-structure-sort-massviews": "Documentation for the 'sort' parameter for the Massviews application. $1 and $2 are the valid values",
 	"pageviews-description": "Brief description of the Pageviews tool. Shown directly under the header.",
 	"topviews-description": "Brief description of the Topviews tool. Shown directly under the header.",
@@ -258,5 +259,6 @@
 	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}",
 	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}",
 	"localization": "Label for localization options in the settings interface.",
-	"chart-preferences": "Label for chart options in the settings interface."
+	"chart-preferences": "Label for chart options in the settings interface.",
+	"auto-pagepile-error": "Error message shown when an automated PagePile failed to generate. $1 is the title 'PagePile' (not translatable) and $2 is the number of pages the tool will use instead of the PagePile."
 }

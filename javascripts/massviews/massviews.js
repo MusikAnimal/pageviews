@@ -486,6 +486,20 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     this.patchUsage('mv');
 
     /**
+     * If they requested more than 10 pages in Pageviews (via typing it in the URL)
+     *   they are redirected to Massviews with an auto-generated PagePile.
+     *   This shows a message explaining what happened.
+     */
+    if (params.overflow && params.source === 'pagepile' && params.target) {
+      this.addSiteNotice(
+        'info',
+        $.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target)),
+        '',
+        true
+      );
+    }
+
+    /**
      * Check if we're using a valid range, and if so ignore any start/end dates.
      * If an invalid range, throw and error and use default dates.
      */
