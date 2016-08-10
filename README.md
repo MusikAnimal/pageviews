@@ -1,9 +1,11 @@
 # Pageviews Analysis
 A pageviews analysis tool for Wikimedia Foundation wikis
 
-Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews), [Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews), [Massviews](https://tools.wmflabs.org/massviews))
+Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews), [Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews), [Massviews](https://tools.wmflabs.org/massviews), [Redirect Views](https://tools.wmflabs.org/redirectviews))
 
-Documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
+User documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
+
+JavaScript documentation: https://tools.wmflabs.org/pageviews/jsdocs
 
 [![Build Status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)](https://travis-ci.org/MusikAnimal/pageviews)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
@@ -53,14 +55,14 @@ IE10 and Safari 8 and below are not supported.
 All assets and views are ultimated placed in `public_html`. With the exception of images, you won't need to make any manual modifications to this directory.
 
 ### Structure
-The repo contains five separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews and Massviews). The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). Partials of any kind are prepended with underscores (e.g. `_footer.php`).
+The repo contains six separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews, Massviews and Redirect Views). The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). Partials of any kind are prepended with underscores (e.g. `_footer.php`).
 
 #### JavaScripts
 Each app has it's own `config.js`, which are constants for application-wide use. When the JS files are compiled, they are concatenated into a single `application.js` that lives within the directory for that app inside `public_html`. If you compile for non-production source maps will be included.
 
 Shared JavaScript goes in the `/shared` directory and will be automatically included in each `application.js`.
 
-All JavaScript is documented [JSDoc](http://usejsdoc.org/). You can view the documentation by running:
+All JavaScript is documented [JSDoc](http://usejsdoc.org/). The documentation is hosted at https://tools.wmflabs.org/pageviews/jsdocs. You can generate the docs locally by running:
 ```
 grunt jsdoc && open doc/PageViews/1.0.0/index.html
 ```
