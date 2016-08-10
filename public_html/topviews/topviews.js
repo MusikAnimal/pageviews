@@ -110,7 +110,9 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
     _createClass(_class, [{
       key: 'setInitialChartType',
-      value: function setInitialChartType(numDatasets) {
+      value: function setInitialChartType() {
+        var numDatasets = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
         if (this.rememberChart === 'true') {
           this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
         } else {
@@ -1462,44 +1464,46 @@ var Pv = function (_PvConfig) {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(_this.initialize.bind(_this));
-
-    // this.addGlobalErrorHandling();
     return _this;
   }
 
-  // addGlobalErrorHandling() {
-  //   window.onerror = (msg, url, line, col, error) => {
-  //     /** col & error are new to the HTML 5 spec and may not be supported in every browser. */
-  //     let extra = col ? '\ncolumn: ' + col : '';
-  //     extra += error ? '\nerror: ' + error : '';
+  /**
+   * Add a site notice (Bootstrap alert)
+   * @param {String} level - one of 'success', 'info', 'warning' or 'danger'
+   * @param {String} message - message to show
+   * @param {String} [title] - will appear in bold and in front of the message
+   * @param {Boolean} [dismissable] - whether or not to add a X
+   *   that allows the user to dismiss the notice
+   * @returns {null} nothing
+   */
 
-  //     // You can view the information in an alert to see things working like this:
-  //     const errorMessage = `Error: ${msg}\nurl: ${url}\nline: ${line + extra}`;
-  //     console.log(errorMessage);
-  //   };
-  // }
 
   _createClass(Pv, [{
     key: 'addSiteNotice',
-    value: function addSiteNotice(level, message, title, autodismiss) {
+    value: function addSiteNotice(level, message, title, dismissable) {
       title = title ? '<strong>' + title + '</strong> ' : '';
-      autodismiss = autodismiss ? ' autodismiss' : '';
-      $('.site-notice').append('<div class=\'alert alert-' + level + autodismiss + '\'>' + title + message + '</div>');
-      $('.site-notice-wrapper').show();
+
+      var markup = title + message;
+
+      /** add relevant CSS class and dismiss link if dismissable */
+      if (dismissable) {
+        dismissable = ' alert-dismissable';
+        markup = '\n        <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n          <span aria-hidden="true">&times;</span>\n        </button>' + markup;
+      } else {
+        dismissable = '';
+      }
+
+      $('.site-notice').append('<div class=\'alert alert-' + level + dismissable + '\'>' + markup + '</div>');
+    }
+  }, {
+    key: 'clearSiteNotices',
+    value: function clearSiteNotices() {
+      $('.site-notice').html('');
     }
   }, {
     key: 'clearMessages',
     value: function clearMessages() {
       $('.message-container').html('');
-    }
-  }, {
-    key: 'clearSiteNotices',
-    value: function clearSiteNotices() {
-      $('.site-notice .autodismiss').remove();
-
-      if (!$('.site-notice .alert').length) {
-        $('.site-notice-wrapper').hide();
-      }
     }
 
     /**

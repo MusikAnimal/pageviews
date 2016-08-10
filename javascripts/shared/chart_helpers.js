@@ -83,7 +83,7 @@ const ChartHelpers = superclass => class extends superclass {
    * @param {Number} [numDatasets] - number of datasets
    * @returns {null} nothing
    */
-  setInitialChartType(numDatasets) {
+  setInitialChartType(numDatasets = 1) {
     if (this.rememberChart === 'true') {
       this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
     } else {

@@ -216,6 +216,7 @@
 	"massviews-empty-set": "$1 contains no pages!",
 	"massviews-oversized-set": "$1 contains $2 pages. For performance reasons, only the first $3 pages will be processed.",
 	"massviews-oversized-set-unknown": "$1 contains over $2 pages. For performance reasons, only the first $2 pages will be processed.",
+	"massviews-redirect": "You have been redirected from $1 because you requested more than $2 pages.<br/>$3 was automatically created and will be processed.",
 	"url-structure-sort-massviews": "Which column to sort. Either $1 or $2",
 	"pageviews-description": "Comparison of pageviews across multiple pages",
 	"topviews-description": "Most viewed pages of a project",
@@ -250,5 +251,6 @@
 	"redirects": "Redirects",
 	"target": "target",
 	"localization": "Localization:",
-	"chart-preferences": "Chart preferences:"
+	"chart-preferences": "Chart preferences:",
+	"auto-pagepile-error": "Unable to create $1. Showing the first $2 requested pages."
 }

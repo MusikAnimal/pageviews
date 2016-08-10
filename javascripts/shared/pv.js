@@ -62,41 +62,44 @@ class Pv extends PvConfig {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
-
-    // this.addGlobalErrorHandling();
   }
 
-  // addGlobalErrorHandling() {
-  //   window.onerror = (msg, url, line, col, error) => {
-  //     /** col & error are new to the HTML 5 spec and may not be supported in every browser. */
-  //     let extra = col ? '\ncolumn: ' + col : '';
-  //     extra += error ? '\nerror: ' + error : '';
-
-  //     // You can view the information in an alert to see things working like this:
-  //     const errorMessage = `Error: ${msg}\nurl: ${url}\nline: ${line + extra}`;
-  //     console.log(errorMessage);
-  //   };
-  // }
-
-  addSiteNotice(level, message, title, autodismiss) {
+  /**
+   * Add a site notice (Bootstrap alert)
+   * @param {String} level - one of 'success', 'info', 'warning' or 'danger'
+   * @param {String} message - message to show
+   * @param {String} [title] - will appear in bold and in front of the message
+   * @param {Boolean} [dismissable] - whether or not to add a X
+   *   that allows the user to dismiss the notice
+   * @returns {null} nothing
+   */
+  addSiteNotice(level, message, title, dismissable) {
     title = title ? `<strong>${title}</strong> ` : '';
-    autodismiss = autodismiss ? ' autodismiss' : '';
+
+    let markup = title + message;
+
+    /** add relevant CSS class and dismiss link if dismissable */
+    if (dismissable) {
+      dismissable = ' alert-dismissable';
+      markup = `
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>` + markup;
+    } else {
+      dismissable = '';
+    }
+
     $('.site-notice').append(
-      `<div class='alert alert-${level}${autodismiss}'>${title}${message}</div>`
+      `<div class='alert alert-${level}${dismissable}'>${markup}</div>`
     );
-    $('.site-notice-wrapper').show();
+  }
+
+  clearSiteNotices() {
+    $('.site-notice').html('');
   }
 
   clearMessages() {
     $('.message-container').html('');
-  }
-
-  clearSiteNotices() {
-    $('.site-notice .autodismiss').remove();
-
-    if (!$('.site-notice .alert').length) {
-      $('.site-notice-wrapper').hide();
-    }
   }
 
   /**

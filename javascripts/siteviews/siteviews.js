@@ -103,14 +103,14 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     this.resetSelect2();
 
-    if (!params.sites || params.sites.length === 1 && !params.sites[0]) {
+    if (!params.sites || (params.sites.length === 1 && !params.sites[0])) {
       params.sites = this.config.defaults.projects;
-      this.setInitialChartType(params.sites.length);
-      this.setSelect2Defaults(params.sites);
-    } else {
-      this.setInitialChartType(params.sites.length);
-      this.setSelect2Defaults(params.sites);
+    } else if (params.sites.length > 10) {
+      params.sites = params.sites.slice(0, 10); // max 10 sites
     }
+
+    this.setInitialChartType(params.sites.length);
+    this.setSelect2Defaults(params.sites);
   }
 
   /**

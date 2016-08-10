@@ -138,27 +138,47 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     this.resetSelect2();
 
-    if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
+    /**
+     * Normalizes the page names then sets the Select2 defaults,
+     *   which triggers the Select2 listener and renders the chart
+     * @param {Array} pages - pages to pass to Massviews
+     * @return {null} nothing
+     */
+    const normalizeAndSetDefaults = pages => {
+      if (this.normalized) {
+        pages = this.underscorePageNames(pages);
+        this.setSelect2Defaults(pages);
+      } else {
+        this.normalizePageNames(pages).then(data => {
+          this.normalized = true;
+          pages = data;
+          this.setSelect2Defaults(this.underscorePageNames(pages));
+        });
+      }
+    };
+
+    // set up default pages if none were passed in
+    if (!params.pages || (params.pages.length === 1 && !params.pages[0])) {
       // only set default of Cat and Dog for enwiki
       if (this.project === 'en.wikipedia') {
         params.pages = ['Cat', 'Dog'];
-        this.setSelect2Defaults(params.pages);
+        this.setInitialChartType(params.pages.length);
+        normalizeAndSetDefaults(params.pages);
       } else {
-        params.pages = [];
+        // leave Select2 empty and put focus on it so they can type in pages
         this.focusSelect2();
-        this.stopSpinny();
+        this.stopSpinny(); // manually hide spinny since we aren't drawing the chart
+        this.setInitialChartType();
       }
-    } else if (this.normalized) {
-      params.pages = this.underscorePageNames(params.pages);
-      this.setSelect2Defaults(params.pages);
+    // If there's more than 10 articles attempt to create a PagePile and open it in Massviews
+    } else if (params.pages.length > 10) {
+      // If a PagePile is successfully created we are redirected to Massviews and the promise is never resolved,
+      //   otherwise we just take the first 10 and process as we would normally
+      this.massviewsRedirectWithPagePile(params.pages).then(normalizeAndSetDefaults);
     } else {
-      this.normalizePageNames(params.pages).then(data => {
-        this.normalized = true;
-        params.pages = data;
-        this.setSelect2Defaults(this.underscorePageNames(params.pages));
-      });
+      this.setInitialChartType(params.pages.length);
+      normalizeAndSetDefaults(params.pages);
     }
-    this.setInitialChartType(params.pages.length);
   }
 
   /**
@@ -343,9 +363,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
+    // clear out old error messages unless the is the first time rendering the chart
+    if (this.prevChartType) {
+      this.clearMessages();
+    }
+
     this.params = location.search;
     this.prevChartType = this.chartType;
-    this.clearMessages(); // clear out old error messages
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
 
@@ -377,6 +401,36 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $('.select2-selection--multiple').addClass('disabled');
       return true;
     }
+  }
+
+  /**
+   * Create a PagePile with given pages using the API and redirect to Massviews.
+   * This is used when the user passes in more than 10 pages
+   * @param {Array} pages - pages to convert to a PagePile and open in Massviews
+   * @returns {Deferred} promise resolved only if creation of PagePile failed
+   */
+  massviewsRedirectWithPagePile(pages) {
+    const dfd = $.Deferred(),
+      dbName = Object.keys(siteMap).find(key => siteMap[key] === `${this.project}.org`);
+
+    $.ajax({
+      url: '//tools.wmflabs.org/pagepile/api.php',
+      data: {
+        action: 'create_pile_with_data',
+        wiki: dbName,
+        data: pages.join('\n')
+      }
+    }).success(pileData => {
+      const params = this.getParams();
+      delete params.project;
+      document.location = `/massviews?overflow=1&${$.param(params)}&source=pagepile&target=${pileData.pile.id}`;
+    }).fail(() => {
+      // just grab first 10 pages and throw an error
+      this.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
+      dfd.resolve(pages.slice(0, 10));
+    });
+
+    return dfd;
   }
 }
 
