@@ -66,7 +66,6 @@
 	"autocompletion": "Auto-complétion",
 	"autocompletion-redirects": "Auto-complétion avec les redirections",
 	"no-autocompletion": "Pas d'auto-complétion",
-	"other-options": "Autres options :",
 	"format-numbers": "Format de donnée numérique",
 	"localize-dates": "Localiser le format de la date",
 	"cancel": "Annuler",
@@ -141,7 +140,9 @@
 	"faq-todays-date-title": "Pourquoi ne puis-je pas afficher les données à la date d’aujourd’hui ?",
 	"faq-todays-date-body": "L’API pageviews de Wikimédia prend en général 24 heures pour remplir les données, parfois plus. Dans certains cas, vous pouvez aussi voir des données manquantes à la date d’hier, et qui seront laissées vides plutôt que d’afficher un compte de zéro vues.",
 	"faq-redirects-title": "Comment sont les redirections sont-elles comptées?",
-	"faq-redirects-body": "Si un utilisateur accède à une redirection, une page vue est enregistrée pour la redirection, mais pas pour la page cible. Si vous voulez obtenir le total de pages vues d'un article, y compris tous les redirections, essayez $1.",
+	"faq-redirects-body": "Si un utilisateur accède à une redirection, une page vue est enregistrée pour la redirection, mais pas pour la page cible. Si vous voulez obtenir le total des vues d’une page, y compris tous les redirections, essayez $1.",
+	"faq-search-redirects-title": "Comment puis-je voir les vues de page des redirections ?",
+	"faq-search-redirects-body": "Pour activer la recherche pour les redirections, modifiez votre méthode de recherche en « $1 » dans le panneau $2. Si vous voulez voir les vues de page de toutes les redirections vers une page, essayez $3.",
 	"faq-agents-title": "Que sont les \"Agents\" ?",
 	"faq-agents-user": "comprend toutes les personnes qui ont affiché une page. Des éditeurs, des éditeurs anonymes, et nos lecteurs.",
 	"faq-agents-spider": "inclut le moteur de recherche « <a href='https://en.wikipedia.org/wiki/Web_crawler'>robots d’indexation</a> » comme Google qui lit les pages pour améliorer les résultats des recherches. Les pages peuvent être vues par des robots d’indexation, ce qui explique que, par défaut, l’outil n’affiche des données que pour les utilisateurs.",
@@ -222,6 +223,7 @@
 	"massviews-empty-set": "$1 ne contient aucune page !",
 	"massviews-oversized-set": "$1 contient $2 pages. Pour des raisons de performance, seules les $3 premières pages seront traitées.",
 	"massviews-oversized-set-unknown": "$1 contient plus de $2 pages. Pour des raisons de performance, seules les $2 premières pages seront traitées.",
+	"massviews-redirect": "Vous avez été redirigé depuis $1 parce que vous avez demandé plus de $2 pages.<br/>$3 a été créé automatiquement et sera traité.",
 	"url-structure-sort-massviews": "Quelle colonne trier : soit $1 soit $2.",
 	"pageviews-description": "Comparaison de pages vues sur plusieurs pages",
 	"topviews-description": "Pages les plus vues d'un projet",
@@ -253,5 +255,9 @@
 	"section": "Section",
 	"num-redirects": "$1 redirections",
 	"num-pageviews": "$1 pages vues",
-	"redirects": "Redirections"
+	"redirects": "Redirections",
+	"target": "cible",
+	"localization": "Localisation :",
+	"chart-preferences": "Préférences de graphique :",
+	"auto-pagepile-error": "Impossible de créer $1. Affichage des $2 premières pages demandées."
 }

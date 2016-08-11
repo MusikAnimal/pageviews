@@ -32,6 +32,7 @@
 	"download-label": "تنزيل",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "اطبع",
 	"credits": "يقدمه لكم $1 و$2 و$3.",
 	"hosted": "مستضاف مع $1 على $2",
 	"tool-labs": "Tool Labs",
@@ -47,7 +48,6 @@
 	"pie": "فطيرة",
 	"search-method": "طريقة البحث:",
 	"no-autocompletion": "لا إكمال تلقائي",
-	"other-options": "خيارات أخرى:",
 	"format-numbers": "نسق البيانات العددية",
 	"localize-dates": "استخدم التنسيق المحلي للتاريخ",
 	"cancel": "ألغ",
@@ -100,5 +100,6 @@
 	"statistics": "الإحصاءات",
 	"most-viewed-pages": "أكثر الصفحات زيارة",
 	"invalid-category-url": "تصنيف غير صالح! برجاء إدخال المسار الكامل للتصنيف.",
-	"source": "المصدر"
+	"source": "المصدر",
+	"target": "الهدف"
 }

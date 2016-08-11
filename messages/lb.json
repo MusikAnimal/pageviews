@@ -46,7 +46,6 @@
 	"polar-area": "Polar Géigend",
 	"settings-notice": "Är Astellunge ginn am selwechte Browser um selwechte Computer gespäichert.",
 	"search-method": "Sichmethod:",
-	"other-options": "Aner Optiounen:",
 	"localize-dates": "Datumsformat lokaliséieren",
 	"cancel": "Ofbriechen",
 	"save": "Späicheren",
@@ -125,5 +124,8 @@
 	"num-sections": "$1 A bschnitter",
 	"section": "Abschnitt",
 	"num-redirects": "$1 Viruleedungen",
-	"redirects": "Viruleedungen"
+	"redirects": "Viruleedungen",
+	"target": "Zil",
+	"localization": "Lokalisatioun:",
+	"chart-preferences": "Diagrammastellungen:"
 }

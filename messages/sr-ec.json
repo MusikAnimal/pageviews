@@ -55,7 +55,6 @@
 	"autocompletion": "Аутоматско довршавање",
 	"autocompletion-redirects": "Аутоматско довршавање укључујући и преусмерења",
 	"no-autocompletion": "Без аутоматског довршавања",
-	"other-options": "Остале опције:",
 	"format-numbers": "Локализуј нумеричке податке",
 	"localize-dates": "Локализуј формат датума",
 	"cancel": "Откажи",
@@ -116,5 +115,6 @@
 	"num-sections": "Одељака: $1",
 	"section": "Преусмерење на одељак",
 	"num-redirects": "Преусмерења: $1",
-	"redirects": "Преусмерења"
+	"redirects": "Преусмерења",
+	"localization": "Локализација:"
 }

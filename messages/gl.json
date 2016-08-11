@@ -32,6 +32,8 @@
 	"download-label": "Descargar",
 	"csv": "CSV",
 	"json": "JSON",
+	"png": "PNG",
+	"print": "Imprimir",
 	"credits": "Desenvolvido por $1, $2 e $3.",
 	"hosted": "Aloxado con $1 en $2.",
 	"translation-credits": "As traducións están impulsadas por $1 e $2.",
@@ -59,7 +61,6 @@
 	"autocompletion": "Autocompletar",
 	"autocompletion-redirects": "Autocompletar incluíndo redireccións",
 	"no-autocompletion": "Sen autocompletar",
-	"other-options": "Outras opcións:",
 	"format-numbers": "Dar formato aos datos numéricos",
 	"localize-dates": "Localizar o formato das datas",
 	"cancel": "Cancelar",
@@ -102,6 +103,7 @@
 	"error-timed-out": "A operación excedeu o tempo límite.",
 	"api-error": "Houbo un problema ao cargar os datos de $1",
 	"api-error-no-data": "Non se atoparon datos.",
+	"api-incomplete-data": "Algúns datos aínda non están dispoñibles para as datas: $1",
 	"topviews-title": "Análise das máis vistas",
 	"excluded-pages": "Páxinas excluídas",
 	"show-more": "Mostrar máis",
@@ -121,6 +123,7 @@
 	"faq-return-to": "Volver a $1",
 	"faq-old-data-title": "Por que non podo ver os datos previos a agosto de 2015?",
 	"faq-todays-date-title": "Por que non podo ver os datos da data de hoxe?",
+	"faq-redirects-title": "Cómo se contabilizan as redireccións?",
 	"faq-agents-title": "Que son os \"Axentes\"?",
 	"faq-chart-type-title": "Como podo cambiar o tipo de gráfico?",
 	"faq-try-tool": "Podes atopar isto en $1.",
@@ -157,5 +160,7 @@
 	"list": "Lista",
 	"chart": "Gráfica",
 	"begin-at-zero": "Comezar en cero",
-	"search": "Procurar"
+	"search": "Procurar",
+	"section": "Sección",
+	"redirects": "Redireccións"
 }

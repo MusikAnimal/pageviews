@@ -63,7 +63,6 @@
 	"autocompletion": "Completamento automatico",
 	"autocompletion-redirects": "Completamento automatico che include i reindirizzamenti",
 	"no-autocompletion": "Nessun autocompletamento",
-	"other-options": "Altre opzioni:",
 	"format-numbers": "Formato dati numerici",
 	"localize-dates": "Localizza formato della data",
 	"cancel": "Annulla",
@@ -231,5 +230,7 @@
 	"section": "Sezione",
 	"num-redirects": "$1 redirect",
 	"num-pageviews": "$1 visualizzazioni della pagina",
-	"redirects": "Redirect"
+	"redirects": "Redirect",
+	"localization": "Localizzazione:",
+	"chart-preferences": "Preferenze grafico:"
 }

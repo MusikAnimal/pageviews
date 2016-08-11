@@ -60,7 +60,6 @@
 	"autocompletion": "Autovervollständigung",
 	"autocompletion-redirects": "Autovervollständigung inklusive Weiterleitungen",
 	"no-autocompletion": "Keine Autovervollständigung",
-	"other-options": "Andere Optionen:",
 	"format-numbers": "Numerische Daten formatieren",
 	"localize-dates": "Datumsformat lokalisieren",
 	"cancel": "Abbrechen",
@@ -135,7 +134,9 @@
 	"faq-todays-date-title": "Warum kann ich keine Daten für den heutigen Tag ansehen?",
 	"faq-todays-date-body": "Die Wikimedia-Pageviews-API benötigt zur Befüllung generell volle 24 Stunden, manchmal länger. In einigen Situationen kannst du sehen, dass Daten auch für den gestrigen Tag fehlen, die leer gelassen werden und nicht eine Anzahl von null Aufrufen anzeigen.",
 	"faq-redirects-title": "Wie werden Weiterleitungen gezählt?",
-	"faq-redirects-body": "Wenn ein Benutzer eine Weiterleitung aufruft, wird ein Seitenaufruf für die Weiterleitung registriert, jedoch nicht für die Zielseite. Falls du die gesamten Seitenaufrufe eines Artikels inklusive aller Weiterleitungen erhalten möchtest, versuche $1.",
+	"faq-redirects-body": "Wenn ein Benutzer eine Weiterleitung aufruft, wird ein Seitenaufruf für die Weiterleitung registriert, jedoch nicht für die Zielseite. Falls du die gesamten Seitenaufrufe einer Seite inklusive aller Weiterleitungen erhalten möchtest, versuche $1.",
+	"faq-search-redirects-title": "Wie kann ich die Seitenaufrufe von Weiterleitungen sehen?",
+	"faq-search-redirects-body": "Um die Suche nach Weiterleitungen zu aktivieren, ändere deine Suchmethode in „$2“ nach $1. Wenn du die Seitenaufrufe aller Weiterleitungen einer Seite sehen möchtest, versuche $3.",
 	"faq-agents-title": "Was sind die „Agenten“?",
 	"faq-agents-user": "Schließt alle Menschen ein, die eine Seite betrachten. Autoren, anonyme Autoren und unsere Leser.",
 	"faq-agents-spider": "Schließt <a href=\"https://de.wikipedia.org/wiki/Webcrawler\">Webcrawler</a> von Suchmaschinen wie Google ein, die Seiten zur Verbesserung der Suchergebnisse lesen. Seiten können erhebliche Aufrufe von Webcrawlern erhalten, deshalb zeigt das Werkzeug standardmäßig nur Daten von Benutzern an.",
@@ -216,6 +217,7 @@
 	"massviews-empty-set": "$1 enthält keine Seiten!",
 	"massviews-oversized-set": "$1 enthält $2 Seiten. Aus Leistungsgründen werden nur die ersten $3 Seiten verarbeitet.",
 	"massviews-oversized-set-unknown": "$1 enthält über $2 Seiten. Aus Leistungsgründen werden nur die ersten $2 Seiten verarbeitet.",
+	"massviews-redirect": "Du wurdest von $1 weitergeleitet, da du mehr als $2 Seiten angefragt hast.<br/>$3 wurde automatisch erstellt und wird verarbeitet.",
 	"url-structure-sort-massviews": "Welche Spalte sortiert werden soll. Entweder $1 oder $2.",
 	"pageviews-description": "Vergleich der Seitenaufrufe auf mehreren Seiten",
 	"topviews-description": "Meistbesuchte Seiten eines Projektes",
@@ -247,5 +249,9 @@
 	"section": "Abschnitt",
 	"num-redirects": "$1 Weiterleitungen",
 	"num-pageviews": "$1 Seitenaufrufe",
-	"redirects": "Weiterleitungen"
+	"redirects": "Weiterleitungen",
+	"target": "Ziel",
+	"localization": "Lokalisierung:",
+	"chart-preferences": "Diagrammeinstellungen:",
+	"auto-pagepile-error": "$1 konnte nicht erstellt werden. Es werden die ersten $2 angefragten Seiten angezeigt."
 }

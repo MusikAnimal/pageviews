@@ -55,7 +55,6 @@
 	"autocompletion": "Uzupełnianie automatyczne",
 	"autocompletion-redirects": "Uzupełnianie automatyczne z uwzględnieniem przekierowań",
 	"no-autocompletion": "Bez uzupełniania automatycznego",
-	"other-options": "Inne opcje:",
 	"format-numbers": "Formatowanie danych liczbowych",
 	"localize-dates": "Lokalizacja formatu daty",
 	"cancel": "Anuluj",
@@ -150,5 +149,7 @@
 	"begin-at-zero-option": "Zawsze pokazuj oś y zaczynając od zera",
 	"search": "Szukaj",
 	"section": "Sekcja",
-	"redirects": "Przekierowania"
+	"redirects": "Przekierowania",
+	"target": "cel",
+	"localization": "Lokalizacja:"
 }

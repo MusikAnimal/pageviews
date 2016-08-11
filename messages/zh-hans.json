@@ -61,7 +61,6 @@
 	"autocompletion": "自动完成",
 	"autocompletion-redirects": "自动完成包括重定向",
 	"no-autocompletion": "无自动完成",
-	"other-options": "其他选项：",
 	"format-numbers": "格式化数值数据",
 	"localize-dates": "本地化日期格式",
 	"cancel": "取消",
@@ -135,6 +134,10 @@
 	"faq-old-data-body": "维基媒体页面浏览API于2015年8月引进，并已回填至$1的数据。您将不得不依赖其他工具，例如<a href='http://stats.grok.se'>stats.grok.se</a>以查看早于该时间的数据。很遗憾，无论是否工作，这在此工具范围之外，并超出了维护人员的控制能力。",
 	"faq-todays-date-title": "为什么我不能查看今天日期的数据？",
 	"faq-todays-date-body": "维基媒体页面浏览API通常需要整整24小时以填充数据，有时这会更长。在一些情况下，您也可能发现昨天日期的数据丢失，这将保留空白，而不是显示为0次浏览。",
+	"faq-redirects-title": "重定向是怎么计算的？",
+	"faq-redirects-body": "如果用户浏览到一个重定向，页面浏览会为重定向注册，但不为目标页面注册。如果您希望获取包含所有重定向在内，一个页面的全部页面浏览数据，请尝试$1。",
+	"faq-search-redirects-title": "我如何查看重定向的页面浏览数据？",
+	"faq-search-redirects-body": "要为重定向启用搜索，在$2面板更改您的搜索方法为“$1”。如果您希望查看所有至某一页面的重定向的页面浏览数据，请尝试$3。",
 	"faq-agents-title": "什么是“代理”？",
 	"faq-agents-user": "包含所有查看一个页面的人。编辑者、匿名编辑者和我们的读者。",
 	"faq-agents-spider": "包含搜索引擎“<a href='https://zh.wikipedia.org/wiki/网络蜘蛛'>网络蜘蛛</a>”，就像Google阅读页面是为了改进搜索结果一样。页面可从网络蜘蛛收到显著阅读量，这就是为何工具默认只显示来自用户的数据。",
@@ -215,6 +218,7 @@
 	"massviews-empty-set": "$1不包含页面！",
 	"massviews-oversized-set": "$1包含$2个页面。由于性能原因，只有前$3个页面会被处理。",
 	"massviews-oversized-set-unknown": "$1包含超过$2个页面。由于性能原因，只有前$2个页面会被处理。",
+	"massviews-redirect": "您已重定向自$1，因为您请求了超过$2个页面。<br/>$3被自动创建，并将被处理。",
 	"url-structure-sort-massviews": "要排序的列。$1或$2之一",
 	"pageviews-description": "跨多个页面的页面浏览比较",
 	"topviews-description": "一个项目中最多访问的页面",
@@ -246,5 +250,9 @@
 	"section": "章节",
 	"num-redirects": "$1个重定向",
 	"num-pageviews": "$1次页面浏览",
-	"redirects": "重定向"
+	"redirects": "重定向",
+	"target": "目标",
+	"localization": "本地化：",
+	"chart-preferences": "图表参数设置：",
+	"auto-pagepile-error": "无法创建$1。显示前$2个请求的页面。"
 }

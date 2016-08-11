@@ -62,7 +62,6 @@
 	"autocompletion": "자동완성",
 	"autocompletion-redirects": "넘겨주기 포함 자동완성",
 	"no-autocompletion": "자동완성 없음",
-	"other-options": "다른 옵션:",
 	"format-numbers": "형식 수치 데이터",
 	"localize-dates": "지역화 날짜 형식",
 	"cancel": "취소",
@@ -121,6 +120,8 @@
 	"faq-old-data-body": "위키미디어 페이지뷰 API는 2015년 8월에 도입되었으며 $1까지의 데이터가 채워져 있습니다. 이 이전의 데이터를 보려면 <a href='http://stats.grok.se'>stats.grok.se</a>와 같은 외부 데이터에 의존해야 합니다. 이 외부 서비스가 작동하는지 여부는 이 도구외 무관한 부분으로 이 서비스를 관리하는 사람들의 권한 밖에 있습니다.",
 	"faq-todays-date-title": "오늘 날짜의 데이터를 왜 볼 수 없나요?",
 	"faq-redirects-title": "넘겨주기 문서의 수는 어떻게 셉니까?",
+	"faq-redirects-body": "사용자가 넘겨주기에 접근하면 넘겨주기 문서에 등록된 문서 조회수가 등록되지만 대상 문서에는 등록되지 않습니다. 모든 넘겨주기를 포함한 문서의 조회수를 보려면 $1을 시도하십시오.",
+	"faq-search-redirects-title": "넘겨주기의 조회수를 어떻게 확인하나요?",
 	"faq-chart-type-title": "차트 종류는 어떻게 바꾸나요?",
 	"faq-try-tool": "$1에서 찾을 수 있습니다.",
 	"faq-bug-report-title": "기능 요청이나 보고할 버그가 있습니다.",
@@ -163,5 +164,7 @@
 	"begin-at-zero": "0에서 시작",
 	"search": "검색",
 	"section": "문단",
-	"redirects": "넘겨주기"
+	"redirects": "넘겨주기",
+	"localization": "지역화:",
+	"chart-preferences": "차트 설정:"
 }

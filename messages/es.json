@@ -61,7 +61,6 @@
 	"autocompletion": "Autocompletar",
 	"autocompletion-redirects": "Autocompletar incluyendo redirecciones",
 	"no-autocompletion": "Sin autocompletar",
-	"other-options": "Otras opciones:",
 	"format-numbers": "Formatear los datos numéricos",
 	"localize-dates": "Localizar el formato de las fechas",
 	"cancel": "Cancelar",
@@ -126,6 +125,7 @@
 	"faq-return-to": "Volver a $1",
 	"faq-old-data-title": "¿Por qué no puedo ver los datos previos a $1?",
 	"faq-todays-date-title": "¿Por qué no puedo ver los datos de la fecha de hoy?",
+	"faq-redirects-title": "¿Cómo se cuentan las redirecciones?",
 	"faq-agents-title": "¿Qué son los \"Agentes\"?",
 	"faq-agents-user": "incluye a todas las personas que ven una página. Editores, editores anónimos y a nuestros lectores.",
 	"faq-chart-type-title": "¿Cómo puedo cambiar el tipo de gráfico?",
@@ -178,5 +178,8 @@
 	"num-sections": "$1 secciones",
 	"section": "Sección",
 	"num-redirects": "$1 redirecciones",
-	"redirects": "Redirecciones"
+	"redirects": "Redirecciones",
+	"target": "destino",
+	"localization": "Localización:",
+	"chart-preferences": "Preferencias de gráfico:"
 }

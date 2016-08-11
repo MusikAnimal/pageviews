@@ -41,7 +41,6 @@
 	"radar": "Radars",
 	"doughnut": "Virtulis",
 	"search-method": "Meklēšanas metode:",
-	"other-options": "Citas iespējas:",
 	"localize-dates": "Lokalizēt datuma formātu",
 	"cancel": "Atcelt",
 	"save": "Saglabāt",
@@ -75,6 +74,7 @@
 	"average": "Vidēji",
 	"num-languages": "$1 valodas",
 	"faq-return-to": "Atgriezties uz $1",
+	"faq-redirects-title": "Kā tiek skaitītas pāradresācijas?",
 	"faq-agents-title": "Kas ir \"aģenti\"?",
 	"faq-try-tool": "Izmēģini $1",
 	"url-structure-parameters": "Parametri",
@@ -97,5 +97,6 @@
 	"num-sections": "$1 sadaļas",
 	"section": "Sadaļa",
 	"num-redirects": "$1 pāradresācijas",
-	"num-pageviews": "$1 lapas skatījumi"
+	"num-pageviews": "$1 lapas skatījumi",
+	"redirects": "Pāradresācijas"
 }
