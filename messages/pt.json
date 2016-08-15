@@ -167,5 +167,8 @@
 	"section": "Secção",
 	"num-redirects": "$1 redirecionamentos",
 	"num-pageviews": "$1 visualizações de página",
-	"redirects": "Redirecionamentos"
+	"redirects": "Redirecionamentos",
+	"localization": "Localização:",
+	"chart-preferences": "Preferências de gráfico:",
+	"auto-pagepile-error": "Falha ao criar $1. A mostrar as primeiras $2 páginas solicitadas."
 }

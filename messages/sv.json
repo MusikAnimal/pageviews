@@ -228,5 +228,6 @@
 	"num-sections": "$1 avsnitt",
 	"section": "Avsnitt",
 	"num-redirects": "$1 omdirigeringar",
-	"num-pageviews": "$1 sidvisningar"
+	"num-pageviews": "$1 sidvisningar",
+	"auto-pagepile-error": "Det går inte att skapa $1. Visar de första $2 begärda sidorna."
 }

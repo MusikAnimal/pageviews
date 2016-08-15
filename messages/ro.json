@@ -133,7 +133,9 @@
 	"faq-todays-date-title": "De ce nu pot vizualiza informații pentru data de azi?",
 	"faq-todays-date-body": "API-ul vizualizărilor al Wikimedia are nevoie în mod normal de 24 de ore pentru a fi populat, uneori chiar mai mult. În unele situații ați putea vedea că informațiile lipsesc și pentru data de ieri, care va rămâne goală mai degrabă decât să afișeze un număr de zero vizualizări.",
 	"faq-redirects-title": "Cum sunt numărate redirecționările?",
-	"faq-redirects-body": "Dacă un utilizator navighează către o pagină de redirecționare, o vizualizare este înregistrată pentru redirecționare dar nu și pentru pagina țintă. Dacă doriți să obțineți numărul total de vizualizări ale unui articol, inclusiv ale tuturor redirecționărilor, încercați $1.",
+	"faq-redirects-body": "Dacă un utilizator navighează către o pagină de redirecționare, o vizualizare este înregistrată pentru redirecționare dar nu și pentru pagina țintă. Dacă doriți să obțineți numărul total de vizualizări ale unei pagini, inclusiv ale tuturor redirecționărilor, încercați $1.",
+	"faq-search-redirects-title": "Cum pot vedea numărul de vizualizări al redirecționărilor?",
+	"faq-search-redirects-body": "Pentru a activa căutarea redirecționărilor, schimbați-vă metoda de căutare la „$1” în panoul $2. Dacă doriți să vedeți vizualizările tuturor redirecționărilor către o pagină anume, încercați $3.",
 	"faq-agents-title": "Ce sunt „Agenții”?",
 	"faq-agents-user": "include toți oamenii care vizualizează o pagină. Editori, editori anonimi și cititorii noștri.",
 	"faq-agents-spider": "include \"<a href='https://ro.wikipedia.org/wiki/Robot_de_c%C4%83utare'>roboții</a>\" motoarelor de căutare, precum Google, care citesc paginile în scopul îmbunătățirii rezultatelor căutării.",
@@ -214,6 +216,7 @@
 	"massviews-empty-set": "$1 nu conține nicio pagină!",
 	"massviews-oversized-set": "$1 conține $2 pagini. Din motive de randament, doar primele $3 pagini vor fi procesate.",
 	"massviews-oversized-set-unknown": "$1 conține peste $2 pagini. Din motive de randament, doar primele $2 pagini vor fi procesate.",
+	"massviews-redirect": "Ați fost redirecționat de la „$1” deoarece ați solicitat mai mult de $2 (de) pagini.<br/>$3 a fost creat automat și va fi procesat.",
 	"url-structure-sort-massviews": "Coloana dorită pentru a fi ordonată: fie $1, fie $2",
 	"pageviews-description": "Compararea vizualizărilor de pagină pentru mai multe pagini",
 	"topviews-description": "Cele mai vizualizate pagini ale unui proiect",
@@ -245,5 +248,9 @@
 	"section": "Secțiune",
 	"num-redirects": "$1 redirecționări",
 	"num-pageviews": "$1 vizualizări de pagină",
-	"redirects": "Redirecționări"
+	"redirects": "Redirecționări",
+	"target": "țintă",
+	"localization": "Localizare:",
+	"chart-preferences": "Preferințe grafic:",
+	"auto-pagepile-error": "Nu se poate crea un $1. Se arată primele $2 pagini solicitate."
 }

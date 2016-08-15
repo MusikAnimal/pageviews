@@ -122,6 +122,7 @@
 	"faq-redirects-title": "넘겨주기 문서의 수는 어떻게 셉니까?",
 	"faq-redirects-body": "사용자가 넘겨주기에 접근하면 넘겨주기 문서에 등록된 문서 조회수가 등록되지만 대상 문서에는 등록되지 않습니다. 모든 넘겨주기를 포함한 문서의 조회수를 보려면 $1을 시도하십시오.",
 	"faq-search-redirects-title": "넘겨주기의 조회수를 어떻게 확인하나요?",
+	"faq-search-redirects-body": "넘겨주기 검색을 사용하려면 $2 패널에서 검색 방식을 \"$1\"으(로) 변경하세요. 문서의 모든 넘겨주기의 조회수를 보려면 $3을(를) 시도하세요.",
 	"faq-chart-type-title": "차트 종류는 어떻게 바꾸나요?",
 	"faq-try-tool": "$1에서 찾을 수 있습니다.",
 	"faq-bug-report-title": "기능 요청이나 보고할 버그가 있습니다.",
@@ -150,6 +151,7 @@
 	"statistics": "통계",
 	"massviews-empty-set": "$1에 페이지가 없습니다!",
 	"massviews-oversized-set-unknown": "$1는 $2 페이지 전체를 포함합니다. 성능 상의 이유로, $2 페이지의 첫 번째만 처리됩니다.",
+	"massviews-redirect": "$2개 이상의 문서를 요청했기 때문에 $1 문서에서 넘어옵니다.<br/>$3은(는) 자동으로 만들어져 처리됩니다.",
 	"pageviews-description": "여러 문서에 대한 조회수 비교",
 	"topviews-description": "주제의 가장 많이 본 페이지",
 	"langviews-description": "모든 언어를 고려한 문서의 조회수",
@@ -163,8 +165,13 @@
 	"chart": "차트",
 	"begin-at-zero": "0에서 시작",
 	"search": "검색",
+	"num-sections": "$1개의 문단",
 	"section": "문단",
+	"num-redirects": "$1개의 넘겨주기",
+	"num-pageviews": "$1개의 조회수",
 	"redirects": "넘겨주기",
+	"target": "대상",
 	"localization": "지역화:",
-	"chart-preferences": "차트 설정:"
+	"chart-preferences": "차트 설정:",
+	"auto-pagepile-error": "$1 문서를 삭제할 수 없습니다. 처음 $2개의 요청 문서를 보여줍니다."
 }
