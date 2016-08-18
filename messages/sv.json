@@ -34,6 +34,7 @@
 	"download-label": "Ladda ned",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "Skriv ut",
 	"credits": "Tillhandahålls av $1, $2 och $3.",
 	"hosted": "Drivs med $1 på $2.",
 	"translation-credits": "Översättningar drivs av $1 och $2.",
@@ -134,6 +135,7 @@
 	"faq-old-data-body": "Wikimedias API för sidvisningar introducerades i augusti 2015 och har data fr.o.m. $1. Du kommer att förlita dig på andra verktyg som <a href='http://stats.grok.se'>stats.grok.se</a> för att se data äldre än detta. Om dessa fungerar eller inte har inte detta verktyg ansvar för och är bortom kontroll för de ansvariga.",
 	"faq-todays-date-title": "Varför kan jag inte visa data för dagens datum?",
 	"faq-todays-date-body": "Wikimedias sidvisnings-API tar vanligtvis 24 timmar att arbeta, ibland längre. I en del situationer kan du se att data även saknas för gårdagen, som kommer att vara tomt istället för att visa ett antal på noll besök.",
+	"faq-redirects-title": "Hur räknas omdirigeringar?",
 	"faq-agents-title": "Vad är \"agenter\"?",
 	"faq-agents-user": "inkluderar alla personer som besöker en sida. Redigerare, anonyma redigerare och alla våra läsare.",
 	"faq-agents-spider": "inkluderar \"<a href='https://sv.wikipedia.org/wiki/Spindel_%28internet%29'>sökmotorsspindlar</a>\", som Google, som läser sidor i syfte att förbättra sina sökresultat. Sidan kan få många visningar från spindlar, som är anledningen till varför verktyget endast visar data från användare som standard.",
@@ -229,5 +231,9 @@
 	"section": "Avsnitt",
 	"num-redirects": "$1 omdirigeringar",
 	"num-pageviews": "$1 sidvisningar",
+	"redirects": "Omdirigeringar",
+	"target": "målet",
+	"localization": "Lokalisering:",
+	"chart-preferences": "Diagrampreferenser:",
 	"auto-pagepile-error": "Det går inte att skapa $1. Visar de första $2 begärda sidorna."
 }
