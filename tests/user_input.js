@@ -102,32 +102,18 @@ module.exports = {
       client.expect(response.value).to.match(/platform=desktop&agent=spider/);
     });
   },
-  'Changing the project clears out the chart and article selector': client => {
+  'Changing the project processes the given articles for the new project': client => {
     client.click('#project-input');
     client.execute('return $(".aqs-project-input").val("")');
     client.setValue('#project-input', ['de.wikipedia.org']);
     client.execute('return $(".aqs-project-input").trigger("change")');
-    client.expect.element('.aqs-chart').to.not.be.visible.after(10000);
-    client.execute('return $(".aqs-select2-selector").val()', [], response => {
-      client.expect(response.value).to.equal(null);
-    });
-  },
-  'Adding article with new project updates the chart and URL parameters': client => {
-    client.click('.select2-container');
-    client.setValue('.select2-search__field', 'Google');
-    client.expect.element('.select2-results__option:first-child').text.to.equal('Google').after(5000);
-    client.click('.select2-results__option:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
-
-    client.execute('return [$(".aqs-select2-selector").val(), location.search]', [], response => {
+    client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(_.isEqual(
-        response.value[0],
-        ['Google']
+        response.value,
+        ['Dog', 'Sea_lion']
       )).to.equal(true);
-
-      client.expect(response.value[1]).to.match(/project=de.wikipedia.org&platform=desktop&agent=spider&range=latest-10&pages=Google/);
     });
-
     client.end();
   }
 };

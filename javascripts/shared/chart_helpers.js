@@ -6,7 +6,7 @@
  */
 
 /**
- * Shared chart-specific logic
+ * Shared chart-specific logic, used in all apps except Topviews
  * @param {class} superclass - base class
  * @returns {null} class extending superclass
  */
@@ -44,6 +44,7 @@ const ChartHelpers = superclass => class extends superclass {
       this.chartType = $(e.currentTarget).data('type');
 
       $('.logarithmic-scale').toggle(this.isLogarithmicCapable());
+      $('.begin-at-zero').toggle(this.config.linearCharts.includes(this.chartType));
 
       if (this.rememberChart === 'true') {
         this.setLocalStorage('pageviews-chart-preference', this.chartType);
@@ -259,14 +260,39 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Get url to query the API based on app and options
+   * @param {String} entity - name of entity we're querying for (page name or project name)
+   * @param {moment} startDate - start date
+   * @param {moment} endDate - end date
+   * @return {String} the URL
+   */
+  getApiUrl(entity, startDate, endDate) {
+    const uriEncodedEntityName = encodeURIComponent(entity);
+
+    if (this.app === 'siteviews') {
+      return this.isPageviews() ? (
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+      ) : (
+        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/${$(this.config.platformSelector).val()}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+      );
+    } else {
+      return (
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/daily` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+      );
+    }
+  }
+
+  /**
    * Mother function for querying the API and processing data
    * @param  {Array}  entities - list of page names, or projects for Siteviews
    * @return {Deferred} Promise resolving with pageviews data and errors, if present
    */
   getPageViewsData(entities) {
-    const startDate = this.daterangepicker.startDate.startOf('day'),
-      endDate = this.daterangepicker.endDate.startOf('day');
-
     let dfd = $.Deferred(), count = 0, failureRetries = {},
       totalRequestCount = entities.length, failedEntities = [];
 
@@ -281,13 +307,11 @@ const ChartHelpers = superclass => class extends superclass {
     };
 
     const makeRequest = (entity, index) => {
-      const uriEncodedEntityName = encodeURIComponent(entity);
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({ url, dataType: 'json' });
+      const startDate = this.daterangepicker.startDate.startOf('day'),
+        endDate = this.daterangepicker.endDate.startOf('day'),
+        url = this.getApiUrl(entity, startDate, endDate),
+        promise = $.ajax({ url, dataType: 'json' });
+
       xhrData.promises.push(promise);
 
       promise.done(successData => {
@@ -334,8 +358,10 @@ const ChartHelpers = superclass => class extends superclass {
         if (cassandraError) {
           failedEntities.push(entity);
         } else {
-          // FIXME: use getSiteLink for siteviews
-          this.writeMessage(`${this.getPageLink(entity, this.project)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+          let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
+          xhrData.errors.push(
+            `${link}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+          );
         }
       }).always(() => {
         if (++count === totalRequestCount) {
@@ -390,6 +416,14 @@ const ChartHelpers = superclass => class extends superclass {
    */
   isPageviews() {
     return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+  }
+
+  /**
+   * Are we trying to show data on pageviews (as opposed to unique devices)?
+   * @return {Boolean} true or false
+   */
+  isUniqueDevices() {
+    return !this.isPageviews();
   }
 
   /**
@@ -628,18 +662,12 @@ const ChartHelpers = superclass => class extends superclass {
     }
 
     if (xhrData.errors.length) {
-      const errorMessages = xhrData.errors.unique().map(error => `<li>${error}</li>`).join('');
-
-      /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-      // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
-
-      this.writeMessage(
-        `${$.i18n('api-error', 'Pageviews API')}<ul>${errorMessages}</ul>`
-      );
-
-      if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
-        return false; // everything failed!
+      // if everything failed, reset the view, clearing out space taken up by empty chart
+      if (xhrData.entities && (xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length)) {
+        this.resetView();
       }
+
+      xhrData.errors.unique().forEach(error => this.writeMessage(error));
     }
 
     return false;

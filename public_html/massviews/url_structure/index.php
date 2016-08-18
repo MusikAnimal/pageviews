@@ -34,7 +34,7 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-massviews-source', array( 'variables' => array( '<code>pagepile</code>', '<code>category</code>', '<code>transclusions</code>' ) ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-massviews-source', array( 'variables' => array( '<code>pagepile</code>', '<code>category</code>', '<code>transclusions</code>', '<code>quarry</code>' ) ) ); ?>
             </dd>
             <dt>target</dt>
             <dd>

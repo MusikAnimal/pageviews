@@ -19,13 +19,19 @@ const config = {
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
     dateRange: 'latest-20',
-    projects: ['fr.wikipedia.org', 'de.wikipedia.org']
+    projects: ['fr.wikipedia.org', 'de.wikipedia.org'],
+    source: 'pageviews'
   },
   linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  select2Input: '.aqs-select2-selector'
+  select2Input: '.aqs-select2-selector',
+  validateParams: ['source', 'agent', 'platform'],
+  validParams: {
+    source: ['pageviews', 'unique-devices'],
+    agent: ['all-agents', 'user', 'spider']
+  }
 };
 
 module.exports = config;

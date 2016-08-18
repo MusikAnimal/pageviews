@@ -17,14 +17,14 @@ const config = {
   circularLegend: templates.circularLegend,
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
-    dateRange: 'latest-20',
-    project: 'en.wikipedia.org'
+    dateRange: 'latest-20'
   },
   linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
-  select2Input: '.aqs-select2-selector'
+  select2Input: '.aqs-select2-selector',
+  validateParams: ['project', 'platform', 'agent']
 };
 
 module.exports = config;

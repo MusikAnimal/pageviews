@@ -23,7 +23,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 /**
- * Shared chart-specific logic
+ * Shared chart-specific logic, used in all apps except Topviews
  * @param {class} superclass - base class
  * @returns {null} class extending superclass
  */
@@ -66,6 +66,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         _this.chartType = $(e.currentTarget).data('type');
 
         $('.logarithmic-scale').toggle(_this.isLogarithmicCapable());
+        $('.begin-at-zero').toggle(_this.config.linearCharts.includes(_this.chartType));
 
         if (_this.rememberChart === 'true') {
           _this.setLocalStorage('pageviews-chart-preference', _this.chartType);
@@ -324,6 +325,26 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
+       * Get url to query the API based on app and options
+       * @param {String} entity - name of entity we're querying for (page name or project name)
+       * @param {moment} startDate - start date
+       * @param {moment} endDate - end date
+       * @return {String} the URL
+       */
+
+    }, {
+      key: 'getApiUrl',
+      value: function getApiUrl(entity, startDate, endDate) {
+        var uriEncodedEntityName = encodeURIComponent(entity);
+
+        if (this.app === 'siteviews') {
+          return this.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedEntityName + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedEntityName + '/' + $(this.config.platformSelector).val() + '/daily' + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        } else {
+          return 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + this.project + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        }
+      }
+
+      /**
        * Mother function for querying the API and processing data
        * @param  {Array}  entities - list of page names, or projects for Siteviews
        * @return {Deferred} Promise resolving with pageviews data and errors, if present
@@ -333,9 +354,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'getPageViewsData',
       value: function getPageViewsData(entities) {
         var _this6 = this;
-
-        var startDate = this.daterangepicker.startDate.startOf('day'),
-            endDate = this.daterangepicker.endDate.startOf('day');
 
         var dfd = $.Deferred(),
             count = 0,
@@ -354,9 +372,11 @@ var ChartHelpers = function ChartHelpers(superclass) {
         };
 
         var makeRequest = function makeRequest(entity, index) {
-          var uriEncodedEntityName = encodeURIComponent(entity);
-          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this6.project + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
-          var promise = $.ajax({ url: url, dataType: 'json' });
+          var startDate = _this6.daterangepicker.startDate.startOf('day'),
+              endDate = _this6.daterangepicker.endDate.startOf('day'),
+              url = _this6.getApiUrl(entity, startDate, endDate),
+              promise = $.ajax({ url: url, dataType: 'json' });
+
           xhrData.promises.push(promise);
 
           promise.done(function (successData) {
@@ -405,8 +425,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
             if (cassandraError) {
               failedEntities.push(entity);
             } else {
-              // FIXME: use getSiteLink for siteviews
-              _this6.writeMessage(_this6.getPageLink(entity, _this6.project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+              var link = _this6.app === 'siteviews' ? _this6.getSiteLink(entity) : _this6.getPageLink(entity, _this6.project);
+              xhrData.errors.push(link + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
             }
           }).always(function () {
             if (++count === totalRequestCount) {
@@ -472,6 +492,17 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'isPageviews',
       value: function isPageviews() {
         return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+      }
+
+      /**
+       * Are we trying to show data on pageviews (as opposed to unique devices)?
+       * @return {Boolean} true or false
+       */
+
+    }, {
+      key: 'isUniqueDevices',
+      value: function isUniqueDevices() {
+        return !this.isPageviews();
       }
 
       /**
@@ -744,6 +775,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
+        var _this9 = this;
+
         if (xhrData.fatalErrors.length) {
           this.resetView(true);
           var fatalErrors = xhrData.fatalErrors.unique();
@@ -753,18 +786,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
         }
 
         if (xhrData.errors.length) {
-          var errorMessages = xhrData.errors.unique().map(function (error) {
-            return '<li>' + error + '</li>';
-          }).join('');
-
-          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
-
-          this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
-
-          if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
-            return false; // everything failed!
+          // if everything failed, reset the view, clearing out space taken up by empty chart
+          if (xhrData.entities && (xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length)) {
+            this.resetView();
           }
+
+          xhrData.errors.unique().forEach(function (error) {
+            return _this9.writeMessage(error);
+          });
         }
 
         return false;
@@ -949,24 +978,12 @@ var ListHelpers = function ListHelpers(superclass) {
     }
 
     /**
-     * Copy default values over to class instance
-     * Use JSON stringify/parsing so to make a deep clone of the defaults
+     * Prepare chart options before showing chart view, based on current chart type
      * @return {null} Nothing
      */
 
 
     _createClass(_class, [{
-      key: 'assignDefaults',
-      value: function assignDefaults() {
-        Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-      }
-
-      /**
-       * Prepare chart options before showing chart view, based on current chart type
-       * @return {null} Nothing
-       */
-
-    }, {
       key: 'assignOutputDataChartOpts',
       value: function assignOutputDataChartOpts() {
         var color = this.config.colors[0];
@@ -1400,15 +1417,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 var PvConfig = require('./pv_config');
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
 
 var Pv = function (_PvConfig) {
   _inherits(Pv, _PvConfig);
@@ -1420,9 +1441,11 @@ var Pv = function (_PvConfig) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
 
-    var defaults = _this.config.defaults;
+    var defaults = _this.config.defaults,
+        validParams = _this.config.validParams;
     _this.config = Object.assign({}, _this.config, appConfig);
     _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+    _this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
 
     _this.colorsStyleEl = undefined;
     _this.storage = {}; // used as fallback when localStorage is not supported
@@ -1497,31 +1520,62 @@ var Pv = function (_PvConfig) {
     }
 
     /**
-     * Check the validity of the date range of given params
+     * Add site notice for invalid parameter
+     * @param {String} param - name of parameter
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'addInvalidParamNotice',
+    value: function addInvalidParamNotice(param) {
+      this.addSiteNotice('danger', $.i18n('param-error-3', param, '/' + this.app + '/url_structure'), $.i18n('invalid-params'), true);
+    }
+
+    /**
+     * Validate the date range of given params
      *   and throw errors as necessary and/or set defaults
      * @param {Object} params - as returned by this.parseQueryString()
      * @returns {Boolean} true if there were no errors, false otherwise
      */
 
   }, {
-    key: 'checkDateRange',
-    value: function checkDateRange(params) {
+    key: 'validateDateRange',
+    value: function validateDateRange(params) {
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
+          this.addInvalidParamNotice('range');
           this.setSpecialRange(this.config.defaults.dateRange);
         }
       } else if (params.start) {
-        var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-            endDate = moment(params.end || Date.now());
+        var dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
+        // first set defaults
+        var startDate = void 0,
+            endDate = void 0;
+
+        // then check format of start and end date
+        if (params.start && dateRegex.test(params.start)) {
+          startDate = moment(params.start);
+        } else {
+          this.addInvalidParamNotice('start');
+          return false;
+        }
+        if (params.end && dateRegex.test(params.end)) {
+          endDate = moment(params.end);
+        } else {
+          this.addInvalidParamNotice('end');
+          return false;
+        }
+
+        // check if they are outside the valid range or if in the wrong order
         if (startDate < this.config.minDate || endDate < this.config.minDate) {
           this.addSiteNotice('danger', $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)), $.i18n('invalid-params'), true);
           return false;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+          this.addSiteNotice('danger', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           return false;
         }
+
         /** directly assign startDate before calling setEndDate so events will be fired once */
         this.daterangepicker.startDate = startDate;
         this.daterangepicker.setEndDate(endDate);
@@ -1698,7 +1752,7 @@ var Pv = function (_PvConfig) {
     /**
      * Get the wiki URL given the page name
      *
-     * @param {string} page name
+     * @param {string} page - page name
      * @returns {string} URL for the page
      */
 
@@ -1711,6 +1765,19 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get the wiki URL given the page name
+     *
+     * @param {string} site - site name (e.g. en.wikipedia.org)
+     * @returns {string} URL for the site
+     */
+
+  }, {
+    key: 'getSiteLink',
+    value: function getSiteLink(site) {
+      return '<a target="_blank" href="//' + site + '.org">' + site + '</a>';
+    }
+
+    /**
      * Get the project name (without the .org)
      *
      * @returns {boolean} lang.projectname
@@ -1719,6 +1786,10 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getLocaleDateString',
     value: function getLocaleDateString() {
+      if (!navigator.language) {
+        return this.config.defaults.dateFormat;
+      }
+
       var formats = {
         'ar-sa': 'DD/MM/YY',
         'bg-bg': 'DD.M.YYYY',
@@ -1932,10 +2003,6 @@ var Pv = function (_PvConfig) {
         'es-us': 'M/D/YYYY'
       };
 
-      if (!navigator.language) {
-        return this.config.defaults.dateFormat;
-      }
-
       var key = navigator.language.toLowerCase();
       return formats[key] || this.config.defaults.dateFormat;
     }
@@ -2026,7 +2093,18 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'isChartApp',
     value: function isChartApp() {
-      return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
+      return !this.isListApp();
+    }
+
+    /**
+     * Is this one of the list-view apps?
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'isListApp',
+    value: function isListApp() {
+      return ['langviews', 'massviews', 'redirectviews'].includes(this.app);
     }
 
     /**
@@ -2137,7 +2215,9 @@ var Pv = function (_PvConfig) {
         var chunk = chunks[i].split('=');
 
         if (multiParam && chunk[0] === multiParam) {
-          params[multiParam] = chunk[1].split('|');
+          params[multiParam] = chunk[1].split('|').filter(function (param) {
+            return !!param;
+          });
         } else {
           params[chunk[0]] = chunk[1];
         }
@@ -2302,10 +2382,10 @@ var Pv = function (_PvConfig) {
         }
       });
 
-      this.daterangepicker.locale.format = this.dateFormat;
-      this.daterangepicker.updateElement();
-
       if (this.app !== 'topviews') {
+        this.daterangepicker.locale.format = this.dateFormat;
+        this.daterangepicker.updateElement();
+
         this.setupSelect2Colors();
 
         /**
@@ -2457,6 +2537,14 @@ var Pv = function (_PvConfig) {
       /** download listeners */
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
+
+      /** project input listeners, saving and restoring old value if new one is invalid */
+      $(this.config.projectInput).on('focusin', function () {
+        this.dataset.value = this.value;
+      });
+      $(this.config.projectInput).on('change', function (e) {
+        return _this7.validateProject(e);
+      });
     }
 
     /**
@@ -2507,7 +2595,7 @@ var Pv = function (_PvConfig) {
           daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
           monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
-        startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+        startDate: moment().subtract(this.config.daysAgo, 'days'),
         minDate: this.config.minDate,
         maxDate: this.config.maxDate,
         ranges: ranges
@@ -2677,6 +2765,72 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Validate basic params against what is defined in the config,
+     *   and if they are invalid set the default
+     * @param {Object} params - params as fetched by this.parseQueryString()
+     * @returns {Object} same params with some invalid parameters correted, as necessary
+     */
+
+  }, {
+    key: 'validateParams',
+    value: function validateParams(params) {
+      var _this12 = this;
+
+      this.config.validateParams.forEach(function (paramKey) {
+        if (paramKey === 'project' && params.project) {
+          params.project = params.project.replace(/^www\./, '');
+        }
+
+        var defaultValue = _this12.config.defaults[paramKey],
+            paramValue = params[paramKey];
+
+        if (defaultValue && !_this12.config.validParams[paramKey].includes(paramValue)) {
+          // only throw error if they tried to provide an invalid value
+          if (!!paramValue) {
+            _this12.addInvalidParamNotice(paramKey);
+          }
+
+          params[paramKey] = defaultValue;
+        }
+      });
+
+      return params;
+    }
+
+    /**
+     * Adds listeners to the project input for validations against the site map,
+     *   reverting to the old value if the new one is invalid
+     * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
+     * @returns {Boolean} whether or not validations passed
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      var multilingual = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var projectInput = $(this.config.projectInput)[0];
+      var project = projectInput.value.replace(/^www\./, ''),
+          valid = false;
+
+      if (multilingual && !this.isMultilangProject()) {
+        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      } else if (siteDomains.includes(project)) {
+        this.clearMessages();
+        this.updateInterAppLinks();
+        valid = true;
+      } else {
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      }
+
+      projectInput.value = project;
+
+      return valid;
+    }
+
+    /**
      * Writes message just below the chart
      * @param {string} message - message to write
      * @param {boolean} clear - whether to clear any existing messages
@@ -2730,7 +2884,7 @@ var Pv = function (_PvConfig) {
 
 module.exports = Pv;
 
-},{"./pv_config":6}],6:[function(require,module,exports){
+},{"./pv_config":6,"./site_map":7}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2743,6 +2897,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
+
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
 /**
  * Configuration for all Pageviews applications.
@@ -2914,14 +3073,16 @@ var PvConfig = function () {
         chartType: function chartType(numDatasets) {
           return numDatasets > 1 ? 'line' : 'bar';
         },
-        daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
         beginAtZero: 'false',
-        rememberChart: 'true'
+        rememberChart: 'true',
+        agent: 'user',
+        platform: 'all-access',
+        project: 'en.wikipedia.org'
       },
       globalChartOpts: {
         animation: {
@@ -2950,6 +3111,7 @@ var PvConfig = function () {
           return _this.config.linearLegend(chart.data.datasets, self);
         }
       },
+      daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
       maxDate: moment().subtract(1, 'days').startOf('day'),
       specialRanges: {
@@ -2957,12 +3119,17 @@ var PvConfig = function () {
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         latest: function latest() {
-          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.defaults.daysAgo : arguments[0];
+          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.daysAgo : arguments[0];
 
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
       },
-      timestampFormat: 'YYYYMMDD00'
+      timestampFormat: 'YYYYMMDD00',
+      validParams: {
+        agent: ['all-agents', 'user', 'spider', 'bot'],
+        platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
+        project: siteDomains
+      }
     };
   }
 
@@ -3019,7 +3186,7 @@ var PvConfig = function () {
 
 module.exports = PvConfig;
 
-},{}],7:[function(require,module,exports){
+},{"./site_map":7}],7:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3947,20 +4114,21 @@ var pv = require('../shared/pv');
  * @type {Object}
  */
 var config = {
-  articleSelector: '.aqs-select2-selector',
+  select2Input: '.aqs-select2-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  dateLimit: 31, // num days
   defaults: {
-    dateRange: 'last-week',
-    daysAgo: 7,
-    excludes: [],
-    project: 'en.wikipedia.org'
+    dateRange: 'last-month',
+    excludes: []
   },
-  pageSize: 20,
+  maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
+  maxMonth: moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate(),
+  pageSize: 100,
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
+  validateParams: ['project', 'platform'],
   timestampFormat: 'YYYYMMDD00'
 };
+
 module.exports = config;
 
 },{"../shared/pv":5}],9:[function(require,module,exports){
@@ -3985,10 +4153,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var config = require('./config');
-var siteMap = require('../shared/site_map');
-var siteDomains = Object.keys(siteMap).map(function (key) {
-  return siteMap[key];
-});
 var Pv = require('../shared/pv');
 
 /** Main TopViews class */
@@ -4021,8 +4185,6 @@ var TopViews = function (_Pv) {
   _createClass(TopViews, [{
     key: 'initialize',
     value: function initialize() {
-      this.setupProjectInput();
-      this.setupDateRangeSelector();
       this.popParams();
       this.updateInterAppLinks();
     }
@@ -4036,6 +4198,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'processInput',
     value: function processInput(force) {
+      this.clearSearch();
       this.pushParams();
 
       /** prevent redundant querying */
@@ -4056,11 +4219,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'drawData',
     value: function drawData() {
-      var _this2 = this;
-
-      this.stopSpinny();
       $('.chart-container').html('');
-      $('.expand-chart').show();
 
       var count = 0,
           index = 0;
@@ -4074,18 +4233,13 @@ var TopViews = function (_Pv) {
         var width = 100 * (item.views / this.max),
             direction = !!i18nRtl ? 'to left' : 'to right';
 
-        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         <a class=\'topview-entry--label\' href="' + this.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\'>' + this.formatNumber(item.views) + '</a></div>');
+        $('.chart-container').append('<div class=\'topview-entry\' id=\'topview-entry-' + index + '\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + '\n           title=\'Remove this page from Topviews rankings\' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         <a class=\'topview-entry--label\' href="' + this.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\'>' + this.formatNumber(item.views) + '</a></div>');
       }
 
       this.pushParams();
-      $('.data-links').removeClass('invisible');
-      $('.search-topviews').removeClass('invisible');
+      this.stopSpinny();
 
-      $('.topview-entry--remove').off('click').on('click', function (e) {
-        var pageName = _this2.pageNames[$(e.target).data('article-id')];
-        _this2.addExclude(pageName);
-        _this2.pushParams();
-      });
+      this.addExcludeListeners();
     }
 
     /**
@@ -4098,27 +4252,43 @@ var TopViews = function (_Pv) {
   }, {
     key: 'addExclude',
     value: function addExclude(pages) {
-      var _this3 = this;
+      var _this2 = this;
 
       var triggerChange = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 
       if (!Array.isArray(pages)) pages = [pages];
 
       pages.forEach(function (page) {
-        if (!_this3.excludes.includes(page)) {
-          _this3.excludes.push(page);
+        if (!_this2.excludes.includes(page)) {
+          _this2.excludes.push(page);
         }
       });
 
-      $(config.articleSelector).html('');
+      $(this.config.select2Input).html('');
 
       this.excludes.forEach(function (exclude) {
         var escapedText = $('<div>').text(exclude).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this3.config.articleSelector);
+        $('<option>' + escapedText + '</option>').appendTo(_this2.config.select2Input);
       });
 
-      if (triggerChange) $(this.config.articleSelector).val(this.excludes).trigger('change');
-      // $(this.config.articleSelector).select2('close');
+      if (triggerChange) $(this.config.select2Input).val(this.excludes).trigger('change');
+    }
+
+    /**
+     * Re-add listeners to exclude pages, called after sorting or changing params
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'addExcludeListeners',
+    value: function addExcludeListeners() {
+      var _this3 = this;
+
+      $('.topview-entry--remove').off('click').on('click', function (e) {
+        var pageName = _this3.pageNames[$(e.target).data('article-id')];
+        _this3.addExclude(pageName);
+        _this3.pushParams();
+      });
     }
 
     /**
@@ -4140,18 +4310,16 @@ var TopViews = function (_Pv) {
      * Exports current chart data to CSV format and loads it in a new tab
      * With the prepended data:text/csv this should cause the browser to download the data
      * @returns {null} nothing
+     * @override
      */
 
   }, {
     key: 'exportCSV',
     value: function exportCSV() {
-      var _this4 = this;
-
       var csvContent = 'data:text/csv;charset=utf-8,Page,Views\n';
 
       this.pageData.forEach(function (entry) {
-        if (_this4.excludes.includes(entry.article)) return;
-        // Build an array of site titles for use in the CSV header
+        // Build an array of page titles for use in the CSV header
         var title = '"' + entry.article.replace(/"/g, '""') + '"';
 
         csvContent += title + ',' + entry.views + '\n';
@@ -4163,25 +4331,35 @@ var TopViews = function (_Pv) {
     /**
      * Exports current chart data to JSON format and loads it in a new tab
      * @returns {null} nothing
+     * @override
      */
 
   }, {
     key: 'exportJSON',
     value: function exportJSON() {
-      var _this5 = this;
-
-      var data = [];
-
-      this.pageData.forEach(function (entry, index) {
-        if (_this5.excludes.includes(entry.article)) return;
-        data.push({
-          page: entry.article,
-          views: entry.views
-        });
-      });
-
-      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.pageData);
       this.downloadData(jsonContent, 'json');
+    }
+
+    /**
+     * Get informative filename without extension to be used for export options
+     * @return {string} filename without an extension
+     * @override
+     */
+
+  }, {
+    key: 'getExportFilename',
+    value: function getExportFilename() {
+      var datepickerValue = this.datepicker.getDate();
+      var date = void 0;
+
+      if (this.isMonthly()) {
+        date = moment(datepickerValue).format('YYYY/MM');
+      } else {
+        date = moment(datepickerValue).format('YYYY/MM/DD');
+      }
+
+      return this.app + '-' + date;
     }
 
     /**
@@ -4193,17 +4371,23 @@ var TopViews = function (_Pv) {
   }, {
     key: 'getPageviewsURL',
     value: function getPageviewsURL(article) {
-      var startDate = moment(this.daterangepicker.startDate),
-          endDate = moment(this.daterangepicker.endDate);
+      // first get the date range
+      var date = moment(this.datepicker.getDate());
+      var startDate = void 0,
+          endDate = void 0;
+      if (this.isMonthly()) {
+        startDate = date.format('YYYY-MM-01');
+        endDate = date.endOf('month').format('YYYY-MM-DD');
+      } else {
+        // surround single dates with 3 days to make the pageviews chart meaningful
+        startDate = moment(date).subtract(3, 'days').format('YYYY-MM-DD');
+        endDate = date.add(3, 'days').format('YYYY-MM-DD');
+      }
+
       var platform = $(this.config.platformSelector).val(),
           project = $(this.config.projectInput).val();
 
-      if (endDate.diff(startDate, 'days') === 0) {
-        startDate.subtract(3, 'days');
-        endDate.add(3, 'days');
-      }
-
-      return '/pageviews#start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&project=' + project + '&platform=' + platform + '&pages=' + article);
+      return '/pageviews?start=' + startDate + '&end=' + endDate + '&project=' + project + '&platform=' + platform + '&pages=' + article;
     }
 
     /**
@@ -4222,16 +4406,19 @@ var TopViews = function (_Pv) {
         platform: $(this.config.platformSelector).val()
       };
 
+      var datepickerValue = this.datepicker.getDate();
+
       /**
        * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
        * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
        *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
        */
       if (this.specialRange && specialRange) {
-        params.range = this.specialRange.range;
+        params.date = this.specialRange.range;
+      } else if (this.isMonthly()) {
+        params.date = moment(datepickerValue).format('YYYY-MM');
       } else {
-        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+        params.date = moment(datepickerValue).format('YYYY-MM-DD');
       }
 
       return params;
@@ -4251,6 +4438,82 @@ var TopViews = function (_Pv) {
     }
 
     /**
+     * Set datepicker based on provided relative range
+     * @param {String} range - e.g. 'last-month', 'yesterday'
+     * @returns {Boolean} whether a valid range was provided and was set
+     * @override
+     */
+
+  }, {
+    key: 'setSpecialRange',
+    value: function setSpecialRange(range) {
+      if (range === 'last-month') {
+        this.setupDateRangeSelector('monthly');
+        this.datepicker.setDate(this.config.maxMonth);
+        this.specialRange = {
+          range: range,
+          value: moment(this.config.maxMonth).format('YYYY/MM')
+        };
+      } else if (range === 'yesterday') {
+        this.setupDateRangeSelector('daily');
+        this.datepicker.setDate(this.config.maxDate);
+        this.specialRange = {
+          range: range,
+          value: moment(this.config.maxDate).format('YYYY-MM-DD')
+        };
+      } else {
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Set datepicker based on provided date or range
+     * @param {String} dateInput - either a range like 'last-month', 'yesterday' or date with format 'YYYY-MM-DD'
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'setDate',
+    value: function setDate(dateInput) {
+      var date = void 0;
+
+      if (/\d{4}-\d{2}$/.test(dateInput)) {
+        // monthly
+        this.setupDateRangeSelector('monthly');
+        date = moment(dateInput + '-01').toDate();
+
+        // if over max, set to max
+        if (date > this.config.maxMonth) {
+          date = this.config.maxMonth;
+        }
+      } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        // daily
+        this.setupDateRangeSelector('daily');
+        date = moment(dateInput).toDate();
+
+        // if over max, set to max (Topviews maxDate is a Date object, not moment)
+        if (date > this.config.maxDate) {
+          date = this.config.maxDate;
+        }
+      } else {
+        // attempt to set as special range, or default range if range is invalid
+        return this.setSpecialRange(dateInput) || this.setSpecialRange(this.config.defaults.dateRange);
+      }
+
+      // if less than min, throw error (since this is a common request)
+      if (date < this.config.minDate.toDate()) {
+        this.addSiteNotice('danger',
+        // use super.dateFormat since this is for moment, not for our datepicker
+        $.i18n('param-error-1', moment(this.config.minDate).format(_get(Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this))), $.i18n('invalid-params'), true);
+        date = this.config.minDate.toDate();
+      }
+
+      return this.datepicker.setDate(date);
+    }
+
+    /**
      * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
      * @returns {null} nothing
@@ -4259,62 +4522,30 @@ var TopViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this6 = this;
+      var _this4 = this;
 
+      /** show loading indicator and add error handling for timeouts */
       this.startSpinny();
-      var startDate = void 0,
-          endDate = void 0,
-          params = this.parseQueryString('excludes');
 
-      $(this.config.projectInput).val(params.project || this.config.defaults.project);
-      if (this.validateProject()) return;
+      var params = this.validateParams(this.parseQueryString('excludes'));
 
+      this.setDate(params.date); // also performs validations
+
+      $(this.config.projectInput).val(params.project);
+      $(this.config.platformSelector).val(params.platform);
       this.patchUsage();
 
-      /**
-       * Check if we're using a valid range, and if so ignore any start/end dates.
-       * If an invalid range, throw and error and use default dates.
-       */
-      if (params.range) {
-        if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-          this.setSpecialRange(this.config.defaults.dateRange);
-        }
-      } else if (params.start) {
-        startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
-        endDate = moment(params.end || Date.now());
-        if (startDate < this.config.minDate || endDate < this.config.minDate) {
-          this.addSiteNotice('danger', $.i18n('param-error-1', $.i18n('july') + ' 2015'), $.i18n('invalid-params'), true);
-          this.resetView();
-          return;
-        } else if (startDate > endDate) {
-          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
-          this.resetView();
-          return;
-        }
-        /** directly assign startDate before calling setEndDate so events will be fired once */
-        this.daterangepicker.startDate = startDate;
-        this.daterangepicker.setEndDate(endDate);
-      } else {
-        this.setSpecialRange(this.config.defaults.dateRange);
-      }
-
-      $(this.config.platformSelector).val(params.platform || 'all-access');
-
-      if (!params.excludes || params.excludes.length === 1 && !params.excludes[0]) {
-        this.excludes = this.config.defaults.excludes;
-      } else {
-        this.excludes = params.excludes.map(function (exclude) {
-          return exclude.descore();
-        });
-      }
+      this.excludes = (params.excludes || []).map(function (exclude) {
+        return exclude.descore();
+      });
 
       this.params = location.search;
 
-      this.initData().then(function () {
-        _this6.setupArticleSelector();
-        _this6.drawData();
-        _this6.setupListeners();
+      this.initData().done(function () {
+        _this4.drawData();
+      }).always(function () {
+        _this4.setupSelect2();
+        _this4.setupListeners();
       });
     }
 
@@ -4337,24 +4568,24 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Removes all article selector related stuff then adds it back
+     * Removes all Select2 related stuff then adds it back
      * @returns {null} nothing
      */
 
   }, {
-    key: 'resetArticleSelector',
-    value: function resetArticleSelector() {
-      var articleSelector = $(this.config.articleSelector);
-      articleSelector.off('change');
-      articleSelector.val(null);
-      articleSelector.html('');
-      articleSelector.select2('data', null);
-      articleSelector.select2('destroy');
-      this.setupArticleSelector();
+    key: 'resetSelect2',
+    value: function resetSelect2() {
+      var select2Input = $(this.config.select2Input);
+      select2Input.off('change');
+      select2Input.val(null);
+      select2Input.html('');
+      select2Input.select2('data', null);
+      select2Input.select2('destroy');
+      this.setupSelect2();
     }
 
     /**
-     * Removes chart, messages, and resets article selections
+     * Removes chart, messages, and resets Select2 selections
      * @returns {null} nothing
      */
 
@@ -4367,14 +4598,11 @@ var TopViews = function (_Pv) {
       this.offset = 0;
       this.pageData = [];
       this.pageNames = [];
-      this.stopSpinny();
+      this.stopSpinny(true);
       $('.chart-container').html('');
-      $('.expand-chart').hide();
-      $('.data-links').addClass('invisible');
-      $('.search-topviews').addClass('invisible');
       $('.message-container').html('');
       if (clearSelector) {
-        this.resetArticleSelector();
+        this.resetSelect2();
         this.excludes = [];
       }
     }
@@ -4388,7 +4616,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'searchTopviews',
     value: function searchTopviews() {
-      var _this7 = this;
+      var _this5 = this;
 
       var query = $('#topviews_search_field').val();
 
@@ -4399,7 +4627,7 @@ var TopViews = function (_Pv) {
 
       // add ranking to pageData and fetch matches
       this.pageData.forEach(function (entry, index) {
-        if (!_this7.excludes.includes(entry.article)) {
+        if (!_this5.excludes.includes(entry.article)) {
           count++;
           if (new RegExp(query, 'i').test(entry.article)) {
             entry.rank = count;
@@ -4414,48 +4642,60 @@ var TopViews = function (_Pv) {
       $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
 
       matchedData.forEach(function (item) {
-        var width = 100 * (item.views / _this7.max),
+        var width = 100 * (item.views / _this5.max),
             direction = !!i18nRtl ? 'to left' : 'to right';
 
-        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + item.index + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + item.rank + '</span>\n         <a class=\'topview-entry--label\' href="' + _this7.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + _this7.getPageviewsURL(item.article) + '\'>' + _this7.formatNumber(item.views) + '</a></div>');
+        $('.chart-container').append('<div class=\'topview-entry\' style=\'background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%)\'>\n         <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + item.index + ' aria-hidden=\'true\'></span>\n         <span class=\'topview-entry--rank\'>' + item.rank + '</span>\n         <a class=\'topview-entry--label\' href="' + _this5.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         <span class=\'topview-entry--leader\'></span>\n         <a class=\'topview-entry--views\' href=\'' + _this5.getPageviewsURL(item.article) + '\'>' + _this5.formatNumber(item.views) + '</a></div>');
       });
 
-      $('.topview-entry--remove').off('click').on('click', function (e) {
-        var pageName = _this7.pageNames[$(e.target).data('article-id')];
-        _this7.addExclude(pageName);
-        _this7.searchTopviews(query, false);
-      });
+      this.addExcludeListeners();
     }
 
     /**
-     * Sets up the article selector and adds listener to update chart
+     * Calls parent setupProjectInput and updates the view if validations passed
+     *   reverting to the old value if the new one is invalid
+     * @returns {null} nothing
+     * @override
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject(e) {
+      if (_get(Object.getPrototypeOf(TopViews.prototype), 'validateProject', this).call(this, e)) {
+        this.resetView(true);
+        this.processInput();
+      }
+    }
+
+    /**
+     * Sets up the Select2 selector and adds listener to update chart
      * @param {array} excludes - default page names to exclude
      * @returns {null} - nothing
      */
 
   }, {
-    key: 'setupArticleSelector',
-    value: function setupArticleSelector() {
-      var _this8 = this;
+    key: 'setupSelect2',
+    value: function setupSelect2() {
+      var _this6 = this;
 
       var excludes = arguments.length <= 0 || arguments[0] === undefined ? this.excludes : arguments[0];
 
-      var articleSelector = $(this.config.articleSelector);
+      var select2Input = $(this.config.select2Input);
 
-      articleSelector.select2({
+      select2Input.select2({
         data: [],
         maximumSelectionLength: 50,
         minimumInputLength: 0,
         placeholder: $.i18n('hover-to-exclude')
       });
 
-      if (excludes.length) this.setArticleSelectorDefaults(excludes);
+      if (excludes.length) this.setSelect2Defaults(excludes);
 
-      articleSelector.on('change', function (e) {
-        _this8.excludes = $(e.target).val() || [];
-        _this8.max = null;
-        _this8.drawData();
-        // $(this).select2().trigger('close');
+      select2Input.on('change', function (e) {
+        _this6.excludes = $(e.target).val() || [];
+        _this6.max = null;
+        _this6.clearSearch();
+        _this6.drawData();
       });
 
       /**
@@ -4468,7 +4708,7 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Directly set articles in article selector
+     * Directly set pages in Select2 selector
      * Currently is not able to remove underscore from page names
      *
      * @param {array} pages - page titles
@@ -4476,49 +4716,51 @@ var TopViews = function (_Pv) {
      */
 
   }, {
-    key: 'setArticleSelectorDefaults',
-    value: function setArticleSelectorDefaults(pages) {
-      var _this9 = this;
+    key: 'setSelect2Defaults',
+    value: function setSelect2Defaults(pages) {
+      var _this7 = this;
 
       pages = pages.map(function (page) {
         // page = page.replace(/ /g, '_');
         var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this9.config.articleSelector);
+        $('<option>' + escapedText + '</option>').appendTo(_this7.config.select2Input);
         return page;
       });
-      $(this.config.articleSelector).select2('val', pages);
-      $(this.config.articleSelector).select2('close');
+      $(this.config.select2Input).select2('val', pages);
 
       return pages;
     }
 
     /**
-     * sets up the daterange selector and adds listeners
+     * sets up the datepicker based on given type
+     * @param {String} [type] - either 'monthly' or 'daily'
      * @returns {null} - nothing
+     * @override
      */
 
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this10 = this;
+      var type = arguments.length <= 0 || arguments[0] === undefined ? 'monthly' : arguments[0];
 
-      _get(Object.getPrototypeOf(TopViews.prototype), 'setupDateRangeSelector', this).call(this);
+      $('#date-type-select').val(type);
 
-      var dateRangeSelector = $(this.config.dateRangeSelector);
+      var datepickerParams = type === 'monthly' ? {
+        format: 'MM yyyy',
+        viewMode: 'months',
+        minViewMode: 'months',
+        endDate: this.config.maxMonth
+      } : {
+        format: this.dateFormat,
+        viewMode: 'days',
+        endDate: this.config.maxDate
+      };
 
-      /** the "Latest N days" links */
-      $('.date-latest a').on('click', function (e) {
-        this.setSpecialRange('latest-' + $(this).data('value'));
-      });
-
-      dateRangeSelector.on('apply.daterangepicker', function (e, action) {
-        if (action.chosenLabel === $.i18n('custom-range')) {
-          _this10.specialRange = null;
-
-          /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this10.daterangepicker.updateElement();
-        }
-      });
+      $(this.config.dateRangeSelector).datepicker('destroy');
+      $(this.config.dateRangeSelector).datepicker(Object.assign({
+        autoclose: true,
+        startDate: this.config.minDate.toDate()
+      }, datepickerParams));
     }
 
     /**
@@ -4529,45 +4771,99 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this11 = this;
+      var _this8 = this;
 
       _get(Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
 
       $(this.config.platformSelector).on('change', this.processInput.bind(this));
+      $('#date-type-select').on('change', function (e) {
+        // also calls setupDateRangeSelector
+        _this8.setSpecialRange(_this8.isMonthly() ? 'last-month' : 'yesterday');
+      });
       $('.expand-chart').on('click', function () {
-        _this11.offset += _this11.config.pageSize;
-        _this11.drawData();
+        _this8.offset += _this8.config.pageSize;
+        _this8.drawData();
       });
       $(this.config.dateRangeSelector).on('change', function (e) {
         /** clear out specialRange if it doesn't match our input */
-        if (_this11.specialRange && _this11.specialRange.value !== e.target.value) {
-          _this11.specialRange = null;
+        if (_this8.specialRange && _this8.specialRange.value !== e.target.value) {
+          _this8.specialRange = null;
         }
-        _this11.processInput();
+        _this8.processInput();
       });
+      $('.mainspace-only-option').on('click', this.processInput.bind(this));
       $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
       $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
     }
 
     /**
-     * Setup listeners for project input
-     * @returns {null} - nothing
+     * Add the loading indicator class and set the safeguard timeout
+     * @returns {null} nothing
+     * @override
      */
 
   }, {
-    key: 'setupProjectInput',
-    value: function setupProjectInput() {
-      var _this12 = this;
+    key: 'startSpinny',
+    value: function startSpinny() {
+      _get(Object.getPrototypeOf(TopViews.prototype), 'startSpinny', this).call(this);
+      $('.expand-chart').hide();
+      $('.data-links').addClass('invisible');
+      $('.search-topviews').addClass('invisible');
+      $('.data-notice').addClass('invisible');
+    }
 
-      $(this.config.projectInput).on('change', function (e) {
-        if (!e.target.value) {
-          e.target.value = _this12.config.defaults.project;
-          return;
-        }
-        if (_this12.validateProject()) return;
-        _this12.resetView(false);
-        _this12.processInput(true).then(resetArticleSelector);
-      });
+    /**
+     * Remove loading indicator class and clear the safeguard timeout
+     * @param {Boolean} hideDataLinks - whether or not to hide the data links
+     * @returns {null} nothing
+     * @override
+     */
+
+  }, {
+    key: 'stopSpinny',
+    value: function stopSpinny(hideDataLinks) {
+      _get(Object.getPrototypeOf(TopViews.prototype), 'stopSpinny', this).call(this);
+      if (!hideDataLinks) {
+        $('.data-links').removeClass('invisible');
+        $('.search-topviews').removeClass('invisible');
+        $('.data-notice').removeClass('invisible');
+        $('.expand-chart').show();
+      }
+    }
+
+    /**
+     * Get date format to use based on settings
+     * @returns {string} date format to passed to parser
+     * @override
+     */
+
+  }, {
+    key: 'isMonthly',
+
+
+    /**
+     * Are we in 'monthly' mode? (If we aren't then we're in daily)
+     * @return {Boolean} yes or no
+     */
+    value: function isMonthly() {
+      return $('#date-type-select').val() === 'monthly';
+    }
+
+    /**
+     * Get the currently selected date for the purposes of pageviews API call
+     * @return {String} formatted date
+     */
+
+  }, {
+    key: 'getAPIDate',
+    value: function getAPIDate() {
+      var datepickerValue = this.datepicker.getDate();
+
+      if (this.isMonthly()) {
+        return moment(datepickerValue).format('YYYY/MM') + '/all-days';
+      } else {
+        return moment(datepickerValue).format('YYYY/MM/DD');
+      }
     }
 
     /**
@@ -4578,147 +4874,128 @@ var TopViews = function (_Pv) {
   }, {
     key: 'initData',
     value: function initData() {
-      var _$,
-          _this13 = this;
+      var _this9 = this;
 
       var dfd = $.Deferred();
 
       this.startSpinny();
-      $('.expand-chart').hide();
 
-      /** Collect parameters from inputs. */
-      var startDate = this.daterangepicker.startDate,
-          endDate = this.daterangepicker.endDate,
-          access = $(this.config.platformSelector).val();
+      var access = $(this.config.platformSelector).val();
 
-      var promises = [],
-          initPageData = {};
+      $.ajax({
+        url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + this.project + '/' + access + '/' + this.getAPIDate(),
+        dataType: 'json'
+      }).done(function (data) {
+        // store pageData from API, removing underscores from the page name
+        _this9.pageData = data.items[0].articles.map(function (page) {
+          page.article = page.article.descore();
+          return page;
+        });
 
-      for (var date = moment(startDate); date.isBefore(endDate); date.add(1, 'd')) {
-        promises.push($.ajax({
-          url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + this.project + '/' + access + '/' + date.format('YYYY/MM/DD'),
-          dataType: 'json'
-        }));
-      }
+        /** build the pageNames array for Select2 */
+        _this9.pageNames = _this9.pageData.map(function (page) {
+          return page.article;
+        });
 
-      return (_$ = $).when.apply(_$, promises).then(function () {
-        for (var _len = arguments.length, data = Array(_len), _key = 0; _key < _len; _key++) {
-          data[_key] = arguments[_key];
-        }
-
-        if (promises.length === 1) data = [data];
-
-        /** import data and do summations */
-        data.forEach(function (day) {
-          day[0].items[0].articles.forEach(function (item) {
-            var article = item.article.replace(/_/g, ' ');
-
-            if (initPageData[article]) {
-              initPageData[article] += item.views;
-            } else {
-              initPageData[article] = item.views;
-            }
+        if ($('.mainspace-only-option').is(':checked')) {
+          _this9.filterOutNamespace(_this9.pageNames).done(function (pageNames) {
+            _this9.pageNames = pageNames;
+            _this9.pageData = _this9.pageData.filter(function (page) {
+              return pageNames.includes(page.article);
+            });
+            return dfd.resolve(_this9.pageData);
           });
-        });
-
-        /** sort given new view counts */
-        var sortable = [];
-        for (var page in initPageData) {
-          sortable.push({
-            article: page,
-            views: initPageData[page]
-          });
-        }
-        _this13.pageData = sortable.sort(function (a, b) {
-          return b.views - a.views;
-        });
-
-        /** ...and build the pageNames array for Select2 */
-        _this13.pageNames = _this13.pageData.map(function (value) {
-          return value.article;
-        });
-
-        if (_this13.excludes.length) {
-          return dfd.resolve(_this13.pageData);
         } else {
-          /** find first 30 non-mainspace pages and exclude them */
-          _this13.filterByNamespace(_this13.pageNames.slice(0, 30)).done(function () {
-            return dfd.resolve(_this13.pageData);
-          });
+          return dfd.resolve(_this9.pageData);
         }
+      }).fail(function (errorData) {
+        _this9.resetView();
+        _this9.writeMessage($.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+        return dfd.reject();
       });
+
+      return dfd;
     }
 
     /**
      * Get the pages that are not in the given namespace
      * @param {array} pages - pages to filter
-     * @param  {Number} [ns] - namespace to restrict to, defaults to main
-     * @return {Deferred} promise resolving with page titles that are not in the given namespace
+     * @param {Number} [ns] - ID of the namespace to restrict to, defaults to 0 (mainspace)
+     * @return {Array} pages in given namespace
      */
 
   }, {
-    key: 'filterByNamespace',
-    value: function filterByNamespace(pages) {
-      var _this14 = this;
-
+    key: 'filterOutNamespace',
+    value: function filterOutNamespace(pages) {
       var ns = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
       var dfd = $.Deferred();
 
-      return $.ajax({
-        url: 'https://' + this.project + '.org/w/api.php',
-        data: {
-          action: 'query',
-          titles: pages.join('|'),
-          meta: 'siteinfo',
-          siprop: 'general',
-          format: 'json'
-        },
-        prop: 'info',
-        dataType: 'jsonp'
-      }).always(function (data) {
-        if (data && data.query && data.query.pages) {
+      var doFiltering = function doFiltering(data) {
+        if (data && data.query && data.query.namespaces) {
           (function () {
-            var normalizeMap = {};
-            (data.query.normalized || []).map(function (entry) {
-              normalizeMap[entry.to] = entry.from;
-            });
+            var nonMainspaceNames = [];
 
-            var excludes = [data.query.general.mainpage];
-            Object.keys(data.query.pages).forEach(function (key) {
-              var page = data.query.pages[key];
-              if (page.ns !== ns || page.missing === '') {
-                var title = data.query.pages[key].title,
-                    normalizedTitle = normalizeMap[title];
-                delete normalizeMap[title];
-                excludes.push(normalizedTitle || title);
-              }
+            // include main page as non-mainspace, along with 'Wikipedia' and 'Special' since API seems to
+            //  include for instance both Wikipedia and Wikipédia for some languages
+            // FIXME: the 'Sp?cial' is an apparent bug, see phab:T145043
+            nonMainspaceNames = [data.query.general.mainpage, 'Wikipedia', 'Special', 'Sp?cial'];
+
+            for (ns in data.query.namespaces) {
+              nonMainspaceNames.push(data.query.namespaces[ns]['*']);
+            }
+
+            // use namespace prefixes to filter out non-mainspace pages
+            pages = pages.filter(function (page) {
+              var ns = page.split(':')[0];
+              return ns && !nonMainspaceNames.includes(ns);
             });
-            _this14.addExclude(excludes);
           })();
         }
 
-        dfd.resolve();
-      });
+        dfd.resolve(pages);
+      };
+
+      var cacheKey = 'pageviews-siteinfo-' + this.project;
+
+      // use cached site info if present
+      if (simpleStorage.hasKey(cacheKey)) {
+        doFiltering(simpleStorage.get(cacheKey));
+      } else {
+        // otherwise fetch siteinfo and store in cache
+        $.ajax({
+          url: 'https://' + this.project + '.org/w/api.php',
+          data: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'general|namespaces',
+            format: 'json'
+          },
+          dataType: 'jsonp'
+        }).always(function (data) {
+          // cache for one week (TTL is in milliseconds)
+          simpleStorage.set(cacheKey, data, { TTL: 1000 * 60 * 60 * 24 * 7 });
+          doFiltering(data);
+        });
+      }
+
+      return dfd;
+    }
+  }, {
+    key: 'dateFormat',
+    get: function get() {
+      return _get(Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this).toLowerCase();
     }
 
     /**
-     * Checks value of project input and validates it against site map
-     * @returns {boolean} whether the currently input project is valid
+     * Get instance of datepicker
+     * @return {Object} the datepicker instance
      */
 
   }, {
-    key: 'validateProject',
-    value: function validateProject() {
-      var project = $(this.config.projectInput).val();
-      if (siteDomains.includes(project)) {
-        $('body').removeClass('invalid-project');
-      } else {
-        this.resetView();
-        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project + '\'>' + project + '</a>'), true);
-        $('body').addClass('invalid-project');
-        return true;
-      }
+    key: 'datepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('datepicker');
     }
   }]);
 
@@ -4736,4 +5013,4 @@ $(document).ready(function () {
   new TopViews();
 });
 
-},{"../shared/pv":5,"../shared/site_map":7,"./config":8}]},{},[1,2,3,4,5,6,7,9]);
+},{"../shared/pv":5,"./config":8}]},{},[1,2,3,4,5,6,7,9]);

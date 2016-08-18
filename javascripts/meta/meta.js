@@ -89,19 +89,11 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   popParams() {
     this.startSpinny();
 
-    let params = this.parseQueryString('tools');
+    const params = this.parseQueryString('tools');
 
-    const startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-      endDate = moment(params.end || Date.now());
-
-    this.daterangepicker.startDate = startDate;
-    this.daterangepicker.setEndDate(endDate);
+    this.validateDateRange(params);
 
     this.resetSelect2();
-
-    if (!params.tools || (params.tools.length === 1 && !params.tools[0])) {
-      params.tools = this.config.apps;
-    }
 
     this.setInitialChartType(params.tools.length);
     this.setSelect2Defaults(params.tools);

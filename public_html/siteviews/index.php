@@ -69,11 +69,14 @@
               <option value="desktop" data-value="desktop" data-ud-value="desktop-site">
                 <?php echo $I18N->msg( 'desktop' ); ?>
               </option>
-              <option class="platform-select--mobile-web" value="mobile-app">
+              <option class="platform-select--mobile-app" value="mobile-app">
                 <?php echo $I18N->msg( 'mobile-app' ); ?>
               </option>
-              <option value="mobile-web" data-value="mobile-web" data-ud-value="mobile-site">
+              <option class="platform-select--mobile-web" value="mobile-web">
                 <?php echo $I18N->msg( 'mobile-web' ); ?>
+              </option>
+              <option class="platform-select--mobile none" data-ud-value="mobile-site">
+                <?php echo $I18N->msg( 'mobile' ); ?>
               </option>
             </select>
           </div>

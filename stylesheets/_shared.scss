@@ -118,9 +118,13 @@ footer {
   white-space: nowrap;
 }
 
-.disabled {
+%disabled {
   opacity: .5;
   pointer-events: none;
+}
+
+.disabled {
+  @extend %disabled;
 }
 
 .heart {
@@ -221,6 +225,10 @@ footer {
 
 .flash {
   animation: 3s ease-out 1 flash;
+}
+
+.none {
+  display: none;
 }
 
 @keyframes flash {

@@ -23,7 +23,11 @@ var config = {
   },
   linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
-  select2Input: '.aqs-select2-selector'
+  select2Input: '.aqs-select2-selector',
+  validateParams: ['tools'],
+  validParams: {
+    tools: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews']
+  }
 };
 
 module.exports = config;
@@ -164,17 +168,9 @@ var MetaViews = function (_mix$with) {
 
       var params = this.parseQueryString('tools');
 
-      var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-          endDate = moment(params.end || Date.now());
-
-      this.daterangepicker.startDate = startDate;
-      this.daterangepicker.setEndDate(endDate);
+      this.validateDateRange(params);
 
       this.resetSelect2();
-
-      if (!params.tools || params.tools.length === 1 && !params.tools[0]) {
-        params.tools = this.config.apps;
-      }
 
       this.setInitialChartType(params.tools.length);
       this.setSelect2Defaults(params.tools);
@@ -461,7 +457,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 /**
- * Shared chart-specific logic
+ * Shared chart-specific logic, used in all apps except Topviews
  * @param {class} superclass - base class
  * @returns {null} class extending superclass
  */
@@ -504,6 +500,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         _this.chartType = $(e.currentTarget).data('type');
 
         $('.logarithmic-scale').toggle(_this.isLogarithmicCapable());
+        $('.begin-at-zero').toggle(_this.config.linearCharts.includes(_this.chartType));
 
         if (_this.rememberChart === 'true') {
           _this.setLocalStorage('pageviews-chart-preference', _this.chartType);
@@ -762,6 +759,26 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
+       * Get url to query the API based on app and options
+       * @param {String} entity - name of entity we're querying for (page name or project name)
+       * @param {moment} startDate - start date
+       * @param {moment} endDate - end date
+       * @return {String} the URL
+       */
+
+    }, {
+      key: 'getApiUrl',
+      value: function getApiUrl(entity, startDate, endDate) {
+        var uriEncodedEntityName = encodeURIComponent(entity);
+
+        if (this.app === 'siteviews') {
+          return this.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedEntityName + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedEntityName + '/' + $(this.config.platformSelector).val() + '/daily' + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        } else {
+          return 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + this.project + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        }
+      }
+
+      /**
        * Mother function for querying the API and processing data
        * @param  {Array}  entities - list of page names, or projects for Siteviews
        * @return {Deferred} Promise resolving with pageviews data and errors, if present
@@ -771,9 +788,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'getPageViewsData',
       value: function getPageViewsData(entities) {
         var _this6 = this;
-
-        var startDate = this.daterangepicker.startDate.startOf('day'),
-            endDate = this.daterangepicker.endDate.startOf('day');
 
         var dfd = $.Deferred(),
             count = 0,
@@ -792,9 +806,11 @@ var ChartHelpers = function ChartHelpers(superclass) {
         };
 
         var makeRequest = function makeRequest(entity, index) {
-          var uriEncodedEntityName = encodeURIComponent(entity);
-          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this6.project + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
-          var promise = $.ajax({ url: url, dataType: 'json' });
+          var startDate = _this6.daterangepicker.startDate.startOf('day'),
+              endDate = _this6.daterangepicker.endDate.startOf('day'),
+              url = _this6.getApiUrl(entity, startDate, endDate),
+              promise = $.ajax({ url: url, dataType: 'json' });
+
           xhrData.promises.push(promise);
 
           promise.done(function (successData) {
@@ -843,8 +859,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
             if (cassandraError) {
               failedEntities.push(entity);
             } else {
-              // FIXME: use getSiteLink for siteviews
-              _this6.writeMessage(_this6.getPageLink(entity, _this6.project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+              var link = _this6.app === 'siteviews' ? _this6.getSiteLink(entity) : _this6.getPageLink(entity, _this6.project);
+              xhrData.errors.push(link + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
             }
           }).always(function () {
             if (++count === totalRequestCount) {
@@ -910,6 +926,17 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'isPageviews',
       value: function isPageviews() {
         return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+      }
+
+      /**
+       * Are we trying to show data on pageviews (as opposed to unique devices)?
+       * @return {Boolean} true or false
+       */
+
+    }, {
+      key: 'isUniqueDevices',
+      value: function isUniqueDevices() {
+        return !this.isPageviews();
       }
 
       /**
@@ -1182,6 +1209,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
+        var _this9 = this;
+
         if (xhrData.fatalErrors.length) {
           this.resetView(true);
           var fatalErrors = xhrData.fatalErrors.unique();
@@ -1191,18 +1220,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
         }
 
         if (xhrData.errors.length) {
-          var errorMessages = xhrData.errors.unique().map(function (error) {
-            return '<li>' + error + '</li>';
-          }).join('');
-
-          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
-
-          this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
-
-          if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
-            return false; // everything failed!
+          // if everything failed, reset the view, clearing out space taken up by empty chart
+          if (xhrData.entities && (xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length)) {
+            this.resetView();
           }
+
+          xhrData.errors.unique().forEach(function (error) {
+            return _this9.writeMessage(error);
+          });
         }
 
         return false;
@@ -1387,24 +1412,12 @@ var ListHelpers = function ListHelpers(superclass) {
     }
 
     /**
-     * Copy default values over to class instance
-     * Use JSON stringify/parsing so to make a deep clone of the defaults
+     * Prepare chart options before showing chart view, based on current chart type
      * @return {null} Nothing
      */
 
 
     _createClass(_class, [{
-      key: 'assignDefaults',
-      value: function assignDefaults() {
-        Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-      }
-
-      /**
-       * Prepare chart options before showing chart view, based on current chart type
-       * @return {null} Nothing
-       */
-
-    }, {
       key: 'assignOutputDataChartOpts',
       value: function assignOutputDataChartOpts() {
         var color = this.config.colors[0];
@@ -1838,15 +1851,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 var PvConfig = require('./pv_config');
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
 
 var Pv = function (_PvConfig) {
   _inherits(Pv, _PvConfig);
@@ -1858,9 +1875,11 @@ var Pv = function (_PvConfig) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
 
-    var defaults = _this.config.defaults;
+    var defaults = _this.config.defaults,
+        validParams = _this.config.validParams;
     _this.config = Object.assign({}, _this.config, appConfig);
     _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+    _this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
 
     _this.colorsStyleEl = undefined;
     _this.storage = {}; // used as fallback when localStorage is not supported
@@ -1935,31 +1954,62 @@ var Pv = function (_PvConfig) {
     }
 
     /**
-     * Check the validity of the date range of given params
+     * Add site notice for invalid parameter
+     * @param {String} param - name of parameter
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'addInvalidParamNotice',
+    value: function addInvalidParamNotice(param) {
+      this.addSiteNotice('danger', $.i18n('param-error-3', param, '/' + this.app + '/url_structure'), $.i18n('invalid-params'), true);
+    }
+
+    /**
+     * Validate the date range of given params
      *   and throw errors as necessary and/or set defaults
      * @param {Object} params - as returned by this.parseQueryString()
      * @returns {Boolean} true if there were no errors, false otherwise
      */
 
   }, {
-    key: 'checkDateRange',
-    value: function checkDateRange(params) {
+    key: 'validateDateRange',
+    value: function validateDateRange(params) {
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
+          this.addInvalidParamNotice('range');
           this.setSpecialRange(this.config.defaults.dateRange);
         }
       } else if (params.start) {
-        var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-            endDate = moment(params.end || Date.now());
+        var dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
+        // first set defaults
+        var startDate = void 0,
+            endDate = void 0;
+
+        // then check format of start and end date
+        if (params.start && dateRegex.test(params.start)) {
+          startDate = moment(params.start);
+        } else {
+          this.addInvalidParamNotice('start');
+          return false;
+        }
+        if (params.end && dateRegex.test(params.end)) {
+          endDate = moment(params.end);
+        } else {
+          this.addInvalidParamNotice('end');
+          return false;
+        }
+
+        // check if they are outside the valid range or if in the wrong order
         if (startDate < this.config.minDate || endDate < this.config.minDate) {
           this.addSiteNotice('danger', $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)), $.i18n('invalid-params'), true);
           return false;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+          this.addSiteNotice('danger', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           return false;
         }
+
         /** directly assign startDate before calling setEndDate so events will be fired once */
         this.daterangepicker.startDate = startDate;
         this.daterangepicker.setEndDate(endDate);
@@ -2136,7 +2186,7 @@ var Pv = function (_PvConfig) {
     /**
      * Get the wiki URL given the page name
      *
-     * @param {string} page name
+     * @param {string} page - page name
      * @returns {string} URL for the page
      */
 
@@ -2149,6 +2199,19 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get the wiki URL given the page name
+     *
+     * @param {string} site - site name (e.g. en.wikipedia.org)
+     * @returns {string} URL for the site
+     */
+
+  }, {
+    key: 'getSiteLink',
+    value: function getSiteLink(site) {
+      return '<a target="_blank" href="//' + site + '.org">' + site + '</a>';
+    }
+
+    /**
      * Get the project name (without the .org)
      *
      * @returns {boolean} lang.projectname
@@ -2157,6 +2220,10 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getLocaleDateString',
     value: function getLocaleDateString() {
+      if (!navigator.language) {
+        return this.config.defaults.dateFormat;
+      }
+
       var formats = {
         'ar-sa': 'DD/MM/YY',
         'bg-bg': 'DD.M.YYYY',
@@ -2370,10 +2437,6 @@ var Pv = function (_PvConfig) {
         'es-us': 'M/D/YYYY'
       };
 
-      if (!navigator.language) {
-        return this.config.defaults.dateFormat;
-      }
-
       var key = navigator.language.toLowerCase();
       return formats[key] || this.config.defaults.dateFormat;
     }
@@ -2464,7 +2527,18 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'isChartApp',
     value: function isChartApp() {
-      return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
+      return !this.isListApp();
+    }
+
+    /**
+     * Is this one of the list-view apps?
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'isListApp',
+    value: function isListApp() {
+      return ['langviews', 'massviews', 'redirectviews'].includes(this.app);
     }
 
     /**
@@ -2575,7 +2649,9 @@ var Pv = function (_PvConfig) {
         var chunk = chunks[i].split('=');
 
         if (multiParam && chunk[0] === multiParam) {
-          params[multiParam] = chunk[1].split('|');
+          params[multiParam] = chunk[1].split('|').filter(function (param) {
+            return !!param;
+          });
         } else {
           params[chunk[0]] = chunk[1];
         }
@@ -2740,10 +2816,10 @@ var Pv = function (_PvConfig) {
         }
       });
 
-      this.daterangepicker.locale.format = this.dateFormat;
-      this.daterangepicker.updateElement();
-
       if (this.app !== 'topviews') {
+        this.daterangepicker.locale.format = this.dateFormat;
+        this.daterangepicker.updateElement();
+
         this.setupSelect2Colors();
 
         /**
@@ -2895,6 +2971,14 @@ var Pv = function (_PvConfig) {
       /** download listeners */
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
+
+      /** project input listeners, saving and restoring old value if new one is invalid */
+      $(this.config.projectInput).on('focusin', function () {
+        this.dataset.value = this.value;
+      });
+      $(this.config.projectInput).on('change', function (e) {
+        return _this7.validateProject(e);
+      });
     }
 
     /**
@@ -2945,7 +3029,7 @@ var Pv = function (_PvConfig) {
           daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
           monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
-        startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+        startDate: moment().subtract(this.config.daysAgo, 'days'),
         minDate: this.config.minDate,
         maxDate: this.config.maxDate,
         ranges: ranges
@@ -3115,6 +3199,72 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Validate basic params against what is defined in the config,
+     *   and if they are invalid set the default
+     * @param {Object} params - params as fetched by this.parseQueryString()
+     * @returns {Object} same params with some invalid parameters correted, as necessary
+     */
+
+  }, {
+    key: 'validateParams',
+    value: function validateParams(params) {
+      var _this12 = this;
+
+      this.config.validateParams.forEach(function (paramKey) {
+        if (paramKey === 'project' && params.project) {
+          params.project = params.project.replace(/^www\./, '');
+        }
+
+        var defaultValue = _this12.config.defaults[paramKey],
+            paramValue = params[paramKey];
+
+        if (defaultValue && !_this12.config.validParams[paramKey].includes(paramValue)) {
+          // only throw error if they tried to provide an invalid value
+          if (!!paramValue) {
+            _this12.addInvalidParamNotice(paramKey);
+          }
+
+          params[paramKey] = defaultValue;
+        }
+      });
+
+      return params;
+    }
+
+    /**
+     * Adds listeners to the project input for validations against the site map,
+     *   reverting to the old value if the new one is invalid
+     * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
+     * @returns {Boolean} whether or not validations passed
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      var multilingual = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var projectInput = $(this.config.projectInput)[0];
+      var project = projectInput.value.replace(/^www\./, ''),
+          valid = false;
+
+      if (multilingual && !this.isMultilangProject()) {
+        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      } else if (siteDomains.includes(project)) {
+        this.clearMessages();
+        this.updateInterAppLinks();
+        valid = true;
+      } else {
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      }
+
+      projectInput.value = project;
+
+      return valid;
+    }
+
+    /**
      * Writes message just below the chart
      * @param {string} message - message to write
      * @param {boolean} clear - whether to clear any existing messages
@@ -3168,7 +3318,7 @@ var Pv = function (_PvConfig) {
 
 module.exports = Pv;
 
-},{"./pv_config":9}],9:[function(require,module,exports){
+},{"./pv_config":9,"./site_map":10}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3181,6 +3331,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
+
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
 /**
  * Configuration for all Pageviews applications.
@@ -3352,14 +3507,16 @@ var PvConfig = function () {
         chartType: function chartType(numDatasets) {
           return numDatasets > 1 ? 'line' : 'bar';
         },
-        daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
         beginAtZero: 'false',
-        rememberChart: 'true'
+        rememberChart: 'true',
+        agent: 'user',
+        platform: 'all-access',
+        project: 'en.wikipedia.org'
       },
       globalChartOpts: {
         animation: {
@@ -3388,6 +3545,7 @@ var PvConfig = function () {
           return _this.config.linearLegend(chart.data.datasets, self);
         }
       },
+      daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
       maxDate: moment().subtract(1, 'days').startOf('day'),
       specialRanges: {
@@ -3395,12 +3553,17 @@ var PvConfig = function () {
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         latest: function latest() {
-          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.defaults.daysAgo : arguments[0];
+          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.daysAgo : arguments[0];
 
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
       },
-      timestampFormat: 'YYYYMMDD00'
+      timestampFormat: 'YYYYMMDD00',
+      validParams: {
+        agent: ['all-agents', 'user', 'spider', 'bot'],
+        platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
+        project: siteDomains
+      }
     };
   }
 
@@ -3457,7 +3620,7 @@ var PvConfig = function () {
 
 module.exports = PvConfig;
 
-},{}],10:[function(require,module,exports){
+},{"./site_map":10}],10:[function(require,module,exports){
 'use strict';
 
 /**

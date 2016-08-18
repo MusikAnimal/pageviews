@@ -5,6 +5,9 @@
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
+const siteMap = require('./site_map');
+const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
+
 /**
  * Configuration for all Pageviews applications.
  * Some properties may be overriden by app-specific configs
@@ -148,14 +151,16 @@ class PvConfig {
       defaults: {
         autocomplete: 'autocomplete',
         chartType: numDatasets => numDatasets > 1 ? 'line' : 'bar',
-        daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
         beginAtZero: 'false',
-        rememberChart: 'true'
+        rememberChart: 'true',
+        agent: 'user',
+        platform: 'all-access',
+        project: 'en.wikipedia.org'
       },
       globalChartOpts: {
         animation: {
@@ -180,17 +185,23 @@ class PvConfig {
         },
         legendCallback: chart => this.config.linearLegend(chart.data.datasets, self)
       },
+      daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
       maxDate: moment().subtract(1, 'days').startOf('day'),
       specialRanges: {
         'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        latest(offset = self.config.defaults.daysAgo) {
+        latest(offset = self.config.daysAgo) {
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
       },
-      timestampFormat: 'YYYYMMDD00'
+      timestampFormat: 'YYYYMMDD00',
+      validParams: {
+        agent: ['all-agents', 'user', 'spider', 'bot'],
+        platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
+        project: siteDomains
+      }
     };
   }
 

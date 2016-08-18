@@ -49,14 +49,11 @@ var config = {
   dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
-    project: 'en.wikipedia.org',
-    params: {
-      sort: 'views',
-      direction: 1,
-      outputData: [],
-      total: 0,
-      view: 'list'
-    }
+    sort: 'views',
+    direction: 1,
+    outputData: [],
+    total: 0,
+    view: 'list'
   },
   linearLegend: function linearLegend(datasets, scope) {
     return '<strong>' + $.i18n('totals') + ':</strong> ' + scope.formatNumber(scope.outputData.sum) + '\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
@@ -67,12 +64,14 @@ var config = {
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   sourceInput: '#source_input',
   timestampFormat: 'YYYYMMDD00',
+  validateParams: ['project', 'platform', 'agent', 'direction', 'sort', 'view'],
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'badges', 'lang'],
     view: ['list', 'chart']
   }
 };
+
 module.exports = config;
 
 },{}],2:[function(require,module,exports){
@@ -171,15 +170,26 @@ var LangViews = function (_mix$with) {
         _this2.renderData();
       });
 
-      $(this.config.projectInput).on('change', function () {
-        _this2.validateProject();
-        _this2.updateInterAppLinks();
-      });
-
       $('.view-btn').on('click', function (e) {
         document.activeElement.blur();
         _this2.view = e.currentTarget.dataset.value;
         _this2.toggleView(_this2.view);
+      });
+    }
+
+    /**
+     * Copy necessary default values to class instance.
+     * Called when the view is reset.
+     * @return {null} Nothing
+     */
+
+  }, {
+    key: 'assignDefaults',
+    value: function assignDefaults() {
+      var _this3 = this;
+
+      ['sort', 'direction', 'outputData', 'total', 'view'].forEach(function (defaultKey) {
+        _this3[defaultKey] = _this3.config.defaults[defaultKey];
       });
     }
 
@@ -195,7 +205,7 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'buildMotherDataset',
     value: function buildMotherDataset(label, link, datasets) {
-      var _this3 = this;
+      var _this4 = this;
 
       /**
        * `datasets` structure:
@@ -269,7 +279,7 @@ var LangViews = function (_mix$with) {
 
         totalTitles.push(dataset.title);
 
-        _this3.outputData.listData.push({
+        _this4.outputData.listData.push({
           data: data,
           badges: dataset.badges,
           lang: dataset.lang,
@@ -286,7 +296,7 @@ var LangViews = function (_mix$with) {
          * See fillInZeros() comments for more info.
          */
 
-        var _fillInZeros = _this3.fillInZeros(dataset.items, startDate, endDate);
+        var _fillInZeros = _this4.fillInZeros(dataset.items, startDate, endDate);
 
         var _fillInZeros2 = _slicedToArray(_fillInZeros, 2);
 
@@ -322,7 +332,7 @@ var LangViews = function (_mix$with) {
 
       if (datesWithoutData.length) {
         var dateList = datesWithoutData.map(function (date) {
-          return moment(date).format(_this3.dateFormat);
+          return moment(date).format(_this4.dateFormat);
         });
         this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
       }
@@ -373,6 +383,9 @@ var LangViews = function (_mix$with) {
         params.sort = this.sort;
         params.direction = this.direction;
         params.view = this.view;
+
+        /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
+        if (this.noLogScale) params.autolog = 'false';
       }
 
       return params;
@@ -424,23 +437,23 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'renderData',
     value: function renderData() {
-      var _this4 = this;
+      var _this5 = this;
 
       _get(Object.getPrototypeOf(LangViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
-        var totalBadgesMarkup = Object.keys(_this4.outputData.badges).map(function (badge) {
-          return '<span class=\'nowrap\'>' + _this4.getBadgeMarkup(badge) + ' &times; ' + _this4.outputData.badges[badge] + '</span>';
+        var totalBadgesMarkup = Object.keys(_this5.outputData.badges).map(function (badge) {
+          return '<span class=\'nowrap\'>' + _this5.getBadgeMarkup(badge) + ' &times; ' + _this5.outputData.badges[badge] + '</span>';
         }).join(', ');
 
-        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-languages', sortedDatasets.length) + '</th>\n         <th>' + $.i18n('unique-titles', _this4.outputData.titles.length) + '</th>\n         <th>' + totalBadgesMarkup + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
+        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-languages', sortedDatasets.length) + '</th>\n         <th>' + $.i18n('unique-titles', _this5.outputData.titles.length) + '</th>\n         <th>' + totalBadgesMarkup + '</th>\n         <th>' + _this5.formatNumber(_this5.outputData.sum) + '</th>\n         <th>' + _this5.formatNumber(Math.round(_this5.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {
           var badgeMarkup = '';
           if (item.badges) {
-            badgeMarkup = item.badges.map(_this4.getBadgeMarkup.bind(_this4)).join();
+            badgeMarkup = item.badges.map(_this5.getBadgeMarkup.bind(_this5)).join();
           }
 
-          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td>' + item.lang + '</td>\n           <td><a href="' + item.url + '" target="_blank">' + item.label + '</a></td>\n           <td>' + badgeMarkup + '</td>\n           <td><a target=\'_blank\' href=\'' + _this4.getPageviewsURL(item.lang + '.' + _this4.baseProject + '.org', item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
+          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td>' + item.lang + '</td>\n           <td><a href="' + item.url + '" target="_blank">' + item.label + '</a></td>\n           <td>' + badgeMarkup + '</td>\n           <td><a target=\'_blank\' href=\'' + _this5.getPageviewsURL(item.lang + '.' + _this5.baseProject + '.org', item.label) + '\'>' + _this5.formatNumber(item.sum) + '</a></td>\n           <td>' + _this5.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
         });
       });
     }
@@ -477,7 +490,7 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'getPageViewsData',
     value: function getPageViewsData(interWikiData) {
-      var _this5 = this;
+      var _this6 = this;
 
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day'),
@@ -496,7 +509,7 @@ var LangViews = function (_mix$with) {
         var data = interWikiData[dbName],
             uriEncodedPageName = encodeURIComponent(data.title);
 
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + data.lang + '.' + _this5.baseProject + ('/' + $(_this5.config.platformSelector).val() + '/' + $(_this5.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this5.config.timestampFormat) + '/' + endDate.format(_this5.config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + data.lang + '.' + _this6.baseProject + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
         promises.push(promise);
 
@@ -513,7 +526,7 @@ var LangViews = function (_mix$with) {
           // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
-              failedPageLink = _this5.getPageLink(data.title, data.lang + '.' + _this5.baseProject + '.org');
+              failedPageLink = _this6.getPageLink(data.title, data.lang + '.' + _this6.baseProject + '.org');
 
           if (cassandraError) {
             if (failureRetries[dbName]) {
@@ -525,25 +538,25 @@ var LangViews = function (_mix$with) {
             /** maximum of 3 retries */
             if (failureRetries[dbName] < 3) {
               totalRequestCount++;
-              return _this5.rateLimit(makeRequest, 100, _this5)(dbName);
+              return _this6.rateLimit(makeRequest, 100, _this6)(dbName);
             }
 
             /** retries exceeded */
             failedPages.push(failedPageLink);
           } else {
-            _this5.writeMessage(failedPageLink + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            _this6.writeMessage(failedPageLink + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
-          _this5.updateProgressBar(++count / totalRequestCount * 100);
+          _this6.updateProgressBar(++count / totalRequestCount * 100);
 
           // XXX: throttling, totalRequestCount can just be interWikiKeys.length
           if (count === totalRequestCount) {
             dfd.resolve(pageViewsData);
 
             if (failedPages.length) {
-              _this5.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
+              _this6.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
                 return '<li>' + failedPage + '</li>';
               }).join('') + '</ul>'));
             }
@@ -554,7 +567,7 @@ var LangViews = function (_mix$with) {
              */
             // XXX: throttling
             if (!hadFailure) {
-              simpleStorage.set(_this5.getCacheKey(), true, { TTL: 600000 });
+              simpleStorage.set(_this6.getCacheKey(), true, { TTL: 600000 });
             }
           }
         });
@@ -585,7 +598,7 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'getInterwikiData',
     value: function getInterwikiData(dbName, pageName) {
-      var _this6 = this;
+      var _this7 = this;
 
       var dfd = $.Deferred();
       var url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=' + dbName + ('&titles=' + encodeURIComponent(pageName) + '&props=sitelinks/urls|datatype&format=json&callback=?');
@@ -594,13 +607,13 @@ var LangViews = function (_mix$with) {
         if (data.error) {
           return dfd.reject($.i18n('api-error', 'Wikidata') + ': ' + data.error.info);
         } else if (data.entities['-1']) {
-          return dfd.reject('<a href=\'' + _this6.getPageURL(pageName).escape() + '\'>' + pageName.descore().escape() + '</a> - ' + $.i18n('api-error-no-data'));
+          return dfd.reject('<a target=\'_blank\' href=\'' + _this7.getPageURL(pageName).escape() + '\'>' + pageName.descore().escape() + '</a> - ' + $.i18n('api-error-no-data'));
         }
 
         var key = Object.keys(data.entities)[0],
             sitelinks = data.entities[key].sitelinks,
             filteredLinks = {},
-            matchRegex = new RegExp('^https://[\\w-]+\\.' + _this6.baseProject + '\\.org');
+            matchRegex = new RegExp('^https://[\\w-]+\\.' + _this7.baseProject + '\\.org');
 
         /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
         Object.keys(sitelinks).forEach(function (key) {
@@ -643,38 +656,39 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this7 = this;
+      var _this8 = this;
 
-      var params = this.parseQueryString('pages');
+      var params = this.validateParams(this.parseQueryString('pages'));
 
-      $(this.config.projectInput).val(params.project || this.config.defaults.project);
-      if (this.validateProject()) return;
+      $(this.config.projectInput).val(params.project);
+      this.validateDateRange(params);
 
       this.patchUsage();
 
-      // if date range is invalid, remove page from params so we don't process the default date range
-      if (!this.checkDateRange(params)) {
+      // fill in value for the page
+      if (params.page) {
+        $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
+      }
+
+      // If there are invalid params, remove page from params so we don't process the defaults.
+      // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
+      //   or any indication the validations failed. This is hacky but necessary.
+      if ($('.site-notice .alert-danger').length) {
         delete params.page;
       }
 
-      $(this.config.platformSelector).val(params.platform || 'all-access');
-      $(this.config.agentSelector).val(params.agent || 'user');
+      $(this.config.platformSelector).val(params.platform);
+      $(this.config.agentSelector).val(params.agent);
 
-      /** import params or set defaults if invalid */
+      /** export necessary params to outer scope */
       ['sort', 'direction', 'view'].forEach(function (key) {
-        var value = params[key];
-        if (value && _this7.config.validParams[key].includes(value)) {
-          params[key] = value;
-          _this7[key] = value;
-        } else {
-          params[key] = _this7.config.defaults.params[key];
-          _this7[key] = _this7.config.defaults.params[key];
-        }
+        _this8[key] = params[key];
       });
+
+      this.setupSourceInput();
 
       /** start up processing if page name is present */
       if (params.page) {
-        $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
         this.processInput();
       }
     }
@@ -729,7 +743,7 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this8 = this;
+      var _this9 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -750,7 +764,7 @@ var LangViews = function (_mix$with) {
       this.setState('processing');
 
       var dbName = Object.keys(siteMap).find(function (key) {
-        return siteMap[key] === $(_this8.config.projectInput).val();
+        return siteMap[key] === $(_this9.config.projectInput).val();
       });
 
       this.getInterwikiData(dbName, page).done(function (interWikiData) {
@@ -762,44 +776,43 @@ var LangViews = function (_mix$with) {
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          *   unless there were are querying for ten or less pages
          */
-        if (numPages > 10) _this8.setThrottle();
+        if (numPages > 10) _this9.setThrottle();
 
-        _this8.getPageViewsData(interWikiData).done(function (pageViewsData) {
-          var pageLink = _this8.getPageLink(decodeURIComponent(page), _this8.project);
+        _this9.getPageViewsData(interWikiData).done(function (pageViewsData) {
+          var pageLink = _this9.getPageLink(decodeURIComponent(page), _this9.project);
           $('.output-title').html(pageLink);
-          $('.output-params').text($(_this8.config.dateRangeSelector).val());
-          _this8.buildMotherDataset(page, pageLink, pageViewsData);
-          _this8.updateProgressBar(100);
-          _this8.setInitialChartType();
-          _this8.renderData();
+          $('.output-params').text($(_this9.config.dateRangeSelector).val());
+          _this9.buildMotherDataset(page, pageLink, pageViewsData);
+          _this9.updateProgressBar(100);
+          _this9.setInitialChartType();
+          _this9.renderData();
 
           /**
            * XXX: throttling
            * Reset throttling again; the first one was in case they aborted
            */
-          if (numPages > 10) _this8.setThrottle();
+          if (numPages > 10) _this9.setThrottle();
         });
       }).fail(function (error) {
-        _this8.setState('initial');
+        _this9.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (typeof error === 'string') {
-          _this8.writeMessage(error);
+          _this9.writeMessage(error);
         } else {
-          _this8.writeMessage($.i18n('api-error-unknown', 'Wikidata'));
+          _this9.writeMessage($.i18n('api-error-unknown', 'Wikidata'));
         }
       });
     }
 
     /**
      * Setup typeahead on the article input, killing the prevous instance if present
-     * Called in validateProject, which is called in popParams when the app is first loaded
      * @return {null} Nothing
      */
 
   }, {
-    key: 'setupsourceInput',
-    value: function setupsourceInput() {
+    key: 'setupSourceInput',
+    value: function setupSourceInput() {
       if (this.typeahead) this.typeahead.destroy();
 
       $(this.config.sourceInput).typeahead({
@@ -827,27 +840,22 @@ var LangViews = function (_mix$with) {
     }
 
     /**
-     * Validate the currently entered project. Called when the value is changed
-     * @return {boolean} true if validation failed
+     * Calls parent setupProjectInput and updates the view if validations passed
+     *   reverting to the old value if the new one is invalid
+     * @returns {null} nothing
+     * @override
      */
 
   }, {
     key: 'validateProject',
     value: function validateProject() {
-      var project = $(this.config.projectInput).val();
+      // 'true' validates that it is a multilingual project
+      if (_get(Object.getPrototypeOf(LangViews.prototype), 'validateProject', this).call(this, true)) {
+        this.setState('initial');
 
-      if (!this.isMultilangProject()) {
-        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
-        this.setState('invalid');
-        return true;
+        /** kill and re-init typeahead to point to new project */
+        this.setupSourceInput();
       }
-
-      this.setState('initial');
-
-      /** kill and re-init typeahead to point to new project */
-      this.setupsourceInput();
-
-      return false;
     }
 
     /**
@@ -860,7 +868,7 @@ var LangViews = function (_mix$with) {
   }, {
     key: 'exportCSV',
     value: function exportCSV() {
-      var _this9 = this;
+      var _this10 = this;
 
       var csvContent = 'data:text/csv;charset=utf-8,Language,Title,Badges,' + this.getDateHeadings(false).join(',') + '\n';
 
@@ -868,7 +876,7 @@ var LangViews = function (_mix$with) {
       this.outputData.listData.forEach(function (page) {
         var pageName = '"' + page.label.descore().replace(/"/g, '""') + '"',
             badges = '"' + page.badges.map(function (badge) {
-          return _this9.config.badges[badge].name.replace(/"/g, '""');
+          return _this10.config.badges[badge].name.replace(/"/g, '""');
         }) + '"';
 
         csvContent += [page.lang, pageName, badges].concat(page.data).join(',') + '\n';
@@ -932,7 +940,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 /**
- * Shared chart-specific logic
+ * Shared chart-specific logic, used in all apps except Topviews
  * @param {class} superclass - base class
  * @returns {null} class extending superclass
  */
@@ -975,6 +983,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
         _this.chartType = $(e.currentTarget).data('type');
 
         $('.logarithmic-scale').toggle(_this.isLogarithmicCapable());
+        $('.begin-at-zero').toggle(_this.config.linearCharts.includes(_this.chartType));
 
         if (_this.rememberChart === 'true') {
           _this.setLocalStorage('pageviews-chart-preference', _this.chartType);
@@ -1233,6 +1242,26 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
+       * Get url to query the API based on app and options
+       * @param {String} entity - name of entity we're querying for (page name or project name)
+       * @param {moment} startDate - start date
+       * @param {moment} endDate - end date
+       * @return {String} the URL
+       */
+
+    }, {
+      key: 'getApiUrl',
+      value: function getApiUrl(entity, startDate, endDate) {
+        var uriEncodedEntityName = encodeURIComponent(entity);
+
+        if (this.app === 'siteviews') {
+          return this.isPageviews() ? 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/' + uriEncodedEntityName + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat)) : 'https://wikimedia.org/api/rest_v1/metrics/unique-devices/' + uriEncodedEntityName + '/' + $(this.config.platformSelector).val() + '/daily' + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        } else {
+          return 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + this.project + ('/' + $(this.config.platformSelector).val() + '/' + $(this.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(this.config.timestampFormat) + '/' + endDate.format(this.config.timestampFormat));
+        }
+      }
+
+      /**
        * Mother function for querying the API and processing data
        * @param  {Array}  entities - list of page names, or projects for Siteviews
        * @return {Deferred} Promise resolving with pageviews data and errors, if present
@@ -1242,9 +1271,6 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'getPageViewsData',
       value: function getPageViewsData(entities) {
         var _this6 = this;
-
-        var startDate = this.daterangepicker.startDate.startOf('day'),
-            endDate = this.daterangepicker.endDate.startOf('day');
 
         var dfd = $.Deferred(),
             count = 0,
@@ -1263,9 +1289,11 @@ var ChartHelpers = function ChartHelpers(superclass) {
         };
 
         var makeRequest = function makeRequest(entity, index) {
-          var uriEncodedEntityName = encodeURIComponent(entity);
-          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this6.project + ('/' + $(_this6.config.platformSelector).val() + '/' + $(_this6.config.agentSelector).val() + '/' + uriEncodedEntityName + '/daily') + ('/' + startDate.format(_this6.config.timestampFormat) + '/' + endDate.format(_this6.config.timestampFormat));
-          var promise = $.ajax({ url: url, dataType: 'json' });
+          var startDate = _this6.daterangepicker.startDate.startOf('day'),
+              endDate = _this6.daterangepicker.endDate.startOf('day'),
+              url = _this6.getApiUrl(entity, startDate, endDate),
+              promise = $.ajax({ url: url, dataType: 'json' });
+
           xhrData.promises.push(promise);
 
           promise.done(function (successData) {
@@ -1314,8 +1342,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
             if (cassandraError) {
               failedEntities.push(entity);
             } else {
-              // FIXME: use getSiteLink for siteviews
-              _this6.writeMessage(_this6.getPageLink(entity, _this6.project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+              var link = _this6.app === 'siteviews' ? _this6.getSiteLink(entity) : _this6.getPageLink(entity, _this6.project);
+              xhrData.errors.push(link + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
             }
           }).always(function () {
             if (++count === totalRequestCount) {
@@ -1381,6 +1409,17 @@ var ChartHelpers = function ChartHelpers(superclass) {
       key: 'isPageviews',
       value: function isPageviews() {
         return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+      }
+
+      /**
+       * Are we trying to show data on pageviews (as opposed to unique devices)?
+       * @return {Boolean} true or false
+       */
+
+    }, {
+      key: 'isUniqueDevices',
+      value: function isUniqueDevices() {
+        return !this.isPageviews();
       }
 
       /**
@@ -1653,6 +1692,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
+        var _this9 = this;
+
         if (xhrData.fatalErrors.length) {
           this.resetView(true);
           var fatalErrors = xhrData.fatalErrors.unique();
@@ -1662,18 +1703,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
         }
 
         if (xhrData.errors.length) {
-          var errorMessages = xhrData.errors.unique().map(function (error) {
-            return '<li>' + error + '</li>';
-          }).join('');
-
-          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          // const cassandraError = errorMessages.some(message => message === 'Error in Cassandra table storage backend');
-
-          this.writeMessage($.i18n('api-error', 'Pageviews API') + '<ul>' + errorMessages + '</ul>');
-
-          if (xhrData.entities && xhrData.errors.length === xhrData.entities.length) {
-            return false; // everything failed!
+          // if everything failed, reset the view, clearing out space taken up by empty chart
+          if (xhrData.entities && (xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length)) {
+            this.resetView();
           }
+
+          xhrData.errors.unique().forEach(function (error) {
+            return _this9.writeMessage(error);
+          });
         }
 
         return false;
@@ -1858,24 +1895,12 @@ var ListHelpers = function ListHelpers(superclass) {
     }
 
     /**
-     * Copy default values over to class instance
-     * Use JSON stringify/parsing so to make a deep clone of the defaults
+     * Prepare chart options before showing chart view, based on current chart type
      * @return {null} Nothing
      */
 
 
     _createClass(_class, [{
-      key: 'assignDefaults',
-      value: function assignDefaults() {
-        Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-      }
-
-      /**
-       * Prepare chart options before showing chart view, based on current chart type
-       * @return {null} Nothing
-       */
-
-    }, {
       key: 'assignOutputDataChartOpts',
       value: function assignOutputDataChartOpts() {
         var color = this.config.colors[0];
@@ -2309,15 +2334,19 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 var PvConfig = require('./pv_config');
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
 
 var Pv = function (_PvConfig) {
   _inherits(Pv, _PvConfig);
@@ -2329,9 +2358,11 @@ var Pv = function (_PvConfig) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
 
-    var defaults = _this.config.defaults;
+    var defaults = _this.config.defaults,
+        validParams = _this.config.validParams;
     _this.config = Object.assign({}, _this.config, appConfig);
     _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+    _this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
 
     _this.colorsStyleEl = undefined;
     _this.storage = {}; // used as fallback when localStorage is not supported
@@ -2406,31 +2437,62 @@ var Pv = function (_PvConfig) {
     }
 
     /**
-     * Check the validity of the date range of given params
+     * Add site notice for invalid parameter
+     * @param {String} param - name of parameter
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'addInvalidParamNotice',
+    value: function addInvalidParamNotice(param) {
+      this.addSiteNotice('danger', $.i18n('param-error-3', param, '/' + this.app + '/url_structure'), $.i18n('invalid-params'), true);
+    }
+
+    /**
+     * Validate the date range of given params
      *   and throw errors as necessary and/or set defaults
      * @param {Object} params - as returned by this.parseQueryString()
      * @returns {Boolean} true if there were no errors, false otherwise
      */
 
   }, {
-    key: 'checkDateRange',
-    value: function checkDateRange(params) {
+    key: 'validateDateRange',
+    value: function validateDateRange(params) {
       if (params.range) {
         if (!this.setSpecialRange(params.range)) {
-          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
+          this.addInvalidParamNotice('range');
           this.setSpecialRange(this.config.defaults.dateRange);
         }
       } else if (params.start) {
-        var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-            endDate = moment(params.end || Date.now());
+        var dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
+        // first set defaults
+        var startDate = void 0,
+            endDate = void 0;
+
+        // then check format of start and end date
+        if (params.start && dateRegex.test(params.start)) {
+          startDate = moment(params.start);
+        } else {
+          this.addInvalidParamNotice('start');
+          return false;
+        }
+        if (params.end && dateRegex.test(params.end)) {
+          endDate = moment(params.end);
+        } else {
+          this.addInvalidParamNotice('end');
+          return false;
+        }
+
+        // check if they are outside the valid range or if in the wrong order
         if (startDate < this.config.minDate || endDate < this.config.minDate) {
           this.addSiteNotice('danger', $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)), $.i18n('invalid-params'), true);
           return false;
         } else if (startDate > endDate) {
-          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+          this.addSiteNotice('danger', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
           return false;
         }
+
         /** directly assign startDate before calling setEndDate so events will be fired once */
         this.daterangepicker.startDate = startDate;
         this.daterangepicker.setEndDate(endDate);
@@ -2607,7 +2669,7 @@ var Pv = function (_PvConfig) {
     /**
      * Get the wiki URL given the page name
      *
-     * @param {string} page name
+     * @param {string} page - page name
      * @returns {string} URL for the page
      */
 
@@ -2620,6 +2682,19 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get the wiki URL given the page name
+     *
+     * @param {string} site - site name (e.g. en.wikipedia.org)
+     * @returns {string} URL for the site
+     */
+
+  }, {
+    key: 'getSiteLink',
+    value: function getSiteLink(site) {
+      return '<a target="_blank" href="//' + site + '.org">' + site + '</a>';
+    }
+
+    /**
      * Get the project name (without the .org)
      *
      * @returns {boolean} lang.projectname
@@ -2628,6 +2703,10 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getLocaleDateString',
     value: function getLocaleDateString() {
+      if (!navigator.language) {
+        return this.config.defaults.dateFormat;
+      }
+
       var formats = {
         'ar-sa': 'DD/MM/YY',
         'bg-bg': 'DD.M.YYYY',
@@ -2841,10 +2920,6 @@ var Pv = function (_PvConfig) {
         'es-us': 'M/D/YYYY'
       };
 
-      if (!navigator.language) {
-        return this.config.defaults.dateFormat;
-      }
-
       var key = navigator.language.toLowerCase();
       return formats[key] || this.config.defaults.dateFormat;
     }
@@ -2935,7 +3010,18 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'isChartApp',
     value: function isChartApp() {
-      return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
+      return !this.isListApp();
+    }
+
+    /**
+     * Is this one of the list-view apps?
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'isListApp',
+    value: function isListApp() {
+      return ['langviews', 'massviews', 'redirectviews'].includes(this.app);
     }
 
     /**
@@ -3046,7 +3132,9 @@ var Pv = function (_PvConfig) {
         var chunk = chunks[i].split('=');
 
         if (multiParam && chunk[0] === multiParam) {
-          params[multiParam] = chunk[1].split('|');
+          params[multiParam] = chunk[1].split('|').filter(function (param) {
+            return !!param;
+          });
         } else {
           params[chunk[0]] = chunk[1];
         }
@@ -3211,10 +3299,10 @@ var Pv = function (_PvConfig) {
         }
       });
 
-      this.daterangepicker.locale.format = this.dateFormat;
-      this.daterangepicker.updateElement();
-
       if (this.app !== 'topviews') {
+        this.daterangepicker.locale.format = this.dateFormat;
+        this.daterangepicker.updateElement();
+
         this.setupSelect2Colors();
 
         /**
@@ -3366,6 +3454,14 @@ var Pv = function (_PvConfig) {
       /** download listeners */
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
+
+      /** project input listeners, saving and restoring old value if new one is invalid */
+      $(this.config.projectInput).on('focusin', function () {
+        this.dataset.value = this.value;
+      });
+      $(this.config.projectInput).on('change', function (e) {
+        return _this7.validateProject(e);
+      });
     }
 
     /**
@@ -3416,7 +3512,7 @@ var Pv = function (_PvConfig) {
           daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
           monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
         },
-        startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+        startDate: moment().subtract(this.config.daysAgo, 'days'),
         minDate: this.config.minDate,
         maxDate: this.config.maxDate,
         ranges: ranges
@@ -3586,6 +3682,72 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Validate basic params against what is defined in the config,
+     *   and if they are invalid set the default
+     * @param {Object} params - params as fetched by this.parseQueryString()
+     * @returns {Object} same params with some invalid parameters correted, as necessary
+     */
+
+  }, {
+    key: 'validateParams',
+    value: function validateParams(params) {
+      var _this12 = this;
+
+      this.config.validateParams.forEach(function (paramKey) {
+        if (paramKey === 'project' && params.project) {
+          params.project = params.project.replace(/^www\./, '');
+        }
+
+        var defaultValue = _this12.config.defaults[paramKey],
+            paramValue = params[paramKey];
+
+        if (defaultValue && !_this12.config.validParams[paramKey].includes(paramValue)) {
+          // only throw error if they tried to provide an invalid value
+          if (!!paramValue) {
+            _this12.addInvalidParamNotice(paramKey);
+          }
+
+          params[paramKey] = defaultValue;
+        }
+      });
+
+      return params;
+    }
+
+    /**
+     * Adds listeners to the project input for validations against the site map,
+     *   reverting to the old value if the new one is invalid
+     * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
+     * @returns {Boolean} whether or not validations passed
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      var multilingual = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+      var projectInput = $(this.config.projectInput)[0];
+      var project = projectInput.value.replace(/^www\./, ''),
+          valid = false;
+
+      if (multilingual && !this.isMultilangProject()) {
+        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      } else if (siteDomains.includes(project)) {
+        this.clearMessages();
+        this.updateInterAppLinks();
+        valid = true;
+      } else {
+        this.writeMessage($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
+        project = projectInput.dataset.value;
+      }
+
+      projectInput.value = project;
+
+      return valid;
+    }
+
+    /**
      * Writes message just below the chart
      * @param {string} message - message to write
      * @param {boolean} clear - whether to clear any existing messages
@@ -3639,7 +3801,7 @@ var Pv = function (_PvConfig) {
 
 module.exports = Pv;
 
-},{"./pv_config":8}],8:[function(require,module,exports){
+},{"./pv_config":8,"./site_map":9}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3652,6 +3814,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
+
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
 
 /**
  * Configuration for all Pageviews applications.
@@ -3823,14 +3990,16 @@ var PvConfig = function () {
         chartType: function chartType(numDatasets) {
           return numDatasets > 1 ? 'line' : 'bar';
         },
-        daysAgo: 20,
         dateFormat: 'YYYY-MM-DD',
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
         bezierCurve: 'false',
         autoLogDetection: 'true',
         beginAtZero: 'false',
-        rememberChart: 'true'
+        rememberChart: 'true',
+        agent: 'user',
+        platform: 'all-access',
+        project: 'en.wikipedia.org'
       },
       globalChartOpts: {
         animation: {
@@ -3859,6 +4028,7 @@ var PvConfig = function () {
           return _this.config.linearLegend(chart.data.datasets, self);
         }
       },
+      daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
       maxDate: moment().subtract(1, 'days').startOf('day'),
       specialRanges: {
@@ -3866,12 +4036,17 @@ var PvConfig = function () {
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         latest: function latest() {
-          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.defaults.daysAgo : arguments[0];
+          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.daysAgo : arguments[0];
 
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
       },
-      timestampFormat: 'YYYYMMDD00'
+      timestampFormat: 'YYYYMMDD00',
+      validParams: {
+        agent: ['all-agents', 'user', 'spider', 'bot'],
+        platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
+        project: siteDomains
+      }
     };
   }
 
@@ -3928,7 +4103,7 @@ var PvConfig = function () {
 
 module.exports = PvConfig;
 
-},{}],9:[function(require,module,exports){
+},{"./site_map":9}],9:[function(require,module,exports){
 'use strict';
 
 /**

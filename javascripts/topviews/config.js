@@ -12,18 +12,19 @@ const pv = require('../shared/pv');
  * @type {Object}
  */
 const config = {
-  articleSelector: '.aqs-select2-selector',
+  select2Input: '.aqs-select2-selector',
   dateRangeSelector: '.aqs-date-range-selector',
-  dateLimit: 31, // num days
   defaults: {
-    dateRange: 'last-week',
-    daysAgo: 7,
-    excludes: [],
-    project: 'en.wikipedia.org'
+    dateRange: 'last-month',
+    excludes: []
   },
-  pageSize: 20,
+  maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
+  maxMonth: moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate(),
+  pageSize: 100,
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
+  validateParams: ['project', 'platform'],
   timestampFormat: 'YYYYMMDD00'
 };
+
 module.exports = config;

@@ -28,20 +28,33 @@
         </div>
         <div class="row aqs-row options">
           <!-- Date range selector -->
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-3 col-sm-3">
+            <label for="date-type-select">
+              <?php echo $I18N->msg( 'date-type' ); ?>
+            </label>
+            <select class="form-control" id="date-type-select">
+              <option value="monthly">
+                <?php echo $I18N->msg( 'monthly' ); ?>
+              </option>
+              <option value="daily">
+                <?php echo $I18N->msg( 'daily' ); ?>
+              </option>
+            </select>
+          </div>
+          <div class="col-lg-3 col-sm-3">
             <label for="range-input">
-              <?php echo $I18N->msg( 'dates' ); ?>
+              <?php echo $I18N->msg( 'date' ); ?>
             </label>
             <input class="form-control aqs-date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-3 col-sm-3">
             <label for="project-input">
               <?php echo $I18N->msg( 'project' ); ?>
             </label>
             <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
           </div>
-          <div class="col-lg-4 col-sm-4">
+          <div class="col-lg-3 col-sm-3">
             <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
@@ -67,7 +80,13 @@
             <label for="article-input">
               <?php echo $I18N->msg( 'excluded-pages' ); ?>
             </label>
-            <select class="aqs-select2-selector col-lg-12 invisible" id="article-input" multiple="multiple"></select>
+            <span class="pull-right">
+              <label>
+                <input class="mainspace-only-option" type="checkbox" checked="checked">
+                <?php echo $I18N->msg( 'mainspace-only-option' ); ?>
+              </label>
+            </span>
+            <select class="aqs-select2-selector col-lg-12 invisible" multiple="multiple"></select>
           </div>
         </div>
         <!-- FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line -->
@@ -85,19 +104,18 @@
           <?php include "../_data_links.php"; ?>
         </span>
         <!-- Chart -->
-        <div class="col-lg-12">
+        <div class="col-lg-12 data-notice invisible">
           <small class="text-muted">
-            <?php echo $I18N->msg( 'topviews-data-approx' ); ?>
             <?php echo $I18N->msg( 'topviews-false-positive' ); ?>
           </small>
         </div>
+        <div class="message-container col-lg-10"></div>
         <div class="chart-container col-lg-12 loading"></div>
         <div class="col-lg-12 text-center">
           <a class="expand-chart" href="#">
             <?php echo $I18N->msg( 'show-more' ); ?>
           </a>
         </div>
-        <div class="message-container col-lg-10"></div>
         <?php include "../_footer.php"; ?>
       </main>
       <?php include "../_modals.php"; ?>

@@ -42,5 +42,18 @@ module.exports = {
     client.expect.element('.select2-selection__rendered').to.have.text.that.matches(/Europe\n.*Asia/m);
     client.expect.element('#chart-legend').to.have.text.that.matches(/\bEurope\b[\s\S]*\bAsia\b/);
     client.end();
+  },
+  'Topviews loads with excludes properly added and data printed': client => {
+    client
+      .url('http://localhost/topviews/index?project=en.wikipedia.org&platform=all-access&date=2016-08&excludes=Michael_Phelps')
+      .waitForElementPresent('.topview-entry', 10000);
+    client.execute('return $(".aqs-select2-selector").val()', [], response => {
+      client.expect(_.isEqual(
+        response.value,
+        ['Michael Phelps']
+      )).to.equal(true);
+    });
+    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)');
+    client.end();
   }
 };

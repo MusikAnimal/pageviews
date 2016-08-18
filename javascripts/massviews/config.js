@@ -17,16 +17,14 @@ const config = {
   defaults: {
     dateRange: 'latest-20',
     project: 'en.wikipedia.org',
-    params: {
-      sort: 'views',
-      source: 'category',
-      sourceProject: '',
-      direction: 1,
-      outputData: [],
-      total: 0,
-      view: 'list',
-      subjectpage: 0
-    }
+    sort: 'views',
+    source: 'category',
+    sourceProject: '',
+    direction: 1,
+    outputData: [],
+    total: 0,
+    view: 'list',
+    subjectpage: 0
   },
   linearLegend: (datasets, scope) => {
     return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.outputData.sum)}
@@ -57,6 +55,7 @@ const config = {
   sourceInput: '#source_input',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
+  validateParams: ['source', 'subjectpage', 'platform', 'agent', 'direction', 'sort', 'view'],
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],

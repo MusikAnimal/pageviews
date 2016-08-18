@@ -54,10 +54,12 @@
                 = $I18N->msg( 'all' )
               %option(value="desktop" data-value="desktop" data-ud-value="desktop-site")
                 = $I18N->msg( 'desktop' )
-              %option.platform-select--mobile-web(value="mobile-app")
+              %option.platform-select--mobile-app(value="mobile-app")
                 = $I18N->msg( 'mobile-app' )
-              %option(value="mobile-web" data-value="mobile-web" data-ud-value="mobile-site")
+              %option.platform-select--mobile-web(value="mobile-web")
                 = $I18N->msg( 'mobile-web' )
+              %option.platform-select--mobile.none(data-ud-value="mobile-site")
+                = $I18N->msg( 'mobile' )
 
           %div.col-lg-2.col-sm-2
             %label(for="agent-select")

@@ -8,7 +8,6 @@
 
 const config = require('./config');
 const siteMap = require('./shared/site_map');
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('./shared/pv');
 const ChartHelpers = require('./shared/chart_helpers');
 
@@ -35,7 +34,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @return {null} Nothing
    */
   initialize() {
-    this.setupProjectInput();
     this.setupDateRangeSelector();
     this.setupSelect2();
     this.setupSelect2Colors();
@@ -98,16 +96,16 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     /** show loading indicator and add error handling for timeouts */
     this.startSpinny();
 
-    let params = this.parseQueryString('pages');
+    let params = this.validateParams(
+      this.parseQueryString('pages')
+    );
 
-    $(this.config.projectInput).val(params.project || this.config.defaults.project);
-    if (this.validateProject()) return;
+    $(this.config.projectInput).val(params.project);
+    $(this.config.platformSelector).val(params.platform);
+    $(this.config.agentSelector).val(params.agent);
 
     this.patchUsage();
-    this.checkDateRange(params);
-
-    $(this.config.platformSelector).val(params.platform || 'all-access');
-    $('#agent-select').val(params.agent || 'user');
+    this.validateDateRange(params);
 
     this.resetSelect2();
 
@@ -206,7 +204,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     let params = {
       project: $(this.config.projectInput).val(),
       platform: $(this.config.platformSelector).val(),
-      agent: $('#agent-select').val()
+      agent: $(this.config.agentSelector).val()
     };
 
     /**
@@ -296,6 +294,18 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
+   * Calls parent setupProjectInput and updates the view if validations passed
+   *   reverting to the old value if the new one is invalid
+   * @returns {null} nothing
+   * @override
+   */
+  validateProject() {
+    if (super.validateProject()) {
+      this.processInput();
+    }
+  }
+
+  /**
    * General place to add page-wide listeners
    * @override
    * @returns {null} - nothing
@@ -303,23 +313,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   setupListeners() {
     super.setupListeners();
     $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
-  }
-
-  /**
-   * Setup listeners for project input
-   * @returns {null} - nothing
-   */
-  setupProjectInput() {
-    $(this.config.projectInput).on('change', e => {
-      if (!e.target.value) {
-        e.target.value = this.config.defaults.project;
-        return;
-      }
-      if (this.validateProject()) return;
-      this.resetView(true); // TODO: load default articles
-
-      this.updateInterAppLinks();
-    });
   }
 
   /**
@@ -337,9 +330,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     }
 
     // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) {
-      this.clearMessages();
-    }
+    this.clearMessages();
 
     this.params = location.search;
     this.prevChartType = this.chartType;
@@ -347,33 +338,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.startSpinny(); // show spinny and capture against fatal errors
 
     this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
-  }
-
-  /**
-   * Checks value of project input and validates it against site map
-   * @returns {boolean} whether the currently input project is INvalid
-   */
-  validateProject() {
-    let project = $(this.config.projectInput).val();
-
-    /** Remove www hostnames since the pageviews API doesn't expect them. */
-    if (project.startsWith('www.')) {
-      project = project.substring(4);
-      $(this.config.projectInput).val(project);
-    }
-
-    if (siteDomains.includes(project)) {
-      $('.validate').remove();
-      $('.select2-selection--multiple').removeClass('disabled');
-    } else {
-      this.resetView(true);
-      this.writeMessage(
-        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
-        true
-      );
-      $('.select2-selection--multiple').addClass('disabled');
-      return true;
-    }
   }
 
   /**

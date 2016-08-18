@@ -20,7 +20,7 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews#sites={{SERVERNAME}}</pre>"; ?>
+          <?php $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews?sites={{SERVERNAME}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $siteviewsLink ), 'parsemag' => true ) ); ?>
         </div>
         <div>
@@ -41,8 +41,29 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-source', array( 'variables' => array( '<code>pageviews</code>', '<code>unique-devices</code>' ), 'parsemag' => true ) ); ?>
             </dd>
-            <?php include "../../url_parts/platform.php"; ?>
-            <?php include "../../url_parts/agent.php"; ?>
+            <dt>platform</dt>
+            <dd>
+              <p>
+                <i>
+                  <?php echo $I18N->msg( 'url-structure-siteviews-platform', array( 'variables' => array( 'source', '<code>pageviews</code>' ) ) ) . ':'; ?>
+                </i>
+                <br>
+                <?php echo $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) ); ?>
+              </p>
+              <p>
+                <i>
+                  <?php echo $I18N->msg( 'url-structure-siteviews-platform', array( 'variables' => array( 'source', '<code>unique-devices</code>' ) ) ) . ':'; ?>
+                </i>
+                <br>
+                <?php echo $I18N->msg( 'url-structure-siteviews-platform-unique-devices', array( 'variables' => array( '<code>all-sites</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop-site</code>', '<code>mobile-site</code>' ), 'parsemag' => true ) ); ?>
+              </p>
+            </dd>
+            <dt>agent</dt>
+            <dd>
+              <?php echo $I18N->msg( 'url-structure-siteviews-agent', array( 'variables' => array( '<code>source</code>', '<code>pageviews</code>' ) ) ); ?>
+              <br>
+              <?php echo $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) ); ?>
+            </dd>
             <?php include "../../url_parts/autolog.php"; ?>
           </dl>
         </div>

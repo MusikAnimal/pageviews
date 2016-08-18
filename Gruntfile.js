@@ -1,15 +1,8 @@
 'use strict';
 
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('gruntify-eslint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-scss-lint');
-  grunt.loadNpmTasks('grunt-haml-php');
-  grunt.loadNpmTasks('grunt-jsdoc');
+  require('load-grunt-tasks')(grunt);
 
   const coreJSDependencies = [
     'vendor/javascripts/jquery.min.js',
@@ -196,12 +189,13 @@ module.exports = function(grunt) {
           // order matters here
           'public_html/topviews/application.js': coreJSDependencies.concat([
             'vendor/javascripts/select2.min.js',
-            'vendor/javascripts/daterangepicker.min.js',
+            'vendor/javascripts/bootstrap-datepicker.min.js',
+            'vendor/javascripts/simpleStorage.js',
             'public_html/topviews/topviews.js'
           ]),
           'public_html/topviews/application.css': coreCSSDependencies.concat([
             'vendor/stylesheets/select2.min.css',
-            'vendor/stylesheets/daterangepicker.min.css',
+            'vendor/stylesheets/bootstrap-datepicker.min.css',
             'public_html/topviews/topviews.css'
           ]),
           'public_html/topviews/faq/application.js': coreJSDependencies,
@@ -341,7 +335,7 @@ module.exports = function(grunt) {
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
 
   apps.forEach(app => {
-    grunt.registerTask(app, [`browserify:${app}`, `sass:${app}`, `concat:${app}`, 'haml']);
+    grunt.registerTask(app, [`newer:browserify:${app}`, `newer:sass:${app}`, `newer:concat:${app}`, 'newer:haml']);
   });
 
   grunt.registerTask('default', ['pageviews']);

@@ -47,7 +47,20 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * @returns {String} URL
    */
   getTopviewsURL(project) {
-    return `/topviews?${$.param(this.getParams())}&project=${project}`;
+    let params = {
+      project,
+      platform: 'all-access'
+    };
+
+    // Use the month of the start date as the date value for Topviews.
+    // If we are on the cusp of a new month, use the previous month as last month's data may not be available yet.
+    let startDate = moment(this.daterangepicker.startDate);
+    if (startDate.month() === moment().month() || startDate.month() === moment().subtract(2, 'days').month()) {
+      startDate.subtract(1, 'month');
+    }
+    params.date = startDate.startOf('month').format('YYYY-MM');
+
+    return `/topviews?${$.param(params)}&project=${project}`;
   }
 
   /**
@@ -58,22 +71,23 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   popParams() {
     this.startSpinny();
 
-    let params = this.parseQueryString('sites');
+    let params = this.validateParams(
+      this.parseQueryString('sites')
+    );
 
     this.patchUsage();
-    this.checkDateRange(params);
 
-    $(this.config.dataSourceSelector).val(params.source || 'pageviews');
-
+    $(this.config.dataSourceSelector).val(params.source);
     this.setupDataSourceSelector();
+    $(this.config.platformSelector).val(params.platform);
 
-    $(this.config.platformSelector).val(params.platform || 'all-access');
     if (params.source === 'pageviews') {
-      $(this.config.agentSelector).val();
+      $(this.config.agentSelector).val(params.agent);
     } else {
       $(this.config.dataSourceSelector).trigger('change');
     }
 
+    this.validateDateRange(params);
     this.resetSelect2();
 
     if (!params.sites || (params.sites.length === 1 && !params.sites[0])) {
@@ -178,22 +192,30 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setPlatformOptionValues();
 
     $(this.config.dataSourceSelector).on('change', e => {
+      const value = $(this.config.platformSelector).val() || '',
+        wasMobileValue = value.includes('mobile');
+
       if (this.isPageviews()) {
-        $('.platform-select--mobile-web').show();
+        $('.platform-select--mobile-web, .platform-select--mobile-app').show();
+        $('.platform-select--mobile').hide();
         $(this.config.agentSelector).prop('disabled', false);
       } else {
-        $('.platform-select--mobile-web').hide();
+        $('.platform-select--mobile-web, .platform-select--mobile-app').hide();
+        $('.platform-select--mobile').show();
         $(this.config.agentSelector).val('user').prop('disabled', true);
       }
 
       this.setPlatformOptionValues();
 
-      /** reset to all-access if currently on mobile-app for unique-devices (not pageviews) */
-      if ($(this.config.platformSelector).val() === 'mobile-app' && !this.isPageviews()) {
-        $(this.config.platformSelector).val('all-sites'); // chart will automatically re-render
-      } else {
-        this.processInput();
+      // If we're going from a mobile value select a corresponding mobile value for the new data source.
+      // Desktop and all-access share the same options so we don't need to add logic for those options.
+      if (wasMobileValue && this.isUniqueDevices()) {
+        $(this.config.platformSelector).val('mobile-site'); // chart will automatically re-render
+      } else if (wasMobileValue && this.isPageviews()) {
+        $(this.config.platformSelector).val('mobile-web');
       }
+
+      this.processInput();
     });
   }
 
@@ -220,17 +242,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    /** @type {Object} everything we need to keep track of for the promises */
-    let xhrData = {
-      entities: $(config.select2Input).select2('val') || [],
-      labels: [], // Labels (dates) for the x-axis.
-      datasets: [], // Data for each site timeseries
-      errors: [], // Queue up errors to show after all requests have been made
-      fatalErrors: [], // Unrecoverable JavaScript errors
-      promises: []
-    };
+    const entities = $(config.select2Input).select2('val') || [];
 
-    if (!xhrData.entities.length) {
+    if (!entities.length) {
       return this.resetView();
     }
 
@@ -240,68 +254,25 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.destroyChart();
     this.startSpinny();
 
-    /** Collect parameters from inputs. */
-    const startDate = this.daterangepicker.startDate.startOf('day'),
-      endDate = this.daterangepicker.endDate.startOf('day');
+    this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+  }
 
-    /**
-     * Asynchronously collect the data from Analytics Query Service API,
-     * process it to Chart.js format and initialize the chart.
-     */
-    xhrData.entities.forEach((site, index) => {
-      const uriEncodedSite = encodeURIComponent(site);
+  /**
+   * Extends super.validateParams to handle special conditional params specific to Siteviews
+   * @param {Object} params - params as fetched by this.parseQueryString()
+   * @returns {Object} same params with some invalid parameters correted, as necessary
+   * @override
+   */
+  validateParams(params) {
+    if (params.source === 'unique-devices') {
+      this.config.validParams.platform = ['all-sites', 'desktop-site', 'mobile-site'];
+      this.config.defaults.platform = 'all-sites';
+      params.agent = 'user';
+    } else {
+      this.config.validParams.agent = ['all-agents', 'user', 'spider'];
+    }
 
-      /** @type {String} Url to query the API. */
-      const url = this.isPageviews() ? (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedSite}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      ) : (
-        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedSite}/${$(this.config.platformSelector).val()}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({
-        url: url,
-        dataType: 'json'
-      });
-      xhrData.promises.push(promise);
-
-      promise.success(successData => {
-        try {
-          if (this.isPageviews()) {
-            successData = this.fillInZeros(successData, startDate, endDate);
-          }
-
-          /** Build the site's dataset. */
-          if (this.config.linearCharts.includes(this.chartType)) {
-            xhrData.datasets.push(this.getLinearData(successData, site, index));
-          } else {
-            xhrData.datasets.push(this.getCircularData(successData, site, index));
-          }
-
-          /** fetch the labels for the x-axis on success if we haven't already */
-          if (successData.items && !xhrData.labels.length) {
-            xhrData.labels = successData.items.map(elem => {
-              return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
-            });
-          }
-        } catch (err) {
-          return xhrData.fatalErrors.push(err);
-        }
-      }).fail(data => {
-        if (data.status === 404) {
-          this.writeMessage(
-            `<a href='https://${site.escape()}'>${site.escape()}</a> - ${$.i18n('api-error-no-data')}`
-          );
-          // remove this site from the list of entities to analyze
-          xhrData.entities = xhrData.entities.filter(el => el !== site);
-        } else {
-          xhrData.errors.push(data.responseJSON.detail[0]);
-        }
-      });
-    });
-
-    $.whenAll(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
+    return super.validateParams(params);
   }
 
   /**

@@ -28,14 +28,6 @@
           <?php include "../faq_parts/chart_type.php"; ?>
           <li class="list-group-item">
             <p>
-              <strong><?php echo $I18N->msg( 'faq-line-chart-title' ); ?></strong>
-            </p>
-            <p>
-              <?php echo $I18N->msg( 'faq-line-chart-body' ); ?>
-            </p>
-          </li>
-          <li class="list-group-item">
-            <p>
               <strong><?php echo $I18N->msg( 'faq-top-viewed-title' ); ?></strong>
             </p>
             <p>

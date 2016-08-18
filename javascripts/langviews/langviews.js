@@ -61,15 +61,21 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.renderData();
     });
 
-    $(this.config.projectInput).on('change', () => {
-      this.validateProject();
-      this.updateInterAppLinks();
-    });
-
     $('.view-btn').on('click', e => {
       document.activeElement.blur();
       this.view = e.currentTarget.dataset.value;
       this.toggleView(this.view);
+    });
+  }
+
+  /**
+   * Copy necessary default values to class instance.
+   * Called when the view is reset.
+   * @return {null} Nothing
+   */
+  assignDefaults() {
+    ['sort', 'direction', 'outputData', 'total', 'view'].forEach(defaultKey => {
+      this[defaultKey] = this.config.defaults[defaultKey];
     });
   }
 
@@ -245,6 +251,9 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       params.sort = this.sort;
       params.direction = this.direction;
       params.view = this.view;
+
+      /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
+      if (this.noLogScale) params.autolog = 'false';
     }
 
     return params;
@@ -461,7 +470,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         return dfd.reject(`${$.i18n('api-error', 'Wikidata')}: ${data.error.info}`);
       } else if (data.entities['-1']) {
         return dfd.reject(
-          `<a href='${this.getPageURL(pageName).escape()}'>${pageName.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
+          `<a target='_blank' href='${this.getPageURL(pageName).escape()}'>${pageName.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
         );
       }
 
@@ -505,36 +514,39 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {null} nothing
    */
   popParams() {
-    let params = this.parseQueryString('pages');
+    let params = this.validateParams(
+      this.parseQueryString('pages')
+    );
 
-    $(this.config.projectInput).val(params.project || this.config.defaults.project);
-    if (this.validateProject()) return;
+    $(this.config.projectInput).val(params.project);
+    this.validateDateRange(params);
 
     this.patchUsage();
 
-    // if date range is invalid, remove page from params so we don't process the default date range
-    if (!this.checkDateRange(params)) {
+    // fill in value for the page
+    if (params.page) {
+      $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
+    }
+
+    // If there are invalid params, remove page from params so we don't process the defaults.
+    // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
+    //   or any indication the validations failed. This is hacky but necessary.
+    if ($('.site-notice .alert-danger').length) {
       delete params.page;
     }
 
-    $(this.config.platformSelector).val(params.platform || 'all-access');
-    $(this.config.agentSelector).val(params.agent || 'user');
+    $(this.config.platformSelector).val(params.platform);
+    $(this.config.agentSelector).val(params.agent);
 
-    /** import params or set defaults if invalid */
+    /** export necessary params to outer scope */
     ['sort', 'direction', 'view'].forEach(key => {
-      const value = params[key];
-      if (value && this.config.validParams[key].includes(value)) {
-        params[key] = value;
-        this[key] = value;
-      } else {
-        params[key] = this.config.defaults.params[key];
-        this[key] = this.config.defaults.params[key];
-      }
+      this[key] = params[key];
     });
+
+    this.setupSourceInput();
 
     /** start up processing if page name is present */
     if (params.page) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
       this.processInput();
     }
   }
@@ -646,10 +658,9 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Setup typeahead on the article input, killing the prevous instance if present
-   * Called in validateProject, which is called in popParams when the app is first loaded
    * @return {null} Nothing
    */
-  setupsourceInput() {
+  setupSourceInput() {
     if (this.typeahead) this.typeahead.destroy();
 
     $(this.config.sourceInput).typeahead({
@@ -675,27 +686,19 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Validate the currently entered project. Called when the value is changed
-   * @return {boolean} true if validation failed
+   * Calls parent setupProjectInput and updates the view if validations passed
+   *   reverting to the old value if the new one is invalid
+   * @returns {null} nothing
+   * @override
    */
   validateProject() {
-    const project = $(this.config.projectInput).val();
+    // 'true' validates that it is a multilingual project
+    if (super.validateProject(true)) {
+      this.setState('initial');
 
-    if (!this.isMultilangProject()) {
-      this.writeMessage(
-        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
-        true
-      );
-      this.setState('invalid');
-      return true;
+      /** kill and re-init typeahead to point to new project */
+      this.setupSourceInput();
     }
-
-    this.setState('initial');
-
-    /** kill and re-init typeahead to point to new project */
-    this.setupsourceInput();
-
-    return false;
   }
 
   /**

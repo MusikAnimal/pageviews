@@ -16,15 +16,6 @@ const ListHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Copy default values over to class instance
-   * Use JSON stringify/parsing so to make a deep clone of the defaults
-   * @return {null} Nothing
-   */
-  assignDefaults() {
-    Object.assign(this, JSON.parse(JSON.stringify(this.config.defaults.params)));
-  }
-
-  /**
    * Prepare chart options before showing chart view, based on current chart type
    * @return {null} Nothing
    */

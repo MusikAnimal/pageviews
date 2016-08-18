@@ -69,6 +69,22 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Copy necessary default values to class instance.
+   * Called when the view is reset.
+   * @return {null} Nothing
+   */
+  assignDefaults() {
+    ['sort', 'source', 'sourceProject', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(defaultKey => {
+      this[defaultKey] = this.config.defaults[defaultKey];
+    });
+  }
+
+  /**
+   * Show/hide form elements based on the selected source
+   * @param  {Object} node - HTML element of the selected source
+   * @return {null} nothing
+   */
   updateSourceInput(node) {
     const source = node.dataset.value;
 
@@ -139,6 +155,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       params.sort = this.sort;
       params.direction = this.direction;
       params.view = this.view;
+
+      /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
+      if (this.noLogScale) params.autolog = 'false';
     }
 
     return params;
@@ -481,16 +500,31 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {null} nothing
    */
   popParams() {
-    let params = this.parseQueryString();
+    let params = this.validateParams(
+      this.parseQueryString()
+    );
+    this.validateDateRange(params);
 
     this.patchUsage();
 
-    /**
-     * If they requested more than 10 pages in Pageviews (via typing it in the URL)
-     *   they are redirected to Massviews with an auto-generated PagePile.
-     *   This shows a message explaining what happened.
-     */
-    if (params.overflow && params.source === 'pagepile' && params.target) {
+    this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
+
+    // fill in value for the target
+    if (params.target) {
+      $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
+    }
+
+    // If there are invalid params, remove target from params so we don't process the defaults.
+    // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
+    //   or any indication the validations failed. This is hacky but necessary.
+    if ($('.site-notice .alert-danger').length) {
+      delete params.target;
+    } else if (params.overflow && params.source === 'pagepile' && params.target) {
+      /**
+       * If they requested more than 10 pages in Pageviews (via typing it in the URL)
+       *   they are redirected to Massviews with an auto-generated PagePile.
+       *   This shows a message explaining what happened.
+       */
       this.addSiteNotice(
         'info',
         $.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target)),
@@ -499,46 +533,25 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       );
     }
 
-    // if date range is invalid, remove target so we don't process the default date range
-    if (!this.checkDateRange(params)) {
-      delete params.target;
-    }
+    $(this.config.platformSelector).val(params.platform);
+    $(this.config.agentSelector).val(params.agent);
 
-    $(this.config.platformSelector).val(params.platform || 'all-access');
-    $(this.config.agentSelector).val(params.agent || 'user');
-
-    /** import params or set defaults if invalid */
+    /** export necessary params to outer scope */
     ['sort', 'direction', 'view', 'source', 'subjectpage'].forEach(key => {
-      const value = params[key];
-      if (value && this.config.validParams[key].includes(value)) {
-        params[key] = value;
-        this[key] = value;
-      } else {
-        params[key] = this.config.defaults.params[key];
-        this[key] = this.config.defaults.params[key];
-      }
+      this[key] = params[key];
     });
 
-    if (params.source === 'quarry') {
-      if (params.project) {
-        $('.quarry-project').val(params.project);
-      } else {
-        delete params.target; // don't process since if we don't have a project
-      }
+    if (params.source === 'quarry' && params.project) {
+      $('.quarry-project').val(params.project);
     }
 
     if (params.subjectpage === '1') {
       $('.category-subject-toggle--input').prop('checked', true);
     }
 
-    this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
-
     /** start up processing if necessary params are present */
     if (params.target) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
       this.processInput();
-    } else {
-      this.setState('initial');
     }
   }
 

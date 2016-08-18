@@ -20,7 +20,11 @@ const config = {
   },
   linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
-  select2Input: '.aqs-select2-selector'
+  select2Input: '.aqs-select2-selector',
+  validateParams: ['tools'],
+  validParams: {
+    tools: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews']
+  }
 };
 
 module.exports = config;

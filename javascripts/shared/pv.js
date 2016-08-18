@@ -1,21 +1,25 @@
 /**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews)
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 const PvConfig = require('./pv_config');
+const siteMap = require('./site_map');
+const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews) */
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
 class Pv extends PvConfig {
   constructor(appConfig) {
     super(appConfig);
 
     /** assign initial class properties */
-    const defaults = this.config.defaults;
+    const defaults = this.config.defaults,
+      validParams = this.config.validParams;
     this.config = Object.assign({}, this.config, appConfig);
     this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+    this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
 
     this.colorsStyleEl = undefined;
     this.storage = {}; // used as fallback when localStorage is not supported
@@ -95,21 +99,52 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Check the validity of the date range of given params
+   * Add site notice for invalid parameter
+   * @param {String} param - name of parameter
+   * @returns {null} nothing
+   */
+  addInvalidParamNotice(param) {
+    this.addSiteNotice(
+      'danger',
+      $.i18n('param-error-3', param, `/${this.app}/url_structure`),
+      $.i18n('invalid-params'),
+      true
+    );
+  }
+
+  /**
+   * Validate the date range of given params
    *   and throw errors as necessary and/or set defaults
    * @param {Object} params - as returned by this.parseQueryString()
    * @returns {Boolean} true if there were no errors, false otherwise
    */
-  checkDateRange(params) {
+  validateDateRange(params) {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
-        this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
+        this.addInvalidParamNotice('range');
         this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
-      const startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
-        endDate = moment(params.end || Date.now());
+      const dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
+      // first set defaults
+      let startDate, endDate;
+
+      // then check format of start and end date
+      if (params.start && dateRegex.test(params.start)) {
+        startDate = moment(params.start);
+      } else {
+        this.addInvalidParamNotice('start');
+        return false;
+      }
+      if (params.end && dateRegex.test(params.end)) {
+        endDate = moment(params.end);
+      } else {
+        this.addInvalidParamNotice('end');
+        return false;
+      }
+
+      // check if they are outside the valid range or if in the wrong order
       if (startDate < this.config.minDate || endDate < this.config.minDate) {
         this.addSiteNotice('danger',
           $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)),
@@ -118,9 +153,10 @@ class Pv extends PvConfig {
         );
         return false;
       } else if (startDate > endDate) {
-        this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+        this.addSiteNotice('danger', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
         return false;
       }
+
       /** directly assign startDate before calling setEndDate so events will be fired once */
       this.daterangepicker.startDate = startDate;
       this.daterangepicker.setEndDate(endDate);
@@ -282,11 +318,21 @@ class Pv extends PvConfig {
   /**
    * Get the wiki URL given the page name
    *
-   * @param {string} page name
+   * @param {string} page - page name
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
     return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/'/, escape)}`;
+  }
+
+  /**
+   * Get the wiki URL given the page name
+   *
+   * @param {string} site - site name (e.g. en.wikipedia.org)
+   * @returns {string} URL for the site
+   */
+  getSiteLink(site) {
+    return `<a target="_blank" href="//${site}.org">${site}</a>`;
   }
 
   /**
@@ -301,6 +347,10 @@ class Pv extends PvConfig {
   }
 
   getLocaleDateString() {
+    if (!navigator.language) {
+      return this.config.defaults.dateFormat;
+    }
+
     const formats = {
       'ar-sa': 'DD/MM/YY',
       'bg-bg': 'DD.M.YYYY',
@@ -514,10 +564,6 @@ class Pv extends PvConfig {
       'es-us': 'M/D/YYYY'
     };
 
-    if (!navigator.language) {
-      return this.config.defaults.dateFormat;
-    }
-
     const key = navigator.language.toLowerCase();
     return formats[key] || this.config.defaults.dateFormat;
   }
@@ -590,7 +636,15 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isChartApp() {
-    return !['langviews', 'massviews', 'redirectviews'].includes(this.app);
+    return !this.isListApp();
+  }
+
+  /**
+   * Is this one of the list-view apps?
+   * @return {Boolean} true or false
+   */
+  isListApp() {
+    return ['langviews', 'massviews', 'redirectviews'].includes(this.app);
   }
 
   /**
@@ -691,7 +745,7 @@ class Pv extends PvConfig {
       let chunk = chunks[i].split('=');
 
       if (multiParam && chunk[0] === multiParam) {
-        params[multiParam] = chunk[1].split('|');
+        params[multiParam] = chunk[1].split('|').filter(param => !!param);
       } else {
         params[chunk[0]] = chunk[1];
       }
@@ -830,10 +884,10 @@ class Pv extends PvConfig {
       }
     });
 
-    this.daterangepicker.locale.format = this.dateFormat;
-    this.daterangepicker.updateElement();
-
     if (this.app !== 'topviews') {
+      this.daterangepicker.locale.format = this.dateFormat;
+      this.daterangepicker.updateElement();
+
       this.setupSelect2Colors();
 
       /**
@@ -951,6 +1005,12 @@ class Pv extends PvConfig {
     /** download listeners */
     $('.download-csv').on('click', this.exportCSV.bind(this));
     $('.download-json').on('click', this.exportJSON.bind(this));
+
+    /** project input listeners, saving and restoring old value if new one is invalid */
+    $(this.config.projectInput).on('focusin', function() {
+      this.dataset.value = this.value;
+    });
+    $(this.config.projectInput).on('change', e => this.validateProject(e));
   }
 
   /**
@@ -1014,7 +1074,7 @@ class Pv extends PvConfig {
           $.i18n('december')
         ]
       },
-      startDate: moment().subtract(this.config.defaults.daysAgo, 'days'),
+      startDate: moment().subtract(this.config.daysAgo, 'days'),
       minDate: this.config.minDate,
       maxDate: this.config.maxDate,
       ranges: ranges
@@ -1177,6 +1237,68 @@ class Pv extends PvConfig {
         link.href = `${url}?project=${this.project.escape()}.org`;
       }
     });
+  }
+
+  /**
+   * Validate basic params against what is defined in the config,
+   *   and if they are invalid set the default
+   * @param {Object} params - params as fetched by this.parseQueryString()
+   * @returns {Object} same params with some invalid parameters correted, as necessary
+   */
+  validateParams(params) {
+    this.config.validateParams.forEach(paramKey => {
+      if (paramKey === 'project' && params.project) {
+        params.project = params.project.replace(/^www\./, '');
+      }
+
+      const defaultValue = this.config.defaults[paramKey],
+        paramValue = params[paramKey];
+
+      if (defaultValue && !this.config.validParams[paramKey].includes(paramValue)) {
+        // only throw error if they tried to provide an invalid value
+        if (!!paramValue) {
+          this.addInvalidParamNotice(paramKey);
+        }
+
+        params[paramKey] = defaultValue;
+      }
+    });
+
+    return params;
+  }
+
+  /**
+   * Adds listeners to the project input for validations against the site map,
+   *   reverting to the old value if the new one is invalid
+   * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
+   * @returns {Boolean} whether or not validations passed
+   */
+  validateProject(multilingual = false) {
+    const projectInput = $(this.config.projectInput)[0];
+    let project = projectInput.value.replace(/^www\./, ''),
+      valid = false;
+
+    if (multilingual && !this.isMultilangProject()) {
+      this.writeMessage(
+        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
+        true
+      );
+      project = projectInput.dataset.value;
+    } else if (siteDomains.includes(project)) {
+      this.clearMessages();
+      this.updateInterAppLinks();
+      valid = true;
+    } else {
+      this.writeMessage(
+        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
+        true
+      );
+      project = projectInput.dataset.value;
+    }
+
+    projectInput.value = project;
+
+    return valid;
   }
 
   /**
