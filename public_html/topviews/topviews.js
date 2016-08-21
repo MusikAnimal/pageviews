@@ -1495,6 +1495,42 @@ var Pv = function (_PvConfig) {
 
       $('.site-notice').append('<div class=\'alert alert-' + level + dismissable + '\'>' + markup + '</div>');
     }
+
+    /**
+     * Check the validity of the date range of given params
+     *   and throw errors as necessary and/or set defaults
+     * @param {Object} params - as returned by this.parseQueryString()
+     * @returns {Boolean} true if there were no errors, false otherwise
+     */
+
+  }, {
+    key: 'checkDateRange',
+    value: function checkDateRange(params) {
+      if (params.range) {
+        if (!this.setSpecialRange(params.range)) {
+          this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
+          this.setSpecialRange(this.config.defaults.dateRange);
+        }
+      } else if (params.start) {
+        var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
+            endDate = moment(params.end || Date.now());
+
+        if (startDate < this.config.minDate || endDate < this.config.minDate) {
+          this.addSiteNotice('danger', $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)), $.i18n('invalid-params'), true);
+          return false;
+        } else if (startDate > endDate) {
+          this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+          return false;
+        }
+        /** directly assign startDate before calling setEndDate so events will be fired once */
+        this.daterangepicker.startDate = startDate;
+        this.daterangepicker.setEndDate(endDate);
+      } else {
+        this.setSpecialRange(this.config.defaults.dateRange);
+      }
+
+      return true;
+    }
   }, {
     key: 'clearSiteNotices',
     value: function clearSiteNotices() {

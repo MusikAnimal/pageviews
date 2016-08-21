@@ -505,36 +505,16 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {null} nothing
    */
   popParams() {
-    let startDate, endDate, params = this.parseQueryString('pages');
+    let params = this.parseQueryString('pages');
 
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
     this.patchUsage('lv');
 
-    /**
-     * Check if we're using a valid range, and if so ignore any start/end dates.
-     * If an invalid range, throw and error and use default dates.
-     */
-    if (params.range) {
-      if (!this.setSpecialRange(params.range)) {
-        this.addSiteNotice('danger', $.i18n('param-error-3'), $.i18n('invalid-params'), true);
-        this.setSpecialRange(this.config.defaults.dateRange);
-      }
-    } else if (params.start) {
-      startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days'));
-      endDate = moment(params.end || Date.now());
-      if (startDate < this.config.minDate || endDate < this.config.minDate) {
-        this.addSiteNotice('danger', $.i18n('param-error-1', `${$.i18n('july')} 2015`), $.i18n('invalid-params'), true);
-        return;
-      } else if (startDate > endDate) {
-        this.addSiteNotice('warning', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
-        return;
-      }
-      this.daterangepicker.setStartDate(startDate);
-      this.daterangepicker.setEndDate(endDate);
-    } else {
-      this.setSpecialRange(this.config.defaults.dateRange);
+    // if date range is invalid, remove page from params so we don't process the default date range
+    if (!this.checkDateRange(params)) {
+      delete params.page;
     }
 
     $(this.config.platformSelector).val(params.platform || 'all-access');

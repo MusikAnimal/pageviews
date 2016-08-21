@@ -3,6 +3,7 @@ log/
 tmp/
 *.js.map
 *.scssc
+*.ruby-version
 node_modules/
 config.php
 composer.lock
