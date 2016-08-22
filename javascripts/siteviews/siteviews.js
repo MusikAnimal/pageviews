@@ -60,7 +60,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     let params = this.parseQueryString('sites');
 
-    this.patchUsage('sv');
+    this.patchUsage();
     this.checkDateRange(params);
 
     $(this.config.dataSourceSelector).val(params.source || 'pageviews');

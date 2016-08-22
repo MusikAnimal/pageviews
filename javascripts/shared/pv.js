@@ -706,9 +706,9 @@ class Pv extends PvConfig {
    * @return {null} nothing
    */
   patchUsage(app) {
-    if (location.host !== 'localhost') {
+    if (metaRoot) {
       $.ajax({
-        url: `//tools.wmflabs.org/musikanimal/api/${app}_uses/${this.project || i18nLang}`,
+        url: `//${metaRoot}/${this.app}/${this.project || i18nLang}`,
         method: 'PATCH'
       });
     }

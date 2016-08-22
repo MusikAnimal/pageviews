@@ -20,7 +20,7 @@ module.exports = function(grunt) {
   const coreCSSDependencies = [
     'vendor/stylesheets/bootstrap.min.css'
   ];
-  const apps = ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'];
+  const apps = ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews', 'meta'];
 
   // set up initial structure of tasks
   let browserifyTasks = {
@@ -80,11 +80,14 @@ module.exports = function(grunt) {
     };
 
     // SASS
-    const sourcesHash = {
-      [`public_html/${path}${app}.css`]: `stylesheets/${path}${app}.scss`,
-      [`public_html/${path}faq.css`]: `stylesheets/${path}faq.scss`,
-      [`public_html/${path}url_structure.css`]: `stylesheets/${path}url_structure.scss`
+    let sourcesHash = {
+      [`public_html/${path}${app}.css`]: `stylesheets/${path}${app}.scss`
     };
+
+    if (app !== 'meta') {
+      sourcesHash[`public_html/${path}faq.css`] = `stylesheets/${path}faq.scss`;
+      sourcesHash[`public_html/${path}url_structure.css`] = `stylesheets/${path}url_structure.scss`;
+    }
     sassTasks[app] = {
       files: [sourcesHash]
     };
@@ -92,15 +95,20 @@ module.exports = function(grunt) {
 
     // HAML
     hamlFiles[`public_html/${path}index.php`] = `views/${path}index.haml`;
-    hamlFiles[`public_html/${path}faq/index.php`] = `views/${path}faq.haml`;
-    hamlFiles[`public_html/${path}url_structure/index.php`] = `views/${path}url_structure.haml`;
+    if (app !== 'meta') {
+      hamlFiles[`public_html/${path}faq/index.php`] = `views/${path}faq.haml`;
+      hamlFiles[`public_html/${path}url_structure/index.php`] = `views/${path}url_structure.haml`;
+    }
 
     // UGLIFY
-    Object.assign(uglifyTask.all.files, {
-      [`public_html/${path}application.js`]: [`public_html/${path}application.js`],
-      [`public_html/${path}faq/application.js`]: [`public_html/${path}faq/application.js`],
-      [`public_html/${path}url_structure/application.js`]: [`public_html/${path}url_structure/application.js`],
-    });
+    let jsPages = {
+      [`public_html/${path}application.js`]: [`public_html/${path}application.js`]
+    };
+    if (app !== 'meta') {
+      jsPages[`public_html/${path}faq/application.js`] = [`public_html/${path}faq/application.js`];
+      jsPages[`public_html/${path}url_structure/application.js`] = [`public_html/${path}url_structure/application.js`];
+    }
+    Object.assign(uglifyTask.all.files, jsPages);
   });
 
   grunt.initConfig({
@@ -299,6 +307,30 @@ module.exports = function(grunt) {
           'public_html/redirectviews/url_structure/application.js': coreJSDependencies,
           'public_html/redirectviews/url_structure/application.css': coreCSSDependencies.concat([
             'public_html/redirectviews/url_structure.css'
+          ])
+        }
+      },
+      meta: {
+        files: {
+          // order matters here
+          'public_html/meta/application.js': coreJSDependencies.concat([
+            'vendor/javascripts/select2.min.js',
+            'vendor/javascripts/daterangepicker.min.js',
+            'vendor/javascripts/Chart.min.js',
+            'public_html/meta/meta.js'
+          ]),
+          'public_html/meta/application.css': coreCSSDependencies.concat([
+            'vendor/stylesheets/select2.min.css',
+            'vendor/stylesheets/daterangepicker.min.css',
+            'public_html/meta/meta.css'
+          ]),
+          'public_html/meta/faq/application.js': coreJSDependencies,
+          'public_html/meta/faq/application.css': coreCSSDependencies.concat([
+            'public_html/meta/faq.css'
+          ]),
+          'public_html/meta/url_structure/application.js': coreJSDependencies,
+          'public_html/meta/url_structure/application.css': coreCSSDependencies.concat([
+            'public_html/meta/url_structure.css'
           ])
         }
       }

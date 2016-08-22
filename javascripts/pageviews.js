@@ -103,7 +103,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
-    this.patchUsage('pv');
+    this.patchUsage();
     this.checkDateRange(params);
 
     $(this.config.platformSelector).val(params.platform || 'all-access');

@@ -630,7 +630,7 @@ var MassViews = function (_mix$with) {
 
       var params = this.parseQueryString();
 
-      this.patchUsage('mv');
+      this.patchUsage();
 
       /**
        * If they requested more than 10 pages in Pageviews (via typing it in the URL)
@@ -3304,9 +3304,9 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'patchUsage',
     value: function patchUsage(app) {
-      if (location.host !== 'localhost') {
+      if (metaRoot) {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/' + app + '_uses/' + (this.project || i18nLang),
+          url: '//' + metaRoot + '/' + this.app + '/' + (this.project || i18nLang),
           method: 'PATCH'
         });
       }
@@ -3907,6 +3907,7 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
+      apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {
           opts: {

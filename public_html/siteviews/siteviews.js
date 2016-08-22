@@ -2155,9 +2155,9 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'patchUsage',
     value: function patchUsage(app) {
-      if (location.host !== 'localhost') {
+      if (metaRoot) {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/' + app + '_uses/' + (this.project || i18nLang),
+          url: '//' + metaRoot + '/' + this.app + '/' + (this.project || i18nLang),
           method: 'PATCH'
         });
       }
@@ -2758,6 +2758,7 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
+      apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {
           opts: {
@@ -4060,7 +4061,7 @@ var SiteViews = function (_mix$with) {
 
       var params = this.parseQueryString('sites');
 
-      this.patchUsage('sv');
+      this.patchUsage();
       this.checkDateRange(params);
 
       $(this.config.dataSourceSelector).val(params.source || 'pageviews');
