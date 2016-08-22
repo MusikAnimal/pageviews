@@ -650,7 +650,7 @@ var LangViews = function (_mix$with) {
       $(this.config.projectInput).val(params.project || this.config.defaults.project);
       if (this.validateProject()) return;
 
-      this.patchUsage('lv');
+      this.patchUsage();
 
       // if date range is invalid, remove page from params so we don't process the default date range
       if (!this.checkDateRange(params)) {
@@ -3064,9 +3064,9 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'patchUsage',
     value: function patchUsage(app) {
-      if (location.host !== 'localhost') {
+      if (metaRoot) {
         $.ajax({
-          url: '//tools.wmflabs.org/musikanimal/api/' + app + '_uses/' + (this.project || i18nLang),
+          url: '//' + metaRoot + '/' + this.app + '/' + (this.project || i18nLang),
           method: 'PATCH'
         });
       }
@@ -3667,6 +3667,7 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
+      apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {
           opts: {

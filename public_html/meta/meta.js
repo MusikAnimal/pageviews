@@ -2,57 +2,40 @@
 'use strict';
 
 /**
- * @file Configuration for Redirectviews application
+ * @file Configuration for Metaviews application
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  */
 
+var templates = require('./templates');
+
 /**
- * Configuration for Redirectviews application.
- * This includes selectors, defaults, and other constants specific to Redirectviews
+ * Configuration for Metaviews application.
+ * This includes selectors, defaults, and other constants specific to Metaviews
  * @type {Object}
  */
 var config = {
-  agentSelector: '#agent_select',
   chart: '.aqs-chart',
-  dateLimit: 90, // num days
-  dateRangeSelector: '#range_input',
+  circularLegend: templates.circularLegend,
+  dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
-    dateRange: 'latest-20',
-    project: 'en.wikipedia.org',
-    params: {
-      sort: 'views',
-      direction: 1,
-      outputData: [],
-      total: 0,
-      view: 'list'
-    }
+    dateRange: 'latest-20'
   },
-  linearLegend: function linearLegend(datasets, scope) {
-    return '<strong>' + $.i18n('totals') + ':</strong>\n      ' + $.i18n('num-redirects', scope.outputData.listData.length - 1) + '\n      &bullet;\n      ' + $.i18n('num-pageviews', scope.formatNumber(scope.outputData.sum)) + '\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
-  },
+  linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
-  platformSelector: '#platform_select',
-  projectInput: '#project_input',
-  formStates: ['initial', 'processing', 'complete', 'invalid'],
-  sourceInput: '#source_input',
-  timestampFormat: 'YYYYMMDD00',
-  validParams: {
-    direction: ['-1', '1'],
-    sort: ['title', 'views', 'section'],
-    view: ['list', 'chart']
-  }
+  select2Input: '.aqs-select2-selector'
 };
+
 module.exports = config;
 
-},{}],2:[function(require,module,exports){
+},{"./templates":3}],2:[function(require,module,exports){
 'use strict';
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -61,33 +44,29 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Redirectviews Analysis tool
- * @file Main file for Redirectviews application
+ * Metaviews Analysis tool
+ * @file Main file for Metaviews application
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
 var config = require('./config');
-var siteMap = require('../shared/site_map');
-var siteDomains = Object.keys(siteMap).map(function (key) {
-  return siteMap[key];
-});
 var Pv = require('../shared/pv');
 var ChartHelpers = require('../shared/chart_helpers');
-var ListHelpers = require('../shared/list_helpers');
 
-/** Main RedirectViews class */
+/** Main MetaViews class */
 
-var RedirectViews = function (_mix$with) {
-  _inherits(RedirectViews, _mix$with);
+var MetaViews = function (_mix$with) {
+  _inherits(MetaViews, _mix$with);
 
-  function RedirectViews() {
-    _classCallCheck(this, RedirectViews);
+  function MetaViews() {
+    _classCallCheck(this, MetaViews);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RedirectViews).call(this, config));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MetaViews).call(this, config));
 
-    _this.app = 'redirectviews';
+    _this.app = 'metaviews';
+    _this.specialRange = null;
     return _this;
   }
 
@@ -98,478 +77,78 @@ var RedirectViews = function (_mix$with) {
    */
 
 
-  _createClass(RedirectViews, [{
+  _createClass(MetaViews, [{
     key: 'initialize',
     value: function initialize() {
-      this.assignDefaults();
       this.setupDateRangeSelector();
+      this.setupSelect2();
+      this.setupSelect2Colors();
       this.popParams();
       this.setupListeners();
-      this.updateInterAppLinks();
-
-      /** only show options for line, bar and radar charts */
-      $('.multi-page-chart-node').hide();
     }
 
     /**
-     * Add general event listeners
-     * @override
-     * @returns {null} nothing
+     * Get data formatted for a circular chart (Pie, Doughnut, PolarArea)
+     *
+     * @param {object} data - data just before we are ready to render the chart
+     * @param {string} entity - title of entity (page or site)
+     * @param {integer} index - where we are in the list of entities to show
+     *    used for colour selection
+     * @returns {object} - ready for chart rendering
      */
 
   }, {
-    key: 'setupListeners',
-    value: function setupListeners() {
-      var _this2 = this;
+    key: 'getCircularData',
+    value: function getCircularData(data, entity, index) {
+      var values = data.map(function (elem) {
+        return elem.count;
+      }),
+          color = this.config.colors[index],
+          value = values.reduce(function (a, b) {
+        return a + b;
+      }),
+          average = Math.round(value / values.length);
 
-      _get(Object.getPrototypeOf(RedirectViews.prototype), 'setupListeners', this).call(this);
-
-      $('#pv_form').on('submit', function (e) {
-        e.preventDefault(); // prevent page from reloading
-        _this2.processInput();
-      });
-
-      $('.another-query').on('click', function () {
-        _this2.setState('initial');
-        _this2.pushParams(true);
-      });
-
-      $('.sort-link').on('click', function (e) {
-        var sortType = $(e.currentTarget).data('type');
-        _this2.direction = _this2.sort === sortType ? -_this2.direction : 1;
-        _this2.sort = sortType;
-        _this2.renderData();
-      });
-
-      $(this.config.projectInput).on('change', function () {
-        _this2.validateProject();
-        _this2.updateInterAppLinks();
-      });
-
-      $('.view-btn').on('click', function (e) {
-        document.activeElement.blur();
-        _this2.view = e.currentTarget.dataset.value;
-        _this2.toggleView(_this2.view);
-      });
+      return Object.assign({
+        label: entity.descore(),
+        value: value,
+        average: average
+      }, this.config.chartConfig[this.chartType].dataset(color));
     }
 
     /**
-     * Build our mother data set, from which we can draw a chart,
-     *   render a list of data, whatever our heart desires :)
-     * @param  {string} label - label for the dataset
-     * @param  {string} link - HTML anchor tag for the label
-     * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
-     * @return {object} mother data set, also stored in this.outputData
+     * Get data formatted for a linear chart (line, bar, radar)
+     *
+     * @param {object} data - data just before we are ready to render the chart
+     * @param {string} entity - title of entity
+     * @param {integer} index - where we are in the list of entities to show
+     *    used for colour selection
+     * @returns {object} - ready for chart rendering
      */
 
   }, {
-    key: 'buildMotherDataset',
-    value: function buildMotherDataset(label, link, datasets) {
-      var _this3 = this;
-
-      /**
-       * `datasets` structure:
-       *
-       * [{
-       *   title: page,
-       *   items: [
-       *     {
-       *       access: '',
-       *       agent: '',
-       *       article: '',
-       *       granularity: '',
-       *       project: '',
-       *       timestamp: '',
-       *       views: 10
-       *     }
-       *   ]
-       * }]
-       *
-       * output structure:
-       *
-       * {
-       *   labels: [''],
-       *   listData: [
-       *     {
-       *       label: '',
-       *       data: [1,2,3,4],
-       *       sum: 10,
-       *       average: 2,
-       *       index: 0
-       *       ...
-       *       MERGE in this.config.chartConfig[this.chartType].dataset(this.config.colors[0])
-       *     }
-       *   ],
-       *   totalViewsSet: [1,2,3,4],
-       *   sum: 10,
-       *   average: 2,
-       *   datesWithoutData: ['2016-05-16T00:00:00-00:00']
-       * }
-       */
-
-      this.outputData = {
-        labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
-        listData: [],
-        source: label
-      };
-      var startDate = moment(this.daterangepicker.startDate),
-          endDate = moment(this.daterangepicker.endDate),
-          length = this.numDaysInRange();
-
-      var totalViewsSet = new Array(length).fill(0),
-          datesWithoutData = [],
-          totalTitles = [],
-          sectionCount = 0;
-
-      datasets.forEach(function (dataset, index) {
-        var data = dataset.items.map(function (item) {
-          return item.views;
-        }),
-            sum = data.reduce(function (a, b) {
-          return a + b;
-        });
-
-        totalTitles.push(dataset.title);
-        if (dataset.section) sectionCount++;
-
-        _this3.outputData.listData.push({
-          data: data,
-          label: dataset.title,
-          section: dataset.section || '',
-          url: 'https://' + _this3.project + '.org/wiki/' + dataset.title.score(),
-          sum: sum,
-          average: sum / length,
-          index: index
-        });
-
-        /**
-         * Ensure we have data for each day, using null as the view count when data is actually not available yet
-         * See fillInZeros() comments for more info.
-         */
-
-        var _fillInZeros = _this3.fillInZeros(dataset.items, startDate, endDate);
-
-        var _fillInZeros2 = _slicedToArray(_fillInZeros, 2);
-
-        var viewsSet = _fillInZeros2[0];
-        var incompleteDates = _fillInZeros2[1];
-
-        incompleteDates.forEach(function (date) {
-          if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
-        });
-
-        totalViewsSet = totalViewsSet.map(function (num, i) {
-          return num + viewsSet[i].views;
-        });
-      });
-
-      var grandSum = totalViewsSet.reduce(function (a, b) {
-        return (a || 0) + (b || 0);
-      });
-
-      Object.assign(this.outputData, {
-        datasets: [{
-          label: label,
-          data: totalViewsSet,
-          sum: grandSum,
-          average: grandSum / length
-        }],
-        datesWithoutData: datesWithoutData,
-        sum: grandSum, // nevermind the duplication
-        average: grandSum / length,
-        titles: totalTitles,
-        sectionCount: sectionCount
-      });
-
-      if (datesWithoutData.length) {
-        var dateList = datesWithoutData.map(function (date) {
-          return moment(date).format(_this3.dateFormat);
-        });
-        this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
-      }
-
-      return this.outputData;
-    }
-
-    /**
-     * Get the base project name (without language and the .org)
-     * @returns {boolean} projectname
-     */
-
-  }, {
-    key: 'getExportFilename',
-
-
-    /**
-     * Get informative filename without extension to be used for export options
-     * @override
-     * @return {string} filename without an extension
-     */
-    value: function getExportFilename() {
-      var params = this.getParams(true);
-      return this.outputData.source + '-' + params.start.replace(/-/g, '') + '-' + params.end.replace(/-/g, '');
-    }
-
-    /**
-     * Get all user-inputted parameters
-     * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
-     *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
-     * @return {Object} project, platform, agent, etc.
-     */
-
-  }, {
-    key: 'getParams',
-    value: function getParams() {
-      var forCacheKey = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-      var params = {
-        project: $(this.config.projectInput).val(),
-        platform: $(this.config.platformSelector).val(),
-        agent: $(this.config.agentSelector).val()
-      };
-
-      /**
-       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-       * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
-       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
-       */
-      if (this.specialRange && !forCacheKey) {
-        params.range = this.specialRange.range;
-      } else {
-        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
-      }
-
-      /** only certain characters within the page name are escaped */
-      params.page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
-
-      if (!forCacheKey) {
-        params.sort = this.sort;
-        params.direction = this.direction;
-        params.view = this.view;
-      }
-
-      return params;
-    }
-
-    /**
-     * Push relevant class properties to the query string
-     * @param  {Boolean} clear - wheter to clear the query string entirely
-     * @return {null} nothing
-     */
-
-  }, {
-    key: 'pushParams',
-    value: function pushParams() {
-      var clear = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-      if (!window.history || !window.history.replaceState) return;
-
-      if (clear) {
-        return history.replaceState(null, document.title, location.href.split('?')[0]);
-      }
-
-      window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
-
-      $('.permalink').prop('href', '/redirectviews?' + $.param(this.getPermaLink()));
-    }
-
-    /**
-     * Render list of redirectviews into view
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'renderData',
-    value: function renderData() {
-      var _this4 = this;
-
-      _get(Object.getPrototypeOf(RedirectViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
-        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-redirects', _this4.outputData.titles.length - 1) + '</th>\n         <th>' + $.i18n('num-sections', _this4.outputData.sectionCount) + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
-        $('#output_list').html('');
-
-        sortedDatasets.forEach(function (item, index) {
-          var isSource = item.label === _this4.outputData.source;
-
-          var sectionMarkup = '';
-
-          if (item.section) {
-            var sectionUrl = _this4.getPageURL(_this4.outputData.source) + '#' + encodeURIComponent(item.section.score());
-            sectionMarkup = '<a href="' + sectionUrl + '" target="_blank">#' + item.section + '</a>';
-          }
-
-          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="' + item.url + '" target="_blank">' + item.label + '</a> ' + (isSource ? '(' + $.i18n('target') + ')' : '') + '</td>\n           <td>' + sectionMarkup + '</a></td>\n           <td><a target=\'_blank\' href=\'' + _this4.getPageviewsURL(_this4.project + '.org', item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
-        });
-      });
-    }
-
-    /**
-     * Get value of given langview entry for the purposes of column sorting
-     * @param  {object} item - langview entry within this.outputData
-     * @param  {String} type - type of property to get
-     * @return {String|Number} - value
-     */
-
-  }, {
-    key: 'getSortProperty',
-    value: function getSortProperty(item, type) {
-      switch (type) {
-        case 'title':
-          return item.label;
-        case 'section':
-          return item.section;
-        case 'views':
-          return Number(item.sum);
-      }
-    }
-
-    /**
-     * Loop through given pages and query the pageviews API for each
-     *   Also updates this.outputData with result
-     * @param  {Array} redirectData - as given by the getRedirects promise
-     * @return {Deferred} - Promise resolving with data ready to be rendered to view
-     */
-
-  }, {
-    key: 'getPageViewsData',
-    value: function getPageViewsData(redirectData) {
-      var _this5 = this;
-
-      var startDate = this.daterangepicker.startDate.startOf('day'),
-          endDate = this.daterangepicker.endDate.startOf('day');
-
-      // XXX: throttling
-      var dfd = $.Deferred(),
-          promises = [],
-          count = 0,
-          hadFailure = void 0,
-          failureRetries = {},
-          totalRequestCount = redirectData.length,
-          failedPages = [],
-          pageViewsData = [];
-
-      var makeRequest = function makeRequest(page) {
-        var uriEncodedPageName = encodeURIComponent(page.title);
-
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + _this5.project + ('/' + $(_this5.config.platformSelector).val() + '/' + $(_this5.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this5.config.timestampFormat) + '/' + endDate.format(_this5.config.timestampFormat));
-        var promise = $.ajax({ url: url, dataType: 'json' });
-        promises.push(promise);
-
-        promise.done(function (pvData) {
-          pageViewsData.push({
-            title: page.title,
-            section: page.fragment,
-            items: pvData.items
-          });
-        }).fail(function (errorData) {
-          // XXX: throttling
-          /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-          var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
-              failedPageLink = _this5.getPageLink(page.title, _this5.project + '.org');
-
-          if (cassandraError) {
-            if (failureRetries[page.title]) {
-              failureRetries[page.title]++;
-            } else {
-              failureRetries[page.title] = 1;
-            }
-
-            /** maximum of 3 retries */
-            if (failureRetries[page.title] < 3) {
-              totalRequestCount++;
-              return _this5.rateLimit(makeRequest, 100, _this5)(page);
-            }
-
-            /** retries exceeded */
-            failedPages.push(failedPageLink);
-          } else {
-            _this5.writeMessage(failedPageLink + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
-          }
-
-          hadFailure = true; // don't treat this series of requests as being cached by server
-        }).always(function () {
-          _this5.updateProgressBar(++count / totalRequestCount * 100);
-
-          // XXX: throttling, totalRequestCount can just be pages.length
-          if (count === totalRequestCount) {
-            dfd.resolve(pageViewsData);
-
-            if (failedPages.length) {
-              _this5.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
-                return '<li>' + failedPage + '</li>';
-              }).join('') + '</ul>'));
-            }
-
-            /**
-             * if there were no failures, assume the resource is now cached by the server
-             *   and save this assumption to our own cache so we don't throttle the same requests
-             */
-            // XXX: throttling
-            if (!hadFailure) {
-              simpleStorage.set(_this5.getCacheKey(), true, { TTL: 600000 });
-            }
-          }
-        });
-      };
-
-      /**
-       * We don't want to throttle requests for cached resources. However in our case,
-       *   we're unable to check response headers to see if the resource was cached,
-       *   so we use simpleStorage to keep track of what the user has recently queried.
-       */
-      // XXX: throttling
-      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
-
-      redirectData.forEach(function (page) {
-        requestFn(page);
-      });
-
-      return dfd;
-    }
-
-    /**
-     * Get all redirects of a page
-     * @param  {String} pageName - name of page we want to get data about
-     * @return {Deferred} - Promise resolving with redirect data
-     */
-
-  }, {
-    key: 'getRedirects',
-    value: function getRedirects(pageName) {
-      var _this6 = this;
-
-      var dfd = $.Deferred();
-
-      var promise = $.ajax({
-        url: 'https://' + this.project + '.org/w/api.php',
-        jsonp: 'callback',
-        dataType: 'jsonp',
-        data: {
-          action: 'query',
-          format: 'json',
-          formatversion: 2,
-          prop: 'redirects',
-          rdprop: 'title|fragment',
-          rdlimit: 500,
-          titles: pageName
-        }
-      });
-
-      promise.done(function (data) {
-        if (data.error) {
-          return _this6.setState('initial', function () {
-            _this6.writeMessage($.i18n('api-error', 'Redirect API') + ': ' + data.error.info.escape());
-          });
-        }
-
-        var redirects = [{
-          title: pageName
-        }].concat(data.query.pages[0].redirects || []);
-
-        return dfd.resolve(redirects);
-      });
-
-      return dfd;
+    key: 'getLinearData',
+    value: function getLinearData(data, entity, index) {
+      var values = data.map(function (elem) {
+        return elem.count;
+      }),
+          sum = values.reduce(function (a, b) {
+        return a + b;
+      }),
+          average = Math.round(sum / values.length),
+          max = Math.max.apply(Math, _toConsumableArray(values)),
+          min = Math.min.apply(Math, _toConsumableArray(values)),
+          color = this.config.colors[index % 10];
+
+      return Object.assign({
+        label: entity.descore(),
+        data: values,
+        sum: sum,
+        average: average,
+        max: max,
+        min: min,
+        color: color
+      }, this.config.chartConfig[this.chartType].dataset(color));
     }
 
     /**
@@ -581,258 +160,212 @@ var RedirectViews = function (_mix$with) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this7 = this;
+      this.startSpinny();
 
-      var params = this.parseQueryString('pages');
+      var params = this.parseQueryString('tools');
 
-      $(this.config.projectInput).val(params.project || this.config.defaults.project);
-      if (this.validateProject()) return;
+      var startDate = moment(params.start || moment().subtract(this.config.defaults.daysAgo, 'days')),
+          endDate = moment(params.end || Date.now());
 
-      this.patchUsage();
+      this.daterangepicker.startDate = startDate;
+      this.daterangepicker.setEndDate(endDate);
 
-      // if date range is invalid, remove page from params so we don't process the default date range
-      if (!this.checkDateRange(params)) {
-        delete params.page;
+      this.resetSelect2();
+
+      if (!params.tools || params.tools.length === 1 && !params.tools[0]) {
+        params.tools = this.config.apps;
       }
 
-      $(this.config.platformSelector).val(params.platform || 'all-access');
-      $(this.config.agentSelector).val(params.agent || 'user');
-
-      /** import params or set defaults if invalid */
-      ['sort', 'direction', 'view'].forEach(function (key) {
-        var value = params[key];
-        if (value && _this7.config.validParams[key].includes(value)) {
-          params[key] = value;
-          _this7[key] = value;
-        } else {
-          params[key] = _this7.config.defaults.params[key];
-          _this7[key] = _this7.config.defaults.params[key];
-        }
-      });
-
-      /** start up processing if page name is present */
-      if (params.page) {
-        $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
-        this.processInput();
-      }
+      this.setInitialChartType(params.tools.length);
+      this.setSelect2Defaults(params.tools);
     }
 
     /**
-     * Helper to set a CSS class on the `main` node,
-     *   styling the document based on a 'state'
-     * @param {String} state - class to be added;
-     *   should be one of ['initial', 'processing', 'complete']
+     * Get all user-inputted parameters except the tools
+     * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
+     * @return {Object} platform, agent, etc.
+     */
+
+  }, {
+    key: 'getParams',
+    value: function getParams() {
+      var specialRange = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+      var params = {};
+
+      /**
+       * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
+       * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
+       *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+       */
+      if (this.specialRange && specialRange) {
+        params.range = this.specialRange.range;
+      } else {
+        params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
+        params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      }
+
+      /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
+      if (this.noLogScale) params.autolog = 'false';
+
+      return params;
+    }
+
+    /**
+     * Push relevant class properties to the query string
+     * Called whenever we go to update the chart
      * @returns {null} nothing
      */
 
   }, {
-    key: 'setState',
-    value: function setState(state) {
-      $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
+    key: 'pushParams',
+    value: function pushParams() {
+      var tools = $(this.config.select2Input).select2('val') || [];
 
-      switch (state) {
-        case 'initial':
-          this.clearMessages();
-          this.assignDefaults();
-          this.destroyChart();
-          $('output').removeClass('list-mode').removeClass('chart-mode');
-          $('.data-links').addClass('invisible');
-          if (this.typeahead) this.typeahead.hide();
-          $(this.config.sourceInput).val('').focus();
-          break;
-        case 'processing':
-          this.processStarted();
-          this.clearMessages();
-          document.activeElement.blur();
-          $('.progress-bar').addClass('active');
-          break;
-        case 'complete':
-          this.processEnded();
-          /** stop hidden animation for slight performance improvement */
-          this.updateProgressBar(0);
-          $('.progress-bar').removeClass('active');
-          $('.data-links').removeClass('invisible');
-          break;
-        case 'invalid':
-          break;
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&tools=' + tools.join('|'));
       }
+
+      $('.permalink').prop('href', '?' + $.param(this.getPermaLink()) + '&tools=' + tools.join('|'));
     }
 
     /**
-     * Process the redirectviews for the article and options entered
-     * Called when submitting the form
-     * @return {null} nothing
+     * Sets up the tool selector and adds listener to update chart
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupSelect2',
+    value: function setupSelect2() {
+      var select2Input = $(this.config.select2Input);
+
+      var data = this.config.apps.map(function (app) {
+        return {
+          id: app,
+          text: app
+        };
+      });
+
+      var params = {
+        data: data,
+        placeholder: $.i18n('projects-placeholder'),
+        maximumSelectionLength: this.config.apps.length,
+        minimumInputLength: 1
+      };
+
+      select2Input.select2(params);
+      select2Input.on('change', this.processInput.bind(this));
+    }
+
+    /**
+     * Directly set items in Select2
+     *
+     * @param {array} items - page titles
+     * @returns {array} - untouched array of items
+     * @override
+     */
+
+  }, {
+    key: 'setSelect2Defaults',
+    value: function setSelect2Defaults(items) {
+      $(this.config.select2Input).val(items).trigger('change');
+
+      return items;
+    }
+
+    /**
+     * General place to add page-wide listeners
+     * @override
+     * @returns {null} - nothing
+     */
+
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      _get(Object.getPrototypeOf(MetaViews.prototype), 'setupListeners', this).call(this);
+    }
+
+    /**
+     * Query the API for each tool, building up the datasets and then calling renderData
+     * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
+     * @returns {null} - nothin
      */
 
   }, {
     key: 'processInput',
-    value: function processInput() {
-      var _this8 = this;
+    value: function processInput(force) {
+      var _this2 = this,
+          _$;
 
-      // XXX: throttling
-      /** allow resubmission of queries that are cached */
-      if (!this.isRequestCached()) {
-        /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('pageviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
+      this.pushParams();
 
-          /** > 0 check to combat race conditions */
-          if (timeRemaining > 0) {
-            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
-          }
-        }
+      /** prevent duplicate querying due to conflicting listeners */
+      if (!force && location.search === this.params && this.prevChartType === this.chartType) {
+        return;
       }
 
-      var page = $(this.config.sourceInput).val();
+      /** @type {Object} everything we need to keep track of for the promises */
+      var xhrData = {
+        entities: $(this.config.select2Input).select2('val') || [],
+        labels: [], // Labels (dates) for the x-axis.
+        datasets: [], // Data for each tool timeseries
+        errors: [], // Queue up errors to show after all requests have been made
+        fatalErrors: [], // Unrecoverable JavaScript errors
+        promises: []
+      };
 
-      this.setState('processing');
+      if (!xhrData.entities.length) {
+        return this.resetView();
+      }
 
-      this.getRedirects(page).done(function (redirectData) {
-        var numPages = redirectData.length;
+      this.params = location.search;
+      this.prevChartType = this.chartType;
+      this.clearMessages(); // clear out old error messages
+      this.destroyChart();
+      this.startSpinny();
 
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (numPages > 10) _this8.setThrottle();
+      /** Collect parameters from inputs. */
+      var startDate = this.daterangepicker.startDate.startOf('day'),
+          endDate = this.daterangepicker.endDate.startOf('day');
 
-        _this8.getPageViewsData(redirectData).done(function (pageViewsData) {
-          var pageLink = _this8.getPageLink(decodeURIComponent(page), _this8.project);
-          $('.output-title').html(pageLink);
-          $('.output-params').text($(_this8.config.dateRangeSelector).val());
-          _this8.buildMotherDataset(page, pageLink, pageViewsData);
-          _this8.updateProgressBar(100);
-          _this8.setInitialChartType();
-          _this8.renderData();
+      xhrData.entities.forEach(function (tool, index) {
+        var url = '//' + metaRoot + '/' + tool + ('/' + startDate.format('YYYY-MM-DD') + '/' + endDate.format('YYYY-MM-DD'));
 
-          /**
-           * XXX: throttling
-           * Reset throttling again; the first one was in case they aborted
-           */
-          if (numPages > 10) _this8.setThrottle();
+        var promise = $.ajax({
+          url: url,
+          dataType: 'json'
         });
-      }).fail(function (error) {
-        _this8.setState('initial');
+        xhrData.promises.push(promise);
 
-        /** structured error comes back as a string, otherwise we don't know what happened */
-        if (typeof error === 'string') {
-          _this8.writeMessage(error);
-        } else {
-          _this8.writeMessage($.i18n('api-error-unknown', 'Wikidata'));
-        }
-      });
-    }
-
-    /**
-     * Setup typeahead on the article input, killing the prevous instance if present
-     * Called in validateProject, which is called in popParams when the app is first loaded
-     * @return {null} Nothing
-     */
-
-  }, {
-    key: 'setupsourceInput',
-    value: function setupsourceInput() {
-      if (this.typeahead) this.typeahead.destroy();
-
-      $(this.config.sourceInput).typeahead({
-        ajax: {
-          url: 'https://' + this.project + '.org/w/api.php',
-          timeout: 200,
-          triggerLength: 1,
-          method: 'get',
-          preDispatch: function preDispatch(query) {
-            return {
-              action: 'opensearch',
-              redirects: 'resolve',
-              format: 'json',
-              search: query
-            };
-          },
-          preProcess: function preProcess(data) {
-            return data[1];
+        promise.success(function (successData) {
+          /** Build the tool's dataset. */
+          if (_this2.config.linearCharts.includes(_this2.chartType)) {
+            xhrData.datasets.push(_this2.getLinearData(successData, tool, index));
+          } else {
+            xhrData.datasets.push(_this2.getCircularData(successData, tool, index));
           }
-        }
-      });
-    }
 
-    /**
-     * Validate the currently entered project. Called when the value is changed
-     * @return {boolean} true if validation failed
-     */
-
-  }, {
-    key: 'validateProject',
-    value: function validateProject() {
-      var project = $(this.config.projectInput).val();
-
-      if (!this.isMultilangProject()) {
-        this.writeMessage($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'), true);
-        this.setState('invalid');
-        return true;
-      }
-
-      this.setState('initial');
-
-      /** kill and re-init typeahead to point to new project */
-      this.setupsourceInput();
-
-      return false;
-    }
-
-    /**
-     * Exports current lang data to CSV format and loads it in a new tab
-     * With the prepended data:text/csv this should cause the browser to download the data
-     * @returns {string} CSV content
-     */
-
-  }, {
-    key: 'exportCSV',
-    value: function exportCSV() {
-      var csvContent = 'data:text/csv;charset=utf-8,Title,' + this.getDateHeadings(false).join(',') + '\n';
-
-      // Add the rows to the CSV
-      this.outputData.listData.forEach(function (page) {
-        var pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
-
-        csvContent += [pageName].concat(page.data).join(',') + '\n';
+          /** fetch the labels for the x-axis on success if we haven't already */
+          if (!xhrData.labels.length) {
+            xhrData.labels = successData.map(function (elem) {
+              return moment(elem.date, 'YYYY-MM-DD').format(_this2.dateFormat);
+            });
+          }
+        }).fail(function (data) {
+          _this2.writeMessage('<a href=\'/' + tool.escape() + '\'>' + tool.escape() + '</a> - ' + $.i18n('api-error-no-data'));
+          // remove this tool from the list of entities to analyze
+          xhrData.entities = xhrData.entities.filter(function (el) {
+            return el !== tool;
+          });
+        });
       });
 
-      // Output the CSV file to the browser
-      var encodedUri = encodeURI(csvContent);
-      window.open(encodedUri);
-    }
-
-    /**
-     * Get informative filename without extension to be used for export options
-     * @return {string} filename without an extension
-     */
-
-  }, {
-    key: 'getExportFilename',
-    value: function getExportFilename() {
-      var params = this.getParams(true);
-      return this.outputData.source + '-' + params.start.replace(/-/g, '') + '-' + params.end.replace(/-/g, '');
-    }
-  }, {
-    key: 'baseProject',
-    get: function get() {
-      return this.project.split('.')[1];
-    }
-
-    /**
-     * @returns {Typeahead} instance
-     */
-
-  }, {
-    key: 'typeahead',
-    get: function get() {
-      return $(this.config.sourceInput).data('typeahead');
+      (_$ = $).whenAll.apply(_$, _toConsumableArray(xhrData.promises)).always(this.updateChart.bind(this, xhrData));
     }
   }]);
 
-  return RedirectViews;
-}(mix(Pv).with(ChartHelpers, ListHelpers));
+  return MetaViews;
+}(mix(Pv).with(ChartHelpers));
 
 $(document).ready(function () {
   /** assume hash params are supposed to be query params */
@@ -842,10 +375,68 @@ $(document).ready(function () {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
-  new RedirectViews();
+  new MetaViews();
 });
 
-},{"../shared/chart_helpers":3,"../shared/list_helpers":5,"../shared/pv":7,"../shared/site_map":9,"./config":1}],3:[function(require,module,exports){
+},{"../shared/chart_helpers":4,"../shared/pv":8,"./config":1}],3:[function(require,module,exports){
+'use strict';
+
+/**
+ * @file Templates used by Chart.js for Metaviews app
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ */
+
+/**
+ * Templates used by Chart.js.
+ * Functions used within our app must be in the global scope.
+ * All quotations must be double-quotes or properly escaped.
+ * @type {Object}
+ */
+var templates = {
+  linearLegend: function linearLegend(datasets, scope) {
+    var markup = '';
+
+    if (datasets.length === 1) {
+      var dataset = datasets[0];
+      return '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(dataset.sum) + ' (' + scope.formatNumber(dataset.average) + '/' + $.i18n('day') + ')\n      </div>';
+    }
+
+    if (datasets.length > 1) {
+      var total = datasets.reduce(function (a, b) {
+        return a + b.sum;
+      }, 0);
+      markup = '<div class="linear-legend--totals">\n        <strong>' + $.i18n('totals') + ':</strong>\n        ' + scope.formatNumber(total) + ' (' + scope.formatNumber(Math.round(total / scope.numDaysInRange())) + '/' + $.i18n('day') + ')\n      </div>';
+    }
+    markup += '<div class="linear-legends">';
+
+    for (var i = 0; i < datasets.length; i++) {
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + scope.rgba(datasets[i].color, 0.8) + '">\n            <a href="/' + datasets[i].label + '" target="_blank">' + datasets[i].label.upcase() + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(datasets[i].sum) + ' (' + scope.formatNumber(datasets[i].average) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links"></div>\n        </span>\n      ';
+    }
+    return markup += '</div>';
+  },
+
+  circularLegend: function circularLegend(datasets, scope) {
+    var dataset = datasets[0],
+        total = dataset.data.reduce(function (a, b) {
+      return a + b;
+    });
+    var markup = '<div class="linear-legend--totals">\n      <strong>' + $.i18n('totals') + ':</strong>\n      ' + scope.formatNumber(total) + ' (' + scope.formatNumber(Math.round(total / scope.numDaysInRange())) + '/' + $.i18n('day') + ')\n    </div>';
+
+    markup += '<div class="linear-legends">';
+
+    for (var i = 0; i < dataset.data.length; i++) {
+      var metaKey = Object.keys(dataset._meta)[0];
+      var label = dataset._meta[metaKey].data[i]._view.label;
+      markup += '\n        <span class="linear-legend">\n          <div class="linear-legend--label" style="background-color:' + dataset.backgroundColor[i] + '">\n            <a href="/' + label + '" target="_blank">' + label.upcase() + '</a>\n          </div>\n          <div class="linear-legend--counts">\n            ' + scope.formatNumber(dataset.data[i]) + ' (' + scope.formatNumber(dataset.averages[i]) + '/' + $.i18n('day') + ')\n          </div>\n          <div class="linear-legend--links"></div>\n        </span>\n      ';
+    }
+    return markup += '</div>';
+  }
+};
+
+module.exports = templates;
+
+},{}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1624,7 +1215,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
 
 module.exports = ChartHelpers;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1762,7 +1353,7 @@ $.whenAll = function () {
   return dfd.promise();
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2091,7 +1682,7 @@ var ListHelpers = function ListHelpers(superclass) {
 
 module.exports = ListHelpers;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2231,7 +1822,7 @@ if (!Array.prototype.fill) {
   };
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -3577,7 +3168,7 @@ var Pv = function (_PvConfig) {
 
 module.exports = Pv;
 
-},{"./pv_config":8}],8:[function(require,module,exports){
+},{"./pv_config":9}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3866,7 +3457,7 @@ var PvConfig = function () {
 
 module.exports = PvConfig;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 /**
@@ -4777,4 +4368,4 @@ var siteMap = {
 
 module.exports = siteMap;
 
-},{}]},{},[3,4,5,6,7,8,9,2]);
+},{}]},{},[4,5,6,7,8,9,10,2]);

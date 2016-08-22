@@ -483,7 +483,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   popParams() {
     let params = this.parseQueryString();
 
-    this.patchUsage('mv');
+    this.patchUsage();
 
     /**
      * If they requested more than 10 pages in Pageviews (via typing it in the URL)

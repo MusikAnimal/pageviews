@@ -239,7 +239,7 @@ class TopViews extends Pv {
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
-    this.patchUsage('tv');
+    this.patchUsage();
 
     /**
      * Check if we're using a valid range, and if so ignore any start/end dates.

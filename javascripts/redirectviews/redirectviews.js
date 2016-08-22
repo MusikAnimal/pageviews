@@ -478,7 +478,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     $(this.config.projectInput).val(params.project || this.config.defaults.project);
     if (this.validateProject()) return;
 
-    this.patchUsage('rv');
+    this.patchUsage();
 
     // if date range is invalid, remove page from params so we don't process the default date range
     if (!this.checkDateRange(params)) {
