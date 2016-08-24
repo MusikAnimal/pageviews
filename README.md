@@ -1,11 +1,13 @@
 # Pageviews Analysis
-A pageviews analysis tool for Wikimedia Foundation wikis
+A suite of tools to visualize pageviews data of Wikimedia Foundation wikis
 
 Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews), [Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews), [Massviews](https://tools.wmflabs.org/massviews), [Redirect Views](https://tools.wmflabs.org/redirectviews))
 
 User documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
 
 JavaScript documentation: https://tools.wmflabs.org/pageviews/jsdocs
+
+Metaviews (pageviews of the Pageviews apps): https://tools.wmflabs.org/pageviews/meta
 
 [![Build Status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)](https://travis-ci.org/MusikAnimal/pageviews)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
@@ -62,7 +64,7 @@ Each app has it's own `config.js`, which are constants for application-wide use.
 
 Shared JavaScript goes in the `/shared` directory and will be automatically included in each `application.js`.
 
-All JavaScript is documented [JSDoc](http://usejsdoc.org/). The documentation is hosted at https://tools.wmflabs.org/pageviews/jsdocs. You can generate the docs locally by running:
+All JavaScript is documented using [JSDoc](http://usejsdoc.org/). The documentation is hosted at https://tools.wmflabs.org/pageviews/jsdocs. You can generate the docs locally by running:
 ```
 grunt jsdoc && open doc/PageViews/1.0.0/index.html
 ```
