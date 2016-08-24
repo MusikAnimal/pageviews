@@ -252,5 +252,6 @@
 	"target": "target",
 	"localization": "Localization:",
 	"chart-preferences": "Chart preferences:",
-	"auto-pagepile-error": "Unable to create $1. Showing the first $2 requested pages."
+	"auto-pagepile-error": "Unable to create $1. Showing the first $2 requested pages.",
+	"metric": "Metric"
 }

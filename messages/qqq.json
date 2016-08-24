@@ -260,5 +260,6 @@
 	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}",
 	"localization": "Label for localization options in the settings interface.",
 	"chart-preferences": "Label for chart options in the settings interface.",
-	"auto-pagepile-error": "Error message shown when an automated PagePile failed to generate. $1 is the title 'PagePile' (not translatable) and $2 is the number of pages the tool will use instead of the PagePile."
+	"auto-pagepile-error": "Error message shown when an automated PagePile failed to generate. $1 is the title 'PagePile' (not translatable) and $2 is the number of pages the tool will use instead of the PagePile.",
+	"metric": "Header for the dropdown to choose which metric to view statistics for in the Siteviews app, such as 'Pageviews' or 'Unique devices'.\n{{Identical|Metric}}"
 }

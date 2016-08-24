@@ -47,7 +47,7 @@
           <!-- Advanced options -->
           <div class="col-lg-3 col-sm-3">
             <label for="data-source-select">
-              Metric
+              <?php echo $I18N->msg( 'metric' ); ?>
             </label>
             <select class="form-control" id="data-source-select">
               <option value="pageviews">
