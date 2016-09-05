@@ -254,5 +254,6 @@
 	"target": "目标",
 	"localization": "本地化：",
 	"chart-preferences": "图表参数设置：",
-	"auto-pagepile-error": "无法创建$1。显示前$2个请求的页面。"
+	"auto-pagepile-error": "无法创建$1。显示前$2个请求的页面。",
+	"metric": "度量"
 }

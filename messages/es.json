@@ -181,5 +181,6 @@
 	"redirects": "Redirecciones",
 	"target": "destino",
 	"localization": "Localización:",
-	"chart-preferences": "Preferencias de gráfico:"
+	"chart-preferences": "Preferencias de gráfico:",
+	"metric": "Métrica"
 }

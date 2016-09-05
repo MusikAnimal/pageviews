@@ -5,7 +5,8 @@
 			"محمد أحمد عبد الفتاح",
 			"Ayatun",
 			"Shbib Al-Subaie",
-			"Izoozo"
+			"Izoozo",
+			"Moud hosny"
 		]
 	},
 	"title": "تحليل زيارات الصفحة",
@@ -101,5 +102,6 @@
 	"most-viewed-pages": "أكثر الصفحات زيارة",
 	"invalid-category-url": "تصنيف غير صالح! برجاء إدخال المسار الكامل للتصنيف.",
 	"source": "المصدر",
-	"target": "الهدف"
+	"target": "الهدف",
+	"metric": "متري"
 }

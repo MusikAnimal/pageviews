@@ -203,5 +203,10 @@
 	"section": "অনুচ্ছেদ",
 	"num-redirects": "$1টি পুনঃনির্দেশ",
 	"num-pageviews": "পাতাপ্রদর্শন $1টি",
-	"redirects": "পুনর্নির্দেশ"
+	"redirects": "পুনর্নির্দেশ",
+	"target": "লক্ষ্য",
+	"localization": "স্থানীয়করণ:",
+	"chart-preferences": "চার্টের পছন্দসমূহ:",
+	"auto-pagepile-error": "$1 তৈরি করা যাবে না। প্রথম $2টি অনুরোধকৃত পাতা দেখানো হচ্ছে।",
+	"metric": "মেট্রিক"
 }

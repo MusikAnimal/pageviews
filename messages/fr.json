@@ -9,7 +9,8 @@
 			"Gomoko",
 			"TradFr",
 			"Yasten",
-			"Trial"
+			"Trial",
+			"Urhixidur"
 		]
 	},
 	"title": "Analyse des pages vues",
@@ -209,7 +210,7 @@
 	"history": "Historique",
 	"info": "Info",
 	"note": "Note",
-	"unsupported-browser-error": "$1 et au-dessous ne sont pas supportées. Veuillez <a href='http://browsehappy.com/'>mettre à jour votre navigateur</a></strong>.",
+	"unsupported-browser-error": "$1 et au-dessous ne sont pas prises en charge. Veuillez <a href='http://browsehappy.com/'>mettre à jour votre navigateur</a></strong>.",
 	"permalink": "Lien permanent",
 	"siteviews-title": "Analyse des visites du site",
 	"projects": "Projets",
@@ -259,5 +260,6 @@
 	"target": "cible",
 	"localization": "Localisation :",
 	"chart-preferences": "Préférences de graphique :",
-	"auto-pagepile-error": "Impossible de créer $1. Affichage des $2 premières pages demandées."
+	"auto-pagepile-error": "Impossible de créer $1. Affichage des $2 premières pages demandées.",
+	"metric": "Métrique"
 }

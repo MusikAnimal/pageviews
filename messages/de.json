@@ -253,5 +253,6 @@
 	"target": "Ziel",
 	"localization": "Lokalisierung:",
 	"chart-preferences": "Diagrammeinstellungen:",
-	"auto-pagepile-error": "$1 konnte nicht erstellt werden. Es werden die ersten $2 angefragten Seiten angezeigt."
+	"auto-pagepile-error": "$1 konnte nicht erstellt werden. Es werden die ersten $2 angefragten Seiten angezeigt.",
+	"metric": "Metrisch"
 }

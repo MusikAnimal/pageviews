@@ -31,6 +31,7 @@
 	"download-label": "ดาวน์โหลด",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "พิมพ์",
 	"credits": "นำส่งถึงคุณโดย $1 $2 และ $3",
 	"hosted": "แม่ข่ายกับ $1 บน $2",
 	"translation-credits": "ขับเคลื่อนการแปลโดย $1 และ $2",
@@ -140,6 +141,7 @@
 	"faq-massviews-sources-title": "อะไรคือ \"แหล่งข้อมูล\" ?",
 	"faq-massviews-subject-page-title": "อะไรคือตัวเลือก \"$1\" ?",
 	"url-structure-parameters": "พารามิเตอร์",
+	"url-structure-page": "ชื่อหน้าหลีก",
 	"url-structure-special-range-latest": "ข้อมูล 20 วันล่าสุด",
 	"url-structure-platform": "หนึ่งของ $1, $2, $3 หรือ $4",
 	"url-structure-massviews-source": "หนึ่งของ $1, $2 หรือ $3",
@@ -193,5 +195,11 @@
 	"num-sections": "$1 ส่วนย่อย",
 	"section": "ส่วนย่อย",
 	"num-redirects": "$1 เปลี่ยนทาง",
-	"num-pageviews": "$1 การเข้าชมหน้า"
+	"num-pageviews": "$1 การเข้าชมหน้า",
+	"redirects": "เปลี่ยนทาง",
+	"target": "เป้าหมาย",
+	"localization": "การปรับให้เข้ากับท้องถิ่น:",
+	"chart-preferences": "แผนภูมิพึงใจ:",
+	"auto-pagepile-error": "ไม่สามารถสร้าง $1 ได้ แสดงอันดับแรก $2 การร้องขอหน้า",
+	"metric": "ตัววัด"
 }

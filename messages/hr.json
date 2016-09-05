@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"MaGa",
-			"Macofe"
+			"Macofe",
+			"Milicevic01"
 		]
 	},
 	"title": "Analiza pregleda stranice",
@@ -151,6 +152,7 @@
 	"begin-at-zero": "Počni s nulom",
 	"begin-at-zero-option": "Uvijek prikazuj os y počevši s nulom",
 	"redirects": "Preusmjeravanja",
+	"target": "odredišna stranica",
 	"localization": "Lokalizacija:",
 	"chart-preferences": "Postavke grafikona:"
 }

@@ -52,6 +52,7 @@
 	"settings-notice": "Är Astellunge ginn am selwechte Browser um selwechte Computer gespäichert.",
 	"search-method": "Sichmethod:",
 	"autocompletion": "Automatesch kompletéieren",
+	"autocompletion-redirects": "Automatesch Ausfëllen inklusiv Viruleedungen",
 	"no-autocompletion": "Net automatesch kompletéieren",
 	"format-numbers": "Format vun den numereschen Daten",
 	"localize-dates": "Datumsformat lokaliséieren",
@@ -94,6 +95,7 @@
 	"api-error": "Feeler beim Ofruff vu(n) $1",
 	"api-error-unknown": "Beim Opruffe vu(n) $1 ass en onbekannt Feeler geschitt",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
+	"api-throttle-wait": "Waart w.e.g. $1 Sekonnen ier Dir eng aner Ufro schéckt.<br/>Entschëllegt eis w.e.g. fir de Mëssel. Dëst ass eng temporär Limitatioun.<br/>Kuckt $2 fir méi Informatiounen.",
 	"api-incomplete-data": "E puer Donnéeë sinn nach net disponibel fir d'Datumer: $1",
 	"excluded-pages": "Ausgeschloss Säiten",
 	"show-more": "Méi weisen",
@@ -163,7 +165,9 @@
 	"chart": "Diagramm",
 	"remember-chart-option": "Diagrammastellunge  verhalen",
 	"begin-at-zero": "Bei null ufänken",
+	"begin-at-zero-option": "D'Y-Achs ëmmer esou weisen datt se bei null ufänkt",
 	"search": "Sichen",
+	"redirectviews-title": "Gekuckt Viruleedungen",
 	"num-sections": "$1 A bschnitter",
 	"section": "Abschnitt",
 	"num-redirects": "$1 Viruleedungen",
@@ -171,5 +175,6 @@
 	"redirects": "Viruleedungen",
 	"target": "Zil",
 	"localization": "Lokalisatioun:",
-	"chart-preferences": "Diagrammastellungen:"
+	"chart-preferences": "Diagrammastellungen:",
+	"metric": "Eenheet"
 }

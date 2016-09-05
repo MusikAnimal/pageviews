@@ -31,6 +31,7 @@
 	"download-label": "Jaitsi",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "Inprimatu",
 	"credits": "$1-en, $2-ren, eta $3-en bitartez eskuratua.",
 	"hosted": "$1(e)kin $2(a)n alojatua.",
 	"translation-credits": "$1-ek eta $2-ek sustatutako itzulpenak.",
@@ -116,8 +117,8 @@
 	"faq-old-data-title": "Zergatik ezin dut $1 baino datu zaharragoak ikusi?",
 	"faq-todays-date-title": "Zergatik ezin dut gaurko eguneko daturik ikusi?",
 	"faq-agents-title": "Zer dira ''Agenteak''?",
-	"faq-chart-type-title": "Ez zait gustatzen grafiko mota hau",
-	"faq-try-tool": "Saiatu $1",
+	"faq-chart-type-title": "Nola aldatu dezaket grafiko mota?",
+	"faq-try-tool": "Hori hemen aurkitu dezakezu: $1",
 	"faq-massviews-sources-title": "Zer dira ''Iturriak''?",
 	"faq-massviews-subject-page-title": "Zer da \"$1\" aukera?",
 	"url-structure-parameters": "Parametroak",
@@ -128,6 +129,7 @@
 	"info": "Info",
 	"note": "Oharra",
 	"permalink": "Lotura iraunkorra",
+	"siteviews-title": "Guneko bisiten analisia",
 	"projects": "Proiektuak",
 	"projects-placeholder": "Idatzi proiektuen izenak...",
 	"statistics": "Estatistikak",
@@ -137,5 +139,7 @@
 	"logarithmic-scale": "Eskala logaritmikoa",
 	"list": "Zerrenda",
 	"chart": "Grafikoa",
-	"begin-at-zero": "Zerotik abiatu"
+	"begin-at-zero": "Zerotik abiatu",
+	"search": "Bilatu",
+	"chart-preferences": "Grafikoaren hobespenak:"
 }

@@ -256,5 +256,6 @@
 	"target": "目標頁面",
 	"localization": "在地化：",
 	"chart-preferences": "圖表偏好設置",
-	"auto-pagepile-error": "無法創建$1。顯示前$2個請求頁面。"
+	"auto-pagepile-error": "無法創建$1。顯示前$2個請求頁面。",
+	"metric": "度量"
 }
