@@ -220,9 +220,8 @@ class TopViews extends Pv {
     const datepickerValue = this.datepicker.getDate();
 
     /**
-     * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
-     *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
+     * Override start and end with custom range values,
+     *   if configured (set by URL params or setupDateRangeSelector)
      */
     if (this.specialRange && specialRange) {
       params.date = this.specialRange.range;
@@ -331,6 +330,18 @@ class TopViews extends Pv {
       this.parseQueryString('excludes')
     );
 
+    // FIXME: remove once all affected wikis/links have been updated
+    if (params.range || params.start || params.end) {
+      this.fixLegacyDates(params);
+      this.addSiteNotice(
+        'warning',
+        `Custom date ranges are no longer supported. See the official annoucement
+          <a href='//meta.wikimedia.org/wiki/Talk:Pageviews_Analysis#Topviews_revamped'>here</a>.`,
+        'Topviews has been revamped!',
+        true
+      );
+    }
+
     this.setDate(params.date); // also performs validations
 
     $(this.config.projectInput).val(params.project);
@@ -347,6 +358,44 @@ class TopViews extends Pv {
       this.setupSelect2();
       this.setupListeners();
     });
+  }
+
+  /**
+   * Fix legacy links to Topviews that used a defined date range.
+   * Instead, we'll determine how wide the range is, and if it's greater than 3 days
+   *   then use the month, otherwise use the first day of the range
+   * @param {Object} params - params as provided by this.parseQueryString
+   * @returns {Object} modified params with corrected dates
+   */
+  fixLegacyDates(params) {
+    // all is well if we were given a date parameter (new version)
+    //   or if no date params were provided
+    if (params.date || (!params.start && !params.end && !params.range)) return params;
+
+    // use last-month if any range was provided
+    if (params.range) {
+      params.date = 'last-month';
+      return params;
+    }
+
+    // if invalid start/end use last-month
+    const dateRegex = /\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(params.start) && !dateRegex.test(params.end)) {
+      params.date = 'last-month';
+      return params;
+    }
+
+    const startDate = moment(params.start, 'YYYY-MM-DD'),
+      endDate = moment(params.end, 'YYYY-MM-DD'),
+      numDays = Math.abs(endDate.diff(startDate, 'days'));
+
+    if (numDays > 3) {
+      params.date = startDate.format('YYYY-MM');
+    } else {
+      params.date = params.start;
+    }
+
+    return params;
   }
 
   /**
@@ -676,31 +725,48 @@ class TopViews extends Pv {
   /**
    * Get the pages that are not in the given namespace
    * @param {array} pages - pages to filter
-   * @param {Number} [ns] - ID of the namespace to restrict to, defaults to 0 (mainspace)
-   * @return {Array} pages in given namespace
+   * @param {Number} [restrictedNamespace] - ID of the namespace to restrict to, defaults to 0 (mainspace)
+   * @return {Deferred} promise resolving with pages in given namespace
    */
-  filterOutNamespace(pages, ns = 0) {
+  filterOutNamespace(pages, restrictedNamespace = 0) {
     let dfd = $.Deferred();
 
-    const doFiltering = data => {
-      if (data && data.query && data.query.namespaces) {
-        let nonMainspaceNames = [];
+    const doFiltering = (entries, unacceptableNamespaces) => {
+      return entries.filter(entry => {
+        const ns = entry.split(':')[0];
 
-        // include main page as non-mainspace, along with 'Wikipedia' and 'Special' since API seems to
-        //  include for instance both Wikipedia and Wikipédia for some languages
-        // FIXME: the 'Sp?cial' is an apparent bug, see phab:T145043
-        nonMainspaceNames = [data.query.general.mainpage, 'Wikipedia', 'Special', 'Sp?cial'];
-
-        for (ns in data.query.namespaces) {
-          nonMainspaceNames.push(data.query.namespaces[ns]['*']);
+        // include main page as non-mainspace
+        if (restrictedNamespace === 0 && entry === this.siteInfo.general.mainpage) {
+          return false;
         }
 
-        // use namespace prefixes to filter out non-mainspace pages
-        pages = pages.filter(page => {
-          const ns = page.split(':')[0];
-          return ns && !nonMainspaceNames.includes(ns);
-        });
+        // Verify there was a namespace. For instance, don't filter out a mainspace article
+        //  called 'Search', when we wanted to filter out Special:Search
+        if (!entry.includes(':')) return true;
+
+        return !unacceptableNamespaces.includes(ns);
+      });
+    };
+
+    const processPages = () => {
+      let unacceptableNamespaces = [];
+
+      // for non-mainspace, count 'Wikipedia' and 'Special' since API seems to
+      //  include for instance both Wikipedia and Wikipédia in some projects
+      // FIXME: the 'Sp?cial' is an apparent bug, see phab:T145043
+      if (restrictedNamespace === 0) {
+        unacceptableNamespaces = ['Wikipedia', 'Special', 'Sp?cial'];
       }
+
+      for (const ns in this.siteInfo.namespaces) {
+        unacceptableNamespaces.push(this.siteInfo.namespaces[ns]['*']);
+      }
+
+      // the actual filtering of the given pages
+      pages = doFiltering(pages, unacceptableNamespaces);
+
+      // remove excludes that would otherwise automatically be filtered out
+      this.excludes = doFiltering(this.excludes, unacceptableNamespaces);
 
       dfd.resolve(pages);
     };
@@ -709,7 +775,8 @@ class TopViews extends Pv {
 
     // use cached site info if present
     if (simpleStorage.hasKey(cacheKey)) {
-      doFiltering(simpleStorage.get(cacheKey));
+      this.siteInfo = simpleStorage.get(cacheKey);
+      processPages();
     } else {
       // otherwise fetch siteinfo and store in cache
       $.ajax({
@@ -722,9 +789,11 @@ class TopViews extends Pv {
         },
         dataType: 'jsonp'
       }).always(data => {
+        this.siteInfo = data.query;
+
         // cache for one week (TTL is in milliseconds)
-        simpleStorage.set(cacheKey, data, {TTL: 1000 * 60 * 60 * 24 * 7});
-        doFiltering(data);
+        simpleStorage.set(cacheKey, this.siteInfo, {TTL: 1000 * 60 * 60 * 24 * 7});
+        processPages();
       });
     }
 
