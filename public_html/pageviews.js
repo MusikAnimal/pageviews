@@ -199,7 +199,7 @@ var PageViews = function (_mix$with) {
       };
 
       // set up default pages if none were passed in
-      if (!params.pages || params.pages.length === 1 && !params.pages[0]) {
+      if (!params.pages || !params.pages.length) {
         // only set default of Cat and Dog for enwiki
         if (this.project === 'en.wikipedia') {
           params.pages = ['Cat', 'Dog'];
@@ -330,8 +330,6 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'setupSelect2',
     value: function setupSelect2() {
-      var _this3 = this;
-
       var $select2Input = $(this.config.select2Input);
 
       var params = {
@@ -343,13 +341,7 @@ var PageViews = function (_mix$with) {
       };
 
       $select2Input.select2(params);
-      $select2Input.on('change', function (e) {
-        if ($(e.target).val()) {
-          _this3.processInput();
-        } else {
-          _this3.resetView();
-        }
-      });
+      $select2Input.on('change', this.processInput.bind(this));
     }
 
     /**
@@ -360,7 +352,7 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'getArticleSelectorAjax',
     value: function getArticleSelectorAjax() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.autocomplete !== 'no_autocomplete') {
         /**
@@ -374,7 +366,7 @@ var PageViews = function (_mix$with) {
           delay: 200,
           jsonpCallback: 'articleSuggestionCallback',
           data: function data(search) {
-            return _this4.getSearchParams(search.term);
+            return _this3.getSearchParams(search.term);
           },
           processResults: this.processSearchResults.bind(this),
           cache: true
@@ -395,7 +387,8 @@ var PageViews = function (_mix$with) {
     key: 'validateProject',
     value: function validateProject() {
       if (_get(Object.getPrototypeOf(PageViews.prototype), 'validateProject', this).call(this)) {
-        this.processInput();
+        this.resetView(true);
+        this.focusSelect2();
       }
     }
 
@@ -421,26 +414,32 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput(force) {
-      var _this5 = this;
+      var _this4 = this;
 
-      var entities = $(config.select2Input).select2('val') || [];
       this.pushParams();
 
       /** prevent duplicate querying due to conflicting listeners */
-      if (!force && (location.search === this.params && this.prevChartType === this.chartType || !entities.length)) {
+      if (!force && location.search === this.params && this.prevChartType === this.chartType) {
         return;
+      }
+
+      this.params = location.search;
+
+      var entities = $(config.select2Input).select2('val') || [];
+
+      if (!entities.length) {
+        return this.resetView();
       }
 
       // clear out old error messages unless the is the first time rendering the chart
       this.clearMessages();
 
-      this.params = location.search;
       this.prevChartType = this.chartType;
       this.destroyChart();
       this.startSpinny(); // show spinny and capture against fatal errors
 
       this.getPageViewsData(entities).done(function (xhrData) {
-        return _this5.updateChart(xhrData);
+        return _this4.updateChart(xhrData);
       });
     }
 
@@ -454,11 +453,11 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'massviewsRedirectWithPagePile',
     value: function massviewsRedirectWithPagePile(pages) {
-      var _this6 = this;
+      var _this5 = this;
 
       var dfd = $.Deferred(),
           dbName = Object.keys(siteMap).find(function (key) {
-        return siteMap[key] === _this6.project + '.org';
+        return siteMap[key] === _this5.project + '.org';
       });
 
       $.ajax({
@@ -469,12 +468,12 @@ var PageViews = function (_mix$with) {
           data: pages.join('\n')
         }
       }).success(function (pileData) {
-        var params = _this6.getParams();
+        var params = _this5.getParams();
         delete params.project;
         document.location = '/massviews?overflow=1&' + $.param(params) + '&source=pagepile&target=' + pileData.pile.id;
       }).fail(function () {
         // just grab first 10 pages and throw an error
-        _this6.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
+        _this5.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
         dfd.resolve(pages.slice(0, 10));
       });
 

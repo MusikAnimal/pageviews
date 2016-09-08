@@ -155,7 +155,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * @returns {null} - nothing
    */
   setupSelect2() {
-    const select2Input = $(this.config.select2Input);
+    const $select2Input = $(this.config.select2Input);
 
     let params = {
       ajax: {
@@ -178,8 +178,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    select2Input.select2(params);
-    select2Input.on('change', this.processInput.bind(this));
+    $select2Input.select2(params);
+    $select2Input.on('change', this.processInput.bind(this));
   }
 
   setPlatformOptionValues() {
@@ -242,13 +242,14 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
+    this.params = location.search;
+
     const entities = $(config.select2Input).select2('val') || [];
 
     if (!entities.length) {
       return this.resetView();
     }
 
-    this.params = location.search;
     this.prevChartType = this.chartType;
     this.clearMessages(); // clear out old error messages
     this.destroyChart();

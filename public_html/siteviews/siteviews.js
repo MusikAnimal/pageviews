@@ -4334,7 +4334,7 @@ var SiteViews = function (_mix$with) {
   }, {
     key: 'setupSelect2',
     value: function setupSelect2() {
-      var select2Input = $(this.config.select2Input);
+      var $select2Input = $(this.config.select2Input);
 
       var params = {
         ajax: {
@@ -4359,8 +4359,8 @@ var SiteViews = function (_mix$with) {
         minimumInputLength: 1
       };
 
-      select2Input.select2(params);
-      select2Input.on('change', this.processInput.bind(this));
+      $select2Input.select2(params);
+      $select2Input.on('change', this.processInput.bind(this));
     }
   }, {
     key: 'setPlatformOptionValues',
@@ -4437,13 +4437,14 @@ var SiteViews = function (_mix$with) {
         return;
       }
 
+      this.params = location.search;
+
       var entities = $(config.select2Input).select2('val') || [];
 
       if (!entities.length) {
         return this.resetView();
       }
 
-      this.params = location.search;
       this.prevChartType = this.chartType;
       this.clearMessages(); // clear out old error messages
       this.destroyChart();

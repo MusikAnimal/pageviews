@@ -102,18 +102,35 @@ module.exports = {
       client.expect(response.value).to.match(/platform=desktop&agent=spider/);
     });
   },
-  'Changing the project processes the given articles for the new project': client => {
+  'Changing the project clears Select2 and new searches use API for the new project': client => {
     client.click('#project-input');
     client.execute('return $(".aqs-project-input").val("")');
     client.setValue('#project-input', ['de.wikipedia.org']);
     client.execute('return $(".aqs-project-input").trigger("change")');
+    client.execute('return $(".aqs-select2-selector").val()', [], response => {
+      client.expect(response.value).to.equal(null);
+    });
+
+    client.click('.select2-container');
+    client.setValue('.select2-search__field', 'Deutsche Fußballnationalmannschaft');
+    client.expect.element('.select2-results__option:first-child').text.to.equal('Deutsche Fußballnationalmannschaft').after(5000);
+    client.click('.select2-results__option:first-child');
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
+    client.pause(500);
+    client.click('.select2-container');
+    client.setValue('.select2-search__field', 'Deutschland');
+    client.expect.element('.select2-results__option:first-child').text.to.equal('Deutschland').after(5000);
+    client.click('.select2-results__option:first-child');
+    client.expect.element('.aqs-chart').to.be.visible.after(10000);
+    client.pause(500);
     client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(_.isEqual(
         response.value,
-        ['Dog', 'Sea_lion']
+        ['Deutsche_Fußballnationalmannschaft', 'Deutschland']
       )).to.equal(true);
     });
+    client.expect.element('#chart-legend').to.have.text.that.matches(/\bDeutsche Fußballnationalmannschaft\b[\s\S]*\bDeutschland\b/);
+
     client.end();
   }
 };

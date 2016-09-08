@@ -11,6 +11,7 @@ const siteMap = require('./shared/site_map');
 const Pv = require('./shared/pv');
 const ChartHelpers = require('./shared/chart_helpers');
 
+
 /** Main PageViews class */
 class PageViews extends mix(Pv).with(ChartHelpers) {
   constructor() {
@@ -129,7 +130,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     };
 
     // set up default pages if none were passed in
-    if (!params.pages || (params.pages.length === 1 && !params.pages[0])) {
+    if (!params.pages || !params.pages.length) {
       // only set default of Cat and Dog for enwiki
       if (this.project === 'en.wikipedia') {
         params.pages = ['Cat', 'Dog'];
@@ -259,13 +260,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     };
 
     $select2Input.select2(params);
-    $select2Input.on('change', e => {
-      if ($(e.target).val()) {
-        this.processInput();
-      } else {
-        this.resetView();
-      }
-    });
+    $select2Input.on('change', this.processInput.bind(this));
   }
 
   /**
@@ -301,7 +296,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   validateProject() {
     if (super.validateProject()) {
-      this.processInput();
+      this.resetView(true);
+      this.focusSelect2();
     }
   }
 
@@ -321,18 +317,24 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @returns {null} - nothin
    */
   processInput(force) {
-    const entities = $(config.select2Input).select2('val') || [];
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
-    if (!force && (location.search === this.params && this.prevChartType === this.chartType || !entities.length)) {
+    if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
       return;
+    }
+
+    this.params = location.search;
+
+    const entities = $(config.select2Input).select2('val') || [];
+
+    if (!entities.length) {
+      return this.resetView();
     }
 
     // clear out old error messages unless the is the first time rendering the chart
     this.clearMessages();
 
-    this.params = location.search;
     this.prevChartType = this.chartType;
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
