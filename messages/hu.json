@@ -115,8 +115,6 @@
 	"faq-agents-bot": "tartalmaz bármilyen más automatizált programot, ami beolvassa lapokat egyéb célból.",
 	"faq-chart-type-title": "Hogyan változtathatom meg a grafikon típusát?",
 	"faq-chart-type-body": "Kattints a „$1” linkre, hogy hatféle grafikon közül választhass. Az alkalmazás megjegyzi a választásodat. Alapértelmezés szerint az alkalmazás oszlopdiagramot használ, ha csak egy lap adatait nézed és vonaldiagramot több lap esetén. A kördiagramok csak egy adott időszak teljes nézettségét tudják megjeleníteni.",
-	"faq-line-chart-title": "Nehéz a pontok fölé vinnem az egeremet a vonaldiagramon",
-	"faq-line-chart-body": "A dátumcímkék fölé is viheted a kurzort alul egy adott nap adatainak megtekintéséhez. Ez különösen hasznos mobilon. Egyszerűen tartsd nyomva a dátumcímkét és húzd jobbra-balra az ujjadat az egyes napok adatainak megtekintéséhez.",
 	"faq-top-viewed-title": "A legnézettebb lapokat akarom megnézni egy időintervallumban",
 	"faq-multi-lang-title": "Egy szócikk adatait akarom megnézni egy projekt minden nyelvén",
 	"faq-bug-report-title": "Szeretnék újabb funkciót kérni vagy hibát bejelenteni",
