@@ -92,7 +92,7 @@ Prerequisites:
 * [Selenium Standalone Server](http://www.seleniumhq.org/download/)
 * [Firefox](http://www.mozilla.org/firefox-download)
 
-Once installed run `java -jar selenium-server-standalone-2.52.0.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests like `./nightwatch --test tests/my_test.js`.
+Note the default browser Selenium uses is Firefox, and as of Firefox 47 the necessary webdriver, `FirefoxDriver` has been removed. A working combination is Selenium WebDriver 2.53.1 and Firefox 47.0.1 (not Firefox 47, or later versions than 47.0.1). Once installed run `java -jar selenium-server-standalone-2.53.1.jar` to start the selenium server and `./nightwatch` to run the tests. You can run specific tests with `./nightwatch --test tests/my_test.js`.
 
 If a test fails when you push to remote, check the build and there will be a link to a video of the test, along with the output of the logs.
 
