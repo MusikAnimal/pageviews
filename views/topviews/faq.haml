@@ -15,13 +15,6 @@
 
       %main.col-lg-10.col-lg-offset-1
         %ul.list-group
-          %li.list-group-item(id="data_caveat")
-            %p
-              %strong
-                = $I18N->msg( 'faq-topviews-data-approx-title')
-            %p
-              - $restBaseLink = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>Wikimedia Pageviews API</a>"
-              = $I18N->msg( 'faq-topviews-data-approx-body', array( 'variables' => array( $restBaseLink ) ) )
           %li.list-group-item(id="false_positive")
             %p
               %strong

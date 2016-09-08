@@ -31,8 +31,21 @@
             %dt excludes
             %dd
               = $I18N->msg( 'url-structure-excludes' )
-            - $defaultRange = 'last-week'
-            - include "../../url_parts/date_ranges.php"
+
+            %dt date
+            %dd
+              = $I18N->msg( 'url-structure-topviews-date', array( 'variables' => array( '<code>date</code>' ), 'parsemag' => true ) )
+              %ul.special-ranges
+                %li
+                  %code last-month
+                  = $I18N->msg( 'last-month' ) . " (" . strtolower( $I18N->msg( 'default' ) ) . ")"
+                %li
+                  %code yesterday
+                %li
+                  = $I18N->msg( 'url-structure-topviews-date-month', array( 'variables' => array( '<code>YYYY-MM</code>' ), 'parsemag' => true ) )
+                %li
+                  = $I18N->msg( 'url-structure-topviews-date-day', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+
             - include "../../url_parts/platform.php"
 
         %div.col-lg-12.text-center.tm

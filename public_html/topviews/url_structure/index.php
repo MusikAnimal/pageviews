@@ -38,8 +38,25 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-excludes' ); ?>
             </dd>
-            <?php $defaultRange = 'last-week'; ?>
-            <?php include "../../url_parts/date_ranges.php"; ?>
+            <dt>date</dt>
+            <dd>
+              <?php echo $I18N->msg( 'url-structure-topviews-date', array( 'variables' => array( '<code>date</code>' ), 'parsemag' => true ) ); ?>
+              <ul class="special-ranges">
+                <li>
+                  <code>last-month</code>
+                  <?php echo $I18N->msg( 'last-month' ) . " (" . strtolower( $I18N->msg( 'default' ) ) . ")"; ?>
+                </li>
+                <li>
+                  <code>yesterday</code>
+                </li>
+                <li>
+                  <?php echo $I18N->msg( 'url-structure-topviews-date-month', array( 'variables' => array( '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
+                </li>
+                <li>
+                  <?php echo $I18N->msg( 'url-structure-topviews-date-day', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
+                </li>
+              </ul>
+            </dd>
             <?php include "../../url_parts/platform.php"; ?>
           </dl>
         </div>

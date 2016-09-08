@@ -20,17 +20,6 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
-          <li class="list-group-item" id="data_caveat">
-            <p>
-              <strong>
-                <?php echo $I18N->msg( 'faq-topviews-data-approx-title'); ?>
-              </strong>
-            </p>
-            <p>
-              <?php $restBaseLink = "<a href='https://wikimedia.org/api/rest_v1/?doc#/'>Wikimedia Pageviews API</a>"; ?>
-              <?php echo $I18N->msg( 'faq-topviews-data-approx-body', array( 'variables' => array( $restBaseLink ) ) ); ?>
-            </p>
-          </li>
           <li class="list-group-item" id="false_positive">
             <p>
               <strong>
