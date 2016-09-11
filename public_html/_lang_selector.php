@@ -3,7 +3,7 @@
     <?php echo $currentLang; ?>
     <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu">
+  <ul class="dropdown-menu dropdown-menu-right">
     <li>
       <a href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">
         <?php echo $I18N->msg( 'help-translate' ); ?>

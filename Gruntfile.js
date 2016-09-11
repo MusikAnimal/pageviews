@@ -335,7 +335,7 @@ module.exports = function(grunt) {
   grunt.registerTask('sass_all', ['sass:dist', 'concat']);
 
   apps.forEach(app => {
-    grunt.registerTask(app, [`newer:browserify:${app}`, `newer:sass:${app}`, `newer:concat:${app}`, 'newer:haml']);
+    grunt.registerTask(app, [`browserify:${app}`, `sass:${app}`, `newer:concat:${app}`, 'newer:haml']);
   });
 
   grunt.registerTask('default', ['pageviews']);
