@@ -22,6 +22,7 @@
 	"desktop": "데스크톱",
 	"mobile-app": "모바일 앱",
 	"mobile-web": "모바일 웹",
+	"mobile": "모바일",
 	"agent": "에이전트",
 	"user": "사용자",
 	"spider": "스파이더",
@@ -138,8 +139,11 @@
 	"url-structure-special-range-latest": "최근 20일 간의 데이터",
 	"url-structure-platform": "$1, $2, $3, $4 중 하나",
 	"url-structure-sort-redirectviews": "정렬할 열. $1, $2, $3 중 하나",
-	"url-structure-massviews-source": "$1, $2, $3 중의 하나",
+	"url-structure-massviews-source": "$1, $2, $3, $4 중의 하나",
 	"url-structure-massviews-target-example": "예를 들어, <strong>이런 건 사용하지 마세요.</strong>:\n$1\n대신 이걸 쓰세요:\n$2\n아니면, 간단하게  좀 더 짧은 위키 주소를 쓸 수 있습니다:\n$3",
+	"url-structure-siteviews-platform": "$1이(가) $2일 때",
+	"url-structure-siteviews-platform-unique-devices": "$1 (기본값), $2, $3 중 하나",
+	"url-structure-siteviews-agent": "$1이(가) $2일 때에만 적용합니다.",
 	"url-structure-subjectpage": "출처(소스)로서 분류를 사용할 때는 옵션 \"$1\". 활성화는 $2, 비활성화는 $3(기본값)을 사용하세요.",
 	"default": "기본값",
 	"all-languages": "모든 언어",
@@ -173,5 +177,10 @@
 	"target": "대상",
 	"localization": "지역화:",
 	"chart-preferences": "차트 설정:",
-	"auto-pagepile-error": "$1 문서를 삭제할 수 없습니다. 처음 $2개의 요청 문서를 보여줍니다."
+	"auto-pagepile-error": "$1 문서를 삭제할 수 없습니다. 처음 $2개의 요청 문서를 보여줍니다.",
+	"date-type": "날짜 형식",
+	"date": "날짜",
+	"monthly": "매월",
+	"daily": "매일",
+	"mainspace-only-option": "일반 이름공간의 문서만 표시"
 }

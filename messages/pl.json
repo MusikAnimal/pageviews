@@ -114,11 +114,12 @@
 	"faq-massviews-subject-page-title": "Co to jest opcja „$1”?",
 	"faq-throttle-wait-title": "Dlaczego muszę czekać $1 sekund, zanim będą mógł użyć narzędzia ponownie?",
 	"url-structure-example-siteviews": "Aby uzyskać najnowsze dane dotyczące ogólnej liczby odsłon wszystkich artykułów na wiki, z domyślnymi opcjami, użyj:\n$1",
+	"url-structure-topviews-date-day": "Określony dzień w formacie $1",
 	"url-structure-parameters": "Parametry",
 	"url-structure-special-range-latest": "Ostatnie 20 dni danych",
 	"url-structure-special-range-latest-n": "gdzie <i>N</i> jest liczbą. Na przykład <code>latest-30</code> pokaże dane z ostatnich 30 dni",
 	"url-structure-sort-direction": "Kierunek sortowania. $1 malejąco, $2 rosnąco",
-	"url-structure-massviews-source": "Jeden z $1, $2 lub $3",
+	"url-structure-massviews-source": "Jeden z $1, $2, $3 lub $4",
 	"default": "Domyślnie",
 	"all-languages": "Wszystkie języki",
 	"history": "Historia",
@@ -150,5 +151,7 @@
 	"section": "Sekcja",
 	"redirects": "Przekierowania",
 	"target": "cel",
-	"localization": "Lokalizacja:"
+	"localization": "Lokalizacja:",
+	"date": "Data",
+	"monthly": "Miesięcznie"
 }

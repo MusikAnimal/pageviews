@@ -4,7 +4,8 @@
 			"Wolf Rex",
 			"Fauvirt",
 			"Máté",
-			"Tacsipacsi"
+			"Tacsipacsi",
+			"R-Joe"
 		]
 	},
 	"dates": "Dátumok",
@@ -134,6 +135,7 @@
 	"url-structure-parameters": "Paraméterek",
 	"url-structure-parameters-order": "Bármilyen sorrendben használhatók",
 	"url-structure-project": "$1 vagy más érvényes $2",
+	"url-structure-siteviews-platform": "Ha a $1 a $2",
 	"default": "Alapértelmezett",
 	"all-languages": "Minden nyelv",
 	"history": "Laptörténet",
@@ -143,5 +145,8 @@
 	"permalink": "Állandó hivatkozás",
 	"projects": "Projektek",
 	"statistics": "Statisztika",
-	"chart": "diagram"
+	"chart": "diagram",
+	"date-type": "Adattípus",
+	"date": "Dátum",
+	"daily": "Napi"
 }

@@ -16,6 +16,7 @@
 	"desktop": "Desktop",
 	"mobile-app": "Mobil App",
 	"mobile-web": "Mobilen Internet",
+	"mobile": "Mobil",
 	"agent": "Agent",
 	"user": "Benotzer",
 	"spider": "Spider",
@@ -128,6 +129,8 @@
 	"faq-massviews-sources-category-url": "ass déi komplett URL vun enger Kategoriesäit, zum Beispill $1.",
 	"faq-massviews-subject-page-title": "Wat ass d'Optioun \"$1\"?",
 	"faq-throttle-wait-title": "Firwat muss ech $1 Sekonne waarden ier ech den Tool nach eng Kéier benotze kann?",
+	"url-structure-topviews-date-month": "E spezifesche Mount am Format $1",
+	"url-structure-topviews-date-day": "E spezifeschen Dag am Format $1",
 	"url-structure-parameters": "Parameteren",
 	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
 	"url-structure-project": "$1 oder aner valabel $2",
@@ -135,7 +138,8 @@
 	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
 	"url-structure-platform": "Eng vu(n) $1, $2, $3 oder $4",
 	"url-structure-sort-redirectviews": "Op wat fir eng Kolonn zortéiert gi soll. Entweder $1, $2 oder $3.",
-	"url-structure-massviews-source": "Eng vu(n) $1, $2 oder $3",
+	"url-structure-massviews-source": "Eng vu(n) $1, $2, $3 oder $4",
+	"url-structure-siteviews-platform": "Wann de(n) $1 $2 ass",
 	"default": "Standard",
 	"all-languages": "All Sproochen",
 	"history": "Versiounen",
@@ -176,5 +180,8 @@
 	"target": "Zil",
 	"localization": "Lokalisatioun:",
 	"chart-preferences": "Diagrammastellungen:",
-	"metric": "Eenheet"
+	"metric": "Eenheet",
+	"date": "Datum",
+	"monthly": "All Mount",
+	"daily": "All Dag"
 }

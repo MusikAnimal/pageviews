@@ -21,6 +21,7 @@
 	"desktop": "سطح المكتب",
 	"mobile-app": "تطبيق محمول",
 	"mobile-web": "وب الجوال",
+	"mobile": "جوال",
 	"agent": "وكيل",
 	"user": "مستخدم",
 	"spider": "العناكب",
@@ -89,6 +90,7 @@
 	"average": "المتوسط",
 	"submit": "إرسال",
 	"faq-redirects-title": "كيف تُحسب التحويلات؟",
+	"url-structure-topviews-date-day": "يوم محدد بتنسيق $1",
 	"url-structure-parameters": "محددات",
 	"default": "افتراضي",
 	"all-languages": "جميع اللغات",
@@ -103,5 +105,10 @@
 	"invalid-category-url": "تصنيف غير صالح! برجاء إدخال المسار الكامل للتصنيف.",
 	"source": "المصدر",
 	"target": "الهدف",
-	"metric": "متري"
+	"metric": "متري",
+	"date-type": "تنسيق التاريخ",
+	"date": "التاريخ",
+	"monthly": "شهري",
+	"daily": "يوميًّا",
+	"mainspace-only-option": "أظهر صفحات النطاق الرئيسي فقط"
 }

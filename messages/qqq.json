@@ -78,7 +78,7 @@
 	"invalid-params": "Generic part of error message. Should include punctuation at the end.",
 	"param-error-1": "Error message for when older data is requested that is not available.",
 	"param-error-2": "Error message for when the given start date is after the end date.",
-	"param-error-3": "General error message for when an invalid paramater is passed in. $1 is the name of the parameter and $2 is a link to the tool's URL documentation.",
+	"param-error-3": "General error message for when an invalid parameter is passed in. $1 is the name of the parameter and $2 is a link to the tool's URL documentation.",
 	"totals": "Label for the total number of pageviews\n{{Identical|Total}}",
 	"day": "Used in the context of number of pageviews per day\n{{Identical|Day}}",
 	"su": "Abbreviation for Sunday, a day of the week.",
