@@ -150,7 +150,7 @@
 	"faq-bug-report-body": "If you would like to use a wiki to provide feedback, use the <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> on Meta. You can also report issues on <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> and <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-topviews-false-positive-title": "Why do some random pages have such high view counts?",
 	"faq-topviews-false-positive-body1": "These are <strong>false positives</strong>, and unfortunately they are unavoidable. These could surface because someone used an automated program to scrape the page, for instance. One tactic to identify false positives is to compare desktop views with mobile web. Mobile web views should be comparable if not higher than desktop, so if mobile web views are very low, it might be a false positive.",
-	"faq-topviews-false-positive-body2": "You can also open a page in the Pageviews app for further analysis. Just click on the view count on the right side. If there's an unusual spike in traffic, the Wikimedia Reading team might be able to explain it.",
+	"faq-topviews-false-positive-body2": "You can also open a page in the Pageviews app for further analysis. Just click on the view count on the right side.",
 	"faq-source-title": "What are the \"Data sources\"?",
 	"faq-source-pageviews": "is the total number of pageviews the project received.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
