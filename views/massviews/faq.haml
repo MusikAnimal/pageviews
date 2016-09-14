@@ -21,20 +21,33 @@
               %strong= $I18N->msg( 'faq-massviews-sources-title' )
             %ul.faq-ul
               %li
-                - $pagePileId = $I18N->msg( 'page-pile-id' )
+                - $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"
+                %i= $I18N->msg( 'category' )
+                &mdash;
+                = $I18N->msg( 'faq-massviews-sources-category', array( 'variables' => array( $categoryLink ) ) )
+              %li
+                - $wikilinksLink = "<a href='https://en.wikipedia.org/wiki/Book:New_York_City' target='_blank'>https://en.wikipedia.org/wiki/Book:New_York_City</a>"
+                %i= $I18N->msg( 'wikilinks' )
+                &mdash;
+                = $I18N->msg( 'faq-massviews-sources-wikilinks', array( 'variables' => array( $wikilinksLink ) ) )
+              %li
                 - $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"
-                %i= $pagePileId
+                %i Page Pile
+                &mdash;
                 = $I18N->msg( 'faq-massviews-sources-pagepile', array( 'variables' => array( $pagePileLink ) ) )
               %li
-                - $categoryLink = "<a href='https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</a>"
-                %i= $I18N->msg( 'category-url' )
-                = $I18N->msg( 'faq-massviews-sources-category-url', array( 'variables' => array( $categoryLink ) ) )
-              %li
                 - $templateLink = "<a href='https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'>https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games</a>"
-                %i= $I18N->msg( 'template-url' )
-                = $I18N->msg( 'faq-massviews-sources-template-url', array( 'variables' => array( $templateLink ) ) )
+                %i= $I18N->msg( 'transclusions' )
+                &mdash;
+                = $I18N->msg( 'faq-massviews-sources-template', array( 'variables' => array( $templateLink ) ) )
+              %li
+                - $subpagesLink = "<a href='https://en.wikipedia.org/wiki/User:Jimbo_Wales'>https://en.wikipedia.org/wiki/User:Example</a>"
+                %i= $I18N->msg( 'subpages' )
+                &mdash;
+                = $I18N->msg( 'faq-massviews-sources-subpages', array( 'variables' => array( $subpagesLink ) ) )
               %li
                 %i Quarry
+                &mdash;
                 = $I18N->msg( 'faq-massviews-sources-quarry', array( 'variables' => array( 'Quarry', 'page_title' ) ) )
           %li.list-group-item(id="category_subject_toggle")
             %p

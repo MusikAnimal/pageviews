@@ -174,7 +174,7 @@
 	"massviews-description": "Importer en liste av sider og analyser antall sidevisninger",
 	"invalid-category-url": "Ugyldig kategori! Vennlist elgg inn full nettadresse til kategorien.",
 	"source": "Kilde",
-	"category-url": "Kategoriadresse",
+	"category": "Kategoriadresse",
 	"elapsed-time": "Tid som har gått: $1 sekunder",
 	"num-pages": "$1 sider"
 }

@@ -2960,6 +2960,52 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get general information about a project, such as namespaces, title of the main page, etc.
+     * Data returned by the api is also stored in this.siteInfo
+     * @param {String} project - project such as en.wikipedia (with or without .org)
+     * @returns {Deferred} promise resolving with siteinfo
+     */
+
+  }, {
+    key: 'getSiteInfo',
+    value: function getSiteInfo(project) {
+      var _this3 = this;
+
+      project = project.replace(/\.org$/, '');
+      var dfd = $.Deferred(),
+          cacheKey = 'pageviews-siteinfo-' + project;
+
+      // use cached site info if present
+      if (simpleStorage.hasKey(cacheKey)) {
+        this.siteInfo = simpleStorage.get(cacheKey);
+        dfd.resolve(this.siteInfo);
+      } else {
+        // otherwise fetch siteinfo and store in cache
+        $.ajax({
+          url: 'https://' + project + '.org/w/api.php',
+          data: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'general|namespaces',
+            format: 'json'
+          },
+          dataType: 'jsonp'
+        }).done(function (data) {
+          _this3.siteInfo = data.query;
+
+          // cache for one week (TTL is in milliseconds)
+          simpleStorage.set(cacheKey, _this3.siteInfo, { TTL: 1000 * 60 * 60 * 24 * 7 });
+
+          dfd.resolve(_this3.siteInfo);
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      }
+
+      return dfd;
+    }
+
+    /**
      * Get user agent, if supported
      * @returns {string} user-agent
      */
@@ -3089,7 +3135,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'normalizePageNames',
     value: function normalizePageNames(pages) {
-      var _this3 = this;
+      var _this4 = this;
 
       var dfd = $.Deferred();
 
@@ -3098,7 +3144,7 @@ var Pv = function (_PvConfig) {
         dataType: 'jsonp'
       }).then(function (data) {
         if (data.query.normalized) {
-          pages = _this3.mapNormalizedPageNames(pages, data.query.normalized);
+          pages = _this4.mapNormalizedPageNames(pages, data.query.normalized);
         }
         return dfd.resolve(pages);
       });
@@ -3286,16 +3332,16 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'saveSettings',
     value: function saveSettings() {
-      var _this4 = this;
+      var _this5 = this;
 
       /** track if we're changing to no_autocomplete mode */
       var wasAutocomplete = this.autocomplete === 'no_autocomplete';
 
       $.each($('#settings-modal input'), function (index, el) {
         if (el.type === 'checkbox') {
-          _this4.saveSetting(el.name, el.checked ? 'true' : 'false');
+          _this5.saveSetting(el.name, el.checked ? 'true' : 'false');
         } else if (el.checked) {
-          _this4.saveSetting(el.name, el.value);
+          _this5.saveSetting(el.name, el.value);
         }
       });
 
@@ -3333,11 +3379,11 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setSelect2Defaults',
     value: function setSelect2Defaults(items) {
-      var _this5 = this;
+      var _this6 = this;
 
       items.forEach(function (item) {
         var escapedText = $('<div>').text(item).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this5.config.select2Input);
+        $('<option>' + escapedText + '</option>').appendTo(_this6.config.select2Input);
       });
       $(this.config.select2Input).select2('val', items);
       $(this.config.select2Input).select2('close');
@@ -3407,7 +3453,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupSelect2Colors',
     value: function setupSelect2Colors() {
-      var _this6 = this;
+      var _this7 = this;
 
       /** first delete old stylesheet, if present */
       if (this.colorsStyleEl) this.colorsStyleEl.remove();
@@ -3419,7 +3465,7 @@ var Pv = function (_PvConfig) {
 
       /** add color rules */
       this.config.colors.forEach(function (color, index) {
-        _this6.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
+        _this7.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
       });
 
       return this.colorsStyleEl.sheet;
@@ -3434,7 +3480,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this7 = this;
+      var _this8 = this;
 
       /** prevent browser's default behaviour for any link with href="#" */
       $("a[href='#']").on('click', function (e) {
@@ -3443,10 +3489,10 @@ var Pv = function (_PvConfig) {
 
       /** language selector */
       $('.lang-link').on('click', function (e) {
-        var expiryGMT = moment().add(_this7.config.cookieExpiry, 'days').toDate().toGMTString();
+        var expiryGMT = moment().add(_this8.config.cookieExpiry, 'days').toDate().toGMTString();
         document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
 
-        var expiryUnix = Math.floor(Date.now() / 1000) + _this7.config.cookieExpiry * 24 * 60 * 60;
+        var expiryUnix = Math.floor(Date.now() / 1000) + _this8.config.cookieExpiry * 24 * 60 * 60;
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
@@ -3460,7 +3506,7 @@ var Pv = function (_PvConfig) {
         this.dataset.value = this.value;
       });
       $(this.config.projectInput).on('change', function (e) {
-        return _this7.validateProject(e);
+        return _this8.validateProject(e);
       });
     }
 
@@ -3488,7 +3534,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this8 = this;
+      var _this9 = this;
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
@@ -3500,7 +3546,7 @@ var Pv = function (_PvConfig) {
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
         if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
-        ranges[$.i18n(key)] = _this8.config.specialRanges[key];
+        ranges[$.i18n(key)] = _this9.config.specialRanges[key];
       });
 
       var datepickerOptions = {
@@ -3534,20 +3580,20 @@ var Pv = function (_PvConfig) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this8.daterangepicker.container,
+            container = _this9.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this8.specialRange = {
-          range: Object.keys(_this8.config.specialRanges)[index],
+        _this9.specialRange = {
+          range: Object.keys(_this9.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
 
       $(this.config.dateRangeSelector).on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this8.specialRange = null;
+          _this9.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this8.daterangepicker.updateElement();
+          _this9.daterangepicker.updateElement();
         }
       });
     }
@@ -3559,11 +3605,11 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'showFatalErrors',
     value: function showFatalErrors(errors) {
-      var _this9 = this;
+      var _this10 = this;
 
       this.clearMessages();
       errors.forEach(function (error) {
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
+        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
       });
 
       if (this.debug) {
@@ -3579,12 +3625,12 @@ var Pv = function (_PvConfig) {
           }
         }).done(function (data) {
           if (data && data.result && data.result.objectName) {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL(data.result.objectName)));
+            _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL(data.result.objectName)));
           } else {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+            _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL()));
           }
         }).fail(function () {
-          _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+          _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL()));
         });
       }
     }
@@ -3622,14 +3668,14 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'startSpinny',
     value: function startSpinny() {
-      var _this10 = this;
+      var _this11 = this;
 
       $('.chart-container').addClass('loading');
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(function (err) {
-        _this10.resetView();
-        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL()) + '\n      ', true);
+        _this11.resetView();
+        _this11.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this11.getBugReportURL()) + '\n      ', true);
       }, 20 * 1000);
     }
 
@@ -3668,15 +3714,15 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'updateInterAppLinks',
     value: function updateInterAppLinks() {
-      var _this11 = this;
+      var _this12 = this;
 
       $('.interapp-link').each(function (i, link) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project.escape() + '.org';
+          link.href = url + '?sites=' + _this12.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project.escape() + '.org';
+          link.href = url + '?project=' + _this12.project.escape() + '.org';
         }
       });
     }
@@ -3691,20 +3737,20 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'validateParams',
     value: function validateParams(params) {
-      var _this12 = this;
+      var _this13 = this;
 
       this.config.validateParams.forEach(function (paramKey) {
         if (paramKey === 'project' && params.project) {
           params.project = params.project.replace(/^www\./, '');
         }
 
-        var defaultValue = _this12.config.defaults[paramKey],
+        var defaultValue = _this13.config.defaults[paramKey],
             paramValue = params[paramKey];
 
-        if (defaultValue && !_this12.config.validParams[paramKey].includes(paramValue)) {
+        if (defaultValue && !_this13.config.validParams[paramKey].includes(paramValue)) {
           // only throw error if they tried to provide an invalid value
           if (!!paramValue) {
-            _this12.addInvalidParamNotice(paramKey);
+            _this13.addInvalidParamNotice(paramKey);
           }
 
           params[paramKey] = defaultValue;

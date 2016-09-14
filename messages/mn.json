@@ -129,8 +129,7 @@
 	"statistics": "Статистик мэдээлэл",
 	"most-viewed-pages": "Хамгийн олон үзсэн хуудаснууд",
 	"source": "Эx код",
-	"page-pile-id": "„Page Pile“-Танилт",
-	"category-url": "Ангилал URL",
+	"category": "Ангилал",
 	"elapsed-time": "Зарцуулсан цаг: $1 {{PLURAL:$1|секунд|секунд}}",
 	"num-pages": "$1 {{PLURAL:$1|xуудас|$1 хуудаснууд}}",
 	"template-url": "Загвар-URL"

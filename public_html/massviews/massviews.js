@@ -39,9 +39,17 @@ var config = {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
       type: 'text'
     },
+    wikilinks: {
+      placeholder: 'https://en.wikipedia.org/wiki/Book:New_York_City',
+      type: 'text'
+    },
     pagepile: {
       placeholder: '12345',
       type: 'number'
+    },
+    subpages: {
+      placeholder: 'https://en.wikipedia.org/wiki/User:Example',
+      type: 'text'
     },
     transclusions: {
       placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
@@ -61,7 +69,7 @@ var config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category', 'transclusions', 'quarry'],
+    source: ['pagepile', 'category', 'subpages', 'transclusions', 'quarry'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
@@ -799,17 +807,8 @@ var MassViews = function (_mix$with) {
     }
   }, {
     key: 'processCategory',
-    value: function processCategory(cb) {
+    value: function processCategory(project, category, cb) {
       var _this10 = this;
-
-      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
-
-      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
-
-      var project = _getWikiPageFromURL2[0];
-      var category = _getWikiPageFromURL2[1];
-
-      if (!this.validateProject(project)) return;
 
       if (!category) {
         return this.setState('initial', function () {
@@ -826,11 +825,6 @@ var MassViews = function (_mix$with) {
         prop: 'categoryinfo',
         titles: decodeURIComponent(category)
       };
-
-      if ($('.category-subject-toggle--input').is(':checked')) {
-        requestData.meta = 'siteinfo';
-        requestData.siprop = 'namespaces';
-      }
 
       var promise = $.ajax({
         url: 'https://' + project + '/w/api.php',
@@ -857,7 +851,10 @@ var MassViews = function (_mix$with) {
         }
 
         var size = data.query.pages[queryKey].categoryinfo.size,
-            namespaces = data.query.namespaces;
+
+        // siteInfo is only populated if they've opted to see subject pages instead of talk pages
+        // Otherwise namespaces are not needed by this.mapCategoryPageNames
+        namespaces = _this10.siteInfo ? _this10.siteInfo.namespaces : undefined;
         var pages = data.query.categorymembers;
 
         if (!pages.length) {
@@ -900,22 +897,131 @@ var MassViews = function (_mix$with) {
       });
     }
   }, {
+    key: 'processSubpages',
+    value: function processSubpages(project, targetPage, cb) {
+      var _this11 = this,
+          _$;
+
+      if (!targetPage) {
+        return this.setState('initial', function () {
+          _this11.writeMessage($.i18n('invalid-page-url'));
+        });
+      }
+
+      this.sourceProject = project; // for caching purposes
+
+      // determine what namespace the targetPage is in
+      var descoredTargetPage = targetPage.descore();
+      var namespace = 0,
+          queryTargetPage = void 0;
+      for (var ns in this.siteInfo.namespaces) {
+        if (ns === '0') continue; // skip mainspace
+
+        var nsName = this.siteInfo.namespaces[ns]['*'] + ':';
+        if (descoredTargetPage.startsWith(nsName)) {
+          namespace = this.siteInfo.namespaces[ns].id;
+          queryTargetPage = targetPage.substring(nsName.length);
+        }
+      }
+
+      // get namespace number of corresponding talk or subject page
+      var inverseNamespace = namespace % 2 === 0 ? namespace + 1 : namespace - 1;
+
+      var promises = [];
+
+      [namespace, inverseNamespace].forEach(function (apnamespace) {
+        promises.push($.ajax({
+          url: 'https://' + project + '/w/api.php',
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          data: {
+            action: 'query',
+            format: 'json',
+            list: 'allpages',
+            aplimit: 500,
+            apnamespace: apnamespace,
+            apprefix: decodeURIComponent(queryTargetPage) + '/'
+          }
+        }));
+      });
+
+      var pageLink = this.getPageLink(decodeURIComponent(targetPage), project);
+
+      (_$ = $).when.apply(_$, promises).done(function (data, data2) {
+        // show errors, if any
+        var errors = [data, data2].filter(function (resp) {
+          return !!resp[0].error;
+        });
+        if (errors.length) {
+          errors.forEach(function (error) {
+            _this11.setState('initial', function () {
+              _this11.writeMessage($.i18n('api-error', 'Allpages API') + ': ' + error[0].error.info.escape());
+            });
+          });
+          return false;
+        }
+
+        var pages = data[0].query.allpages.concat(data2[0].query.allpages);
+        var size = pages.length;
+
+        if (size === 0) {
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('api-error-no-data'));
+          });
+        }
+
+        if (size > _this11.config.pageLimit) {
+          _this11.writeMessage($.i18n('massviews-oversized-set', pageLink, _this11.formatNumber(size), _this11.config.pageLimit));
+
+          pages = pages.slice(0, _this11.config.pageLimit);
+        }
+
+        /**
+         * XXX: throttling
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        if (size > 10) _this11.setThrottle();
+
+        var pageNames = pages.map(function (page) {
+          return page.title;
+        }).concat([targetPage]);
+
+        _this11.getPageViewsData(project, pageNames).done(function (pageViewsData) {
+          $('.output-title').html(pageLink);
+          $('.output-params').html($(_this11.config.dateRangeSelector).val());
+          _this11.buildMotherDataset(targetPage, pageLink, pageViewsData);
+
+          cb();
+        });
+      }).fail(function (data) {
+        _this11.setState('initial');
+
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (data && typeof data.error === 'string') {
+          _this11.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
+        } else {
+          _this11.writeMessage($.i18n('api-error-unknown', pageLink));
+        }
+      });
+    }
+  }, {
     key: 'processTemplate',
     value: function processTemplate(cb) {
-      var _this11 = this;
+      var _this12 = this;
 
-      var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
-      var _getWikiPageFromURL4 = _slicedToArray(_getWikiPageFromURL3, 2);
+      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
 
-      var project = _getWikiPageFromURL4[0];
-      var template = _getWikiPageFromURL4[1];
+      var project = _getWikiPageFromURL2[0];
+      var template = _getWikiPageFromURL2[1];
 
       if (!this.validateProject(project)) return;
 
       if (!template) {
         return this.setState('initial', function () {
-          _this11.writeMessage($.i18n('invalid-template-url'));
+          _this12.writeMessage($.i18n('invalid-template-url'));
         });
       }
 
@@ -936,16 +1042,16 @@ var MassViews = function (_mix$with) {
 
       promise.done(function (data) {
         if (data.error) {
-          return _this11.setState('initial', function () {
-            _this11.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info.escape());
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info.escape());
           });
         }
 
         var queryKey = Object.keys(data.query.pages)[0];
 
         if (queryKey === '-1') {
-          return _this11.setState('initial', function () {
-            _this11.writeMessage($.i18n('api-error-no-data'));
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -954,14 +1060,14 @@ var MassViews = function (_mix$with) {
         });
 
         if (!pages.length) {
-          return _this11.setState('initial', function () {
-            _this11.writeMessage($.i18n('massviews-empty-set', templateLink));
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('massviews-empty-set', templateLink));
           });
         }
 
         // in this case we are limited by the API to 500 pages, not this.config.pageLimit
         if (data.continue) {
-          _this11.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
+          _this12.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
         }
 
         /**
@@ -969,30 +1075,120 @@ var MassViews = function (_mix$with) {
          * At this point we know we have data to process,
          *   so set the throttle flag to disallow additional requests for the next 90 seconds
          */
-        if (pages.length > 10) _this11.setThrottle();
+        if (pages.length > 10) _this12.setThrottle();
 
-        _this11.getPageViewsData(project, pages).done(function (pageViewsData) {
+        _this12.getPageViewsData(project, pages).done(function (pageViewsData) {
           $('.output-title').html(templateLink);
-          $('.output-params').html($(_this11.config.dateRangeSelector).val());
-          _this11.buildMotherDataset(template, templateLink, pageViewsData);
+          $('.output-params').html($(_this12.config.dateRangeSelector).val());
+          _this12.buildMotherDataset(template, templateLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this11.setState('initial');
+        _this12.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && typeof data.error === 'string') {
-          _this11.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
+          _this12.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
         } else {
-          _this11.writeMessage($.i18n('api-error-unknown', templateLink));
+          _this12.writeMessage($.i18n('api-error-unknown', templateLink));
+        }
+      });
+    }
+  }, {
+    key: 'processWikiPage',
+    value: function processWikiPage(cb) {
+      var _this13 = this;
+
+      var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+
+      var _getWikiPageFromURL4 = _slicedToArray(_getWikiPageFromURL3, 2);
+
+      var project = _getWikiPageFromURL4[0];
+      var page = _getWikiPageFromURL4[1];
+
+      if (!this.validateProject(project)) return;
+
+      if (!page) {
+        return this.setState('initial', function () {
+          _this13.writeMessage($.i18n('invalid-page-url'));
+        });
+      }
+
+      var promise = $.ajax({
+        url: 'https://' + project + '/w/api.php',
+        jsonp: 'callback',
+        dataType: 'jsonp',
+        data: {
+          action: 'query',
+          format: 'json',
+          pllimit: 500,
+          titles: decodeURIComponent(page),
+          prop: 'links'
+        }
+      });
+      var pageLink = this.getPageLink(decodeURIComponent(page), project);
+      this.sourceProject = project; // for caching purposes
+
+      promise.done(function (data) {
+        if (data.error) {
+          return _this13.setState('initial', function () {
+            _this13.writeMessage($.i18n('api-error', 'Links API') + ': ' + data.error.info.escape());
+          });
+        }
+
+        var queryKey = Object.keys(data.query.pages)[0];
+
+        if (queryKey === '-1' || !data.query.pages[queryKey].links) {
+          return _this13.setState('initial', function () {
+            _this13.writeMessage($.i18n('api-error-no-data'));
+          });
+        }
+
+        var pages = data.query.pages[queryKey].links.map(function (page) {
+          return page.title;
+        });
+
+        if (!pages.length) {
+          return _this13.setState('initial', function () {
+            _this13.writeMessage($.i18n('massviews-empty-set', pageLink));
+          });
+        }
+
+        // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+        if (data.continue) {
+          _this13.writeMessage($.i18n('massviews-oversized-set-unknown', pageLink, 500));
+        }
+
+        /**
+         * XXX: throttling
+         * At this point we know we have data to process,
+         *   so set the throttle flag to disallow additional requests for the next 90 seconds
+         */
+        if (pages.length > 10) _this13.setThrottle();
+
+        _this13.getPageViewsData(project, pages).done(function (pageViewsData) {
+          $('.output-title').html(pageLink);
+          $('.output-params').html($(_this13.config.dateRangeSelector).val());
+          _this13.buildMotherDataset(page, pageLink, pageViewsData);
+
+          cb();
+        });
+      }).fail(function (data) {
+        _this13.setState('initial');
+
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (data && typeof data.error === 'string') {
+          _this13.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
+        } else {
+          _this13.writeMessage($.i18n('api-error-unknown', pageLink));
         }
       });
     }
   }, {
     key: 'processQuarry',
     value: function processQuarry(cb) {
-      var _this12 = this;
+      var _this14 = this;
 
       var project = $('.quarry-project').val(),
           id = $(this.config.sourceInput).val();
@@ -1005,8 +1201,8 @@ var MassViews = function (_mix$with) {
         var titleIndex = data.headers.indexOf('page_title');
 
         if (titleIndex === -1) {
-          _this12.setState('initial');
-          return _this12.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
+          _this14.setState('initial');
+          return _this14.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
         }
 
         var titles = data.rows.map(function (row) {
@@ -1014,23 +1210,23 @@ var MassViews = function (_mix$with) {
         });
 
         if (titles.length > 500) {
-          _this12.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this12.formatNumber(titles.length), _this12.config.pageLimit));
+          _this14.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this14.formatNumber(titles.length), _this14.config.pageLimit));
 
-          titles = titles.slice(0, _this12.config.pageLimit);
+          titles = titles.slice(0, _this14.config.pageLimit);
         }
 
-        if (titles.length > 10) _this12.setThrottle();
+        if (titles.length > 10) _this14.setThrottle();
 
-        _this12.getPageViewsData(project, titles).done(function (pageViewsData) {
+        _this14.getPageViewsData(project, titles).done(function (pageViewsData) {
           $('.output-title').html(quarryLink);
-          $('.output-params').html($(_this12.config.dateRangeSelector).val());
-          _this12.buildMotherDataset(id, quarryLink, pageViewsData);
+          $('.output-params').html($(_this14.config.dateRangeSelector).val());
+          _this14.buildMotherDataset(id, quarryLink, pageViewsData);
 
           cb();
         });
       }).error(function (data) {
-        _this12.setState('initial');
-        return _this12.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+        _this14.setState('initial');
+        return _this14.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
       });
     }
 
@@ -1082,7 +1278,7 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this13 = this;
+      var _this15 = this;
 
       // XXX: throttling
       /** allow resubmission of queries that are cached */
@@ -1101,17 +1297,58 @@ var MassViews = function (_mix$with) {
       this.setState('processing');
 
       var cb = function cb() {
-        _this13.updateProgressBar(100);
-        _this13.setInitialChartType();
-        _this13.renderData();
+        _this15.updateProgressBar(100);
+        _this15.setInitialChartType();
+        _this15.renderData();
       };
+
+      var project = void 0,
+          target = void 0;
 
       switch ($('#source_button').data('value')) {
         case 'pagepile':
           this.processPagePile(cb);
           break;
         case 'category':
-          this.processCategory(cb);
+          var _getWikiPageFromURL5 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+          // parse input before calling processCategory, so we can query for siteinfo if needed
+
+
+          var _getWikiPageFromURL6 = _slicedToArray(_getWikiPageFromURL5, 2);
+
+          project = _getWikiPageFromURL6[0];
+          target = _getWikiPageFromURL6[1];
+
+          if (!this.validateProject(project)) return;
+
+          // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
+          if ($('.category-subject-toggle--input').is(':checked')) {
+            this.getSiteInfo(project).then(function () {
+              _this15.processCategory(project, target, cb);
+            });
+          } else {
+            this.processCategory(project, target, cb);
+          }
+          break;
+        case 'subpages':
+          var _getWikiPageFromURL7 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+          // parse input before calling processSubpages so we can query for siteinfo
+
+
+          var _getWikiPageFromURL8 = _slicedToArray(_getWikiPageFromURL7, 2);
+
+          project = _getWikiPageFromURL8[0];
+          target = _getWikiPageFromURL8[1];
+
+          if (!this.validateProject(project)) return;
+
+          // fetch namespaces first
+          this.getSiteInfo(project).then(function () {
+            return _this15.processSubpages(project, target, cb);
+          });
+          break;
+        case 'wikilinks':
+          this.processWikiPage(cb);
           break;
         case 'transclusions':
           this.processTemplate(cb);
@@ -3209,6 +3446,52 @@ var Pv = function (_PvConfig) {
     }
 
     /**
+     * Get general information about a project, such as namespaces, title of the main page, etc.
+     * Data returned by the api is also stored in this.siteInfo
+     * @param {String} project - project such as en.wikipedia (with or without .org)
+     * @returns {Deferred} promise resolving with siteinfo
+     */
+
+  }, {
+    key: 'getSiteInfo',
+    value: function getSiteInfo(project) {
+      var _this3 = this;
+
+      project = project.replace(/\.org$/, '');
+      var dfd = $.Deferred(),
+          cacheKey = 'pageviews-siteinfo-' + project;
+
+      // use cached site info if present
+      if (simpleStorage.hasKey(cacheKey)) {
+        this.siteInfo = simpleStorage.get(cacheKey);
+        dfd.resolve(this.siteInfo);
+      } else {
+        // otherwise fetch siteinfo and store in cache
+        $.ajax({
+          url: 'https://' + project + '.org/w/api.php',
+          data: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'general|namespaces',
+            format: 'json'
+          },
+          dataType: 'jsonp'
+        }).done(function (data) {
+          _this3.siteInfo = data.query;
+
+          // cache for one week (TTL is in milliseconds)
+          simpleStorage.set(cacheKey, _this3.siteInfo, { TTL: 1000 * 60 * 60 * 24 * 7 });
+
+          dfd.resolve(_this3.siteInfo);
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      }
+
+      return dfd;
+    }
+
+    /**
      * Get user agent, if supported
      * @returns {string} user-agent
      */
@@ -3338,7 +3621,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'normalizePageNames',
     value: function normalizePageNames(pages) {
-      var _this3 = this;
+      var _this4 = this;
 
       var dfd = $.Deferred();
 
@@ -3347,7 +3630,7 @@ var Pv = function (_PvConfig) {
         dataType: 'jsonp'
       }).then(function (data) {
         if (data.query.normalized) {
-          pages = _this3.mapNormalizedPageNames(pages, data.query.normalized);
+          pages = _this4.mapNormalizedPageNames(pages, data.query.normalized);
         }
         return dfd.resolve(pages);
       });
@@ -3535,16 +3818,16 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'saveSettings',
     value: function saveSettings() {
-      var _this4 = this;
+      var _this5 = this;
 
       /** track if we're changing to no_autocomplete mode */
       var wasAutocomplete = this.autocomplete === 'no_autocomplete';
 
       $.each($('#settings-modal input'), function (index, el) {
         if (el.type === 'checkbox') {
-          _this4.saveSetting(el.name, el.checked ? 'true' : 'false');
+          _this5.saveSetting(el.name, el.checked ? 'true' : 'false');
         } else if (el.checked) {
-          _this4.saveSetting(el.name, el.value);
+          _this5.saveSetting(el.name, el.value);
         }
       });
 
@@ -3582,11 +3865,11 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setSelect2Defaults',
     value: function setSelect2Defaults(items) {
-      var _this5 = this;
+      var _this6 = this;
 
       items.forEach(function (item) {
         var escapedText = $('<div>').text(item).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this5.config.select2Input);
+        $('<option>' + escapedText + '</option>').appendTo(_this6.config.select2Input);
       });
       $(this.config.select2Input).select2('val', items);
       $(this.config.select2Input).select2('close');
@@ -3656,7 +3939,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupSelect2Colors',
     value: function setupSelect2Colors() {
-      var _this6 = this;
+      var _this7 = this;
 
       /** first delete old stylesheet, if present */
       if (this.colorsStyleEl) this.colorsStyleEl.remove();
@@ -3668,7 +3951,7 @@ var Pv = function (_PvConfig) {
 
       /** add color rules */
       this.config.colors.forEach(function (color, index) {
-        _this6.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
+        _this7.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
       });
 
       return this.colorsStyleEl.sheet;
@@ -3683,7 +3966,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this7 = this;
+      var _this8 = this;
 
       /** prevent browser's default behaviour for any link with href="#" */
       $("a[href='#']").on('click', function (e) {
@@ -3692,10 +3975,10 @@ var Pv = function (_PvConfig) {
 
       /** language selector */
       $('.lang-link').on('click', function (e) {
-        var expiryGMT = moment().add(_this7.config.cookieExpiry, 'days').toDate().toGMTString();
+        var expiryGMT = moment().add(_this8.config.cookieExpiry, 'days').toDate().toGMTString();
         document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
 
-        var expiryUnix = Math.floor(Date.now() / 1000) + _this7.config.cookieExpiry * 24 * 60 * 60;
+        var expiryUnix = Math.floor(Date.now() / 1000) + _this8.config.cookieExpiry * 24 * 60 * 60;
         document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
         location.reload();
       });
@@ -3709,7 +3992,7 @@ var Pv = function (_PvConfig) {
         this.dataset.value = this.value;
       });
       $(this.config.projectInput).on('change', function (e) {
-        return _this7.validateProject(e);
+        return _this8.validateProject(e);
       });
     }
 
@@ -3737,7 +4020,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var _this8 = this;
+      var _this9 = this;
 
       var dateRangeSelector = $(this.config.dateRangeSelector);
 
@@ -3749,7 +4032,7 @@ var Pv = function (_PvConfig) {
       var ranges = {};
       Object.keys(this.config.specialRanges).forEach(function (key) {
         if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
-        ranges[$.i18n(key)] = _this8.config.specialRanges[key];
+        ranges[$.i18n(key)] = _this9.config.specialRanges[key];
       });
 
       var datepickerOptions = {
@@ -3783,20 +4066,20 @@ var Pv = function (_PvConfig) {
        */
       $('.daterangepicker .ranges li').on('click', function (e) {
         var index = $('.daterangepicker .ranges li').index(e.target),
-            container = _this8.daterangepicker.container,
+            container = _this9.daterangepicker.container,
             inputs = container.find('.daterangepicker_input input');
-        _this8.specialRange = {
-          range: Object.keys(_this8.config.specialRanges)[index],
+        _this9.specialRange = {
+          range: Object.keys(_this9.config.specialRanges)[index],
           value: inputs[0].value + ' - ' + inputs[1].value
         };
       });
 
       $(this.config.dateRangeSelector).on('apply.daterangepicker', function (e, action) {
         if (action.chosenLabel === $.i18n('custom-range')) {
-          _this8.specialRange = null;
+          _this9.specialRange = null;
 
           /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-          _this8.daterangepicker.updateElement();
+          _this9.daterangepicker.updateElement();
         }
       });
     }
@@ -3808,11 +4091,11 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'showFatalErrors',
     value: function showFatalErrors(errors) {
-      var _this9 = this;
+      var _this10 = this;
 
       this.clearMessages();
       errors.forEach(function (error) {
-        _this9.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
+        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
       });
 
       if (this.debug) {
@@ -3828,12 +4111,12 @@ var Pv = function (_PvConfig) {
           }
         }).done(function (data) {
           if (data && data.result && data.result.objectName) {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL(data.result.objectName)));
+            _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL(data.result.objectName)));
           } else {
-            _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+            _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL()));
           }
         }).fail(function () {
-          _this9.writeMessage($.i18n('error-please-report', _this9.getBugReportURL()));
+          _this10.writeMessage($.i18n('error-please-report', _this10.getBugReportURL()));
         });
       }
     }
@@ -3871,14 +4154,14 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'startSpinny',
     value: function startSpinny() {
-      var _this10 = this;
+      var _this11 = this;
 
       $('.chart-container').addClass('loading');
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(function (err) {
-        _this10.resetView();
-        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this10.getBugReportURL()) + '\n      ', true);
+        _this11.resetView();
+        _this11.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this11.getBugReportURL()) + '\n      ', true);
       }, 20 * 1000);
     }
 
@@ -3917,15 +4200,15 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'updateInterAppLinks',
     value: function updateInterAppLinks() {
-      var _this11 = this;
+      var _this12 = this;
 
       $('.interapp-link').each(function (i, link) {
         var url = link.href.split('?')[0];
 
         if (link.classList.contains('interapp-link--siteviews')) {
-          link.href = url + '?sites=' + _this11.project.escape() + '.org';
+          link.href = url + '?sites=' + _this12.project.escape() + '.org';
         } else {
-          link.href = url + '?project=' + _this11.project.escape() + '.org';
+          link.href = url + '?project=' + _this12.project.escape() + '.org';
         }
       });
     }
@@ -3940,20 +4223,20 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'validateParams',
     value: function validateParams(params) {
-      var _this12 = this;
+      var _this13 = this;
 
       this.config.validateParams.forEach(function (paramKey) {
         if (paramKey === 'project' && params.project) {
           params.project = params.project.replace(/^www\./, '');
         }
 
-        var defaultValue = _this12.config.defaults[paramKey],
+        var defaultValue = _this13.config.defaults[paramKey],
             paramValue = params[paramKey];
 
-        if (defaultValue && !_this12.config.validParams[paramKey].includes(paramValue)) {
+        if (defaultValue && !_this13.config.validParams[paramKey].includes(paramValue)) {
           // only throw error if they tried to provide an invalid value
           if (!!paramValue) {
-            _this12.addInvalidParamNotice(paramKey);
+            _this13.addInvalidParamNotice(paramKey);
           }
 
           params[paramKey] = defaultValue;

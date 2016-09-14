@@ -106,17 +106,27 @@
                   <ul class="dropdown-menu">
                     <li>
                       <a class="source-option" href="#" data-value="category">
-                        <?php echo $I18N->msg( 'category-url' ); ?>
+                        <?php echo $I18N->msg( 'category' ); ?>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="wikilinks">
+                        <?php echo $I18N->msg( 'wikilinks' ); ?>
                       </a>
                     </li>
                     <li>
                       <a class="source-option" href="#" data-value="pagepile">
-                        <?php echo $I18N->msg( 'page-pile-id' ); ?>
+                        Page Pile
+                      </a>
+                    </li>
+                    <li>
+                      <a class="source-option" href="#" data-value="subpages">
+                        <?php echo $I18N->msg( 'subpages' ); ?>
                       </a>
                     </li>
                     <li>
                       <a class="source-option" href="#" data-value="transclusions">
-                        <?php echo $I18N->msg( 'template-url' ); ?>
+                        <?php echo $I18N->msg( 'transclusions' ); ?>
                       </a>
                     </li>
                     <li>

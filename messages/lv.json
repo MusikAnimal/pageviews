@@ -97,7 +97,7 @@
 	"massviews-empty-set": "$1 nesatur nevienu lapu!",
 	"topviews-description": "Visvairāk apskatītās lapas projektā",
 	"source": "Avots",
-	"category-url": "Kategorijas URL",
+	"category": "Kategorijas",
 	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}",
 	"logarithmic-scale": "Logaritmiskā skala",
 	"list": "Saraksts",

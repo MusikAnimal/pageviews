@@ -149,6 +149,5 @@
 	"unique-devices": "Ατομικές συσκευές",
 	"massviews-empty-set": "Το $1 δεν περιέχει σελίδες!",
 	"source": "Πηγή",
-	"category-url": "Κατηγορία URL",
-	"template-url": "Πρότυπο URL"
+	"category": "Κατηγορία"
 }

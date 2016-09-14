@@ -79,13 +79,19 @@
                   %ul.dropdown-menu
                     %li
                       %a.source-option(href="#" data-value="category")
-                        = $I18N->msg( 'category-url' )
+                        = $I18N->msg( 'category' )
+                    %li
+                      %a.source-option(href="#" data-value="wikilinks")
+                        = $I18N->msg( 'wikilinks' )
                     %li
                       %a.source-option(href="#" data-value="pagepile")
-                        = $I18N->msg( 'page-pile-id' )
+                        Page Pile
+                    %li
+                      %a.source-option(href="#" data-value="subpages")
+                        = $I18N->msg( 'subpages' )
                     %li
                       %a.source-option(href="#" data-value="transclusions")
-                        = $I18N->msg( 'template-url' )
+                        = $I18N->msg( 'transclusions' )
                     %li
                       %a.source-option(href="#" data-value="quarry")
                         Quarry

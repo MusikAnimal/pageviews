@@ -159,7 +159,6 @@
 	"redirectviews-description": "Visualizações de todos os redirecionamentos para uma página",
 	"elapsed-time": "Tempo decorrido: $1 {{PLURAL:$1|segundo|segundos}}",
 	"num-pages": "$1 {{PLURAL:$1|página|páginas}}",
-	"template-url": "URL da predefinição",
 	"logarithmic-scale": "Escada logarítmica",
 	"bezier-curve-option": "Usar curva de Bézier nos gráficos em linha",
 	"list": "Lista",

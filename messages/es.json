@@ -169,7 +169,7 @@
 	"invalid-category-url": "Categoría no válida. Escribe el URL wiki completo de la categoría.",
 	"invalid-template-url": "¡Plantilla no válida! Escribe el URL wiki completo de la plantilla o la página.",
 	"source": "Fuente",
-	"category-url": "URL de la categoría",
+	"category": "Categoría",
 	"elapsed-time": "Tiempo transcurrido: $1 {{PLURAL:$1|segundo|segundos}}",
 	"num-pages": "$1 {{PLURAL:$1|página|páginas}}",
 	"logarithmic-scale": "Escala logarítmica",

@@ -748,7 +748,7 @@ class TopViews extends Pv {
       });
     };
 
-    const processPages = () => {
+    this.getSiteInfo(this.project).done(() => {
       let unacceptableNamespaces = [];
 
       // for non-mainspace, count 'Wikipedia' and 'Special' since API seems to
@@ -769,33 +769,10 @@ class TopViews extends Pv {
       this.excludes = doFiltering(this.excludes, unacceptableNamespaces);
 
       dfd.resolve(pages);
-    };
-
-    const cacheKey = `pageviews-siteinfo-${this.project}`;
-
-    // use cached site info if present
-    if (simpleStorage.hasKey(cacheKey)) {
-      this.siteInfo = simpleStorage.get(cacheKey);
-      processPages();
-    } else {
-      // otherwise fetch siteinfo and store in cache
-      $.ajax({
-        url: `https://${this.project}.org/w/api.php`,
-        data: {
-          action: 'query',
-          meta: 'siteinfo',
-          siprop: 'general|namespaces',
-          format: 'json'
-        },
-        dataType: 'jsonp'
-      }).always(data => {
-        this.siteInfo = data.query;
-
-        // cache for one week (TTL is in milliseconds)
-        simpleStorage.set(cacheKey, this.siteInfo, {TTL: 1000 * 60 * 60 * 24 * 7});
-        processPages();
-      });
-    }
+    }).fail(() => {
+      this.writeMessage(`${$.i18n('api-error', 'Siteinfo API')}`);
+      dfd.resolve(pages);
+    });
 
     return dfd;
   }

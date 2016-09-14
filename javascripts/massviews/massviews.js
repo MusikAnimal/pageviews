@@ -652,10 +652,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
-  processCategory(cb) {
-    const [project, category] = this.getWikiPageFromURL($(this.config.sourceInput).val());
-    if (!this.validateProject(project)) return;
-
+  processCategory(project, category, cb) {
     if (!category) {
       return this.setState('initial', () => {
         this.writeMessage($.i18n('invalid-category-url'));
@@ -671,11 +668,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       prop: 'categoryinfo',
       titles: decodeURIComponent(category)
     };
-
-    if ($('.category-subject-toggle--input').is(':checked')) {
-      requestData.meta = 'siteinfo';
-      requestData.siprop = 'namespaces';
-    }
 
     const promise = $.ajax({
       url: `https://${project}/w/api.php`,
@@ -704,7 +696,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       }
 
       const size = data.query.pages[queryKey].categoryinfo.size,
-        namespaces = data.query.namespaces;
+        // siteInfo is only populated if they've opted to see subject pages instead of talk pages
+        // Otherwise namespaces are not needed by this.mapCategoryPageNames
+        namespaces = this.siteInfo ? this.siteInfo.namespaces : undefined;
       let pages = data.query.categorymembers;
 
       if (!pages.length) {
@@ -747,6 +741,114 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         );
       } else {
         this.writeMessage($.i18n('api-error-unknown', categoryLink));
+      }
+    });
+  }
+
+  processSubpages(project, targetPage, cb) {
+    if (!targetPage) {
+      return this.setState('initial', () => {
+        this.writeMessage($.i18n('invalid-page-url'));
+      });
+    }
+
+    this.sourceProject = project; // for caching purposes
+
+    // determine what namespace the targetPage is in
+    const descoredTargetPage = targetPage.descore();
+    let namespace = 0, queryTargetPage;
+    for (const ns in this.siteInfo.namespaces) {
+      if (ns === '0') continue; // skip mainspace
+
+      const nsName = this.siteInfo.namespaces[ns]['*'] + ':';
+      if (descoredTargetPage.startsWith(nsName)) {
+        namespace = this.siteInfo.namespaces[ns].id;
+        queryTargetPage = targetPage.substring(nsName.length);
+      }
+    }
+
+    // get namespace number of corresponding talk or subject page
+    const inverseNamespace = namespace % 2 === 0 ? namespace + 1 : namespace - 1;
+
+    let promises = [];
+
+    [namespace, inverseNamespace].forEach(apnamespace => {
+      promises.push(
+        $.ajax({
+          url: `https://${project}/w/api.php`,
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          data: {
+            action: 'query',
+            format: 'json',
+            list: 'allpages',
+            aplimit: 500,
+            apnamespace,
+            apprefix: decodeURIComponent(queryTargetPage) + '/'
+          }
+        })
+      );
+    });
+
+    const pageLink = this.getPageLink(decodeURIComponent(targetPage), project);
+
+    $.when(...promises).done((data, data2) => {
+      // show errors, if any
+      const errors = [data, data2].filter(resp => !!resp[0].error);
+      if (errors.length) {
+        errors.forEach(error => {
+          this.setState('initial', () => {
+            this.writeMessage(
+              `${$.i18n('api-error', 'Allpages API')}: ${error[0].error.info.escape()}`
+            );
+          });
+        });
+        return false;
+      }
+
+      let pages = data[0].query.allpages.concat(data2[0].query.allpages);
+      const size = pages.length;
+
+      if (size === 0) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      if (size > this.config.pageLimit) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set', pageLink, this.formatNumber(size), this.config.pageLimit)
+        );
+
+        pages = pages.slice(0, this.config.pageLimit);
+      }
+
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      if (size > 10) this.setThrottle();
+
+      const pageNames = pages.map(page => page.title).concat([targetPage]);
+
+      this.getPageViewsData(project, pageNames).done(pageViewsData => {
+        $('.output-title').html(pageLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(targetPage, pageLink, pageViewsData);
+
+        cb();
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && typeof data.error === 'string') {
+        this.writeMessage(
+          $.i18n('api-error', pageLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', pageLink));
       }
     });
   }
@@ -832,6 +934,91 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         );
       } else {
         this.writeMessage($.i18n('api-error-unknown', templateLink));
+      }
+    });
+  }
+
+  processWikiPage(cb) {
+    const [project, page] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+    if (!this.validateProject(project)) return;
+
+    if (!page) {
+      return this.setState('initial', () => {
+        this.writeMessage($.i18n('invalid-page-url'));
+      });
+    }
+
+    const promise = $.ajax({
+      url: `https://${project}/w/api.php`,
+      jsonp: 'callback',
+      dataType: 'jsonp',
+      data: {
+        action: 'query',
+        format: 'json',
+        pllimit: 500,
+        titles: decodeURIComponent(page),
+        prop: 'links'
+      }
+    });
+    const pageLink = this.getPageLink(decodeURIComponent(page), project);
+    this.sourceProject = project; // for caching purposes
+
+    promise.done(data => {
+      if (data.error) {
+        return this.setState('initial', () => {
+          this.writeMessage(
+            `${$.i18n('api-error', 'Links API')}: ${data.error.info.escape()}`
+          );
+        });
+      }
+
+      const queryKey = Object.keys(data.query.pages)[0];
+
+      if (queryKey === '-1' || !data.query.pages[queryKey].links) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const pages = data.query.pages[queryKey].links.map(page => page.title);
+
+      if (!pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', pageLink));
+        });
+      }
+
+      // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+      if (data.continue) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set-unknown', pageLink, 500)
+        );
+      }
+
+      /**
+       * XXX: throttling
+       * At this point we know we have data to process,
+       *   so set the throttle flag to disallow additional requests for the next 90 seconds
+       */
+      if (pages.length > 10) this.setThrottle();
+
+      this.getPageViewsData(project, pages).done(pageViewsData => {
+        $('.output-title').html(pageLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(page, pageLink, pageViewsData);
+
+        cb();
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && typeof data.error === 'string') {
+        this.writeMessage(
+          $.i18n('api-error', pageLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', pageLink));
       }
     });
   }
@@ -946,12 +1133,36 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.renderData();
     };
 
+    let project, target;
+
     switch ($('#source_button').data('value')) {
     case 'pagepile':
       this.processPagePile(cb);
       break;
     case 'category':
-      this.processCategory(cb);
+      // parse input before calling processCategory, so we can query for siteinfo if needed
+      [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      if (!this.validateProject(project)) return;
+
+      // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
+      if ($('.category-subject-toggle--input').is(':checked')) {
+        this.getSiteInfo(project).then(() => {
+          this.processCategory(project, target, cb);
+        });
+      } else {
+        this.processCategory(project, target, cb);
+      }
+      break;
+    case 'subpages':
+      // parse input before calling processSubpages so we can query for siteinfo
+      [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      if (!this.validateProject(project)) return;
+
+      // fetch namespaces first
+      this.getSiteInfo(project).then(() => this.processSubpages(project, target, cb));
+      break;
+    case 'wikilinks':
+      this.processWikiPage(cb);
       break;
     case 'transclusions':
       this.processTemplate(cb);

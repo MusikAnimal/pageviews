@@ -599,6 +599,47 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Get general information about a project, such as namespaces, title of the main page, etc.
+   * Data returned by the api is also stored in this.siteInfo
+   * @param {String} project - project such as en.wikipedia (with or without .org)
+   * @returns {Deferred} promise resolving with siteinfo
+   */
+  getSiteInfo(project) {
+    project = project.replace(/\.org$/, '');
+    const dfd = $.Deferred(),
+      cacheKey = `pageviews-siteinfo-${project}`;
+
+    // use cached site info if present
+    if (simpleStorage.hasKey(cacheKey)) {
+      this.siteInfo = simpleStorage.get(cacheKey);
+      dfd.resolve(this.siteInfo);
+    } else {
+      // otherwise fetch siteinfo and store in cache
+      $.ajax({
+        url: `https://${project}.org/w/api.php`,
+        data: {
+          action: 'query',
+          meta: 'siteinfo',
+          siprop: 'general|namespaces',
+          format: 'json'
+        },
+        dataType: 'jsonp'
+      }).done(data => {
+        this.siteInfo = data.query;
+
+        // cache for one week (TTL is in milliseconds)
+        simpleStorage.set(cacheKey, this.siteInfo, {TTL: 1000 * 60 * 60 * 24 * 7});
+
+        dfd.resolve(this.siteInfo);
+      }).fail(data => {
+        dfd.reject(data);
+      });
+    }
+
+    return dfd;
+  }
+
+  /**
    * Get user agent, if supported
    * @returns {string} user-agent
    */

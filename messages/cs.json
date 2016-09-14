@@ -135,7 +135,7 @@
 	"massviews-redirect": "Byli jste přesměrováni z $1 , protože jste požádali o více než $2 stránky.<br />$3 byla automaticky vytvořena a bude zpracována.",
 	"elapsed-time": "Uplynulý čas: $1 {{PLURAL:$1|sekunda|sekundy|sekund}}",
 	"num-pages": "$1 {{PLURAL:$1|stránka|stránky|stránek}}",
-	"template-url": "URL šablony",
+	"template": "šablony",
 	"logarithmic-scale": "Logaritmické měřítko",
 	"bezier-curve-option": "Použít Bézierovu křivku na lineární grafy",
 	"list": "Seznam",
