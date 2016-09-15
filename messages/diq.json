@@ -23,8 +23,8 @@
 	"user": "Karber",
 	"spider": "Bındırık",
 	"bot": "Bot",
-	"page": "Pele",
-	"pages": "Peli",
+	"page": "Perr",
+	"pages": "Perri",
 	"page-title": "Sernameyê pele",
 	"change-chart": "Tewra grafiki",
 	"settings": "Eyari",
@@ -122,5 +122,6 @@
 	"note": "Not",
 	"permalink": "Greyo Daimi",
 	"projects": "Proceyi",
-	"statistics": "İstatistiki"
+	"statistics": "İstatistiki",
+	"num-pages": "$1 {{PLURAL:$1|Perr|Perri}}"
 }

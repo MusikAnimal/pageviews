@@ -144,7 +144,7 @@
 	"url-structure-page": "ชื่อหน้าหลีก",
 	"url-structure-special-range-latest": "ข้อมูล 20 วันล่าสุด",
 	"url-structure-platform": "หนึ่งของ $1, $2, $3 หรือ $4",
-	"url-structure-massviews-source": "หนึ่งของ $1, $2 หรือ $3",
+	"url-structure-massviews-source": "หนึ่งของ $1, $2, $3 หรือ $4",
 	"url-structure-massviews-target": "ไอดี Page Pile หรือ ยูอาร์แอลแบบเต็มถึงหมวดหมู่ หากมีเครื่องหมายปรัศนี \"<code>?</code>\" ในยูอาร์แอล มัน<strong>จะต้องเข้ารหัส</strong>",
 	"url-structure-massviews-target-example": "ตัวอย่าง, <strong>ไม่ต้องใช้</strong>\n$1\nใช้แทน:\n$2\nหรือคุณควรใช้วิกิยูอาร์แอล์แบบสั้น\n$3",
 	"url-structure-subjectpage": "ตั้งตัวเลือก \"$1\" เมื่อใช้งานหมวดหมู่เช่นเดียวกับแหล่งข้อมูล ใช้ $2 เพื่ออนุญาต หรือ $3 เพื่อปฎิเสธ (ค่าปริยาย)",
