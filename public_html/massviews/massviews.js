@@ -69,7 +69,7 @@ var config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category', 'subpages', 'transclusions', 'quarry'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
@@ -98,6 +98,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
+ * @requires Pv
+ * @requires ChartHelpers
+ * @requires ListHelpers
  */
 
 var config = require('./config');
@@ -321,7 +324,17 @@ var MassViews = function (_mix$with) {
       var _this4 = this;
 
       _get(Object.getPrototypeOf(MassViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
-        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-pages', sortedDatasets.length) + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
+        var source = $('#source_button').data('value');
+        var pageColumnMessage = void 0;
+
+        // update message for pages column
+        if (['wikilinks', 'subpages', 'transclusions'].includes(source)) {
+          pageColumnMessage = $.i18n('num-' + source, sortedDatasets.length - 1);
+        } else {
+          pageColumnMessage = $.i18n('num-pages', sortedDatasets.length);
+        }
+
+        $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n(pageColumnMessage, sortedDatasets.length) + '</th>\n         <th>' + _this4.formatNumber(_this4.outputData.sum) + '</th>\n         <th>' + _this4.formatNumber(Math.round(_this4.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {

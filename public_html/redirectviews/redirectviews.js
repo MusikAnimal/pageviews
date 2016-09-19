@@ -65,6 +65,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
+ * @requires Pv
+ * @requires ChartHelpers
+ * @requires ListHelpers
  */
 
 var config = require('./config');

@@ -67,7 +67,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'category', 'subpages', 'transclusions', 'quarry'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

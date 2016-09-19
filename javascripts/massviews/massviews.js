@@ -4,6 +4,9 @@
  * @author MusikAnimal
  * @copyright 2016 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
+ * @requires Pv
+ * @requires ChartHelpers
+ * @requires ListHelpers
  */
 
 const config = require('./config');
@@ -188,9 +191,19 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   renderData() {
     super.renderData(sortedDatasets => {
+      const source = $('#source_button').data('value');
+      let pageColumnMessage;
+
+      // update message for pages column
+      if (['wikilinks', 'subpages', 'transclusions'].includes(source)) {
+        pageColumnMessage = $.i18n(`num-${source}`, sortedDatasets.length - 1);
+      } else {
+        pageColumnMessage = $.i18n('num-pages', sortedDatasets.length);
+      }
+
       $('.output-totals').html(
         `<th scope='row'>${$.i18n('totals')}</th>
-         <th>${$.i18n('num-pages', sortedDatasets.length)}</th>
+         <th>${$.i18n(pageColumnMessage, sortedDatasets.length)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
          <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
       );

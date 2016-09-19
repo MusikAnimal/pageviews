@@ -28,6 +28,15 @@
    $langs = getAvailableLangs();
    $currentLang = in_array( $I18N->getLangName(), $langs ) ? $I18N->getLangName() : 'English';
    $client = new WhichBrowser\Parser(getallheaders());
+   $defaultMsg = '(' . strtolower( $I18N->msg( 'default' ) ) . ')';
+  
+   function generateListMessage( $values ) {
+     global $I18N;
+     $comma = $I18N->msg( 'comma-character' ) . ' ';
+     return $I18N->msg( 'list-values', [
+       'variables' => [ implode( $values, $comma ), count( $values ) ], 'parsemag' => true
+     ] );
+   }
   
    // Adds a .rtl class to the <body> if a right-to-left language
    if ( in_array( $I18N->getLang(), array( 'ar', 'he', 'fa', 'ps', 'ur' ) ) ) {

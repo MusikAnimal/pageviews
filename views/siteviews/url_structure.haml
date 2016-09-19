@@ -17,7 +17,7 @@
       %main.col-lg-10.col-lg-offset-1
         %div
           - $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews?sites={{SERVERNAME}}</pre>"
-          = $I18N->msg( 'url-structure-example-siteviews', array( 'variables' => array( $siteviewsLink ), 'parsemag' => true ) )
+          = $I18N->msg( 'url-structure-example-siteviews', [ 'variables' => [ $siteviewsLink ], 'parsemag' => true ] )
 
         %div
           %h3
@@ -28,34 +28,36 @@
             %dt sites
             %dd
               - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"
-              = $I18N->msg( 'url-structure-projects', array( 'variables' => array( $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-projects', [ 'variables' => [ $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ], 'parsemag' => true ] )
             - $defaultRange = 'latest'
             - include "../../url_parts/date_ranges.php"
             %dt source
             %dd
-              = $I18N->msg( 'url-structure-source', array( 'variables' => array( '<code>pageviews</code>', '<code>unique-devices</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-source', [ 'variables' => [ '<code>pageviews</code>', '<code>unique-devices</code>' ], 'parsemag' => true ] )
             %dt platform
             %dd
               %p
                 %i
-                  = $I18N->msg( 'url-structure-siteviews-platform', array( 'variables' => array( 'source', '<code>pageviews</code>' ) ) ) . ':'
+                  = $I18N->msg( 'url-structure-siteviews-platform', [ 'variables' => [ 'source', '<code>pageviews</code>' ] ] ) . ':'
                 %br
-                = $I18N->msg( 'url-structure-platform', array( 'variables' => array( '<code>all-access</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ), 'parsemag' => true ) )
+                - $values = [ '<code>all-access</code> ' . $defaultMsg, '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ];
+                = generateListMessage( $values )
               %p
                 %i
-                  = $I18N->msg( 'url-structure-siteviews-platform', array( 'variables' => array( 'source', '<code>unique-devices</code>' ) ) ) . ':'
+                  = $I18N->msg( 'url-structure-siteviews-platform', [ 'variables' => [ 'source', '<code>unique-devices</code>' ] ] ) . ':'
                 %br
-                = $I18N->msg( 'url-structure-siteviews-platform-unique-devices', array( 'variables' => array( '<code>all-sites</code> (' . strtolower( $I18N->msg( 'default' ) ) . ')', '<code>desktop-site</code>', '<code>mobile-site</code>' ), 'parsemag' => true ) )
+                - $values = [ '<code>all-sites</code> ' . $defaultMsg, '<code>desktop-site</code>', '<code>mobile-site</code>' ]
+                = generateListMessage( $values )
             %dt agent
             %dd
-              = $I18N->msg( 'url-structure-siteviews-agent', array( 'variables' => array( '<code>source</code>', '<code>pageviews</code>' ) ) )
+              = $I18N->msg( 'url-structure-siteviews-agent', [ 'variables' => [ '<code>source</code>', '<code>pageviews</code>' ] ] )
               %br
-              = $I18N->msg( 'url-structure-agent', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-agent', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ], 'parsemag' => true ] )
             - include "../../url_parts/autolog.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/siteviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
+            = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'siteviews-title' ) ], 'parsemag' => true ] )
 
         - $currentApp = "siteviews";
         -include "../../_footer.php";

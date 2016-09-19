@@ -34,7 +34,9 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-massviews-source', array( 'variables' => array( '<code>pagepile</code>', '<code>category</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>quarry</code>' ) ) ); ?>
+              <?php $params = [ '<code>pagepile</code>', '<code>category</code>', '<code>wikilinks</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>quarry</code>' ]; ?>
+              <?php $comma = $I18N->msg( 'comma-character' ) . ' '; ?>
+              <?php echo $I18N->msg( 'list-values', [ 'variables' => [ implode( $params, $comma ), count( $params ) ], 'parsemag' => true ] ); ?>
             </dd>
             <dt>target</dt>
             <dd>
@@ -48,7 +50,8 @@
             <?php include "../../url_parts/agent.php"; ?>
             <dt>sort</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-sort-massviews', array( 'variables' => array( '<code>title</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
+              <?php $values = [ '<code>title</code>', '<code>views</code>' ]; ?>
+              <?php echo $I18N->msg( 'url-structure-sort' ) . ' ' . generateListMessage( $values ); ?>
             </dd>
             <dt>direction</dt>
             <dd>

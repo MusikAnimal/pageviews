@@ -53,7 +53,8 @@
             <?php include "../../url_parts/agent.php"; ?>
             <dt>sort</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-sort', array( 'variables' => array( '<code>lang</code>', '<code>title</code>', '<code>badges</code>', '<code>views</code>' ), 'parsemag' => true ) ); ?>
+              <?php $values = [ '<code>lang</code>', '<code>title</code>', '<code>badges</code>', '<code>views</code>' ]; ?>
+              <?php echo $I18N->msg( 'url-structure-sort' ) . ' ' . generateListMessage( $values ); ?>
             </dd>
             <dt>direction</dt>
             <dd>
