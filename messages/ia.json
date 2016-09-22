@@ -149,7 +149,6 @@
 	"url-structure-special-range-latest-n": "ubi <i>N</i> es un numero. Per exemplo, <code>latest-30</code> monstrara datos pro le ultime 30 dies",
 	"url-structure-start-date": "Data de initio in le formato $1<br/>Omitte iste parametro e le parametro $2 pro monstrar le datos le plus recente",
 	"url-structure-end-date": "Data de fin in le formato $1, le die precedente es predefinite",
-	"url-structure-platform": "Un de $1, $2, $3 o $4",
 	"url-structure-agent": "Un de $1 (visitator human, predefinite), $2 (robots de motor de recerca web), $3 (robots de Wikimedia) or $4 (usator, robots de motor de recerca web e robots de Wikimedia)",
 	"url-structure-sort": "Le columna a ordinar. Un de $1, $2, $3 o $4",
 	"url-structure-sort-direction": "Le direction de ordinamento. $1 pro descendente, $2 pro ascendente",

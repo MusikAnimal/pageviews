@@ -3,7 +3,8 @@
 		"authors": [
 			"Niharika29",
 			"Sfic",
-			"Macofe"
+			"Macofe",
+			"NehalDaveND"
 		]
 	},
 	"title": "पृष्ठदृश्य विश्लेषण",
@@ -17,8 +18,8 @@
 	"platform": "मंच",
 	"all": "सभी",
 	"desktop": "डेस्कटॉप",
-	"mobile-app": "मोबाइल अनुप्रयोग",
-	"mobile-web": "मोबाइल वेब",
+	"mobile-app": "दूरभाष अनुप्रयोग",
+	"mobile-web": "दूरभाष वेब",
 	"agent": "एजेंट",
 	"user": "सदस्य",
 	"spider": "स्पाइडर",

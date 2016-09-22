@@ -131,6 +131,5 @@
 	"source": "Эx код",
 	"category": "Ангилал",
 	"elapsed-time": "Зарцуулсан цаг: $1 {{PLURAL:$1|секунд|секунд}}",
-	"num-pages": "$1 {{PLURAL:$1|xуудас|$1 хуудаснууд}}",
-	"template-url": "Загвар-URL"
+	"num-pages": "$1 {{PLURAL:$1|xуудас|$1 хуудаснууд}}"
 }

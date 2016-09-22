@@ -20,6 +20,7 @@
 	"desktop": "Escritorio",
 	"mobile-app": "Aplicación móbil",
 	"mobile-web": "Web móbil",
+	"mobile": "Móbil",
 	"agent": "Axente",
 	"user": "Usuario",
 	"spider": "Araña",
@@ -102,6 +103,7 @@
 	"fatal-error": "Erro fatal",
 	"error-timed-out": "A operación excedeu o tempo límite.",
 	"api-error": "Houbo un problema ao cargar os datos de $1",
+	"api-error-unknown": "Ocorreu un erro descoñecido ó consultar $1",
 	"api-error-no-data": "Non se atoparon datos.",
 	"api-incomplete-data": "Algúns datos aínda non están dispoñibles para as datas: $1",
 	"topviews-title": "Análise das máis vistas",
@@ -143,8 +145,7 @@
 	"url-structure-parameters": "Parámetros",
 	"url-structure-parameters-order": "Pode usarse en calquera orde",
 	"url-structure-special-range-latest": "Os datos dos últimos 20 días",
-	"url-structure-platform": "Un de $1, $2, $3 ou $4",
-	"url-structure-massviews-source": "Un de $1, $2 or $3",
+	"url-structure-siteviews-platform": "Cando o $1 é $2",
 	"default": "Por defecto",
 	"all-languages": "Todas as linguas",
 	"history": "Historial",
@@ -177,5 +178,8 @@
 	"target": "destino",
 	"localization": "Localización:",
 	"chart-preferences": "Preferenzas de gráfico:",
-	"metric": "Métrica"
+	"metric": "Métrica",
+	"monthly": "Mensualmente",
+	"daily": "Diariamente",
+	"mainspace-only-option": "Amosar só as páxinas no espazo de nomes principal"
 }

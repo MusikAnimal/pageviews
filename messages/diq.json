@@ -3,7 +3,8 @@
 		"authors": [
 			"Kumkumuk",
 			"Mirzali",
-			"Gırd"
+			"Gırd",
+			"Asmen"
 		]
 	},
 	"title": "Analiza asayışta pela",
@@ -23,8 +24,8 @@
 	"user": "Karber",
 	"spider": "Bındırık",
 	"bot": "Bot",
-	"page": "Perr",
-	"pages": "Perri",
+	"page": "Pele",
+	"pages": "Peli",
 	"page-title": "Sernameyê pele",
 	"change-chart": "Tewra grafiki",
 	"settings": "Eyari",
@@ -36,7 +37,7 @@
 	"hosted": "$2 de $1 ya host kerdış",
 	"translation-credits": "Açarnayışê tereftê $1 u $2 ra gêrênê",
 	"tool-labs": "Tool Labs",
-	"faq": "PZP",
+	"faq": "PVP",
 	"disclaimer": "Redê mesuliyeti",
 	"url-structure": "Babeta URL",
 	"view-source": "Çımey bıvêne",
@@ -123,5 +124,5 @@
 	"permalink": "Greyo Daimi",
 	"projects": "Proceyi",
 	"statistics": "İstatistiki",
-	"num-pages": "$1 {{PLURAL:$1|Perr|Perri}}"
+	"num-pages": "$1 {{PLURAL:$1|pele|peli}}"
 }
