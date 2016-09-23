@@ -2854,7 +2854,7 @@ var Pv = function (_PvConfig) {
         if (multiParam && chunk[0] === multiParam) {
           params[multiParam] = chunk[1].split('|').filter(function (param) {
             return !!param;
-          });
+          }).unique();
         } else {
           params[chunk[0]] = chunk[1];
         }

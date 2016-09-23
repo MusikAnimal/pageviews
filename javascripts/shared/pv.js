@@ -865,7 +865,7 @@ class Pv extends PvConfig {
       let chunk = chunks[i].split('=');
 
       if (multiParam && chunk[0] === multiParam) {
-        params[multiParam] = chunk[1].split('|').filter(param => !!param);
+        params[multiParam] = chunk[1].split('|').filter(param => !!param).unique();
       } else {
         params[chunk[0]] = chunk[1];
       }
