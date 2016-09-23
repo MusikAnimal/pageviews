@@ -105,7 +105,6 @@
 	"api-error-unknown": "An unknown error occurred when querying $1",
 	"api-error-no-data": "No data found.",
 	"api-error-timeout": "Due to API failure, the following could not be processed:\n$1\nPlease wait several minutes and try again.",
-	"api-throttle-wait": "Please wait $1 seconds before submitting another request.<br/>Apologies for the inconvenience. This is a temporary throttling tactic.<br/>See $2 for more information.",
 	"api-incomplete-data": "Some data is not yet available for the dates: $1",
 	"topviews-title": "Topviews Analysis",
 	"excluded-pages": "Excluded pages",
@@ -163,8 +162,6 @@
 	"faq-massviews-sources-quarry": "Enter the numeric ID and project of a $1 dataset. The <code>$2</code> column (required) is what will be used as the page titles.",
 	"faq-massviews-subject-page-title": "What is the \"$1\" option?",
 	"faq-massviews-subject-page-body": "This option is for when you are using a category as the source. In some cases the category may contain talk pages when you actually want the subject pages. For instance <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City articles</a>, which lists the talk pages of FA-quality articles within WikiProject New York City.",
-	"faq-throttle-wait-title": "Why do I have to wait $1 seconds before I can use the tool a second time?",
-	"faq-throttle-wait-body": "The Wikimedia Pageviews API can only handle so many requests during a window of time. In order to ensure the API does not fail and you get all the data you need, you are forced to wait $1 seconds after using the tool before you can use it again.",
 	"url-structure-example": "To get the latest data on a given page on your wiki, with default options, use:\n$1\nreplacing $2 with a valid $3. $4 will resolve to the page the link is placed on",
 	"url-structure-example-siteviews": "To get the latest data on total pageviews of all pages on your wiki, with default options, use:\n$1",
 	"url-structure-topviews-example": "To show the default list of top viewed pages on your wiki, use:\n$1\nreplacing $2 with a valid $3. You can also use $4 to exclude certain pages from view, such as known false positives.",
@@ -226,7 +223,6 @@
 	"redirectviews-description": "Pageviews of all redirects to a page",
 	"invalid-category-url": "Invalid category! Please enter the full wiki URL of the category.",
 	"invalid-page-url": "Invalid page! Please enter the full wiki URL of the page.",
-	"invalid-template-url": "Invalid template! Please enter the full wiki URL of the template or page.",
 	"invalid-quarry-dataset": "Invalid Quarry dataset! The <code>$1</code> column is required but was not found.",
 	"source": "Source",
 	"category": "Category",
@@ -265,5 +261,6 @@
 	"daily": "Daily",
 	"mainspace-only-option": "Show only mainspace pages",
 	"list-values": "One of: $1",
-	"comma-character": ","
+	"comma-character": ",",
+	"processing-page": "Processing page $1 of $2"
 }

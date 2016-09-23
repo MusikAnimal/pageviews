@@ -31,7 +31,6 @@ const config = {
       (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
-  pageLimit: 500,
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',

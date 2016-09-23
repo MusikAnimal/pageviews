@@ -33,7 +33,6 @@ var config = {
     return '<strong>' + $.i18n('totals') + ':</strong> ' + scope.formatNumber(scope.outputData.sum) + '\n      (' + scope.formatNumber(Math.round(scope.outputData.average)) + '/' + $.i18n('day') + ')';
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
-  pageLimit: 500,
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
@@ -379,7 +378,6 @@ var MassViews = function (_mix$with) {
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day');
 
-      // XXX: throttling
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
@@ -401,7 +399,6 @@ var MassViews = function (_mix$with) {
             items: pvData.items
           });
         }).fail(function (errorData) {
-          // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
@@ -425,11 +422,11 @@ var MassViews = function (_mix$with) {
             _this5.writeMessage(_this5.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
-          hadFailure = true; // don't treat this series of requests as being cached by server
+          // unless it was a 404, don't treat this series of requests as being cached by server
+          if (errorData.status !== 404) hadFailure = true;
         }).always(function () {
-          _this5.updateProgressBar(++count / totalRequestCount * 100);
+          _this5.updateProgressBar(++count, totalRequestCount);
 
-          // XXX: throttling
           if (count === totalRequestCount) {
             dfd.resolve(pageViewsData);
 
@@ -443,7 +440,6 @@ var MassViews = function (_mix$with) {
              * if there were no failures, assume the resource is now cached by the server
              *   and save this assumption to our own cache so we don't throttle the same requests
              */
-            // XXX: throttling
             if (!hadFailure) {
               simpleStorage.set(_this5.getCacheKey(), true, { TTL: 600000 });
             }
@@ -456,8 +452,7 @@ var MassViews = function (_mix$with) {
        *   we're unable to check response headers to see if the resource was cached,
        *   so we use simpleStorage to keep track of what the user has recently queried.
        */
-      // XXX: throttling
-      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
+      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
       pages.forEach(function (page, index) {
         requestFn(page);
@@ -625,10 +620,10 @@ var MassViews = function (_mix$with) {
       }).done(function (data) {
         var pages = Object.keys(data.pages);
 
-        if (pages.length > 500) {
-          _this7.writeMessage($.i18n('massviews-oversized-set', _this7.getPileLink(id), _this7.formatNumber(pages.length), _this7.config.pageLimit));
+        if (pages.length > _this7.config.apiLimit) {
+          _this7.writeMessage($.i18n('massviews-oversized-set', _this7.getPileLink(id), _this7.formatNumber(pages.length), _this7.config.apiLimit));
 
-          pages = pages.slice(0, _this7.config.pageLimit);
+          pages = pages.slice(0, _this7.config.apiLimit);
         }
 
         return dfd.resolve({
@@ -738,6 +733,7 @@ var MassViews = function (_mix$with) {
 
       switch (state) {
         case 'initial':
+          this.updateProgressBar(0);
           this.clearMessages();
           this.assignDefaults();
           this.destroyChart();
@@ -778,13 +774,6 @@ var MassViews = function (_mix$with) {
           });
         }
 
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (!_this9.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
-
         _this9.sourceProject = siteMap[pileData.wiki];
 
         /**
@@ -823,52 +812,37 @@ var MassViews = function (_mix$with) {
     value: function processCategory(project, category, cb) {
       var _this10 = this;
 
-      if (!category) {
-        return this.setState('initial', function () {
-          _this10.writeMessage($.i18n('invalid-category-url'));
-        });
-      }
-
       var requestData = {
-        action: 'query',
-        format: 'json',
         list: 'categorymembers',
         cmlimit: 500,
-        cmtitle: decodeURIComponent(category),
+        cmtitle: category,
         prop: 'categoryinfo',
-        titles: decodeURIComponent(category)
+        titles: category
       };
 
-      var promise = $.ajax({
-        url: 'https://' + project + '/w/api.php',
-        jsonp: 'callback',
-        dataType: 'jsonp',
-        data: requestData
-      });
-      var categoryLink = this.getPageLink(decodeURIComponent(category), project);
-      this.sourceProject = project; // for caching purposes
+      var categoryLink = this.getPageLink(category, project);
 
-      promise.done(function (data) {
+      this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(function (data) {
         if (data.error) {
           return _this10.setState('initial', function () {
             _this10.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info.escape());
           });
         }
 
-        var queryKey = Object.keys(data.query.pages)[0];
+        var pageObj = data.pages[0];
 
-        if (queryKey === '-1') {
+        if (pageObj.missing) {
           return _this10.setState('initial', function () {
             _this10.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
-        var size = data.query.pages[queryKey].categoryinfo.size,
+        var size = pageObj.categoryinfo.size,
 
         // siteInfo is only populated if they've opted to see subject pages instead of talk pages
         // Otherwise namespaces are not needed by this.mapCategoryPageNames
         namespaces = _this10.siteInfo ? _this10.siteInfo.namespaces : undefined;
-        var pages = data.query.categorymembers;
+        var pages = data.categorymembers;
 
         if (!pages.length) {
           return _this10.setState('initial', function () {
@@ -876,18 +850,11 @@ var MassViews = function (_mix$with) {
           });
         }
 
-        if (size > _this10.config.pageLimit) {
-          _this10.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this10.formatNumber(size), _this10.config.pageLimit));
+        if (size > _this10.config.apiLimit) {
+          _this10.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this10.formatNumber(size), _this10.config.apiLimit));
 
-          pages = pages.slice(0, _this10.config.pageLimit);
+          pages = pages.slice(0, _this10.config.apiLimit);
         }
-
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (size > 10) _this10.setThrottle();
 
         var pageNames = _this10.mapCategoryPageNames(pages, namespaces);
 
@@ -915,14 +882,6 @@ var MassViews = function (_mix$with) {
       var _this11 = this,
           _$;
 
-      if (!targetPage) {
-        return this.setState('initial', function () {
-          _this11.writeMessage($.i18n('invalid-page-url'));
-        });
-      }
-
-      this.sourceProject = project; // for caching purposes
-
       // determine what namespace the targetPage is in
       var descoredTargetPage = targetPage.descore();
       var namespace = 0,
@@ -943,38 +902,32 @@ var MassViews = function (_mix$with) {
       var promises = [];
 
       [namespace, inverseNamespace].forEach(function (apnamespace) {
-        promises.push($.ajax({
-          url: 'https://' + project + '/w/api.php',
-          jsonp: 'callback',
-          dataType: 'jsonp',
-          data: {
-            action: 'query',
-            format: 'json',
-            list: 'allpages',
-            aplimit: 500,
-            apnamespace: apnamespace,
-            apprefix: decodeURIComponent(queryTargetPage) + '/'
-          }
-        }));
+        var params = {
+          list: 'allpages',
+          aplimit: 500,
+          apnamespace: apnamespace,
+          apprefix: queryTargetPage + '/'
+        };
+        promises.push(_this11.massApi(params, project, 'apcontinue', 'allpages'));
       });
 
-      var pageLink = this.getPageLink(decodeURIComponent(targetPage), project);
+      var pageLink = this.getPageLink(targetPage, project);
 
       (_$ = $).when.apply(_$, promises).done(function (data, data2) {
         // show errors, if any
         var errors = [data, data2].filter(function (resp) {
-          return !!resp[0].error;
+          return !!resp.error;
         });
         if (errors.length) {
           errors.forEach(function (error) {
             _this11.setState('initial', function () {
-              _this11.writeMessage($.i18n('api-error', 'Allpages API') + ': ' + error[0].error.info.escape());
+              _this11.writeMessage($.i18n('api-error', 'Allpages API') + ': ' + error.error.info.escape());
             });
           });
           return false;
         }
 
-        var pages = data[0].query.allpages.concat(data2[0].query.allpages);
+        var pages = data.allpages.concat(data2.allpages);
         var size = pages.length;
 
         if (size === 0) {
@@ -983,22 +936,15 @@ var MassViews = function (_mix$with) {
           });
         }
 
-        if (size > _this11.config.pageLimit) {
-          _this11.writeMessage($.i18n('massviews-oversized-set', pageLink, _this11.formatNumber(size), _this11.config.pageLimit));
+        if (size > _this11.config.apiLimit) {
+          _this11.writeMessage($.i18n('massviews-oversized-set', pageLink, _this11.formatNumber(size), _this11.config.apiLimit));
 
-          pages = pages.slice(0, _this11.config.pageLimit);
+          pages = pages.slice(0, _this11.config.apiLimit);
         }
 
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (size > 10) _this11.setThrottle();
-
-        var pageNames = pages.map(function (page) {
+        var pageNames = [targetPage].concat(pages.map(function (page) {
           return page.title;
-        }).concat([targetPage]);
+        }));
 
         _this11.getPageViewsData(project, pageNames).done(function (pageViewsData) {
           $('.output-title').html(pageLink);
@@ -1020,75 +966,41 @@ var MassViews = function (_mix$with) {
     }
   }, {
     key: 'processTemplate',
-    value: function processTemplate(cb) {
+    value: function processTemplate(project, template, cb) {
       var _this12 = this;
 
-      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      var requestData = {
+        prop: 'transcludedin',
+        tilimit: 500,
+        titles: template
+      };
 
-      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
+      var templateLink = this.getPageLink(template, project);
 
-      var project = _getWikiPageFromURL2[0];
-      var template = _getWikiPageFromURL2[1];
-
-      if (!this.validateProject(project)) return;
-
-      if (!template) {
-        return this.setState('initial', function () {
-          _this12.writeMessage($.i18n('invalid-template-url'));
-        });
-      }
-
-      var promise = $.ajax({
-        url: 'https://' + project + '/w/api.php',
-        jsonp: 'callback',
-        dataType: 'jsonp',
-        data: {
-          action: 'query',
-          format: 'json',
-          tilimit: 500,
-          titles: decodeURIComponent(template),
-          prop: 'transcludedin'
-        }
-      });
-      var templateLink = this.getPageLink(decodeURIComponent(template), project);
-      this.sourceProject = project; // for caching purposes
-
-      promise.done(function (data) {
+      this.massApi(requestData, project, 'ticontinue', function (data) {
+        return data.pages[0].transcludedin;
+      }).done(function (data) {
         if (data.error) {
           return _this12.setState('initial', function () {
             _this12.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info.escape());
           });
         }
 
-        var queryKey = Object.keys(data.query.pages)[0];
-
-        if (queryKey === '-1') {
+        // this happens if there are no transclusions or the template could not be found
+        if (!data.pages[0]) {
           return _this12.setState('initial', function () {
             _this12.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
-        var pages = data.query.pages[queryKey].transcludedin.map(function (page) {
+        var pages = data.pages.map(function (page) {
           return page.title;
         });
 
-        if (!pages.length) {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('massviews-empty-set', templateLink));
-          });
-        }
-
-        // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+        // there were more pages that could not be processed as we hit the limit
         if (data.continue) {
-          _this12.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, 500));
+          _this12.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, _this12.config.apiLimit, _this12.config.apiLimit));
         }
-
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (pages.length > 10) _this12.setThrottle();
 
         _this12.getPageViewsData(project, pages).done(function (pageViewsData) {
           $('.output-title').html(templateLink);
@@ -1110,55 +1022,34 @@ var MassViews = function (_mix$with) {
     }
   }, {
     key: 'processWikiPage',
-    value: function processWikiPage(cb) {
+    value: function processWikiPage(project, page, cb) {
       var _this13 = this;
 
-      var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      var requestData = {
+        pllimit: 500,
+        prop: 'links',
+        titles: page
+      };
 
-      var _getWikiPageFromURL4 = _slicedToArray(_getWikiPageFromURL3, 2);
+      var pageLink = this.getPageLink(page, project);
 
-      var project = _getWikiPageFromURL4[0];
-      var page = _getWikiPageFromURL4[1];
-
-      if (!this.validateProject(project)) return;
-
-      if (!page) {
-        return this.setState('initial', function () {
-          _this13.writeMessage($.i18n('invalid-page-url'));
-        });
-      }
-
-      var promise = $.ajax({
-        url: 'https://' + project + '/w/api.php',
-        jsonp: 'callback',
-        dataType: 'jsonp',
-        data: {
-          action: 'query',
-          format: 'json',
-          pllimit: 500,
-          titles: decodeURIComponent(page),
-          prop: 'links'
-        }
-      });
-      var pageLink = this.getPageLink(decodeURIComponent(page), project);
-      this.sourceProject = project; // for caching purposes
-
-      promise.done(function (data) {
+      this.massApi(requestData, project, 'plcontinue', function (data) {
+        return data.pages[0].links;
+      }).done(function (data) {
         if (data.error) {
           return _this13.setState('initial', function () {
             _this13.writeMessage($.i18n('api-error', 'Links API') + ': ' + data.error.info.escape());
           });
         }
 
-        var queryKey = Object.keys(data.query.pages)[0];
-
-        if (queryKey === '-1' || !data.query.pages[queryKey].links) {
+        // this happens if there are no transclusions or the template could not be found
+        if (!data.pages[0]) {
           return _this13.setState('initial', function () {
             _this13.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
-        var pages = data.query.pages[queryKey].links.map(function (page) {
+        var pages = data.pages.map(function (page) {
           return page.title;
         });
 
@@ -1168,17 +1059,11 @@ var MassViews = function (_mix$with) {
           });
         }
 
-        // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+        // in this case we know there are more than this.config.apiLimit pages
+        //   because we got back a data.continue value
         if (data.continue) {
-          _this13.writeMessage($.i18n('massviews-oversized-set-unknown', pageLink, 500));
+          _this13.writeMessage($.i18n('massviews-oversized-set-unknown', pageLink, _this13.config.apiLimit));
         }
-
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         */
-        if (pages.length > 10) _this13.setThrottle();
 
         _this13.getPageViewsData(project, pages).done(function (pageViewsData) {
           $('.output-title').html(pageLink);
@@ -1222,13 +1107,11 @@ var MassViews = function (_mix$with) {
           return row[titleIndex];
         });
 
-        if (titles.length > 500) {
-          _this14.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this14.formatNumber(titles.length), _this14.config.pageLimit));
+        if (titles.length > _this14.config.apiLimit) {
+          _this14.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this14.formatNumber(titles.length), _this14.config.apiLimit));
 
-          titles = titles.slice(0, _this14.config.pageLimit);
+          titles = titles.slice(0, _this14.config.apiLimit);
         }
-
-        if (titles.length > 10) _this14.setThrottle();
 
         _this14.getPageViewsData(project, titles).done(function (pageViewsData) {
           $('.output-title').html(quarryLink);
@@ -1252,7 +1135,7 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'validateProject',
     value: function validateProject(project) {
-      if (!project) return true;
+      if (!project) return false;
 
       /** Remove www hostnames since the pageviews API doesn't expect them. */
       project = project.replace(/^www\./, '');
@@ -1293,47 +1176,47 @@ var MassViews = function (_mix$with) {
     value: function processInput() {
       var _this15 = this;
 
-      // XXX: throttling
-      /** allow resubmission of queries that are cached */
-      if (!this.isRequestCached()) {
-        /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('pageviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-          /** > 0 check to combat race conditions */
-          if (timeRemaining > 0) {
-            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
-          }
-        }
-      }
-
       this.setState('processing');
 
       var cb = function cb() {
-        _this15.updateProgressBar(100);
         _this15.setInitialChartType();
         _this15.renderData();
       };
+      var source = $('#source_button').data('value');
 
-      var project = void 0,
-          target = void 0;
+      // special sources that don't use a wiki URL
+      if (source === 'pagepile') {
+        return this.processPagePile(cb);
+      } else if (source === 'quarry') {
+        return this.processQuarry(cb);
+      }
 
-      switch ($('#source_button').data('value')) {
-        case 'pagepile':
-          this.processPagePile(cb);
-          break;
+      // validate wiki URL
+
+      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
+
+      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
+
+      var project = _getWikiPageFromURL2[0];
+      var target = _getWikiPageFromURL2[1];
+
+
+      if (!project || !target) {
+        return this.setState('initial', function () {
+          _this15.writeMessage($.i18n('invalid-' + (source === 'category' ? 'category' : 'page') + '-url'));
+        });
+      } else if (!this.validateProject(project)) {
+        return;
+      }
+
+      // for caching purposes
+      this.sourceProject = project;
+
+      // decode and remove trailing slash
+      target = decodeURIComponent(target).replace(/\/$/, '');
+
+      switch (source) {
         case 'category':
-          var _getWikiPageFromURL5 = this.getWikiPageFromURL($(this.config.sourceInput).val());
-          // parse input before calling processCategory, so we can query for siteinfo if needed
-
-
-          var _getWikiPageFromURL6 = _slicedToArray(_getWikiPageFromURL5, 2);
-
-          project = _getWikiPageFromURL6[0];
-          target = _getWikiPageFromURL6[1];
-
-          if (!this.validateProject(project)) return;
-
           // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
           if ($('.category-subject-toggle--input').is(':checked')) {
             this.getSiteInfo(project).then(function () {
@@ -1344,30 +1227,16 @@ var MassViews = function (_mix$with) {
           }
           break;
         case 'subpages':
-          var _getWikiPageFromURL7 = this.getWikiPageFromURL($(this.config.sourceInput).val());
-          // parse input before calling processSubpages so we can query for siteinfo
-
-
-          var _getWikiPageFromURL8 = _slicedToArray(_getWikiPageFromURL7, 2);
-
-          project = _getWikiPageFromURL8[0];
-          target = _getWikiPageFromURL8[1];
-
-          if (!this.validateProject(project)) return;
-
           // fetch namespaces first
           this.getSiteInfo(project).then(function () {
             return _this15.processSubpages(project, target, cb);
           });
           break;
         case 'wikilinks':
-          this.processWikiPage(cb);
+          this.processWikiPage(project, target, cb);
           break;
         case 'transclusions':
-          this.processTemplate(cb);
-          break;
-        case 'quarry':
-          this.processQuarry(cb);
+          this.processTemplate(project, target, cb);
           break;
       }
     }
@@ -1829,7 +1698,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
               /** maximum of 3 retries */
               if (failureRetries[_this6.project] < 3) {
                 totalRequestCount++;
-                return _this6.rateLimit(makeRequest, 100, _this6)(entity, index);
+                return _this6.rateLimit(makeRequest, _this6.config.apiThrottle, _this6)(entity, index);
               }
             }
 
@@ -2472,7 +2341,7 @@ var ListHelpers = function ListHelpers(superclass) {
     }, {
       key: 'getCacheKey',
       value: function getCacheKey() {
-        return 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true)));
+        return 'pv-cache-' + this.hashCode(this.app + JSON.stringify(this.getParams(true)));
       }
 
       /**
@@ -2660,14 +2529,22 @@ var ListHelpers = function ListHelpers(superclass) {
 
       /**
        * Set value of progress bar
-       * @param  {Number} value - percentage as float
+       * @param  {Number} value - current iteration
+       * @param  {Number} total - total number of iterations
        * @return {null} nothing
        */
 
     }, {
       key: 'updateProgressBar',
-      value: function updateProgressBar(value) {
-        $('.progress-bar').css('width', value.toFixed(2) + '%');
+      value: function updateProgressBar(value, total) {
+        if (total) {
+          var percentage = value / total * 100;
+          $('.progress-bar').css('width', percentage.toFixed(2) + '%');
+          $('.progress-counter').text($.i18n('processing-page', value, total));
+        } else {
+          $('.progress-bar').css('width', '0%');
+          $('.progress-counter').text('');
+        }
       }
     }]);
 
@@ -3611,8 +3488,91 @@ var Pv = function (_PvConfig) {
      */
 
   }, {
-    key: 'n',
+    key: 'massApi',
 
+
+    /**
+     * Make mass requests to MediaWiki API
+     * The API normally limits to 500 pages, but gives you a 'continue' value
+     *   to finish iterating through the resource.
+     * @param {Object} params - parameters to pass to the API
+     * @param {String} project - project to query, e.g. en.wikipedia (.org is optional)
+     * @param {String} [continueKey] - the key to look in the continue hash, if present (e.g. cmcontinue for API:Categorymembers)
+     * @param {String|Function} [dataKey] - the key for the main chunk of data, in the query hash (e.g. categorymembers for API:Categorymembers)
+     *   If this is a function it is given the response data, and expected to return the data we want to concatentate.
+     * @param {Number} [limit] - max number of pages to fetch
+     * @return {Deferred} promise resolving with data
+     */
+    value: function massApi(params, project) {
+      var continueKey = arguments.length <= 2 || arguments[2] === undefined ? 'continue' : arguments[2];
+      var dataKey = arguments[3];
+      var limit = arguments.length <= 4 || arguments[4] === undefined ? this.config.apiLimit : arguments[4];
+
+      if (!/\.org$/.test(project)) project += '.org';
+
+      var dfd = $.Deferred();
+      var resolveData = {
+        pages: []
+      };
+
+      var makeRequest = function makeRequest(continueValue) {
+        var requestData = Object.assign({
+          action: 'query',
+          format: 'json',
+          formatversion: '2'
+        }, params);
+
+        if (continueValue) requestData[continueKey] = continueValue;
+
+        var promise = $.ajax({
+          url: 'https://' + project + '/w/api.php',
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          data: requestData
+        });
+
+        promise.done(function (data) {
+          // some failures come back as 200s, so we still resolve and let the local app handle it
+          if (data.error) return dfd.resolve(data);
+
+          var isFinished = void 0;
+
+          // allow custom function to parse the data we want, if provided
+          if (typeof dataKey === 'function') {
+            resolveData.pages = resolveData.pages.concat(dataKey(data.query));
+            isFinished = resolveData.pages.length >= limit;
+          } else {
+            // append new data to data from last request. We might want both 'pages' and dataKey
+            if (data.query.pages) {
+              resolveData.pages = resolveData.pages.concat(data.query.pages);
+            }
+            if (data.query[dataKey]) {
+              resolveData[dataKey] = (resolveData[dataKey] || []).concat(data.query[dataKey]);
+            }
+            // If pages is not the collection we want, it will be either an empty array or one entry with basic page info
+            //   depending on what API we're hitting. So resolveData[dataKey] will hit the limit
+            isFinished = resolveData.pages.length >= limit || resolveData[dataKey].length >= limit;
+          }
+
+          // make recursive call if needed, waiting 100ms
+          if (!isFinished && data.continue && data.continue[continueKey]) {
+            setTimeout(function () {
+              makeRequest(data.continue[continueKey]);
+            }, 100);
+          } else {
+            // indicate there were more entries than the limit
+            if (data.continue) resolveData.continue = true;
+            dfd.resolve(resolveData);
+          }
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      };
+
+      makeRequest();
+
+      return dfd;
+    }
 
     /**
      * Localize Number object with delimiters
@@ -3620,6 +3580,9 @@ var Pv = function (_PvConfig) {
      * @param {Number} value - the Number, e.g. 1234567
      * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
      */
+
+  }, {
+    key: 'n',
     value: function n(value) {
       return new Number(value).toLocaleString();
     }
@@ -4097,11 +4060,6 @@ var Pv = function (_PvConfig) {
       });
     }
   }, {
-    key: 'setThrottle',
-    value: function setThrottle() {
-      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
-    }
-  }, {
     key: 'showFatalErrors',
     value: function showFatalErrors(errors) {
       var _this10 = this;
@@ -4379,6 +4337,8 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
+      apiLimit: 5000,
+      apiThrottle: 20,
       apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {

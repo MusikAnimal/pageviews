@@ -129,14 +129,16 @@ output {
   cursor: pointer;
 }
 
+.progress .progress-bar {
+  transition: width .1s ease;
+}
+
 .progress-bar--wrapper {
   display: none;
   float: none;
-  margin-top: 50px;
-}
-
-.progress {
   margin-bottom: 40px;
+  margin-top: 50px;
+  text-align: center;
 }
 
 @media (max-width: $screen-md) {

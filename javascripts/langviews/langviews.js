@@ -361,7 +361,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day'),
       interWikiKeys = Object.keys(interWikiData);
-    // XXX: throttling
+
     let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
       totalRequestCount = interWikiKeys.length, failedPages = [], pageViewsData = [];
 
@@ -387,7 +387,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           items: pvData.items
         });
       }).fail(errorData => {
-        // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
           failedPageLink = this.getPageLink(data.title, `${data.lang}.${this.baseProject}.org`);
@@ -402,7 +401,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           /** maximum of 3 retries */
           if (failureRetries[dbName] < 3) {
             totalRequestCount++;
-            return this.rateLimit(makeRequest, 100, this)(dbName);
+            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(dbName);
           }
 
           /** retries exceeded */
@@ -415,9 +414,8 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
         hadFailure = true; // don't treat this series of requests as being cached by server
       }).always(() => {
-        this.updateProgressBar((++count / totalRequestCount) * 100);
+        this.updateProgressBar(++count, totalRequestCount);
 
-        // XXX: throttling, totalRequestCount can just be interWikiKeys.length
         if (count === totalRequestCount) {
           dfd.resolve(pageViewsData);
 
@@ -434,7 +432,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
            * if there were no failures, assume the resource is now cached by the server
            *   and save this assumption to our own cache so we don't throttle the same requests
            */
-          // XXX: throttling
           if (!hadFailure) {
             simpleStorage.set(this.getCacheKey(), true, {TTL: 600000});
           }
@@ -447,8 +444,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
      *   we're unable to check response headers to see if the resource was cached,
      *   so we use simpleStorage to keep track of what the user has recently queried.
      */
-    // XXX: throttling
-    const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
+    const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
     interWikiKeys.forEach((dbName, index) => {
       requestFn(dbName);
@@ -551,6 +547,8 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     /** start up processing if page name is present */
     if (params.page) {
       this.processInput();
+    } else {
+      $(this.config.sourceInput).focus();
     }
   }
 
@@ -598,23 +596,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {null} nothing
    */
   processInput() {
-    // XXX: throttling
-    /** allow resubmission of queries that are cached */
-    if (!this.isRequestCached()) {
-      /** Check if user has exceeded request limit and throw error */
-      if (simpleStorage.hasKey('pageviews-throttle')) {
-        const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-        /** > 0 check to combat race conditions */
-        if (timeRemaining > 0) {
-          return this.writeMessage($.i18n(
-            'api-throttle-wait', `<b>${timeRemaining}</b>`,
-            '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-          ), true);
-        }
-      }
-    }
-
     const page = $(this.config.sourceInput).val();
 
     this.setState('processing');
@@ -622,30 +603,13 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(this.config.projectInput).val());
 
     this.getInterwikiData(dbName, page).done(interWikiData => {
-      const numPages = Object.keys(interWikiData).length;
-
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       *   unless there were are querying for ten or less pages
-       */
-      if (numPages > 10) this.setThrottle();
-
       this.getPageViewsData(interWikiData).done(pageViewsData => {
         const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
         $('.output-title').html(pageLink);
         $('.output-params').text($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(page, pageLink, pageViewsData);
-        this.updateProgressBar(100);
         this.setInitialChartType();
         this.renderData();
-
-        /**
-         * XXX: throttling
-         * Reset throttling again; the first one was in case they aborted
-         */
-        if (numPages > 10) this.setThrottle();
       });
     }).fail(error => {
       this.setState('initial');

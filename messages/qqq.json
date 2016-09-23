@@ -113,7 +113,6 @@
 	"api-error-unknown": "Error message saying an unknown error occurred when querying an API. $1 is the name of the API.",
 	"api-error-no-data": "When the API returned no data",
 	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
-	"api-throttle-wait": "Error message saying the user needs to wait $1 seconds before they can make submit another query. It also explains that this throttling is temporary. $2 is a link to the relevant Phabricator task",
 	"api-incomplete-data": "Error message saying that some data in the collection is not yet available for the given dates. $1 (***always treat as plural***) is the list of dates lacking data.",
 	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews-test/)",
 	"excluded-pages": "Pages that are excluded from the Topviews list",
@@ -171,8 +170,6 @@
 	"faq-massviews-sources-quarry": "FAQ - explanation of what the 'Quarry' source in the Massviews tool is. $1 is the name of the Quarry tool. $2 is the name of the column that the Quarry dataset is required to have.",
 	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",
 	"faq-massviews-subject-page-body": "FAQ - explanation of what the 'use subject page' option is",
-	"faq-throttle-wait-title": "FAQ - title of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
-	"faq-throttle-wait-body": "FAQ - body of the section explaining why a wait period is enforced after using the Massviews or Langviews tool. $1 is the number of seconds the user has to wait.",
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
 	"url-structure-example-siteviews": "Example of how to link to Siteviews Analysis on a wiki. $1 is the example link. This message is the same as the first sentence of 'url-structure-example'",
 	"url-structure-topviews-example": "Example of how to link to Topviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, and $4 is the 'excludes' parameter",
@@ -234,7 +231,6 @@
 	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
 	"invalid-category-url": "Error message saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
 	"invalid-page-url": "Error message saying the user inputted wiki URL is not a valid page.",
-	"invalid-template-url": "Error message saying the user inputted wiki URL is not a valid template or page. In this case it does not have to be in the Template namespace, rather it just needs to be a valid page.",
 	"invalid-quarry-dataset": "Error message saying the user inputted a Quarry dataset without the required column. $1 is the name of the column that is required.",
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"category": "Label for the 'Category' input field on the Massviews tool.\n{{Identical|Category}}",
@@ -273,5 +269,6 @@
 	"daily": "Label for option to view statistics for on a daily basis in the Topviews app\n{{Identical|Daily}}",
 	"mainspace-only-option": "Label to show only mainspace pages in the Topviews app.",
 	"list-values": "Used to show a list of values or parameters, and that only one of them can be selected. $1 is the comma-separated list, $2 is the number of items in the list. The PLURAL magic word does not necessarily have to be used.",
-	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.\n{{Identical|,}}"
+	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.\n{{Identical|,}}",
+	"processing-page": "Text shown below the progress bar in some apps to indicate which page is being process out of how many total pages."
 }

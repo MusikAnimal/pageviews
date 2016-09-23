@@ -735,6 +735,85 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Make mass requests to MediaWiki API
+   * The API normally limits to 500 pages, but gives you a 'continue' value
+   *   to finish iterating through the resource.
+   * @param {Object} params - parameters to pass to the API
+   * @param {String} project - project to query, e.g. en.wikipedia (.org is optional)
+   * @param {String} [continueKey] - the key to look in the continue hash, if present (e.g. cmcontinue for API:Categorymembers)
+   * @param {String|Function} [dataKey] - the key for the main chunk of data, in the query hash (e.g. categorymembers for API:Categorymembers)
+   *   If this is a function it is given the response data, and expected to return the data we want to concatentate.
+   * @param {Number} [limit] - max number of pages to fetch
+   * @return {Deferred} promise resolving with data
+   */
+  massApi(params, project, continueKey = 'continue', dataKey, limit = this.config.apiLimit) {
+    if (!/\.org$/.test(project)) project += '.org';
+
+    const dfd = $.Deferred();
+    let resolveData = {
+      pages: []
+    };
+
+    const makeRequest = continueValue => {
+      let requestData = Object.assign({
+        action: 'query',
+        format: 'json',
+        formatversion: '2'
+      }, params);
+
+      if (continueValue) requestData[continueKey] = continueValue;
+
+      const promise = $.ajax({
+        url: `https://${project}/w/api.php`,
+        jsonp: 'callback',
+        dataType: 'jsonp',
+        data: requestData
+      });
+
+      promise.done(data => {
+        // some failures come back as 200s, so we still resolve and let the local app handle it
+        if (data.error) return dfd.resolve(data);
+
+        let isFinished;
+
+        // allow custom function to parse the data we want, if provided
+        if (typeof dataKey === 'function') {
+          resolveData.pages = resolveData.pages.concat(dataKey(data.query));
+          isFinished = resolveData.pages.length >= limit;
+        } else {
+          // append new data to data from last request. We might want both 'pages' and dataKey
+          if (data.query.pages) {
+            resolveData.pages = resolveData.pages.concat(data.query.pages);
+          }
+          if (data.query[dataKey]) {
+            resolveData[dataKey] = (resolveData[dataKey] || []).concat(data.query[dataKey]);
+          }
+          // If pages is not the collection we want, it will be either an empty array or one entry with basic page info
+          //   depending on what API we're hitting. So resolveData[dataKey] will hit the limit
+          isFinished = resolveData.pages.length >= limit || resolveData[dataKey].length >= limit;
+        }
+
+        // make recursive call if needed, waiting 100ms
+        if (!isFinished && data.continue && data.continue[continueKey]) {
+          setTimeout(() => {
+            makeRequest(data.continue[continueKey]);
+          }, 100);
+        } else {
+          // indicate there were more entries than the limit
+          if (data.continue) resolveData.continue = true;
+          dfd.resolve(resolveData);
+        }
+      }).fail(data => {
+        dfd.reject(data);
+      });
+    };
+
+    makeRequest();
+
+    return dfd;
+  }
+
+  /**
    * Localize Number object with delimiters
    *
    * @param {Number} value - the Number, e.g. 1234567
@@ -1160,10 +1239,6 @@ class Pv extends PvConfig {
         this.daterangepicker.updateElement();
       }
     });
-  }
-
-  setThrottle() {
-    if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
   }
 
   showFatalErrors(errors) {

@@ -498,7 +498,7 @@ var LangViews = function (_mix$with) {
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day'),
           interWikiKeys = Object.keys(interWikiData);
-      // XXX: throttling
+
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
@@ -526,7 +526,6 @@ var LangViews = function (_mix$with) {
             items: pvData.items
           });
         }).fail(function (errorData) {
-          // XXX: throttling
           /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
               failedPageLink = _this6.getPageLink(data.title, data.lang + '.' + _this6.baseProject + '.org');
@@ -541,7 +540,7 @@ var LangViews = function (_mix$with) {
             /** maximum of 3 retries */
             if (failureRetries[dbName] < 3) {
               totalRequestCount++;
-              return _this6.rateLimit(makeRequest, 100, _this6)(dbName);
+              return _this6.rateLimit(makeRequest, _this6.config.apiThrottle, _this6)(dbName);
             }
 
             /** retries exceeded */
@@ -552,9 +551,8 @@ var LangViews = function (_mix$with) {
 
           hadFailure = true; // don't treat this series of requests as being cached by server
         }).always(function () {
-          _this6.updateProgressBar(++count / totalRequestCount * 100);
+          _this6.updateProgressBar(++count, totalRequestCount);
 
-          // XXX: throttling, totalRequestCount can just be interWikiKeys.length
           if (count === totalRequestCount) {
             dfd.resolve(pageViewsData);
 
@@ -568,7 +566,6 @@ var LangViews = function (_mix$with) {
              * if there were no failures, assume the resource is now cached by the server
              *   and save this assumption to our own cache so we don't throttle the same requests
              */
-            // XXX: throttling
             if (!hadFailure) {
               simpleStorage.set(_this6.getCacheKey(), true, { TTL: 600000 });
             }
@@ -581,8 +578,7 @@ var LangViews = function (_mix$with) {
        *   we're unable to check response headers to see if the resource was cached,
        *   so we use simpleStorage to keep track of what the user has recently queried.
        */
-      // XXX: throttling
-      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
+      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
       interWikiKeys.forEach(function (dbName, index) {
         requestFn(dbName);
@@ -693,6 +689,8 @@ var LangViews = function (_mix$with) {
       /** start up processing if page name is present */
       if (params.page) {
         this.processInput();
+      } else {
+        $(this.config.sourceInput).focus();
       }
     }
 
@@ -748,20 +746,6 @@ var LangViews = function (_mix$with) {
     value: function processInput() {
       var _this9 = this;
 
-      // XXX: throttling
-      /** allow resubmission of queries that are cached */
-      if (!this.isRequestCached()) {
-        /** Check if user has exceeded request limit and throw error */
-        if (simpleStorage.hasKey('pageviews-throttle')) {
-          var timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-          /** > 0 check to combat race conditions */
-          if (timeRemaining > 0) {
-            return this.writeMessage($.i18n('api-throttle-wait', '<b>' + timeRemaining + '</b>', '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'), true);
-          }
-        }
-      }
-
       var page = $(this.config.sourceInput).val();
 
       this.setState('processing');
@@ -771,30 +755,13 @@ var LangViews = function (_mix$with) {
       });
 
       this.getInterwikiData(dbName, page).done(function (interWikiData) {
-        var numPages = Object.keys(interWikiData).length;
-
-        /**
-         * XXX: throttling
-         * At this point we know we have data to process,
-         *   so set the throttle flag to disallow additional requests for the next 90 seconds
-         *   unless there were are querying for ten or less pages
-         */
-        if (numPages > 10) _this9.setThrottle();
-
         _this9.getPageViewsData(interWikiData).done(function (pageViewsData) {
           var pageLink = _this9.getPageLink(decodeURIComponent(page), _this9.project);
           $('.output-title').html(pageLink);
           $('.output-params').text($(_this9.config.dateRangeSelector).val());
           _this9.buildMotherDataset(page, pageLink, pageViewsData);
-          _this9.updateProgressBar(100);
           _this9.setInitialChartType();
           _this9.renderData();
-
-          /**
-           * XXX: throttling
-           * Reset throttling again; the first one was in case they aborted
-           */
-          if (numPages > 10) _this9.setThrottle();
         });
       }).fail(function (error) {
         _this9.setState('initial');
@@ -1333,7 +1300,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
               /** maximum of 3 retries */
               if (failureRetries[_this6.project] < 3) {
                 totalRequestCount++;
-                return _this6.rateLimit(makeRequest, 100, _this6)(entity, index);
+                return _this6.rateLimit(makeRequest, _this6.config.apiThrottle, _this6)(entity, index);
               }
             }
 
@@ -1976,7 +1943,7 @@ var ListHelpers = function ListHelpers(superclass) {
     }, {
       key: 'getCacheKey',
       value: function getCacheKey() {
-        return 'lv-cache-' + this.hashCode(JSON.stringify(this.getParams(true)));
+        return 'pv-cache-' + this.hashCode(this.app + JSON.stringify(this.getParams(true)));
       }
 
       /**
@@ -2164,14 +2131,22 @@ var ListHelpers = function ListHelpers(superclass) {
 
       /**
        * Set value of progress bar
-       * @param  {Number} value - percentage as float
+       * @param  {Number} value - current iteration
+       * @param  {Number} total - total number of iterations
        * @return {null} nothing
        */
 
     }, {
       key: 'updateProgressBar',
-      value: function updateProgressBar(value) {
-        $('.progress-bar').css('width', value.toFixed(2) + '%');
+      value: function updateProgressBar(value, total) {
+        if (total) {
+          var percentage = value / total * 100;
+          $('.progress-bar').css('width', percentage.toFixed(2) + '%');
+          $('.progress-counter').text($.i18n('processing-page', value, total));
+        } else {
+          $('.progress-bar').css('width', '0%');
+          $('.progress-counter').text('');
+        }
       }
     }]);
 
@@ -3115,8 +3090,91 @@ var Pv = function (_PvConfig) {
      */
 
   }, {
-    key: 'n',
+    key: 'massApi',
 
+
+    /**
+     * Make mass requests to MediaWiki API
+     * The API normally limits to 500 pages, but gives you a 'continue' value
+     *   to finish iterating through the resource.
+     * @param {Object} params - parameters to pass to the API
+     * @param {String} project - project to query, e.g. en.wikipedia (.org is optional)
+     * @param {String} [continueKey] - the key to look in the continue hash, if present (e.g. cmcontinue for API:Categorymembers)
+     * @param {String|Function} [dataKey] - the key for the main chunk of data, in the query hash (e.g. categorymembers for API:Categorymembers)
+     *   If this is a function it is given the response data, and expected to return the data we want to concatentate.
+     * @param {Number} [limit] - max number of pages to fetch
+     * @return {Deferred} promise resolving with data
+     */
+    value: function massApi(params, project) {
+      var continueKey = arguments.length <= 2 || arguments[2] === undefined ? 'continue' : arguments[2];
+      var dataKey = arguments[3];
+      var limit = arguments.length <= 4 || arguments[4] === undefined ? this.config.apiLimit : arguments[4];
+
+      if (!/\.org$/.test(project)) project += '.org';
+
+      var dfd = $.Deferred();
+      var resolveData = {
+        pages: []
+      };
+
+      var makeRequest = function makeRequest(continueValue) {
+        var requestData = Object.assign({
+          action: 'query',
+          format: 'json',
+          formatversion: '2'
+        }, params);
+
+        if (continueValue) requestData[continueKey] = continueValue;
+
+        var promise = $.ajax({
+          url: 'https://' + project + '/w/api.php',
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          data: requestData
+        });
+
+        promise.done(function (data) {
+          // some failures come back as 200s, so we still resolve and let the local app handle it
+          if (data.error) return dfd.resolve(data);
+
+          var isFinished = void 0;
+
+          // allow custom function to parse the data we want, if provided
+          if (typeof dataKey === 'function') {
+            resolveData.pages = resolveData.pages.concat(dataKey(data.query));
+            isFinished = resolveData.pages.length >= limit;
+          } else {
+            // append new data to data from last request. We might want both 'pages' and dataKey
+            if (data.query.pages) {
+              resolveData.pages = resolveData.pages.concat(data.query.pages);
+            }
+            if (data.query[dataKey]) {
+              resolveData[dataKey] = (resolveData[dataKey] || []).concat(data.query[dataKey]);
+            }
+            // If pages is not the collection we want, it will be either an empty array or one entry with basic page info
+            //   depending on what API we're hitting. So resolveData[dataKey] will hit the limit
+            isFinished = resolveData.pages.length >= limit || resolveData[dataKey].length >= limit;
+          }
+
+          // make recursive call if needed, waiting 100ms
+          if (!isFinished && data.continue && data.continue[continueKey]) {
+            setTimeout(function () {
+              makeRequest(data.continue[continueKey]);
+            }, 100);
+          } else {
+            // indicate there were more entries than the limit
+            if (data.continue) resolveData.continue = true;
+            dfd.resolve(resolveData);
+          }
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      };
+
+      makeRequest();
+
+      return dfd;
+    }
 
     /**
      * Localize Number object with delimiters
@@ -3124,6 +3182,9 @@ var Pv = function (_PvConfig) {
      * @param {Number} value - the Number, e.g. 1234567
      * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
      */
+
+  }, {
+    key: 'n',
     value: function n(value) {
       return new Number(value).toLocaleString();
     }
@@ -3601,11 +3662,6 @@ var Pv = function (_PvConfig) {
       });
     }
   }, {
-    key: 'setThrottle',
-    value: function setThrottle() {
-      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, { TTL: 90000 });
-    }
-  }, {
     key: 'showFatalErrors',
     value: function showFatalErrors(errors) {
       var _this10 = this;
@@ -3883,6 +3939,8 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
+      apiLimit: 5000,
+      apiThrottle: 20,
       apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {

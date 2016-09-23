@@ -250,7 +250,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
-    // XXX: throttling
     let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
       totalRequestCount = pages.length, failedPages = [], pageViewsData = [];
 
@@ -270,7 +269,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           items: pvData.items
         });
       }).fail(errorData => {
-        // XXX: throttling
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
@@ -294,11 +292,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           this.writeMessage(`${this.getPageLink(page, project)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
         }
 
-        hadFailure = true; // don't treat this series of requests as being cached by server
+        // unless it was a 404, don't treat this series of requests as being cached by server
+        if (errorData.status !== 404) hadFailure = true;
       }).always(() => {
-        this.updateProgressBar((++count / totalRequestCount) * 100);
+        this.updateProgressBar(++count, totalRequestCount);
 
-        // XXX: throttling
         if (count === totalRequestCount) {
           dfd.resolve(pageViewsData);
 
@@ -315,7 +313,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
            * if there were no failures, assume the resource is now cached by the server
            *   and save this assumption to our own cache so we don't throttle the same requests
            */
-          // XXX: throttling
           if (!hadFailure) {
             simpleStorage.set(this.getCacheKey(), true, {TTL: 600000});
           }
@@ -328,8 +325,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
      *   we're unable to check response headers to see if the resource was cached,
      *   so we use simpleStorage to keep track of what the user has recently queried.
      */
-    // XXX: throttling
-    const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, 100, this);
+    const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
     pages.forEach((page, index) => {
       requestFn(page);
@@ -468,12 +464,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }).done(data => {
       let pages = Object.keys(data.pages);
 
-      if (pages.length > 500) {
+      if (pages.length > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', this.getPileLink(id), this.formatNumber(pages.length), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', this.getPileLink(id), this.formatNumber(pages.length), this.config.apiLimit)
         );
 
-        pages = pages.slice(0, this.config.pageLimit);
+        pages = pages.slice(0, this.config.apiLimit);
       }
 
       return dfd.resolve({
@@ -581,6 +577,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     switch (state) {
     case 'initial':
+      this.updateProgressBar(0);
       this.clearMessages();
       this.assignDefaults();
       this.destroyChart();
@@ -617,13 +614,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           this.writeMessage($.i18n('massviews-empty-set', this.getPileLink(pileId)));
         });
       }
-
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (!this.isRequestCached()) simpleStorage.set('pageviews-throttle', true, {TTL: 90000});
 
       this.sourceProject = siteMap[pileData.wiki];
 
@@ -666,32 +656,17 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   processCategory(project, category, cb) {
-    if (!category) {
-      return this.setState('initial', () => {
-        this.writeMessage($.i18n('invalid-category-url'));
-      });
-    }
-
     let requestData = {
-      action: 'query',
-      format: 'json',
       list: 'categorymembers',
       cmlimit: 500,
-      cmtitle: decodeURIComponent(category),
+      cmtitle: category,
       prop: 'categoryinfo',
-      titles: decodeURIComponent(category)
+      titles: category
     };
 
-    const promise = $.ajax({
-      url: `https://${project}/w/api.php`,
-      jsonp: 'callback',
-      dataType: 'jsonp',
-      data: requestData
-    });
-    const categoryLink = this.getPageLink(decodeURIComponent(category), project);
-    this.sourceProject = project; // for caching purposes
+    const categoryLink = this.getPageLink(category, project);
 
-    promise.done(data => {
+    this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(data => {
       if (data.error) {
         return this.setState('initial', () => {
           this.writeMessage(
@@ -700,19 +675,19 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      const queryKey = Object.keys(data.query.pages)[0];
+      const pageObj = data.pages[0];
 
-      if (queryKey === '-1') {
+      if (pageObj.missing) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('api-error-no-data'));
         });
       }
 
-      const size = data.query.pages[queryKey].categoryinfo.size,
+      const size = pageObj.categoryinfo.size,
         // siteInfo is only populated if they've opted to see subject pages instead of talk pages
         // Otherwise namespaces are not needed by this.mapCategoryPageNames
         namespaces = this.siteInfo ? this.siteInfo.namespaces : undefined;
-      let pages = data.query.categorymembers;
+      let pages = data.categorymembers;
 
       if (!pages.length) {
         return this.setState('initial', () => {
@@ -720,20 +695,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      if (size > this.config.pageLimit) {
+      if (size > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', categoryLink, this.formatNumber(size), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', categoryLink, this.formatNumber(size), this.config.apiLimit)
         );
 
-        pages = pages.slice(0, this.config.pageLimit);
+        pages = pages.slice(0, this.config.apiLimit);
       }
-
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (size > 10) this.setThrottle();
 
       const pageNames = this.mapCategoryPageNames(pages, namespaces);
 
@@ -759,14 +727,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   processSubpages(project, targetPage, cb) {
-    if (!targetPage) {
-      return this.setState('initial', () => {
-        this.writeMessage($.i18n('invalid-page-url'));
-      });
-    }
-
-    this.sourceProject = project; // for caching purposes
-
     // determine what namespace the targetPage is in
     const descoredTargetPage = targetPage.descore();
     let namespace = 0, queryTargetPage;
@@ -786,40 +746,34 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     let promises = [];
 
     [namespace, inverseNamespace].forEach(apnamespace => {
+      const params = {
+        list: 'allpages',
+        aplimit: 500,
+        apnamespace,
+        apprefix: queryTargetPage + '/'
+      };
       promises.push(
-        $.ajax({
-          url: `https://${project}/w/api.php`,
-          jsonp: 'callback',
-          dataType: 'jsonp',
-          data: {
-            action: 'query',
-            format: 'json',
-            list: 'allpages',
-            aplimit: 500,
-            apnamespace,
-            apprefix: decodeURIComponent(queryTargetPage) + '/'
-          }
-        })
+        this.massApi(params, project, 'apcontinue', 'allpages')
       );
     });
 
-    const pageLink = this.getPageLink(decodeURIComponent(targetPage), project);
+    const pageLink = this.getPageLink(targetPage, project);
 
     $.when(...promises).done((data, data2) => {
       // show errors, if any
-      const errors = [data, data2].filter(resp => !!resp[0].error);
+      const errors = [data, data2].filter(resp => !!resp.error);
       if (errors.length) {
         errors.forEach(error => {
           this.setState('initial', () => {
             this.writeMessage(
-              `${$.i18n('api-error', 'Allpages API')}: ${error[0].error.info.escape()}`
+              `${$.i18n('api-error', 'Allpages API')}: ${error.error.info.escape()}`
             );
           });
         });
         return false;
       }
 
-      let pages = data[0].query.allpages.concat(data2[0].query.allpages);
+      let pages = data.allpages.concat(data2.allpages);
       const size = pages.length;
 
       if (size === 0) {
@@ -828,22 +782,15 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      if (size > this.config.pageLimit) {
+      if (size > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', pageLink, this.formatNumber(size), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', pageLink, this.formatNumber(size), this.config.apiLimit)
         );
 
-        pages = pages.slice(0, this.config.pageLimit);
+        pages = pages.slice(0, this.config.apiLimit);
       }
 
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (size > 10) this.setThrottle();
-
-      const pageNames = pages.map(page => page.title).concat([targetPage]);
+      const pageNames = [targetPage].concat(pages.map(page => page.title));
 
       this.getPageViewsData(project, pageNames).done(pageViewsData => {
         $('.output-title').html(pageLink);
@@ -866,32 +813,16 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
-  processTemplate(cb) {
-    const [project, template] = this.getWikiPageFromURL($(this.config.sourceInput).val());
-    if (!this.validateProject(project)) return;
+  processTemplate(project, template, cb) {
+    let requestData = {
+      prop: 'transcludedin',
+      tilimit: 500,
+      titles: template
+    };
 
-    if (!template) {
-      return this.setState('initial', () => {
-        this.writeMessage($.i18n('invalid-template-url'));
-      });
-    }
+    const templateLink = this.getPageLink(template, project);
 
-    const promise = $.ajax({
-      url: `https://${project}/w/api.php`,
-      jsonp: 'callback',
-      dataType: 'jsonp',
-      data: {
-        action: 'query',
-        format: 'json',
-        tilimit: 500,
-        titles: decodeURIComponent(template),
-        prop: 'transcludedin'
-      }
-    });
-    const templateLink = this.getPageLink(decodeURIComponent(template), project);
-    this.sourceProject = project; // for caching purposes
-
-    promise.done(data => {
+    this.massApi(requestData, project, 'ticontinue', data => data.pages[0].transcludedin).done(data => {
       if (data.error) {
         return this.setState('initial', () => {
           this.writeMessage(
@@ -900,35 +831,21 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      const queryKey = Object.keys(data.query.pages)[0];
-
-      if (queryKey === '-1') {
+      // this happens if there are no transclusions or the template could not be found
+      if (!data.pages[0]) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('api-error-no-data'));
         });
       }
 
-      const pages = data.query.pages[queryKey].transcludedin.map(page => page.title);
+      const pages = data.pages.map(page => page.title);
 
-      if (!pages.length) {
-        return this.setState('initial', () => {
-          this.writeMessage($.i18n('massviews-empty-set', templateLink));
-        });
-      }
-
-      // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+      // there were more pages that could not be processed as we hit the limit
       if (data.continue) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set-unknown', templateLink, 500)
+          $.i18n('massviews-oversized-set-unknown', templateLink, this.config.apiLimit, this.config.apiLimit)
         );
       }
-
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (pages.length > 10) this.setThrottle();
 
       this.getPageViewsData(project, pages).done(pageViewsData => {
         $('.output-title').html(templateLink);
@@ -951,32 +868,16 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
-  processWikiPage(cb) {
-    const [project, page] = this.getWikiPageFromURL($(this.config.sourceInput).val());
-    if (!this.validateProject(project)) return;
+  processWikiPage(project, page, cb) {
+    let requestData = {
+      pllimit: 500,
+      prop: 'links',
+      titles: page
+    };
 
-    if (!page) {
-      return this.setState('initial', () => {
-        this.writeMessage($.i18n('invalid-page-url'));
-      });
-    }
+    const pageLink = this.getPageLink(page, project);
 
-    const promise = $.ajax({
-      url: `https://${project}/w/api.php`,
-      jsonp: 'callback',
-      dataType: 'jsonp',
-      data: {
-        action: 'query',
-        format: 'json',
-        pllimit: 500,
-        titles: decodeURIComponent(page),
-        prop: 'links'
-      }
-    });
-    const pageLink = this.getPageLink(decodeURIComponent(page), project);
-    this.sourceProject = project; // for caching purposes
-
-    promise.done(data => {
+    this.massApi(requestData, project, 'plcontinue', data => data.pages[0].links).done(data => {
       if (data.error) {
         return this.setState('initial', () => {
           this.writeMessage(
@@ -985,15 +886,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      const queryKey = Object.keys(data.query.pages)[0];
-
-      if (queryKey === '-1' || !data.query.pages[queryKey].links) {
+      // this happens if there are no transclusions or the template could not be found
+      if (!data.pages[0]) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('api-error-no-data'));
         });
       }
 
-      const pages = data.query.pages[queryKey].links.map(page => page.title);
+      const pages = data.pages.map(page => page.title);
 
       if (!pages.length) {
         return this.setState('initial', () => {
@@ -1001,19 +901,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      // in this case we are limited by the API to 500 pages, not this.config.pageLimit
+      // in this case we know there are more than this.config.apiLimit pages
+      //   because we got back a data.continue value
       if (data.continue) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set-unknown', pageLink, 500)
+          $.i18n('massviews-oversized-set-unknown', pageLink, this.config.apiLimit)
         );
       }
-
-      /**
-       * XXX: throttling
-       * At this point we know we have data to process,
-       *   so set the throttle flag to disallow additional requests for the next 90 seconds
-       */
-      if (pages.length > 10) this.setThrottle();
 
       this.getPageViewsData(project, pages).done(pageViewsData => {
         $('.output-title').html(pageLink);
@@ -1054,15 +948,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       let titles = data.rows.map(row => row[titleIndex]);
 
-      if (titles.length > 500) {
+      if (titles.length > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', quarryLink, this.formatNumber(titles.length), this.config.pageLimit)
+          $.i18n('massviews-oversized-set', quarryLink, this.formatNumber(titles.length), this.config.apiLimit)
         );
 
-        titles = titles.slice(0, this.config.pageLimit);
+        titles = titles.slice(0, this.config.apiLimit);
       }
-
-      if (titles.length > 10) this.setThrottle();
 
       this.getPageViewsData(project, titles).done(pageViewsData => {
         $('.output-title').html(quarryLink);
@@ -1083,7 +975,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {Boolean} true or false
    */
   validateProject(project) {
-    if (!project) return true;
+    if (!project) return false;
 
     /** Remove www hostnames since the pageviews API doesn't expect them. */
     project = project.replace(/^www\./, '');
@@ -1121,42 +1013,40 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {null} nothing
    */
   processInput() {
-    // XXX: throttling
-    /** allow resubmission of queries that are cached */
-    if (!this.isRequestCached()) {
-      /** Check if user has exceeded request limit and throw error */
-      if (simpleStorage.hasKey('pageviews-throttle')) {
-        const timeRemaining = Math.round(simpleStorage.getTTL('pageviews-throttle') / 1000);
-
-        /** > 0 check to combat race conditions */
-        if (timeRemaining > 0) {
-          return this.writeMessage($.i18n(
-            'api-throttle-wait', `<b>${timeRemaining}</b>`,
-            '<a href="https://phabricator.wikimedia.org/T124314" target="_blank">phab:T124314</a>'
-          ), true);
-        }
-      }
-    }
-
     this.setState('processing');
 
     const cb = () => {
-      this.updateProgressBar(100);
       this.setInitialChartType();
       this.renderData();
     };
+    const source = $('#source_button').data('value');
 
-    let project, target;
+    // special sources that don't use a wiki URL
+    if (source === 'pagepile') {
+      return this.processPagePile(cb);
+    } else if (source === 'quarry') {
+      return this.processQuarry(cb);
+    }
 
-    switch ($('#source_button').data('value')) {
-    case 'pagepile':
-      this.processPagePile(cb);
-      break;
+    // validate wiki URL
+    let [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+
+    if (!project || !target) {
+      return this.setState('initial', () => {
+        this.writeMessage($.i18n(`invalid-${source === 'category' ? 'category' : 'page'}-url`));
+      });
+    } else if (!this.validateProject(project)) {
+      return;
+    }
+
+    // for caching purposes
+    this.sourceProject = project;
+
+    // decode and remove trailing slash
+    target = decodeURIComponent(target).replace(/\/$/, '');
+
+    switch (source) {
     case 'category':
-      // parse input before calling processCategory, so we can query for siteinfo if needed
-      [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
-      if (!this.validateProject(project)) return;
-
       // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
       if ($('.category-subject-toggle--input').is(':checked')) {
         this.getSiteInfo(project).then(() => {
@@ -1167,21 +1057,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       }
       break;
     case 'subpages':
-      // parse input before calling processSubpages so we can query for siteinfo
-      [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
-      if (!this.validateProject(project)) return;
-
       // fetch namespaces first
       this.getSiteInfo(project).then(() => this.processSubpages(project, target, cb));
       break;
     case 'wikilinks':
-      this.processWikiPage(cb);
+      this.processWikiPage(project, target, cb);
       break;
     case 'transclusions':
-      this.processTemplate(cb);
-      break;
-    case 'quarry':
-      this.processQuarry(cb);
+      this.processTemplate(project, target, cb);
       break;
     }
   }

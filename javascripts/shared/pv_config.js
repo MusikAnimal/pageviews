@@ -17,6 +17,8 @@ class PvConfig {
     let self = this;
 
     this.config = {
+      apiLimit: 5000,
+      apiThrottle: 20,
       apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {

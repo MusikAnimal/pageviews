@@ -20,7 +20,6 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
-          <?php include "../../faq_parts/throttle.php"; ?>
           <li class="list-group-item" id="sources">
             <p>
               <strong><?php echo $I18N->msg( 'faq-massviews-sources-title' ); ?></strong>

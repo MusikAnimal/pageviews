@@ -348,7 +348,7 @@ const ChartHelpers = superclass => class extends superclass {
           /** maximum of 3 retries */
           if (failureRetries[this.project] < 3) {
             totalRequestCount++;
-            return this.rateLimit(makeRequest, 100, this)(entity, index);
+            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(entity, index);
           }
         }
 

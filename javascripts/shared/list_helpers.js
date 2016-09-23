@@ -78,8 +78,8 @@ const ListHelpers = superclass => class extends superclass {
    * @return {String} key
    */
   getCacheKey() {
-    return `lv-cache-${this.hashCode(
-      JSON.stringify(this.getParams(true))
+    return `pv-cache-${this.hashCode(
+      this.app + JSON.stringify(this.getParams(true))
     )}`;
   }
 
@@ -252,11 +252,21 @@ const ListHelpers = superclass => class extends superclass {
 
   /**
    * Set value of progress bar
-   * @param  {Number} value - percentage as float
+   * @param  {Number} value - current iteration
+   * @param  {Number} total - total number of iterations
    * @return {null} nothing
    */
-  updateProgressBar(value) {
-    $('.progress-bar').css('width', `${value.toFixed(2)}%`);
+  updateProgressBar(value, total) {
+    if (total) {
+      const percentage = (value / total) * 100;
+      $('.progress-bar').css('width', `${percentage.toFixed(2)}%`);
+      $('.progress-counter').text(
+        $.i18n('processing-page', value, total)
+      );
+    } else {
+      $('.progress-bar').css('width', '0%');
+      $('.progress-counter').text('');
+    }
   }
 };
 

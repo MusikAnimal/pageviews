@@ -2,6 +2,7 @@
   <div class="progress">
     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
   </div>
+  <div class="progress-counter"></div>
 </div>
 <output class="clearfix" form="langviews_form">
   <header class="output-header clearfix">
