@@ -36,27 +36,52 @@ var config = {
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+      descriptionParams: function descriptionParams() {
+        return ['<a target=\'_blank\' href=\'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories\'>' + $.i18n('category').toLowerCase() + '</a>'];
+      },
       type: 'text'
     },
     wikilinks: {
       placeholder: 'https://en.wikipedia.org/wiki/Book:New_York_City',
+      descriptionParams: function descriptionParams() {
+        return ['https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Wikilinks'];
+      },
       type: 'text'
     },
     pagepile: {
       placeholder: '12345',
+      descriptionParams: function descriptionParams() {
+        return ["<a target='_blank' href='//tools.wmflabs.org/pagepile'>PagePile</a>"];
+      },
       type: 'number'
     },
     subpages: {
       placeholder: 'https://en.wikipedia.org/wiki/User:Example',
+      descriptionParams: function descriptionParams() {
+        return ['<a target=\'_blank\' href=\'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages\'>' + $.i18n('subpages').toLowerCase() + '</a>'];
+      },
       type: 'text'
     },
     transclusions: {
       placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+      descriptionParams: function descriptionParams() {
+        return ['https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Transclusion'];
+      },
       type: 'text'
     },
     quarry: {
       placeholder: '12345',
+      descriptionParams: function descriptionParams() {
+        return ["<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>"];
+      },
       type: 'number'
+    },
+    hashtag: {
+      placeholder: '#editathon',
+      descriptionParams: function descriptionParams() {
+        return ['<span class=\'glyphicon glyphicon-flash\'></span>' + $.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>"), '<a target=\'_blank\' href=\'//tools.wmflabs.org/hashtags/docs\'>' + $.i18n('hashtags').toLowerCase() + '</a>'];
+      },
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -68,7 +93,7 @@ var config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
@@ -84,6 +109,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -196,7 +223,7 @@ var MassViews = function (_mix$with) {
     value: function assignDefaults() {
       var _this3 = this;
 
-      ['sort', 'source', 'sourceProject', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(function (defaultKey) {
+      ['sort', 'source', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(function (defaultKey) {
         _this3[defaultKey] = _this3.config.defaults[defaultKey];
       });
     }
@@ -210,11 +237,15 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'updateSourceInput',
     value: function updateSourceInput(node) {
+      var _$;
+
       var source = node.dataset.value;
 
       $('#source_button').data('value', source).html(node.textContent + ' <span class=\'caret\'></span>');
 
       $(this.config.sourceInput).prop('type', this.config.sources[source].type).prop('placeholder', this.config.sources[source].placeholder).val('');
+
+      $('.source-description').html((_$ = $).i18n.apply(_$, ['massviews-' + source + '-description'].concat(_toConsumableArray(this.config.sources[source].descriptionParams()))));
 
       if (source === 'category') {
         $('.category-subject-toggle').show();
@@ -337,7 +368,7 @@ var MassViews = function (_mix$with) {
         $('#output_list').html('');
 
         sortedDatasets.forEach(function (item, index) {
-          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="https://' + _this4.sourceProject.escape() + '/wiki/' + item.label.score() + '" target="_blank">' + item.label.descore() + '</a></td>\n           <td><a target="_blank" href=\'' + _this4.getPageviewsURL(_this4.sourceProject, item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
+          $('#output_list').append('<tr>\n           <th scope=\'row\'>' + (index + 1) + '</th>\n           <td><a href="https://' + item.project.escape() + '/wiki/' + item.label.score() + '" target="_blank">' + item.label.descore() + '</a></td>\n           <td><a target="_blank" href=\'' + _this4.getPageviewsURL(item.project, item.label) + '\'>' + _this4.formatNumber(item.sum) + '</a></td>\n           <td>' + _this4.formatNumber(Math.round(item.average)) + ' / ' + $.i18n('day') + '</td>\n           </tr>');
         });
       });
     }
@@ -365,21 +396,21 @@ var MassViews = function (_mix$with) {
     /**
      * Loop through given pages and query the pageviews API for each
      *   Also updates this.outputData with result
-     * @param  {string} project - project such as en.wikipedia.org
-     * @param  {Object} pages - as given by the getPagePile promise
+     * @param  {Array} pages - list of page names or full URLs to pages
+     * @param  {String} [project] - project such as en.wikipedia.org
+     *   If null pages is assumed to be an array of page URLs
      * @return {Deferred} - Promise resolving with data ready to be rendered to view
      */
 
   }, {
     key: 'getPageViewsData',
-    value: function getPageViewsData(project, pages) {
+    value: function getPageViewsData(pages, project) {
       var _this5 = this;
 
       var startDate = this.daterangepicker.startDate.startOf('day'),
           endDate = this.daterangepicker.endDate.startOf('day');
 
       var dfd = $.Deferred(),
-          promises = [],
           count = 0,
           hadFailure = void 0,
           failureRetries = {},
@@ -388,14 +419,28 @@ var MassViews = function (_mix$with) {
           pageViewsData = [];
 
       var makeRequest = function makeRequest(page) {
+        var queryProject = void 0;
+
+        // if there's no project that means page is a URL to the page
+        if (!project) {
+          var _getWikiPageFromURL = _this5.getWikiPageFromURL(page);
+
+          var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
+
+          queryProject = _getWikiPageFromURL2[0];
+          page = _getWikiPageFromURL2[1];
+        } else {
+          queryProject = project;
+        }
+
         var uriEncodedPageName = encodeURIComponent(page);
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + project + ('/' + $(_this5.config.platformSelector).val() + '/' + $(_this5.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this5.config.timestampFormat) + '/' + endDate.format(_this5.config.timestampFormat));
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/' + queryProject + ('/' + $(_this5.config.platformSelector).val() + '/' + $(_this5.config.agentSelector).val() + '/' + uriEncodedPageName + '/daily') + ('/' + startDate.format(_this5.config.timestampFormat) + '/' + endDate.format(_this5.config.timestampFormat));
         var promise = $.ajax({ url: url, dataType: 'json' });
-        promises.push(promise);
 
         promise.done(function (pvData) {
           pageViewsData.push({
             title: page,
+            project: queryProject,
             items: pvData.items
           });
         }).fail(function (errorData) {
@@ -403,14 +448,14 @@ var MassViews = function (_mix$with) {
           var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
           if (cassandraError) {
-            if (failureRetries[project]) {
-              failureRetries[project]++;
+            if (failureRetries[page]) {
+              failureRetries[page]++;
             } else {
-              failureRetries[project] = 1;
+              failureRetries[page] = 1;
             }
 
             /** maximum of 3 retries */
-            if (failureRetries[project] < 3) {
+            if (failureRetries[page] < 3) {
               totalRequestCount++;
               return _this5.rateLimit(makeRequest, 100, _this5)(page);
             }
@@ -419,7 +464,7 @@ var MassViews = function (_mix$with) {
           if (cassandraError) {
             failedPages.push(page);
           } else {
-            _this5.writeMessage(_this5.getPageLink(page, project) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+            _this5.writeMessage(_this5.getPageLink(page, queryProject) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
           // unless it was a 404, don't treat this series of requests as being cached by server
@@ -432,7 +477,7 @@ var MassViews = function (_mix$with) {
 
             if (failedPages.length) {
               _this5.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
-                return '<li>' + _this5.getPageLink(failedPage, project) + '</li>';
+                return '<li>' + _this5.getPageLink(failedPage, queryProject) + '</li>';
               }).join('') + '</ul>'));
             }
 
@@ -455,7 +500,7 @@ var MassViews = function (_mix$with) {
       var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
       pages.forEach(function (page, index) {
-        requestFn(page);
+        requestFn(page, index);
       });
 
       return dfd;
@@ -480,6 +525,7 @@ var MassViews = function (_mix$with) {
        *
        * [{
        *   title: page,
+       *   project: 'en.wikipedia.org',
        *   items: [
        *     {
        *       access: '',
@@ -500,6 +546,7 @@ var MassViews = function (_mix$with) {
        *   listData: [
        *     {
        *       label: '',
+       *       project: '',
        *       data: [1,2,3,4],
        *       sum: 10,
        *       average: 2,
@@ -538,6 +585,7 @@ var MassViews = function (_mix$with) {
         _this6.outputData.listData.push({
           data: data,
           label: dataset.title,
+          project: dataset.project,
           sum: sum,
           average: sum / length,
           index: index
@@ -760,57 +808,81 @@ var MassViews = function (_mix$with) {
           break;
       }
     }
+
+    /**
+     * Helper to reset the state of the app and indicate that than API error occurred
+     * @param {String} apiName - name of the API where the error occurred
+     * @param {String} [errorMessage] - optional error message to show retrieved from API
+     * @return {null} nothing
+     */
+
+  }, {
+    key: 'apiErrorReset',
+    value: function apiErrorReset(apiName, errorMessage) {
+      var _this9 = this;
+
+      return this.setState('initial', function () {
+        var message = void 0;
+        if (errorMessage) {
+          message = $.i18n('api-error', apiName) + ': ' + errorMessage;
+        } else {
+          message = '' + $.i18n('api-error-unknown', apiName);
+        }
+        _this9.writeMessage(message);
+      });
+    }
   }, {
     key: 'processPagePile',
     value: function processPagePile(cb) {
-      var _this9 = this;
+      var _this10 = this;
 
       var pileId = $(this.config.sourceInput).val();
 
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
-          return _this9.setState('initial', function () {
-            _this9.writeMessage($.i18n('massviews-empty-set', _this9.getPileLink(pileId)));
+          return _this10.setState('initial', function () {
+            _this10.writeMessage($.i18n('massviews-empty-set', _this10.getPileLink(pileId)));
           });
         }
 
-        _this9.sourceProject = siteMap[pileData.wiki];
+        // reference siteMap hash to get project domain from database name (giant file in /shared/site_map.js)
+        var project = siteMap[pileData.wiki];
 
         /**
          * remove Project: prefix if present, only for enwiki, for now,
          * see https://phabricator.wikimedia.org/T135437
          */
-        if (_this9.sourceProject === 'en.wikipedia.org') {
+        if (project === 'en.wikipedia.org') {
           pileData.pages = pileData.pages.map(function (page) {
             return page.replace(/^Project:Wikipedia:/, 'Wikipedia:');
           });
         }
 
-        _this9.getPageViewsData(_this9.sourceProject, pileData.pages).done(function (pageViewsData) {
+        _this10.getPageViewsData(pileData.pages, project).done(function (pageViewsData) {
           var label = 'Page Pile #' + pileData.id;
 
-          $('.output-title').text(label).prop('href', _this9.getPileURL(pileData.id));
-          $('.output-params').html('\n          ' + $(_this9.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + _this9.sourceProject.escape() + '" target="_blank">' + _this9.sourceProject.replace(/.org$/, '').escape() + '</a>\n          ');
+          $('.output-title').text(label).prop('href', _this10.getPileURL(pileData.id));
+          $('.output-params').html('\n          ' + $(_this10.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + project.escape() + '" target="_blank">\n            ' + project.replace(/.org$/, '').escape() + '\n          </a>\n          ');
 
-          _this9.buildMotherDataset(label, _this9.getPileLink(pileData.id), pageViewsData);
+          _this10.buildMotherDataset(label, _this10.getPileLink(pileData.id), pageViewsData);
 
           cb();
         });
       }).fail(function (error) {
-        _this9.setState('initial');
+        _this10.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (typeof error === 'string') {
-          _this9.writeMessage(error);
+          _this10.writeMessage(error);
         } else {
-          _this9.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
+          _this10.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
         }
       });
     }
   }, {
     key: 'processCategory',
     value: function processCategory(project, category, cb) {
-      var _this10 = this;
+      var _this11 = this;
 
       var requestData = {
         list: 'categorymembers',
@@ -824,16 +896,14 @@ var MassViews = function (_mix$with) {
 
       this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(function (data) {
         if (data.error) {
-          return _this10.setState('initial', function () {
-            _this10.writeMessage($.i18n('api-error', 'Category API') + ': ' + data.error.info.escape());
-          });
+          return _this11.apiErrorReset('Category API', data.error.info);
         }
 
         var pageObj = data.pages[0];
 
         if (pageObj.missing) {
-          return _this10.setState('initial', function () {
-            _this10.writeMessage($.i18n('api-error-no-data'));
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -841,57 +911,196 @@ var MassViews = function (_mix$with) {
 
         // siteInfo is only populated if they've opted to see subject pages instead of talk pages
         // Otherwise namespaces are not needed by this.mapCategoryPageNames
-        namespaces = _this10.siteInfo ? _this10.siteInfo.namespaces : undefined;
+        namespaces = _this11.getSiteInfo(project) ? _this11.getSiteInfo(project).namespaces : undefined;
         var pages = data.categorymembers;
 
         if (!pages.length) {
-          return _this10.setState('initial', function () {
-            _this10.writeMessage($.i18n('massviews-empty-set', categoryLink));
+          return _this11.setState('initial', function () {
+            _this11.writeMessage($.i18n('massviews-empty-set', categoryLink));
           });
         }
 
-        if (size > _this10.config.apiLimit) {
-          _this10.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this10.formatNumber(size), _this10.config.apiLimit));
+        if (size > _this11.config.apiLimit) {
+          _this11.writeMessage($.i18n('massviews-oversized-set', categoryLink, _this11.formatNumber(size), _this11.config.apiLimit));
 
-          pages = pages.slice(0, _this10.config.apiLimit);
+          pages = pages.slice(0, _this11.config.apiLimit);
         }
 
-        var pageNames = _this10.mapCategoryPageNames(pages, namespaces);
+        var pageNames = _this11.mapCategoryPageNames(pages, namespaces);
 
-        _this10.getPageViewsData(project, pageNames).done(function (pageViewsData) {
+        _this11.getPageViewsData(pageNames, project).done(function (pageViewsData) {
           $('.output-title').html(categoryLink);
-          $('.output-params').html($(_this10.config.dateRangeSelector).val());
-          _this10.buildMotherDataset(category, categoryLink, pageViewsData);
+          $('.output-params').html($(_this11.config.dateRangeSelector).val());
+          _this11.buildMotherDataset(category, categoryLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this10.setState('initial');
+        _this11.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && typeof data.error === 'string') {
-          _this10.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
+          _this11.writeMessage($.i18n('api-error', categoryLink + ': ' + data.error));
         } else {
-          _this10.writeMessage($.i18n('api-error-unknown', categoryLink));
+          _this11.writeMessage($.i18n('api-error-unknown', categoryLink));
         }
       });
     }
   }, {
+    key: 'processHashtag',
+    value: function processHashtag(cb) {
+      var _this12 = this;
+
+      var hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
+          hashTagLink = '<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/' + hashtag + '">#' + hashtag.escape() + '</a>';
+
+      $.get('http://tools.wmflabs.org/hashtags/csv/' + hashtag + '?limit=5000').done(function (data) {
+        /**
+         * CSVToArray code courtesy of Ben Nadel
+         * http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm
+         */
+        var strDelimiter = ',';
+
+        // Create a regular expression to parse the CSV values.
+        var objPattern = new RegExp(
+        // Delimiters.
+        '(\\' + strDelimiter + '|\\r?\\n|\\r|^)' +
+        // Quoted fields.
+        '(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|' + (
+        // Standard fields.
+        '([^"\\' + strDelimiter + '\\r\\n]*))'), 'gi');
+
+        // Create an array to hold our data. Give the array a default empty first row.
+        var csvData = [[]];
+
+        // Create an array to hold our individual pattern
+        // matching groups.
+        var arrMatches = void 0;
+
+        // Keep looping over the regular expression matches until we can no longer find a match.
+        while (arrMatches = objPattern.exec(data)) {
+          // Get the delimiter that was found.
+          var strMatchedDelimiter = arrMatches[1];
+
+          // Check to see if the given delimiter has a length
+          // (is not the start of string) and if it matches
+          // field delimiter. If id does not, then we know
+          // that this delimiter is a row delimiter.
+          if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+            // Since we have reached a new row of data, add an empty row to our data array.
+            csvData.push([]);
+          }
+
+          var strMatchedValue = void 0;
+
+          // Now that we have our delimiter out of the way,
+          // let's check to see which kind of value we
+          // captured (quoted or unquoted).
+          if (arrMatches[2]) {
+            // We found a quoted value. When we capture
+            // this value, unescape any double quotes.
+            strMatchedValue = arrMatches[2].replace(new RegExp('\"\"', 'g'), '\"');
+          } else {
+            // We found a non-quoted value.
+            strMatchedValue = arrMatches[3];
+          }
+
+          // Now that we have our value string, let's add it to the data array.
+          csvData[csvData.length - 1].push(strMatchedValue);
+        }
+
+        // remove extraneous empty entry, if present
+        if (csvData[csvData.length - 1].length === 1 && !csvData[csvData.length - 1][0]) {
+          csvData = csvData.slice(0, -1);
+        }
+
+        // collect necessary data from the other rows
+        _this12.getPageURLsFromHashtagCSV(csvData).done(function (pageURLs) {
+          var size = pageURLs.length;
+
+          if (!size) {
+            return _this12.setState('initial', function () {
+              _this12.writeMessage($.i18n('massviews-empty-set', hashTagLink));
+            });
+          }
+
+          if (size > _this12.config.apiLimit) {
+            _this12.writeMessage($.i18n('massviews-oversized-set', hashTagLink, _this12.formatNumber(size), _this12.config.apiLimit));
+
+            pageURLs = pageURLs.slice(0, _this12.config.apiLimit);
+          }
+
+          _this12.getPageViewsData(pageURLs).done(function (pageViewsData) {
+            $('.output-title').html(hashTagLink);
+            $('.output-params').html($(_this12.config.dateRangeSelector).val());
+            _this12.buildMotherDataset(hashtag, hashTagLink, pageViewsData);
+
+            cb();
+          });
+        }).fail(function () {
+          return apiErrorReset('Siteinfo API');
+        });
+      }).fail(function () {
+        return apiErrorReset('Hashtag API');
+      });
+    }
+
+    /**
+     * Helper for processHashtag that parses the CSV data to get the page URLs
+     * @param  {Array} csvData - as built by processHashtag
+     * @return {Array} full page URLs
+     */
+
+  }, {
+    key: 'getPageURLsFromHashtagCSV',
+    value: function getPageURLsFromHashtagCSV(csvData) {
+      var _this13 = this;
+
+      var dfd = $.Deferred();
+
+      // find the index of the page title, language and diff URL
+      var pageTitleIndex = csvData[0].indexOf('spaced_title'),
+          namespaceIndex = csvData[0].indexOf('rc_namespace'),
+          diffIndex = csvData[0].indexOf('diff_url');
+
+      var pageURLs = [];
+
+      // collect necessary data from the other rows
+      csvData.slice(1).forEach(function (entry) {
+        var project = entry[diffIndex].match(/https:\/\/(.*?\.org)\//)[1];
+
+        // get siteinfo so we can get the namespace names (either from cache or from API)
+        _this13.fetchSiteInfo(project).done(function () {
+          var nsName = _this13.getSiteInfo(project).namespaces[entry[namespaceIndex]]['*'];
+          pageURLs.push('https://' + project + '/wiki/' + (!!nsName ? nsName + ':' : '') + entry[pageTitleIndex]);
+
+          // if we're on the last iteration resolve the outer promise with the unique page names
+          if (pageURLs.length === csvData.length - 1) {
+            dfd.resolve(pageURLs.unique());
+          }
+        }).fail(function () {
+          dfd.reject();
+        });
+      });
+
+      return dfd;
+    }
+  }, {
     key: 'processSubpages',
     value: function processSubpages(project, targetPage, cb) {
-      var _this11 = this,
-          _$;
+      var _this14 = this,
+          _$2;
 
       // determine what namespace the targetPage is in
       var descoredTargetPage = targetPage.descore();
       var namespace = 0,
           queryTargetPage = void 0;
-      for (var ns in this.siteInfo.namespaces) {
+      for (var ns in this.getSiteInfo(project).namespaces) {
         if (ns === '0') continue; // skip mainspace
 
-        var nsName = this.siteInfo.namespaces[ns]['*'] + ':';
+        var nsName = this.getSiteInfo(project).namespaces[ns]['*'] + ':';
         if (descoredTargetPage.startsWith(nsName)) {
-          namespace = this.siteInfo.namespaces[ns].id;
+          namespace = this.getSiteInfo(project).namespaces[ns].id;
           queryTargetPage = targetPage.substring(nsName.length);
         }
       }
@@ -908,20 +1117,20 @@ var MassViews = function (_mix$with) {
           apnamespace: apnamespace,
           apprefix: queryTargetPage + '/'
         };
-        promises.push(_this11.massApi(params, project, 'apcontinue', 'allpages'));
+        promises.push(_this14.massApi(params, project, 'apcontinue', 'allpages'));
       });
 
       var pageLink = this.getPageLink(targetPage, project);
 
-      (_$ = $).when.apply(_$, promises).done(function (data, data2) {
+      (_$2 = $).when.apply(_$2, promises).done(function (data, data2) {
         // show errors, if any
         var errors = [data, data2].filter(function (resp) {
           return !!resp.error;
         });
         if (errors.length) {
-          errors.forEach(function (error) {
-            _this11.setState('initial', function () {
-              _this11.writeMessage($.i18n('api-error', 'Allpages API') + ': ' + error.error.info.escape());
+          _this14.setState('initial', function () {
+            errors.forEach(function (error) {
+              _this14.writeMessage($.i18n('api-error', 'Allpages API') + ': ' + error.error.info.escape());
             });
           });
           return false;
@@ -931,43 +1140,43 @@ var MassViews = function (_mix$with) {
         var size = pages.length;
 
         if (size === 0) {
-          return _this11.setState('initial', function () {
-            _this11.writeMessage($.i18n('api-error-no-data'));
+          return _this14.setState('initial', function () {
+            _this14.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
-        if (size > _this11.config.apiLimit) {
-          _this11.writeMessage($.i18n('massviews-oversized-set', pageLink, _this11.formatNumber(size), _this11.config.apiLimit));
+        if (size > _this14.config.apiLimit) {
+          _this14.writeMessage($.i18n('massviews-oversized-set', pageLink, _this14.formatNumber(size), _this14.config.apiLimit));
 
-          pages = pages.slice(0, _this11.config.apiLimit);
+          pages = pages.slice(0, _this14.config.apiLimit);
         }
 
         var pageNames = [targetPage].concat(pages.map(function (page) {
           return page.title;
         }));
 
-        _this11.getPageViewsData(project, pageNames).done(function (pageViewsData) {
+        _this14.getPageViewsData(pageNames, project).done(function (pageViewsData) {
           $('.output-title').html(pageLink);
-          $('.output-params').html($(_this11.config.dateRangeSelector).val());
-          _this11.buildMotherDataset(targetPage, pageLink, pageViewsData);
+          $('.output-params').html($(_this14.config.dateRangeSelector).val());
+          _this14.buildMotherDataset(targetPage, pageLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this11.setState('initial');
+        _this14.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && typeof data.error === 'string') {
-          _this11.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
+          _this14.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
         } else {
-          _this11.writeMessage($.i18n('api-error-unknown', pageLink));
+          _this14.writeMessage($.i18n('api-error-unknown', pageLink));
         }
       });
     }
   }, {
     key: 'processTemplate',
     value: function processTemplate(project, template, cb) {
-      var _this12 = this;
+      var _this15 = this;
 
       var requestData = {
         prop: 'transcludedin',
@@ -981,15 +1190,13 @@ var MassViews = function (_mix$with) {
         return data.pages[0].transcludedin;
       }).done(function (data) {
         if (data.error) {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('api-error', 'Transclusion API') + ': ' + data.error.info.escape());
-          });
+          return _this15.apiErrorReset('Transclusion API', data.error.info);
         }
 
         // this happens if there are no transclusions or the template could not be found
         if (!data.pages[0]) {
-          return _this12.setState('initial', function () {
-            _this12.writeMessage($.i18n('api-error-no-data'));
+          return _this15.setState('initial', function () {
+            _this15.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -999,31 +1206,31 @@ var MassViews = function (_mix$with) {
 
         // there were more pages that could not be processed as we hit the limit
         if (data.continue) {
-          _this12.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, _this12.config.apiLimit, _this12.config.apiLimit));
+          _this15.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, _this15.config.apiLimit, _this15.config.apiLimit));
         }
 
-        _this12.getPageViewsData(project, pages).done(function (pageViewsData) {
+        _this15.getPageViewsData(pages, project).done(function (pageViewsData) {
           $('.output-title').html(templateLink);
-          $('.output-params').html($(_this12.config.dateRangeSelector).val());
-          _this12.buildMotherDataset(template, templateLink, pageViewsData);
+          $('.output-params').html($(_this15.config.dateRangeSelector).val());
+          _this15.buildMotherDataset(template, templateLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this12.setState('initial');
+        _this15.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && typeof data.error === 'string') {
-          _this12.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
+          _this15.writeMessage($.i18n('api-error', templateLink + ': ' + data.error));
         } else {
-          _this12.writeMessage($.i18n('api-error-unknown', templateLink));
+          _this15.writeMessage($.i18n('api-error-unknown', templateLink));
         }
       });
     }
   }, {
     key: 'processWikiPage',
     value: function processWikiPage(project, page, cb) {
-      var _this13 = this;
+      var _this16 = this;
 
       var requestData = {
         pllimit: 500,
@@ -1037,15 +1244,13 @@ var MassViews = function (_mix$with) {
         return data.pages[0].links;
       }).done(function (data) {
         if (data.error) {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('api-error', 'Links API') + ': ' + data.error.info.escape());
-          });
+          return _this16.apiErrorReset('Links API', data.error.info);
         }
 
         // this happens if there are no transclusions or the template could not be found
         if (!data.pages[0]) {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('api-error-no-data'));
+          return _this16.setState('initial', function () {
+            _this16.writeMessage($.i18n('api-error-no-data'));
           });
         }
 
@@ -1054,39 +1259,39 @@ var MassViews = function (_mix$with) {
         });
 
         if (!pages.length) {
-          return _this13.setState('initial', function () {
-            _this13.writeMessage($.i18n('massviews-empty-set', pageLink));
+          return _this16.setState('initial', function () {
+            _this16.writeMessage($.i18n('massviews-empty-set', pageLink));
           });
         }
 
         // in this case we know there are more than this.config.apiLimit pages
         //   because we got back a data.continue value
         if (data.continue) {
-          _this13.writeMessage($.i18n('massviews-oversized-set-unknown', pageLink, _this13.config.apiLimit));
+          _this16.writeMessage($.i18n('massviews-oversized-set-unknown', pageLink, _this16.config.apiLimit));
         }
 
-        _this13.getPageViewsData(project, pages).done(function (pageViewsData) {
+        _this16.getPageViewsData(pages, project).done(function (pageViewsData) {
           $('.output-title').html(pageLink);
-          $('.output-params').html($(_this13.config.dateRangeSelector).val());
-          _this13.buildMotherDataset(page, pageLink, pageViewsData);
+          $('.output-params').html($(_this16.config.dateRangeSelector).val());
+          _this16.buildMotherDataset(page, pageLink, pageViewsData);
 
           cb();
         });
       }).fail(function (data) {
-        _this13.setState('initial');
+        _this16.setState('initial');
 
         /** structured error comes back as a string, otherwise we don't know what happened */
         if (data && typeof data.error === 'string') {
-          _this13.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
+          _this16.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
         } else {
-          _this13.writeMessage($.i18n('api-error-unknown', pageLink));
+          _this16.writeMessage($.i18n('api-error-unknown', pageLink));
         }
       });
     }
   }, {
     key: 'processQuarry',
     value: function processQuarry(cb) {
-      var _this14 = this;
+      var _this17 = this;
 
       var project = $('.quarry-project').val(),
           id = $(this.config.sourceInput).val();
@@ -1099,30 +1304,30 @@ var MassViews = function (_mix$with) {
         var titleIndex = data.headers.indexOf('page_title');
 
         if (titleIndex === -1) {
-          _this14.setState('initial');
-          return _this14.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
+          _this17.setState('initial');
+          return _this17.writeMessage($.i18n('invalid-quarry-dataset', 'page_title'));
         }
 
         var titles = data.rows.map(function (row) {
           return row[titleIndex];
         });
 
-        if (titles.length > _this14.config.apiLimit) {
-          _this14.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this14.formatNumber(titles.length), _this14.config.apiLimit));
+        if (titles.length > _this17.config.apiLimit) {
+          _this17.writeMessage($.i18n('massviews-oversized-set', quarryLink, _this17.formatNumber(titles.length), _this17.config.apiLimit));
 
-          titles = titles.slice(0, _this14.config.apiLimit);
+          titles = titles.slice(0, _this17.config.apiLimit);
         }
 
-        _this14.getPageViewsData(project, titles).done(function (pageViewsData) {
+        _this17.getPageViewsData(titles, project).done(function (pageViewsData) {
           $('.output-title').html(quarryLink);
-          $('.output-params').html($(_this14.config.dateRangeSelector).val());
-          _this14.buildMotherDataset(id, quarryLink, pageViewsData);
+          $('.output-params').html($(_this17.config.dateRangeSelector).val());
+          _this17.buildMotherDataset(id, quarryLink, pageViewsData);
 
           cb();
         });
-      }).error(function (data) {
-        _this14.setState('initial');
-        return _this14.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+      }).fail(function (data) {
+        _this17.setState('initial');
+        return _this17.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
       });
     }
 
@@ -1174,13 +1379,13 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this15 = this;
+      var _this18 = this;
 
       this.setState('processing');
 
       var cb = function cb() {
-        _this15.setInitialChartType();
-        _this15.renderData();
+        _this18.setInitialChartType();
+        _this18.renderData();
       };
       var source = $('#source_button').data('value');
 
@@ -1189,28 +1394,27 @@ var MassViews = function (_mix$with) {
         return this.processPagePile(cb);
       } else if (source === 'quarry') {
         return this.processQuarry(cb);
+      } else if (source === 'hashtag') {
+        return this.processHashtag(cb);
       }
 
       // validate wiki URL
 
-      var _getWikiPageFromURL = this.getWikiPageFromURL($(this.config.sourceInput).val());
+      var _getWikiPageFromURL3 = this.getWikiPageFromURL($(this.config.sourceInput).val());
 
-      var _getWikiPageFromURL2 = _slicedToArray(_getWikiPageFromURL, 2);
+      var _getWikiPageFromURL4 = _slicedToArray(_getWikiPageFromURL3, 2);
 
-      var project = _getWikiPageFromURL2[0];
-      var target = _getWikiPageFromURL2[1];
+      var project = _getWikiPageFromURL4[0];
+      var target = _getWikiPageFromURL4[1];
 
 
       if (!project || !target) {
         return this.setState('initial', function () {
-          _this15.writeMessage($.i18n('invalid-' + (source === 'category' ? 'category' : 'page') + '-url'));
+          _this18.writeMessage($.i18n('invalid-' + (source === 'category' ? 'category' : 'page') + '-url'));
         });
       } else if (!this.validateProject(project)) {
         return;
       }
-
-      // for caching purposes
-      this.sourceProject = project;
 
       // decode and remove trailing slash
       target = decodeURIComponent(target).replace(/\/$/, '');
@@ -1219,8 +1423,8 @@ var MassViews = function (_mix$with) {
         case 'category':
           // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
           if ($('.category-subject-toggle--input').is(':checked')) {
-            this.getSiteInfo(project).then(function () {
-              _this15.processCategory(project, target, cb);
+            this.fetchSiteInfo(project).then(function () {
+              _this18.processCategory(project, target, cb);
             });
           } else {
             this.processCategory(project, target, cb);
@@ -1228,8 +1432,8 @@ var MassViews = function (_mix$with) {
           break;
         case 'subpages':
           // fetch namespaces first
-          this.getSiteInfo(project).then(function () {
-            return _this15.processSubpages(project, target, cb);
+          this.fetchSiteInfo(project).then(function () {
+            return _this18.processSubpages(project, target, cb);
           });
           break;
         case 'wikilinks':
@@ -1689,14 +1893,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
             var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
             if (cassandraError) {
-              if (failureRetries[_this6.project]) {
-                failureRetries[_this6.project]++;
+              if (failureRetries[entity]) {
+                failureRetries[entity]++;
               } else {
-                failureRetries[_this6.project] = 1;
+                failureRetries[entity] = 1;
               }
 
               /** maximum of 3 retries */
-              if (failureRetries[_this6.project] < 3) {
+              if (failureRetries[entity] < 3) {
                 totalRequestCount++;
                 return _this6.rateLimit(makeRequest, _this6.config.apiThrottle, _this6)(entity, index);
               }
@@ -2749,6 +2953,7 @@ var Pv = function (_PvConfig) {
     _this.setupSettingsModal();
 
     _this.params = null;
+    _this.siteInfo = {};
 
     /** @type {null|Date} tracking of elapsed time */
     _this.processStart = null;
@@ -2821,7 +3026,8 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'addInvalidParamNotice',
     value: function addInvalidParamNotice(param) {
-      this.addSiteNotice('danger', $.i18n('param-error-3', param, '/' + this.app + '/url_structure'), $.i18n('invalid-params'), true);
+      var docLink = '<a href=\'/' + this.app + '/url_structure\'>' + $.i18n('documentation') + '</a>';
+      this.addSiteNotice('danger', $.i18n('param-error-3', param, docLink), $.i18n('invalid-params'), true);
     }
 
     /**
@@ -3054,7 +3260,7 @@ var Pv = function (_PvConfig) {
     value: function getPageURL(page) {
       var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
 
-      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
+      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + page.score().replace(/'/, escape);
     }
 
     /**
@@ -3339,21 +3545,24 @@ var Pv = function (_PvConfig) {
      * Get general information about a project, such as namespaces, title of the main page, etc.
      * Data returned by the api is also stored in this.siteInfo
      * @param {String} project - project such as en.wikipedia (with or without .org)
-     * @returns {Deferred} promise resolving with siteinfo
+     * @returns {Deferred} promise resolving with siteinfo,
+     *   along with any other cached siteinfo for other projects
      */
 
   }, {
-    key: 'getSiteInfo',
-    value: function getSiteInfo(project) {
+    key: 'fetchSiteInfo',
+    value: function fetchSiteInfo(project) {
       var _this3 = this;
 
       project = project.replace(/\.org$/, '');
       var dfd = $.Deferred(),
           cacheKey = 'pageviews-siteinfo-' + project;
 
+      if (this.siteInfo[project]) return dfd.resolve(this.siteInfo);
+
       // use cached site info if present
       if (simpleStorage.hasKey(cacheKey)) {
-        this.siteInfo = simpleStorage.get(cacheKey);
+        this.siteInfo[project] = simpleStorage.get(cacheKey);
         dfd.resolve(this.siteInfo);
       } else {
         // otherwise fetch siteinfo and store in cache
@@ -3367,10 +3576,10 @@ var Pv = function (_PvConfig) {
           },
           dataType: 'jsonp'
         }).done(function (data) {
-          _this3.siteInfo = data.query;
+          _this3.siteInfo[project] = data.query;
 
           // cache for one week (TTL is in milliseconds)
-          simpleStorage.set(cacheKey, _this3.siteInfo, { TTL: 1000 * 60 * 60 * 24 * 7 });
+          simpleStorage.set(cacheKey, _this3.siteInfo[project], { TTL: 1000 * 60 * 60 * 24 * 7 });
 
           dfd.resolve(_this3.siteInfo);
         }).fail(function (data) {
@@ -3379,6 +3588,18 @@ var Pv = function (_PvConfig) {
       }
 
       return dfd;
+    }
+
+    /**
+     * Helper to get siteinfo from this.siteInfo for given project, with or without .org
+     * @param {String} project - project name, with or without .org
+     * @returns {Object|undefined} site information if present
+     */
+
+  }, {
+    key: 'getSiteInfo',
+    value: function getSiteInfo(project) {
+      return this.siteInfo[project.replace(/\.org$/, '')];
     }
 
     /**
@@ -3949,16 +4170,6 @@ var Pv = function (_PvConfig) {
         return e.preventDefault();
       });
 
-      /** language selector */
-      $('.lang-link').on('click', function (e) {
-        var expiryGMT = moment().add(_this8.config.cookieExpiry, 'days').toDate().toGMTString();
-        document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
-
-        var expiryUnix = Math.floor(Date.now() / 1000) + _this8.config.cookieExpiry * 24 * 60 * 60;
-        document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
-        location.reload();
-      });
-
       /** download listeners */
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
@@ -4489,7 +4700,6 @@ var PvConfig = function () {
       },
       circularCharts: ['pie', 'doughnut', 'polarArea'],
       colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-      cookieExpiry: 30, // num days
       defaults: {
         autocomplete: 'autocomplete',
         chartType: function chartType(numDatasets) {

@@ -65,7 +65,7 @@
 	"invalid-params": "Ugyldige parametre!",
 	"param-error-1": "Sidevisnings-API'en har ikke data som er fra før august 2015. Beklager.",
 	"param-error-2": "Startdatoen skal være ældre end slutdatoen.",
-	"param-error-3": "Ugyldigt <code>interval</code>, standardintervallet anvendes istedet. Se <a href='/pageviews/url_structure'>dokumentationen</a> for mere information.",
+	"param-error-3": "Ugyldigt <code>$1</code>, standardintervallet anvendes istedet. Se $2 for mere information.",
 	"totals": "I alt",
 	"day": "dag",
 	"su": "Sø",

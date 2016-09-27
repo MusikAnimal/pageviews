@@ -72,7 +72,7 @@
 	"invalid-params": "¡Parámetros incorrectos!",
 	"param-error-1": "La API no contiene datos anteriores a $1. Disculpa.",
 	"param-error-2": "La fecha inicial debe ser anterior a la fecha final.",
-	"param-error-3": "<code>$1</code> incorrecto. Se utiliza el predeterminado en su lugar. Consulta la <a href='$2'>documentación</a> para obtener más información.",
+	"param-error-3": "<code>$1</code> incorrecto. Se utiliza el predeterminado en su lugar. Consulta la $2 para obtener más información.",
 	"totals": "Totales",
 	"day": "día",
 	"su": "D",

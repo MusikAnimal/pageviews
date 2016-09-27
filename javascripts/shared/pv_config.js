@@ -149,7 +149,6 @@ class PvConfig {
       },
       circularCharts: ['pie', 'doughnut', 'polarArea'],
       colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-      cookieExpiry: 30, // num days
       defaults: {
         autocomplete: 'autocomplete',
         chartType: numDatasets => numDatasets > 1 ? 'line' : 'bar',

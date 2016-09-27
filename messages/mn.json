@@ -60,7 +60,7 @@
 	"invalid-params": "Хүчингүй параметр!",
 	"param-error-1": "Уучлаарай, Pageviews-API нь $1-с хуучин мэдээлэл хадгалаагүй байна.",
 	"param-error-2": "Эхлэх хугацаа нь төгсгөлийн хугацаанаас эрт байх ёстой.",
-	"param-error-3": "Хүчингүй <код>range</код>. Үүний оронд стандарт хэсгийг ашиглана уу. Verwende stattdessen den Standardbereich. Нэмэлт мэдээллийг <a href='/pageviews/url_structure'>баримтаас</a> үзнэ үү!",
+	"param-error-3": "Хүчингүй <код>$1</код>. Үүний оронд стандарт хэсгийг ашиглана уу. Verwende stattdessen den Standardbereich. Нэмэлт мэдээллийг $2 үзнэ үү!",
 	"totals": "Нийт",
 	"day": "өдөр",
 	"su": "Ня",

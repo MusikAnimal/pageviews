@@ -69,7 +69,7 @@
 	"invalid-params": "Tham số không hợp lệ!",
 	"param-error-1": "Xin lỗi. API thống kê lượt xem trang không có dữ liệu cho thời gian từ $1 trở về trước.",
 	"param-error-2": "Ngày bắt đầu phải trước ngày kết thúc.",
-	"param-error-3": "<code>Khoảng thời gian</code> không hợp lệ, đang sử dụng khoảng thời gian mặc định. Xem <a href='/pageviews/url_structure'>hướng dẫn</a> để biết thêm thông tin.",
+	"param-error-3": "<code>$1</code> không hợp lệ, đang sử dụng khoảng thời gian mặc định. Xem $2 để biết thêm thông tin.",
 	"totals": "Tổng cộng",
 	"day": "ngày",
 	"su": "CN",

@@ -60,7 +60,7 @@
 	"article-placeholder": "Gépelj lapcímeket…",
 	"invalid-params": "Érvénytelen paraméterek!",
 	"param-error-2": "A kezdési dátumnak régebbinek kell lennie a befejezésnél.",
-	"param-error-3": "Érvénytelen <code>range</code>, az alapértelmezett tartomány jelenik meg. Lásd a <a href='/pageviews/url_structure'>dokumentációt</a> további információkért.",
+	"param-error-3": "Érvénytelen <code>$1</code>, az alapértelmezett tartomány jelenik meg. Lásd a $2 további információkért.",
 	"totals": "Összesen",
 	"day": "nap",
 	"su": "Va",

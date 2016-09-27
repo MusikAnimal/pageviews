@@ -78,7 +78,7 @@
 	"invalid-params": "Paramètres invalides.",
 	"param-error-1": "L'API Pageviews ne contient pas les données d'avant $1. Désolé.",
 	"param-error-2": "La date de début doit être plus ancienne que la date de fin.",
-	"param-error-3": "Invalide <code>$1</code>, utilisation des valeurs par défaut à la place. Voir la <a href='$2'>documentation</a> pour plus d'informations.",
+	"param-error-3": "Invalide <code>$1</code>, utilisation des valeurs par défaut à la place. Voir la $2 pour plus d'informations.",
 	"totals": "Totaux",
 	"day": "jour",
 	"su": "Di",

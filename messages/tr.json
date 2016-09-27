@@ -69,7 +69,7 @@
 	"invalid-params": "Geçersiz parametreler.",
 	"param-error-1": "Sayfa Görüntülemeleri API'si $1 için daha eski verileri içermiyor. Üzgünüz!",
 	"param-error-2": "Başlangış tarihi, bitiş tarihinden daha eski olmalıdır.",
-	"param-error-3": "Varsayılan aralığın yerine kullanılan <code>aralık</code> geçersizdir. Daha fazla bilgi için <a href='/pageviews/url_structure'>dokümantasyon</a> sayfasına bakınız.",
+	"param-error-3": "Varsayılan aralığın yerine kullanılan <code>$1</code> geçersizdir. Daha fazla bilgi için $2 sayfasına bakınız.",
 	"totals": "Toplam",
 	"day": "gün",
 	"su": "Pz",

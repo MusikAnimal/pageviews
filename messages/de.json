@@ -71,7 +71,7 @@
 	"invalid-params": "Ungültige Parameter!",
 	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als aus dem $1.",
 	"param-error-2": "Das Startdatum muss älter sein als das Enddatum.",
-	"param-error-3": "Ungültiger <code>$1</code>. Verwende stattdessen Standards. Siehe die <a href='$2'>Dokumentation</a> für weitere Informationen.",
+	"param-error-3": "Ungültiger <code>$1</code>. Verwende stattdessen Standards. Siehe die $2 für weitere Informationen.",
 	"totals": "Summen",
 	"day": "Tag",
 	"su": "So",

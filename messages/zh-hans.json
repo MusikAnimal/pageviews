@@ -72,7 +72,7 @@
 	"invalid-params": "无效参数！",
 	"param-error-1": "页面浏览API不包含早于$1的数据。对不起。",
 	"param-error-2": "开始日期必须早于结束日期。",
-	"param-error-3": "无效的<code>$1</code>，改用默认值。参见<a href='$2'>文档</a>以获取更多信息。",
+	"param-error-3": "无效的<code>$1</code>，改用默认值。参见$2以获取更多信息。",
 	"totals": "总计",
 	"day": "日",
 	"su": "日",

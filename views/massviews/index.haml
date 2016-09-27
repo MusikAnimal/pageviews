@@ -74,7 +74,7 @@
               %div.input-group.clearfix
                 %div.input-group-btn
                   %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
-                    = $I18N->msg( 'category-url' )
+                    = $I18N->msg( 'category' )
                     %span.caret
                   %ul.dropdown-menu
                     %li
@@ -93,6 +93,9 @@
                       %a.source-option(href="#" data-value="transclusions")
                         = $I18N->msg( 'transclusions' )
                     %li
+                      %a.source-option(href="#" data-value="hashtag")
+                        = $I18N->msg( 'hashtag' )
+                    %li
                       %a.source-option(href="#" data-value="quarry")
                         Quarry
                 %input.form-control.input-control.source-input#source_input(min="0" required="required")
@@ -100,6 +103,7 @@
                 %span.input-group-btn
                   %button.btn.btn-primary.pull-right.btn-submit
                     = $I18N->msg( 'submit' )
+              %div.source-description.text-muted
 
         :php
           $columns = array(

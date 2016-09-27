@@ -64,7 +64,7 @@
 	"invalid-params": "Parametros invalide.",
 	"param-error-1": "Le API de visitas non contine datos de ante augusto 2015.",
 	"param-error-2": "Le data initial debe preceder le data final.",
-	"param-error-3": "Parametro <code>range</code> non valide. Es usate un intervallo predefinite in su loco. Vide le <a href='/pageviews/url_structure'>documentation</a> pro plus information.",
+	"param-error-3": "Parametro <code>$1</code> non valide. Es usate un intervallo predefinite in su loco. Vide le $2 pro plus information.",
 	"totals": "Totales",
 	"day": "die",
 	"su": "Do",

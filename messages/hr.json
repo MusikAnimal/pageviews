@@ -68,7 +68,7 @@
 	"invalid-params": "Krivi parametri.",
 	"param-error-1": "Žao nam je, ali podatci prije $1 nisu dostupni.",
 	"param-error-2": "Početni datum mora biti manji od krajnjeg.",
-	"param-error-3": "Krivi <code>opseg</code>. Umjesto njega, koristi se podrazumijevani. Za više informacija vidjeti <a href='/pageviews/url_structure'>documentation</a>.",
+	"param-error-3": "Krivi <code>$1</code>. Umjesto njega, koristi se podrazumijevani. Za više informacija vidjeti $2.",
 	"totals": "Ukupno",
 	"day": "danu",
 	"su": "Ned",

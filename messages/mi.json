@@ -67,7 +67,7 @@
 	"invalid-params": "He manakore ētahi taurangi!",
 	"param-error-1": "Aroha mai.  Kāhore he raraunga i roto i te API Pageviews mō ngā wā i mua i te wā $1.",
 	"param-error-2": "Me tawhito te wā timitanga i te wā mutunga.",
-	"param-error-3": "Kei te manakore te range; whakamahitia te range noa.  Panui i te <a href='/pageviews/url_structure'>pukapuka</a> ki te whakamōhio ki a koe.",
+	"param-error-3": "Kei te manakore te <code>$1</code>.  Panui i te $2 ki te whakamōhio ki a koe.",
 	"totals": "Ngā kaute",
 	"day": "rā",
 	"su": "Ta",

@@ -339,14 +339,14 @@ const ChartHelpers = superclass => class extends superclass {
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
         if (cassandraError) {
-          if (failureRetries[this.project]) {
-            failureRetries[this.project]++;
+          if (failureRetries[entity]) {
+            failureRetries[entity]++;
           } else {
-            failureRetries[this.project] = 1;
+            failureRetries[entity] = 1;
           }
 
           /** maximum of 3 retries */
-          if (failureRetries[this.project] < 3) {
+          if (failureRetries[entity] < 3) {
             totalRequestCount++;
             return this.rateLimit(makeRequest, this.config.apiThrottle, this)(entity, index);
           }

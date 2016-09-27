@@ -66,7 +66,7 @@
 	"invalid-params": "Ugyldige parametere.",
 	"param-error-1": "Sidevisnings-API har ikke eldre tidsserier enn $1. Beklager.",
 	"param-error-2": "Startdato må være eldre enn sluttdato",
-	"param-error-3": "Ugyldig <code>intervall</code>, bruk standardintervall i stedet. Se  <a href='/pageviews/url_structure'>dokumentasjon</a> for mer.",
+	"param-error-3": "Ugyldig <code>$1</code>, bruk standardintervall i stedet. Se  $2 for mer.",
 	"totals": "Totalt",
 	"day": "dag",
 	"su": "Sø",

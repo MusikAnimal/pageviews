@@ -65,7 +65,7 @@
 	"invalid-params": "Paràmetres invàlids.",
 	"param-error-1": "Visites a la pàgina de l'API no contenen dades de més edat de $1. Ho sentim.",
 	"param-error-2": "Data d'inici ha de ser anterior a la data de finalització.",
-	"param-error-3": "<code>range</code> invàlid, utilitzant per defecte la gamma en el seu lloc. Vegeu la <a href=\"/pageviews/url_structure\">documentació</a> per a més informació.",
+	"param-error-3": "<code>$1</code> invàlid, utilitzant per defecte la gamma en el seu lloc. Vegeu la $2 per a més informació.",
 	"totals": "Total",
 	"day": "dia",
 	"su": "dg",

@@ -404,14 +404,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
             var cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
             if (cassandraError) {
-              if (failureRetries[_this6.project]) {
-                failureRetries[_this6.project]++;
+              if (failureRetries[entity]) {
+                failureRetries[entity]++;
               } else {
-                failureRetries[_this6.project] = 1;
+                failureRetries[entity] = 1;
               }
 
               /** maximum of 3 retries */
-              if (failureRetries[_this6.project] < 3) {
+              if (failureRetries[entity] < 3) {
                 totalRequestCount++;
                 return _this6.rateLimit(makeRequest, _this6.config.apiThrottle, _this6)(entity, index);
               }
@@ -1464,6 +1464,7 @@ var Pv = function (_PvConfig) {
     _this.setupSettingsModal();
 
     _this.params = null;
+    _this.siteInfo = {};
 
     /** @type {null|Date} tracking of elapsed time */
     _this.processStart = null;
@@ -1536,7 +1537,8 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'addInvalidParamNotice',
     value: function addInvalidParamNotice(param) {
-      this.addSiteNotice('danger', $.i18n('param-error-3', param, '/' + this.app + '/url_structure'), $.i18n('invalid-params'), true);
+      var docLink = '<a href=\'/' + this.app + '/url_structure\'>' + $.i18n('documentation') + '</a>';
+      this.addSiteNotice('danger', $.i18n('param-error-3', param, docLink), $.i18n('invalid-params'), true);
     }
 
     /**
@@ -1769,7 +1771,7 @@ var Pv = function (_PvConfig) {
     value: function getPageURL(page) {
       var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
 
-      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + encodeURIComponent(page.score()).replace(/'/, escape);
+      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + page.score().replace(/'/, escape);
     }
 
     /**
@@ -2054,21 +2056,24 @@ var Pv = function (_PvConfig) {
      * Get general information about a project, such as namespaces, title of the main page, etc.
      * Data returned by the api is also stored in this.siteInfo
      * @param {String} project - project such as en.wikipedia (with or without .org)
-     * @returns {Deferred} promise resolving with siteinfo
+     * @returns {Deferred} promise resolving with siteinfo,
+     *   along with any other cached siteinfo for other projects
      */
 
   }, {
-    key: 'getSiteInfo',
-    value: function getSiteInfo(project) {
+    key: 'fetchSiteInfo',
+    value: function fetchSiteInfo(project) {
       var _this3 = this;
 
       project = project.replace(/\.org$/, '');
       var dfd = $.Deferred(),
           cacheKey = 'pageviews-siteinfo-' + project;
 
+      if (this.siteInfo[project]) return dfd.resolve(this.siteInfo);
+
       // use cached site info if present
       if (simpleStorage.hasKey(cacheKey)) {
-        this.siteInfo = simpleStorage.get(cacheKey);
+        this.siteInfo[project] = simpleStorage.get(cacheKey);
         dfd.resolve(this.siteInfo);
       } else {
         // otherwise fetch siteinfo and store in cache
@@ -2082,10 +2087,10 @@ var Pv = function (_PvConfig) {
           },
           dataType: 'jsonp'
         }).done(function (data) {
-          _this3.siteInfo = data.query;
+          _this3.siteInfo[project] = data.query;
 
           // cache for one week (TTL is in milliseconds)
-          simpleStorage.set(cacheKey, _this3.siteInfo, { TTL: 1000 * 60 * 60 * 24 * 7 });
+          simpleStorage.set(cacheKey, _this3.siteInfo[project], { TTL: 1000 * 60 * 60 * 24 * 7 });
 
           dfd.resolve(_this3.siteInfo);
         }).fail(function (data) {
@@ -2094,6 +2099,18 @@ var Pv = function (_PvConfig) {
       }
 
       return dfd;
+    }
+
+    /**
+     * Helper to get siteinfo from this.siteInfo for given project, with or without .org
+     * @param {String} project - project name, with or without .org
+     * @returns {Object|undefined} site information if present
+     */
+
+  }, {
+    key: 'getSiteInfo',
+    value: function getSiteInfo(project) {
+      return this.siteInfo[project.replace(/\.org$/, '')];
     }
 
     /**
@@ -2664,16 +2681,6 @@ var Pv = function (_PvConfig) {
         return e.preventDefault();
       });
 
-      /** language selector */
-      $('.lang-link').on('click', function (e) {
-        var expiryGMT = moment().add(_this8.config.cookieExpiry, 'days').toDate().toGMTString();
-        document.cookie = 'TsIntuition_userlang=' + $(e.target).data('lang') + '; expires=' + expiryGMT + '; path=/';
-
-        var expiryUnix = Math.floor(Date.now() / 1000) + _this8.config.cookieExpiry * 24 * 60 * 60;
-        document.cookie = 'TsIntuition_expiry=' + expiryUnix + '; expires=' + expiryGMT + '; path=/';
-        location.reload();
-      });
-
       /** download listeners */
       $('.download-csv').on('click', this.exportCSV.bind(this));
       $('.download-json').on('click', this.exportJSON.bind(this));
@@ -3204,7 +3211,6 @@ var PvConfig = function () {
       },
       circularCharts: ['pie', 'doughnut', 'polarArea'],
       colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
-      cookieExpiry: 30, // num days
       defaults: {
         autocomplete: 'autocomplete',
         chartType: function chartType(numDatasets) {

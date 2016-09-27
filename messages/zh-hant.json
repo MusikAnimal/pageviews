@@ -74,7 +74,7 @@
 	"invalid-params": "無效參數！",
 	"param-error-1": "很抱歉，此頁面瀏覽API不可查詢早於$1以前的資料。",
 	"param-error-2": "起始日期必須大於結束日期。",
-	"param-error-3": "<code>$1</code>無效，請嘗試改用預設範圍。可參考 <a href='$2'>文件</a>獲取更多訊息。",
+	"param-error-3": "<code>$1</code>無效，請嘗試改用預設範圍。可參考 $2獲取更多訊息。",
 	"totals": "總計",
 	"day": "日",
 	"su": "週日",

@@ -75,7 +75,7 @@
 	"invalid-params": "Parâmetros inválidos!",
 	"param-error-1": "A API de Visualizações de Página não contem dados anteriores a $1. Desculpe.",
 	"param-error-2": "Data inicial tem que ser mais antiga do que data final.",
-	"param-error-3": "<code>$1</code> inválido: foi substituído pelo padrão. Veja a <a href='$2'>documentação</a> para mais informações.",
+	"param-error-3": "<code>$1</code> inválido: foi substituído pelo padrão. Veja a $2 para mais informações.",
 	"totals": "Totais",
 	"day": "dia",
 	"su": "Dom",

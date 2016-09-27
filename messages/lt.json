@@ -57,7 +57,7 @@
 	"save": "Išsaugoti",
 	"apply": "Taikyti",
 	"invalid-params": "Neteisingi parametrai!",
-	"param-error-3": "Neleistinas <code>$1</code>, vietoj to naudojami numatytieji. Žiūrėkite <a href='$2'>dokumentaciją</a> dėl daugiau informacijos.",
+	"param-error-3": "Neleistinas <code>$1</code>, vietoj to naudojami numatytieji. Žiūrėkite $2 dėl daugiau informacijos.",
 	"totals": "Iš viso",
 	"day": "diena",
 	"su": "Se",

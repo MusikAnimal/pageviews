@@ -70,7 +70,7 @@
 	"invalid-params": "Parametri incorecți!",
 	"param-error-1": "API-ul vizualizărilor nu deține informații dinainte de $1. Ne pare rău.",
 	"param-error-2": "Data inițială trebuie să fie anterioară datei finale.",
-	"param-error-3": "<code>$1</code> incorect, se vor folosi parametrii impliciți în loc. Consultați <a href='$2'>documentația</a> pentru mai multe informații.",
+	"param-error-3": "<code>$1</code> incorect, se vor folosi parametrii impliciți în loc. Consultați $2 pentru mai multe informații.",
 	"totals": "Totaluri",
 	"day": "zi",
 	"su": "Du",

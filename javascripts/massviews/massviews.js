@@ -78,7 +78,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {null} Nothing
    */
   assignDefaults() {
-    ['sort', 'source', 'sourceProject', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(defaultKey => {
+    ['sort', 'source', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(defaultKey => {
       this[defaultKey] = this.config.defaults[defaultKey];
     });
   }
@@ -96,6 +96,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     $(this.config.sourceInput).prop('type', this.config.sources[source].type)
       .prop('placeholder', this.config.sources[source].placeholder)
       .val('');
+
+    $('.source-description').html(
+      $.i18n(`massviews-${source}-description`, ...this.config.sources[source].descriptionParams())
+    );
 
     if (source === 'category') {
       $('.category-subject-toggle').show();
@@ -213,8 +217,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td><a href="https://${this.sourceProject.escape()}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
-           <td><a target="_blank" href='${this.getPageviewsURL(this.sourceProject, item.label)}'>${this.formatNumber(item.sum)}</a></td>
+           <td><a href="https://${item.project.escape()}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
+           <td><a target="_blank" href='${this.getPageviewsURL(item.project, item.label)}'>${this.formatNumber(item.sum)}</a></td>
            <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
            </tr>`
         );
@@ -242,30 +246,40 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Loop through given pages and query the pageviews API for each
    *   Also updates this.outputData with result
-   * @param  {string} project - project such as en.wikipedia.org
-   * @param  {Object} pages - as given by the getPagePile promise
+   * @param  {Array} pages - list of page names or full URLs to pages
+   * @param  {String} [project] - project such as en.wikipedia.org
+   *   If null pages is assumed to be an array of page URLs
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
    */
-  getPageViewsData(project, pages) {
+  getPageViewsData(pages, project) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
-    let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
+    let dfd = $.Deferred(), count = 0, hadFailure, failureRetries = {},
       totalRequestCount = pages.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = page => {
+      let queryProject;
+
+      // if there's no project that means page is a URL to the page
+      if (!project) {
+        [queryProject, page] = this.getWikiPageFromURL(page);
+      } else {
+        queryProject = project;
+      }
+
       const uriEncodedPageName = encodeURIComponent(page);
       const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${project}` +
+        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${queryProject}` +
         `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
-      promises.push(promise);
 
       promise.done(pvData => {
         pageViewsData.push({
           title: page,
+          project: queryProject,
           items: pvData.items
         });
       }).fail(errorData => {
@@ -273,14 +287,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
 
         if (cassandraError) {
-          if (failureRetries[project]) {
-            failureRetries[project]++;
+          if (failureRetries[page]) {
+            failureRetries[page]++;
           } else {
-            failureRetries[project] = 1;
+            failureRetries[page] = 1;
           }
 
           /** maximum of 3 retries */
-          if (failureRetries[project] < 3) {
+          if (failureRetries[page] < 3) {
             totalRequestCount++;
             return this.rateLimit(makeRequest, 100, this)(page);
           }
@@ -289,7 +303,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         if (cassandraError) {
           failedPages.push(page);
         } else {
-          this.writeMessage(`${this.getPageLink(page, project)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+          this.writeMessage(
+            `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+          );
         }
 
         // unless it was a 404, don't treat this series of requests as being cached by server
@@ -304,7 +320,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, project)}</li>`).join('') +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, queryProject)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -328,7 +344,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
     pages.forEach((page, index) => {
-      requestFn(page);
+      requestFn(page, index);
     });
 
     return dfd;
@@ -348,6 +364,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
      *
      * [{
      *   title: page,
+     *   project: 'en.wikipedia.org',
      *   items: [
      *     {
      *       access: '',
@@ -368,6 +385,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
      *   listData: [
      *     {
      *       label: '',
+     *       project: '',
      *       data: [1,2,3,4],
      *       sum: 10,
      *       average: 2,
@@ -402,6 +420,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.outputData.listData.push({
         data,
         label: dataset.title,
+        project: dataset.project,
         sum,
         average: sum / length,
         index
@@ -605,6 +624,24 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }
   }
 
+  /**
+   * Helper to reset the state of the app and indicate that than API error occurred
+   * @param {String} apiName - name of the API where the error occurred
+   * @param {String} [errorMessage] - optional error message to show retrieved from API
+   * @return {null} nothing
+   */
+  apiErrorReset(apiName, errorMessage) {
+    return this.setState('initial', () => {
+      let message;
+      if (errorMessage) {
+        message = `${$.i18n('api-error', apiName)}: ${errorMessage}`;
+      } else {
+        message = `${$.i18n('api-error-unknown', apiName)}`;
+      }
+      this.writeMessage(message);
+    });
+  }
+
   processPagePile(cb) {
     const pileId = $(this.config.sourceInput).val();
 
@@ -615,19 +652,20 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }
 
-      this.sourceProject = siteMap[pileData.wiki];
+      // reference siteMap hash to get project domain from database name (giant file in /shared/site_map.js)
+      const project = siteMap[pileData.wiki];
 
       /**
        * remove Project: prefix if present, only for enwiki, for now,
        * see https://phabricator.wikimedia.org/T135437
        */
-      if (this.sourceProject === 'en.wikipedia.org') {
+      if (project === 'en.wikipedia.org') {
         pileData.pages = pileData.pages.map(page => {
           return page.replace(/^Project:Wikipedia:/, 'Wikipedia:');
         });
       }
 
-      this.getPageViewsData(this.sourceProject, pileData.pages).done(pageViewsData => {
+      this.getPageViewsData(pileData.pages, project).done(pageViewsData => {
         const label = `Page Pile #${pileData.id}`;
 
         $('.output-title').text(label).prop('href', this.getPileURL(pileData.id));
@@ -635,7 +673,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           `
           ${$(this.config.dateRangeSelector).val()}
           &mdash;
-          <a href="https://${this.sourceProject.escape()}" target="_blank">${this.sourceProject.replace(/.org$/, '').escape()}</a>
+          <a href="https://${project.escape()}" target="_blank">
+            ${project.replace(/.org$/, '').escape()}
+          </a>
           `
         );
 
@@ -668,11 +708,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(data => {
       if (data.error) {
-        return this.setState('initial', () => {
-          this.writeMessage(
-            `${$.i18n('api-error', 'Category API')}: ${data.error.info.escape()}`
-          );
-        });
+        return this.apiErrorReset('Category API', data.error.info);
       }
 
       const pageObj = data.pages[0];
@@ -686,7 +722,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       const size = pageObj.categoryinfo.size,
         // siteInfo is only populated if they've opted to see subject pages instead of talk pages
         // Otherwise namespaces are not needed by this.mapCategoryPageNames
-        namespaces = this.siteInfo ? this.siteInfo.namespaces : undefined;
+        namespaces = this.getSiteInfo(project) ? this.getSiteInfo(project).namespaces : undefined;
       let pages = data.categorymembers;
 
       if (!pages.length) {
@@ -705,7 +741,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       const pageNames = this.mapCategoryPageNames(pages, namespaces);
 
-      this.getPageViewsData(project, pageNames).done(pageViewsData => {
+      this.getPageViewsData(pageNames, project).done(pageViewsData => {
         $('.output-title').html(categoryLink);
         $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(category, categoryLink, pageViewsData);
@@ -726,16 +762,153 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  processHashtag(cb) {
+    const hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
+      hashTagLink = `<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/${hashtag}">#${hashtag.escape()}</a>`;
+
+    $.get(`http://tools.wmflabs.org/hashtags/csv/${hashtag}?limit=5000`).done(data => {
+      /**
+       * CSVToArray code courtesy of Ben Nadel
+       * http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm
+       */
+      const strDelimiter = ',';
+
+      // Create a regular expression to parse the CSV values.
+      const objPattern = new RegExp(
+        (
+          // Delimiters.
+          `(\\${strDelimiter}|\\r?\\n|\\r|^)` +
+          // Quoted fields.
+          '(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|' +
+          // Standard fields.
+          `([^\"\\${strDelimiter}\\r\\n]*))`
+        ),
+        'gi'
+      );
+
+      // Create an array to hold our data. Give the array a default empty first row.
+      let csvData = [[]];
+
+      // Create an array to hold our individual pattern
+      // matching groups.
+      let arrMatches;
+
+      // Keep looping over the regular expression matches until we can no longer find a match.
+      while (arrMatches = objPattern.exec(data)) {
+        // Get the delimiter that was found.
+        const strMatchedDelimiter = arrMatches[1];
+
+        // Check to see if the given delimiter has a length
+        // (is not the start of string) and if it matches
+        // field delimiter. If id does not, then we know
+        // that this delimiter is a row delimiter.
+        if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+          // Since we have reached a new row of data, add an empty row to our data array.
+          csvData.push([]);
+        }
+
+        let strMatchedValue;
+
+        // Now that we have our delimiter out of the way,
+        // let's check to see which kind of value we
+        // captured (quoted or unquoted).
+        if (arrMatches[2]) {
+          // We found a quoted value. When we capture
+          // this value, unescape any double quotes.
+          strMatchedValue = arrMatches[2].replace(
+            new RegExp('\"\"', 'g'), '\"'
+          );
+        } else {
+          // We found a non-quoted value.
+          strMatchedValue = arrMatches[3];
+        }
+
+        // Now that we have our value string, let's add it to the data array.
+        csvData[csvData.length - 1].push(strMatchedValue);
+      }
+
+      // remove extraneous empty entry, if present
+      if (csvData[csvData.length - 1].length === 1 && !csvData[csvData.length - 1][0]) {
+        csvData = csvData.slice(0, -1);
+      }
+
+      // collect necessary data from the other rows
+      this.getPageURLsFromHashtagCSV(csvData).done(pageURLs => {
+        const size = pageURLs.length;
+
+        if (!size) {
+          return this.setState('initial', () => {
+            this.writeMessage($.i18n('massviews-empty-set', hashTagLink));
+          });
+        }
+
+        if (size > this.config.apiLimit) {
+          this.writeMessage(
+            $.i18n('massviews-oversized-set', hashTagLink, this.formatNumber(size), this.config.apiLimit)
+          );
+
+          pageURLs = pageURLs.slice(0, this.config.apiLimit);
+        }
+
+        this.getPageViewsData(pageURLs).done(pageViewsData => {
+          $('.output-title').html(hashTagLink);
+          $('.output-params').html($(this.config.dateRangeSelector).val());
+          this.buildMotherDataset(hashtag, hashTagLink, pageViewsData);
+
+          cb();
+        });
+      }).fail(() => apiErrorReset('Siteinfo API'));
+    }).fail(() => apiErrorReset('Hashtag API'));
+  }
+
+  /**
+   * Helper for processHashtag that parses the CSV data to get the page URLs
+   * @param  {Array} csvData - as built by processHashtag
+   * @return {Array} full page URLs
+   */
+  getPageURLsFromHashtagCSV(csvData) {
+    const dfd = $.Deferred();
+
+    // find the index of the page title, language and diff URL
+    const pageTitleIndex = csvData[0].indexOf('spaced_title'),
+      namespaceIndex = csvData[0].indexOf('rc_namespace'),
+      diffIndex = csvData[0].indexOf('diff_url');
+
+    let pageURLs = [];
+
+    // collect necessary data from the other rows
+    csvData.slice(1).forEach(entry => {
+      const project = entry[diffIndex].match(/https:\/\/(.*?\.org)\//)[1];
+
+      // get siteinfo so we can get the namespace names (either from cache or from API)
+      this.fetchSiteInfo(project).done(() => {
+        const nsName = this.getSiteInfo(project).namespaces[entry[namespaceIndex]]['*'];
+        pageURLs.push(
+          `https://${project}/wiki/${!!nsName ? nsName + ':' : ''}${entry[pageTitleIndex]}`
+        );
+
+        // if we're on the last iteration resolve the outer promise with the unique page names
+        if (pageURLs.length === csvData.length - 1) {
+          dfd.resolve(pageURLs.unique());
+        }
+      }).fail(() => {
+        dfd.reject();
+      });
+    });
+
+    return dfd;
+  }
+
   processSubpages(project, targetPage, cb) {
     // determine what namespace the targetPage is in
     const descoredTargetPage = targetPage.descore();
     let namespace = 0, queryTargetPage;
-    for (const ns in this.siteInfo.namespaces) {
+    for (const ns in this.getSiteInfo(project).namespaces) {
       if (ns === '0') continue; // skip mainspace
 
-      const nsName = this.siteInfo.namespaces[ns]['*'] + ':';
+      const nsName = this.getSiteInfo(project).namespaces[ns]['*'] + ':';
       if (descoredTargetPage.startsWith(nsName)) {
-        namespace = this.siteInfo.namespaces[ns].id;
+        namespace = this.getSiteInfo(project).namespaces[ns].id;
         queryTargetPage = targetPage.substring(nsName.length);
       }
     }
@@ -763,8 +936,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       // show errors, if any
       const errors = [data, data2].filter(resp => !!resp.error);
       if (errors.length) {
-        errors.forEach(error => {
-          this.setState('initial', () => {
+        this.setState('initial', () => {
+          errors.forEach(error => {
             this.writeMessage(
               `${$.i18n('api-error', 'Allpages API')}: ${error.error.info.escape()}`
             );
@@ -792,7 +965,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       const pageNames = [targetPage].concat(pages.map(page => page.title));
 
-      this.getPageViewsData(project, pageNames).done(pageViewsData => {
+      this.getPageViewsData(pageNames, project).done(pageViewsData => {
         $('.output-title').html(pageLink);
         $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(targetPage, pageLink, pageViewsData);
@@ -824,11 +997,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.massApi(requestData, project, 'ticontinue', data => data.pages[0].transcludedin).done(data => {
       if (data.error) {
-        return this.setState('initial', () => {
-          this.writeMessage(
-            `${$.i18n('api-error', 'Transclusion API')}: ${data.error.info.escape()}`
-          );
-        });
+        return this.apiErrorReset('Transclusion API', data.error.info);
       }
 
       // this happens if there are no transclusions or the template could not be found
@@ -847,7 +1016,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         );
       }
 
-      this.getPageViewsData(project, pages).done(pageViewsData => {
+      this.getPageViewsData(pages, project).done(pageViewsData => {
         $('.output-title').html(templateLink);
         $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(template, templateLink, pageViewsData);
@@ -879,11 +1048,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.massApi(requestData, project, 'plcontinue', data => data.pages[0].links).done(data => {
       if (data.error) {
-        return this.setState('initial', () => {
-          this.writeMessage(
-            `${$.i18n('api-error', 'Links API')}: ${data.error.info.escape()}`
-          );
-        });
+        return this.apiErrorReset('Links API', data.error.info);
       }
 
       // this happens if there are no transclusions or the template could not be found
@@ -909,7 +1074,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         );
       }
 
-      this.getPageViewsData(project, pages).done(pageViewsData => {
+      this.getPageViewsData(pages, project).done(pageViewsData => {
         $('.output-title').html(pageLink);
         $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(page, pageLink, pageViewsData);
@@ -956,14 +1121,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         titles = titles.slice(0, this.config.apiLimit);
       }
 
-      this.getPageViewsData(project, titles).done(pageViewsData => {
+      this.getPageViewsData(titles, project).done(pageViewsData => {
         $('.output-title').html(quarryLink);
         $('.output-params').html($(this.config.dateRangeSelector).val());
         this.buildMotherDataset(id, quarryLink, pageViewsData);
 
         cb();
       });
-    }).error(data => {
+    }).fail(data => {
       this.setState('initial');
       return this.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
     });
@@ -1026,6 +1191,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return this.processPagePile(cb);
     } else if (source === 'quarry') {
       return this.processQuarry(cb);
+    } else if (source === 'hashtag') {
+      return this.processHashtag(cb);
     }
 
     // validate wiki URL
@@ -1039,9 +1206,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return;
     }
 
-    // for caching purposes
-    this.sourceProject = project;
-
     // decode and remove trailing slash
     target = decodeURIComponent(target).replace(/\/$/, '');
 
@@ -1049,7 +1213,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     case 'category':
       // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
       if ($('.category-subject-toggle--input').is(':checked')) {
-        this.getSiteInfo(project).then(() => {
+        this.fetchSiteInfo(project).then(() => {
           this.processCategory(project, target, cb);
         });
       } else {
@@ -1058,7 +1222,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       break;
     case 'subpages':
       // fetch namespaces first
-      this.getSiteInfo(project).then(() => this.processSubpages(project, target, cb));
+      this.fetchSiteInfo(project).then(() => this.processSubpages(project, target, cb));
       break;
     case 'wikilinks':
       this.processWikiPage(project, target, cb);

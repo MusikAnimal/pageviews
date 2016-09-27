@@ -100,7 +100,7 @@
               <div class="input-group clearfix">
                 <div class="input-group-btn">
                   <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
-                    <?php echo $I18N->msg( 'category-url' ); ?>
+                    <?php echo $I18N->msg( 'category' ); ?>
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
@@ -130,6 +130,11 @@
                       </a>
                     </li>
                     <li>
+                      <a class="source-option" href="#" data-value="hashtag">
+                        <?php echo $I18N->msg( 'hashtag' ); ?>
+                      </a>
+                    </li>
+                    <li>
                       <a class="source-option" href="#" data-value="quarry">
                         Quarry
                       </a>
@@ -144,6 +149,7 @@
                   </button>
                 </span>
               </div>
+              <div class="source-description text-muted"></div>
             </div>
           </div>
         </form>

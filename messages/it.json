@@ -74,7 +74,7 @@
 	"invalid-params": "Parametri non validi!",
 	"param-error-1": "L'API sulle visualizzazioni delle pagine non contiene dati precedenti rispetto ad $1. Spiacenti.",
 	"param-error-2": "La data inizio deve essere precedente la data fine.",
-	"param-error-3": "<code>$1</code> non valido, utilizza invece un intervallo predefinito. Vedi la <a href='$2'>documentazione</a> per ulteriori informazioni.",
+	"param-error-3": "<code>$1</code> non valido, utilizza invece un intervallo predefinito. Vedi la $2 per ulteriori informazioni.",
 	"totals": "Totali",
 	"day": "giorno",
 	"su": "Do",

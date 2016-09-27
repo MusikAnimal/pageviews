@@ -30,6 +30,7 @@ class Pv extends PvConfig {
     this.setupSettingsModal();
 
     this.params = null;
+    this.siteInfo = {};
 
     /** @type {null|Date} tracking of elapsed time */
     this.processStart = null;
@@ -104,9 +105,10 @@ class Pv extends PvConfig {
    * @returns {null} nothing
    */
   addInvalidParamNotice(param) {
+    const docLink = `<a href='/${this.app}/url_structure'>${$.i18n('documentation')}</a>`;
     this.addSiteNotice(
       'danger',
-      $.i18n('param-error-3', param, `/${this.app}/url_structure`),
+      $.i18n('param-error-3', param, docLink),
       $.i18n('invalid-params'),
       true
     );
@@ -322,7 +324,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/'/, escape)}`;
+    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${page.score().replace(/'/, escape)}`;
   }
 
   /**
@@ -602,16 +604,19 @@ class Pv extends PvConfig {
    * Get general information about a project, such as namespaces, title of the main page, etc.
    * Data returned by the api is also stored in this.siteInfo
    * @param {String} project - project such as en.wikipedia (with or without .org)
-   * @returns {Deferred} promise resolving with siteinfo
+   * @returns {Deferred} promise resolving with siteinfo,
+   *   along with any other cached siteinfo for other projects
    */
-  getSiteInfo(project) {
+  fetchSiteInfo(project) {
     project = project.replace(/\.org$/, '');
     const dfd = $.Deferred(),
       cacheKey = `pageviews-siteinfo-${project}`;
 
+    if (this.siteInfo[project]) return dfd.resolve(this.siteInfo);
+
     // use cached site info if present
     if (simpleStorage.hasKey(cacheKey)) {
-      this.siteInfo = simpleStorage.get(cacheKey);
+      this.siteInfo[project] = simpleStorage.get(cacheKey);
       dfd.resolve(this.siteInfo);
     } else {
       // otherwise fetch siteinfo and store in cache
@@ -625,10 +630,10 @@ class Pv extends PvConfig {
         },
         dataType: 'jsonp'
       }).done(data => {
-        this.siteInfo = data.query;
+        this.siteInfo[project] = data.query;
 
         // cache for one week (TTL is in milliseconds)
-        simpleStorage.set(cacheKey, this.siteInfo, {TTL: 1000 * 60 * 60 * 24 * 7});
+        simpleStorage.set(cacheKey, this.siteInfo[project], {TTL: 1000 * 60 * 60 * 24 * 7});
 
         dfd.resolve(this.siteInfo);
       }).fail(data => {
@@ -637,6 +642,15 @@ class Pv extends PvConfig {
     }
 
     return dfd;
+  }
+
+  /**
+   * Helper to get siteinfo from this.siteInfo for given project, with or without .org
+   * @param {String} project - project name, with or without .org
+   * @returns {Object|undefined} site information if present
+   */
+  getSiteInfo(project) {
+    return this.siteInfo[project.replace(/\.org$/, '')];
   }
 
   /**
@@ -1111,16 +1125,6 @@ class Pv extends PvConfig {
   setupListeners() {
     /** prevent browser's default behaviour for any link with href="#" */
     $("a[href='#']").on('click', e => e.preventDefault());
-
-    /** language selector */
-    $('.lang-link').on('click', e => {
-      const expiryGMT = moment().add(this.config.cookieExpiry, 'days').toDate().toGMTString();
-      document.cookie = `TsIntuition_userlang=${$(e.target).data('lang')}; expires=${expiryGMT}; path=/`;
-
-      const expiryUnix = Math.floor(Date.now() / 1000) + (this.config.cookieExpiry * 24 * 60 * 60);
-      document.cookie = `TsIntuition_expiry=${expiryUnix}; expires=${expiryGMT}; path=/`;
-      location.reload();
-    });
 
     /** download listeners */
     $('.download-csv').on('click', this.exportCSV.bind(this));

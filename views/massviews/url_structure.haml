@@ -28,7 +28,7 @@
           %dl.dl-horizontal
             %dt source
             %dd
-              - $params = [ '<code>pagepile</code>', '<code>category</code>', '<code>wikilinks</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>quarry</code>' ];
+              - $params = [ '<code>pagepile</code>', '<code>category</code>', '<code>wikilinks</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>hashtag</code>', '<code>quarry</code>' ];
               - $comma = $I18N->msg( 'comma-character' ) . ' ';
               = $I18N->msg( 'list-values', [ 'variables' => [ implode( $params, $comma ), count( $params ) ], 'parsemag' => true ] )
             %dt target

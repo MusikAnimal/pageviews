@@ -73,7 +73,7 @@
 	"invalid-params": "Ogiltiga parametrar!",
 	"param-error-1": "Sidvisnings-API:et har ingen data som är äldre än $1. Beklagar.",
 	"param-error-2": "Startdatumet måste vara äldre än slutdatumet.",
-	"param-error-3": "Ogiltigt <code>intervall</code>, standardintervallet används istället. Se <a href='/pageviews/url_structure'>dokumentationen</a> för mer information.",
+	"param-error-3": "Ogiltigt <code>$1</code>, standardintervallet används istället. Se $2 för mer information.",
 	"totals": "Totalt",
 	"day": "dag",
 	"su": "Sö",

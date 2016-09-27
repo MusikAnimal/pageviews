@@ -72,7 +72,7 @@
 	"invalid-params": "Parámetros incorrectos!",
 	"param-error-1": "A API de análise de visitas ás páxinas non ten datos anteriores a agosto de 2015. Sentímolo.",
 	"param-error-2": "A data inicial debe ser anterior á data final.",
-	"param-error-3": "<code>range</code> incorrecto. Utilízase o intervalo predeterminado no seu lugar. Consulte a <a href='/pageviews/url_structure'>documentación</a> para obter máis información.",
+	"param-error-3": "<code>$1</code> incorrecto. Utilízase o intervalo predeterminado no seu lugar. Consulte a $2 para obter máis información.",
 	"totals": "Totais",
 	"day": "día",
 	"su": "D",

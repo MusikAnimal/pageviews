@@ -737,7 +737,7 @@ class TopViews extends Pv {
         const ns = entry.split(':')[0];
 
         // include main page as non-mainspace
-        if (restrictedNamespace === 0 && entry === this.siteInfo.general.mainpage) {
+        if (restrictedNamespace === 0 && entry === this.getSiteInfo(this.project).general.mainpage) {
           return false;
         }
 
@@ -749,7 +749,7 @@ class TopViews extends Pv {
       });
     };
 
-    this.getSiteInfo(this.project).done(() => {
+    this.fetchSiteInfo(this.project).done(() => {
       let unacceptableNamespaces = [];
 
       // for non-mainspace, count 'Wikipedia' and 'Special' since API seems to
@@ -759,8 +759,8 @@ class TopViews extends Pv {
         unacceptableNamespaces = ['Wikipedia', 'Special', 'Sp?cial'];
       }
 
-      for (const ns in this.siteInfo.namespaces) {
-        unacceptableNamespaces.push(this.siteInfo.namespaces[ns]['*']);
+      for (const ns in this.getSiteInfo(this.project).namespaces) {
+        unacceptableNamespaces.push(this.getSiteInfo(this.project).namespaces[ns]['*']);
       }
 
       // the actual filtering of the given pages

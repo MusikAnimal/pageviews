@@ -34,27 +34,41 @@ const config = {
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+      descriptionParams: () => [`<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories'>${$.i18n('category').toLowerCase()}</a>`],
       type: 'text'
     },
     wikilinks: {
       placeholder: 'https://en.wikipedia.org/wiki/Book:New_York_City',
+      descriptionParams: () => ['https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Wikilinks'],
       type: 'text'
     },
     pagepile: {
       placeholder: '12345',
+      descriptionParams: () => ["<a target='_blank' href='//tools.wmflabs.org/pagepile'>PagePile</a>"],
       type: 'number'
     },
     subpages: {
       placeholder: 'https://en.wikipedia.org/wiki/User:Example',
+      descriptionParams: () => [`<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages'>${$.i18n('subpages').toLowerCase()}</a>`],
       type: 'text'
     },
     transclusions: {
       placeholder: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+      descriptionParams: () => ['https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Transclusion'],
       type: 'text'
     },
     quarry: {
       placeholder: '12345',
+      descriptionParams: () => ["<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>"],
       type: 'number'
+    },
+    hashtag: {
+      placeholder: '#editathon',
+      descriptionParams: () => [
+        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
+        `<a target='_blank' href='//tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtags').toLowerCase()}</a>`
+      ],
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -66,7 +80,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
