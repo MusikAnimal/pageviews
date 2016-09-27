@@ -106,7 +106,6 @@
 	"api-error-unknown": "Beim Abruf der $1 ist ein unbekannter Fehler aufgetreten",
 	"api-error-no-data": "Keine Daten gefunden.",
 	"api-error-timeout": "Aufgrund des API-Fehlers konnte das Folgende nicht verarbeitet werden:\n$1\nBitte warte einige Minuten und versuche es erneut.",
-	"api-throttle-wait": "Bitte warte $1 Sekunden, bevor du eine weitere Anfrage sendest.<br/>Entschuldigung für die Unannehmlichkeit. Dies ist eine vorübergehende Drosselungstaktik.<br/>Siehe $2 für weitere Informationen.",
 	"api-incomplete-data": "Einige Daten sind noch nicht verfügbar für die Daten: $1",
 	"topviews-title": "Topviews Analysis",
 	"excluded-pages": "Ausgeschlossene Seiten",
@@ -164,8 +163,6 @@
 	"faq-massviews-sources-quarry": "Gib die numerische Kennung und das Projekt eines $1-Datensatzes ein. Die Spalte <code>$2</code> (erforderlich) wird als die Seitennamen verwendet.",
 	"faq-massviews-subject-page-title": "Was ist die Option „$1“?",
 	"faq-massviews-subject-page-body": "Diese Option ist dafür, wenn du eine Kategorie als Quelle verwendest. In einigen Fällen kann die Kategorie Diskussionsseiten enthalten, obwohl du die dazugehörigen Seiten möchtest. Zum Beispiel „<a href=\"https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles\">exzellente Artikel zu New York City</a>“, die die Diskussionsseiten von exzellenten Artikeln innerhalb des Wikiprojekts „New York City“ auflistet.",
-	"faq-throttle-wait-title": "Warum muss ich $1 Sekunden warten, bevor ich das Werkzeug ein zweites Mal verwenden kann?",
-	"faq-throttle-wait-body": "Die Wikimedia-Pageviews-API kann nur so viele Anfragen während eines bestimmten Zeitfensters abarbeiten. Um sicherzustellen, dass die API nicht ausfällt und du alle benötigten Daten erhältst, wirst du gezwungen, nach der Verwendung des Werkzeugs $1 Sekunden zu warten, bevor du es erneut verwenden kannst.",
 	"url-structure-example": "Um die aktuellsten Daten zu einer angegebenen Seite auf deinem Wiki mit Standardoptionen abzurufen, verwende:\n$1\nErsetze $2 durch ein gültiges $3. $4 wird durch die Seite aufgelöst, auf der der Link platziert ist.",
 	"url-structure-example-siteviews": "Um die aktuellsten Daten zu den Gesamtaufrufen aller Seiten auf deinem Wiki mit Standardoptionen zu erhalten, verwende:\n$1",
 	"url-structure-topviews-example": "Um die Standardliste der meistbesuchten Seiten auf deinem Wiki anzuzeigen, verwende:\n$1\nErsetze $2 durch ein gültiges $3. Du kannst auch $4 verwenden, um bestimmte Seiten wie bekannte falsche Positive von der Ansicht auszuschließen.",
@@ -227,7 +224,6 @@
 	"redirectviews-description": "Seitenaufrufe aller Weiterleitungen auf eine Seite",
 	"invalid-category-url": "Ungültige Kategorie! Bitte gib die vollständige Wiki-URL der Kategorie ein.",
 	"invalid-page-url": "Ungültige Seite! Bitte gib die vollständige Wiki-URL der Seite ein.",
-	"invalid-template-url": "Ungültige Vorlage! Bitte gib die vollständige Wiki-URL der Vorlage oder Seite ein.",
 	"invalid-quarry-dataset": "Ungültiger Quarry-Datensatz! Die Spalte <code>$1</code> ist erforderlich, wurde aber nicht gefunden.",
 	"source": "Quelle",
 	"category": "Kategorie",
@@ -266,5 +262,6 @@
 	"daily": "Täglich",
 	"mainspace-only-option": "Nur Seiten im Artikelnamensraum anzeigen",
 	"list-values": "Eines von: $1",
-	"comma-character": ","
+	"comma-character": ",",
+	"processing-page": "Verarbeite Seite $1 von $2"
 }

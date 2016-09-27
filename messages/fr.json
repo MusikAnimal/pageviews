@@ -113,7 +113,6 @@
 	"api-error-unknown": "Une erreur inconnue s’est produite en requêtant $1",
 	"api-error-no-data": "Aucune donnée trouvée.",
 	"api-error-timeout": "Du fait d’une erreur de l’API, \n$1 \nn'a pas pu être traité.\nVeuillez attendre quelques minutes avant de réessayer.",
-	"api-throttle-wait": "Veuillez attendre $1 secondes avant de soumettre une autre requête.<br/>Désolé pour la gêne occasionnée. Il s’agit d’une tactique de limitation temporaire.<br/>Voyez $2 pour plus d’informations.",
 	"api-incomplete-data": "Certaines données ne sont pas encore disponibles pour les dates: $1",
 	"topviews-title": "Analyse générale",
 	"excluded-pages": "Pages exclues",
@@ -171,8 +170,6 @@
 	"faq-massviews-sources-quarry": "Entrer l’identifiant numérique et le projet d’un ensemble de données $1. La colonne <code>$2</code> (obligatoire) sera utilisée pour les titres de page.",
 	"faq-massviews-subject-page-title": "Qu’est-ce que l’option « $1 » ?",
 	"faq-massviews-subject-page-body": "Cette option sert quand vous utilisez une catégorie comme source. Dans certains cas, la catégorie peut contenir des pages de discussion alors que vous souhaitez les pages du sujet. Par exemple <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>les articles de classe FA de la ville de New-York</a>, qui liste les pages de discussion de qualité FA dans le projet wiki Ville de New-York.",
-	"faq-throttle-wait-title": "Pourquoi dois-je attendre $1 secondes avant de pouvoir utiliser l’outil une seconde fois ?",
-	"faq-throttle-wait-body": "L’API Pageviews de Wikimédia ne peut pas gérer autant de requêtes pendant un temps donné. Afin de s’assurer que l’API ne plante pas et que vous obtenez toutes les données nécessaires, vous êtes obligé d’attendre $1 secondes après avoir utilisé l’outil, avant de pouvoir recommencer.",
 	"url-structure-example": "Pour obtenir les dernières données sur une page récente de votre wiki, avec les options par défaut, utiliser : \n$1 \nen remplaçant $2 par un $3 valide. $4 résoudra vers la page le lien qui est placé dessus",
 	"url-structure-example-siteviews": "Pour obtenir les dernières données sur le total des pages vues de toutes les pages de votre wiki, avec les options par défaut, utiliser :\n$1",
 	"url-structure-topviews-example": "Pour afficher la valeur par défaut de la liste des pages les plus vues sur votre wiki, utilisez:\n$1\nen remplaçant $2 par un lien valide $3 . Vous pouvez également utiliser $4 pour empêcher certaines pages d'être vues, comme les faux positifs.",
@@ -234,7 +231,6 @@
 	"redirectviews-description": "Le nombre de pages vues de toutes les redirections vers une page",
 	"invalid-category-url": "Catégorie non valide ! Veuillez entrer l’URL complète du wiki de la catégorie.",
 	"invalid-page-url": "Page non valide ! Veuillez entrer l’URL wiki complète de la page.",
-	"invalid-template-url": "Modèle invalide! Veuillez entrer l'URL complet du wiki pour le modèle ou la page.",
 	"invalid-quarry-dataset": "Ensemble de données Quarry non valide ! La colonne <code>$1</code> est obligatoire mais n’a pas été trouvée.",
 	"source": "Source",
 	"category": "Catégorie",
@@ -273,5 +269,6 @@
 	"daily": "Quotidien",
 	"mainspace-only-option": "Afficher uniquement les pages de l'espace principal",
 	"list-values": "Un parmi : $1",
-	"comma-character": ","
+	"comma-character": ",",
+	"processing-page": "Traitement de la page $1 sur $2"
 }

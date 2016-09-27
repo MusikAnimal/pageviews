@@ -107,7 +107,6 @@
 	"api-error-unknown": "查询$1时发生未知错误",
 	"api-error-no-data": "找不到数据。",
 	"api-error-timeout": "由于API故障，以下内容不能处理：\n$1\n请等待数分钟并重试。",
-	"api-throttle-wait": "请在提交另一个请求前等待$1秒。<br/>给您带来的不便尽请谅解。这是一次临时限流策略。<br/>参见$2以获取更多信息。",
 	"api-incomplete-data": "一些数据尚不可用于这些日期：$1",
 	"topviews-title": "最多浏览分析",
 	"excluded-pages": "排除的页面",
@@ -165,8 +164,6 @@
 	"faq-massviews-sources-quarry": "输入$1数据集的数字ID和项目。<code>$2</code>列（必填）将用作页面标题。",
 	"faq-massviews-subject-page-title": "什么是“$1”选项？",
 	"faq-massviews-subject-page-body": "此选项用在当您使用分类作为来源的情况。一些情况下，当您实际上想要主题页面时，分类可能包含讨论页。例如<a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City articles</a>，它列举了在纽约专题中特色条目的讨论页。",
-	"faq-throttle-wait-title": "为什么在我可以再次使用工具前需等待$1秒？",
-	"faq-throttle-wait-body": "维基媒体页面浏览API只能在同一时间段处理这么多请求。为了确保API不会失败，并且您可以获取您需要的所有数据，在您使用工具后，再次使用它之前，您被迫等待$1秒。",
 	"url-structure-example": "要获取您wiki上指定页面的最新数据，并使用默认选项，请使用：\n$1\n将$2替换为有效的$3。$4将决定链接放置的页面",
 	"url-structure-example-siteviews": "要获取您wiki上所有页面的总计页面浏览的最新数据，并使用默认选项，请使用：\n$1",
 	"url-structure-topviews-example": "要显示您wiki上默认最多浏览页面的列表，请使用：\n$1\n将$2替换为有效的$3。您也可以使用$4以从视图中排除特定页面，例如已知的误报。",
@@ -228,7 +225,6 @@
 	"redirectviews-description": "所有至某一页面的重定向的页面浏览",
 	"invalid-category-url": "无效分类！请输入分类的完整wiki URL。",
 	"invalid-page-url": "无效页面！请输入页面的完整wiki URL。",
-	"invalid-template-url": "无效模板！请输入模板或页面的完整wiki URL。",
 	"invalid-quarry-dataset": "无效的Quarry数据集！<code>$1</code>列必填，但未找到。",
 	"source": "来源",
 	"category": "分类",
@@ -267,5 +263,6 @@
 	"daily": "每日",
 	"mainspace-only-option": "只显示主名字空间页面",
 	"list-values": "$1之一",
-	"comma-character": "、"
+	"comma-character": "、",
+	"processing-page": "正在处理$1个页面，共$2个"
 }

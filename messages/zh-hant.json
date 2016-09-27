@@ -109,7 +109,6 @@
 	"api-error-unknown": "在查詢$1時出現一個未知錯誤",
 	"api-error-no-data": "查無資料",
 	"api-error-timeout": "由於API應用程式出現問題，以下暫無法處理：\n$1\n請等待數分鐘後在重新執行一次試試。",
-	"api-throttle-wait": "請等待$1秒後再提交另一份查詢請求。<br/>此爲限制臨時使用流量上的規範，若給您帶來不便還煩請諒解。<br/>您可查看$2以獲得更多此方面的訊息。",
 	"api-incomplete-data": "部分數據資料在以下日期無法獲取：$1",
 	"topviews-title": "最多瀏覽頁面排行分析",
 	"excluded-pages": "排除的頁面",
@@ -167,8 +166,6 @@
 	"faq-massviews-sources-quarry": "輸入數字ID和$1資料集的項目。必填的 <code>$2</code>列是用作頁面標題。",
 	"faq-massviews-subject-page-title": "什麼是$1選項？",
 	"faq-massviews-subject-page-body": "此選項使用在以分類作為來源時。某些情形下，您所想要用的主題中，分類裡頭可能包含著討論頁面。如英語維基上<a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>與紐約市有關的特色條目分類</a>中，此分類頁面裡便列出紐約市專題裡各特色條目的討論頁連結。",
-	"faq-throttle-wait-title": "為何再次使用此查詢工具時；必須先等上$1秒？",
-	"faq-throttle-wait-body": "此維基媒體頁面瀏覽次數API應用程式於一定時段內只能一定程度的多筆請求。而為確保此API能不出錯產生出您所需的數據資料，因此若想再次使用此工具作查詢時；強制要求您必須先等上$1秒後才可使用。",
 	"url-structure-example": "想取得您所指定的維基百科頁面最新數據內容；並使用預設選項，請使用：\n$1\n將$2替換成有效的$3。$4會呈現出頁面相關連結",
 	"url-structure-example-siteviews": "要以預設方式獲取維基所有頁面的總瀏覽次數之最新數據資料，請使用$1",
 	"url-structure-topviews-example": "想顯示出維基上最多瀏覽頁面的預設清單內容，請使用：\n$1\n將$2替換成有效的$3。您也可使用$4把指定的頁面項目從畫面上排除，例如已知的誤報。",
@@ -230,7 +227,6 @@
 	"redirectviews-description": "所有對應至此頁面的重定向之總瀏覽數",
 	"invalid-category-url": "內容無效！請輸入此分類項目在維基上的完整網址",
 	"invalid-page-url": "無效頁面！請輸入頁面的完整wiki URL。",
-	"invalid-template-url": "無效模板！請輸入模板或頁面在維基上的完整網址。",
 	"invalid-quarry-dataset": "無效的查詢資料集！未找出必填的<code>$1</code>列。",
 	"source": "來源",
 	"category": "分類項目網址",
@@ -269,5 +265,6 @@
 	"daily": "每日",
 	"mainspace-only-option": "僅顯示主空間頁面",
 	"list-values": "$1之一",
-	"comma-character": "、"
+	"comma-character": "、",
+	"processing-page": "正在處理共$2個中的$1個頁面"
 }

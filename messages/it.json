@@ -108,7 +108,6 @@
 	"api-error-unknown": "Si è verificato un errore sconosciuto durante l'interrogazione di $1",
 	"api-error-no-data": "Nessun dato trovato.",
 	"api-error-timeout": "A causa di un errore delle API, le seguenti non possono essere elaborate:\n$1\nAspetta alcuni minuti e riprova.",
-	"api-throttle-wait": "Aspetta $1 secondi prima di inviare un'altra richiesta.<br/>Ci scusiamo per il disagio. Questa è una misura temporanea di limitazione.<br/>Vedi $2 per maggiori informazioni.",
 	"api-incomplete-data": "Alcuni dati non sono ancora disponibili per le date: $1",
 	"topviews-title": "Analisi delle pagine più viste",
 	"excluded-pages": "Pagine escluse",
@@ -153,8 +152,6 @@
 	"faq-massviews-sources-pagepile": "Inserisci l'ID numerico di un insieme di pagine create con $1. E' possibile creare elenchi e importarli dentro Massviews per analizzare le loro visualizzazioni delle pagine.",
 	"faq-massviews-sources-category": "è l'URL completo della pagina di una categoria, per esempio $1.",
 	"faq-massviews-sources-quarry": "Inserisci l'ID numerico e progetto di un set di dati $1. La colonna <code>$2</code> (obbligatoria) è quella che verrà utilizzata come titolo della pagina.",
-	"faq-throttle-wait-title": "Perché devo aspettare $1 secondi prima di poter utilizzare lo strumento una seconda volta?",
-	"faq-throttle-wait-body": "Le API Wikimedia sulle visualizzazioni delle pagine possono gestire solo un certo numero di richieste in un lasso di tempo. Per garantire che le API non falliscano e che tu ottenga tutti i dati di cui hai bisogno, devi aspettare $1 secondi dopo aver usato lo strumento, prima che tu possa usarlo nuovamente.",
 	"url-structure-example": "Per ottenere i dati più recenti su una determinata pagina sul tuo wiki, con le opzioni predefinite, usa:\n$1\nsostituendo $2 con un $3 valido. $4 risolverà la pagina su cui il collegamento è posto",
 	"url-structure-example-siteviews": "Per ottenere i dati più recenti sulle visualizzazioni totali di tutte le pagine sul tuo wiki, con le opzioni predefinite, usa:\n$1",
 	"url-structure-topviews-example": "Per mostrare l'elenco delle pagine più viste sul tuo wiki, con le opzioni predefinite, usa:\n$1\nsostituendo $2 con un $3 valido. Puoi anche utilizzare $4 per escludere alcune pagine, come i falsi positivi conosciuti.",
@@ -209,7 +206,6 @@
 	"massviews-description": "Importa un elenco di pagine e confronta le visualizzazioni per pagina",
 	"siteviews-description": "Confronto del totale delle visualizzazioni di pagina per più progetti",
 	"invalid-category-url": "Categoria non valida! Inserisci l'URL wiki completo della categoria.",
-	"invalid-template-url": "Template non valido! Inserisci l'URL wiki completo del template o della pagina.",
 	"invalid-quarry-dataset": "Set di dati $1 non valido! La colonna <code>$1</code> è obbligatoria ma non è stata trovata.",
 	"source": "Sorgente",
 	"category": "URL categoria",
@@ -241,5 +237,6 @@
 	"daily": "Giornaliero",
 	"mainspace-only-option": "Mostra solo pagine nel namespace principale",
 	"list-values": "Uno tra: $1",
-	"comma-character": ","
+	"comma-character": ",",
+	"processing-page": "Elaborazione pagina $1 di $2"
 }

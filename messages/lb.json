@@ -96,7 +96,6 @@
 	"api-error": "Feeler beim Ofruff vu(n) $1",
 	"api-error-unknown": "Beim Opruffe vu(n) $1 ass en onbekannt Feeler geschitt",
 	"api-error-no-data": "Keng Donnéeë fonnt.",
-	"api-throttle-wait": "Waart w.e.g. $1 Sekonnen ier Dir eng aner Ufro schéckt.<br/>Entschëllegt eis w.e.g. fir de Mëssel. Dëst ass eng temporär Limitatioun.<br/>Kuckt $2 fir méi Informatiounen.",
 	"api-incomplete-data": "E puer Donnéeë sinn nach net disponibel fir d'Datumer: $1",
 	"excluded-pages": "Ausgeschloss Säiten",
 	"show-more": "Méi weisen",
@@ -128,7 +127,6 @@
 	"faq-massviews-sources-title": "Wat sinn d'''Quellen''?",
 	"faq-massviews-sources-category": "ass déi komplett URL vun enger Kategoriesäit, zum Beispill $1.",
 	"faq-massviews-subject-page-title": "Wat ass d'Optioun \"$1\"?",
-	"faq-throttle-wait-title": "Firwat muss ech $1 Sekonne waarden ier ech den Tool nach eng Kéier benotze kann?",
 	"url-structure-topviews-date-month": "E spezifesche Mount am Format $1",
 	"url-structure-topviews-date-day": "E spezifeschen Dag am Format $1",
 	"url-structure-parameters": "Parameteren",
@@ -182,9 +180,11 @@
 	"localization": "Lokalisatioun:",
 	"chart-preferences": "Diagrammastellungen:",
 	"metric": "Eenheet",
+	"date-type": "Datumstyp",
 	"date": "Datum",
 	"monthly": "All Mount",
 	"daily": "All Dag",
 	"list-values": "Ee vun: $1",
-	"comma-character": ","
+	"comma-character": ",",
+	"processing-page": "Verschaffe Säit $1 vu(n) $2"
 }

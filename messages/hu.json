@@ -131,7 +131,6 @@
 	"faq-massviews-sources-quarry": "egy $1-adathalmaz numerikus azonosítója. A <code>$2</code> oszlopból (kötelező) lesznek a lapcímek.",
 	"faq-massviews-subject-page-title": "Mi az a „$1” opció?",
 	"faq-massviews-subject-page-body": "Ez az opció arra való, amikor egy kategóriát használsz forrásként. Bizonyos esetekben a kategória vitalapokat tartalmaz, de valójában a tartalmi lapokra van szükség. Például a <a href='https://hu.wikipedia.org/wiki/Kateg%C3%B3ria:Kit%C3%BCntetett_besorol%C3%A1s%C3%BA_magyar_telep%C3%BCl%C3%A9sekkel_kapcsolatos_sz%C3%B3cikkek'>Kitüntetett besorolású magyar településekkel kapcsolatos szócikkek</a> kategória a Magyar települések műhelyének érdeklődési körébe tartozó kiemelt szócikkek vitalapjait tartalmazza.",
-	"faq-throttle-wait-title": "Miért kell $1 másodpercet várnom, mielőtt másodszorra használhatnám az eszközt?",
 	"url-structure-parameters": "Paraméterek",
 	"url-structure-parameters-order": "Bármilyen sorrendben használhatók",
 	"url-structure-project": "$1 vagy más érvényes $2",

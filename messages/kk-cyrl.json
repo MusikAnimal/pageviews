@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Arystanbek",
-			"Macofe"
+			"Macofe",
+			"Mirgulkali"
 		]
 	},
 	"title": "Бет қаралу талдауы",
@@ -18,6 +19,7 @@
 	"desktop": "Десктоп",
 	"mobile-app": "Мобиль қосымша",
 	"mobile-web": "Мобилді уеб",
+	"mobile": "Мобил",
 	"agent": "Агент",
 	"user": "Қатысушы",
 	"spider": "Өрмекші",
@@ -25,10 +27,12 @@
 	"page": "Бет",
 	"pages": "Беттер",
 	"page-title": "Бет атауы",
-	"change-chart": "Диаграмма түрін өзгерту",
+	"change-chart": "Диаграмма түрі",
 	"settings": "Баптаулар",
+	"download-label": "Түсіріп алу",
 	"csv": "CSV",
 	"json": "JSON",
+	"print": "Басып шығару",
 	"credits": "Сіз үшін жасағандар: $1, $2 және $3.",
 	"translation-credits": "Аударма $1 және $2 арқылы жасалды.",
 	"tool-labs": "Tool Labs",
@@ -101,7 +105,17 @@
 	"source-project": "Қайнар жоба",
 	"language": "Тіл",
 	"pageviews": "Бет қаралуы",
+	"langviews": "Тіл қараулар",
+	"topviews": "Ең көп қаралғандар",
+	"siteviews": "Сайт қараулары",
+	"massviews": "Жаппай қараулар",
+	"redirectviews": "Бағыттау қараулары",
 	"average": "Орташа",
 	"submit": "Жіберу",
-	"num-languages": "$1 тіл"
+	"num-languages": "$1 тіл",
+	"default": "Әдепкі",
+	"all-languages": "Барлық тілдер",
+	"history": "Тарихы",
+	"info": "Мәлімет",
+	"processing-page": "$2 беттің $1 өңдеу"
 }

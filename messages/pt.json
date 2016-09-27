@@ -110,7 +110,6 @@
 	"api-error-unknown": "Ocorreu um erro desconhecido ao consultar $1",
 	"api-error-no-data": "Não foram encontrados dados.",
 	"api-error-timeout": "Devido a uma falha da API, não foi possível processar o seguinte:\n$1\nPor favor, aguarde alguns minutos e tente novamente.",
-	"api-throttle-wait": "Por favor aguarde $1 segundos antes de enviar outro pedido.<br />As nossas desculpas pelo inconveniente. Este é uma tática temporária de limitação do uso do servidor.<br />Veja $2 para obter mais informações.",
 	"api-incomplete-data": "Alguns dados ainda não está disponível para as datas $1",
 	"topviews-title": "Análise de páginas mais vistas",
 	"excluded-pages": "Páginas excluídas",

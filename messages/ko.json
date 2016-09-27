@@ -157,7 +157,6 @@
 	"langviews-description": "모든 언어를 고려한 문서의 조회수",
 	"siteviews-description": "여러 주제를 고려한 전체 조회수 분석",
 	"redirectviews-description": "문서에 대한 모든 넘겨주기의 조회수",
-	"invalid-template-url": "부적절한 템플릿! 템플릿이나 페이지의 전체 위키주소를 넣어주세요.",
 	"category": "분류",
 	"wikilinks": "위키링크",
 	"transclusions": "끼워넣기",
@@ -165,6 +164,7 @@
 	"elapsed-time": "지연 시간: $1 {{PLURAL:$1|초|초}}",
 	"num-pages": "$1{{PLURAL:$1|페이지}}",
 	"num-transclusions": "$1 {{PLURAL:$1|끼워넣기}}",
+	"num-subpages": "$1개의 {{PLURAL:$1|하위 문서}}",
 	"num-wikilinks": "$1 {{PLURAL:$1|위키링크}}",
 	"category-subject-toggle": "대화 페이지 대신 주제 페이지 사용",
 	"chart": "차트",
@@ -183,5 +183,6 @@
 	"date": "날짜",
 	"monthly": "매월",
 	"daily": "매일",
-	"mainspace-only-option": "일반 이름공간의 문서만 표시"
+	"mainspace-only-option": "일반 이름공간의 문서만 표시",
+	"processing-page": "$2 중 $1 페이지 처리 중"
 }

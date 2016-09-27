@@ -95,7 +95,6 @@
 	"faq-try-tool": "Dat kam_mer fenge op ä Sigg $1",
 	"faq-bug-report-title": "Esch well Verbäßerong aanrähje udder ene Fähler mällde",
 	"faq-bug-report-body": "Wä jähn e Wikki för sing Rökmälldong hät, nemmp dat <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">Forrum</a> em Mettawikki derför. Mer kann och op <a href=\"https://github.com/MusikAnimal/pageviews/issues\"><i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"GitHub - ene Deens för et Zesammewerke beim Projrammehre, un esuh\">GitHub</i></a>, un em <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\"><i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"Phabricator is a collaboration platform open to all Wikimedia and MediaWiki contributors with a focus on bug reporting and software projects.\">Phabricator</i></a> si Aanlijje loßwähde.",
-	"faq-throttle-wait-title": "Waröm moss_esch {{PLURAL:$1|en Sekond|$1 Sekonde|kein Sekond}} wahde, ih dadd_esch dat Wärkzüsch norr_en oprohfe kann?",
 	"url-structure-example-siteviews": "Öm de neuste Dahte över de Jesampzahle vun affjerohfe Sigge vum Wikki ze krije, met de Schtandadd_Eschtällonge, nemm:\n$1",
 	"url-structure-parameters": "Parramehtere",
 	"url-structure-parameters-order": "Kam_mer en jehde Reihjefollsch bruche",
