@@ -832,15 +832,16 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         csvData = csvData.slice(0, -1);
       }
 
+      // if only header row is present, reset view and throw error for being an empty set
+      if (csvData.length === 1) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', hashTagLink));
+        });
+      }
+
       // collect necessary data from the other rows
       this.getPageURLsFromHashtagCSV(csvData).done(pageURLs => {
         const size = pageURLs.length;
-
-        if (!size) {
-          return this.setState('initial', () => {
-            this.writeMessage($.i18n('massviews-empty-set', hashTagLink));
-          });
-        }
 
         if (size > this.config.apiLimit) {
           this.writeMessage(

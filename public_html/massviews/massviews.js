@@ -1014,15 +1014,16 @@ var MassViews = function (_mix$with) {
           csvData = csvData.slice(0, -1);
         }
 
+        // if only header row is present, reset view and throw error for being an empty set
+        if (csvData.length === 1) {
+          return _this12.setState('initial', function () {
+            _this12.writeMessage($.i18n('massviews-empty-set', hashTagLink));
+          });
+        }
+
         // collect necessary data from the other rows
         _this12.getPageURLsFromHashtagCSV(csvData).done(function (pageURLs) {
           var size = pageURLs.length;
-
-          if (!size) {
-            return _this12.setState('initial', function () {
-              _this12.writeMessage($.i18n('massviews-empty-set', hashTagLink));
-            });
-          }
 
           if (size > _this12.config.apiLimit) {
             _this12.writeMessage($.i18n('massviews-oversized-set', hashTagLink, _this12.formatNumber(size), _this12.config.apiLimit));
