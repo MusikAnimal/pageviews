@@ -79,7 +79,7 @@ var config = {
     hashtag: {
       placeholder: '#editathon',
       descriptionParams: function descriptionParams() {
-        return ['<span class=\'glyphicon glyphicon-flash\'></span>' + $.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>"), '<a target=\'_blank\' href=\'//tools.wmflabs.org/hashtags/docs\'>' + $.i18n('hashtags').toLowerCase() + '</a>'];
+        return ['<span class=\'glyphicon glyphicon-flash\'></span>' + $.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>"), '<a target=\'_blank\' href=\'//tools.wmflabs.org/hashtags/docs\'>' + $.i18n('hashtag').toLowerCase() + '</a>'];
       },
       type: 'string'
     }
