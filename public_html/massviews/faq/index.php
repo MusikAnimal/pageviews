@@ -61,6 +61,15 @@
                 <?php echo $I18N->msg( 'faq-massviews-sources-template', [ 'variables' => [ $templateLink ] ] ); ?>
               </li>
               <li>
+                <?php $linkSearchLink = "<a href='https://en.wikipedia.org/wiki/Special:LinkSearch/*.nycgo.com'>*.nycgo.com</a>"; ?>
+                <?php $docLink = "<a target='_blank' href='https://www.mediawiki.org/wiki/Help:Links#External_links'>" . strtolower( $I18N->msg( 'external-link' ) ) . "</a>"; ?>
+                <?php $linkSearchDocLink = "<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Linksearch'>" . $I18N->msg( 'documentation' ) . "</a>"; ?>
+                <i><?php echo $I18N->msg( 'external-link' ); ?></i>
+                &mdash;
+                <?php echo $I18N->msg( 'massviews-external-link-description', [ 'variables' => [ $docLink ] ] ) . '.'; ?>
+                <?php echo $I18N->msg( 'faq-massviews-sources-external-link', [ 'variables' => [ $linkSearchLink, $linkSearchDocLink ] ] ); ?>
+              </li>
+              <li>
                 <?php $hashtagCredits = $I18N->msg( 'hashtag-credits', [ 'variables' => [ "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>" ] ] ); ?>
                 <?php $hashtagLink = "<a href='http://tools.wmflabs.org/hashtags/search/100wikidays'>#100wikidays</a>"; ?>
                 <?php $infoLink = "<a href='http://tools.wmflabs.org/hashtags/docs'>" . $I18N->msg( 'documentation' ) . "</a>"; ?>

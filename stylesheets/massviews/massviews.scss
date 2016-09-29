@@ -16,12 +16,12 @@
 }
 
 .massviews-source-input {
-  .quarry-project {
+  .project-input {
     display: none;
   }
 
-  &.quarry {
-    .quarry-project {
+  &.project-enabled {
+    .project-input {
       display: inline-block;
       width: 50%;
     }

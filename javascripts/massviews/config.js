@@ -34,7 +34,9 @@ const config = {
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
-      descriptionParams: () => [`<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories'>${$.i18n('category').toLowerCase()}</a>`],
+      descriptionParams: () => [
+        `<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories'>${$.i18n('category').toLowerCase()}</a>`
+      ],
       type: 'text'
     },
     wikilinks: {
@@ -49,7 +51,9 @@ const config = {
     },
     subpages: {
       placeholder: 'https://en.wikipedia.org/wiki/User:Example',
-      descriptionParams: () => [`<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages'>${$.i18n('subpages').toLowerCase()}</a>`],
+      descriptionParams: () => [
+        `<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Subpages'>${$.i18n('subpages').toLowerCase()}</a>`
+      ],
       type: 'text'
     },
     transclusions: {
@@ -69,6 +73,13 @@ const config = {
         `<a target='_blank' href='//tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
       ],
       type: 'string'
+    },
+    'external-link': {
+      placeholder: '*.nycgo.com',
+      descriptionParams: () => [
+        `<a target='_blank' href='https://www.mediawiki.org/wiki/Help:Links#External_links'>${$.i18n('external-link').toLowerCase()}</a>`
+      ],
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -80,7 +91,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

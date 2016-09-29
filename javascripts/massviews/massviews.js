@@ -107,12 +107,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.category-subject-toggle').hide();
     }
 
-    if (source === 'quarry') {
-      $('.massviews-source-input').addClass('quarry');
-      $('.quarry-project').prop('disabled', false);
+    if (source === 'quarry' || source === 'external-link') {
+      $('.massviews-source-input').addClass('project-enabled');
+      $('.project-input').prop('disabled', false);
     } else {
-      $('.massviews-source-input').removeClass('quarry');
-      $('.quarry-project').prop('disabled', true);
+      $('.massviews-source-input').removeClass('project-enabled');
+      $('.project-input').prop('disabled', true);
     }
 
     $(this.config.sourceInput).focus();
@@ -154,8 +154,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (params.source === 'category') {
       params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
-    } else if (params.source === 'quarry') {
-      params.project = $('.quarry-project').val();
+    } else if (params.source === 'quarry' || params.source === 'external-link') {
+      params.project = $('.project-input').val();
     }
 
     if (!forCacheKey) {
@@ -569,8 +569,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this[key] = params[key];
     });
 
-    if (params.source === 'quarry' && params.project) {
-      $('.quarry-project').val(params.project);
+    if ((params.source === 'quarry' || params.source === 'external-link') && params.project) {
+      $('.project-input').val(params.project);
     }
 
     if (params.subjectpage === '1') {
@@ -645,6 +645,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   processPagePile(cb) {
     const pileId = $(this.config.sourceInput).val();
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Page Pile API'));
     this.getPagePile(pileId).done(pileData => {
       if (!pileData.pages.length) {
         return this.setState('initial', () => {
@@ -706,6 +707,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const categoryLink = this.getPageLink(category, project);
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Category API'));
     this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(data => {
       if (data.error) {
         return this.apiErrorReset('Category API', data.error.info);
@@ -766,6 +768,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
       hashTagLink = `<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/${hashtag}">#${hashtag.escape()}</a>`;
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Hashtag API'));
     $.get(`http://tools.wmflabs.org/hashtags/csv/${hashtag}?limit=5000`).done(data => {
       /**
        * CSVToArray code courtesy of Ben Nadel
@@ -919,6 +922,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     let promises = [];
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Allpages API'));
     [namespace, inverseNamespace].forEach(apnamespace => {
       const params = {
         list: 'allpages',
@@ -996,6 +1000,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const templateLink = this.getPageLink(template, project);
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Transclusion API'));
     this.massApi(requestData, project, 'ticontinue', data => data.pages[0].transcludedin).done(data => {
       if (data.error) {
         return this.apiErrorReset('Transclusion API', data.error.info);
@@ -1013,7 +1018,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       // there were more pages that could not be processed as we hit the limit
       if (data.continue) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set-unknown', templateLink, this.config.apiLimit, this.config.apiLimit)
+          $.i18n('massviews-oversized-set-unknown', templateLink, this.config.apiLimit)
         );
       }
 
@@ -1047,12 +1052,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const pageLink = this.getPageLink(page, project);
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Links API'));
     this.massApi(requestData, project, 'plcontinue', data => data.pages[0].links).done(data => {
       if (data.error) {
         return this.apiErrorReset('Links API', data.error.info);
       }
 
-      // this happens if there are no transclusions or the template could not be found
+      // this happens if there are no wikilinks or the page could not be found
       if (!data.pages[0]) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('api-error-no-data'));
@@ -1097,13 +1103,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   processQuarry(cb) {
-    const project = $('.quarry-project').val(),
+    const project = $('.project-input').val(),
       id = $(this.config.sourceInput).val();
     if (!this.validateProject(project)) return;
 
     const url = `https://quarry.wmflabs.org/query/${id}/result/latest/0/json`,
       quarryLink = `<a target='_blank' href='https://quarry.wmflabs.org/query/${id}'>Quarry ${id}</a>`;
 
+    $('.progress-counter').text($.i18n('fetching-data', 'Quarry API'));
     $.getJSON(url).done(data => {
       const titleIndex = data.headers.indexOf('page_title');
 
@@ -1132,6 +1139,69 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }).fail(data => {
       this.setState('initial');
       return this.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+    });
+  }
+
+  processExternalLink(cb) {
+    const project = $('.project-input').val(),
+      link = $(this.config.sourceInput).val();
+    if (!this.validateProject(project)) return;
+
+    let requestData = {
+      list: 'exturlusage',
+      eulimit: 500,
+      eunamespace: 0,
+      euquery: link
+    };
+
+    const linkSearchLink = `<a target='_blank' href='https://${project}/w/index.php?target=${link}&title=Special:LinkSearch'>${link}</a>`;
+
+    $('.progress-counter').text($.i18n('fetching-data', 'External link API'));
+    this.massApi(requestData, project, 'euoffset', 'exturlusage').done(data => {
+      if (data.error) {
+        return this.apiErrorReset('External link API', data.error.info);
+      }
+
+      // this happens if there are no external links
+      if (!data.exturlusage[0]) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const pages = data.exturlusage.map(page => page.title).unique();
+
+      if (!pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', linkSearchLink));
+        });
+      }
+
+      // there were more pages that could not be processed as we hit the limit
+      if (data.continue) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set-unknown', linkSearchLink, this.config.apiLimit)
+        );
+      }
+
+      this.getPageViewsData(pages, project).done(pageViewsData => {
+        $('.output-title').html(linkSearchLink);
+        $('.output-params').html($(this.config.dateRangeSelector).val());
+        this.buildMotherDataset(link, linkSearchLink, pageViewsData);
+
+        cb();
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && typeof data.error === 'string') {
+        this.writeMessage(
+          $.i18n('api-error', linkSearchLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', linkSearchLink));
+      }
     });
   }
 
@@ -1188,12 +1258,15 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const source = $('#source_button').data('value');
 
     // special sources that don't use a wiki URL
-    if (source === 'pagepile') {
+    switch (source) {
+    case 'pagepile':
       return this.processPagePile(cb);
-    } else if (source === 'quarry') {
+    case 'quarry':
       return this.processQuarry(cb);
-    } else if (source === 'hashtag') {
+    case 'hashtag':
       return this.processHashtag(cb);
+    case 'external-link':
+      return this.processExternalLink(cb);
     }
 
     // validate wiki URL

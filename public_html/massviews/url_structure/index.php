@@ -34,7 +34,7 @@
           <dl class="dl-horizontal">
             <dt>source</dt>
             <dd>
-              <?php $params = [ '<code>pagepile</code>', '<code>category</code>', '<code>wikilinks</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>hashtag</code>', '<code>quarry</code>' ]; ?>
+              <?php $params = [ '<code>pagepile</code>', '<code>category</code>', '<code>wikilinks</code>', '<code>subpages</code>', '<code>transclusions</code>', '<code>external-link</code>', '<code>hashtag</code>', '<code>quarry</code>' ]; ?>
               <?php $comma = $I18N->msg( 'comma-character' ) . ' '; ?>
               <?php echo $I18N->msg( 'list-values', [ 'variables' => [ implode( $params, $comma ), count( $params ) ], 'parsemag' => true ] ); ?>
             </dd>

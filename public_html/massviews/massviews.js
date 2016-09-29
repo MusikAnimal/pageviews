@@ -82,6 +82,13 @@ var config = {
         return ['<span class=\'glyphicon glyphicon-flash\'></span>' + $.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>"), '<a target=\'_blank\' href=\'//tools.wmflabs.org/hashtags/docs\'>' + $.i18n('hashtag').toLowerCase() + '</a>'];
       },
       type: 'string'
+    },
+    'external-link': {
+      placeholder: '*.nycgo.com',
+      descriptionParams: function descriptionParams() {
+        return ['<a target=\'_blank\' href=\'https://www.mediawiki.org/wiki/Help:Links#External_links\'>' + $.i18n('external-link').toLowerCase() + '</a>'];
+      },
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -93,7 +100,7 @@ var config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }
@@ -253,12 +260,12 @@ var MassViews = function (_mix$with) {
         $('.category-subject-toggle').hide();
       }
 
-      if (source === 'quarry') {
-        $('.massviews-source-input').addClass('quarry');
-        $('.quarry-project').prop('disabled', false);
+      if (source === 'quarry' || source === 'external-link') {
+        $('.massviews-source-input').addClass('project-enabled');
+        $('.project-input').prop('disabled', false);
       } else {
-        $('.massviews-source-input').removeClass('quarry');
-        $('.quarry-project').prop('disabled', true);
+        $('.massviews-source-input').removeClass('project-enabled');
+        $('.project-input').prop('disabled', true);
       }
 
       $(this.config.sourceInput).focus();
@@ -303,8 +310,8 @@ var MassViews = function (_mix$with) {
 
       if (params.source === 'category') {
         params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
-      } else if (params.source === 'quarry') {
-        params.project = $('.quarry-project').val();
+      } else if (params.source === 'quarry' || params.source === 'external-link') {
+        params.project = $('.project-input').val();
       }
 
       if (!forCacheKey) {
@@ -751,8 +758,8 @@ var MassViews = function (_mix$with) {
         _this8[key] = params[key];
       });
 
-      if (params.source === 'quarry' && params.project) {
-        $('.quarry-project').val(params.project);
+      if ((params.source === 'quarry' || params.source === 'external-link') && params.project) {
+        $('.project-input').val(params.project);
       }
 
       if (params.subjectpage === '1') {
@@ -838,6 +845,7 @@ var MassViews = function (_mix$with) {
 
       var pileId = $(this.config.sourceInput).val();
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Page Pile API'));
       this.getPagePile(pileId).done(function (pileData) {
         if (!pileData.pages.length) {
           return _this10.setState('initial', function () {
@@ -894,6 +902,7 @@ var MassViews = function (_mix$with) {
 
       var categoryLink = this.getPageLink(category, project);
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Category API'));
       this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(function (data) {
         if (data.error) {
           return _this11.apiErrorReset('Category API', data.error.info);
@@ -954,6 +963,7 @@ var MassViews = function (_mix$with) {
       var hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
           hashTagLink = '<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/' + hashtag + '">#' + hashtag.escape() + '</a>';
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Hashtag API'));
       $.get('http://tools.wmflabs.org/hashtags/csv/' + hashtag + '?limit=5000').done(function (data) {
         /**
          * CSVToArray code courtesy of Ben Nadel
@@ -1111,6 +1121,7 @@ var MassViews = function (_mix$with) {
 
       var promises = [];
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Allpages API'));
       [namespace, inverseNamespace].forEach(function (apnamespace) {
         var params = {
           list: 'allpages',
@@ -1187,6 +1198,7 @@ var MassViews = function (_mix$with) {
 
       var templateLink = this.getPageLink(template, project);
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Transclusion API'));
       this.massApi(requestData, project, 'ticontinue', function (data) {
         return data.pages[0].transcludedin;
       }).done(function (data) {
@@ -1207,7 +1219,7 @@ var MassViews = function (_mix$with) {
 
         // there were more pages that could not be processed as we hit the limit
         if (data.continue) {
-          _this15.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, _this15.config.apiLimit, _this15.config.apiLimit));
+          _this15.writeMessage($.i18n('massviews-oversized-set-unknown', templateLink, _this15.config.apiLimit));
         }
 
         _this15.getPageViewsData(pages, project).done(function (pageViewsData) {
@@ -1241,6 +1253,7 @@ var MassViews = function (_mix$with) {
 
       var pageLink = this.getPageLink(page, project);
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Links API'));
       this.massApi(requestData, project, 'plcontinue', function (data) {
         return data.pages[0].links;
       }).done(function (data) {
@@ -1248,7 +1261,7 @@ var MassViews = function (_mix$with) {
           return _this16.apiErrorReset('Links API', data.error.info);
         }
 
-        // this happens if there are no transclusions or the template could not be found
+        // this happens if there are no wikilinks or the page could not be found
         if (!data.pages[0]) {
           return _this16.setState('initial', function () {
             _this16.writeMessage($.i18n('api-error-no-data'));
@@ -1294,13 +1307,14 @@ var MassViews = function (_mix$with) {
     value: function processQuarry(cb) {
       var _this17 = this;
 
-      var project = $('.quarry-project').val(),
+      var project = $('.project-input').val(),
           id = $(this.config.sourceInput).val();
       if (!this.validateProject(project)) return;
 
       var url = 'https://quarry.wmflabs.org/query/' + id + '/result/latest/0/json',
           quarryLink = '<a target=\'_blank\' href=\'https://quarry.wmflabs.org/query/' + id + '\'>Quarry ' + id + '</a>';
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Quarry API'));
       $.getJSON(url).done(function (data) {
         var titleIndex = data.headers.indexOf('page_title');
 
@@ -1329,6 +1343,70 @@ var MassViews = function (_mix$with) {
       }).fail(function (data) {
         _this17.setState('initial');
         return _this17.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
+      });
+    }
+  }, {
+    key: 'processExternalLink',
+    value: function processExternalLink(cb) {
+      var _this18 = this;
+
+      var project = $('.project-input').val(),
+          link = $(this.config.sourceInput).val();
+      if (!this.validateProject(project)) return;
+
+      var requestData = {
+        list: 'exturlusage',
+        eulimit: 500,
+        eunamespace: 0,
+        euquery: link
+      };
+
+      var linkSearchLink = '<a target=\'_blank\' href=\'https://' + project + '/w/index.php?target=' + link + '&title=Special:LinkSearch\'>' + link + '</a>';
+
+      $('.progress-counter').text($.i18n('fetching-data', 'External link API'));
+      this.massApi(requestData, project, 'euoffset', 'exturlusage').done(function (data) {
+        if (data.error) {
+          return _this18.apiErrorReset('External link API', data.error.info);
+        }
+
+        // this happens if there are no external links
+        if (!data.exturlusage[0]) {
+          return _this18.setState('initial', function () {
+            _this18.writeMessage($.i18n('api-error-no-data'));
+          });
+        }
+
+        var pages = data.exturlusage.map(function (page) {
+          return page.title;
+        }).unique();
+
+        if (!pages.length) {
+          return _this18.setState('initial', function () {
+            _this18.writeMessage($.i18n('massviews-empty-set', linkSearchLink));
+          });
+        }
+
+        // there were more pages that could not be processed as we hit the limit
+        if (data.continue) {
+          _this18.writeMessage($.i18n('massviews-oversized-set-unknown', linkSearchLink, _this18.config.apiLimit));
+        }
+
+        _this18.getPageViewsData(pages, project).done(function (pageViewsData) {
+          $('.output-title').html(linkSearchLink);
+          $('.output-params').html($(_this18.config.dateRangeSelector).val());
+          _this18.buildMotherDataset(link, linkSearchLink, pageViewsData);
+
+          cb();
+        });
+      }).fail(function (data) {
+        _this18.setState('initial');
+
+        /** structured error comes back as a string, otherwise we don't know what happened */
+        if (data && typeof data.error === 'string') {
+          _this18.writeMessage($.i18n('api-error', linkSearchLink + ': ' + data.error));
+        } else {
+          _this18.writeMessage($.i18n('api-error-unknown', linkSearchLink));
+        }
       });
     }
 
@@ -1380,23 +1458,26 @@ var MassViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput() {
-      var _this18 = this;
+      var _this19 = this;
 
       this.setState('processing');
 
       var cb = function cb() {
-        _this18.setInitialChartType();
-        _this18.renderData();
+        _this19.setInitialChartType();
+        _this19.renderData();
       };
       var source = $('#source_button').data('value');
 
       // special sources that don't use a wiki URL
-      if (source === 'pagepile') {
-        return this.processPagePile(cb);
-      } else if (source === 'quarry') {
-        return this.processQuarry(cb);
-      } else if (source === 'hashtag') {
-        return this.processHashtag(cb);
+      switch (source) {
+        case 'pagepile':
+          return this.processPagePile(cb);
+        case 'quarry':
+          return this.processQuarry(cb);
+        case 'hashtag':
+          return this.processHashtag(cb);
+        case 'external-link':
+          return this.processExternalLink(cb);
       }
 
       // validate wiki URL
@@ -1411,7 +1492,7 @@ var MassViews = function (_mix$with) {
 
       if (!project || !target) {
         return this.setState('initial', function () {
-          _this18.writeMessage($.i18n('invalid-' + (source === 'category' ? 'category' : 'page') + '-url'));
+          _this19.writeMessage($.i18n('invalid-' + (source === 'category' ? 'category' : 'page') + '-url'));
         });
       } else if (!this.validateProject(project)) {
         return;
@@ -1425,7 +1506,7 @@ var MassViews = function (_mix$with) {
           // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
           if ($('.category-subject-toggle--input').is(':checked')) {
             this.fetchSiteInfo(project).then(function () {
-              _this18.processCategory(project, target, cb);
+              _this19.processCategory(project, target, cb);
             });
           } else {
             this.processCategory(project, target, cb);
@@ -1434,7 +1515,7 @@ var MassViews = function (_mix$with) {
         case 'subpages':
           // fetch namespaces first
           this.fetchSiteInfo(project).then(function () {
-            return _this18.processSubpages(project, target, cb);
+            return _this19.processSubpages(project, target, cb);
           });
           break;
         case 'wikilinks':

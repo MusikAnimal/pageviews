@@ -156,6 +156,7 @@
 	"faq-massviews-sources-wikilinks": "Enter the full URL of any page, for example $1.",
 	"faq-massviews-sources-template": "Enter the full URL of a template page, for example $1.",
 	"faq-massviews-sources-subpages": "Enter the full URL of any page, for example $1.",
+	"faq-massviews-sources-external-link": "Enter a URL pattern, for example $1. See the $2 for more information.",
 	"faq-massviews-sources-hashtag": "Enter a hashtag with or without the hash ($1) characer, for example $2. The result set may include pages across multiple wikis. See the $3 for more information. This feature is primarily for editathons and outreach purposes.",
 	"faq-massviews-sources-quarry": "Enter the numeric ID and project of a $1 dataset. The <code>$2</code> column (required) is what will be used as the page titles.",
 	"faq-massviews-subject-page-title": "What is the \"$1\" option?",
@@ -215,6 +216,7 @@
 	"massviews-redirect": "You have been redirected from $1 because you requested more than $2 pages.<br/>$3 was automatically created and will be processed.",
 	"massviews-category-description": "Get the pageviews of pages in a $1",
 	"massviews-wikilinks-description": "Get the pageviews of <a href='$1'>linked pages</a> on a page",
+	"massviews-external-link-description": "Get the pageviews of pages containing an $1",
 	"massviews-pagepile-description": "Get the pageviews of pages in a $1",
 	"massviews-subpages-description": "Get the pageviews of a page and all of its $1",
 	"massviews-transclusions-description": "Get the pageviews of pages that <a href='$1'>transclude</a> a template",
@@ -232,6 +234,7 @@
 	"source": "Source",
 	"category": "Category",
 	"wikilinks": "Wikilinks",
+	"external-link": "External link",
 	"transclusions": "Transclusions",
 	"subpages": "Subpages",
 	"hashtag": "Hashtag",
@@ -270,5 +273,6 @@
 	"list-values": "One of: $1",
 	"comma-character": ",",
 	"processing-page": "Processing page $1 of $2",
+	"fetching-data": "Fetching data from $1",
 	"documentation": "documentation"
 }

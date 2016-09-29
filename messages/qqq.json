@@ -166,6 +166,7 @@
 	"faq-massviews-sources-wikilinks": "FAQ - explanation of what the 'Wikilinks' source in the Massviews tool is. The message 'massviews-wikilinks-description' is shown before this message. $1 is a link to an example page.",
 	"faq-massviews-sources-template": "FAQ - explanation of what the 'Template' source in the Massviews tool is. The message 'massviews-transclusions-description' is shown before this message. $1 is a link to an example template.",
 	"faq-massviews-sources-subpages": "FAQ - explanation of what the 'Subpages' source in the Massviews tool is. The message 'massviews-subpages-description' is shown before this message. $1 is a link to an example page.",
+	"faq-massviews-sources-external-link": "FAQ - explanation of what the 'External link' source in the Massviews tool is. The message 'massviews-external-link-description' is shown before this message. $1 is a link to an example link search, and $2 is a link to the documentation on mediawiki.org, with the message 'documentation' as the link text.",
 	"faq-massviews-sources-hash": "FAQ - explanation of what the 'Hashtag' source in the Massviews tool is. The message 'massviews-hashtag-description' is shown before this message. $1 is the non-translatable hashtag character (#), and $2 is a link to an example hashtag.",
 	"faq-massviews-sources-quarry": "FAQ - explanation of what the 'Quarry' source in the Massviews tool is. The message 'massviews-quarry-description' is shown before this message. $1 is the name of the Quarry tool and $2 is the name of the column that the Quarry dataset is required to have.",
 	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",
@@ -225,6 +226,7 @@
 	"massviews-redirect": "Notice saying the user was redirected from the Pageviews app because they requested too many pages. $1 is the translation for 'title' (Pageviews app name), $2 is the number pages Pageviews can handle, and $3 is a link to the PagePile that was created.",
 	"massviews-category-description": "Description of the 'category' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is a link to a page describing what a category is, with the message 'category' as the link text.",
 	"massviews-wikilinks-description": "Description of the 'wikilinks' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is the URL to a page describing what wikilinks are.",
+	"massviews-external-link-description": "Description of the 'external link' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is the URL to a page describing what external links are, with the message 'external-link' as the link text.",
 	"massviews-pagepile-description": "Description of the 'pagepile' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is a link to the PagePile tool, with the non-translatable name 'PagePile' as the link text.",
 	"massviews-subpages-description": "Description of the 'subpages' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is a link to a page describing what subpages are, with the message 'subpages' as the link text.",
 	"massviews-transclusions-description": "Description of the 'transclusions' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is the URL to a page describing what transclusions are.",
@@ -242,6 +244,7 @@
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"category": "Label for the 'Category' input field on the Massviews tool.\n{{Identical|Category}}",
 	"wikilinks": "Label for the 'Wikilinks' input field on the Massviews tool. Wikilinks are links on a page that link to other pages.\n{{Identical|Wikilink}}",
+	"external-link": "Label for the 'External link' input field on the Massviews tool. An external link is a link on a page that goes to other non-wiki websites.\n{{Identical|External link}}",
 	"transclusions": "Label for the 'Transclusions' input field on the Massviews tool. See the wikidata item for 'transclusion' for possible translations: https://www.wikidata.org/wiki/Q1207412\n{{Identical|Transclusion}}",
 	"subpages": "Label for the 'Subpages' input field on the Massviews tool. See the wikidata item for 'Project:Subpages' for possible translations: https://www.wikidata.org/wiki/Q4592255\n{{Identical|Subpage}}",
 	"hashtag": "Label for the 'hashtag' input field on the Massviews tool. This is the same word you would use for tags like #example on social media sites such as Twitter and Instagram.\n{{Identical|Hashtag}}",
@@ -279,6 +282,7 @@
 	"mainspace-only-option": "Label to show only mainspace pages in the Topviews app.",
 	"list-values": "Used to show a list of values or parameters, and that only one of them can be selected. $1 is the comma-separated list, $2 is the number of items in the list. The PLURAL magic word does not necessarily have to be used.",
 	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.\n{{Identical|,}}",
-	"processing-page": "Text shown below the progress bar in some apps to indicate which page is being process out of how many total pages.",
+	"processing-page": "Text shown below the progress bar in some apps to indicate which page is being process out of how many total pages. $1 is the current page being processed, and $2 is the total number of pages that will be processed.",
+	"fetching-data": "Text shown below the progress bar in some apps to indicate initial data is being fetched. $1 is the name of the API that is being used.",
 	"documentation": "The word documentation. This is used as the text for a link to a documentation page.\n{{Identical|Documentation}}"
 }
