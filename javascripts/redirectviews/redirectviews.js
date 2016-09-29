@@ -77,7 +77,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {null} Nothing
    */
   assignDefaults() {
-    ['sort', 'direction', 'outputData', 'total', 'view'].forEach(defaultKey => {
+    ['sort', 'direction', 'outputData', 'hadFailure', 'total', 'view'].forEach(defaultKey => {
       this[defaultKey] = this.config.defaults[defaultKey];
     });
   }
@@ -133,6 +133,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.outputData = {
       labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
+      link,
       listData: [],
       source: label
     };
@@ -193,6 +194,15 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if (datesWithoutData.length) {
       const dateList = datesWithoutData.map(date => moment(date).format(this.dateFormat));
       this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
+    }
+
+    /**
+     * If there were no failures, cache the result as some datasets can be very large.
+     * There is server cache but there is also processing time that local caching can eliminate
+     */
+    if (!this.hadFailure) {
+      // 10 minutes, TTL is milliseconds
+      simpleStorage.set(this.getCacheKey(), this.outputData, {TTL: 600000});
     }
 
     return this.outputData;
@@ -345,7 +355,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
-    let dfd = $.Deferred(), promises = [], count = 0, hadFailure, failureRetries = {},
+    let dfd = $.Deferred(), promises = [], count = 0, failureRetries = {},
       totalRequestCount = redirectData.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = page => {
@@ -391,13 +401,12 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           );
         }
 
-        hadFailure = true; // don't treat this series of requests as being cached by server
+        // unless it was a 404, don't cache this series of requests
+        if (errorData.status !== 404) hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 
         if (count === totalRequestCount) {
-          dfd.resolve(pageViewsData);
-
           if (failedPages.length) {
             this.writeMessage($.i18n(
               'api-error-timeout',
@@ -407,23 +416,12 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
             ));
           }
 
-          /**
-           * if there were no failures, assume the resource is now cached by the server
-           *   and save this assumption to our own cache so we don't throttle the same requests
-           */
-          if (!hadFailure) {
-            simpleStorage.set(this.getCacheKey(), true, {TTL: 600000});
-          }
+          dfd.resolve(pageViewsData);
         }
       });
     };
 
-    /**
-     * We don't want to throttle requests for cached resources. However in our case,
-     *   we're unable to check response headers to see if the resource was cached,
-     *   so we use simpleStorage to keep track of what the user has recently queried.
-     */
-    const requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
+    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
     redirectData.forEach(page => {
       requestFn(page);
@@ -567,14 +565,32 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.setState('processing');
 
+    const readyForRendering = () => {
+      $('.output-title').html(this.outputData.link);
+      $('.output-params').html($(this.config.dateRangeSelector).val());
+      this.setInitialChartType();
+      this.renderData();
+    };
+
+    if (this.isRequestCached()) {
+      $('.progress-bar').css('width', '100%');
+      $('.progress-counter').text($.i18n('loading-cache'));
+      return setTimeout(() => {
+        this.outputData = simpleStorage.get(this.getCacheKey());
+        readyForRendering();
+      }, 500);
+    }
+
+    $('.progress-counter').text($.i18n('fetching-data', 'Redirects API'));
     this.getRedirects(page).done(redirectData => {
       this.getPageViewsData(redirectData).done(pageViewsData => {
+        $('.progress-bar').css('width', '100%');
+        $('.progress-counter').text($.i18n('building-dataset'));
         const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
-        $('.output-title').html(pageLink);
-        $('.output-params').text($(this.config.dateRangeSelector).val());
-        this.buildMotherDataset(page, pageLink, pageViewsData);
-        this.setInitialChartType();
-        this.renderData();
+        setTimeout(() => {
+          this.buildMotherDataset(page, pageLink, pageViewsData);
+          readyForRendering();
+        }, 250);
       });
     }).fail(error => {
       this.setState('initial');

@@ -1686,13 +1686,18 @@ var ListHelpers = function ListHelpers(superclass) {
     }, {
       key: 'updateProgressBar',
       value: function updateProgressBar(value, total) {
-        if (total) {
-          var percentage = value / total * 100;
-          $('.progress-bar').css('width', percentage.toFixed(2) + '%');
-          $('.progress-counter').text($.i18n('processing-page', value, total));
-        } else {
+        if (!total) {
           $('.progress-bar').css('width', '0%');
-          $('.progress-counter').text('');
+          return $('.progress-counter').text('');
+        }
+
+        var percentage = value / total * 100;
+        $('.progress-bar').css('width', percentage.toFixed(2) + '%');
+
+        if (value === total) {
+          $('.progress-counter').text('Building dataset...');
+        } else {
+          $('.progress-counter').text($.i18n('processing-page', value, total));
         }
       }
     }]);

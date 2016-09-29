@@ -19,6 +19,7 @@ const config = {
     sort: 'views',
     direction: 1,
     outputData: [],
+    hadFailure: false,
     total: 0,
     view: 'list'
   },

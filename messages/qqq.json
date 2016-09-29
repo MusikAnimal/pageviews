@@ -284,5 +284,7 @@
 	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.\n{{Identical|,}}",
 	"processing-page": "Text shown below the progress bar in some apps to indicate which page is being process out of how many total pages. $1 is the current page being processed, and $2 is the total number of pages that will be processed.",
 	"fetching-data": "Text shown below the progress bar in some apps to indicate initial data is being fetched. $1 is the name of the API that is being used.",
-	"documentation": "The word documentation. This is used as the text for a link to a documentation page.\n{{Identical|Documentation}}"
+	"documentation": "The word documentation. This is used as the text for a link to a documentation page.\n{{Identical|Documentation}}",
+	"building-dataset": "Message shown on the Massviews tool when data is being put together to be shown to the user. This is different than the 'fetching-data' message.",
+	"loading-cache": "Message shown on the Massviews tool whend data is being loaded from cache, as opposed to being loaded from the server. See the wikidata item for 'Cache (computing)' for a list of possible translations for the word 'cache': https://www.wikidata.org/wiki/Q165596"
 }

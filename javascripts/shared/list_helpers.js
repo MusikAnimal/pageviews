@@ -257,15 +257,20 @@ const ListHelpers = superclass => class extends superclass {
    * @return {null} nothing
    */
   updateProgressBar(value, total) {
-    if (total) {
-      const percentage = (value / total) * 100;
-      $('.progress-bar').css('width', `${percentage.toFixed(2)}%`);
+    if (!total) {
+      $('.progress-bar').css('width', '0%');
+      return $('.progress-counter').text('');
+    }
+
+    const percentage = (value / total) * 100;
+    $('.progress-bar').css('width', `${percentage.toFixed(2)}%`);
+
+    if (value === total) {
+      $('.progress-counter').text('Building dataset...');
+    } else {
       $('.progress-counter').text(
         $.i18n('processing-page', value, total)
       );
-    } else {
-      $('.progress-bar').css('width', '0%');
-      $('.progress-counter').text('');
     }
   }
 };

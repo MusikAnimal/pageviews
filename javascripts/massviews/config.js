@@ -22,6 +22,7 @@ const config = {
     sourceProject: '',
     direction: 1,
     outputData: [],
+    hadFailure: false,
     total: 0,
     view: 'list',
     subjectpage: 0

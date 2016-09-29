@@ -274,5 +274,7 @@
 	"comma-character": ",",
 	"processing-page": "Processing page $1 of $2",
 	"fetching-data": "Fetching data from $1",
-	"documentation": "documentation"
+	"documentation": "documentation",
+	"building-dataset": "Building dataset...",
+	"loading-cache": "Loading from cache..."
 }

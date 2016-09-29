@@ -25,6 +25,7 @@ var config = {
     sourceProject: '',
     direction: 1,
     outputData: [],
+    hadFailure: false,
     total: 0,
     view: 'list',
     subjectpage: 0
@@ -230,7 +231,7 @@ var MassViews = function (_mix$with) {
     value: function assignDefaults() {
       var _this3 = this;
 
-      ['sort', 'source', 'direction', 'outputData', 'total', 'view', 'subjectpage'].forEach(function (defaultKey) {
+      ['sort', 'source', 'direction', 'outputData', 'hadFailure', 'total', 'view', 'subjectpage'].forEach(function (defaultKey) {
         _this3[defaultKey] = _this3.config.defaults[defaultKey];
       });
     }
@@ -366,7 +367,7 @@ var MassViews = function (_mix$with) {
 
         // update message for pages column
         if (['wikilinks', 'subpages', 'transclusions'].includes(source)) {
-          pageColumnMessage = $.i18n('num-' + source, sortedDatasets.length - 1);
+          pageColumnMessage = $.i18n('num-' + source, sortedDatasets.length - (source === 'subpages' ? 1 : 0));
         } else {
           pageColumnMessage = $.i18n('num-pages', sortedDatasets.length);
         }
@@ -419,7 +420,6 @@ var MassViews = function (_mix$with) {
 
       var dfd = $.Deferred(),
           count = 0,
-          hadFailure = void 0,
           failureRetries = {},
           totalRequestCount = pages.length,
           failedPages = [],
@@ -474,40 +474,27 @@ var MassViews = function (_mix$with) {
             _this5.writeMessage(_this5.getPageLink(page, queryProject) + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
-          // unless it was a 404, don't treat this series of requests as being cached by server
+          // unless it was a 404, don't cache this series of requests
           if (errorData.status !== 404) hadFailure = true;
         }).always(function () {
           _this5.updateProgressBar(++count, totalRequestCount);
 
           if (count === totalRequestCount) {
-            dfd.resolve(pageViewsData);
-
             if (failedPages.length) {
               _this5.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
                 return '<li>' + _this5.getPageLink(failedPage, queryProject) + '</li>';
               }).join('') + '</ul>'));
             }
 
-            /**
-             * if there were no failures, assume the resource is now cached by the server
-             *   and save this assumption to our own cache so we don't throttle the same requests
-             */
-            if (!hadFailure) {
-              simpleStorage.set(_this5.getCacheKey(), true, { TTL: 600000 });
-            }
+            dfd.resolve(pageViewsData);
           }
         });
       };
 
-      /**
-       * We don't want to throttle requests for cached resources. However in our case,
-       *   we're unable to check response headers to see if the resource was cached,
-       *   so we use simpleStorage to keep track of what the user has recently queried.
-       */
-      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
+      var requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
       pages.forEach(function (page, index) {
-        requestFn(page, index);
+        requestFn(page);
       });
 
       return dfd;
@@ -640,6 +627,15 @@ var MassViews = function (_mix$with) {
           return moment(date).format(_this6.dateFormat);
         });
         this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
+      }
+
+      /**
+       * If there were no failures, cache the result as some datasets can be very large.
+       * There is server cache but there is also processing time that local caching can eliminate
+       */
+      if (!this.hadFailure) {
+        // 10 minutes, TTL is milliseconds
+        simpleStorage.set(this.getCacheKey(), this.outputData, { TTL: 600000 });
       }
 
       return this.outputData;
@@ -872,9 +868,7 @@ var MassViews = function (_mix$with) {
           $('.output-title').text(label).prop('href', _this10.getPileURL(pileData.id));
           $('.output-params').html('\n          ' + $(_this10.config.dateRangeSelector).val() + '\n          &mdash;\n          <a href="https://' + project.escape() + '" target="_blank">\n            ' + project.replace(/.org$/, '').escape() + '\n          </a>\n          ');
 
-          _this10.buildMotherDataset(label, _this10.getPileLink(pileData.id), pageViewsData);
-
-          cb();
+          cb(label, _this10.getPileLink(pileData.id), pageViewsData);
         });
       }).fail(function (error) {
         _this10.setState('initial');
@@ -938,11 +932,7 @@ var MassViews = function (_mix$with) {
         var pageNames = _this11.mapCategoryPageNames(pages, namespaces);
 
         _this11.getPageViewsData(pageNames, project).done(function (pageViewsData) {
-          $('.output-title').html(categoryLink);
-          $('.output-params').html($(_this11.config.dateRangeSelector).val());
-          _this11.buildMotherDataset(category, categoryLink, pageViewsData);
-
-          cb();
+          cb(category, categoryLink, pageViewsData);
         });
       }).fail(function (data) {
         _this11.setState('initial');
@@ -1042,17 +1032,13 @@ var MassViews = function (_mix$with) {
           }
 
           _this12.getPageViewsData(pageURLs).done(function (pageViewsData) {
-            $('.output-title').html(hashTagLink);
-            $('.output-params').html($(_this12.config.dateRangeSelector).val());
-            _this12.buildMotherDataset(hashtag, hashTagLink, pageViewsData);
-
-            cb();
+            cb(hashtag, hashTagLink, pageViewsData);
           });
         }).fail(function () {
-          return apiErrorReset('Siteinfo API');
+          return _this12.apiErrorReset('Siteinfo API');
         });
       }).fail(function () {
-        return apiErrorReset('Hashtag API');
+        return _this12.apiErrorReset('Hashtag API');
       });
     }
 
@@ -1168,11 +1154,7 @@ var MassViews = function (_mix$with) {
         }));
 
         _this14.getPageViewsData(pageNames, project).done(function (pageViewsData) {
-          $('.output-title').html(pageLink);
-          $('.output-params').html($(_this14.config.dateRangeSelector).val());
-          _this14.buildMotherDataset(targetPage, pageLink, pageViewsData);
-
-          cb();
+          cb(targetPage, pageLink, pageViewsData);
         });
       }).fail(function (data) {
         _this14.setState('initial');
@@ -1223,11 +1205,7 @@ var MassViews = function (_mix$with) {
         }
 
         _this15.getPageViewsData(pages, project).done(function (pageViewsData) {
-          $('.output-title').html(templateLink);
-          $('.output-params').html($(_this15.config.dateRangeSelector).val());
-          _this15.buildMotherDataset(template, templateLink, pageViewsData);
-
-          cb();
+          cb(template, templateLink, pageViewsData);
         });
       }).fail(function (data) {
         _this15.setState('initial');
@@ -1285,21 +1263,11 @@ var MassViews = function (_mix$with) {
         }
 
         _this16.getPageViewsData(pages, project).done(function (pageViewsData) {
-          $('.output-title').html(pageLink);
-          $('.output-params').html($(_this16.config.dateRangeSelector).val());
-          _this16.buildMotherDataset(page, pageLink, pageViewsData);
-
-          cb();
+          cb(page, pageLink, pageViewsData);
         });
       }).fail(function (data) {
-        _this16.setState('initial');
-
-        /** structured error comes back as a string, otherwise we don't know what happened */
-        if (data && typeof data.error === 'string') {
-          _this16.writeMessage($.i18n('api-error', pageLink + ': ' + data.error));
-        } else {
-          _this16.writeMessage($.i18n('api-error-unknown', pageLink));
-        }
+        var errorMessage = data && typeof data.error === 'string' ? data.error : null;
+        _this16.apiErrorReset('Links API', errorMessage);
       });
     }
   }, {
@@ -1334,11 +1302,7 @@ var MassViews = function (_mix$with) {
         }
 
         _this17.getPageViewsData(titles, project).done(function (pageViewsData) {
-          $('.output-title').html(quarryLink);
-          $('.output-params').html($(_this17.config.dateRangeSelector).val());
-          _this17.buildMotherDataset(id, quarryLink, pageViewsData);
-
-          cb();
+          cb(id, quarryLink, pageViewsData);
         });
       }).fail(function (data) {
         _this17.setState('initial');
@@ -1392,11 +1356,7 @@ var MassViews = function (_mix$with) {
         }
 
         _this18.getPageViewsData(pages, project).done(function (pageViewsData) {
-          $('.output-title').html(linkSearchLink);
-          $('.output-params').html($(_this18.config.dateRangeSelector).val());
-          _this18.buildMotherDataset(link, linkSearchLink, pageViewsData);
-
-          cb();
+          cb(link, linkSearchLink, pageViewsData);
         });
       }).fail(function (data) {
         _this18.setState('initial');
@@ -1462,10 +1422,31 @@ var MassViews = function (_mix$with) {
 
       this.setState('processing');
 
-      var cb = function cb() {
+      var readyForRendering = function readyForRendering() {
+        $('.output-title').html(_this19.outputData.link);
+        $('.output-params').html($(_this19.config.dateRangeSelector).val());
         _this19.setInitialChartType();
         _this19.renderData();
       };
+
+      if (this.isRequestCached()) {
+        $('.progress-bar').css('width', '100%');
+        $('.progress-counter').text($.i18n('loading-cache'));
+        return setTimeout(function () {
+          _this19.outputData = simpleStorage.get(_this19.getCacheKey());
+          readyForRendering();
+        }, 500);
+      }
+
+      var cb = function cb(label, link, datasets) {
+        $('.progress-bar').css('width', '100%');
+        $('.progress-counter').text($.i18n('building-dataset'));
+        setTimeout(function () {
+          _this19.buildMotherDataset(label, link, datasets);
+          readyForRendering();
+        }, 250);
+      };
+
       var source = $('#source_button').data('value');
 
       // special sources that don't use a wiki URL
@@ -2823,13 +2804,18 @@ var ListHelpers = function ListHelpers(superclass) {
     }, {
       key: 'updateProgressBar',
       value: function updateProgressBar(value, total) {
-        if (total) {
-          var percentage = value / total * 100;
-          $('.progress-bar').css('width', percentage.toFixed(2) + '%');
-          $('.progress-counter').text($.i18n('processing-page', value, total));
-        } else {
+        if (!total) {
           $('.progress-bar').css('width', '0%');
-          $('.progress-counter').text('');
+          return $('.progress-counter').text('');
+        }
+
+        var percentage = value / total * 100;
+        $('.progress-bar').css('width', percentage.toFixed(2) + '%');
+
+        if (value === total) {
+          $('.progress-counter').text('Building dataset...');
+        } else {
+          $('.progress-counter').text($.i18n('processing-page', value, total));
         }
       }
     }]);

@@ -52,6 +52,7 @@ var config = {
     sort: 'views',
     direction: 1,
     outputData: [],
+    hadFailure: false,
     total: 0,
     view: 'list'
   },
@@ -191,7 +192,7 @@ var LangViews = function (_mix$with) {
     value: function assignDefaults() {
       var _this3 = this;
 
-      ['sort', 'direction', 'outputData', 'total', 'view'].forEach(function (defaultKey) {
+      ['sort', 'direction', 'outputData', 'hadFailure', 'total', 'view'].forEach(function (defaultKey) {
         _this3[defaultKey] = _this3.config.defaults[defaultKey];
       });
     }
@@ -338,6 +339,15 @@ var LangViews = function (_mix$with) {
           return moment(date).format(_this4.dateFormat);
         });
         this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
+      }
+
+      /**
+       * If there were no failures, cache the result as some datasets can be very large.
+       * There is server cache but there is also processing time that local caching can eliminate
+       */
+      if (!this.hadFailure) {
+        // 10 minutes, TTL is milliseconds
+        simpleStorage.set(this.getCacheKey(), this.outputData, { TTL: 600000 });
       }
 
       return this.outputData;
@@ -502,7 +512,6 @@ var LangViews = function (_mix$with) {
       var dfd = $.Deferred(),
           promises = [],
           count = 0,
-          hadFailure = void 0,
           failureRetries = {},
           totalRequestCount = interWikiKeys.length,
           failedPages = [],
@@ -549,36 +558,24 @@ var LangViews = function (_mix$with) {
             _this6.writeMessage(failedPageLink + ': ' + $.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
           }
 
-          hadFailure = true; // don't treat this series of requests as being cached by server
+          // unless it was a 404, don't cache this series of requests
+          if (errorData.status !== 404) hadFailure = true;
         }).always(function () {
           _this6.updateProgressBar(++count, totalRequestCount);
 
           if (count === totalRequestCount) {
-            dfd.resolve(pageViewsData);
-
             if (failedPages.length) {
               _this6.writeMessage($.i18n('api-error-timeout', '<ul>' + failedPages.map(function (failedPage) {
                 return '<li>' + failedPage + '</li>';
               }).join('') + '</ul>'));
             }
 
-            /**
-             * if there were no failures, assume the resource is now cached by the server
-             *   and save this assumption to our own cache so we don't throttle the same requests
-             */
-            if (!hadFailure) {
-              simpleStorage.set(_this6.getCacheKey(), true, { TTL: 600000 });
-            }
+            dfd.resolve(pageViewsData);
           }
         });
       };
 
-      /**
-       * We don't want to throttle requests for cached resources. However in our case,
-       *   we're unable to check response headers to see if the resource was cached,
-       *   so we use simpleStorage to keep track of what the user has recently queried.
-       */
-      var requestFn = this.isRequestCached() ? makeRequest : this.rateLimit(makeRequest, this.config.apiThrottle, this);
+      var requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
       interWikiKeys.forEach(function (dbName, index) {
         requestFn(dbName);
@@ -750,18 +747,36 @@ var LangViews = function (_mix$with) {
 
       this.setState('processing');
 
+      var readyForRendering = function readyForRendering() {
+        $('.output-title').html(_this9.outputData.link);
+        $('.output-params').html($(_this9.config.dateRangeSelector).val());
+        _this9.setInitialChartType();
+        _this9.renderData();
+      };
+
+      if (this.isRequestCached()) {
+        $('.progress-bar').css('width', '100%');
+        $('.progress-counter').text($.i18n('loading-cache'));
+        return setTimeout(function () {
+          _this9.outputData = simpleStorage.get(_this9.getCacheKey());
+          readyForRendering();
+        }, 500);
+      }
+
       var dbName = Object.keys(siteMap).find(function (key) {
         return siteMap[key] === $(_this9.config.projectInput).val();
       });
 
+      $('.progress-counter').text($.i18n('fetching-data', 'Wikidata'));
       this.getInterwikiData(dbName, page).done(function (interWikiData) {
         _this9.getPageViewsData(interWikiData).done(function (pageViewsData) {
+          $('.progress-bar').css('width', '100%');
+          $('.progress-counter').text($.i18n('building-dataset'));
           var pageLink = _this9.getPageLink(decodeURIComponent(page), _this9.project);
-          $('.output-title').html(pageLink);
-          $('.output-params').text($(_this9.config.dateRangeSelector).val());
-          _this9.buildMotherDataset(page, pageLink, pageViewsData);
-          _this9.setInitialChartType();
-          _this9.renderData();
+          setTimeout(function () {
+            _this9.buildMotherDataset(page, pageLink, pageViewsData);
+            readyForRendering();
+          }, 250);
         });
       }).fail(function (error) {
         _this9.setState('initial');
@@ -2139,13 +2154,18 @@ var ListHelpers = function ListHelpers(superclass) {
     }, {
       key: 'updateProgressBar',
       value: function updateProgressBar(value, total) {
-        if (total) {
-          var percentage = value / total * 100;
-          $('.progress-bar').css('width', percentage.toFixed(2) + '%');
-          $('.progress-counter').text($.i18n('processing-page', value, total));
-        } else {
+        if (!total) {
           $('.progress-bar').css('width', '0%');
-          $('.progress-counter').text('');
+          return $('.progress-counter').text('');
+        }
+
+        var percentage = value / total * 100;
+        $('.progress-bar').css('width', percentage.toFixed(2) + '%');
+
+        if (value === total) {
+          $('.progress-counter').text('Building dataset...');
+        } else {
+          $('.progress-counter').text($.i18n('processing-page', value, total));
         }
       }
     }]);
