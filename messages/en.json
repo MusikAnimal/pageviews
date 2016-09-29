@@ -157,7 +157,7 @@
 	"faq-massviews-sources-template": "Enter the full URL of a template page, for example $1.",
 	"faq-massviews-sources-subpages": "Enter the full URL of any page, for example $1.",
 	"faq-massviews-sources-external-link": "Enter a URL pattern, for example $1. See the $2 for more information.",
-	"faq-massviews-sources-hashtag": "Enter a hashtag with or without the hash ($1) characer, for example $2. The result set may include pages across multiple wikis. See the $3 for more information. This feature is primarily for editathons and outreach purposes.",
+	"faq-massviews-sources-hashtag": "Enter a hashtag with or without the hash ($1) character, for example $2. The result set may include pages across multiple wikis. See the $3 for more information. This feature is primarily for editathons and outreach purposes.",
 	"faq-massviews-sources-quarry": "Enter the numeric ID and project of a $1 dataset. The <code>$2</code> column (required) is what will be used as the page titles.",
 	"faq-massviews-subject-page-title": "What is the \"$1\" option?",
 	"faq-massviews-subject-page-body": "This option is for when you are using a category as the source. In some cases the category may contain talk pages when you actually want the subject pages. For instance <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City articles</a>, which lists the talk pages of FA-quality articles within WikiProject New York City.",
