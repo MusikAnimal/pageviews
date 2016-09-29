@@ -50,8 +50,6 @@
 	"url-structure": "Link to documentation about the URL structure used by the tool",
 	"view-source": "Link to the source code for the tool\n{{Identical|View source}}",
 	"report-issue": "Link to report an issue or bug with the tool",
-	"rest-api": "Link to the API documentation",
-	"maintainer": "Link to the project maintainer. This is used in a sentence.",
 	"ok": "Label for button\n{{Identical|OK}}",
 	"chart-types": "Header for the interface that lets the user choose what type of chart they want",
 	"daily-pageviews": "Label for chart options that show daily pageviews for each article",
