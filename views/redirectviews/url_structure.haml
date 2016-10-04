@@ -4,7 +4,7 @@
     - include '../../_head.php'
     %title
       = $I18N->msg( 'redirectviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
-  %body
+  %body.clearfix
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -40,9 +40,9 @@
               = $I18N->msg( 'url-structure-page' )
               = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
             - $defaultRange = 'latest'
-            - include "../../url_parts/date_ranges.php"
-            - include "../../url_parts/platform.php"
-            - include "../../url_parts/agent.php"
+            - include "../../url_parts/_date_ranges.php"
+            - include "../../url_parts/_platform.php"
+            - include "../../url_parts/_agent.php"
             %dt sort
             %dd
               - $values = [ '<code>title</code>', '<code>section</code>', '<code>views</code>' ]
@@ -55,5 +55,5 @@
           %a(href="/redirectviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'redirectviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "redirectviews";
-        -include "../../_footer.php";
+      - $currentApp = "redirectviews";
+      -include "../../_footer.php";

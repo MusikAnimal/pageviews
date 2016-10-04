@@ -43,5 +43,14 @@
         "keywords": "massviews,pageviews,page views,traffic,visitors,statistics,stats,views,glam",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
+    },
+    {
+        "name" : "redirectviews",
+        "title": "Redirect Views",
+        "description": "Get the pageviews of all redirects to a page",
+        "url": "https://tools.wmflabs.org/redirectviews",
+        "keywords": "redirectviews,redirects,pageviews,page views,traffic,visitors,statistics,stats,views",
+        "author": "MusikAnimal",
+        "repository": "https://github.com/MusikAnimal/pageviews"
     }
 ]

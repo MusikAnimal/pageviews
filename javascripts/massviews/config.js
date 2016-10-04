@@ -27,7 +27,7 @@ const config = {
     view: 'list',
     subjectpage: 0
   },
-  linearLegend: (datasets, scope) => {
+  chartLegend: scope => {
     return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.outputData.sum)}
       (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },

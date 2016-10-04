@@ -1,5 +1,6 @@
 {
     "require": {
+        "mthaml/mthaml": "1.8.0",
         "Krinkle/intuition": "^0.2.3",
         "whichbrowser/parser": "^2.0"
     }

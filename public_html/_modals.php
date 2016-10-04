@@ -123,19 +123,19 @@
           <?php echo $I18N->msg( 'chart-preferences' ); ?>
           <div class="checkbox">
             <label>
-              <input class="js-test-bezier-curve" name="autoLogDetection" type="checkbox">
+              <input class="js-test-autolog" name="autoLogDetection" type="checkbox">
               <?php echo $I18N->msg( 'autolog-option' ); ?>
             </label>
           </div>
           <div class="checkbox">
             <label>
-              <input class="js-test-bezier-curve" name="beginAtZero" type="checkbox">
+              <input class="js-test-begin-at-zero" name="beginAtZero" type="checkbox">
               <?php echo $I18N->msg( 'begin-at-zero-option' ); ?>
             </label>
           </div>
           <div class="checkbox">
             <label>
-              <input class="js-test-bezier-curve" name="rememberChart" type="checkbox">
+              <input class="js-test-remember-chart" name="rememberChart" type="checkbox">
               <?php echo $I18N->msg( 'remember-chart-option' ); ?>
             </label>
           </div>

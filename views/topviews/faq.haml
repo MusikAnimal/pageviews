@@ -4,7 +4,7 @@
     - include "../../_head.php"
     %title
       = $I18N->msg( 'topviews-title' ) . ' - ' . $I18N->msg( 'faq' )
-  %body
+  %body.clearfix
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -23,13 +23,13 @@
               = $I18N->msg( 'faq-topviews-false-positive-body1')
             %p
               = $I18N->msg( 'faq-topviews-false-positive-body2')
-          - include "../../faq_parts/old_data.php"
-          - include "../../faq_parts/todays_data.php"
-          - include "../../faq_parts/feedback.php"
+          - include "../../faq_parts/_old_data.php"
+          - include "../../faq_parts/_todays_data.php"
+          - include "../../faq_parts/_feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "topviews";
-        - include "../../_footer.php";
+      - $currentApp = "topviews";
+      - include "../../_footer.php";

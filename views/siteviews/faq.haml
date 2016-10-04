@@ -4,7 +4,7 @@
     - include '../../_head.php'
     %title
       = $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' )
-  %body
+  %body.clearfix
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -15,8 +15,8 @@
 
       %main.col-lg-10.col-lg-offset-1
         %ul.list-group
-          - include "../../faq_parts/old_data.php"
-          - include "../../faq_parts/todays_data.php"
+          - include "../../faq_parts/_old_data.php"
+          - include "../../faq_parts/_todays_data.php"
           %li.list-group-item
             %p
               %strong= $I18N->msg( 'faq-source-title' )
@@ -27,18 +27,18 @@
               %li
                 %i= $I18N->msg( 'unique-devices' )
                 = $I18N->msg( 'faq-source-unique-devices' )
-          - include "../../faq_parts/agents.php"
-          - include "../../faq_parts/chart_type.php"
+          - include "../../faq_parts/_agents.php"
+          - include "../../faq_parts/_chart_type.php"
           %li.list-group-item
             %p
               %strong= $I18N->msg( 'faq-top-viewed-title' )
             %p
               = $I18N->msg( 'faq-try-tool', array( 'variables' => array( "<a href='/topviews'>" . $I18N->msg( 'topviews-title' ) . "</a>" ), 'parsemag' => true ) )
-          - include "../../faq_parts/feedback.php"
+          - include "../../faq_parts/_feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/siteviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'siteviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "siteviews";
-        - include "../../_footer.php"
+      - $currentApp = "siteviews";
+      - include "../../_footer.php"

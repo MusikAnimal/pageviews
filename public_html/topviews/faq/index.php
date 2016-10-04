@@ -6,7 +6,7 @@
       <?php echo $I18N->msg( 'topviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
-  <body>
+  <body class="clearfix">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -33,18 +33,18 @@
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body2'); ?>
             </p>
           </li>
-          <?php include "../../faq_parts/old_data.php"; ?>
-          <?php include "../../faq_parts/todays_data.php"; ?>
-          <?php include "../../faq_parts/feedback.php"; ?>
+          <?php include "../../faq_parts/_old_data.php"; ?>
+          <?php include "../../faq_parts/_todays_data.php"; ?>
+          <?php include "../../faq_parts/_feedback.php"; ?>
         </ul>
         <div class="col-lg-12 text-center tm">
           <a href="/topviews">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $currentApp = "topviews"; ?>
-        <?php include "../../_footer.php"; ?>
       </main>
+      <?php $currentApp = "topviews"; ?>
+      <?php include "../../_footer.php"; ?>
     </div>
   </body>
 </html>

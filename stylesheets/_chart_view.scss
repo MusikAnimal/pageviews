@@ -1,9 +1,18 @@
 @import 'mixins';
 
-// Fix chart position
-// .aqs-chart {
-//   margin-left: -12px;
-// }
+body.initial {
+  .data-links {
+    visibility: hidden;
+  }
+
+  .output-list,
+  .table-view,
+  .summary-column,
+  .single-page-stats,
+  .single-page-ranking {
+    display: none !important;
+  }
+}
 
 @each $type in ('line' 'bar' 'pie' 'doughnut' 'radar' 'polararea') {
   .#{$type}-legend {
@@ -26,6 +35,72 @@
   }
 }
 
+.page-selector {
+  border-right: solid 1px $light-gray;
+
+  .page-selector--container > div {
+    margin-bottom: 10px;
+  }
+}
+
+.summary-column {
+  border-left: solid 1px $light-gray;
+}
+
+.remove-page {
+  color: $link;
+  cursor: pointer;
+}
+
+.data-links {
+  margin-top: 15px;
+}
+
+.table-view {
+  display: none;
+}
+
+.table .table-view--header th {
+  vertical-align: top;
+}
+
+.table .output-list td {
+  vertical-align: middle;
+}
+
+.table-view--color-col {
+  padding-right: 0;
+}
+
+.table-view--color-block {
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+
+.table-view--summary-row th {
+  // scss-lint:disable ImportantRule
+  border-top-width: 2px !important;
+}
+
+.single-page-stats {
+  margin-top: 5px;
+
+  .text-muted {
+    font-weight: normal;
+  }
+}
+
+.single-page-ranking {
+  font-weight: normal;
+  margin-top: 20px;
+}
+
+.clear-pages {
+  cursor: pointer;
+  display: none;
+}
+
 .modal-chart-type {
   display: inline-block;
   margin-right: -4px;
@@ -39,20 +114,25 @@
   }
 }
 
+.chart-legend,
+.single-page-legend {
+  padding: 0;
+
+  hr {
+    margin: 10px 0 5px;
+  }
+
+  .legend-block {
+    padding-bottom: 10px;
+  }
+}
+
 .linear-legend {
-  background: $white;
-  border: solid 1px $gray;
   border-radius: 5px;
-  float: left;
   line-height: 15px;
   margin-bottom: 6px;
-  margin-right: 6px;
   overflow: hidden; // to make --label have the same border-radius
-  width: calc(100% / 3 - 4px);
-
-  &:nth-child(3n) {
-    margin: 0;
-  }
+  width: 100%;
 
   a {
     float: none;
@@ -64,15 +144,18 @@
 }
 
 .linear-legend--label {
+  margin-bottom: 5px;
   padding: 5px 10px;
   width: 100%;
 }
 
 .linear-legend--counts {
-  padding: 5px 10px 0;
+  margin-bottom: 5px;
 }
 
 .linear-legend--links {
+  border-top: solid 1px $gray;
+  margin-top: 3px;
   padding: 5px 10px;
 }
 
@@ -81,4 +164,35 @@
   height: 30px;
   line-height: 30px;
   margin: 0 0 0 10px;
+}
+
+.latest-group {
+  position: absolute;
+  right: 0;
+  top: -2px;
+
+  .dropdown-menu {
+    min-width: auto;
+  }
+}
+
+.date-selector-label {
+  position: relative;
+}
+
+@media (max-width: $screen-sm) {
+  .chart-buttons {
+    float: left;
+  }
+
+  .chart-toggles {
+    clear: both;
+    float: left;
+    margin-top: 6px;
+  }
+}
+
+.num-entities-info {
+  font-weight: normal;
+  margin-left: 10px;
 }

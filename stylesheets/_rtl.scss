@@ -6,14 +6,6 @@
 
 @import 'mixins';
 
-.container {
-  direction: rtl;
-}
-
-.chart-container {
-  direction: rtl;
-}
-
 .date-latest,
 .pull-right {
   float: left !important;
@@ -23,13 +15,38 @@
   float: right !important;
 }
 
-.lang-group {
+.latest-group {
   left: 0;
+  right: initial;
+}
+
+.num-entities-info {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.lang-group {
+  margin-left: 5px;
   right: initial;
 
   .dropdown-menu {
     left: 0;
     right: auto;
+    text-align: right;
+  }
+}
+
+.download-btn-group {
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+    text-align: right;
+  }
+}
+
+.table {
+  td,
+  th {
     text-align: right;
   }
 }
@@ -182,5 +199,15 @@ input[type=checkbox] {
     .input-group-btn {
       margin-left: -3px;
     }
+  }
+}
+
+#toast-container {
+  > div {
+    padding: 15px 15px 15px 25px !important;
+  }
+
+  .toast-message {
+    padding-right: 50px;
   }
 }

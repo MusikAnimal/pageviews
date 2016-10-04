@@ -11,91 +11,118 @@
  * @type {Object}
  */
 const templates = {
-  linearLegend(datasets, scope) {
-    let markup = '';
-    if (datasets.length === 1) {
-      const dataset = datasets[0];
-      return `<div class="linear-legend--totals">
-        <strong>${$.i18n('totals')}:</strong>
-        ${scope.formatNumber(dataset.sum)} (${scope.formatNumber(dataset.average)}/${$.i18n('day')})
-        &bullet;
-        <a href="${scope.getLangviewsURL(dataset.label)}" target="_blank">${$.i18n('all-languages')}</a>
-        &bullet;
-        <a href="${scope.getRedirectviewsURL(dataset.label)}" target="_blank">${$.i18n('redirects')}</a>
-        &bullet;
-        <a href="${scope.getExpandedPageURL(dataset.label)}&action=history" target="_blank">${$.i18n('history')}</a>
-        &bullet;
-        <a href="${scope.getExpandedPageURL(dataset.label)}&action=info" target="_blank">${$.i18n('info')}</a>
-      </div>`;
-    }
+  chartLegend(scope) {
+    const dataList = (entity, multiEntity = false) => {
+      let editsLink;
 
-    if (datasets.length > 1) {
-      const total = datasets.reduce((a,b) => a + b.sum, 0);
-      markup = `<div class="linear-legend--totals">
-        <strong>${$.i18n('totals')}:</strong>
-        ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
-      </div>`;
-    }
-    markup += '<div class="linear-legends">';
+      if (multiEntity) {
+        editsLink = scope.formatNumber(entity.num_edits);
+      } else {
+        editsLink = scope.getHistoryLink(entity.label, scope.formatNumber(entity.num_edits));
+      }
 
-    for (let i = 0; i < datasets.length; i++) {
-      markup += `
-        <span class="linear-legend">
-          <div class="linear-legend--label" style="background-color:${scope.rgba(datasets[i].color, 0.8)}">
-            <a href="${scope.getPageURL(datasets[i].label)}" target="_blank">${datasets[i].label}</a>
-          </div>
-          <div class="linear-legend--counts">
-            ${scope.formatNumber(datasets[i].sum)} (${scope.formatNumber(datasets[i].average)}/${$.i18n('day')})
-          </div>
+      let infoHash = {
+        [$.i18n('pageviews')]: {
+          [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
+          [$.i18n('daily-average')]: scope.formatNumber(entity.average)
+        },
+        [$.i18n('revisions')]: {
+          [$.i18n('edits')]: editsLink,
+          [$.i18n('editors')]: scope.formatNumber(entity.num_users)
+        },
+        [$.i18n('basic-information')]: {
+          [$.i18n('watchers')]: entity.watchers ? scope.formatNumber(entity.watchers) : $.i18n('unknown')
+        }
+      };
+
+      if (!multiEntity) {
+        Object.assign(infoHash[$.i18n('basic-information')], {
+          [$.i18n('size')]: entity.length ? scope.formatNumber(entity.length) : '',
+          [$.i18n('protection')]: entity.protection
+        });
+      }
+
+      let markup = '';
+
+      for (let block in infoHash) {
+        const blockId = block.toLowerCase().score();
+        markup += `<div class='legend-block legend-block--${blockId}'>
+          <h5>${block}</h5><hr/>
+          <div class='legend-block--body'>`;
+        for (let key in infoHash[block]) {
+          const value = infoHash[block][key];
+          if (!value) continue;
+          markup += `
+            <div class="linear-legend--counts">
+              ${key}:
+              <span class='pull-right'>
+                ${value}
+              </span>
+            </div>`;
+        }
+        markup += '</div></div>';
+      }
+
+      if (!multiEntity) {
+        markup += `
           <div class="linear-legend--links">
-            <a href="${scope.getLangviewsURL(datasets[i].label)}" target="_blank">${$.i18n('all-languages')}</a>
+            <a href="${scope.getLangviewsURL(entity.label)}" target="_blank">${$.i18n('all-languages')}</a>
             &bullet;
-            <a href="${scope.getRedirectviewsURL(datasets[i].label)}" target="_blank">${$.i18n('redirects')}</a>
-            &bullet;
-            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=history" target="_blank">${$.i18n('history')}</a>
-            &bullet;
-            <a href="${scope.getExpandedPageURL(datasets[i].label)}&action=info" target="_blank">${$.i18n('info')}</a>
-          </div>
-        </span>
-      `;
+            <a href="${scope.getRedirectviewsURL(entity.label)}" target="_blank">${$.i18n('redirects')}</a>
+          </div>`;
+      }
+
+      return markup;
+    };
+
+    if (scope.outputData.length === 1) {
+      return dataList(scope.outputData[0]);
     }
-    return markup += '</div>';
+
+    const sum = scope.outputData.reduce((a,b) => a + b.sum, 0);
+    const totals = {
+      sum,
+      average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
+      num_edits: scope.outputData.reduce((a, b) => a + b.num_edits, 0),
+      num_users: scope.outputData.reduce((a, b) => a + b.num_users, 0),
+      watchers: scope.outputData.reduce((a, b) => a + b.watchers || 0, 0)
+    };
+
+    return dataList(totals, true);
   },
 
-  circularLegend(datasets, scope) {
-    const dataset = datasets[0],
-      total = dataset.data.reduce((a,b) => a + b);
-    let markup = `<div class="linear-legend--totals">
-      <strong>${$.i18n('totals')}:</strong>
-      ${scope.formatNumber(total)} (${scope.formatNumber(Math.round(total / scope.numDaysInRange()))}/${$.i18n('day')})
-    </div>`;
-
-    markup += '<div class="linear-legends">';
-
-    for (let i = 0; i < dataset.data.length; i++) {
-      const metaKey = Object.keys(dataset._meta)[0];
-      const label = dataset._meta[metaKey].data[i]._view.label;
-      markup += `
-        <span class="linear-legend">
-          <div class="linear-legend--label" style="background-color:${dataset.backgroundColor[i]}">
-            <a href="${scope.getPageURL(label)}" target="_blank">${label}</a>
-          </div>
-          <div class="linear-legend--counts">
-            ${scope.formatNumber(dataset.data[i])} (${scope.formatNumber(dataset.averages[i])}/${$.i18n('day')})
-          </div>
-          <div class="linear-legend--links">
-            <a href="${scope.getLangviewsURL(label)}" target="_blank">All languages</a>
-            &bullet;
-            <a href="${scope.getRedirectviewsURL(label)}" target="_blank">${$.i18n('redirects')}</a>
-            &bullet;
-            <a href="${scope.getExpandedPageURL(label)}&action=history" target="_blank">History</a>
-            &bullet;
-            <a href="${scope.getExpandedPageURL(label)}&action=info" target="_blank">Info</a>
-          </div>
-        </span>
+  tableRow(scope, item, last = false) {
+    const tag = last ? 'th' : 'td';
+    const linksRow = last ? '' : `
+        <a href="${scope.getLangviewsURL(item.label)}" target="_blank">${$.i18n('all-languages')}</a>
+        &bull;
+        <a href="${scope.getRedirectviewsURL(item.label)}" target="_blank">${$.i18n('redirects')}</a>
       `;
+    const numUsers = $.isNumeric(item.num_users) ? scope.formatNumber(item.num_users) : '?';
+    let historyRow;
+    if ($.isNumeric(item.num_edits)) {
+      historyRow = last ? scope.formatNumber(item.num_edits) :
+        scope.getHistoryLink(item.label, scope.formatNumber(item.num_edits));
+    } else {
+      historyRow = '?';
     }
-    return markup += '</div>';
+
+    return `
+      <tr>
+        <${tag} class='table-view--color-col'>
+          <span class='table-view--color-block' style="background:${item.color}"></span>
+        </${tag}>
+        <${tag} class='table-view--title'>${last ? item.label : scope.getPageLink(item.label)}</${tag}>
+        <${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>
+        <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
+        <${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>
+        <${tag} class='table-view-editors table-view--edit-data'>${numUsers}</${tag}>
+        <${tag} class='table-view--size'>${scope.formatNumber(item.length)}</${tag}>
+        <${tag} class='table-view--protection'>${item.protection}</${tag}>
+        <${tag} class='table-view--watchers'>${item.watchers ? scope.formatNumber(item.watchers) : $.i18n('unknown')}</${tag}>
+        <${tag}>${linksRow}</${tag}>
+      </tr>
+    `;
   }
 };
 

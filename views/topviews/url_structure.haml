@@ -4,7 +4,7 @@
     - include "../../_head.php"
     %title
       = $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
-  %body
+  %body.clearfix
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -27,7 +27,7 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            - include "../../url_parts/project.php"
+            - include "../../url_parts/_project.php"
             %dt excludes
             %dd
               = $I18N->msg( 'url-structure-excludes' )
@@ -46,11 +46,11 @@
                 %li
                   = $I18N->msg( 'url-structure-topviews-date-day', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
 
-            - include "../../url_parts/platform.php"
+            - include "../../url_parts/_platform.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "topviews";
-        - include "../../_footer.php";
+      - $currentApp = "topviews";
+      - include "../../_footer.php";

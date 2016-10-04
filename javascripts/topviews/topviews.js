@@ -12,6 +12,10 @@ const Pv = require('../shared/pv');
 
 /** Main TopViews class */
 class TopViews extends Pv {
+  /**
+   * Set instance variables and boot the app via pv.constructor
+   * @override
+   */
   constructor() {
     super(config);
     this.app = 'topviews';
@@ -26,7 +30,6 @@ class TopViews extends Pv {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
   initialize() {
     this.popParams();
@@ -54,7 +57,6 @@ class TopViews extends Pv {
 
   /**
    * Print list of top pages
-   * @returns {null} nothing
    */
   drawData() {
     $('.chart-container').html('');
@@ -91,7 +93,6 @@ class TopViews extends Pv {
    * Add given page(s) to list of excluded pages and optionally re-render the view
    * @param {Array|String} pages - page(s) to add to excludes
    * @param {Boolean} [triggerChange] - whether or not to re-render the view
-   * @returns {null} nothing
    */
   addExclude(pages, triggerChange = true) {
     if (!Array.isArray(pages)) pages = [pages];
@@ -114,7 +115,6 @@ class TopViews extends Pv {
 
   /**
    * Re-add listeners to exclude pages, called after sorting or changing params
-   * @returns {null} nothing
    */
   addExcludeListeners() {
     $('.topview-entry--remove').off('click').on('click', e => {
@@ -126,7 +126,6 @@ class TopViews extends Pv {
 
   /**
    * Clear the topviews search
-   * @return {null} nothing
    */
   clearSearch() {
     if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
@@ -139,7 +138,6 @@ class TopViews extends Pv {
   /**
    * Exports current chart data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
-   * @returns {null} nothing
    * @override
    */
   exportCSV() {
@@ -157,7 +155,6 @@ class TopViews extends Pv {
 
   /**
    * Exports current chart data to JSON format and loads it in a new tab
-   * @returns {null} nothing
    * @override
    */
   exportJSON() {
@@ -276,7 +273,7 @@ class TopViews extends Pv {
   /**
    * Set datepicker based on provided date or range
    * @param {String} dateInput - either a range like 'last-month', 'yesterday' or date with format 'YYYY-MM-DD'
-   * @returns {null} nothing
+   * @return {null}
    */
   setDate(dateInput) {
     let date;
@@ -306,12 +303,11 @@ class TopViews extends Pv {
 
     // if less than min, throw error (since this is a common request)
     if (date < this.config.minDate.toDate()) {
-      this.addSiteNotice('danger',
-        // use super.dateFormat since this is for moment, not for our datepicker
-        $.i18n('param-error-1', moment(this.config.minDate).format(super.dateFormat)),
-        $.i18n('invalid-params'),
-        true
-      );
+      // use super.dateFormat since this is for moment, not for our datepicker
+      this.toastError(`
+        <strong>${$.i18n('invalid-params')}</strong>
+        ${$.i18n('param-error-1', moment(this.config.minDate).format(super.dateFormat))}
+      `);
       date = this.config.minDate.toDate();
     }
 
@@ -321,7 +317,6 @@ class TopViews extends Pv {
   /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
-   * @returns {null} nothing
    */
   popParams() {
     /** show loading indicator and add error handling for timeouts */
@@ -334,13 +329,12 @@ class TopViews extends Pv {
     // FIXME: remove once all affected wikis/links have been updated
     if (params.range || params.start || params.end) {
       this.fixLegacyDates(params);
-      this.addSiteNotice(
-        'warning',
-        `Custom date ranges are no longer supported. See the official annoucement
-          <a href='//meta.wikimedia.org/wiki/Talk:Pageviews_Analysis#Topviews_revamped'>here</a>.`,
-        'Topviews has been revamped!',
-        true
-      );
+      this.toastWarn(`
+        <strong>Topviews has been revamped!</strong>
+        Custom date ranges are
+        <a href='//meta.wikimedia.org/wiki/Special:Permalink/15931284#Topviews_revamped'>no longer supported</a>.
+        Using defaults instead.
+      `);
     }
 
     this.setDate(params.date); // also performs validations
@@ -402,7 +396,6 @@ class TopViews extends Pv {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
-   * @returns {null} nothing
    */
   pushParams() {
     const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%]/g, escape);
@@ -416,7 +409,6 @@ class TopViews extends Pv {
 
   /**
    * Removes all Select2 related stuff then adds it back
-   * @returns {null} nothing
    */
   resetSelect2() {
     const select2Input = $(this.config.select2Input);
@@ -430,7 +422,7 @@ class TopViews extends Pv {
 
   /**
    * Removes chart, messages, and resets Select2 selections
-   * @returns {null} nothing
+   * @param {Boolean} [clearSelector] - whether to clear the Select2 control
    */
   resetView(clearSelector = true) {
     this.max = null;
@@ -449,7 +441,7 @@ class TopViews extends Pv {
   /**
    * Search the topviews data for the given page title
    * and restrict the view to the matches
-   * @returns {null} nothing
+   * @return {null}
    */
   searchTopviews() {
     const query = $('#topviews_search_field').val();
@@ -494,7 +486,6 @@ class TopViews extends Pv {
   /**
    * Calls parent setupProjectInput and updates the view if validations passed
    *   reverting to the old value if the new one is invalid
-   * @returns {null} nothing
    * @override
    */
   validateProject(e) {
@@ -507,7 +498,6 @@ class TopViews extends Pv {
   /**
    * Sets up the Select2 selector and adds listener to update chart
    * @param {array} excludes - default page names to exclude
-   * @returns {null} - nothing
    */
   setupSelect2(excludes = this.excludes) {
     const select2Input = $(this.config.select2Input);
@@ -559,7 +549,6 @@ class TopViews extends Pv {
   /**
    * sets up the datepicker based on given type
    * @param {String} [type] - either 'monthly' or 'daily'
-   * @returns {null} - nothing
    * @override
    */
   setupDateRangeSelector(type = 'monthly') {
@@ -587,7 +576,6 @@ class TopViews extends Pv {
 
   /**
    * General place to add page-wide listeners
-   * @returns {null} - nothing
    */
   setupListeners() {
     super.setupListeners();
@@ -615,7 +603,6 @@ class TopViews extends Pv {
 
   /**
    * Add the loading indicator class and set the safeguard timeout
-   * @returns {null} nothing
    * @override
    */
   startSpinny() {
@@ -629,7 +616,6 @@ class TopViews extends Pv {
   /**
    * Remove loading indicator class and clear the safeguard timeout
    * @param {Boolean} hideDataLinks - whether or not to hide the data links
-   * @returns {null} nothing
    * @override
    */
   stopSpinny(hideDataLinks) {

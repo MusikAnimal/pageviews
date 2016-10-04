@@ -4,7 +4,7 @@
     - include '../../_head.php'
     %title
       = $I18N->msg( 'massviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
-  %body
+  %body.clearfix
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -37,9 +37,9 @@
               %br
               = $I18N->msg( 'url-structure-massviews-target-example', array( 'variables' => array( '<pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>', '<pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>', '<pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>' ) ) )
             - $defaultRange = 'latest'
-            - include "../../url_parts/date_ranges.php"
-            - include "../../url_parts/platform.php"
-            - include "../../url_parts/agent.php"
+            - include "../../url_parts/_date_ranges.php"
+            - include "../../url_parts/_platform.php"
+            - include "../../url_parts/_agent.php"
             %dt sort
             %dd
               - $values = [ '<code>title</code>', '<code>views</code>' ]
@@ -63,5 +63,5 @@
           %a(href="/massviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'massviews-title' ) ), 'parsemag' => true ) )
 
-        - $currentApp = "massviews";
-        -include "../../_footer.php";
+      - $currentApp = "massviews";
+      -include "../../_footer.php";

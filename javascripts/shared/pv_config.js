@@ -13,11 +13,20 @@ const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
  * Some properties may be overriden by app-specific configs
  */
 class PvConfig {
+  /** set instance variable (config), also defining any private methods */
   constructor() {
     let self = this;
+    const formatXAxisTick = value => {
+      const dayOfWeek = moment(value, this.dateFormat).weekday();
+      if (dayOfWeek % 7) {
+        return value;
+      } else {
+        return `• ${value}`;
+      }
+    };
 
     this.config = {
-      apiLimit: 10000,
+      apiLimit: 20000,
       apiThrottle: 10,
       apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
@@ -28,10 +37,17 @@ class PvConfig {
                 ticks: {
                   callback: value => this.formatYAxisNumber(value)
                 }
+              }],
+              xAxes: [{
+                ticks: {
+                  callback: value => {
+                    return formatXAxisTick(value);
+                  }
+                }
               }]
             },
-            legendCallback: chart => this.config.linearLegend(chart.data.datasets, self),
-            tooltips: this.linearTooltips
+            legendCallback: chart => this.config.chartLegend(self),
+            tooltips: this.linearTooltips()
           },
           dataset(color) {
             return {
@@ -60,11 +76,16 @@ class PvConfig {
               }],
               xAxes: [{
                 barPercentage: 1.0,
-                categoryPercentage: 0.85
+                categoryPercentage: 0.85,
+                ticks: {
+                  callback: value => {
+                    return formatXAxisTick(value);
+                  }
+                }
               }]
             },
-            legendCallback: chart => this.config.linearLegend(chart.data.datasets, self),
-            tooltips: this.linearTooltips
+            legendCallback: chart => this.config.chartLegend(self),
+            tooltips: this.linearTooltips('label')
           },
           dataset(color) {
             return {
@@ -84,8 +105,8 @@ class PvConfig {
                 callback: value => this.formatNumber(value)
               }
             },
-            legendCallback: chart => this.config.linearLegend(chart.data.datasets, self),
-            tooltips: this.linearTooltips
+            legendCallback: chart => this.config.chartLegend(self),
+            tooltips: this.linearTooltips()
           },
           dataset(color) {
             return {
@@ -103,7 +124,7 @@ class PvConfig {
         },
         pie: {
           opts: {
-            legendCallback: chart => this.config.circularLegend(chart.data.datasets, self),
+            legendCallback: chart => this.config.chartLegend(self),
             tooltips: this.circularTooltips
           },
           dataset(color) {
@@ -116,7 +137,7 @@ class PvConfig {
         },
         doughnut: {
           opts: {
-            legendCallback: chart => this.config.circularLegend(chart.data.datasets, self),
+            legendCallback: chart => this.config.chartLegend(self),
             tooltips: this.circularTooltips
           },
           dataset(color) {
@@ -135,7 +156,7 @@ class PvConfig {
                 callback: value => this.formatNumber(value)
               }
             },
-            legendCallback: chart => this.config.circularLegend(chart.data.datasets, self),
+            legendCallback: chart => this.config.chartLegend(self),
             tooltips: this.circularTooltips
           },
           dataset(color) {
@@ -156,9 +177,9 @@ class PvConfig {
         localizeDateFormat: 'true',
         numericalFormatting: 'true',
         bezierCurve: 'false',
-        autoLogDetection: 'true',
+        autoLogDetection: 'false',
         beginAtZero: 'false',
-        rememberChart: 'true',
+        rememberChart: 'false',
         agent: 'user',
         platform: 'all-access',
         project: 'en.wikipedia.org'
@@ -184,7 +205,7 @@ class PvConfig {
             }
           }]
         },
-        legendCallback: chart => this.config.linearLegend(chart.data.datasets, self)
+        legendCallback: chart => this.config.chartLegend(chart.data.datasets, self)
       },
       daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
@@ -193,6 +214,9 @@ class PvConfig {
         'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        'this-year': [moment().startOf('year'), moment().subtract(1, 'days').startOf('day')],
+        'last-year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+        'all-time': [moment('2015-07-01').startOf('day'), moment().subtract(1, 'days').startOf('day')],
         latest(offset = self.config.daysAgo) {
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
@@ -206,9 +230,14 @@ class PvConfig {
     };
   }
 
-  get linearTooltips() {
+  /**
+   * Get config for tooltips shown on linear charts, used by Chart.js
+   * @param {String} [mode] - x-axis or label depending on chart type
+   * @return {Object}
+   */
+  linearTooltips(mode) {
     return {
-      mode: 'label',
+      mode: mode || 'x-axis',
       callbacks: {
         label: tooltipItem => {
           if (Number.isNaN(tooltipItem.yLabel)) {
@@ -225,6 +254,10 @@ class PvConfig {
     };
   }
 
+  /**
+   * Get config for tooltips shown on circular charts, used by Chart.js
+   * @return {Object}
+   */
   get circularTooltips() {
     return {
       callbacks: {

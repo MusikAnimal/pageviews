@@ -6,7 +6,7 @@
       <?php echo $I18N->msg( 'redirectviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
-  <body>
+  <body class="clearfix">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -48,9 +48,9 @@
               <?php echo $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>
-            <?php include "../../url_parts/date_ranges.php"; ?>
-            <?php include "../../url_parts/platform.php"; ?>
-            <?php include "../../url_parts/agent.php"; ?>
+            <?php include "../../url_parts/_date_ranges.php"; ?>
+            <?php include "../../url_parts/_platform.php"; ?>
+            <?php include "../../url_parts/_agent.php"; ?>
             <dt>sort</dt>
             <dd>
               <?php $values = [ '<code>title</code>', '<code>section</code>', '<code>views</code>' ]; ?>
@@ -67,9 +67,9 @@
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'redirectviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $currentApp = "redirectviews"; ?>
-        <?php include "../../_footer.php"; ?>
       </main>
+      <?php $currentApp = "redirectviews"; ?>
+      <?php include "../../_footer.php"; ?>
     </div>
   </body>
 </html>

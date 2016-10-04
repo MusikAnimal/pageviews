@@ -11,13 +11,17 @@
  * @returns {null} class extending superclass
  */
 const ListHelpers = superclass => class extends superclass {
+  /**
+   * Called from pv.constructor, setting common instance variables and
+   *   initial set up for list-related apps
+   * @param {Object} appConfig - as defined in the app's config.js
+   */
   constructor(appConfig) {
     super(appConfig);
   }
 
   /**
    * Prepare chart options before showing chart view, based on current chart type
-   * @return {null} Nothing
    */
   assignOutputDataChartOpts() {
     const color = this.config.colors[0];
@@ -30,7 +34,6 @@ const ListHelpers = superclass => class extends superclass {
 
   /**
    * Exports current lang data to JSON format and loads it in a new tab
-   * @returns {null} Nothing
    */
   exportJSON() {
     const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.outputData.listData);
@@ -88,8 +91,8 @@ const ListHelpers = superclass => class extends superclass {
    * @param {String} project - base project, e.g. en.wikipedia.org
    * @param {String} page - page name
    * @returns {String} URL
+   * FIXME: should include agent and platform, and use special ranges as currently specified
    */
-  // FIXME: should include agent and platform, and use special ranges as currently specified
   getPageviewsURL(project, page) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
@@ -137,7 +140,6 @@ const ListHelpers = superclass => class extends superclass {
   /**
    * Render list of output data into view
    * @param {function} cb - block to call between initial setup and showing the output
-   * @returns {null} nothing
    */
   renderData(cb) {
     const articleDatasets = this.outputData.listData;
@@ -156,8 +158,8 @@ const ListHelpers = superclass => class extends superclass {
       }
     });
 
-    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $('.sort-link span').removeClass('glyphicon-sort-by-attributes-alt glyphicon-sort-by-attributes').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-attributes-alt' : 'glyphicon-sort-by-attributes';
     $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     try {
@@ -180,7 +182,6 @@ const ListHelpers = superclass => class extends superclass {
   /**
    * Toggle or set chart vs list view. All of the normal chart logic lives here
    * @param  {String} view - which view to set, either chart or list
-   * @return {null} Nothing
    */
   toggleView(view) {
     $('.view-btn').removeClass('active');
@@ -254,7 +255,7 @@ const ListHelpers = superclass => class extends superclass {
    * Set value of progress bar
    * @param  {Number} value - current iteration
    * @param  {Number} total - total number of iterations
-   * @return {null} nothing
+   * @return {null}
    */
   updateProgressBar(value, total) {
     if (!total) {

@@ -12,6 +12,10 @@ const ChartHelpers = require('../shared/chart_helpers');
 
 /** Main MetaViews class */
 class MetaViews extends mix(Pv).with(ChartHelpers) {
+  /**
+   * set instance variables and boot the app via pv.constructor
+   * @override
+   */
   constructor() {
     super(config);
     this.app = 'metaviews';
@@ -21,7 +25,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
   initialize() {
     this.setupDateRangeSelector();
@@ -84,7 +87,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
-   * @returns {null} nothing
    */
   popParams() {
     this.startSpinny();
@@ -94,6 +96,8 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
     this.validateDateRange(params);
 
     this.resetSelect2();
+
+    params.tools = params.tools || this.config.apps;
 
     this.setInitialChartType(params.tools.length);
     this.setSelect2Defaults(params.tools);
@@ -128,7 +132,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Push relevant class properties to the query string
    * Called whenever we go to update the chart
-   * @returns {null} nothing
    */
   pushParams() {
     const tools = $(this.config.select2Input).select2('val') || [];
@@ -144,7 +147,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Sets up the tool selector and adds listener to update chart
-   * @returns {null} - nothing
    */
   setupSelect2() {
     const select2Input = $(this.config.select2Input);
@@ -183,7 +185,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   /**
    * General place to add page-wide listeners
    * @override
-   * @returns {null} - nothing
    */
   setupListeners() {
     super.setupListeners();
@@ -192,7 +193,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Query the API for each tool, building up the datasets and then calling renderData
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
-   * @returns {null} - nothin
+   * @return {null}
    */
   processInput(force) {
     this.pushParams();
@@ -202,11 +203,17 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    /** @type {Object} everything we need to keep track of for the promises */
+    const entities = $(this.config.select2Input).select2('val') || [];
+    this.setInitialChartType(entities.length);
+
+    /**
+     * everything we need to keep track of for the promises
+     * @type {Object}
+     */
     let xhrData = {
-      entities: $(this.config.select2Input).select2('val') || [],
+      entities,
       labels: [], // Labels (dates) for the x-axis.
-      datasets: [], // Data for each tool timeseries
+      datasets: new Array(entities.length), // Data for each tool timeseries
       errors: [], // Queue up errors to show after all requests have been made
       fatalErrors: [], // Unrecoverable JavaScript errors
       promises: []
@@ -227,7 +234,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       endDate = this.daterangepicker.endDate.startOf('day');
 
     xhrData.entities.forEach((tool, index) => {
-      const url = `//${metaRoot}/${tool}` +
+      const url = `//${metaRoot}/usage/${tool}` +
         `/${startDate.format('YYYY-MM-DD')}/${endDate.format('YYYY-MM-DD')}`;
 
       const promise = $.ajax({
@@ -236,13 +243,8 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       });
       xhrData.promises.push(promise);
 
-      promise.success(successData => {
-        /** Build the tool's dataset. */
-        if (this.config.linearCharts.includes(this.chartType)) {
-          xhrData.datasets.push(this.getLinearData(successData, tool, index));
-        } else {
-          xhrData.datasets.push(this.getCircularData(successData, tool, index));
-        }
+      promise.done(successData => {
+        xhrData.datasets[index] = successData;
 
         /** fetch the labels for the x-axis on success if we haven't already */
         if (!xhrData.labels.length) {
@@ -261,6 +263,108 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
 
     $.whenAll(...xhrData.promises).always(this.updateChart.bind(this, xhrData));
   }
+
+  /**
+   * Get value of given page for the purposes of column sorting in table view
+   * @param  {object} item - page name
+   * @param  {String} type - type of property to get
+   * @return {String|Number} - value
+   */
+  getSortProperty(item, type) {
+    switch (type) {
+    case 'title':
+      return item.label;
+    case 'pageloads':
+      return Number(item.sum);
+    case 'average':
+      return Number(item.average);
+    }
+  }
+
+  /**
+   * Update the page comparison table, shown below the chart
+   * @return {null}
+   */
+  updateTable() {
+    if (this.outputData.length === 1) {
+      return this.showSingleAppLegend();
+    } else {
+      $('.single-page-stats').html('');
+    }
+
+    $('.output-list').html('');
+
+    /** sort ascending by current sort setting, using slice() to clone the array */
+    const datasets = this.outputData.slice().sort((a, b) => {
+      const before = this.getSortProperty(a, this.sort),
+        after = this.getSortProperty(b, this.sort);
+
+      if (before < after) {
+        return this.direction;
+      } else if (before > after) {
+        return -this.direction;
+      } else {
+        return 0;
+      }
+    });
+
+    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
+    datasets.forEach(item => {
+      $('.output-list').append(`
+        <tr>
+          <td class='table-view--color-col'>
+            <span class='table-view--color-block' style="background:${item.color}"></span>
+          </td>
+          <td class='table-view--title'><a href='/${item.label}'>${item.label}</a></td>
+          <td class='table-view--pageloads'>${this.formatNumber(item.sum)}</td>
+          <td class='table-view--average'>${this.formatNumber(item.average)}</td>
+        </tr>
+      `);
+    });
+
+    // add summations to show up as the bottom row in the table
+    const sum = datasets.reduce((a,b) => a + b.sum, 0);
+    const totals = {
+      label: `${datasets.length} app${datasets.length === 1 ? '' : 's'}`,
+      sum,
+      average: Math.round(sum / datasets[0].data.length)
+    };
+    $('.output-list').append(`
+      <tr>
+        <th class='table-view--color-col'></th>
+        <th class='table-view--title'>${totals.label}</th>
+        <th class='table-view--pageloads'>${this.formatNumber(totals.sum)}</th>
+        <th class='table-view--average'>${this.formatNumber(totals.average)}</th>
+      </tr>
+    `);
+
+    $('.table-view').show();
+  }
+
+  /**
+   * Show info below the chart when there is only one app being queried
+   */
+  showSingleAppLegend() {
+    const app = this.outputData[0];
+
+    $('.table-view').hide();
+    $('.single-page-stats').html(`
+      <a href='/${app.label}'>${app.label}</a>
+      &middot;
+      <span class='text-muted'>
+        ${$(this.config.dateRangeSelector).val()}
+      </span>
+      &middot;
+      ${app.sum} page load${app.sum === 1 ? '' : 's'}
+      <span>
+        (${this.formatNumber(app.average)}/${$.i18n('day')})
+      </span>
+    `);
+  }
+
 }
 
 $(document).ready(() => {

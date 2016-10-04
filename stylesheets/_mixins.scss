@@ -1,8 +1,16 @@
 $red: #fe875e;
 $gray: #ccc;
+$bootstrap-dark-gray: #ddd;
 $light-gray: #e0e0e0;
-$bootstrap-gay: #777;
+$bootstrap-gray: #777;
 $bootstrap-text: #333;
+$bootstrap-primary: #337ab7;
+$bootstrap-success: #dff0d8;
+$bootstrap-info: #d9edf7;
+$bootstrap-warning-bg: #fcf8e3;
+$bootstrap-warning-text: #8a6d3b;
+$bootstrap-danger-bg: #f2dede;
+$bootstrap-danger-text: #a94442;
 $link: #337ab7;
 $flash: #fbf8b2;
 $white: #fff;
@@ -40,7 +48,6 @@ $black: #000;
 }
 
 %disabled {
-  cursor: not-allowed;
   opacity: .5;
   pointer-events: none;
 }
@@ -52,13 +59,12 @@ $black: #000;
   border: 3px solid $gray;
   border-radius: 50%;
   border-top-color: transparent;
-  bottom: 0;
   content: '';
   height: 60px;
   left: 0;
   margin: auto;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 100px;
   width: 60px;
 }

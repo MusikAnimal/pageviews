@@ -1,96 +1,90 @@
 / Topviews Analysis tool
 / Copyright 2016 MusikAnimal
-- $currentApp = "topviews"
+- $currentApp = 'topviews'
 !!!
 %html
   %head
-    - include "../_head.php"
+    - include '../_head.php'
     %title= $I18N->msg( 'topviews-title' )
-  %body(class="#{$rtl} #{$currentApp}")
-    %div.container
-      %header.col-lg-12.text-center
-        %h4
-          %strong
-            = $I18N->msg( 'topviews-title' )
-          %small.app-description
-            = $I18N->msg( 'topviews-description' )
+  %body(class="clearfix #{$rtl} #{$currentApp}")
+    - include '../_header.php'
 
-      %main.col-lg-10.col-lg-offset-1
-        / Site notice
-        %div.text-center.site-notice-wrapper
-          %div.site-notice
-            - include "../_browser_check.php"
+    %main.col-lg-8.col-lg-offset-2
+      / Site notice
+      %div.text-center.site-notice-wrapper
+        %div.site-notice
+          - include '../_browser_check.php'
 
-        %div.row.aqs-row.options
-          / Date range selector
-          %div.col-lg-3.col-sm-3
-            %label(for="date-type-select")
-              = $I18N->msg( 'date-type' )
-            %select.form-control#date-type-select
-              %option(value="monthly")
-                = $I18N->msg( 'monthly' )
-              %option(value="daily")
-                = $I18N->msg( 'daily' )
-          %div.col-lg-3.col-sm-3
-            %label(for="range-input")
-              = $I18N->msg( 'date' )
-            %input.form-control.aqs-date-range-selector#range-input
+      %div.row.aqs-row.options
+        / Date range selector
+        %div.col-lg-3.col-sm-3
+          %label(for="date-type-select")
+            = $I18N->msg( 'date-type' )
+          %select.form-control#date-type-select
+            %option(value="monthly")
+              = $I18N->msg( 'monthly' )
+            %option(value="daily")
+              = $I18N->msg( 'daily' )
+        %div.col-lg-3.col-sm-3
+          %label(for="range-input")
+            = $I18N->msg( 'date' )
+          %input.form-control.aqs-date-range-selector#range-input
 
-          / Project selector
-          %div.col-lg-3.col-sm-3
-            %label(for="project-input")
-              = $I18N->msg( 'project' )
-            %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
+        / Project selector
+        %div.col-lg-3.col-sm-3
+          %label(for="project-input")
+            = $I18N->msg( 'project' )
+          %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
 
-          %div.col-lg-3.col-sm-3
-            %label(for="platform-select")
-              = $I18N->msg( 'platform' )
-            %select.form-control#platform-select
-              %option(value="all-access")
-                = $I18N->msg( 'all' )
-              %option(value="desktop")
-                = $I18N->msg( 'desktop' )
-              %option(value="mobile-app")
-                = $I18N->msg( 'mobile-app' )
-              %option(value="mobile-web")
-                = $I18N->msg( 'mobile-web' )
+        %div.col-lg-3.col-sm-3
+          %label(for="platform-select")
+            = $I18N->msg( 'platform' )
+          %select.form-control#platform-select
+            %option(value="all-access")
+              = $I18N->msg( 'all' )
+            %option(value="desktop")
+              = $I18N->msg( 'desktop' )
+            %option(value="mobile-app")
+              = $I18N->msg( 'mobile-app' )
+            %option(value="mobile-web")
+              = $I18N->msg( 'mobile-web' )
 
-        / Article selector
-        %div.row.aqs-row
-          %div.col-lg-12
-            %label(for="article-input")
-              = $I18N->msg( 'excluded-pages' )
-            %span.pull-right
-              %label
-                %input.mainspace-only-option(type="checkbox" checked="checked")
-                = $I18N->msg( 'mainspace-only-option' )
-            %select.aqs-select2-selector.col-lg-12.invisible(multiple="multiple")
+      / Article selector
+      %div.row.aqs-row
+        %div.col-lg-12
+          %label(for="article-input")
+            = $I18N->msg( 'excluded-pages' )
+          %span.pull-right
+            %label
+              %input.mainspace-only-option(type="checkbox" checked="checked")
+              = $I18N->msg( 'mainspace-only-option' )
+          %select.aqs-select2-selector.col-lg-12.invisible(multiple="multiple")
 
-        / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
-        - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
-        %span(class="row search-topviews invisible #{$cols}")
-          %div.input-group
-            %label.input-group-addon(for="topviews_search_field")
-              = $I18N->msg( 'search' )
-            %span.glyphicon.glyphicon-search.topviews-search-icon
-            %input.form-control#topviews_search_field
+      / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
+      - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
+      %span(class="row search-topviews invisible #{$cols}")
+        %div.input-group
+          %label.input-group-addon(for="topviews_search_field")
+            = $I18N->msg( 'search' )
+          %span.glyphicon.glyphicon-search.topviews-search-icon
+          %input.form-control#topviews_search_field
 
-        %span.pull-right
-          - include "../_data_links.php"
+      %span.pull-right
+        - include "../_data_links.php"
 
-        / Chart
-        %div.col-lg-12.data-notice.invisible
-          %small.text-muted
-            = $I18N->msg( 'topviews-false-positive' )
+      / Chart
+      %div.col-lg-12.data-notice.invisible
+        %small.text-muted
+          = $I18N->msg( 'topviews-false-positive' )
 
-        %div.message-container.col-lg-10
+      %div.message-container.col-lg-10
 
-        %div.chart-container.col-lg-12.loading
+      %div.chart-container.col-lg-12.loading
 
-        %div.col-lg-12.text-center
-          %a.expand-chart(href="#")
-            = $I18N->msg( 'show-more' )
+      %div.col-lg-12.text-center
+        %a.expand-chart(href="#")
+          = $I18N->msg( 'show-more' )
 
-        - include "../_footer.php"
+    - include '../_footer.php'
 
-      - include "../_modals.php"
+    - include '../_modals.php'

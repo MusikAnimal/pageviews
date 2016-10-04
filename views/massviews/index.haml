@@ -1,119 +1,114 @@
 / Massviews Analysis tool
 / Copyright 2016 MusikAnimal
-- $currentApp = "massviews"
+- $currentApp = 'massviews'
 !!!
 %html
   %head
     - include '../_head.php'
     %title= $I18N->msg( 'massviews-title' )
-  %body(class="#{$rtl} #{$currentApp}")
-    %div.container
-      %header.col-lg-12.text-center
-        %h4
-          %strong
-            = $I18N->msg( 'massviews-title' )
-          %small.app-description
-            = $I18N->msg( 'massviews-description' )
+  %body(class="clearfix #{$rtl} #{$currentApp}")
+    - include '../_header.php'
 
-      %main.col-lg-10.col-lg-offset-1
-        / Site notice
-        %div.text-center.site-notice-wrapper
-          %div.site-notice
-            - include "../_browser_check.php"
+    %main.col-lg-8.col-lg-offset-2
+      / Site notice
+      %div.text-center.site-notice-wrapper
+        %div.site-notice
+          - include '../_browser_check.php'
 
-        %form#pv_form
-          %div.row.aqs-row.options
-            / Date range selector
-            %div.col-lg-4.col-sm-4
-              %label(for="range_input")
-                = $I18N->msg( 'dates' )
-              %input.form-control.aqs-date-range-selector#range_input
+      %form#pv_form
+        %div.row.aqs-row.options
+          / Date range selector
+          %div.col-lg-4.col-sm-4
+            %label(for="range_input")
+              = $I18N->msg( 'dates' )
+            %input.form-control.aqs-date-range-selector#range_input
 
-            / Advanced options
-            %div.col-lg-4.col-sm-4
-              %label(for="platform_select")
-                = $I18N->msg( 'platform' )
-              %select.form-control#platform_select
-                %option(value="all-access")
-                  = $I18N->msg( 'all' )
-                %option(value="desktop")
-                  = $I18N->msg( 'desktop' )
-                %option(value="mobile-app")
-                  = $I18N->msg( 'mobile-app' )
-                %option(value="mobile-web")
-                  = $I18N->msg( 'mobile-web' )
+          / Advanced options
+          %div.col-lg-4.col-sm-4
+            %label(for="platform_select")
+              = $I18N->msg( 'platform' )
+            %select.form-control#platform_select
+              %option(value="all-access")
+                = $I18N->msg( 'all' )
+              %option(value="desktop")
+                = $I18N->msg( 'desktop' )
+              %option(value="mobile-app")
+                = $I18N->msg( 'mobile-app' )
+              %option(value="mobile-web")
+                = $I18N->msg( 'mobile-web' )
 
-            %div.col-lg-4.col-sm-4
-              %label(for="agent_select")
-                = $I18N->msg( 'agent' )
-                %a.help-link(href="/massviews/faq#agents")
+          %div.col-lg-4.col-sm-4
+            %label(for="agent_select")
+              = $I18N->msg( 'agent' )
+              %a.help-link(href="/massviews/faq#agents")
+                %span.glyphicon.glyphicon-question-sign
+            %select.form-control#agent_select
+              %option(value="all-agents")
+                = $I18N->msg( 'all' )
+              %option(selected="selected" value="user")
+                = $I18N->msg( 'user' )
+              %option(value="spider")
+                = $I18N->msg( 'spider' )
+              %option(value="bot")
+                = $I18N->msg( 'bot' )
+
+        / Source input
+        %div.row.aqs-row.massviews-source-input
+          %div.col-lg-12
+            %label(for="source_input")
+              = $I18N->msg( 'source' )
+              %a.help-link(href="/massviews/faq#sources")
+                %span.glyphicon.glyphicon-question-sign
+            %div.checkbox.pull-right.category-subject-toggle
+              %label
+                %input.category-subject-toggle--input(type="checkbox")
+                  = $I18N->msg( 'category-subject-toggle' )
+                %a.help-link(href="/massviews/faq#category_subject_toggle")
                   %span.glyphicon.glyphicon-question-sign
-              %select.form-control#agent_select
-                %option(value="all-agents")
-                  = $I18N->msg( 'all' )
-                %option(selected="selected" value="user")
-                  = $I18N->msg( 'user' )
-                %option(value="spider")
-                  = $I18N->msg( 'spider' )
-                %option(value="bot")
-                  = $I18N->msg( 'bot' )
+            %div.input-group.clearfix
+              %div.input-group-btn
+                %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
+                  = $I18N->msg( 'category' )
+                  %span.caret
+                %ul.dropdown-menu
+                  %li
+                    %a.source-option(href="#" data-value="category")
+                      = $I18N->msg( 'category' )
+                  %li
+                    %a.source-option(href="#" data-value="wikilinks")
+                      = $I18N->msg( 'wikilinks' )
+                  %li
+                    %a.source-option(href="#" data-value="pagepile")
+                      Page Pile
+                  %li
+                    %a.source-option(href="#" data-value="subpages")
+                      = $I18N->msg( 'subpages' )
+                  %li
+                    %a.source-option(href="#" data-value="transclusions")
+                      = $I18N->msg( 'transclusions' )
+                  %li
+                    %a.source-option(href="#" data-value="external-link")
+                      = $I18N->msg( 'external-link' )
+                  %li
+                    %a.source-option(href="#" data-value="hashtag")
+                      = $I18N->msg( 'hashtag' )
+                  %li
+                    %a.source-option(href="#" data-value="quarry")
+                      Quarry
+              %input.form-control.input-control.source-input#source_input(min="0" required="required")
+              %input.form-control.input-control.project-input.col-lg-6(required="required" placeholder="en.wikipedia.org" disabled="disabled")
+              %span.input-group-btn
+                %button.btn.btn-primary.pull-right.btn-submit
+                  = $I18N->msg( 'submit' )
+            %div.source-description.text-muted
 
-          / Source input
-          %div.row.aqs-row.massviews-source-input
-            %div.col-lg-12
-              %label(for="source_input")
-                = $I18N->msg( 'source' )
-                %a.help-link(href="/massviews/faq#sources")
-                  %span.glyphicon.glyphicon-question-sign
-              %div.checkbox.pull-right.category-subject-toggle
-                %label
-                  %input.category-subject-toggle--input(type="checkbox")
-                    = $I18N->msg( 'category-subject-toggle' )
-                  %a.help-link(href="/massviews/faq#category_subject_toggle")
-                    %span.glyphicon.glyphicon-question-sign
-              %div.input-group.clearfix
-                %div.input-group-btn
-                  %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
-                    = $I18N->msg( 'category' )
-                    %span.caret
-                  %ul.dropdown-menu
-                    %li
-                      %a.source-option(href="#" data-value="category")
-                        = $I18N->msg( 'category' )
-                    %li
-                      %a.source-option(href="#" data-value="wikilinks")
-                        = $I18N->msg( 'wikilinks' )
-                    %li
-                      %a.source-option(href="#" data-value="pagepile")
-                        Page Pile
-                    %li
-                      %a.source-option(href="#" data-value="subpages")
-                        = $I18N->msg( 'subpages' )
-                    %li
-                      %a.source-option(href="#" data-value="transclusions")
-                        = $I18N->msg( 'transclusions' )
-                    %li
-                      %a.source-option(href="#" data-value="external-link")
-                        = $I18N->msg( 'external-link' )
-                    %li
-                      %a.source-option(href="#" data-value="hashtag")
-                        = $I18N->msg( 'hashtag' )
-                    %li
-                      %a.source-option(href="#" data-value="quarry")
-                        Quarry
-                %input.form-control.input-control.source-input#source_input(min="0" required="required")
-                %input.form-control.input-control.project-input.col-lg-6(required="required" placeholder="en.wikipedia.org" disabled="disabled")
-                %span.input-group-btn
-                  %button.btn.btn-primary.pull-right.btn-submit
-                    = $I18N->msg( 'submit' )
-              %div.source-description.text-muted
+      :php
+        $columns = array(
+          'title' => 'page-title',
+          'views' => 'pageviews'
+        );
+      - include '../_output.php'
 
-        :php
-          $columns = array(
-            'title' => 'page-title',
-            'views' => 'pageviews'
-          );
-        - include "../_output.php"
-        - include "../_footer.php"
+    - include '../_footer.php'
 
-      - include "../_modals.php"
+    - include '../_modals.php'

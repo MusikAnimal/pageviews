@@ -6,7 +6,7 @@
       <?php echo $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
-  <body>
+  <body class="clearfix">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -33,7 +33,7 @@
           </h3>
           <hr>
           <dl class="dl-horizontal">
-            <?php include "../../url_parts/project.php"; ?>
+            <?php include "../../url_parts/_project.php"; ?>
             <dt>excludes</dt>
             <dd>
               <?php echo $I18N->msg( 'url-structure-excludes' ); ?>
@@ -57,7 +57,7 @@
                 </li>
               </ul>
             </dd>
-            <?php include "../../url_parts/platform.php"; ?>
+            <?php include "../../url_parts/_platform.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">
@@ -65,9 +65,9 @@
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>
-        <?php $currentApp = "topviews"; ?>
-        <?php include "../../_footer.php"; ?>
       </main>
+      <?php $currentApp = "topviews"; ?>
+      <?php include "../../_footer.php"; ?>
     </div>
   </body>
 </html>

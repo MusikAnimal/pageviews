@@ -160,7 +160,13 @@
     "quote-props": 0,
     "quotes": [1, "single", "avoid-escape"],
     "radix": 0,
-    "require-jsdoc": 1,
+    "require-jsdoc": [2, {
+        "require": {
+            "FunctionDeclaration": true,
+            "MethodDefinition": true,
+            "ClassDeclaration": false
+        }
+    }],
     "require-yield": 0,
     "semi": [2, "always"],
     "semi-spacing": [2, {"before": false, "after": true}],
@@ -178,7 +184,13 @@
     "spaced-line-comment": [0, "always"],
     "strict": 0,
     "use-isnan": 0,
-    "valid-jsdoc": 1,
+    "valid-jsdoc": [2, {
+        "requireReturn": false,
+        "requireReturnType": true,
+        "matchDescription": ".+",
+        "requireParamDescription": false,
+        "requireReturnDescription": false
+    }],
     "valid-typeof": 2,
     "vars-on-top": 0,
     "wrap-iife": 0,

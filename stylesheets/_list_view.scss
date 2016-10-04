@@ -102,29 +102,6 @@ output {
   display: block;
 }
 
-.sort-link {
-  @include prefix(user-select, none);
-  cursor: pointer;
-
-  .glyphicon {
-    top: 2px;
-    visibility: hidden;
-  }
-
-  .glyphicon-sort-by-alphabet,
-  .glyphicon-sort-by-alphabet-alt,
-  .glyphicon-sort-by-order,
-  .glyphicon-sort-by-order-alt {
-    visibility: visible;
-  }
-
-  &:hover {
-    .glyphicon-sort {
-      visibility: visible;
-    }
-  }
-}
-
 .another-query {
   cursor: pointer;
 }

@@ -5,12 +5,21 @@
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
+/** class-less files with global overrides */
+require('./core_extensions');
+require('./polyfills');
+
 const PvConfig = require('./pv_config');
 const siteMap = require('./site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 
 /** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
 class Pv extends PvConfig {
+  /**
+   * Main constructor for each app, giving way to the parent constructor in list_helpers or chart_helpers
+   * @param {Object} appConfig - as defined in the app's config.js
+   * @override
+   */
   constructor(appConfig) {
     super(appConfig);
 
@@ -32,30 +41,46 @@ class Pv extends PvConfig {
     this.params = null;
     this.siteInfo = {};
 
-    /** @type {null|Date} tracking of elapsed time */
+    /**
+     * tracking of elapsed time
+     * @type {null|Date}
+     */
     this.processStart = null;
 
     this.debug = location.search.includes('debug=true') || location.host === 'localhost';
+
+    /** redirect to production if debug flag isn't given */
+    if (location.pathname.includes('-test') && !location.search.includes('debug=true')) {
+      const actualPathName = location.pathname.replace(/-test\/?/, '');
+      $('body').html(`
+        <p class='tm text-center'>This is the staging environment!</p>
+        <p class='tm text-center'>To use the staging app, append <code>debug=true</code> to the URL</p>
+        <p class='tm text-center'>Otherwise, please update your links to use
+          <strong><a href='${actualPathName}'>https://${location.host}${actualPathName}</a></strong>
+        </p>
+        <p class='text-center' style='margin-top:50px; font-weight:bold'>
+          Redirecting you to the production ${document.title} in
+          <span class='countdown'>10</span>...
+        </p>
+      `);
+
+      let count = 10;
+
+      setInterval(() => {
+        if (--count === 0) {
+          return document.location = actualPathName;
+        }
+        $('.countdown').text(count);
+      }, 1000);
+
+      return;
+    }
 
     /** assign app instance to window for debugging on local environment */
     if (this.debug) {
       window.app = this;
     } else {
       this.splash();
-    }
-
-    /** FIXME: temporary debug flag for T149058 */
-    if (location.search.includes('debugOutput=true')) {
-      this.debugOutput = true;
-    }
-
-    /** show notice if on staging environment */
-    if (/-test/.test(location.pathname)) {
-      const actualPathName = location.pathname.replace(/-test\/?/, '');
-      this.addSiteNotice('warning',
-        `This is a staging environment. For the actual ${document.title},
-         see <a href='${actualPathName}'>${location.hostname}${actualPathName}</a>`
-      );
     }
 
     /**
@@ -72,51 +97,102 @@ class Pv extends PvConfig {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
+
+    /** set up toastr config. The duration may be overriden later */
+    toastr.options = {
+      closeButton: true,
+      debug: location.host === 'localhost',
+      newestOnTop: false,
+      progressBar: false,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+      onclick: null,
+      showDuration: '300',
+      hideDuration: '1000',
+      timeOut: '5000',
+      extendedTimeOut: '3000',
+      showEasing: 'swing',
+      hideEasing: 'linear',
+      showMethod: 'fadeIn',
+      hideMethod: 'fadeOut',
+      toastClass: 'alert',
+      iconClasses: {
+        error: 'alert-danger',
+        info: 'alert-info',
+        success: 'alert-success',
+        warning: 'alert-warning'
+      }
+    };
   }
 
   /**
    * Add a site notice (Bootstrap alert)
-   * @param {String} level - one of 'success', 'info', 'warning' or 'danger'
-   * @param {String} message - message to show
-   * @param {String} [title] - will appear in bold and in front of the message
-   * @param {Boolean} [dismissable] - whether or not to add a X
-   *   that allows the user to dismiss the notice
-   * @returns {null} nothing
+   * @param {Object} opts - as follows:
+   * {
+   *   message: '',       // {String} message - message to show
+   *   level: 'warning',  // one of 'success', 'info', 'warning', 'error'
+   *   timeout: 10,       // {Number} [timeout] - in seconds. Use 0 to show indefinitely
+   *   title: ''          // {String} [title] - will appear in bold and in front of the message
+   * }
    */
-  addSiteNotice(level, message, title, dismissable) {
-    title = title ? `<strong>${title}</strong> ` : '';
+  toast(opts) {
+    const title = opts.title ? `<strong>${opts.title}</strong> ` : '';
+    opts = Object.assign({
+      message: title + opts.message,
+      level: 'warning',
+      timeout: 10
+    }, opts);
 
-    let markup = title + message;
+    toastr.options.timeOut = opts.timeout * 1000;
+    toastr[opts.level](opts.message);
+  }
 
-    /** add relevant CSS class and dismiss link if dismissable */
-    if (dismissable) {
-      dismissable = ' alert-dismissable';
-      markup = `
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>` + markup;
-    } else {
-      dismissable = '';
-    }
+  /**
+   * Show success message to user via this.toast
+   * @param {String} message
+   * @param {Number} [timeout] - in seconds
+   */
+  toastSuccess(message, timeout = 10) {
+    this.toast({ message, level: 'success', timeout });
+  }
 
-    $('.site-notice').append(
-      `<div class='alert alert-${level}${dismissable}'>${markup}</div>`
-    );
+  /**
+   * Show info message to user via this.toast
+   * @param {String} message
+   * @param {Number} [timeout] - in seconds
+   */
+  toastInfo(message, timeout = 10) {
+    this.toast({ message, level: 'info', timeout });
+  }
+
+  /**
+   * Show warning to user via this.toast
+   * @param {String} message
+   * @param {Number} [timeout] - in seconds
+   */
+  toastWarn(message, timeout = 10) {
+    this.toast({ message, level: 'warning', timeout });
+  }
+
+  /**
+   * Show an error to user via this.toast
+   * @param {String} message
+   * @param {Number} [timeout] - in seconds
+   */
+  toastError(message, timeout = 10) {
+    this.toast({ message, level: 'error', timeout });
   }
 
   /**
    * Add site notice for invalid parameter
    * @param {String} param - name of parameter
-   * @returns {null} nothing
    */
   addInvalidParamNotice(param) {
-    const docLink = `<a href='/${this.app}/url_structure'>${$.i18n('documentation')}</a>`;
-    this.addSiteNotice(
-      'danger',
-      $.i18n('param-error-3', param, docLink),
-      $.i18n('invalid-params'),
-      true
-    );
+    const docLink = `<a href='/${this.app}/url_structure'>${$.i18n('documentation').toLowerCase()}</a>`;
+    this.toastError(`
+      <strong>${$.i18n('invalid-params')}</strong>
+      ${$.i18n('param-error-3', param, docLink)}
+    `);
   }
 
   /**
@@ -153,14 +229,16 @@ class Pv extends PvConfig {
 
       // check if they are outside the valid range or if in the wrong order
       if (startDate < this.config.minDate || endDate < this.config.minDate) {
-        this.addSiteNotice('danger',
-          $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)),
-          $.i18n('invalid-params'),
-          true
-        );
+        this.toastError(`
+          <strong>${$.i18n('invalid-params')}</strong>
+          ${$.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat))}
+        `);
         return false;
       } else if (startDate > endDate) {
-        this.addSiteNotice('danger', $.i18n('param-error-2'), $.i18n('invalid-params'), true);
+        this.toastError(`
+          <strong>${$.i18n('param-error-2')}</strong>
+          ${$.i18n('invalid-params')}
+        `);
         return false;
       }
 
@@ -174,10 +252,9 @@ class Pv extends PvConfig {
     return true;
   }
 
-  clearSiteNotices() {
-    $('.site-notice').html('');
-  }
-
+  /**
+   * Clear inline messages used to show non-critical errors
+   */
   clearMessages() {
     $('.message-container').html('');
   }
@@ -203,10 +280,18 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Get the database name of the given projet
+   * @param  {String} project - with or without .org
+   * @return {String} database name
+   */
+  dbName(project) {
+    return Object.keys(siteMap).find(key => siteMap[key] === `${project.replace(/\.org$/,'')}.org`);
+  }
+
+  /**
    * Force download of given data, or open in a new tab if HTML5 <a> download attribute is not supported
    * @param {String} data - Raw data prepended with data type, e.g. "data:text/csv;charset=utf-8,my data..."
    * @param {String} extension - the file extension to use
-   * @returns {null} Nothing
    */
   downloadData(data, extension) {
     const encodedUri = encodeURI(data);
@@ -229,7 +314,6 @@ class Pv extends PvConfig {
 
   /**
    * Fill in values within settings modal with what's in the session object
-   * @returns {null} nothing
    */
   fillInSettings() {
     $.each($('#settings-modal input'), (index, el) => {
@@ -243,7 +327,6 @@ class Pv extends PvConfig {
 
   /**
    * Add focus to Select2 input field
-   * @returns {null} nothing
    */
   focusSelect2() {
     $('.select2-selection').trigger('click');
@@ -264,6 +347,11 @@ class Pv extends PvConfig {
     }
   }
 
+  /**
+   * show every other number in the y-axis, called from PvConfig
+   * @param  {Number} num - numerical value
+   * @return {String|null} formatted number or null if an even number
+   */
   formatYAxisNumber(num) {
     if (num % 1 === 0) {
       return this.formatNumber(num);
@@ -277,11 +365,11 @@ class Pv extends PvConfig {
    * @param {boolean} localized - whether the dates should be localized per browser language
    * @returns {Array} the date headings as strings
    */
-  getDateHeadings(localized) {
+  getDateHeadings(localized = true) {
     const dateHeadings = [],
-      endDate = moment(this.daterangepicker.endDate).add(1, 'd');
+      endDate = moment(this.daterangepicker.endDate).add(1, 'day');
 
-    for (let date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'd')) {
+    for (let date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'day')) {
       if (localized) {
         dateHeadings.push(date.format(this.dateFormat));
       } else {
@@ -300,6 +388,18 @@ class Pv extends PvConfig {
    */
   getExpandedPageURL(page) {
     return `//${this.project}.org/w/index.php?title=${encodeURIComponent(page.score()).replace(/'/, escape)}`;
+  }
+
+  /**
+   * Get full link to page history for given page and project
+   * @param  {string} page - page to link to
+   * @param  {string} content - what to put as the link text
+   * @return {string} HTML markup
+   */
+  getHistoryLink(page, content) {
+    return `<a href="${this.getExpandedPageURL(page)}&action=history" target="_blank">
+        ${content}
+      </a>`;
   }
 
   /**
@@ -324,8 +424,8 @@ class Pv extends PvConfig {
 
   /**
    * Get the wiki URL given the page name
-   *
    * @param {string} page - page name
+   * @param {string} [project] - project, or this.project (for chart-based apps)
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
@@ -339,7 +439,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the site
    */
   getSiteLink(site) {
-    return `<a target="_blank" href="//${site}.org">${site}</a>`;
+    return `<a target="_blank" href="//${site.replace(/\.org$/, '')}.org">${site}</a>`;
   }
 
   /**
@@ -353,6 +453,10 @@ class Pv extends PvConfig {
     return project ? project.toLowerCase().replace(/.org$/, '') : null;
   }
 
+  /**
+   * get date format for the browser's locale
+   * @return {String} format to be passed to moment.format()
+   */
   getLocaleDateString() {
     if (!navigator.language) {
       return this.config.defaults.dateFormat;
@@ -592,11 +696,12 @@ class Pv extends PvConfig {
   /**
    * Get URL to file a report on Meta, preloaded with permalink
    * @param {String} [phabPaste] URL to auto-generated error report on Phabricator
+   * @param {String} [titleOverride] goes in the title input field of the wiki editing interface
    * @return {String} URL
    */
-  getBugReportURL(phabPaste) {
+  getBugReportURL(phabPaste, titleOverride) {
     const reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
-      `&section=new&preloadtitle=${this.app.upcase()} bug report`;
+      `&section=new&preloadtitle=${titleOverride || this.app.upcase() + ' bug report'}`;
 
     if (phabPaste) {
       return `${reportURL}&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${phabPaste}`;
@@ -659,6 +764,40 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Get month that would be shown in Topviews based on start date or end date, as specified
+   * @param {Boolean} [useStartDate] - if false, the end date will be used
+   * @return {moment} date within the month that will be used
+   */
+  getTopviewsMonth(useStartDate = true) {
+    const dateKey = useStartDate ? 'startDate' : 'endDate';
+    let targetMonth = moment(this.daterangepicker[dateKey]);
+
+    // Use the month of the target date as the date value for Topviews.
+    // If we are on the cusp of a new month, use the previous month as last month's data may not be available yet.
+    if (targetMonth.month() === moment().month() || targetMonth.month() === moment().subtract(2, 'days').month()) {
+      targetMonth.subtract(1, 'month');
+    }
+
+    return targetMonth;
+  }
+
+  /**
+   * Link to /topviews for given project and chosen options
+   * @param {String} project - project to link to
+   * @param {moment} [month] - date that lies within the month we want to link to
+   * @returns {String} URL
+   */
+  getTopviewsMonthURL(project, month = this.getTopviewsMonth()) {
+    let params = {
+      project,
+      platform: 'all-access',
+      date: month.startOf('month').format('YYYY-MM')
+    };
+
+    return `/topviews?${$.param(params)}`;
+  }
+
+  /**
    * Get user agent, if supported
    * @returns {string} user-agent
    */
@@ -713,28 +852,6 @@ class Pv extends PvConfig {
    */
   isMultilangProject() {
     return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(this.project);
-  }
-
-  /**
-   * Map normalized pages from API into a string of page names
-   * Used in normalizePageNames()
-   *
-   * @param {array} pages - array of page names
-   * @param {array} normalizedPages - array of normalized mappings returned by the API
-   * @returns {array} pages with the new normalized names, if given
-   */
-  mapNormalizedPageNames(pages, normalizedPages) {
-    normalizedPages.forEach(normalPage => {
-      /** do it this way to preserve ordering of pages */
-      pages = pages.map(page => {
-        if (normalPage.from === page) {
-          return normalPage.to;
-        } else {
-          return page;
-        }
-      });
-    });
-    return pages;
   }
 
   /**
@@ -843,22 +960,30 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Make request to API in order to get normalized page names. E.g. masculine versus feminine namespaces on dewiki
-   *
+   * Get basic info on given pages, including the normalized page names.
+   * E.g. masculine versus feminine namespaces on dewiki
    * @param {array} pages - array of page names
    * @returns {Deferred} promise with data fetched from API
    */
-  normalizePageNames(pages) {
+  getPageInfo(pages) {
     let dfd = $.Deferred();
 
     return $.ajax({
-      url: `https://${this.project}.org/w/api.php?action=query&prop=info&format=json&titles=${pages.join('|')}`,
+      url: `https://${this.project}.org/w/api.php?action=query&prop=info&inprop=protection|watchers` +
+        `&formatversion=2&format=json&titles=${pages.join('|')}`,
       dataType: 'jsonp'
     }).then(data => {
+      // restore original order of pages, taking into account out any page names that were normalized
+      let pageData = {};
       if (data.query.normalized) {
-        pages = this.mapNormalizedPageNames(pages, data.query.normalized);
+        data.query.normalized.forEach(n => {
+          pages[pages.indexOf(n.from)] = n.to;
+        });
       }
-      return dfd.resolve(pages);
+      pages.forEach(page => {
+        pageData[page] = data.query.pages.find(p => p.title === page);
+      });
+      return dfd.resolve(pageData);
     });
   }
 
@@ -896,12 +1021,16 @@ class Pv extends PvConfig {
   /**
    * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
    * @param {string} app - one of: pv, lv, tv, sv, ms
-   * @return {null} nothing
    */
   patchUsage(app) {
-    if (metaRoot) {
+    if (location.pathname.includes('-test')) {
       $.ajax({
-        url: `//${metaRoot}/${this.app}/${this.project || i18nLang}`,
+        url: `//${metaRoot}/usage/${this.app}-test/${this.project || i18nLang}`,
+        method: 'POST'
+      });
+    } else if (metaRoot) {
+      $.ajax({
+        url: `//${metaRoot}/usage/${this.app}/${this.project || i18nLang}`,
         method: 'POST'
       });
     }
@@ -972,7 +1101,6 @@ class Pv extends PvConfig {
   /**
    * Removes all Select2 related stuff then adds it back
    * Also might result in the chart being re-rendered
-   * @returns {null} nothing
    */
   resetSelect2() {
     const select2Input = $(this.config.select2Input);
@@ -999,7 +1127,6 @@ class Pv extends PvConfig {
    *
    * @param {string} key - settings key
    * @param {string|boolean} value - value to save
-   * @returns {null} nothing
    */
   saveSetting(key, value) {
     this[key] = value;
@@ -1009,7 +1136,6 @@ class Pv extends PvConfig {
   /**
    * Save the selected settings within the settings modal
    * Prefer this implementation over a large library like serializeObject or serializeJSON
-   * @returns {null} nothing
    */
   saveSettings() {
     /** track if we're changing to no_autocomplete mode */
@@ -1048,7 +1174,7 @@ class Pv extends PvConfig {
 
   /**
    * Directly set items in Select2
-   * Currently is not able to remove underscore from page names
+   * Currently is not able to remove underscores from page names
    *
    * @param {array} items - page titles
    * @returns {array} - untouched array of items
@@ -1056,10 +1182,10 @@ class Pv extends PvConfig {
   setSelect2Defaults(items) {
     items.forEach(item => {
       const escapedText = $('<div>').text(item).html();
-      $('<option>' + escapedText + '</option>').appendTo(this.config.select2Input);
+      $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
     });
     $(this.config.select2Input).select2('val', items);
-    $(this.config.select2Input).select2('close');
+    $(this.config.select2Input).trigger('select2:select');
 
     return items;
   }
@@ -1074,10 +1200,10 @@ class Pv extends PvConfig {
    */
   setSpecialRange(type) {
     const rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
-    let startDate, endDate;
+    let startDate, endDate, offset;
 
     if (type.includes('latest-')) {
-      const offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+      offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
       [startDate, endDate] = this.config.specialRanges.latest(offset);
     } else if (rangeIndex >= 0) {
       /** treat 'latest' as a function */
@@ -1095,6 +1221,8 @@ class Pv extends PvConfig {
     /** directly assign startDate then use setEndDate so that the events will be fired once */
     this.daterangepicker.startDate = startDate;
     this.daterangepicker.setEndDate(endDate);
+
+    $('.latest-num').text(offset);
 
     return this.specialRange;
   }
@@ -1125,7 +1253,6 @@ class Pv extends PvConfig {
   /**
    * Cross-application listeners
    * Each app has it's own setupListeners() that should call super.setupListeners()
-   * @return {null} nothing
    */
   setupListeners() {
     /** prevent browser's default behaviour for any link with href="#" */
@@ -1144,7 +1271,6 @@ class Pv extends PvConfig {
 
   /**
    * Set values of form based on localStorage or defaults, add listeners
-   * @returns {null} nothing
    */
   setupSettingsModal() {
     /** fill in values, everything is either a checkbox or radio */
@@ -1157,7 +1283,6 @@ class Pv extends PvConfig {
 
   /**
    * sets up the daterange selector and adds listeners
-   * @returns {null} - nothing
    */
   setupDateRangeSelector() {
     const dateRangeSelector = $(this.config.dateRangeSelector);
@@ -1250,13 +1375,21 @@ class Pv extends PvConfig {
     });
   }
 
+  /**
+   * Loop through given errors and show them to the user, also creating a paste on phabricator
+   * @param  {Array} errors - list of error messages (strings)
+   */
   showFatalErrors(errors) {
-    this.clearMessages();
+    this.resetView();
     errors.forEach(error => {
       this.writeMessage(
         `<strong>${$.i18n('fatal-error')}</strong>: <code>${error}</code>`
       );
     });
+
+    const throwToastError = bugUrl => this.toastError(`
+      <strong>${$.i18n('fatal-error')}</strong>: ${$.i18n('error-please-report', this.getBugReportURL(bugUrl))}
+    `, 0);
 
     if (this.debug) {
       throw errors[0];
@@ -1278,19 +1411,18 @@ class Pv extends PvConfig {
         }
       }).done(data => {
         if (data && data.result && data.result.objectName) {
-          this.writeMessage($.i18n('error-please-report', this.getBugReportURL(data.result.objectName)));
+          throwToastError(data.result.objectName);
         } else {
-          this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+          throwToastError();
         }
       }).fail(() => {
-        this.writeMessage($.i18n('error-please-report', this.getBugReportURL()));
+        throwToastError();
       });
     }
   }
 
   /**
    * Splash in console, just for fun
-   * @returns {String} output
    */
   splash() {
     const style = 'background: #eee; color: #555; padding: 4px; font-family:monospace';
@@ -1312,27 +1444,27 @@ class Pv extends PvConfig {
 
   /**
    * Add the loading indicator class and set the safeguard timeout
-   * @returns {null} nothing
    */
   startSpinny() {
-    $('.chart-container').addClass('loading');
+    $('body').addClass('loading');
+    document.activeElement.blur();
     clearTimeout(this.timeout);
 
     this.timeout = setTimeout(err => {
       this.resetView();
-      this.writeMessage(`<strong>${$.i18n('fatal-error')}</strong>:
+      this.toastError(`
+        <strong>${$.i18n('fatal-error')}</strong>:
         ${$.i18n('error-timed-out')}
         ${$.i18n('error-please-report', this.getBugReportURL())}
-      `, true);
-    }, 20 * 1000);
+      `);
+    }, 30 * 1000);
   }
 
   /**
    * Remove loading indicator class and clear the safeguard timeout
-   * @returns {null} nothing
    */
   stopSpinny() {
-    $('.chart-container').removeClass('loading');
+    $('body').removeClass('loading initial');
     clearTimeout(this.timeout);
   }
 
@@ -1350,7 +1482,6 @@ class Pv extends PvConfig {
 
   /**
    * Update hrefs of inter-app links to load currently selected project
-   * @return {null} nuttin'
    */
   updateInterAppLinks() {
     $('.interapp-link').each((i, link) => {
@@ -1404,9 +1535,8 @@ class Pv extends PvConfig {
       valid = false;
 
     if (multilingual && !this.isMultilangProject()) {
-      this.writeMessage(
-        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
-        true
+      this.toastWarn(
+        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     } else if (siteDomains.includes(project)) {
@@ -1414,9 +1544,8 @@ class Pv extends PvConfig {
       this.updateInterAppLinks();
       valid = true;
     } else {
-      this.writeMessage(
-        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
-        true
+      this.toastWarn(
+        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     }
@@ -1427,15 +1556,13 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Writes message just below the chart
+   * Writes message just below the chart or list of data
    * @param {string} message - message to write
-   * @param {boolean} clear - whether to clear any existing messages
+   * @param {boolean} [clear] - whether to clear any existing messages
    * @returns {jQuery} - jQuery object of message container
    */
-  writeMessage(message, clear) {
-    if (clear) {
-      this.clearMessages();
-    }
+  writeMessage(message, clear = false) {
+    if (clear) this.clearMessages();
     return $('.message-container').append(
       `<div class='error-message'>${message}</div>`
     );

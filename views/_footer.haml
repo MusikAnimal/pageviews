@@ -22,51 +22,39 @@
     %p
       Click on the uBlock icon and then click on the large power icon. Reload the page.
 
-%footer.row
-  %div.col-lg-12
-    %hr
-    %div.footer-nav
-      - include "_lang_selector.php"
+%div.spacer
 
-      %div.interapp-links.bm
-        - $apps = array( 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' )
-        - $appLinks = array();
-        - foreach( $apps as $app )
-          - $i18nName = $app === 'pageviews' ? '' : $app . '-'
-          - if ( $app === $currentApp )
-            - $appLinks[] = $I18N->msg( $app )
-          - else
-            - $appLinks[] = "<a class='interapp-link interapp-link--{$app}' href='/{$app}'>{$I18N->msg( $app )}</a>"
-        = implode( ' &bullet; ', $appLinks )
+%footer
+  %hr
 
-    %span
-      - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
-      - $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
-      - $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
-      = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );
+  %span
+    - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
+    - $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>";
+    - $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>";
+    = $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );
 
-    %div
-      %span.nowrap
-        - $heart = "<span class='heart'>&hearts;</span>";
-        - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
-        = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );
-      %span.nowrap
-        - $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"
-        - $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"
-        = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
+  %div
+    %span.nowrap
+      - $heart = "<span class='heart'>&hearts;</span>";
+      - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>";
+      = $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );
+    %span.nowrap
+      - $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"
+      - $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"
+      = $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) )
 
-    %div
-      %a(href="/#{$currentApp}/faq")<
-        = $I18N->msg( 'faq' )
-      &middot;
-      %a(href="/#{$currentApp}/url_structure")<
-        = $I18N->msg( 'url-structure' )
-      &middot;
-      %a(href="https://github.com/MusikAnimal/pageviews")<
-        = $I18N->msg( 'view-source' )
-      &middot;
-      %a(href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis")<
-        = $I18N->msg( 'report-issue' )
+  %div
+    %a(href="/#{$currentApp}/faq")<
+      = $I18N->msg( 'faq' )
+    &middot;
+    %a(href="/#{$currentApp}/url_structure")<
+      = $I18N->msg( 'url-structure' )
+    &middot;
+    %a(href="https://github.com/MusikAnimal/pageviews")<
+      = $I18N->msg( 'view-source' )
+    &middot;
+    %a(href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis")<
+      = $I18N->msg( 'report-issue' )
 
 - if ( strpos ( $_SERVER['PHP_SELF'], 'faq' ) !== false )
   :javascript

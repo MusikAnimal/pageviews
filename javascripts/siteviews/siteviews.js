@@ -16,10 +16,15 @@ const ChartHelpers = require('../shared/chart_helpers');
 
 /** Main SiteViews class */
 class SiteViews extends mix(Pv).with(ChartHelpers) {
+  /**
+   * Set instance variables and boot the app via pv.constructor
+   * @override
+   */
   constructor() {
     super(config);
     this.app = 'siteviews';
     this.specialRange = null;
+    this.entityInfo = {};
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -32,7 +37,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
   initialize() {
     this.setupDateRangeSelector();
@@ -44,34 +48,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Link to /topviews for given project and chosen options
-   * @param {String} project - project to link to
-   * @returns {String} URL
-   */
-  getTopviewsURL(project) {
-    let params = {
-      project,
-      platform: 'all-access'
-    };
-
-    // Use the month of the start date as the date value for Topviews.
-    // If we are on the cusp of a new month, use the previous month as last month's data may not be available yet.
-    let startDate = moment(this.daterangepicker.startDate);
-    if (startDate.month() === moment().month() || startDate.month() === moment().subtract(2, 'days').month()) {
-      startDate.subtract(1, 'month');
-    }
-    params.date = startDate.startOf('month').format('YYYY-MM');
-
-    return `/topviews?${$.param(params)}&project=${project}`;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
-   * @returns {null} nothing
    */
   popParams() {
-    this.startSpinny();
+    /** show loading indicator and add error handling for timeouts */
+    setTimeout(this.startSpinny.bind(this)); // use setTimeout to force rendering threads to catch up
 
     let params = this.validateParams(
       this.parseQueryString('sites')
@@ -100,6 +82,42 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     this.setInitialChartType(params.sites.length);
     this.setSelect2Defaults(params.sites);
+  }
+
+  /**
+   * Get statistics for the given sites
+   * @param  {Array} sites - site names, ['en.wikipedia.org', 'fr.wikipedia.org', ...]
+   * @return {Deferred} Promise resolving with the stats for each site
+   */
+  getSiteStats(sites) {
+    let dfd = $.Deferred(), requestCount = 0;
+
+    const alwaysCallback = () => {
+      requestCount++;
+      if (requestCount === sites.length) {
+        dfd.resolve(this.entityInfo);
+      }
+    };
+
+    sites.forEach(site => {
+      // don't re-query for the same stats
+      if (this.entityInfo[site]) return alwaysCallback();
+
+      $.ajax({
+        url: `https://${site}/w/api.php`,
+        data: {
+          action: 'query',
+          meta: 'siteinfo',
+          siprop: 'statistics',
+          format: 'json'
+        },
+        dataType: 'jsonp'
+      }).done(data => {
+        this.entityInfo[site] = data.query.statistics;
+      }).always(alwaysCallback);
+    });
+
+    return dfd;
   }
 
   /**
@@ -138,7 +156,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Push relevant class properties to the query string
    * Called whenever we go to update the chart
-   * @returns {null} nothing
    */
   pushParams() {
     const sites = $(this.config.select2Input).select2('val') || [];
@@ -154,7 +171,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Sets up the site selector and adds listener to update chart
-   * @returns {null} - nothing
    */
   setupSelect2() {
     const $select2Input = $(this.config.select2Input);
@@ -181,15 +197,25 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     };
 
     $select2Input.select2(params);
-    $select2Input.on('change', this.processInput.bind(this));
+    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    $select2Input.off('select2:unselect').on('select2:unselect', e => {
+      this.processInput(false, e.params.data.text);
+      $select2Input.trigger('select2:close');
+    });
   }
 
+  /**
+   * Set options for the Platform dropdown based on whether we're showing pageviews or unique devices
+   */
   setPlatformOptionValues() {
     $(this.config.platformSelector).find('option').each((index, el) => {
       $(el).prop('value', this.isPageviews() ? $(el).data('value') : $(el).data('ud-value'));
     });
   }
 
+  /**
+   * Setup listeners for the data source selector, and initialize values for the platform dropdown
+   */
   setupDataSourceSelector() {
     this.setPlatformOptionValues();
 
@@ -224,19 +250,30 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   /**
    * General place to add page-wide listeners
    * @override
-   * @returns {null} - nothing
    */
   setupListeners() {
     super.setupListeners();
     $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
+    $('.sort-link').on('click', e => {
+      const sortType = $(e.currentTarget).data('type');
+      this.direction = this.sort === sortType ? -this.direction : 1;
+      this.sort = sortType;
+      this.updateTable();
+    });
+    $('.clear-pages').on('click', () => {
+      $('.clear-pages').hide();
+      this.resetView(true);
+      this.focusSelect2();
+    });
   }
 
   /**
    * Query the API for each site, building up the datasets and then calling renderData
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
-   * @returns {null} - nothin
+   * @param {string} [removedSite] - site that was just removed via Select2, supplied by select2:unselect handler
+   * @return {null}
    */
-  processInput(force) {
+  processInput(force, removedSite) {
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
@@ -246,18 +283,124 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     this.params = location.search;
 
-    const entities = $(config.select2Input).select2('val') || [];
+    const sites = $(config.select2Input).select2('val') || [];
 
-    if (!entities.length) {
+    if (!sites.length) {
       return this.resetView();
     }
 
+    this.setInitialChartType(sites.length);
+
+    // clear out old error messages unless the is the first time rendering the chart
+    if (this.prevChartType) this.clearMessages();
+
     this.prevChartType = this.chartType;
-    this.clearMessages(); // clear out old error messages
     this.destroyChart();
     this.startSpinny();
 
-    this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+    if (removedSite) {
+      // we've got the data already, just removed a single page so we'll remove that data
+      // and re-render the chart
+      this.outputData = this.outputData.filter(entry => entry.label !== removedSite.descore());
+      this.outputData = this.outputData.map(entity => {
+        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
+      });
+      this.updateChart();
+    } else {
+      this.getSiteStats(sites).then(() => {
+        this.getPageViewsData(sites).done(xhrData => this.updateChart(xhrData));
+      });
+    }
+  }
+
+  /**
+   * Update the page comparison table, shown below the chart
+   * @return {null}
+   */
+  updateTable() {
+    if (this.outputData.length === 1) {
+      return this.showSinglePageLegend();
+    } else {
+      $('.single-page-stats').html('');
+      $('.single-page-ranking').html('');
+    }
+
+    $('.output-list').html('');
+
+    /** sort ascending by current sort setting, using slice() to clone the array */
+    const datasets = this.outputData.slice().sort((a, b) => {
+      const before = this.getSortProperty(a, this.sort),
+        after = this.getSortProperty(b, this.sort);
+
+      if (before < after) {
+        return this.direction;
+      } else if (before > after) {
+        return -this.direction;
+      } else {
+        return 0;
+      }
+    });
+
+    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
+    datasets.forEach((item, index) => {
+      $('.output-list').append(this.config.templates.tableRow(this, item));
+    });
+
+    // add summations to show up as the bottom row in the table
+    const sum = datasets.reduce((a,b) => a + b.sum, 0);
+    let totals = {
+      label: $.i18n('num-projects', datasets.length),
+      sum,
+      average: Math.round(sum / datasets.length),
+    };
+    ['pages', 'articles', 'edits', 'images', 'users', 'activeusers', 'admins'].forEach(type => {
+      totals[type] = datasets.reduce((a, b) => a + b[type], 0);
+    });
+    $('.output-list').append(this.config.templates.tableRow(this, totals, true));
+
+    $('.table-view').show();
+  }
+
+  /**
+   * Get value of given page for the purposes of column sorting in table view
+   * @param  {object} item - page name
+   * @param  {String} type - type of property to get
+   * @return {String|Number} - value
+   */
+  getSortProperty(item, type) {
+    if (type === 'active-users') {
+      return Number(item.activeusers);
+    } else if (type === 'label') {
+      return item.label;
+    }
+    return Number(item[type]);
+  }
+
+  /**
+   * Show info below the chart when there is only one site being queried
+   */
+  showSinglePageLegend() {
+    const site = this.outputData[0];
+
+    $('.table-view').hide();
+    $('.single-site-stats').html(`
+      ${this.getSiteLink(site.label)}
+      &middot;
+      <span class='text-muted'>
+        ${$(this.config.dateRangeSelector).val()}
+      </span>
+      &middot;
+      ${$.i18n('num-pageviews', this.formatNumber(site.sum))}
+      <span class='hidden-lg'>
+        (${this.formatNumber(site.average)}/${$.i18n('day')})
+      </span>
+    `);
+    $('.single-site-legend').html(
+      this.config.templates.chartLegend(this)
+    );
   }
 
   /**

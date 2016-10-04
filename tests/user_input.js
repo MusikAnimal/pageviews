@@ -20,12 +20,12 @@ module.exports = {
         ['Cat', 'Dog', 'Sea_lion']
       )).to.equal(true);
     });
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b[\s\S]*\bSea lion\b/);
+    client.expect.element('.output-list').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b[\s\S]*\bSea lion\b/).after(5000);
   },
   'Removing a page updates the chart accordingly': client => {
     client.click('.select2-selection__choice__remove:first-child');
-    client.expect.element('.aqs-chart').to.be.visible.after(10000);
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bDog\b[\s\S]*\bSea lion\b/);
+    client.expect.element('.aqs-chart').to.be.visible.after(500);
+    client.expect.element('.output-list').to.have.text.that.matches(/\bDog\b[\s\S]*\bSea lion\b/);
   },
   'Changing the date range updates the chart, URL parameters, and date selector': client => {
     // disable date formatting
@@ -66,10 +66,11 @@ module.exports = {
     });
   },
   'Selecting a special range updates the chart, URL parameters, and date selector': client => {
+    client.pause(1000);
     client.click('.aqs-date-range-selector');
-    client.waitForElementVisible('.daterangepicker', 500);
+    client.waitForElementVisible('.daterangepicker', 1000);
     client.click('.daterangepicker .ranges li:first-child'); // Last week
-    client.waitForElementNotVisible('.daterangepicker', 500);
+    client.waitForElementNotVisible('.daterangepicker', 1000);
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
     client.execute('return [$("#range-input").val(), location.search]', [], response => {
@@ -79,6 +80,9 @@ module.exports = {
     });
   },
   'Selecting a latest range updates the chart, URL parameters, and date selector': client => {
+    client.pause(1000);
+    client.click('.latest-group .dropdown-toggle');
+    client.expect.element('.date-latest').to.be.visible.after(1000);
     client.click('.date-latest a:first-child'); // latest 10 days
     client.expect.element('.aqs-chart').to.be.visible.after(10000);
 
@@ -90,13 +94,21 @@ module.exports = {
     });
   },
   'Changing platform and agent updates the chart and URL parameters': client => {
+    client.pause(500);
+    client.setValue('#platform-select', 'desktop');
+    client.execute('$(\'#platform-select\').trigger(\'change\')');
+    // try again for Safari
     client.click('#platform-select');
-    client.click('#platform-select option:nth-child(2)'); // desktop
-    client.expect.element('.aqs-chart').to.be.visible.after(10000);
-
+    client.click('#platform-select option:nth-child(2)');
+    client.waitForElementVisible('output', 5000);
+    client.pause(1000);
+    client.setValue('#agent-select', 'spider');
+    client.execute('$(\'#agent-select\').trigger(\'change\')');
+    // and again for Safari
     client.click('#agent-select');
-    client.click('#agent-select option:nth-child(3)'); // spider
-    client.expect.element('.aqs-chart').to.be.visible.after(10000);
+    client.click('#agent-select option:nth-child(3)');
+    client.waitForElementVisible('output', 5000);
+    client.pause(1000);
 
     client.execute('return location.search', [], response => {
       client.expect(response.value).to.match(/platform=desktop&agent=spider/);
@@ -129,7 +141,9 @@ module.exports = {
         ['Deutsche_Fußballnationalmannschaft', 'Deutschland']
       )).to.equal(true);
     });
-    client.expect.element('#chart-legend').to.have.text.that.matches(/\bDeutsche Fußballnationalmannschaft\b[\s\S]*\bDeutschland\b/);
+    client.expect.element('.output-list').to.have.text.that.matches(
+      /\b(Deutsche Fußballnationalmannschaft\b[\s\S]*\bDeutschland|Deutschland\b[\s\S]*\bDeutsche Fußballnationalmannschaft)\b/
+    ).after(5000);
 
     client.end();
   }

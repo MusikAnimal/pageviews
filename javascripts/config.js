@@ -14,16 +14,16 @@ const templates = require('./templates');
 const config = {
   agentSelector: '#agent-select',
   chart: '.aqs-chart',
-  circularLegend: templates.circularLegend,
+  chartLegend: templates.chartLegend,
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
     dateRange: 'latest-20'
   },
-  linearLegend: templates.linearLegend,
   logarithmicCheckbox: '.logarithmic-scale-option',
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   select2Input: '.aqs-select2-selector',
+  templates,
   validateParams: ['project', 'platform', 'agent']
 };
 

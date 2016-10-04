@@ -6,7 +6,7 @@
       <?php echo $I18N->msg( 'siteviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
-  <body>
+  <body class="clearfix">
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -36,7 +36,7 @@
               <?php echo $I18N->msg( 'url-structure-projects', [ 'variables' => [ $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ], 'parsemag' => true ] ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>
-            <?php include "../../url_parts/date_ranges.php"; ?>
+            <?php include "../../url_parts/_date_ranges.php"; ?>
             <dt>source</dt>
             <dd>
               <?php echo $I18N->msg( 'url-structure-source', [ 'variables' => [ '<code>pageviews</code>', '<code>unique-devices</code>' ], 'parsemag' => true ] ); ?>
@@ -66,7 +66,7 @@
               <br>
               <?php echo $I18N->msg( 'url-structure-agent', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ], 'parsemag' => true ] ); ?>
             </dd>
-            <?php include "../../url_parts/autolog.php"; ?>
+            <?php include "../../url_parts/_autolog.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">
@@ -74,9 +74,9 @@
             <?php echo $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'siteviews-title' ) ], 'parsemag' => true ] ); ?>
           </a>
         </div>
-        <?php $currentApp = "siteviews"; ?>
-        <?php include "../../_footer.php"; ?>
       </main>
+      <?php $currentApp = "siteviews"; ?>
+      <?php include "../../_footer.php"; ?>
     </div>
   </body>
 </html>

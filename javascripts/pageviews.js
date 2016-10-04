@@ -7,19 +7,25 @@
  */
 
 const config = require('./config');
-const siteMap = require('./shared/site_map');
 const Pv = require('./shared/pv');
+const siteMap = require('./shared/site_map');
 const ChartHelpers = require('./shared/chart_helpers');
-
 
 /** Main PageViews class */
 class PageViews extends mix(Pv).with(ChartHelpers) {
+  /**
+   * Set instance variables and boot the app via pv.constructor
+   * @override
+   */
   constructor() {
     super(config);
     this.app = 'pageviews';
 
-    this.normalized = false; /** let's us know if the page names have been normalized via the API yet */
+    this.entityInfo = false; /** let's us know if we've gotten the page info from API yet */
     this.specialRange = null;
+    this.initialQuery = false;
+    this.sort = 'views';
+    this.direction = '1';
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -32,7 +38,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
   initialize() {
     this.setupDateRangeSelector();
@@ -41,6 +46,41 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.popParams();
     this.setupListeners();
     this.updateInterAppLinks();
+  }
+
+  /**
+   * Query musikanimal API to get edit data about page within date range
+   * @param {Array} pages - page names
+   * @returns {Deferred} Promise resolving with editing data
+   */
+  getEditData(pages) {
+    const dfd = $.Deferred();
+
+    if (metaRoot) {
+      $.ajax({
+        url: `//${metaRoot}/article_analysis/basic_info`,
+        data: {
+          pages: pages.join('|'),
+          project: this.project,
+          start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
+          end: this.daterangepicker.endDate.format('YYYY-MM-DD')
+        }
+      })
+      .done(data => dfd.resolve(data))
+      .fail(() => {
+        // stable flag will be used to handle lack of data, so just resolve with empty data
+        let data = {};
+        pages.forEach(page => data[page] = {});
+        dfd.resolve({ pages: data });
+      });
+    } else {
+      dfd.resolve({
+        num_edits: 0,
+        num_users: 0
+      });
+    }
+
+    return dfd;
   }
 
   /**
@@ -91,11 +131,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
-   * @returns {null} nothing
    */
   popParams() {
     /** show loading indicator and add error handling for timeouts */
-    this.startSpinny();
+    setTimeout(this.startSpinny.bind(this)); // use setTimeout to force rendering threads to catch up
 
     let params = this.validateParams(
       this.parseQueryString('pages')
@@ -111,46 +150,82 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.resetSelect2();
 
     /**
-     * Normalizes the page names then sets the Select2 defaults,
-     *   which triggers the Select2 listener and renders the chart
-     * @param {Array} pages - pages to pass to Massviews
-     * @return {null} nothing
+     * Sets the Select2 defaults, which triggers the Select2 listener and calls this.processInput
+     * @param {Array} pages - pages to query
      */
-    const normalizeAndSetDefaults = pages => {
-      if (this.normalized) {
-        pages = this.underscorePageNames(pages);
-        this.setSelect2Defaults(pages);
-      } else {
-        this.normalizePageNames(pages).then(data => {
-          this.normalized = true;
-          pages = data;
-          this.setSelect2Defaults(this.underscorePageNames(pages));
-        });
-      }
+    const getPageInfoAndSetDefaults = pages => {
+      this.getPageAndEditInfo(pages).then(pageInfo => {
+        this.initialQuery = true;
+        const normalizedPageNames = Object.keys(pageInfo);
+
+        // all given pages were invalid, reset view without clearing the error message
+        if (!normalizedPageNames.length) return this.resetView(false, false);
+
+        this.setSelect2Defaults(
+          this.underscorePageNames(normalizedPageNames)
+        );
+      });
     };
 
     // set up default pages if none were passed in
     if (!params.pages || !params.pages.length) {
-      // only set default of Cat and Dog for enwiki
-      if (this.project === 'en.wikipedia') {
-        params.pages = ['Cat', 'Dog'];
-        this.setInitialChartType(params.pages.length);
-        normalizeAndSetDefaults(params.pages);
-      } else {
+      this.getDefaultPages().done(pages => {
+        this.setInitialChartType(pages.length);
+        getPageInfoAndSetDefaults(pages);
+      }).fail(() => {
+        // manually hide spinny since we aren't drawing the chart,
+        // again using setTimeout to let everything catch up
+        setTimeout(this.stopSpinny.bind(this));
+        this.setInitialChartType();
         // leave Select2 empty and put focus on it so they can type in pages
         this.focusSelect2();
-        this.stopSpinny(); // manually hide spinny since we aren't drawing the chart
-        this.setInitialChartType();
-      }
+      });
     // If there's more than 10 articles attempt to create a PagePile and open it in Massviews
     } else if (params.pages.length > 10) {
       // If a PagePile is successfully created we are redirected to Massviews and the promise is never resolved,
       //   otherwise we just take the first 10 and process as we would normally
-      this.massviewsRedirectWithPagePile(params.pages).then(normalizeAndSetDefaults);
+      this.massviewsRedirectWithPagePile(params.pages).then(getPageInfoAndSetDefaults);
     } else {
       this.setInitialChartType(params.pages.length);
-      normalizeAndSetDefaults(params.pages);
+      getPageInfoAndSetDefaults(params.pages);
     }
+  }
+
+  /**
+   * Get the pages that should be shown if none were requested in the URL
+   * @return {Deferred} promise resolving with the array of pages to be shown, based on project
+   */
+  getDefaultPages() {
+    const dfd = $.Deferred();
+
+    // only set default of Cat and Dog for enwiki
+    if (this.project === 'en.wikipedia') {
+      dfd.resolve(['Cat', 'Dog']);
+    } else if (this.project.includes('wikipedia')) {
+      // get local title for Cat and Dog
+      const url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki' +
+        '&titles=Cat|Dog&props=sitelinks/urls|datatype&format=json&callback=?';
+
+      $.getJSON(url).done(data => {
+        if (data.error) {
+          return dfd.resolve();
+        }
+
+        const dbName = Object.keys(siteMap).find(key => siteMap[key] === `${this.project}.org`);
+        const pages = Object.keys(data.entities).map(key => {
+          return data.entities[key].sitelinks[dbName].title;
+        });
+
+        dfd.resolve(pages);
+      });
+    } else {
+      // get mainpage from siteinfo
+      this.fetchSiteInfo(this.project).done(siteInfo => {
+        dfd.resolve([siteInfo[this.project].general.mainpage]);
+      }).fail(dfd.reject);
+    }
+
+    return dfd;
   }
 
   /**
@@ -229,7 +304,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
-   * @returns {null} nothing
    */
   pushParams() {
     const pages = $(this.config.select2Input).select2('val') || [],
@@ -246,7 +320,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Sets up the article selector and adds listener to update chart
-   * @returns {null} - nothing
    */
   setupSelect2() {
     const $select2Input = $(this.config.select2Input);
@@ -260,7 +333,23 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     };
 
     $select2Input.select2(params);
-    $select2Input.on('change', this.processInput.bind(this));
+    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    $select2Input.off('select2:unselect').on('select2:unselect', e => {
+      this.processInput(false, e.params.data.text);
+      $select2Input.trigger('select2:close');
+    });
+    $select2Input.off('select2:open').on('select2:open', e => {
+      if ($(e.target).val() && $(e.target).val().length === 10) {
+        $('.select2-search__field').one('keyup', () => {
+          const message = $.i18n(
+            'massviews-notice',
+            10,
+            `<strong><a href='/massviews/'>${$.i18n('massviews')}</a></strong>`
+          );
+          this.toastInfo(message);
+        });
+      }
+    });
   }
 
   /**
@@ -291,7 +380,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Calls parent setupProjectInput and updates the view if validations passed
    *   reverting to the old value if the new one is invalid
-   * @returns {null} nothing
    * @override
    */
   validateProject() {
@@ -304,19 +392,30 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * General place to add page-wide listeners
    * @override
-   * @returns {null} - nothing
    */
   setupListeners() {
     super.setupListeners();
     $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
+    $('.sort-link').on('click', e => {
+      const sortType = $(e.currentTarget).data('type');
+      this.direction = this.sort === sortType ? -this.direction : 1;
+      this.sort = sortType;
+      this.updateTable();
+    });
+    $('.clear-pages').on('click', () => {
+      $('.clear-pages').hide();
+      this.resetView(true);
+      this.focusSelect2();
+    });
   }
 
   /**
    * Query the API for each page, building up the datasets and then calling renderData
-   * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
-   * @returns {null} - nothin
+   * @param {boolean} [force] - whether to force the chart to re-render, even if no params have changed
+   * @param {string} [removedPage] - page that was just removed via Select2, supplied by select2:unselect handler
+   * @return {null}
    */
-  processInput(force) {
+  processInput(force, removedPage) {
     this.pushParams();
 
     /** prevent duplicate querying due to conflicting listeners */
@@ -332,14 +431,209 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       return this.resetView();
     }
 
+    this.setInitialChartType(entities.length);
+
     // clear out old error messages unless the is the first time rendering the chart
-    this.clearMessages();
+    if (this.prevChartType) this.clearMessages();
 
     this.prevChartType = this.chartType;
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
 
-    this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+    if (removedPage) {
+      // we've got the data already, just removed a single page so we'll remove that data
+      // and re-render the chart
+      this.outputData = this.outputData.filter(entry => entry.label !== removedPage.descore());
+      this.outputData = this.outputData.map(entity => {
+        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
+      });
+      this.updateChart();
+    } else if (this.initialQuery) {
+      // We've already gotten data about the intial set of pages
+      // This is because we need any page names given to be normalized when the app first loads
+      this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+      // set back to false so we get page and edit info for any newly entered pages
+      this.initialQuery = false;
+    } else {
+      this.getPageAndEditInfo(entities).then(() => {
+        this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+      });
+    }
+  }
+
+  /**
+   * Show info below the chart when there is only one page being queried
+   */
+  showSinglePageLegend() {
+    const page = this.outputData[0];
+    const topviewsMonth = this.getTopviewsMonth(false); // 'false' to go off of endDate
+    const topviewsDate = `${this.daterangepicker.endDate.format('YYYY')}/${topviewsMonth.format('MM')}/all-days`;
+
+    $.ajax({
+      url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/` +
+        `${$(this.config.platformSelector).val()}/${topviewsDate}`,
+      dataType: 'json'
+    }).done(data => {
+      // store pageData from API, removing underscores from the page name
+      const entry = data.items[0].articles.find(tv => tv.article === page.label.score());
+      if (entry) {
+        const monthName = this.daterangepicker.locale.monthNames[topviewsMonth.month()];
+        const topviewsLink = `
+          <a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>most-viewed pages</a>
+        `;
+
+        $('.single-page-ranking').html(
+          $.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
+        );
+      }
+    }).always(() => {
+      $('.table-view').hide();
+      $('.single-page-stats').html(`
+        ${this.getPageLink(page.label)}
+        &middot;
+        <span class='text-muted'>
+          ${$(this.config.dateRangeSelector).val()}
+        </span>
+        &middot;
+        ${$.i18n('num-pageviews', this.formatNumber(page.sum))}
+        <span class='hidden-lg'>
+          (${this.formatNumber(page.average)}/${$.i18n('day')})
+        </span>
+      `);
+      $('.single-page-legend').html(
+        this.config.templates.chartLegend(this)
+      );
+    });
+  }
+
+  /**
+   * Update the page comparison table, shown below the chart
+   * @return {null}
+   */
+  updateTable() {
+    if (!$.isNumeric(this.outputData[0].num_edits)) {
+      $('.legend-block--revisions .legend-block--body').html(
+        `<span class='text-muted'>${$.i18n('data-unavailable')}</span>`
+      );
+    }
+
+    if (this.outputData.length === 1) {
+      return this.showSinglePageLegend();
+    } else {
+      $('.single-page-stats').html('');
+      $('.single-page-ranking').html('');
+    }
+
+    $('.output-list').html('');
+
+    /** sort ascending by current sort setting, using slice() to clone the array */
+    const datasets = this.outputData.slice().sort((a, b) => {
+      const before = this.getSortProperty(a, this.sort),
+        after = this.getSortProperty(b, this.sort);
+
+      if (before < after) {
+        return this.direction;
+      } else if (before > after) {
+        return -this.direction;
+      } else {
+        return 0;
+      }
+    });
+
+    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
+    let hasProtection = false;
+    datasets.forEach((item, index) => {
+      if (item.protection !== $.i18n('none').toLowerCase()) hasProtection = true;
+
+      $('.output-list').append(this.config.templates.tableRow(this, item));
+    });
+
+    // add summations to show up as the bottom row in the table
+    const sum = datasets.reduce((a,b) => a + b.sum, 0);
+    const totals = {
+      label: $.i18n('num-pages', datasets.length),
+      sum,
+      average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
+      num_edits: datasets.reduce((a, b) => a + b.num_edits, 0),
+      num_users: datasets.reduce((a, b) => a + b.num_users, 0),
+      length: datasets.reduce((a, b) => a + b.length, 0),
+      protection: `${datasets.filter(page => page.protection !== 'none').length} protections`,
+      watchers: datasets.reduce((a, b) => a + b.watchers || 0, 0)
+    };
+    $('.output-list').append(this.config.templates.tableRow(this, totals, true));
+
+    // hide protection column if no pages are protected
+    $('.table-view--protection').toggle(hasProtection);
+
+    $('.table-view').show();
+  }
+
+  /**
+   * Get value of given page for the purposes of column sorting in table view
+   * @param  {object} item - page name
+   * @param  {String} type - type of property to get
+   * @return {String|Number} - value
+   */
+  getSortProperty(item, type) {
+    switch (type) {
+    case 'title':
+      return item.label;
+    case 'views':
+      return Number(item.sum);
+    case 'average':
+      return Number(item.average);
+    case 'edits':
+      return Number(item.num_edits);
+    case 'editors':
+      return Number(item.num_users);
+    case 'size':
+      return Number(item.length);
+    case 'watchers':
+      return Number(item.watchers);
+    }
+  }
+
+  /**
+   * Get page info and editing info of given pages.
+   * Also sets this.entityInfo
+   * @param  {Array} pages - page names
+   * @return {Deferred} Promise resolving with this.entityInfo
+   */
+  getPageAndEditInfo(pages) {
+    const dfd = $.Deferred();
+
+    this.getPageInfo(pages).done(data => {
+      // throw errors for missing pages and remove them from the list to be processed
+      for (let page in data) {
+        if (data[page].missing) {
+          this.writeMessage(`${this.getPageLink(page)}: ${$.i18n('api-error-no-data')}`);
+          delete data[page];
+        }
+      }
+
+      this.entityInfo = data;
+      // use Object.keys(data) to get normalized page names
+      this.getEditData(Object.keys(data)).done(editData => {
+        for (let page in editData.pages) {
+          let pageData = editData.pages[page];
+
+          const protection = (this.entityInfo[page].protection || []).find(prot => prot.type === 'edit');
+          pageData.protection = protection ? protection.level : $.i18n('none').toLowerCase();
+
+          Object.assign(this.entityInfo[page], editData.pages[page]);
+        }
+        dfd.resolve(this.entityInfo);
+      }).fail(() => {
+        dfd.resolve(this.entityInfo); // treat as if successful, simply won't show the data
+      });
+    }).fail(() => {
+      dfd.resolve({}); // same, simply won't show the data if it failed
+    });
+
+    return dfd;
   }
 
   /**
@@ -349,14 +643,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @returns {Deferred} promise resolved only if creation of PagePile failed
    */
   massviewsRedirectWithPagePile(pages) {
-    const dfd = $.Deferred(),
-      dbName = Object.keys(siteMap).find(key => siteMap[key] === `${this.project}.org`);
+    const dfd = $.Deferred();
 
     $.ajax({
       url: '//tools.wmflabs.org/pagepile/api.php',
       data: {
         action: 'create_pile_with_data',
-        wiki: dbName,
+        wiki: this.dbName(this.project),
         data: pages.join('\n')
       }
     }).success(pileData => {
@@ -365,7 +658,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       document.location = `/massviews?overflow=1&${$.param(params)}&source=pagepile&target=${pileData.pile.id}`;
     }).fail(() => {
       // just grab first 10 pages and throw an error
-      this.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
+      this.toastError(
+        $.i18n('auto-pagepile-error', 'PagePile', 10)
+      );
       dfd.resolve(pages.slice(0, 10));
     });
 

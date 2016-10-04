@@ -1,12 +1,72 @@
 @import 'mixins';
+@import 'bootstrap';
+
 $select2-selection: rgba(255, 255, 255, .8);
 $select2-dropdown: rgba(0, 0, 0, .075);
 $form-control-bg: rgba(255, 255, 255, .7);
 $faq-entry-bg: rgba(255, 255, 255, .5);
 
+$footer-height: 127px;
+
+html {
+  height: 100%;
+}
+
 body {
   background: url('/pageviews/images/gradient.png');
+  min-height: 100%;
   overflow-x: hidden;
+  position: relative;
+}
+
+.spacer {
+  clear: both;
+  height: $footer-height;
+}
+
+.top-nav {
+  border-bottom: 1px solid $bootstrap-dark-gray;
+
+  > * {
+    vertical-align: middle;
+  }
+
+  .nav-tabs {
+    border-bottom: 0;
+    display: inline-block;
+  }
+
+  .home-link {
+    background: url('/pageviews/images/logo.svg') no-repeat;
+    background-size: 36px;
+    display: inline-block;
+    height: 36px;
+    margin-left: 4px;
+    margin-right: 6px;
+    position: relative;
+    top: 1px;
+    width: 36px;
+  }
+}
+
+.nav-tabs {
+  .active a {
+    // scss-lint:disable ImportantRule
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+}
+
+.nav-buttons > * {
+  bottom: 1px;
+  margin-right: 6px;
+  margin-top: 7px;
+  position: relative;
+}
+
+.site-header {
+  margin-top: 0;
+  padding: 10px;
 }
 
 hr {
@@ -35,6 +95,7 @@ select {
 
 .rtl {
   @import 'rtl';
+  direction: rtl;
 }
 
 // Improve vertical spacing
@@ -44,8 +105,7 @@ select {
 
 // scss-lint:disable ImportantRule
 .aqs-select2-selector {
-  display: block;
-  height: 34px !important;
+  display: none;
 }
 
 // Avoid select2 collapsing with narrow screens
@@ -107,20 +167,18 @@ header {
 }
 
 footer {
-  clear: both;
+  bottom: 0;
   display: block;
   font-family: sans-serif;
-  margin: 6px 0 20px;
+  left: 0;
+  min-height: $footer-height;
+  position: absolute;
   text-align: center;
+  width: 100%;
 }
 
 .nowrap {
   white-space: nowrap;
-}
-
-%disabled {
-  opacity: .5;
-  pointer-events: none;
 }
 
 .disabled {
@@ -140,8 +198,33 @@ footer {
   font-family: Consolas, Lucida Console, monospace;
 }
 
-.loading::after {
-  @extend %loading;
+.loading {
+  .select2-container,
+  .page-selector {
+    @extend %disabled;
+  }
+
+  .chart-container::after {
+    @extend %loading;
+  }
+
+  .clear-pages {
+    // scss-lint:disable ImportantRule
+    display: none !important;
+  }
+
+  .data-links,
+  output {
+    display: none;
+  }
+
+  .summary-column {
+    visibility: hidden;
+  }
+}
+
+.message-container {
+  margin-bottom: 20px;
 }
 
 .error-message {
@@ -189,14 +272,25 @@ footer {
 }
 
 .lang-group {
-  position: absolute;
-  right: 0;
-  top: 0;
+  float: none !important;
+  position: relative;
 
   .dropdown-menu {
     background: $white;
     max-height: 194px;
     overflow-y: scroll;
+  }
+
+  .btn {
+    padding-left: 26px;
+  }
+
+  svg {
+    height: 15px;
+    left: 8px;
+    position: absolute;
+    top: 6px;
+    width: 15px;
   }
 }
 
@@ -210,6 +304,22 @@ footer {
 
 .interapp-links {
   font-size: 15px;
+}
+
+.interapp-link {
+  &:hover {
+    background: transparent !important;
+    border-color: transparent !important;
+
+    &::after {
+      border: solid 2px $gray;
+      bottom: 0;
+      content: '';
+      left: 0;
+      position: absolute;
+      width: 100%;
+    }
+  }
 }
 
 .list-group-item {
@@ -256,4 +366,45 @@ footer {
 
 .glyphicon-print {
   margin-right: 4px;
+}
+
+.sort-link {
+  @include prefix(user-select, none);
+  cursor: pointer;
+
+  .glyphicon {
+    top: 2px;
+    visibility: hidden;
+  }
+
+  .glyphicon-sort-by-alphabet,
+  .glyphicon-sort-by-alphabet-alt {
+    visibility: visible;
+  }
+
+  &:hover {
+    .glyphicon-sort {
+      visibility: visible;
+    }
+  }
+}
+
+output {
+  clear: both;
+  overflow-x: scroll;
+}
+
+@font-face {
+  font-family: 'Glyphter';
+  src: url('/pageviews/fonts/Glyphter.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media (max-width: $screen-lg) {
+  .summary-column {
+    // scss-lint:disable ImportantRule
+    border: 0 !important;
+    margin-top: 20px;
+  }
 }
