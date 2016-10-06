@@ -105,6 +105,7 @@
 	"info": "Инфо",
 	"permalink": "Трајна веза",
 	"massviews-empty-set": "$1 не садржи странице!",
+	"external-link": "Спољашња веза",
 	"subpages": "Подстранице",
 	"elapsed-time": "Утрошено време: $1 {{PLURAL:$1|сек.}}",
 	"bezier-curve-option": "Користи Безјеову криву на линијским графиконима",

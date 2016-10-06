@@ -101,6 +101,7 @@
 	"redirectviews-description": "Visu lapas pāradresāciju skatījumu skaits",
 	"source": "Avots",
 	"category": "Kategorijas",
+	"external-link": "Ārējā saite",
 	"num-pages": "$1 {{PLURAL:$1|lapas|lapa|lapas}}",
 	"logarithmic-scale": "Logaritmiskā skala",
 	"list": "Saraksts",
@@ -113,5 +114,6 @@
 	"num-redirects": "$1 pāradresācijas",
 	"num-pageviews": "$1 lapas skatījumi",
 	"redirects": "Pāradresācijas",
-	"localization": "Lokalizācija:"
+	"localization": "Lokalizācija:",
+	"documentation": "dokumentācija"
 }

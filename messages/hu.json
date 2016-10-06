@@ -146,5 +146,6 @@
 	"chart": "diagram",
 	"date-type": "Adattípus",
 	"date": "Dátum",
-	"daily": "Napi"
+	"daily": "Napi",
+	"documentation": "dokumentációt"
 }

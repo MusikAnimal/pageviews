@@ -143,6 +143,7 @@
 	"faq-topviews-false-positive-body2": "এছাড়াও আপনি আরও বিশ্লেষণের জন্য পৃষ্ঠাদর্শন অ্যাপ্লিকেশনে একটি পৃষ্ঠা খুলতে পারেন। এর জন্য ডান পাশের দৃশ্য গণনার উপর ক্লিক করুন।",
 	"faq-source-title": "\"উপাত্ত উৎস\" কি?",
 	"faq-massviews-sources-title": "\"উত্স\" কি?",
+	"faq-massviews-sources-category": "একটি বিষয়শ্রেণীর পাতার পূর্ণ URL লিখুন, উদাহরণস্বরূপ $1।",
 	"faq-massviews-subject-page-title": "\"$1\" বিকল্পটি কি?",
 	"url-structure-parameters": "প্যারামিটার",
 	"url-structure-parameters-order": "যে কোনো অনুক্রমে ব্যবহার করা যেতে পারে",
@@ -191,8 +192,11 @@
 	"source": "উৎস",
 	"category": "বিষয়শ্রেণী",
 	"wikilinks": "উইকিসংযোগসমূহ",
+	"external-link": "বহিঃসংযোগ",
 	"transclusions": "অন্তর্ভুক্তকরণ",
 	"subpages": "উপপাতাসমূহ",
+	"hashtag": "হ্যাশট্যাগ",
+	"hashtag-credits": "$1 দ্বারা চালিত",
 	"elapsed-time": "অতিবাহিত সময়: $1 {{PLURAL:$1|সেকেন্ড}}",
 	"num-pages": "$1টি {{PLURAL:$1|পাতা}}",
 	"num-transclusions": "$1টি {{PLURAL:$1|অন্তর্ভুক্তি}}",
@@ -225,5 +229,9 @@
 	"daily": "দৈনিক",
 	"mainspace-only-option": "শুধু নামস্থানের পাতাগুলি দেখাও",
 	"comma-character": ",",
-	"processing-page": "$2-এর $1টি পাতা প্রক্রিয়াকরণ হচ্ছে"
+	"processing-page": "$2-এর $1টি পাতা প্রক্রিয়াকরণ হচ্ছে",
+	"fetching-data": "$1 থেকে উপাত্ত আনা হচ্ছে",
+	"documentation": "নথিপত্র",
+	"building-dataset": "উপাত্তগুচ্ছ নির্মীয়মাণ...",
+	"loading-cache": "ক্যাশে থেকে লোড করা হচ্ছে..."
 }

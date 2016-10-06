@@ -124,7 +124,10 @@
 	"faq-try-tool": "Dir kënnt dëst op $1 fannen.",
 	"faq-bug-report-title": "Ech hunn en Ufro fir eng Funktioun oder e Feeler ze mellen",
 	"faq-massviews-sources-title": "Wat sinn d'''Quellen''?",
-	"faq-massviews-sources-category": "ass déi komplett URL vun enger Kategoriesäit, zum Beispill $1.",
+	"faq-massviews-sources-category": "Gitt déi komplett URL vun enger Kategoriesäit an, zum Beispill $1.",
+	"faq-massviews-sources-wikilinks": "Gitt déi komplett URL vun enger Säit an, zum Beispill $1.",
+	"faq-massviews-sources-template": "Gitt déi komplett URL vun enger Schablounesäit an, zum Beispill $1.",
+	"faq-massviews-sources-subpages": "Gitt déi komplett URL vun enger Säit an, zum Beispill $1.",
 	"faq-massviews-subject-page-title": "Wat ass d'Optioun \"$1\"?",
 	"url-structure-topviews-date-month": "E spezifesche Mount am Format $1",
 	"url-structure-topviews-date-day": "E spezifeschen Dag am Format $1",
@@ -158,7 +161,10 @@
 	"source": "Quell",
 	"category": "Kategorie",
 	"wikilinks": "Wikilinken",
+	"external-link": "Externe Link",
 	"subpages": "Ënnersäiten",
+	"hashtag": "Hashtag",
+	"hashtag-credits": "Notzt $1",
 	"num-pages": "$1 {{PLURAL:$1|Säit|Säiten}}",
 	"num-subpages": "{{PLURAL:$1|Eng Ënnersäit|$1 Ënnersäiten}}",
 	"num-wikilinks": "{{PLURAL:$1|Ee Wikilink|$1 Wikilinken}}",
@@ -185,5 +191,9 @@
 	"daily": "All Dag",
 	"list-values": "Ee vun: $1",
 	"comma-character": ",",
-	"processing-page": "Verschaffe Säit $1 vu(n) $2"
+	"processing-page": "Verschaffe Säit $1 vu(n) $2",
+	"fetching-data": "Donnéeën ofruffe vu(n) $1",
+	"documentation": "Dokumentatioun",
+	"building-dataset": "Datesaz zesummestellen...",
+	"loading-cache": "Aus dem Cache lueden..."
 }

@@ -143,7 +143,7 @@
 	"category": "Luokka",
 	"wikilinks": "Wikilinkit",
 	"subpages": "Alasivut",
-	"elapsed-time": "Tiedot haettu $1 {{PLURAL:$1|sekunnissa}}",
+	"elapsed-time": "Tiedot haettu $1 {{PLURAL:$1|sekunnissa|sekunnissa}}",
 	"num-pages": "$1 {{PLURAL:$1|sivu|sivua}}",
 	"num-subpages": "$1 {{PLURAL:$1|alasivu|alasivua}}",
 	"category-subject-toggle": "Älä sisällytä tuloksiin keskustelusivuja",
@@ -167,5 +167,6 @@
 	"monthly": "Kuukausittain",
 	"daily": "Päivittäin",
 	"mainspace-only-option": "Näytä vain artikkelinimiavaruuden sivut",
-	"processing-page": "Analysoidaan sivua $1 / $2."
+	"processing-page": "Analysoidaan sivua $1 / $2.",
+	"fetching-data": "Haetaan dataa kohteesta $1"
 }

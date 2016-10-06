@@ -133,6 +133,7 @@
 	"invalid-category-url": "Nieprawidłowa kategoria! Podaj pełny URL kategorii.",
 	"source": "Źródło",
 	"category": "Kategorii",
+	"external-link": "Link zewnętrzny",
 	"subpages": "Podstrony",
 	"elapsed-time": "Czas, który upłynął: $1 {{PLURAL:$1|sekunda|sekundy|sekund}}",
 	"num-pages": "$1 {{PLURAL:$1|strona|strony|stron}}",
@@ -151,5 +152,10 @@
 	"target": "cel",
 	"localization": "Lokalizacja:",
 	"date": "Data",
-	"monthly": "Miesięcznie"
+	"monthly": "Miesięcznie",
+	"mainspace-only-option": "Pokaż tylko strony przestrzeni głównej",
+	"processing-page": "Przetwarzanie strony $1 z $2",
+	"fetching-data": "Pobieranie danych z $1",
+	"documentation": "dokumentacja",
+	"loading-cache": "Ładowanie z pamięci podręcznej..."
 }
