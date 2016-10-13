@@ -165,6 +165,7 @@
 	"source": "Fuente",
 	"category": "Categoría",
 	"wikilinks": "Enlaces wikis",
+	"external-link": "Enlace externo",
 	"transclusions": "Transclusiones",
 	"subpages": "Subpáginas",
 	"elapsed-time": "Tiempo transcurrido: $1 {{PLURAL:$1|segundo|segundos}}",

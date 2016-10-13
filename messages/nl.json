@@ -3,7 +3,8 @@
 		"authors": [
 			"Sjoerddebruin",
 			"Macofe",
-			"MrLeopold"
+			"MrLeopold",
+			"SPQRobin"
 		]
 	},
 	"title": "Paginaweergaven-analyse",
@@ -122,6 +123,8 @@
 	"siteviews-description": "Vergelijking van paginaweergaven over meerdere projecten",
 	"redirectviews-description": "Paginaweergaven van alle doorverwijzingen naar een pagina",
 	"source": "Bron",
+	"category": "Categorie",
+	"external-link": "Externe koppeling",
 	"elapsed-time": "Verstreken tijd: $1 {{PLURAL:$1|seconde|seconden}}",
 	"num-pages": "$1 {{PLURAL:$1|pagina|pagina's}}",
 	"list": "Lijst",
@@ -132,5 +135,7 @@
 	"section": "Sectie",
 	"num-redirects": "$1 doorverwijzingen",
 	"num-pageviews": "$1 paginaweergaven",
-	"redirects": "Doorverwijzingen"
+	"redirects": "Doorverwijzingen",
+	"monthly": "Maandelijks",
+	"daily": "Dagelijks"
 }
