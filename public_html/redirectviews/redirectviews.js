@@ -88,7 +88,7 @@ var RedirectViews = function (_mix$with) {
   function RedirectViews() {
     _classCallCheck(this, RedirectViews);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RedirectViews).call(this, config));
+    var _this = _possibleConstructorReturn(this, (RedirectViews.__proto__ || Object.getPrototypeOf(RedirectViews)).call(this, config));
 
     _this.app = 'redirectviews';
     return _this;
@@ -125,7 +125,7 @@ var RedirectViews = function (_mix$with) {
     value: function setupListeners() {
       var _this2 = this;
 
-      _get(Object.getPrototypeOf(RedirectViews.prototype), 'setupListeners', this).call(this);
+      _get(RedirectViews.prototype.__proto__ || Object.getPrototypeOf(RedirectViews.prototype), 'setupListeners', this).call(this);
 
       $('#pv_form').on('submit', function (e) {
         e.preventDefault(); // prevent page from reloading
@@ -344,7 +344,7 @@ var RedirectViews = function (_mix$with) {
   }, {
     key: 'getParams',
     value: function getParams() {
-      var forCacheKey = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var forCacheKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var params = {
         project: $(this.config.projectInput).val(),
@@ -388,7 +388,7 @@ var RedirectViews = function (_mix$with) {
   }, {
     key: 'pushParams',
     value: function pushParams() {
-      var clear = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var clear = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       if (!window.history || !window.history.replaceState) return;
 
@@ -411,7 +411,7 @@ var RedirectViews = function (_mix$with) {
     value: function renderData() {
       var _this5 = this;
 
-      _get(Object.getPrototypeOf(RedirectViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
+      _get(RedirectViews.prototype.__proto__ || Object.getPrototypeOf(RedirectViews.prototype), 'renderData', this).call(this, function (sortedDatasets) {
         $('.output-totals').html('<th scope=\'row\'>' + $.i18n('totals') + '</th>\n         <th>' + $.i18n('num-redirects', _this5.outputData.titles.length - 1) + '</th>\n         <th>' + $.i18n('num-sections', _this5.outputData.sectionCount) + '</th>\n         <th>' + _this5.formatNumber(_this5.outputData.sum) + '</th>\n         <th>' + _this5.formatNumber(Math.round(_this5.outputData.average)) + ' / ' + $.i18n('day') + '</th>');
         $('#output_list').html('');
 
@@ -765,7 +765,7 @@ var RedirectViews = function (_mix$with) {
   }, {
     key: 'validateProject',
     value: function validateProject() {
-      if (_get(Object.getPrototypeOf(RedirectViews.prototype), 'validateProject', this).call(this)) {
+      if (_get(RedirectViews.prototype.__proto__ || Object.getPrototypeOf(RedirectViews.prototype), 'validateProject', this).call(this)) {
         this.setState('initial');
 
         /** kill and re-init typeahead to point to new project */
@@ -874,7 +874,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     function _class(appConfig) {
       _classCallCheck(this, _class);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+      var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, appConfig));
 
       _this.chartObj = null;
       _this.prevChartType = null;
@@ -952,7 +952,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     _createClass(_class, [{
       key: 'setInitialChartType',
       value: function setInitialChartType() {
-        var numDatasets = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+        var numDatasets = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
         if (this.rememberChart === 'true') {
           this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
@@ -1368,7 +1368,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'resetView',
       value: function resetView() {
-        var select2 = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+        var select2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         try {
           /** these can fail sometimes */
@@ -1464,7 +1464,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
       value: function setupDateRangeSelector() {
         var _this7 = this;
 
-        _get(Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
+        _get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
 
         /** prevent duplicate setup since the list view apps also use charts */
         if (!this.isChartApp()) return;
@@ -1814,7 +1814,7 @@ var ListHelpers = function ListHelpers(superclass) {
     function _class(appConfig) {
       _classCallCheck(this, _class);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+      return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, appConfig));
     }
 
     /**
@@ -2292,7 +2292,7 @@ var Pv = function (_PvConfig) {
 
     /** assign initial class properties */
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
+    var _this = _possibleConstructorReturn(this, (Pv.__proto__ || Object.getPrototypeOf(Pv)).call(this, appConfig));
 
     var defaults = _this.config.defaults,
         validParams = _this.config.validParams;
@@ -2614,7 +2614,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getPageURL',
     value: function getPageURL(page) {
-      var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
+      var project = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.project;
 
       return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + page.score().replace(/'/, escape);
     }
@@ -3081,9 +3081,9 @@ var Pv = function (_PvConfig) {
      * @return {Deferred} promise resolving with data
      */
     value: function massApi(params, project) {
-      var continueKey = arguments.length <= 2 || arguments[2] === undefined ? 'continue' : arguments[2];
+      var continueKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'continue';
       var dataKey = arguments[3];
-      var limit = arguments.length <= 4 || arguments[4] === undefined ? this.config.apiLimit : arguments[4];
+      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.config.apiLimit;
 
       if (!/\.org$/.test(project)) project += '.org';
 
@@ -3240,7 +3240,7 @@ var Pv = function (_PvConfig) {
       if (metaRoot) {
         $.ajax({
           url: '//' + metaRoot + '/' + this.app + '/' + (this.project || i18nLang),
-          method: 'PATCH'
+          method: 'POST'
         });
       }
     }
@@ -3794,7 +3794,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'validateProject',
     value: function validateProject() {
-      var multilingual = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var multilingual = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var projectInput = $(this.config.projectInput)[0];
       var project = projectInput.value.replace(/^www\./, ''),
@@ -4107,7 +4107,7 @@ var PvConfig = function () {
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         latest: function latest() {
-          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.daysAgo : arguments[0];
+          var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.config.daysAgo;
 
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }

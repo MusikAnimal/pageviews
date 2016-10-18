@@ -34,7 +34,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     function _class(appConfig) {
       _classCallCheck(this, _class);
 
-      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+      var _this = _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, appConfig));
 
       _this.chartObj = null;
       _this.prevChartType = null;
@@ -112,7 +112,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     _createClass(_class, [{
       key: 'setInitialChartType',
       value: function setInitialChartType() {
-        var numDatasets = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+        var numDatasets = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
         if (this.rememberChart === 'true') {
           this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
@@ -528,7 +528,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'resetView',
       value: function resetView() {
-        var select2 = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+        var select2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
         try {
           /** these can fail sometimes */
@@ -624,7 +624,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
       value: function setupDateRangeSelector() {
         var _this7 = this;
 
-        _get(Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
+        _get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
 
         /** prevent duplicate setup since the list view apps also use charts */
         if (!this.isChartApp()) return;
@@ -974,7 +974,7 @@ var ListHelpers = function ListHelpers(superclass) {
     function _class(appConfig) {
       _classCallCheck(this, _class);
 
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this, appConfig));
+      return _possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).call(this, appConfig));
     }
 
     /**
@@ -1452,7 +1452,7 @@ var Pv = function (_PvConfig) {
 
     /** assign initial class properties */
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Pv).call(this, appConfig));
+    var _this = _possibleConstructorReturn(this, (Pv.__proto__ || Object.getPrototypeOf(Pv)).call(this, appConfig));
 
     var defaults = _this.config.defaults,
         validParams = _this.config.validParams;
@@ -1774,7 +1774,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'getPageURL',
     value: function getPageURL(page) {
-      var project = arguments.length <= 1 || arguments[1] === undefined ? this.project : arguments[1];
+      var project = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.project;
 
       return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + page.score().replace(/'/, escape);
     }
@@ -2241,9 +2241,9 @@ var Pv = function (_PvConfig) {
      * @return {Deferred} promise resolving with data
      */
     value: function massApi(params, project) {
-      var continueKey = arguments.length <= 2 || arguments[2] === undefined ? 'continue' : arguments[2];
+      var continueKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'continue';
       var dataKey = arguments[3];
-      var limit = arguments.length <= 4 || arguments[4] === undefined ? this.config.apiLimit : arguments[4];
+      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.config.apiLimit;
 
       if (!/\.org$/.test(project)) project += '.org';
 
@@ -2400,7 +2400,7 @@ var Pv = function (_PvConfig) {
       if (metaRoot) {
         $.ajax({
           url: '//' + metaRoot + '/' + this.app + '/' + (this.project || i18nLang),
-          method: 'PATCH'
+          method: 'POST'
         });
       }
     }
@@ -2954,7 +2954,7 @@ var Pv = function (_PvConfig) {
   }, {
     key: 'validateProject',
     value: function validateProject() {
-      var multilingual = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var multilingual = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       var projectInput = $(this.config.projectInput)[0];
       var project = projectInput.value.replace(/^www\./, ''),
@@ -3267,7 +3267,7 @@ var PvConfig = function () {
         'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         latest: function latest() {
-          var offset = arguments.length <= 0 || arguments[0] === undefined ? self.config.daysAgo : arguments[0];
+          var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.config.daysAgo;
 
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }
@@ -4312,7 +4312,7 @@ var TopViews = function (_Pv) {
   function TopViews() {
     _classCallCheck(this, TopViews);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TopViews).call(this, config));
+    var _this = _possibleConstructorReturn(this, (TopViews.__proto__ || Object.getPrototypeOf(TopViews)).call(this, config));
 
     _this.app = 'topviews';
 
@@ -4403,7 +4403,7 @@ var TopViews = function (_Pv) {
     value: function addExclude(pages) {
       var _this2 = this;
 
-      var triggerChange = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+      var triggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
       if (!Array.isArray(pages)) pages = [pages];
 
@@ -4548,7 +4548,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'getParams',
     value: function getParams() {
-      var specialRange = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+      var specialRange = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       var params = {
         project: $(this.config.projectInput).val(),
@@ -4654,7 +4654,7 @@ var TopViews = function (_Pv) {
       if (date < this.config.minDate.toDate()) {
         this.addSiteNotice('danger',
         // use super.dateFormat since this is for moment, not for our datepicker
-        $.i18n('param-error-1', moment(this.config.minDate).format(_get(Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this))), $.i18n('invalid-params'), true);
+        $.i18n('param-error-1', moment(this.config.minDate).format(_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this))), $.i18n('invalid-params'), true);
         date = this.config.minDate.toDate();
       }
 
@@ -4787,7 +4787,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'resetView',
     value: function resetView() {
-      var clearSelector = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+      var clearSelector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       this.max = null;
       this.offset = 0;
@@ -4856,7 +4856,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'validateProject',
     value: function validateProject(e) {
-      if (_get(Object.getPrototypeOf(TopViews.prototype), 'validateProject', this).call(this, e)) {
+      if (_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'validateProject', this).call(this, e)) {
         this.resetView(true);
         this.processInput();
       }
@@ -4873,7 +4873,7 @@ var TopViews = function (_Pv) {
     value: function setupSelect2() {
       var _this6 = this;
 
-      var excludes = arguments.length <= 0 || arguments[0] === undefined ? this.excludes : arguments[0];
+      var excludes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.excludes;
 
       var select2Input = $(this.config.select2Input);
 
@@ -4936,7 +4936,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var type = arguments.length <= 0 || arguments[0] === undefined ? 'monthly' : arguments[0];
+      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'monthly';
 
       $('#date-type-select').val(type);
 
@@ -4968,7 +4968,7 @@ var TopViews = function (_Pv) {
     value: function setupListeners() {
       var _this8 = this;
 
-      _get(Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
+      _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
 
       $(this.config.platformSelector).on('change', this.processInput.bind(this));
       $('#date-type-select').on('change', function (e) {
@@ -5000,7 +5000,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'startSpinny',
     value: function startSpinny() {
-      _get(Object.getPrototypeOf(TopViews.prototype), 'startSpinny', this).call(this);
+      _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'startSpinny', this).call(this);
       $('.expand-chart').hide();
       $('.data-links').addClass('invisible');
       $('.search-topviews').addClass('invisible');
@@ -5017,7 +5017,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'stopSpinny',
     value: function stopSpinny(hideDataLinks) {
-      _get(Object.getPrototypeOf(TopViews.prototype), 'stopSpinny', this).call(this);
+      _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'stopSpinny', this).call(this);
       if (!hideDataLinks) {
         $('.data-links').removeClass('invisible');
         $('.search-topviews').removeClass('invisible');
@@ -5124,7 +5124,7 @@ var TopViews = function (_Pv) {
     value: function filterOutNamespace(pages) {
       var _this10 = this;
 
-      var restrictedNamespace = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+      var restrictedNamespace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
       var dfd = $.Deferred();
 
@@ -5176,7 +5176,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'dateFormat',
     get: function get() {
-      return _get(Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this).toLowerCase();
+      return _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this).toLowerCase();
     }
 
     /**
