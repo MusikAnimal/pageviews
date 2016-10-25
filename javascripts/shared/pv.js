@@ -35,14 +35,14 @@ class Pv extends PvConfig {
     /** @type {null|Date} tracking of elapsed time */
     this.processStart = null;
 
+    this.debug = location.search.includes('debug=true') || location.host === 'localhost';
+
     /** assign app instance to window for debugging on local environment */
-    if (location.host === 'localhost') {
+    if (this.debug) {
       window.app = this;
     } else {
       this.splash();
     }
-
-    this.debug = location.search.includes('debug=true') || location.host === 'localhost';
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {

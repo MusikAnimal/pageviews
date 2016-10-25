@@ -2376,14 +2376,14 @@ var Pv = function (_PvConfig) {
     /** @type {null|Date} tracking of elapsed time */
     _this.processStart = null;
 
+    _this.debug = location.search.includes('debug=true') || location.host === 'localhost';
+
     /** assign app instance to window for debugging on local environment */
-    if (location.host === 'localhost') {
+    if (_this.debug) {
       window.app = _this;
     } else {
       _this.splash();
     }
-
-    _this.debug = location.search.includes('debug=true') || location.host === 'localhost';
 
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
