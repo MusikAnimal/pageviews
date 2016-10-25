@@ -339,7 +339,23 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
 
-    this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+    this.getPageViewsData(entities).done(xhrData => {
+      this.updateChart(xhrData);
+
+      if (this.debugOutput) {
+        const url = this.getApiUrl($(this.config.select2Input).val()[0], this.daterangepicker.startDate, this.daterangepicker.endDate);
+        let output = `
+          ${this.chartObj.data.datasets[0].data}\n
+          ${this.config.maxDate.format()}\n
+          ${this.daterangepicker.endDate.startOf('day').format()}\n
+          ${url}\n`;
+
+        $.getJSON(url).then(data => {
+          output += data.items.map(item => item.views);
+          alert(output);
+        });
+      }
+    });
   }
 
   /**

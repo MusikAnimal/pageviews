@@ -3035,6 +3035,11 @@ var Pv = function (_PvConfig) {
       _this.splash();
     }
 
+    /** FIXME: temporary debug flag for T149058 */
+    if (location.search.includes('debugOutput=true')) {
+      _this.debugOutput = true;
+    }
+
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       var actualPathName = location.pathname.replace(/-test\/?/, '');

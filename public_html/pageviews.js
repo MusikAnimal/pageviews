@@ -439,7 +439,21 @@ var PageViews = function (_mix$with) {
       this.startSpinny(); // show spinny and capture against fatal errors
 
       this.getPageViewsData(entities).done(function (xhrData) {
-        return _this4.updateChart(xhrData);
+        _this4.updateChart(xhrData);
+
+        if (_this4.debugOutput) {
+          (function () {
+            var url = _this4.getApiUrl($(_this4.config.select2Input).val()[0], _this4.daterangepicker.startDate, _this4.daterangepicker.endDate);
+            var output = '\n          ' + _this4.chartObj.data.datasets[0].data + '\n\n          ' + _this4.config.maxDate.format() + '\n\n          ' + _this4.daterangepicker.endDate.startOf('day').format() + '\n\n          ' + url + '\n';
+
+            $.getJSON(url).then(function (data) {
+              output += data.items.map(function (item) {
+                return item.views;
+              });
+              alert(output);
+            });
+          })();
+        }
       });
     }
 
@@ -1978,6 +1992,11 @@ var Pv = function (_PvConfig) {
       window.app = _this;
     } else {
       _this.splash();
+    }
+
+    /** FIXME: temporary debug flag for T149058 */
+    if (location.search.includes('debugOutput=true')) {
+      _this.debugOutput = true;
     }
 
     /** show notice if on staging environment */

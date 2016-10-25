@@ -44,6 +44,11 @@ class Pv extends PvConfig {
       this.splash();
     }
 
+    /** FIXME: temporary debug flag for T149058 */
+    if (location.search.includes('debugOutput=true')) {
+      this.debugOutput = true;
+    }
+
     /** show notice if on staging environment */
     if (/-test/.test(location.pathname)) {
       const actualPathName = location.pathname.replace(/-test\/?/, '');
