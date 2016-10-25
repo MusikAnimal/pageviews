@@ -1121,7 +1121,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
-       * Fills in zero value to a timeseries, see:
+       * Fills in zero values to a timeseries, see:
        * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
        *
        * @param {object} data fetched from API
@@ -1139,14 +1139,14 @@ var ChartHelpers = function ChartHelpers(superclass) {
         var alreadyThere = {};
         data.items.forEach(function (elem) {
           var date = moment(elem.timestamp, _this3.config.timestampFormat);
-          alreadyThere[date] = elem;
+          alreadyThere[date.format('YYYYMMDD')] = elem;
         });
         data.items = [];
 
         /** Reconstruct with zeros instead of nulls */
-        for (var date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-          if (alreadyThere[date]) {
-            data.items.push(alreadyThere[date]);
+        for (var date = moment(startDate); date <= endDate; date.add(1, 'day')) {
+          if (alreadyThere[date.format('YYYYMMDD')]) {
+            data.items.push(alreadyThere[date.format('YYYYMMDD')]);
           } else {
             var edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
             data.items.push(_defineProperty({
