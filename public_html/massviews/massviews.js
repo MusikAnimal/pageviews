@@ -954,7 +954,7 @@ var MassViews = function (_mix$with) {
           hashTagLink = '<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/' + hashtag + '">#' + hashtag.escape() + '</a>';
 
       $('.progress-counter').text($.i18n('fetching-data', 'Hashtag API'));
-      $.get('http://tools.wmflabs.org/hashtags/csv/' + hashtag + '?limit=5000').done(function (data) {
+      $.get('//tools.wmflabs.org/hashtags/csv/' + hashtag + '?limit=5000').done(function (data) {
         /**
          * CSVToArray code courtesy of Ben Nadel
          * http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm
