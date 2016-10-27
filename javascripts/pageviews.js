@@ -41,6 +41,23 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.popParams();
     this.setupListeners();
     this.updateInterAppLinks();
+
+    if (i18nLang === 'en' && !this.getFromLocalStorage('pageviews-hide-beta-notice')) {
+      this.addSiteNotice(
+        'info',
+        `
+          There's a new Pageviews tool in town!
+          Try <strong><a href='/pageviews-test?pages=Google'>Pageviews Analysis 2.0 BETA!</a></strong>
+          &nbsp;
+          <span class='small'>(<a href='#' class='hide-beta-notice' data-dismiss='alert'>permanently hide this notice</a>)</span>
+        `,
+        '',
+        true
+      );
+      $('.hide-beta-notice').on('click', () => {
+        this.setLocalStorage('pageviews-hide-beta-notice', true);
+      });
+    }
   }
 
   /**
