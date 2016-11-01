@@ -154,6 +154,7 @@
 	"faq-source-pageviews": "är det totala antalet sidbesök som projektet får",
 	"faq-source-unique-devices": "är antalet unika enheter som besöker webbplatsen.",
 	"faq-massviews-sources-title": "Vilka är \"källorna\"?",
+	"faq-massviews-sources-pagepile": "Ange ett numeriskt ID för en grupp sidor som skapades med $1.",
 	"faq-massviews-sources-category": "Ange den fullständiga webbadressen för en kategorisida, t.ex. $1.",
 	"faq-massviews-sources-wikilinks": "Ange den fullständiga webbadressen för någon sida, t.ex. $1.",
 	"faq-massviews-sources-template": "Ange den fullständiga webbadressen för en mallsida, t.ex. $1.",

@@ -5,7 +5,8 @@
 			"Macofe",
 			"Peter Bowman",
 			"GamemOfAnime",
-			"Rubentl134"
+			"Rubentl134",
+			"Fitoschido"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -155,7 +156,7 @@
 	"projects-placeholder": "Escribe nombres de proyectos...",
 	"statistics": "Estadísticas",
 	"most-viewed-pages": "Páginas más vistas",
-	"topviews-false-positive": "Algunas paginas pueden ser <a href='/topviews/faq#false_positive'>falsos positivos</a>.",
+	"topviews-false-positive": "Algunas páginas pueden ser <a href='/topviews/faq#false_positive'>falsos positivos</a>.",
 	"unique-devices": "Dispositivos únicos",
 	"massviews-empty-set": "¡$1 no contiene ninguna página!",
 	"massviews-oversized-set-unknown": "$1 contiene más de $2 páginas. Por motivos de rendimiento, sólo las primeras $2 páginas se procesarán.",
@@ -168,6 +169,7 @@
 	"external-link": "Enlace externo",
 	"transclusions": "Transclusiones",
 	"subpages": "Subpáginas",
+	"hashtag-credits": "Funciona con $1",
 	"elapsed-time": "Tiempo transcurrido: $1 {{PLURAL:$1|segundo|segundos}}",
 	"num-pages": "$1 {{PLURAL:$1|página|páginas}}",
 	"num-transclusions": "$1 {{PLURAL:$1|transclusión|transclusiones}}",
@@ -196,5 +198,6 @@
 	"mainspace-only-option": "Mostrar sólo páginas del espacio principal",
 	"list-values": "Uno de: $1",
 	"comma-character": ",",
-	"processing-page": "Procesando página $1 de $2"
+	"processing-page": "Procesando página $1 de $2",
+	"documentation": "documentación"
 }
