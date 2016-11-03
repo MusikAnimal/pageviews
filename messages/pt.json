@@ -219,7 +219,7 @@
 	"daily": "Diariamente",
 	"mainspace-only-option": "Mostrar apenas páginas do domínio principal",
 	"list-values": "Um de: $1",
-	"processing-page": "A processar página $1 de $2",
+	"processing-page": "A processar a página $1 de $2",
 	"documentation": "documentação",
 	"loading-cache": "A carregar a partir da cache..."
 }
