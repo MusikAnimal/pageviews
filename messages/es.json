@@ -104,6 +104,7 @@
 	"api-error": "Error al consultar a $1.",
 	"api-error-unknown": "Ocurrió un error desconocido al consultar $1",
 	"api-error-no-data": "No se encontraron resultados.",
+	"api-error-timeout": "Debido a un error de API, lo siguiente no se ha podido procesar:\n$1\nPor favor, espera unos minutos e inténtalo de nuevo.",
 	"api-incomplete-data": "Algunos datos todavía no están disponibles para las fechas: $1",
 	"topviews-title": "Análisis de las más vistas",
 	"excluded-pages": "Páginas excluidas",
