@@ -18,6 +18,10 @@ const ListHelpers = require('../shared/list_helpers');
 
 /** Main MassViews class */
 class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
+  /**
+   * set instance variables and boot the app via pv.constructor
+   * @override
+   */
   constructor() {
     super(config);
     this.app = 'massviews';
@@ -26,7 +30,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
   initialize() {
     this.assignDefaults();
@@ -41,7 +44,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Add general event listeners
    * @override
-   * @returns {null} nothing
    */
   setupListeners() {
     super.setupListeners();
@@ -75,7 +77,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Copy necessary default values to class instance.
    * Called when the view is reset.
-   * @return {null} Nothing
    */
   assignDefaults() {
     ['sort', 'source', 'direction', 'outputData', 'hadFailure', 'total', 'view', 'subjectpage'].forEach(defaultKey => {
@@ -86,7 +87,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Show/hide form elements based on the selected source
    * @param  {Object} node - HTML element of the selected source
-   * @return {null} nothing
    */
   updateSourceInput(node) {
     const source = node.dataset.value;
@@ -120,7 +120,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Get the base project name (without language and the .org)
-   * @returns {boolean} projectname
+   * @returns {string} project name
    */
   get baseProject() {
     return this.project.split('.')[1];
@@ -172,8 +172,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param  {Boolean} clear - wheter to clear the query string entirely
-   * @return {null} nothing
+   * @param {Boolean} clear - wheter to clear the query string entirely
+   * @returns {null}
    */
   pushParams(clear = false) {
     if (!window.history || !window.history.replaceState) return;
@@ -191,7 +191,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Render list of massviews into view
    * @override
-   * @returns {null} nothing
    */
   renderData() {
     super.renderData(sortedDatasets => {
@@ -456,10 +455,20 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     return this.outputData;
   }
 
+  /**
+   * Get a URL for the page pile with given ID
+   * @param  {String|Number} id - ID of the PagePile
+   * @return {String} - the URL
+   */
   getPileURL(id) {
     return `http://tools.wmflabs.org/pagepile/api.php?action=get_data&id=${id}`;
   }
 
+  /**
+   * Get a link to the page pile with given ID
+   * @param  {String|Number} id - ID of the PagePile
+   * @return {String} - markup
+   */
   getPileLink(id) {
     return `<a href='${this.getPileURL(id)}' target='_blank'>Page Pile ${id}</a>`;
   }
@@ -521,7 +530,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
-   * @returns {null} nothing
    */
   popParams() {
     let params = this.validateParams(
@@ -549,11 +557,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
        *   they are redirected to Massviews with an auto-generated PagePile.
        *   This shows a message explaining what happened.
        */
-      this.addSiteNotice(
-        'info',
-        $.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target)),
-        '',
-        true
+      this.toastInfo(
+        $.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target))
       );
     }
 
@@ -585,7 +590,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @param {String} state - class to be added;
    *   should be one of ['initial', 'processing', 'complete']
    * @param {function} [cb] - Optional function to be called after initial state has been set
-   * @returns {null} nothing
    */
   setState(state, cb) {
     $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
@@ -624,10 +628,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * Helper to reset the state of the app and indicate that than API error occurred
    * @param {String} apiName - name of the API where the error occurred
    * @param {String} [errorMessage] - optional error message to show retrieved from API
-   * @return {null} nothing
    */
   apiErrorReset(apiName, errorMessage) {
-    return this.setState('initial', () => {
+    this.setState('initial', () => {
       let message;
       if (errorMessage) {
         message = `${$.i18n('api-error', apiName)}: ${errorMessage}`;
@@ -638,6 +641,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Process the input as the ID of a page pile
+   * @param  {Function} cb - called after processing is complete,
+   *   given the label and link for the PagePile and the pageviews data
+   */
   processPagePile(cb) {
     const pileId = $(this.config.sourceInput).val();
 
@@ -690,6 +698,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Get pageviews data of given category in given project
+   * @param {String} project - project name
+   * @param {String} category - category name
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the category and the pageviews data
+   */
   processCategory(project, category, cb) {
     let requestData = {
       list: 'categorymembers',
@@ -754,6 +769,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Process the input as a hashtag
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the hashtag and the pageviews data
+   */
   processHashtag(cb) {
     const hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
       hashTagLink = `<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/${hashtag}">#${hashtag.escape()}</a>`;
@@ -889,6 +909,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     return dfd;
   }
 
+  /**
+   * Get pageviews for subpages of given page and project
+   * @param {String} project - project name
+   * @param {String} targetPage - name of parent wiki page
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the page and the pageviews data
+   */
   processSubpages(project, targetPage, cb) {
     // determine what namespace the targetPage is in
     const descoredTargetPage = targetPage.descore();
@@ -973,6 +1000,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Get pageviews of pages that transclude the given template for given project
+   * @param {String} project
+   * @param {String} template - template name, can be any wiki page
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the template and the pageviews data
+   */
   processTemplate(project, template, cb) {
     let requestData = {
       prop: 'transcludedin',
@@ -1021,6 +1055,13 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Get pageviews of pages linked on the given page on given project
+   * @param {String} project
+   * @param {String} page - page name
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the page and the pageviews data
+   */
   processWikiPage(project, page, cb) {
     let requestData = {
       pllimit: 500,
@@ -1068,6 +1109,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Process the input as the ID of a Quarry dataset, getting the pageviews of results in the 'page_title' column
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the Quarry and the pageviews data
+   */
   processQuarry(cb) {
     const project = $('.project-input').val(),
       id = $(this.config.sourceInput).val();
@@ -1104,6 +1150,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     });
   }
 
+  /**
+   * Process the input as the a URL pattern for an external link,
+   *   getting the pageviews of results from list=exturlusage
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the link pattern at Special:LinkSearch and the pageviews data
+   */
   processExternalLink(cb) {
     const project = $('.project-input').val(),
       link = $(this.config.sourceInput).val();
@@ -1185,6 +1237,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     return false;
   }
 
+  /**
+   * Get subject pages of given talk pages in given namespace
+   * @param  {Array} pages - page names
+   * @param  {Object} namespaces - as returned by the siteInfo
+   * @return {Array} - mapped page names
+   */
   mapCategoryPageNames(pages, namespaces) {
     let pageNames = [];
 
@@ -1204,7 +1262,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   /**
    * Process the massviews for the given source and options entered
    * Called when submitting the form
-   * @return {null} nothing
+   * @return {null}
    */
   processInput() {
     this.setState('processing');
@@ -1290,7 +1348,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * Exports current mass data to CSV format and loads it in a new tab
    * With the prepended data:text/csv this should cause the browser to download the data
    * @override
-   * @returns {null} nothing
    */
   exportCSV() {
     let csvContent = `data:text/csv;charset=utf-8,Title,${this.getDateHeadings(false).join(',')}\n`;

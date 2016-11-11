@@ -151,6 +151,11 @@ var ListHelpers = require('../shared/list_helpers');
 var MassViews = function (_mix$with) {
   _inherits(MassViews, _mix$with);
 
+  /**
+   * set instance variables and boot the app via pv.constructor
+   * @override
+   */
+
   function MassViews() {
     _classCallCheck(this, MassViews);
 
@@ -163,7 +168,6 @@ var MassViews = function (_mix$with) {
   /**
    * Initialize the application.
    * Called in `pv.js` after translations have loaded
-   * @return {null} Nothing
    */
 
 
@@ -182,7 +186,6 @@ var MassViews = function (_mix$with) {
     /**
      * Add general event listeners
      * @override
-     * @returns {null} nothing
      */
 
   }, {
@@ -223,7 +226,6 @@ var MassViews = function (_mix$with) {
     /**
      * Copy necessary default values to class instance.
      * Called when the view is reset.
-     * @return {null} Nothing
      */
 
   }, {
@@ -239,7 +241,6 @@ var MassViews = function (_mix$with) {
     /**
      * Show/hide form elements based on the selected source
      * @param  {Object} node - HTML element of the selected source
-     * @return {null} nothing
      */
 
   }, {
@@ -274,7 +275,7 @@ var MassViews = function (_mix$with) {
 
     /**
      * Get the base project name (without language and the .org)
-     * @returns {boolean} projectname
+     * @returns {string} project name
      */
 
   }, {
@@ -329,8 +330,8 @@ var MassViews = function (_mix$with) {
 
     /**
      * Push relevant class properties to the query string
-     * @param  {Boolean} clear - wheter to clear the query string entirely
-     * @return {null} nothing
+     * @param {Boolean} clear - wheter to clear the query string entirely
+     * @returns {null}
      */
 
   }, {
@@ -353,7 +354,6 @@ var MassViews = function (_mix$with) {
     /**
      * Render list of massviews into view
      * @override
-     * @returns {null} nothing
      */
 
   }, {
@@ -640,11 +640,25 @@ var MassViews = function (_mix$with) {
 
       return this.outputData;
     }
+
+    /**
+     * Get a URL for the page pile with given ID
+     * @param  {String|Number} id - ID of the PagePile
+     * @return {String} - the URL
+     */
+
   }, {
     key: 'getPileURL',
     value: function getPileURL(id) {
       return 'http://tools.wmflabs.org/pagepile/api.php?action=get_data&id=' + id;
     }
+
+    /**
+     * Get a link to the page pile with given ID
+     * @param  {String|Number} id - ID of the PagePile
+     * @return {String} - markup
+     */
+
   }, {
     key: 'getPileLink',
     value: function getPileLink(id) {
@@ -712,7 +726,6 @@ var MassViews = function (_mix$with) {
     /**
      * Parses the URL query string and sets all the inputs accordingly
      * Should only be called on initial page load, until we decide to support pop states (probably never)
-     * @returns {null} nothing
      */
 
   }, {
@@ -743,7 +756,7 @@ var MassViews = function (_mix$with) {
          *   they are redirected to Massviews with an auto-generated PagePile.
          *   This shows a message explaining what happened.
          */
-        this.addSiteNotice('info', $.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target)), '', true);
+        this.toastInfo($.i18n('massviews-redirect', $.i18n('title'), 10, this.getPileLink(params.target)));
       }
 
       $(this.config.platformSelector).val(params.platform);
@@ -774,7 +787,6 @@ var MassViews = function (_mix$with) {
      * @param {String} state - class to be added;
      *   should be one of ['initial', 'processing', 'complete']
      * @param {function} [cb] - Optional function to be called after initial state has been set
-     * @returns {null} nothing
      */
 
   }, {
@@ -816,7 +828,6 @@ var MassViews = function (_mix$with) {
      * Helper to reset the state of the app and indicate that than API error occurred
      * @param {String} apiName - name of the API where the error occurred
      * @param {String} [errorMessage] - optional error message to show retrieved from API
-     * @return {null} nothing
      */
 
   }, {
@@ -824,7 +835,7 @@ var MassViews = function (_mix$with) {
     value: function apiErrorReset(apiName, errorMessage) {
       var _this9 = this;
 
-      return this.setState('initial', function () {
+      this.setState('initial', function () {
         var message = void 0;
         if (errorMessage) {
           message = $.i18n('api-error', apiName) + ': ' + errorMessage;
@@ -834,6 +845,13 @@ var MassViews = function (_mix$with) {
         _this9.writeMessage(message);
       });
     }
+
+    /**
+     * Process the input as the ID of a page pile
+     * @param  {Function} cb - called after processing is complete,
+     *   given the label and link for the PagePile and the pageviews data
+     */
+
   }, {
     key: 'processPagePile',
     value: function processPagePile(cb) {
@@ -881,6 +899,15 @@ var MassViews = function (_mix$with) {
         }
       });
     }
+
+    /**
+     * Get pageviews data of given category in given project
+     * @param {String} project - project name
+     * @param {String} category - category name
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the category and the pageviews data
+     */
+
   }, {
     key: 'processCategory',
     value: function processCategory(project, category, cb) {
@@ -945,6 +972,13 @@ var MassViews = function (_mix$with) {
         }
       });
     }
+
+    /**
+     * Process the input as a hashtag
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the hashtag and the pageviews data
+     */
+
   }, {
     key: 'processHashtag',
     value: function processHashtag(cb) {
@@ -1082,6 +1116,15 @@ var MassViews = function (_mix$with) {
 
       return dfd;
     }
+
+    /**
+     * Get pageviews for subpages of given page and project
+     * @param {String} project - project name
+     * @param {String} targetPage - name of parent wiki page
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the page and the pageviews data
+     */
+
   }, {
     key: 'processSubpages',
     value: function processSubpages(project, targetPage, cb) {
@@ -1167,6 +1210,15 @@ var MassViews = function (_mix$with) {
         }
       });
     }
+
+    /**
+     * Get pageviews of pages that transclude the given template for given project
+     * @param {String} project
+     * @param {String} template - template name, can be any wiki page
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the template and the pageviews data
+     */
+
   }, {
     key: 'processTemplate',
     value: function processTemplate(project, template, cb) {
@@ -1218,6 +1270,15 @@ var MassViews = function (_mix$with) {
         }
       });
     }
+
+    /**
+     * Get pageviews of pages linked on the given page on given project
+     * @param {String} project
+     * @param {String} page - page name
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the page and the pageviews data
+     */
+
   }, {
     key: 'processWikiPage',
     value: function processWikiPage(project, page, cb) {
@@ -1270,6 +1331,13 @@ var MassViews = function (_mix$with) {
         _this16.apiErrorReset('Links API', errorMessage);
       });
     }
+
+    /**
+     * Process the input as the ID of a Quarry dataset, getting the pageviews of results in the 'page_title' column
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the Quarry and the pageviews data
+     */
+
   }, {
     key: 'processQuarry',
     value: function processQuarry(cb) {
@@ -1309,6 +1377,14 @@ var MassViews = function (_mix$with) {
         return _this17.writeMessage($.i18n('api-error-unknown', 'Quarry API'), true);
       });
     }
+
+    /**
+     * Process the input as the a URL pattern for an external link,
+     *   getting the pageviews of results from list=exturlusage
+     * @param {Function} cb - called after processing is complete,
+     *   given the label and link for the link pattern at Special:LinkSearch and the pageviews data
+     */
+
   }, {
     key: 'processExternalLink',
     value: function processExternalLink(cb) {
@@ -1391,6 +1467,14 @@ var MassViews = function (_mix$with) {
 
       return false;
     }
+
+    /**
+     * Get subject pages of given talk pages in given namespace
+     * @param  {Array} pages - page names
+     * @param  {Object} namespaces - as returned by the siteInfo
+     * @return {Array} - mapped page names
+     */
+
   }, {
     key: 'mapCategoryPageNames',
     value: function mapCategoryPageNames(pages, namespaces) {
@@ -1412,7 +1496,7 @@ var MassViews = function (_mix$with) {
     /**
      * Process the massviews for the given source and options entered
      * Called when submitting the form
-     * @return {null} nothing
+     * @return {null}
      */
 
   }, {
@@ -1512,7 +1596,6 @@ var MassViews = function (_mix$with) {
      * Exports current mass data to CSV format and loads it in a new tab
      * With the prepended data:text/csv this should cause the browser to download the data
      * @override
-     * @returns {null} nothing
      */
 
   }, {
@@ -4621,8 +4704,8 @@ var PvConfig = function () {
     var self = this;
 
     this.config = {
-      apiLimit: 5000,
-      apiThrottle: 20,
+      apiLimit: 10000,
+      apiThrottle: 10,
       apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews'],
       chartConfig: {
         line: {
