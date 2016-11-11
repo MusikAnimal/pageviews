@@ -92,21 +92,12 @@ var PageViews = function (_mix$with) {
   _createClass(PageViews, [{
     key: 'initialize',
     value: function initialize() {
-      var _this2 = this;
-
       this.setupDateRangeSelector();
       this.setupSelect2();
       this.setupSelect2Colors();
       this.popParams();
       this.setupListeners();
       this.updateInterAppLinks();
-
-      if (i18nLang === 'en' && !this.getFromLocalStorage('pageviews-hide-beta-notice')) {
-        this.addSiteNotice('info', '\n          There\'s a new Pageviews tool in town!\n          Try <strong><a href=\'/pageviews-test?pages=Google\'>Pageviews Analysis 2.0 BETA!</a></strong>\n          &nbsp;\n          <span class=\'small\'>(<a href=\'#\' class=\'hide-beta-notice\' data-dismiss=\'alert\'>permanently hide this notice</a>)</span>\n        ', '', true);
-        $('.hide-beta-notice').on('click', function () {
-          _this2.setLocalStorage('pageviews-hide-beta-notice', true);
-        });
-      }
     }
 
     /**
@@ -172,7 +163,7 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this3 = this;
+      var _this2 = this;
 
       /** show loading indicator and add error handling for timeouts */
       this.startSpinny();
@@ -195,14 +186,14 @@ var PageViews = function (_mix$with) {
        * @return {null} nothing
        */
       var normalizeAndSetDefaults = function normalizeAndSetDefaults(pages) {
-        if (_this3.normalized) {
-          pages = _this3.underscorePageNames(pages);
-          _this3.setSelect2Defaults(pages);
+        if (_this2.normalized) {
+          pages = _this2.underscorePageNames(pages);
+          _this2.setSelect2Defaults(pages);
         } else {
-          _this3.normalizePageNames(pages).then(function (data) {
-            _this3.normalized = true;
+          _this2.normalizePageNames(pages).then(function (data) {
+            _this2.normalized = true;
             pages = data;
-            _this3.setSelect2Defaults(_this3.underscorePageNames(pages));
+            _this2.setSelect2Defaults(_this2.underscorePageNames(pages));
           });
         }
       };
@@ -361,7 +352,7 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'getArticleSelectorAjax',
     value: function getArticleSelectorAjax() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.autocomplete !== 'no_autocomplete') {
         /**
@@ -375,7 +366,7 @@ var PageViews = function (_mix$with) {
           delay: 200,
           jsonpCallback: 'articleSuggestionCallback',
           data: function data(search) {
-            return _this4.getSearchParams(search.term);
+            return _this3.getSearchParams(search.term);
           },
           processResults: this.processSearchResults.bind(this),
           cache: true
@@ -423,7 +414,7 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'processInput',
     value: function processInput(force) {
-      var _this5 = this;
+      var _this4 = this;
 
       this.pushParams();
 
@@ -448,7 +439,7 @@ var PageViews = function (_mix$with) {
       this.startSpinny(); // show spinny and capture against fatal errors
 
       this.getPageViewsData(entities).done(function (xhrData) {
-        return _this5.updateChart(xhrData);
+        return _this4.updateChart(xhrData);
       });
     }
 
@@ -462,11 +453,11 @@ var PageViews = function (_mix$with) {
   }, {
     key: 'massviewsRedirectWithPagePile',
     value: function massviewsRedirectWithPagePile(pages) {
-      var _this6 = this;
+      var _this5 = this;
 
       var dfd = $.Deferred(),
           dbName = Object.keys(siteMap).find(function (key) {
-        return siteMap[key] === _this6.project + '.org';
+        return siteMap[key] === _this5.project + '.org';
       });
 
       $.ajax({
@@ -477,12 +468,12 @@ var PageViews = function (_mix$with) {
           data: pages.join('\n')
         }
       }).success(function (pileData) {
-        var params = _this6.getParams();
+        var params = _this5.getParams();
         delete params.project;
         document.location = '/massviews?overflow=1&' + $.param(params) + '&source=pagepile&target=' + pileData.pile.id;
       }).fail(function () {
         // just grab first 10 pages and throw an error
-        _this6.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
+        _this5.writeMessage($.i18n('auto-pagepile-error', 'PagePile', 10));
         dfd.resolve(pages.slice(0, 10));
       });
 
