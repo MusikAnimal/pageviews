@@ -50,6 +50,12 @@
           <?php echo $I18N->msg( 'begin-at-zero' ); ?>
         </label>
       </span>
+      <span class="pull-right chart-specific">
+        <label class="show-labels">
+          <input class="show-labels-option" type="checkbox">
+          <?php echo $I18N->msg( 'show-values' ); ?>
+        </label>
+      </span>
     </span>
   </div>
 </div>

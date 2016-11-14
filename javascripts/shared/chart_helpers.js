@@ -53,6 +53,7 @@ const ChartHelpers = superclass => class extends superclass {
 
       $('.logarithmic-scale').toggle(this.isLogarithmicCapable());
       $('.begin-at-zero').toggle(this.config.linearCharts.includes(this.chartType));
+      $('.show-labels').toggle(['bar', 'line'].includes(this.chartType));
 
       if (this.rememberChart === 'true') {
         this.setLocalStorage('pageviews-chart-preference', this.chartType);
@@ -79,6 +80,10 @@ const ChartHelpers = superclass => class extends superclass {
     }
 
     $('.begin-at-zero-option').on('click', () => {
+      this.isChartApp() ? this.updateChart() : this.renderData();
+    });
+
+    $('.show-labels-option').on('click', () => {
       this.isChartApp() ? this.updateChart() : this.renderData();
     });
 
@@ -669,12 +674,23 @@ const ChartHelpers = superclass => class extends superclass {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
         }
 
+        // Show labels if option is checked (for linear charts only)
+        if ($('.show-labels-option').is(':checked')) {
+          options = this.showPointLabels(options);
+        } else {
+          delete options.animation.onComplete;
+          delete options.animation.onProgress;
+        }
+
         this.chartObj = new Chart(context, {
           type: this.chartType,
           data: linearData,
           options
         });
       } else {
+        // in case these were set when changing from linear chart type
+        delete options.animation.onComplete;
+        delete options.animation.onProgress;
         this.chartObj = new Chart(context, {
           type: this.chartType,
           data: {
@@ -701,6 +717,55 @@ const ChartHelpers = superclass => class extends superclass {
 
     if (['metaviews', 'pageviews', 'siteviews'].includes(this.app)) this.updateTable();
   }
+
+  /**
+   * Show the values each point in the series
+   * Courtesy of Hung Tran: http://stackoverflow.com/a/38797712/604142
+   * @param {Object} options - to be passed to Chart instantiation
+   * @returns {Object} modified options
+   */
+  showPointLabels(options) {
+    if (!['bar', 'line'].includes(this.chartType)) return;
+
+    const modifyCtx = ctx => {
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillStyle = '#444';
+      ctx.font = Chart.helpers.fontString(
+        Chart.defaults.global.defaultFontSize,
+        Chart.defaults.global.defaultFontStyle,
+        Chart.defaults.global.defaultFontFamily
+      );
+      return ctx;
+    };
+
+    const drawValue = (context, step) => {
+      const chartInstance = context.chart;
+      let ctx = modifyCtx(chartInstance.ctx);
+
+      Chart.helpers.each(context.data.datasets.forEach((dataset, i) => {
+        const meta = chartInstance.controller.getDatasetMeta(i);
+        Chart.helpers.each(meta.data.forEach((bar, index) => {
+          ctx.fillStyle = `rgba(68,68,68,${step})`;
+          const scaleMax = dataset._meta[Object.keys(dataset._meta)[0]].data[index]._yScale.maxHeight;
+          const yPos = (scaleMax - bar._model.y) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
+          ctx.fillText(dataset.data[index], bar._model.x, yPos);
+        }), context);
+      }), context);
+    };
+
+    options.animation.onComplete = function() {
+      drawValue(this, 1);
+    };
+
+    options.animation.onProgress = function(state) {
+      const animation = state.animationObject;
+      drawValue(this, animation.currentStep / animation.numSteps);
+    };
+
+    return options;
+  }
+
 
   /**
    * Show errors built in this.processInput

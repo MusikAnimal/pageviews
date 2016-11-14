@@ -312,5 +312,6 @@
 	"users": "{{Identical|Users}}",
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
 	"admins": "Word for the users who have sysop rights on a wiki.\n{{Identical|Admins}}",
-	"data-unavailable": "Brief message indicating data is temporarily unavailable."
+	"data-unavailable": "Brief message indicating data is temporarily unavailable.",
+	"show-values": "Label for the option to show values over the points of the chart."
 }

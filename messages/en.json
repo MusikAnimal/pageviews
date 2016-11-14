@@ -307,5 +307,6 @@
 	"users": "Users",
 	"active-users": "Active users",
 	"admins": "Admins",
-	"data-unavailable": "Data unavailable"
+	"data-unavailable": "Data unavailable",
+	"show-values": "Show values"
 }

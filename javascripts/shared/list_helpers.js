@@ -229,6 +229,14 @@ const ListHelpers = superclass => class extends superclass {
         });
       }
 
+      // Show labels if option is checked
+      if ($('.show-labels-option').is(':checked')) {
+        options = this.showPointLabels(options);
+      } else {
+        delete options.animation.onComplete;
+        delete options.animation.onProgress;
+      }
+
       if (this.chartType === 'radar') {
         options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
       } else {
