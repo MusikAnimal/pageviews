@@ -61,32 +61,66 @@ class TopViews extends Pv {
   drawData() {
     $('.chart-container').html('');
 
-    let count = 0, index = 0;
+    let count = 0, index = 0, pageIndexes = [], pageNames = [];
 
+    // first get indexes of pages to be shown
     while (count < this.config.pageSize + this.offset) {
-      let item = this.pageData[index++];
+      const item = this.pageData[index];
+      if (!this.excludes.includes(item.article)) {
+        count++;
+        pageIndexes.push(index);
+        pageNames.push(item.article);
+      }
 
-      if (this.excludes.includes(item.article)) continue;
-      if (!this.max) this.max = item.views;
+      // if (!this.max) this.max = item.views;
+      // const width = 100 * (item.views / this.max),
+      //   direction = !!i18nRtl ? 'to left' : 'to right';
+      // $('.chart-container').append(
+      //   `<div class='topview-entry' id='topview-entry-${index}' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
+      //    <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
+      //      title='Remove this page from Topviews rankings' aria-hidden='true'></span>
+      //    <span class='topview-entry--rank'>${++count}</span>
+      //    <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+      //    <span class='topview-entry--leader'></span>
+      //    <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
+      // );
 
-      const width = 100 * (item.views / this.max),
-        direction = !!i18nRtl ? 'to left' : 'to right';
-
-      $('.chart-container').append(
-        `<div class='topview-entry' id='topview-entry-${index}' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
-         <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
-           title='Remove this page from Topviews rankings' aria-hidden='true'></span>
-         <span class='topview-entry--rank'>${++count}</span>
-         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
-         <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
-      );
+      index++;
     }
 
-    this.pushParams();
-    this.stopSpinny();
+    this.getPageDetails(pageNames).then(() => {
+      count = 0;
 
-    this.addExcludeListeners();
+      pageIndexes.forEach(pageIndex => {
+        let item = this.pageData[pageIndex];
+
+        $('.chart-container').append(
+          `<article class='topview-entry clearfix'>
+             <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${pageIndex - 1} aria-hidden='true'></span>
+             <span class='topview-entry--rank'>${++count}</span>
+             <span class='topview-entry--image' style='background-image:url(${item.thumbnail})' />
+             <span class='topview-entry--details'>
+               <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target='_blank'>${item.article}</a>
+               <a class='topview-entry--views pull-right' target='_blank' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a>
+               <div class='topview-entry--intro clearfix'>
+                 ${item.intro || ''}
+               </div>
+             </span>
+           </article>`
+        );
+
+        $('.data-links').removeClass('invisible');
+        $('.search-topviews').removeClass('invisible');
+
+        $('.topview-entry--remove').off('click').on('click', e => {
+          const pageName = this.pageNames[$(e.target).data('article-id')];
+          this.addExclude(pageName);
+          this.pushParams();
+        });
+
+        this.stopSpinny();
+      });
+    });
   }
 
   /**
@@ -202,6 +236,45 @@ class TopViews extends Pv {
       project = $(this.config.projectInput).val();
 
     return `/pageviews?start=${startDate}&end=${endDate}&project=${project}&platform=${platform}&pages=${article}`;
+  }
+
+  /**
+   * Get details about given pages, including thumbnail, lead, etc.
+   * @param  {Array} pageNames - pages to query
+   * @return {Deferred} promise resolving with data
+   */
+  getPageDetails(pageNames) {
+    const dfd = $.Deferred();
+    const url = `https://${this.project}.org/w/api.php?action=query&titles=${pageNames.join('|')}&` +
+      'prop=pageimages|extracts&pithumbsize=500&exintro=1&exsentences=3&explaintext=1&' +
+      'exlimit=10&pilimit=10&format=json&formatversion=2';
+
+    $.ajax({
+      url: url,
+      dataType: 'jsonp'
+    }).then(data => {
+      data.query.pages.forEach(page => {
+        const index = this.pageNames.indexOf(page.title);
+        let thumbnail = 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Antu_wikipedia.svg/150px-Antu_wikipedia.svg.png';
+
+        // FIXME: only include if on Commons, otherwise show logo fallback
+        // include thumbnail only if it exists on Commons
+        // if (page.thumbnail && page.thumbnail.source.includes('commons')) {
+        if (page.thumbnail && page.thumbnail.source) {
+          thumbnail = page.thumbnail.source;
+        }
+        // }
+
+        Object.assign(this.pageData[index], {
+          thumbnail,
+          intro: page.extract
+        });
+      });
+
+      dfd.resolve();
+    });
+
+    return dfd;
   }
 
   /**
@@ -471,12 +544,12 @@ class TopViews extends Pv {
         direction = !!i18nRtl ? 'to left' : 'to right';
 
       $('.chart-container').append(
-        `<div class='topview-entry' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
+        `<div class='topview-entry clearfix' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
          <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index} aria-hidden='true'></span>
          <span class='topview-entry--rank'>${item.rank}</span>
-         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+         <a target='_blank' class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
          <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
+         <a target='_blank' class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
       );
     });
 

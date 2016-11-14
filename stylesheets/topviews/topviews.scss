@@ -9,13 +9,14 @@ $gray: #ccc;
 }
 
 .topview-entry {
-  display: flex;
+  background: $lighter-gray;
+  display: table;
   margin-bottom: 20px;
-  overflow: hidden;
+  min-height: 100px;
   padding: 10px;
   position: relative;
   transition: all .5s ease-in;
-  white-space: nowrap;
+  width: 100%;
 
   &:hover {
     .topview-entry--rank {
@@ -28,21 +29,45 @@ $gray: #ccc;
   }
 }
 
+.topview-entry--rank,
 .topview-entry--remove {
-  @include center('vertical');
-  cursor: pointer;
-  display: none;
+  background: rgba(255, 255, 255, .5);
+  font-size: 18px;
+  font-weight: bold;
+  height: 30px;
   left: 10px;
+  line-height: 30px;
+  position: absolute;
+  text-align: center;
+  top: 10px;
+  width: 30px;
 }
 
-.topview-entry--rank {
-  float: left;
-  font-weight: bold;
-  margin-right: 8px;
+.topview-entry--remove {
+  cursor: pointer;
+  display: none;
+}
 
-  &::after {
-    content: '.';
-  }
+.topview-entry--image {
+  background-position: 50%;
+  background-size: cover;
+  display: table-cell;
+  width: 150px;
+}
+
+.topview-entry--details {
+  display: table-cell;
+  padding-left: 15px;
+}
+
+.topview-entry--label,
+.topview-entry--views {
+  font-size: 18px;
+}
+
+.topview-entry--intro {
+  clear: both;
+  margin-top: 10px;
 }
 
 .topview-entry--leader {

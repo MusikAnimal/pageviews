@@ -100,7 +100,7 @@
         </small>
       </div>
       <div class="message-container col-lg-10"></div>
-      <div class="chart-container col-lg-12 loading"></div>
+      <section class="chart-container col-lg-12 loading"></section>
       <div class="col-lg-12 text-center">
         <a class="expand-chart" href="#">
           <?php echo $I18N->msg( 'show-more' ); ?>
