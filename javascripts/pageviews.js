@@ -64,7 +64,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
           project: this.project,
           start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
           end: this.daterangepicker.endDate.format('YYYY-MM-DD')
-        }
+        },
+        timeout: 8000
       })
       .done(data => dfd.resolve(data))
       .fail(() => {
