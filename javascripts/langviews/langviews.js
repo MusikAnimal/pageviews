@@ -258,10 +258,11 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
-    /** only certain characters within the page name are escaped */
-    params.page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
-
-    if (!forCacheKey) {
+    if (forCacheKey) {
+      // Page name needed to make a unique cache key for the query.
+      // For other purposes (e.g. this.pushParams()), we want to do special escaping of the page name
+      params.page = $(this.config.sourceInput).val().score();
+    } else {
       params.sort = this.sort;
       params.direction = this.direction;
       params.view = this.view;
@@ -285,9 +286,11 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return history.replaceState(null, document.title, location.href.split('?')[0]);
     }
 
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}`);
+    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?]/g, escape);
 
-    $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}`);
+    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
+
+    $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}&page=${escapedPageName}`);
   }
 
   /**
@@ -519,11 +522,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.patchUsage();
 
-    // fill in value for the page
-    if (params.page) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
-    }
-
     // If there are invalid params, remove page from params so we don't process the defaults.
     // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
     //   or any indication the validations failed. This is hacky but necessary.
@@ -543,7 +541,19 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     /** start up processing if page name is present */
     if (params.page) {
-      this.processInput();
+      this.getPageInfo([params.page]).done(data => {
+        // throw errors if page is missing
+        const normalizedPage = Object.keys(data)[0];
+        if (data[normalizedPage].missing) {
+          this.setState('initial');
+          return this.writeMessage(`${this.getPageLink(normalizedPage)}: ${$.i18n('api-error-no-data')}`);
+        }
+        // fill in value for the page
+        $(this.config.sourceInput).val(normalizedPage);
+        this.processInput();
+      }).fail(() => {
+        this.writeMessage($.i18n('api-error-unknown', 'Info'));
+      });
     } else {
       $(this.config.sourceInput).focus();
     }
@@ -619,7 +629,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.getPageViewsData(interWikiData).done(pageViewsData => {
         $('.progress-bar').css('width', '100%');
         $('.progress-counter').text($.i18n('building-dataset'));
-        const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
+        const pageLink = this.getPageLink(page, this.project);
         setTimeout(() => {
           this.buildMotherDataset(page, pageLink, pageViewsData);
           readyForRendering();

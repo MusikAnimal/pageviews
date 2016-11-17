@@ -261,7 +261,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       this.updateTable();
     });
     $('.clear-pages').on('click', () => {
-      $('.clear-pages').hide();
       this.resetView(true);
       this.focusSelect2();
     });

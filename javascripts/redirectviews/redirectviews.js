@@ -490,11 +490,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.patchUsage();
 
-    // fill in value for the page
-    if (params.page) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.page).descore());
-    }
-
     // If there are invalid params, remove page from params so we don't process the defaults.
     // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
     //   or any indication the validations failed. This is hacky but necessary.
@@ -514,7 +509,19 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     /** start up processing if page name is present */
     if (params.page) {
-      this.processInput();
+      this.getPageInfo([params.page]).done(data => {
+        // throw errors if page is missing
+        const normalizedPage = Object.keys(data)[0];
+        if (data[normalizedPage].missing) {
+          this.setState('initial');
+          return this.writeMessage(`${this.getPageLink(normalizedPage)}: ${$.i18n('api-error-no-data')}`);
+        }
+        // fill in value for the page
+        $(this.config.sourceInput).val(normalizedPage);
+        this.processInput();
+      }).fail(() => {
+        this.writeMessage($.i18n('api-error-unknown', 'Info'));
+      });
     } else {
       $(this.config.sourceInput).focus();
     }

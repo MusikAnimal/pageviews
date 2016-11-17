@@ -9,7 +9,8 @@ body.initial {
   .table-view,
   .summary-column,
   .single-page-stats,
-  .single-page-ranking {
+  .single-page-ranking,
+  .clear-pages {
     display: none !important;
   }
 }
@@ -98,7 +99,6 @@ body.initial {
 
 .clear-pages {
   cursor: pointer;
-  display: none;
 }
 
 .modal-chart-type {

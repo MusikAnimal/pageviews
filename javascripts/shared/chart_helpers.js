@@ -612,10 +612,8 @@ const ChartHelpers = superclass => class extends superclass {
       return this.stopSpinny();
     } else if (entityNames.length === 1) {
       $('.multi-page-chart-node').hide();
-      $('.clear-pages').hide();
     } else {
       $('.multi-page-chart-node').show();
-      $('.clear-pages').show();
     }
 
     if (xhrData) {
