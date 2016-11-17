@@ -343,7 +343,7 @@ class TopViews extends Pv {
     $(this.config.platformSelector).val(params.platform);
     this.patchUsage();
 
-    this.excludes = (params.excludes || []).map(exclude => exclude.descore());
+    this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
 
     this.params = location.search;
 
@@ -398,7 +398,7 @@ class TopViews extends Pv {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%]/g, escape);
+    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?]/g, escape);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
@@ -444,7 +444,8 @@ class TopViews extends Pv {
    * @return {null}
    */
   searchTopviews() {
-    const query = $('#topviews_search_field').val();
+    const query = $('#topviews_search_field').val()
+      .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
     if (!query) return this.clearSearch();
 

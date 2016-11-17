@@ -429,7 +429,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${page.score().replace(/'/, escape)}`;
+    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score())}`;
   }
 
   /**
@@ -967,6 +967,7 @@ class Pv extends PvConfig {
    */
   getPageInfo(pages) {
     let dfd = $.Deferred();
+    pages = pages.map(page => encodeURIComponent(decodeURIComponent(page)));
 
     return $.ajax({
       url: `https://${this.project}.org/w/api.php?action=query&prop=info&inprop=protection|watchers` +
@@ -974,13 +975,14 @@ class Pv extends PvConfig {
       dataType: 'jsonp'
     }).then(data => {
       // restore original order of pages, taking into account out any page names that were normalized
-      let pageData = {};
       if (data.query.normalized) {
         data.query.normalized.forEach(n => {
-          pages[pages.indexOf(n.from)] = n.to;
+          pages[pages.indexOf(encodeURIComponent(n.from))] = n.to;
         });
       }
+      let pageData = {};
       pages.forEach(page => {
+        page = decodeURIComponent(page);
         pageData[page] = data.query.pages.find(p => p.title === page);
       });
       return dfd.resolve(pageData);

@@ -115,6 +115,7 @@ const ListHelpers = superclass => class extends superclass {
     let params = this.getParams(true);
     params.sort = this.sort;
     params.direction = this.direction;
+    params.view = this.view;
     return params;
   }
 

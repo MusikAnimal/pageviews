@@ -90,7 +90,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @returns {String} URL
    */
   getLangviewsURL(page) {
-    return `/langviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
+    return `/langviews?${$.param(this.getParams())}&page=${encodeURIComponent(page.score())}`;
   }
 
   /**
@@ -99,7 +99,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * @returns {String} URL
    */
   getRedirectviewsURL(page) {
-    return `/redirectviews?${$.param(this.getParams())}&page=${page.replace(/[&%]/g, escape).score()}`;
+    return `/redirectviews?${$.param(this.getParams())}&page=${encodeURIComponent(page.score())}`;
   }
 
   /**
@@ -308,7 +308,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   pushParams() {
     const pages = $(this.config.select2Input).select2('val') || [],
-      escapedPages = pages.join('|').replace(/[&%]/g, escape);
+      escapedPages = pages.join('|').replace(/[&%?]/g, escape);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -456,7 +456,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       // set back to false so we get page and edit info for any newly entered pages
       this.initialQuery = false;
     } else {
-      this.getPageAndEditInfo(entities).then(() => {
+      this.getPageAndEditInfo(entities.map(entity => encodeURIComponent(entity))).then(() => {
         this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
       });
     }

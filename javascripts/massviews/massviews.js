@@ -216,7 +216,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td><a href="https://${item.project.escape()}/wiki/${item.label.score()}" target="_blank">${item.label.descore()}</a></td>
+           <td>${this.getPageLink(item.label, item.project)}</td>
            <td><a target="_blank" href='${this.getPageviewsURL(item.project, item.label)}'>${this.formatNumber(item.sum)}</a></td>
            <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
            </tr>`

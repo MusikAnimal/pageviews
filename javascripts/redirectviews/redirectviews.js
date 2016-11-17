@@ -237,7 +237,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Get all user-inputted parameters
-   * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
+   * @param {boolean} [forCacheKey] whether or not to exclude sort, direction and other parameters irrelevant to the query
    *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
    * @return {Object} project, platform, agent, etc.
    */
@@ -260,10 +260,11 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
     }
 
-    /** only certain characters within the page name are escaped */
-    params.page = $(this.config.sourceInput).val().score().replace(/[&%]/g, escape);
-
-    if (!forCacheKey) {
+    if (forCacheKey) {
+      // Page name needed to make a unique cache key for the query.
+      // For other purposes (e.g. this.pushParams()), we want to do special escaping of the page name
+      params.page = $(this.config.sourceInput).val().score();
+    } else {
       params.sort = this.sort;
       params.direction = this.direction;
       params.view = this.view;
@@ -287,9 +288,11 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return history.replaceState(null, document.title, location.href.split('?')[0]);
     }
 
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}`);
+    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?]/g, escape);
 
-    $('.permalink').prop('href', `/redirectviews?${$.param(this.getPermaLink())}`);
+    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
+
+    $('.permalink').prop('href', `/redirectviews?${$.param(this.getPermaLink())}&page=${escapedPageName}`);
   }
 
   /**
@@ -585,7 +588,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.getPageViewsData(redirectData).done(pageViewsData => {
         $('.progress-bar').css('width', '100%');
         $('.progress-counter').text($.i18n('building-dataset'));
-        const pageLink = this.getPageLink(decodeURIComponent(page), this.project);
+        const pageLink = this.getPageLink(page, this.project);
         setTimeout(() => {
           this.buildMotherDataset(page, pageLink, pageViewsData);
           readyForRendering();
@@ -661,15 +664,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     // Output the CSV file to the browser
     const encodedUri = encodeURI(csvContent);
     window.open(encodedUri);
-  }
-
-  /**
-   * Get informative filename without extension to be used for export options
-   * @return {string} filename without an extension
-   */
-  getExportFilename() {
-    const params = this.getParams(true);
-    return `${this.outputData.source}-${params.start.replace(/-/g, '')}-${params.end.replace(/-/g, '')}`;
   }
 }
 
