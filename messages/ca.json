@@ -3,7 +3,8 @@
 		"authors": [
 			"Medol",
 			"Paracel63",
-			"Macofe"
+			"Macofe",
+			"Fitoschido"
 		]
 	},
 	"title": "Anàlisi de pàgines vistes",
@@ -86,14 +87,14 @@
 	"december": "desembre",
 	"select2-min-chars": "Introduïu $1 o més caràcters.",
 	"select2-max-chars": "Si us plau, elimineu $1 caràcters",
-	"select2-loading": "Carregant més resultats…",
+	"select2-loading": "S’estan carregant més resultats…",
 	"select2-max-items": "Només podeu seleccionar $1 elements",
 	"select2-no-results": "No s'han trobat resultats.",
 	"help-translate": "Ajudeu a traduir",
 	"api-error": "Error consultar $1",
 	"api-error-unknown": "Un error desconegut es va produir quan consultar $1",
 	"api-error-no-data": "No hi ha dades trobades.",
-	"api-error-timeout": "A causa de l'API de fracàs, les pàgines següents no podien ser processats:\n$1\nSi us plau, espereu uns minuts i torneu a intentar.",
+	"api-error-timeout": "A causa d’una fallada de l’API, no s’ha pogut processar el següent:\n$1\nTorneu-ho a provar d’aquí a uns minuts.",
 	"api-incomplete-data": "Algunes dades encara no està disponibles per a les dates: $1",
 	"topviews-title": "Anàlisi de pàgines més vistes",
 	"excluded-pages": "Pàgines excloses",

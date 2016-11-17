@@ -5,7 +5,8 @@
 			"Liashko",
 			"SamGold",
 			"Macofe",
-			"Mechanizatar"
+			"Mechanizatar",
+			"Artificial123"
 		]
 	},
 	"title": "Аналіз колькасці праглядаў старонкі",
@@ -96,7 +97,7 @@
 	"select2-max-items": "Вы можаце выбраць толькі $1 аб'ект",
 	"select2-no-results": "Нічога не знойдзена",
 	"help-translate": "Дапамажыце перакласці",
-	"api-error": "Памылка пры запампоўцы дадзеных з API.",
+	"api-error": "Памылка пры запыце $1",
 	"api-error-no-data": "Няма дадзеных.",
 	"topviews-title": "Аналіз найбольшых праглядаў",
 	"excluded-pages": "Выключаныя старонкі",

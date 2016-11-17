@@ -6,7 +6,8 @@
 			"Nike",
 			"Silvonen",
 			"SMAUG",
-			"Pyscowicz"
+			"Pyscowicz",
+			"Valtlait"
 		]
 	},
 	"title": "Sivun näyttökertojen tarkastelu",
@@ -15,6 +16,7 @@
 	"last-week": "Viime viikko",
 	"this-month": "Tässä kuussa",
 	"last-month": "Viime kuussa",
+	"last-year": "Viime vuosi",
 	"custom-range": "Mukautettu alue",
 	"project": "Projekti",
 	"platform": "Alusta",
@@ -145,6 +147,7 @@
 	"subpages": "Alasivut",
 	"elapsed-time": "Tiedot haettu $1 {{PLURAL:$1|sekunnissa|sekunnissa}}",
 	"num-pages": "$1 {{PLURAL:$1|sivu|sivua}}",
+	"num-projects": "$1 projektia",
 	"num-subpages": "$1 {{PLURAL:$1|alasivu|alasivua}}",
 	"category-subject-toggle": "Älä sisällytä tuloksiin keskustelusivuja",
 	"logarithmic-scale": "Käytä logaritmista asteikkoa",
@@ -158,6 +161,7 @@
 	"search": "Haku",
 	"redirectviews-title": "Ohjausten näyttökertojen tarkastelu",
 	"num-redirects": "$1 ohjaus(ta)",
+	"num-protections": "$1 suojausta",
 	"redirects": "Ohjaukset",
 	"target": "kohdesivu",
 	"localization": "Lokalisointi:",
@@ -168,5 +172,17 @@
 	"daily": "Päivittäin",
 	"mainspace-only-option": "Näytä vain artikkelinimiavaruuden sivut",
 	"processing-page": "Analysoidaan sivua $1 / $2.",
-	"fetching-data": "Haetaan dataa kohteesta $1"
+	"fetching-data": "Haetaan dataa kohteesta $1",
+	"edits": "Muokkaukset",
+	"editors": "Muokkaajat",
+	"size": "Koko",
+	"none": "Ei mitään",
+	"unknown": "Tuntematon",
+	"links": "Linkit",
+	"clear": "Tyhjennä",
+	"basic-information": "Perustiedot",
+	"articles": "Artikkelit",
+	"images": "Kuvat",
+	"users": "Käyttäjät",
+	"show-values": "Näytä arvot"
 }
