@@ -20,7 +20,7 @@ const config = {
   select2Input: '.aqs-select2-selector',
   validateParams: ['tools'],
   validParams: {
-    tools: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews']
+    tools: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews', 'userviews']
   }
 };
 

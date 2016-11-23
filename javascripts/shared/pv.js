@@ -872,7 +872,7 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isListApp() {
-    return ['langviews', 'massviews', 'redirectviews'].includes(this.app);
+    return ['langviews', 'massviews', 'redirectviews', 'userviews'].includes(this.app);
   }
 
   /**
@@ -1582,7 +1582,7 @@ class Pv extends PvConfig {
       const defaultValue = this.config.defaults[paramKey],
         paramValue = params[paramKey];
 
-      if (defaultValue && !this.config.validParams[paramKey].includes(paramValue)) {
+      if (defaultValue !== undefined && !this.config.validParams[paramKey].includes(paramValue)) {
         // only throw error if they tried to provide an invalid value
         if (!!paramValue) {
           this.addInvalidParamNotice(paramKey);
@@ -1620,6 +1620,9 @@ class Pv extends PvConfig {
       );
       project = projectInput.dataset.value;
     }
+
+    // fire custom event that the project has changed
+    if (valid) $(this.config.projectInput).trigger('updated');
 
     projectInput.value = project;
 

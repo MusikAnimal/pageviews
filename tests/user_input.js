@@ -20,7 +20,9 @@ module.exports = {
         ['Cat', 'Dog', 'Sea_lion']
       )).to.equal(true);
     });
-    client.expect.element('.output-list').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b[\s\S]*\bSea lion\b/).after(5000);
+    client.expect.element('.output-list').to.have.text.that.includes('Cat').after(5000);
+    client.expect.element('.output-list').to.have.text.that.includes('Dog').after(5000);
+    client.expect.element('.output-list').to.have.text.that.includes('Sea lion').after(5000);
   },
   'Removing a page updates the chart accordingly': client => {
     client.click('.select2-selection__choice__remove:first-child');

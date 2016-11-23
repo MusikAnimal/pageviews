@@ -51,7 +51,7 @@
   %div.navbar-collapse.collapse.interapp-navigation
     %a.home-link.pull-left(href='/pageviews')
     %ul.interapp-links.nav.navbar-nav.navbar-left
-      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' ]
+      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews' ]
       - foreach( $apps as $app )
         - $i18nName = $app === 'pageviews' ? '' : $app . '-'
 

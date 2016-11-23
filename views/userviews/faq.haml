@@ -1,0 +1,30 @@
+!!!
+%html
+  %head
+    - include '../../_head.php'
+    %title
+      = $I18N->msg( 'userviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+  %body(class="#{$rtl}")
+    - $currentApp = 'userviews'
+    - include '../../_header.php'
+
+    %div.container
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'userviews-title' )
+          %small.app-description
+            = $I18N->msg( 'faq' )
+
+      %main.col-lg-10.col-lg-offset-1
+        %ul.list-group
+          - include "../../faq_parts/_old_data.php"
+          - include "../../faq_parts/_todays_data.php"
+          - include "../../faq_parts/_agents.php"
+          - include "../../faq_parts/_feedback.php"
+
+        %div.col-lg-12.text-center.tm
+          %a(href="/userviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'userviews-title' ) ), 'parsemag' => true ) )
+
+      - include "../../_footer.php"

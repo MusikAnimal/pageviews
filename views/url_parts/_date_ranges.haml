@@ -2,7 +2,7 @@
 
 %dt range
 %dd
-  = $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) )
+  = $I18N->msg( 'url-structure-special-range', [ 'variables' => [ '<code>start</code>', '<code>end</code>' ], 'parsemag' => true ] )
   %ul.special-ranges
     %li
       %code latest
@@ -25,7 +25,13 @@
       = $I18N->msg( 'last-month' )
 %dt start
 %dd
-  = $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) )
+  = $I18N->msg( 'url-structure-start-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>', '<code>end</code>' ], 'parsemag' => true ] )
+  - if ( in_array( $currentApp, [ 'pageviews' ] ) )
+    %br
+    = $I18N->msg( 'url-structure-start-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] )
 %dt end
 %dd
-  = $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) )
+  = $I18N->msg( 'url-structure-end-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>' ], 'parsemag' => true ] )
+  - if ( in_array( $currentApp, [ 'pageviews' ] ) )
+    %br
+    = $I18N->msg( 'url-structure-end-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] )

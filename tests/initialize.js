@@ -27,7 +27,8 @@ module.exports = {
     client.expect.element('#platform-select').to.have.value.that.equals('all-access');
     client.expect.element('#agent-select').to.have.value.that.equals('user');
     client.expect.element('.select2-selection__rendered').to.have.text.that.matches(/×Cat\n.*×Dog/m).after(5000);
-    client.expect.element('.output-list').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b/);
+    // list is by default sorted by number of pageveiws, so could be Cat or Dog
+    client.expect.element('.output-list').to.have.text.that.matches(/\bCat\b[\s\S]*\bDog\b|\bDog\b[\s\S]*\bCat\b/);
     client.end();
   },
   'Page loads with values and text matching given params': client => {

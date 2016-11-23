@@ -4,6 +4,7 @@
   </div>
   <div class="progress-counter"></div>
 </div>
+<div class="elapsed-timer text-center"></div>
 <output class="clearfix" form="langviews_form">
   <header class="output-header clearfix">
     <strong class="another-query">

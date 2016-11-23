@@ -80,6 +80,15 @@ const appDependencies = {
       'vendor/javascripts/Chart.min.js'
     ]
   },
+  'userviews': {
+    css: ['vendor/stylesheets/daterangepicker.css'],
+    js: [
+      'vendor/javascripts/HackTimer.min.js',
+      'vendor/javascripts/daterangepicker.js',
+      'vendor/javascripts/bootstrap-typeahead.js',
+      'vendor/javascripts/Chart.min.js'
+    ]
+  },
   'meta': {
     css: [
       'vendor/stylesheets/select2.min.css',

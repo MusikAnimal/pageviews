@@ -1,7 +1,7 @@
 <?php $defaultMsg = "(" . strtolower( $I18N->msg( 'default' ) ) . ")"; ?>
 <dt>range</dt>
 <dd>
-  <?php echo $I18N->msg( 'url-structure-special-range', array( 'variables' => array( '<code>start</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
+  <?php echo $I18N->msg( 'url-structure-special-range', [ 'variables' => [ '<code>start</code>', '<code>end</code>' ], 'parsemag' => true ] ); ?>
   <ul class="special-ranges">
     <li>
       <code>latest</code>
@@ -31,9 +31,17 @@
 </dd>
 <dt>start</dt>
 <dd>
-  <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
+  <?php echo $I18N->msg( 'url-structure-start-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>', '<code>end</code>' ], 'parsemag' => true ] ); ?>
+  <?php if ( in_array( $currentApp, [ 'pageviews' ] ) ) { ?>
+    <br>
+    <?php echo $I18N->msg( 'url-structure-start-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] ); ?>
+  <?php } ?>
 </dd>
 <dt>end</dt>
 <dd>
-  <?php echo $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
+  <?php echo $I18N->msg( 'url-structure-end-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>' ], 'parsemag' => true ] ); ?>
+  <?php if ( in_array( $currentApp, [ 'pageviews' ] ) ) { ?>
+    <br>
+    <?php echo $I18N->msg( 'url-structure-end-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] ); ?>
+  <?php } ?>
 </dd>
