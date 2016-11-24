@@ -10,7 +10,8 @@
 			"LordMsz",
 			"Macofe",
 			"Purodha",
-			"Amire80"
+			"Amire80",
+			"Siebrand"
 		]
 	},
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
@@ -295,7 +296,7 @@
 	"editors": "Label for the value showing the number of editors that contributed to the pages during the timeframe.\n{{Identical|Editor}}",
 	"size": "Label for the value showing the size of the page.\n{{Identical|Size}}",
 	"protection": "Label for the value showing the protection level of the page.\n{{Identical|Protection}}",
-	"watchers": "Label for the value showing the number of watchers (i.e. users who added the page to watchlist) a page has.\n{{Identical|Watcher}}",
+	"watchers": "Label for the value showing the number of watchers (i.e. users who added the page to watchlist) a page has. Should use a word that is related to {{msg-mw|watchlist}}.\n{{Identical|Watcher}}",
 	"none": "The word 'none', used for general purpose.\n{{Identical|None}}",
 	"unknown": "The word 'unknown', used for general purpose.\n{{Identical|Unknown}}",
 	"help": "Label for the help button dropdown.\n{{Identical|Help}}",
@@ -307,7 +308,7 @@
 	"clear": "Label for the link to clear all pages from the page selector.\n{{Identical|Clear}}",
 	"revisions": "Heading for the list of data about revisions of a page.\n{{Identical|Revision}}",
 	"basic-information": "Heading for the list of data showing basic information about a page or site.\n{{Identical|Basic information}}",
-	"most-viewed-rank": "Text saying that a page ranked as one of the top most-viewed pages for a month. $1 is the number of the ranking, $2 is a link to the Topviews app with the message for 'most-viewed-pages' as the link text, and $3 is the month name and year.",
+	"most-viewed-rank": "Text saying that a page ranked as one of the top most-viewed pages for a month. $1 is the number of the ranking, $2 is a link to the Topviews app with the message for \"most-viewed-pages\" as the link text, and $3 is the month name and year.",
 	"articles": "The word for pages in the mainspace of encyclopedia projects.\n{{Identical|Article}}",
 	"images": "The word 'images'.\n{{Identical|Image}}",
 	"users": "{{Identical|User}}",

@@ -4,7 +4,8 @@
 			"Dinhxuanduyet",
 			"Nguyên Lê",
 			"Macofe",
-			"Minh Nguyen"
+			"Minh Nguyen",
+			"Yue Ling"
 		]
 	},
 	"title": "Phân tích số lượt xem trang",
@@ -187,5 +188,8 @@
 	"redirects": "Trang đổi hướng",
 	"target": "mục tiêu",
 	"localization": "Ngôn ngữ:",
-	"chart-preferences": "Tùy chọn biểu đồ:"
+	"chart-preferences": "Tùy chọn biểu đồ:",
+	"unknown": "Không xác định",
+	"users": "Những người dùng",
+	"show-values": "Hiển thị giá trị"
 }
