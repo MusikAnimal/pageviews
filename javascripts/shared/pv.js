@@ -1224,7 +1224,9 @@ class Pv extends PvConfig {
     this.daterangepicker.startDate = startDate;
     this.daterangepicker.setEndDate(endDate);
 
-    $('.latest-num').text(offset);
+    $('.latest-text').text(
+      $.i18n('latest-days', offset)
+    );
 
     return this.specialRange;
   }

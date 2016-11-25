@@ -23,8 +23,8 @@
             = $I18N->msg( 'dates' )
           %span.btn-group.dropdown.latest-group
             %button.btn.btn-default.btn-xs.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-              = $I18N->msg( 'latest' )
-              %span.latest-num 30
+              %span.latest-text
+                = $I18N->msg( 'latest' )
               %span.caret
             %ul.dropdown-menu.dropdown-menu-right.date-latest
               - foreach ([10, 20, 30, 60, 90] as $offset)

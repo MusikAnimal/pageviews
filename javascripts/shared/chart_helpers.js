@@ -580,13 +580,15 @@ const ChartHelpers = superclass => class extends superclass {
     $('.date-latest a').on('click', e => {
       const value = $(e.target).data('value');
       this.setSpecialRange(`latest-${value}`);
-      $('.latest-num').text(value);
+      $('.latest-text').text(
+        $.i18n('latest-days', value)
+      );
     });
 
     dateRangeSelector.on('change', e => {
       this.setChartPointDetectionRadius(); // FIXME: is this needed?
       this.processInput();
-      $('.latest-num').text('');
+      $('.latest-text').text($.i18n('latest'));
 
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
