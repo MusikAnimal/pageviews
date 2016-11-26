@@ -12,7 +12,6 @@
 const config = {
   agentSelector: '#agent_select',
   chart: '.aqs-chart',
-  dateLimit: 31, // num days
   dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
