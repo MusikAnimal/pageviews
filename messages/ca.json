@@ -4,7 +4,8 @@
 			"Medol",
 			"Paracel63",
 			"Macofe",
-			"Fitoschido"
+			"Fitoschido",
+			"Arnaugir"
 		]
 	},
 	"title": "Anàlisi de pàgines vistes",
@@ -159,5 +160,6 @@
 	"list": "Llista",
 	"chart": "Gràfic",
 	"begin-at-zero": "Començar de zero",
-	"search": "Cerca"
+	"search": "Cerca",
+	"documentation": "Documentació"
 }

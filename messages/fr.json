@@ -10,12 +10,13 @@
 			"TradFr",
 			"Yasten",
 			"Trial",
-			"Urhixidur"
+			"Urhixidur",
+			"Derugon"
 		]
 	},
 	"title": "Analyse des pages vues",
 	"dates": "Dates",
-	"latest-days": "Derniers $1 jours",
+	"latest-days": "Dernier $1",
 	"last-week": "Semaine dernière",
 	"this-month": "Ce mois",
 	"last-month": "Mois dernier",
