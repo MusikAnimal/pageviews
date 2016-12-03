@@ -8,6 +8,11 @@ $gray: #ccc;
   padding: 0;
 }
 
+.download-btn-group .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+
 .topview-entry {
   display: flex;
   margin-bottom: 20px;

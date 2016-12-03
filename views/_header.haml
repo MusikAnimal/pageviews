@@ -1,5 +1,10 @@
-%nav.top-nav
-  %a.home-link(href='/pageviews')
+%nav.top-nav.navbar
+  %button.navbar-toggle.collapsed.pull-left(data-toggle="collapse" data-target=".interapp-navigation" aria-expanded="false")
+    %span.sr-only Toggle navigation
+    %span.icon-bar
+    %span.icon-bar
+    %span.icon-bar
+
   %span.pull-right.nav-buttons
     %button.btn.btn-default.btn-sm.btn-settings.js-test-settings(data-target="#settings-modal" data-toggle="modal")
       %span.glyphicon.glyphicon-wrench
@@ -40,19 +45,21 @@
           %li
             %a.lang-link(href="#" data-lang="#{$lang}")= $langName
 
-  %ul.interapp-links.nav.nav-tabs
-    - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' ]
-    - foreach( $apps as $app )
-      - $i18nName = $app === 'pageviews' ? '' : $app . '-'
+  %div.navbar-collapse.collapse.interapp-navigation
+    %a.home-link.pull-left(href='/pageviews')
+    %ul.interapp-links.nav.navbar-nav.navbar-left
+      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' ]
+      - foreach( $apps as $app )
+        - $i18nName = $app === 'pageviews' ? '' : $app . '-'
 
-      - if ( $app === $currentApp )
-        %li.active(role="presentation")
-          %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
-            = $I18N->msg( $app )
-      - else
-        %li(role="presentation")
-          %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
-            = $I18N->msg( $app )
+        - if ( $app === $currentApp )
+          %li.active(role="presentation")
+            %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
+              = $I18N->msg( $app )
+        - else
+          %li(role="presentation")
+            %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
+              = $I18N->msg( $app )
 
 %header.site-header
   %h4.text-center

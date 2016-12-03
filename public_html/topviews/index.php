@@ -10,14 +10,12 @@
   <body class="clearfix <?php echo $rtl; ?> <?php echo $currentApp; ?>">
     <?php include '../_header.php'; ?>
     <main class="col-lg-8 col-lg-offset-2">
-      <!-- Site notice -->
       <div class="text-center site-notice-wrapper">
         <div class="site-notice">
           <?php include '../_browser_check.php'; ?>
         </div>
       </div>
       <div class="row aqs-row options">
-        <!-- Date range selector -->
         <div class="col-lg-3 col-sm-3">
           <label for="date-type-select">
             <?php echo $I18N->msg( 'date-type' ); ?>
@@ -37,7 +35,6 @@
           </label>
           <input class="form-control aqs-date-range-selector" id="range-input">
         </div>
-        <!-- Project selector -->
         <div class="col-lg-3 col-sm-3">
           <label for="project-input">
             <?php echo $I18N->msg( 'project' ); ?>
@@ -64,7 +61,6 @@
           </select>
         </div>
       </div>
-      <!-- Article selector -->
       <div class="row aqs-row">
         <div class="col-lg-12">
           <label for="article-input">
@@ -93,7 +89,6 @@
       <span class="pull-right">
         <?php include "../_data_links.php"; ?>
       </span>
-      <!-- Chart -->
       <div class="col-lg-12 data-notice invisible">
         <small class="text-muted">
           <?php echo $I18N->msg( 'topviews-false-positive' ); ?>

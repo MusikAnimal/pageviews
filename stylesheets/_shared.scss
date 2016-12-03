@@ -26,42 +26,39 @@ body {
 
 .top-nav {
   border-bottom: 1px solid $bootstrap-dark-gray;
+  margin: 0;
 
   > * {
     vertical-align: middle;
   }
-
-  .nav-tabs {
-    border-bottom: 0;
-    display: inline-block;
-  }
-
-  .home-link {
-    background: url('/pageviews/images/logo.svg') no-repeat;
-    background-size: 36px;
-    display: inline-block;
-    height: 36px;
-    margin-left: 4px;
-    margin-right: 6px;
-    position: relative;
-    top: 1px;
-    width: 36px;
-  }
 }
 
-.nav-tabs {
-  .active a {
-    // scss-lint:disable ImportantRule
-    background: transparent !important;
-    border-color: transparent !important;
-  }
+.interapp-navigation {
+  padding: 0;
+}
+
+.home-link {
+  background: url('/pageviews/images/logo.svg') no-repeat;
+  background-size: 40px;
+  display: inline-block;
+  height: 40px;
+  margin-left: 5px;
+  margin-right: 6px;
+  position: relative;
+  top: 5px;
+  width: 40px;
 }
 
 .nav-buttons > * {
   bottom: 1px;
+  height: 36px;
   margin-right: 6px;
   margin-top: 7px;
   position: relative;
+
+  .btn {
+    height: 100%;
+  }
 }
 
 .site-header {
@@ -289,7 +286,7 @@ footer {
     height: 15px;
     left: 8px;
     position: absolute;
-    top: 6px;
+    top: 9px;
     width: 15px;
   }
 }
@@ -302,11 +299,38 @@ footer {
   margin-top: 15px;
 }
 
+.navbar-nav {
+  margin: 0;
+}
+
+.navbar-toggle {
+  border-color: $bootstrap-dark-gray;
+  margin-left: 6px;
+
+  .icon-bar {
+    background: $bootstrap-darker-gray;
+  }
+}
+
 .interapp-links {
   font-size: 15px;
+
+  .active .interapp-link {
+    color: $bootstrap-link-gray;
+    cursor: default;
+    pointer-events: none;
+
+    &:hover::after {
+      display: none;
+    }
+  }
 }
 
 .interapp-link {
+  &:focus {
+    background: transparent !important;
+  }
+
   &:hover {
     background: transparent !important;
     border-color: transparent !important;
@@ -406,5 +430,19 @@ output {
     // scss-lint:disable ImportantRule
     border: 0 !important;
     margin-top: 20px;
+  }
+}
+
+@media (max-width: $screen-sm) {
+  .interapp-navigation {
+    clear: both;
+  }
+
+  .interapp-link:hover::after {
+    display: none;
+  }
+
+  .home-link {
+    display: none;
   }
 }

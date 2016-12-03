@@ -379,6 +379,20 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
+   * Removes chart, messages, and resets site selections
+   * @param {boolean} [select2] whether or not to clear the Select2 input
+   * @param {boolean} [clearMessages] whether or not to clear any exisitng errors from view
+   * @override
+   */
+  resetView(select2 = false, clearMessages = true) {
+    super.resetView(select2, clearMessages);
+    $('.output-list').html('');
+    $('.single-page-ranking').html('');
+    $('.single-page-stats').html('');
+    $('.single-page-legend').html('');
+  }
+
+  /**
    * Calls parent setupProjectInput and updates the view if validations passed
    *   reverting to the old value if the new one is invalid
    * @override

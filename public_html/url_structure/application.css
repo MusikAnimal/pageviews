@@ -284,32 +284,33 @@ body {
   height: 127px; }
 
 .top-nav {
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #ddd;
+  margin: 0; }
   .top-nav > * {
     vertical-align: middle; }
-  .top-nav .nav-tabs {
-    border-bottom: 0;
-    display: inline-block; }
-  .top-nav .home-link {
-    background: url("/pageviews/images/logo.svg") no-repeat;
-    background-size: 36px;
-    display: inline-block;
-    height: 36px;
-    margin-left: 4px;
-    margin-right: 6px;
-    position: relative;
-    top: 1px;
-    width: 36px; }
 
-.nav-tabs .active a {
-  background: transparent !important;
-  border-color: transparent !important; }
+.interapp-navigation {
+  padding: 0; }
+
+.home-link {
+  background: url("/pageviews/images/logo.svg") no-repeat;
+  background-size: 40px;
+  display: inline-block;
+  height: 40px;
+  margin-left: 5px;
+  margin-right: 6px;
+  position: relative;
+  top: 5px;
+  width: 40px; }
 
 .nav-buttons > * {
   bottom: 1px;
+  height: 36px;
   margin-right: 6px;
   margin-top: 7px;
   position: relative; }
+  .nav-buttons > * .btn {
+    height: 100%; }
 
 .site-header {
   margin-top: 0;
@@ -596,7 +597,7 @@ footer {
     height: 15px;
     left: 8px;
     position: absolute;
-    top: 6px;
+    top: 9px;
     width: 15px; }
 
 .bm {
@@ -605,8 +606,26 @@ footer {
 .tm {
   margin-top: 15px; }
 
+.navbar-nav {
+  margin: 0; }
+
+.navbar-toggle {
+  border-color: #ddd;
+  margin-left: 6px; }
+  .navbar-toggle .icon-bar {
+    background: #888; }
+
 .interapp-links {
   font-size: 15px; }
+  .interapp-links .active .interapp-link {
+    color: #555;
+    cursor: default;
+    pointer-events: none; }
+    .interapp-links .active .interapp-link:hover::after {
+      display: none; }
+
+.interapp-link:focus {
+  background: transparent !important; }
 
 .interapp-link:hover {
   background: transparent !important;
@@ -686,6 +705,14 @@ output {
   .summary-column {
     border: 0 !important;
     margin-top: 20px; } }
+
+@media (max-width: 768px) {
+  .interapp-navigation {
+    clear: both; }
+  .interapp-link:hover::after {
+    display: none; }
+  .home-link {
+    display: none; } }
 
 .special-ranges {
   padding: 5px 20px 0; }

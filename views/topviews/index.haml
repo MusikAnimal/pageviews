@@ -10,13 +10,11 @@
     - include '../_header.php'
 
     %main.col-lg-8.col-lg-offset-2
-      / Site notice
       %div.text-center.site-notice-wrapper
         %div.site-notice
           - include '../_browser_check.php'
 
       %div.row.aqs-row.options
-        / Date range selector
         %div.col-lg-3.col-sm-3
           %label(for="date-type-select")
             = $I18N->msg( 'date-type' )
@@ -30,7 +28,6 @@
             = $I18N->msg( 'date' )
           %input.form-control.aqs-date-range-selector#range-input
 
-        / Project selector
         %div.col-lg-3.col-sm-3
           %label(for="project-input")
             = $I18N->msg( 'project' )
@@ -49,7 +46,6 @@
             %option(value="mobile-web")
               = $I18N->msg( 'mobile-web' )
 
-      / Article selector
       %div.row.aqs-row
         %div.col-lg-12
           %label(for="article-input")
@@ -72,7 +68,6 @@
       %span.pull-right
         - include "../_data_links.php"
 
-      / Chart
       %div.col-lg-12.data-notice.invisible
         %small.text-muted
           = $I18N->msg( 'topviews-false-positive' )

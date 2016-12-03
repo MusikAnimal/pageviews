@@ -1,5 +1,10 @@
-<nav class="top-nav">
-  <a class="home-link" href="<?php echo '/pageviews'; ?>"></a>
+<nav class="top-nav navbar">
+  <button class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target=".interapp-navigation" aria-expanded="false">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
   <span class="pull-right nav-buttons">
     <button class="btn btn-default btn-sm btn-settings js-test-settings" data-target="#settings-modal" data-toggle="modal">
       <span class="glyphicon glyphicon-wrench"></span>
@@ -58,25 +63,28 @@
       </ul>
     </span>
   </span>
-  <ul class="interapp-links nav nav-tabs">
-    <?php $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' ]; ?>
-    <?php foreach( $apps as $app ) { ?>
-      <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
-      <?php if ( $app === $currentApp ) { ?>
-        <li class="active" role="presentation">
-          <a class="interapp-link" class="interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
-            <?php echo $I18N->msg( $app ); ?>
-          </a>
-        </li>
-      <?php } else { ?>
-        <li role="presentation">
-          <a class="interapp-link" class="interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
-            <?php echo $I18N->msg( $app ); ?>
-          </a>
-        </li>
+  <div class="navbar-collapse collapse interapp-navigation">
+    <a class="home-link pull-left" href="<?php echo '/pageviews'; ?>"></a>
+    <ul class="interapp-links nav navbar-nav navbar-left">
+      <?php $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews' ]; ?>
+      <?php foreach( $apps as $app ) { ?>
+        <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
+        <?php if ( $app === $currentApp ) { ?>
+          <li class="active" role="presentation">
+            <a class="interapp-link" class="interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
+              <?php echo $I18N->msg( $app ); ?>
+            </a>
+          </li>
+        <?php } else { ?>
+          <li role="presentation">
+            <a class="interapp-link" class="interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
+              <?php echo $I18N->msg( $app ); ?>
+            </a>
+          </li>
+        <?php } ?>
       <?php } ?>
-    <?php } ?>
-  </ul>
+    </ul>
+  </div>
 </nav>
 <header class="site-header">
   <h4 class="text-center">

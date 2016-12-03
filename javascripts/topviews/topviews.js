@@ -476,8 +476,8 @@ class TopViews extends Pv {
    *   reverting to the old value if the new one is invalid
    * @override
    */
-  validateProject(e) {
-    if (super.validateProject(e)) {
+  validateProject() {
+    if (super.validateProject()) {
       this.resetView(true);
       this.processInput();
     }

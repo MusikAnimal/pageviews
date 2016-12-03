@@ -1272,7 +1272,7 @@ class Pv extends PvConfig {
     $(this.config.projectInput).on('focusin', function() {
       this.dataset.value = this.value;
     });
-    $(this.config.projectInput).on('change', e => this.validateProject(e));
+    $(this.config.projectInput).on('change', () => this.validateProject());
   }
 
   /**
@@ -1546,7 +1546,6 @@ class Pv extends PvConfig {
       );
       project = projectInput.dataset.value;
     } else if (siteDomains.includes(project)) {
-      this.clearMessages();
       this.updateInterAppLinks();
       valid = true;
     } else {
