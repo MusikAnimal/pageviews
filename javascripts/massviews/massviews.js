@@ -917,9 +917,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    *   given the label and link for the page and the pageviews data
    */
   processSubpages(project, targetPage, cb) {
-    // determine what namespace the targetPage is in
     const descoredTargetPage = targetPage.descore();
-    let namespace = 0, queryTargetPage;
+
+    // determine what namespace the targetPage is in
+    let namespace = 0, queryTargetPage = descoredTargetPage;
     for (const ns in this.getSiteInfo(project).namespaces) {
       if (ns === '0') continue; // skip mainspace
 

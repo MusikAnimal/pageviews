@@ -408,19 +408,6 @@ class TopViews extends Pv {
   }
 
   /**
-   * Removes all Select2 related stuff then adds it back
-   */
-  resetSelect2() {
-    const select2Input = $(this.config.select2Input);
-    select2Input.off('change');
-    select2Input.val(null);
-    select2Input.html('');
-    select2Input.select2('data', null);
-    select2Input.select2('destroy');
-    this.setupSelect2();
-  }
-
-  /**
    * Removes chart, messages, and resets Select2 selections
    * @param {Boolean} [clearSelector] - whether to clear the Select2 control
    */
