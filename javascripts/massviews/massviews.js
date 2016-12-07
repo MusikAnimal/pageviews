@@ -1158,15 +1158,21 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    *   given the label and link for the link pattern at Special:LinkSearch and the pageviews data
    */
   processExternalLink(cb) {
-    const project = $('.project-input').val(),
-      link = $(this.config.sourceInput).val();
+    const project = $('.project-input').val();
     if (!this.validateProject(project)) return;
+
+    // get protocol, supported values: https://www.mediawiki.org/wiki/Manual:$wgUrlProtocols
+    const protocolRegex = /^(?:\/\/|(ftps?|git|gopher|https?|ircs?|mms|nntp|redis|sftp|ssh|svn|telnet|worldwind):\/\/|(bitcoin|geo|magnet|mailto|news|sips?|sms|tel|urn|xmpp):)/;
+    let link = $(this.config.sourceInput).val();
+    const protocol = (protocolRegex.exec(link) || [,])[1] || 'http';
+    const euquery = link.replace(protocolRegex, '');
 
     let requestData = {
       list: 'exturlusage',
       eulimit: 500,
       eunamespace: 0,
-      euquery: link
+      euprotocol: protocol,
+      euquery
     };
 
     const linkSearchLink = `<a target='_blank' href='https://${project}/w/index.php?target=${link}&title=Special:LinkSearch'>${link}</a>`;
