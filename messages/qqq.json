@@ -115,7 +115,7 @@
 	"api-error-no-data": "When the API returned no data",
 	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
 	"api-incomplete-data": "Error message saying that some data in the collection is not yet available for the given dates. $1 (***always treat as plural***) is the list of dates lacking data.",
-	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews-test/)",
+	"topviews-title": "The title of the Topviews tool. This is shown as a header at the top of the page. (See https://tools.wmflabs.org/topviews/)",
 	"excluded-pages": "Pages that are excluded from the Topviews list",
 	"show-more": "Link to reveal more of the Topviews data",
 	"langviews-title": "The title of the Langviews tool. This is shown as a header at the top of the page.",
