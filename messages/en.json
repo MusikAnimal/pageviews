@@ -123,7 +123,7 @@
 	"redirectviews": "Redirect Views",
 	"average": "Average",
 	"submit": "Submit",
-	"hover-to-exclude": "Hover over entires and click the ✖ to exclude from view",
+	"hover-to-exclude": "To exclude pages from view, hover over their names and click the ✖",
 	"num-languages": "$1 languages",
 	"unique-titles": "$1 unique {{PLURAL:$1|title|titles}}",
 	"invalid-project": "$1 is not a <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>valid project</a> or is currently unsupported.",
