@@ -6,7 +6,9 @@
       <?php echo $I18N->msg( 'siteviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
-  <body class="clearfix">
+  <body class="<?php echo $rtl; ?>">
+    <?php $currentApp = 'siteviews'; ?>
+    <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -37,6 +39,7 @@
               </li>
             </ul>
           </li>
+          <?php include "../../faq_parts/_counts.php"; ?>
           <?php include "../../faq_parts/_agents.php"; ?>
           <?php include "../../faq_parts/_chart_type.php"; ?>
           <li class="list-group-item">

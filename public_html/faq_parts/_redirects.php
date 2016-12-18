@@ -4,6 +4,6 @@
   </p>
   <p>
     <?php $redirectViewsLink = "<a href='/redirectviews'>" . $I18N->msg( 'redirectviews' ) . "</a>"; ?>
-    <?php echo $I18N->msg( 'faq-redirects-body', array( 'variables' => array( $redirectViewsLink ) ) ); ?>
+    <?php echo $I18N->msg( 'faq-redirects-body', [ 'variables' => [ $redirectViewsLink ] ] ); ?>
   </p>
 </li>

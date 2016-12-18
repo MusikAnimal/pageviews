@@ -6,7 +6,9 @@
       <?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
-  <body class="clearfix">
+  <body class="<?php echo $rtl; ?>">
+    <?php $currentApp = 'pageviews'; ?>
+    <?php include '../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>

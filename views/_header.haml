@@ -61,17 +61,18 @@
             %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
               = $I18N->msg( $app )
 
-%header.site-header
-  %h4.text-center
-    %strong
-      - if ( $currentApp === 'pageviews' )
-        = $I18N->msg( 'title' )
-      - elseif ( $currentApp === 'metaviews' )
-        Metaviews Analysis
-      - else
-        = $I18N->msg( $currentApp . '-title' )
-    %small.app-description
-      - if ( $currentApp === 'metaviews' )
-        Pageviews Analysis of Pageviews Analysis
-      - else
-        = $I18N->msg( $currentApp. '-description' )
+- if ( strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false )
+  %header.site-header
+    %h4.text-center
+      %strong
+        - if ( $currentApp === 'pageviews' )
+          = $I18N->msg( 'title' )
+        - elseif ( $currentApp === 'metaviews' )
+          Metaviews Analysis
+        - else
+          = $I18N->msg( $currentApp . '-title' )
+      %small.app-description
+        - if ( $currentApp === 'metaviews' )
+          Pageviews Analysis of Pageviews Analysis
+        - else
+          = $I18N->msg( $currentApp. '-description' )

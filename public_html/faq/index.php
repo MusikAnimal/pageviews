@@ -6,7 +6,9 @@
       <?php echo $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
-  <body class="clearfix">
+  <body class="<?php echo $rtl; ?>">
+    <?php $currentApp = 'pageviews'; ?>
+    <?php include '../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -24,6 +26,9 @@
           <?php include "../faq_parts/_todays_data.php"; ?>
           <?php include "../faq_parts/_search_redirects.php"; ?>
           <?php include "../faq_parts/_redirects.php"; ?>
+          <?php include "../faq_parts/_counts.php"; ?>
+          <?php include "../faq_parts/_location.php"; ?>
+          <?php include "../faq_parts/_referrals.php"; ?>
           <?php include "../faq_parts/_agents.php"; ?>
           <?php include "../faq_parts/_chart_type.php"; ?>
           <li class="list-group-item">

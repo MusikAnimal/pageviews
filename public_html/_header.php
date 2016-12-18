@@ -86,23 +86,25 @@
     </ul>
   </div>
 </nav>
-<header class="site-header">
-  <h4 class="text-center">
-    <strong>
-      <?php if ( $currentApp === 'pageviews' ) { ?>
-        <?php echo $I18N->msg( 'title' ); ?>
-      <?php } elseif ( $currentApp === 'metaviews' ) { ?>
-        Metaviews Analysis
-      <?php } else { ?>
-        <?php echo $I18N->msg( $currentApp . '-title' ); ?>
-      <?php } ?>
-    </strong>
-    <small class="app-description">
-      <?php if ( $currentApp === 'metaviews' ) { ?>
-        Pageviews Analysis of Pageviews Analysis
-      <?php } else { ?>
-        <?php echo $I18N->msg( $currentApp. '-description' ); ?>
-      <?php } ?>
-    </small>
-  </h4>
-</header>
+<?php if ( strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false ) { ?>
+  <header class="site-header">
+    <h4 class="text-center">
+      <strong>
+        <?php if ( $currentApp === 'pageviews' ) { ?>
+          <?php echo $I18N->msg( 'title' ); ?>
+        <?php } elseif ( $currentApp === 'metaviews' ) { ?>
+          Metaviews Analysis
+        <?php } else { ?>
+          <?php echo $I18N->msg( $currentApp . '-title' ); ?>
+        <?php } ?>
+      </strong>
+      <small class="app-description">
+        <?php if ( $currentApp === 'metaviews' ) { ?>
+          Pageviews Analysis of Pageviews Analysis
+        <?php } else { ?>
+          <?php echo $I18N->msg( $currentApp. '-description' ); ?>
+        <?php } ?>
+      </small>
+    </h4>
+  </header>
+<?php } ?>

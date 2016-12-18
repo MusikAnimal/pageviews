@@ -1,0 +1,6 @@
+%li.list-group-item(id="referrals")
+  %p
+    %strong= $I18N->msg( 'faq-referrals-title' )
+  %p
+    - $definitionLink = "<a target='_blank' href='http://discovery.wmflabs.org/external/'>discovery.wmflabs.org</a>"
+    = $I18N->msg( 'faq-referrals-body', [ 'variables' => [ $definitionLink ] ] )

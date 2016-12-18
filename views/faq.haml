@@ -4,7 +4,10 @@
     - include '../_head.php'
     %title
       = $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' )
-  %body.clearfix
+  %body(class="#{$rtl}")
+    - $currentApp = 'pageviews'
+    - include '../_header.php'
+
     %div.container
       %header.col-lg-12.text-center
         %h4
@@ -19,6 +22,9 @@
           - include "../faq_parts/_todays_data.php"
           - include "../faq_parts/_search_redirects.php"
           - include "../faq_parts/_redirects.php"
+          - include "../faq_parts/_counts.php"
+          - include "../faq_parts/_location.php"
+          - include "../faq_parts/_referrals.php"
           - include "../faq_parts/_agents.php"
           - include "../faq_parts/_chart_type.php"
           %li.list-group-item

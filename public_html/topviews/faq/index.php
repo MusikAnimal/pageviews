@@ -6,7 +6,9 @@
       <?php echo $I18N->msg( 'topviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
-  <body class="clearfix">
+  <body class="<?php echo $rtl; ?>">
+    <?php $currentApp = 'langviews'; ?>
+    <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -35,6 +37,7 @@
           </li>
           <?php include "../../faq_parts/_old_data.php"; ?>
           <?php include "../../faq_parts/_todays_data.php"; ?>
+          <?php include "../../faq_parts/_counts.php"; ?>
           <?php include "../../faq_parts/_feedback.php"; ?>
         </ul>
         <div class="col-lg-12 text-center tm">

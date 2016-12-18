@@ -1,0 +1,6 @@
+%li.list-group-item(id="location")
+  %p
+    %strong= $I18N->msg( 'faq-location-title' )
+  %p
+    - $statsLink = "<a href='https://stats.wikimedia.org/wikimedia/squids/SquidReportPageViewsPerCountryBreakdown.htm'>stats.wikimedia.org</a>"
+    = $I18N->msg( 'faq-location-body', [ 'variables' => [ $statsLink ] ] )
