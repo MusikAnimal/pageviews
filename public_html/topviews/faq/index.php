@@ -7,7 +7,7 @@
     </title>
   </head>
   <body class="<?php echo $rtl; ?>">
-    <?php $currentApp = 'langviews'; ?>
+    <?php $currentApp = 'topviews'; ?>
     <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
