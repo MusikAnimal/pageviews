@@ -1,3 +1,5 @@
+- $isAppPage = strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false
+
 %nav.top-nav.navbar
   %button.navbar-toggle.collapsed.pull-left(data-toggle="collapse" data-target=".interapp-navigation" aria-expanded="false")
     %span.sr-only Toggle navigation
@@ -6,9 +8,10 @@
     %span.icon-bar
 
   %span.pull-right.nav-buttons
-    %button.btn.btn-default.btn-sm.btn-settings.js-test-settings(data-target="#settings-modal" data-toggle="modal")
-      %span.glyphicon.glyphicon-wrench
-      = $I18N->msg( 'settings' )
+    - if ( $isAppPage )
+      %button.btn.btn-default.btn-sm.btn-settings.js-test-settings(data-target="#settings-modal" data-toggle="modal")
+        %span.glyphicon.glyphicon-wrench
+        = $I18N->msg( 'settings' )
 
     %span.btn-group.dropdown.help-btn-group
       %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
@@ -61,7 +64,7 @@
             %a.interapp-link(class="interapp-link--#{$app}" href="/#{$app}")
               = $I18N->msg( $app )
 
-- if ( strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false )
+- if ( $isAppPage )
   %header.site-header
     %h4.text-center
       %strong

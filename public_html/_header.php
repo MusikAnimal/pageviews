@@ -1,3 +1,4 @@
+<?php $isAppPage = strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false; ?>
 <nav class="top-nav navbar">
   <button class="navbar-toggle collapsed pull-left" data-toggle="collapse" data-target=".interapp-navigation" aria-expanded="false">
     <span class="sr-only">Toggle navigation</span>
@@ -6,10 +7,12 @@
     <span class="icon-bar"></span>
   </button>
   <span class="pull-right nav-buttons">
-    <button class="btn btn-default btn-sm btn-settings js-test-settings" data-target="#settings-modal" data-toggle="modal">
-      <span class="glyphicon glyphicon-wrench"></span>
-      <?php echo $I18N->msg( 'settings' ); ?>
-    </button>
+    <?php if ( $isAppPage ) { ?>
+      <button class="btn btn-default btn-sm btn-settings js-test-settings" data-target="#settings-modal" data-toggle="modal">
+        <span class="glyphicon glyphicon-wrench"></span>
+        <?php echo $I18N->msg( 'settings' ); ?>
+      </button>
+    <?php } ?>
     <span class="btn-group dropdown help-btn-group">
       <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="glyphicon glyphicon-question-sign"></span>
@@ -86,7 +89,7 @@
     </ul>
   </div>
 </nav>
-<?php if ( strpos( $_SERVER['REQUEST_URI'], '/faq' ) === false && strpos( $_SERVER['REQUEST_URI'], '/url_structure' ) === false ) { ?>
+<?php if ( $isAppPage ) { ?>
   <header class="site-header">
     <h4 class="text-center">
       <strong>
