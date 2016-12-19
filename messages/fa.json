@@ -7,7 +7,8 @@
 			"Reza1615",
 			"Alifakoor",
 			"Alirn",
-			"Huji"
+			"Huji",
+			"Arash.pt"
 		]
 	},
 	"title": "تحلیل بازدیدهای صفحه",
@@ -126,8 +127,11 @@
 	"faq-todays-date-title": "چرا نمی‌توانم داده‌های تاریخ امروز را مشاهده کنم؟",
 	"faq-redirects-title": "تغییرمسیرها چگونه شمرده می‌شوند؟",
 	"faq-search-redirects-title": "چگونه می‌توانم بازدیدهای صفحات تغییرمسیرها را ببینم؟",
+	"faq-top-viewed-title": "می‌خواهم پربیننده‌ترین صفحات را براساس بازه زمانی مشاهده کنم",
 	"faq-try-tool": "می‌توانید این را در $1 بیابید.",
+	"faq-bug-report-title": "می‌خواهم یک ویژگی یا مشکل را گزارش کنم",
 	"url-structure-parameters": "پارامترها",
+	"url-structure-special-range-latest": "داده‌های ۲۰ روز گذشته",
 	"url-structure-sort": "کدام ستون مرتب شود.",
 	"url-structure-siteviews-platform": "زمانی که $1، $2 باشد.",
 	"default": "پیش‌فرض",
