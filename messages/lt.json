@@ -104,6 +104,7 @@
 	"num-languages": "$1 kalbos",
 	"unique-titles": "$1 {{PLURAL:$1|unikalus pavadinimas|unikalūs pavadinimai}}",
 	"faq-return-to": "Grįžti į $1",
+	"faq-referrals-title": "Ar galiu pamatyti kaip vartotojai pateko į puslapį?",
 	"faq-chart-type-title": "Kaip aš galiu pakeisti diagramos tipą?",
 	"faq-try-tool": "Jūs galite tai rasti $1.",
 	"url-structure-topviews-date-month": "Konkretus mėnuo $1 formatu",
