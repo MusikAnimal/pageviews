@@ -1,4 +1,4 @@
-<li class="list-group-item" id="data_dumps">
+<li class="list-group-item" id="date_dot">
   <p>
     <strong><?php echo $I18N->msg( 'faq-date-dot' ); ?></strong>
   </p>
