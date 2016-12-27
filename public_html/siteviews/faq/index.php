@@ -41,6 +41,7 @@
           </li>
           <?php include "../../faq_parts/_counts.php"; ?>
           <?php include "../../faq_parts/_agents.php"; ?>
+          <?php include "../../faq_parts/_date_dot.php"; ?>
           <?php include "../../faq_parts/_chart_type.php"; ?>
           <li class="list-group-item">
             <p>

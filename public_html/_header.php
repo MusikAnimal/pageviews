@@ -58,7 +58,7 @@
           </a>
         </li>
         <li class="divider" role="separator"></li>
-        <?php foreach (array_unique($langs) as $lang => $langName) { ?>
+        <?php foreach ($langs as $lang => $langName) { ?>
           <li>
             <a class="lang-link" href="#" data-lang="<?php echo $lang; ?>"><?php echo $langName; ?></a>
           </li>

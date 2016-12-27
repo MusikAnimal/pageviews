@@ -99,6 +99,7 @@
           <?php include "../../faq_parts/_old_data.php"; ?>
           <?php include "../../faq_parts/_todays_data.php"; ?>
           <?php include "../../faq_parts/_counts.php"; ?>
+          <?php include "../../faq_parts/_date_dot.php"; ?>
           <?php include "../../faq_parts/_agents.php"; ?>
           <?php include "../../faq_parts/_feedback.php"; ?>
         </ul>

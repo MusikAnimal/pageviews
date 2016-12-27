@@ -1,0 +1,6 @@
+%li.list-group-item(id="data_dumps")
+  %p
+    %strong= $I18N->msg( 'faq-data-dumps' )
+  %p
+    - $statsLink = "<a href='https://dumps.wikimedia.org/other/pageviews/'>dumps.wikimedia.org</a>"
+    = $I18N->msg( 'faq-data-dumps-body', [ 'variables' => [ $statsLink ] ] )

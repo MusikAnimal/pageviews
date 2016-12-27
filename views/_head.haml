@@ -14,9 +14,9 @@
 
     $availableLanguages = array();
     foreach ( $languages as $lang ) {
-      $availableLanguages[$lang] = $I18N->getLangName( $lang );
+      $availableLanguages[$lang] = ucfirst( $I18N->getLangName( $lang ) );
     }
-    ksort( $availableLanguages );
+    asort( $availableLanguages );
     return $availableLanguages;
   }
 

@@ -24,11 +24,13 @@
         <ul class="list-group">
           <?php include "../../faq_parts/_old_data.php"; ?>
           <?php include "../../faq_parts/_todays_data.php"; ?>
-          <?php include "../../faq_parts/_redirects.php"; ?>
           <?php include "../../faq_parts/_counts.php"; ?>
+          <?php include "../../faq_parts/_redirects.php"; ?>
           <?php include "../../faq_parts/_location.php"; ?>
           <?php include "../../faq_parts/_referrals.php"; ?>
+          <?php include "../../faq_parts/_date_dot.php"; ?>
           <?php include "../../faq_parts/_agents.php"; ?>
+          <?php include "../../faq_parts/_data_dumps.php"; ?>
           <?php include "../../faq_parts/_feedback.php"; ?>
         </ul>
         <div class="col-lg-12 text-center tm">

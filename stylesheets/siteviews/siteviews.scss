@@ -7,3 +7,14 @@
 .search-method-options {
   display: none;
 }
+
+.legend-block {
+  h5 .text-muted {
+    display: none;
+    margin: 0 6px;
+  }
+
+  &--statistics h5 .text-muted {
+    display: inline;
+  }
+}

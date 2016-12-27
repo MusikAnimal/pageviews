@@ -35,8 +35,9 @@ const templates = {
 
       for (let block in infoHash) {
         const blockId = block.toLowerCase().score();
+        // "all time" text is shown only for .legend-block--statistics via CSS in siteviews.scss
         markup += `<div class='legend-block legend-block--${blockId}'>
-          <h5>${block}</h5><hr/>
+          <h5>${block}<span class='text-muted'>(${$.i18n('all-time').toLowerCase()})</span></h5><hr/>
           <div class='legend-block--body'>`;
         for (let key in infoHash[block]) {
           const value = infoHash[block][key];
