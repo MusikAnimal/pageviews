@@ -169,6 +169,7 @@
 	"faq-topviews-false-positive-title": "FAQ - title of the section explaning that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body2": "FAQ - an additional body of text explaining that there could be false positives in the Topviews report.",
+	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can report a page as a false positive in the Topviews application. $1 is the message 'report-false-positive' and $2 is the message 'excluded-pages'.",
 	"faq-source-title": "FAQ - title of the section explaining what the 'source' options are.",
 	"faq-source-pageviews": "FAQ - body of the section explaining what the 'source' options are.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
@@ -325,5 +326,9 @@
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
 	"admins": "Word for the users who have sysop rights on a wiki.\n{{Identical|Admin}}",
 	"data-unavailable": "Brief message indicating data is temporarily unavailable.",
-	"show-values": "Label for the option to show values over the points of the chart."
+	"show-values": "Label for the option to show values over the points of the chart.",
+	"learn-more": "Link to bring the user to the FAQ.\n{{Identical|Learn more}}",
+	"report-false-positive": "Link to report pages as false positives in the Topviews app.",
+	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
+	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report."
 }

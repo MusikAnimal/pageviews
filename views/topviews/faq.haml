@@ -25,6 +25,8 @@
             %p
               = $I18N->msg( 'faq-topviews-false-positive-body1')
             %p
+              = $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ])
+            %p
               = $I18N->msg( 'faq-topviews-false-positive-body2')
           - include "../../faq_parts/_old_data.php"
           - include "../../faq_parts/_todays_data.php"
@@ -33,7 +35,7 @@
 
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
+            = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'topviews-title' ) ], 'parsemag' => true ] )
 
       - $currentApp = "topviews";
       - include "../../_footer.php";

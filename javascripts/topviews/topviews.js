@@ -21,10 +21,12 @@ class TopViews extends Pv {
     this.app = 'topviews';
 
     this.excludes = [];
+    this.autoExcludes = [];
     this.offset = 0;
     this.max = null;
     this.pageData = [];
     this.pageNames = [];
+    this.excludeAdded = false;
   }
 
   /**
@@ -66,7 +68,7 @@ class TopViews extends Pv {
     while (count < this.config.pageSize + this.offset) {
       let item = this.pageData[index++];
 
-      if (this.excludes.includes(item.article)) continue;
+      if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) continue;
       if (!this.max) this.max = item.views;
 
       const width = 100 * (item.views / this.max),
@@ -111,6 +113,7 @@ class TopViews extends Pv {
     });
 
     if (triggerChange) $(this.config.select2Input).val(this.excludes).trigger('change');
+    this.buildReportFalsePositiveForm();
   }
 
   /**
@@ -118,9 +121,50 @@ class TopViews extends Pv {
    */
   addExcludeListeners() {
     $('.topview-entry--remove').off('click').on('click', e => {
+      // show 'Report false positive' button if they've manually excluded a page
+      if (!this.excludeAdded) {
+        this.excludeAdded = true;
+        $('.report-false-positive').show();
+      }
+
       const pageName = this.pageNames[$(e.target).data('article-id')];
       this.addExclude(pageName);
       this.pushParams();
+    });
+  }
+
+  /**
+   * Uses this.excludes to build a list of pages
+   * that the user can report as a false positive.
+   */
+  buildReportFalsePositiveForm() {
+    $('.false-positive-list').html('');
+    this.excludes.forEach((exclude, index) => {
+      exclude = exclude.escape();
+      $('.false-positive-list').append(`
+        <li>
+          <label>
+            <input type='checkbox' data-index='${index}' />
+            ${exclude.escape()}
+          </label>
+        </li>
+      `);
+    });
+    $('.submit-false-positive').off('click').on('click', () => {
+      const excludes = $.map($('.false-positive-list input:checked'), el => {
+        return this.excludes[parseInt(el.dataset.index, 10)];
+      });
+      if (!excludes.length) return;
+
+      $.ajax({
+        url: `//${metaRoot}/usage/topviews/${this.project}/false_positives`,
+        data: {
+          pages: excludes
+        },
+        method: 'POST'
+      });
+      this.toastSuccess($.i18n('report-false-positive-submitted'));
+      $('.report-false-positive').hide();
     });
   }
 
@@ -341,9 +385,15 @@ class TopViews extends Pv {
 
     $(this.config.projectInput).val(params.project);
     $(this.config.platformSelector).val(params.platform);
-    this.patchUsage();
 
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
+
+    this.patchUsage().then(autoExcludes => {
+      this.autoExcludes = autoExcludes;
+
+      // remove autoExcludes from excludes given via URL param
+      this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
+    });
 
     this.params = location.search;
 
@@ -504,6 +554,10 @@ class TopViews extends Pv {
       this.max = null;
       this.clearSearch();
       this.drawData();
+    });
+
+    select2Input.on('select2:unselect', e => {
+      if (!$(e.target).val()) $('.report-false-positive').hide();
     });
 
     /**

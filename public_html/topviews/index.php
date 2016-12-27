@@ -66,6 +66,9 @@
           <label for="article-input">
             <?php echo $I18N->msg( 'excluded-pages' ); ?>
           </label>
+          <span class="report-false-positive">
+            (<a href='#' data-target="#report-false-positive-modal" data-toggle="modal"><?php echo strtolower( $I18N->msg( 'report-false-positive' ) ); ?></a>)
+          </span>
           <span class="pull-right">
             <label>
               <input class="mainspace-only-option" type="checkbox" checked="checked">
@@ -73,6 +76,36 @@
             </label>
           </span>
           <select class="aqs-select2-selector col-lg-12 invisible" multiple="multiple"></select>
+          <!-- * Report false positive modal */ -->
+          <div class="modal fade" id="report-false-positive-modal" role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button class="close" arialabel="Close" data-dismiss="modal" type="button">
+                    <span ariahidden="true">&times;</span>
+                  </button>
+                  <h4 class="modal-title">
+                    <?php echo $I18N->msg( 'report-false-positive' ); ?>
+                  </h4>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    <?php $learnMoreLink = "<a href='/topviews/faq#false_positive'>" . strtolower( $I18N->msg( 'learn-more' ) ) . "</a>"; ?>
+                    <?php echo $I18N->msg( 'report-false-positive-text', [ 'variables' => [ $learnMoreLink ] ] ); ?>
+                  </p>
+                  <ul class="false-positive-list list-unstyled"></ul>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-default" data-dismiss="modal" type="button">
+                    <?php echo $I18N->msg( 'cancel' ); ?>
+                  </button>
+                  <button class="btn btn-primary submit-false-positive" data-dismiss="modal" type="button">
+                    <?php echo $I18N->msg( 'submit' ); ?>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <!-- FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line -->

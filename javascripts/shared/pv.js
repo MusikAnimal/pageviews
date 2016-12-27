@@ -1022,18 +1022,18 @@ class Pv extends PvConfig {
 
   /**
    * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-   * @param {string} app - one of: pv, lv, tv, sv, ms
+   * @returns {Deferred|null} Null or a promise resolving with autoExcludes for the Topviews app
    */
-  patchUsage(app) {
+  patchUsage() {
     if (location.pathname.includes('-test')) {
       $.ajax({
         url: `//${metaRoot}/usage/${this.app}-test/${this.project || i18nLang}`,
         method: 'POST'
       });
     } else if (metaRoot) {
-      $.ajax({
+      return $.ajax({
         url: `//${metaRoot}/usage/${this.app}/${this.project || i18nLang}`,
-        method: 'POST'
+        method: this.app === 'topviews' ? 'GET' : 'POST'
       });
     }
   }

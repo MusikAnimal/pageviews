@@ -95,3 +95,17 @@ $gray: #ccc;
     z-index: 10;
   }
 }
+
+.report-false-positive {
+  display: none;
+}
+
+.false-positive-list {
+  input {
+    margin-right: 5px;
+  }
+
+  label {
+    font-weight: bold;
+  }
+}

@@ -50,11 +50,33 @@
         %div.col-lg-12
           %label(for="article-input")
             = $I18N->msg( 'excluded-pages' )
+          %span.report-false-positive
+            (<a href='#' data-target="#report-false-positive-modal" data-toggle="modal">#{strtolower( $I18N->msg( 'report-false-positive' ) )}</a>)
           %span.pull-right
             %label
               %input.mainspace-only-option(type="checkbox" checked="checked")
               = $I18N->msg( 'mainspace-only-option' )
           %select.aqs-select2-selector.col-lg-12.invisible(multiple="multiple")
+
+          /* Report false positive modal */
+          %div.modal.fade#report-false-positive-modal(role="dialog" tabindex="-1")
+            %div.modal-dialog(role="document")
+              %div.modal-content
+                %div.modal-header
+                  %button.close(arialabel="Close" data-dismiss="modal" type="button")
+                    %span(ariahidden="true") &times;
+                  %h4.modal-title
+                    = $I18N->msg( 'report-false-positive' )
+                %div.modal-body
+                  %p
+                    - $learnMoreLink = "<a href='/topviews/faq#false_positive'>" . strtolower( $I18N->msg( 'learn-more' ) ) . "</a>"
+                    = $I18N->msg( 'report-false-positive-text', [ 'variables' => [ $learnMoreLink ] ] )
+                  %ul.false-positive-list.list-unstyled
+                %div.modal-footer
+                  %button.btn.btn-default(data-dismiss="modal" type="button")
+                    = $I18N->msg( 'cancel' )
+                  %button.btn.btn-primary.submit-false-positive(data-dismiss="modal" type="button")
+                    = $I18N->msg( 'submit' )
 
       / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
       - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'

@@ -32,6 +32,9 @@
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body1'); ?>
             </p>
             <p>
+              <?php echo $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ]); ?>
+            </p>
+            <p>
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body2'); ?>
             </p>
           </li>
@@ -42,7 +45,7 @@
         </ul>
         <div class="col-lg-12 text-center tm">
           <a href="/topviews">
-            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
+            <?php echo $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'topviews-title' ) ], 'parsemag' => true ] ); ?>
           </a>
         </div>
       </main>
