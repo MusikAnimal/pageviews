@@ -67,7 +67,7 @@ module.exports = {
         ['Michael Phelps']
       )).to.equal(true);
     });
-    client.expect.element('#topview-entry-2').text.to.contain('2016 Summer Olympics');
+    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)');
     client.end();
   }
 };
