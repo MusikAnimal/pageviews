@@ -67,7 +67,7 @@ module.exports = {
         ['Michael Phelps']
       )).to.equal(true);
     });
-    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)').after(10000);
+    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)').after(15000);
     client.end();
   }
 };
