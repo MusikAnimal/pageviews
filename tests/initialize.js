@@ -60,7 +60,7 @@ module.exports = {
   'Topviews loads with excludes properly added and data printed': client => {
     client
       .url('http://localhost/topviews/index?project=en.wikipedia.org&platform=all-access&date=2016-08&excludes=Michael_Phelps')
-      .waitForElementPresent('.topview-entry', 10000);
+      .waitForElementPresent('.topview-entry', 15000);
     client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(_.isEqual(
         response.value,
