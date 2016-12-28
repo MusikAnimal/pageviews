@@ -1033,7 +1033,8 @@ class Pv extends PvConfig {
     } else if (metaRoot) {
       return $.ajax({
         url: `//${metaRoot}/usage/${this.app}/${this.project || i18nLang}`,
-        method: this.app === 'topviews' ? 'GET' : 'POST'
+        method: this.app === 'topviews' ? 'GET' : 'POST',
+        timeout: 8000
       });
     }
   }

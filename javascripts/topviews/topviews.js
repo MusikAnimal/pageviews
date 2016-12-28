@@ -388,20 +388,20 @@ class TopViews extends Pv {
 
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
 
-    this.patchUsage().then(autoExcludes => {
+    this.patchUsage().done(autoExcludes => {
       this.autoExcludes = autoExcludes;
 
       // remove autoExcludes from excludes given via URL param
       this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
-    });
-
-    this.params = location.search;
-
-    this.initData().done(() => {
-      this.drawData();
     }).always(() => {
-      this.setupSelect2();
-      this.setupListeners();
+      this.params = location.search;
+
+      this.initData().done(() => {
+        this.drawData();
+      }).always(() => {
+        this.setupSelect2();
+        this.setupListeners();
+      });
     });
   }
 
