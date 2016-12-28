@@ -60,14 +60,14 @@ module.exports = {
   'Topviews loads with excludes properly added and data printed': client => {
     client
       .url('http://localhost/topviews/index?project=en.wikipedia.org&platform=all-access&date=2016-08&excludes=Michael_Phelps')
-      .waitForElementPresent('.topview-entry', 15000);
+      .waitForElementPresent('.topview-entry', 20000);
     client.execute('return $(".aqs-select2-selector").val()', [], response => {
       client.expect(_.isEqual(
         response.value,
         ['Michael Phelps']
       )).to.equal(true);
     });
-    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)').after(15000);
+    client.expect.element('#topview-entry-2').text.to.contain('Suicide Squad (film)').after(20000);
     client.end();
   }
 };
