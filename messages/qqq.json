@@ -169,7 +169,7 @@
 	"faq-topviews-false-positive-title": "FAQ - title of the section explaning that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body2": "FAQ - an additional body of text explaining that there could be false positives in the Topviews report.",
-	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can report a page as a false positive in the Topviews application. $1 is the message 'report-false-positive' and $2 is the message 'excluded-pages'.",
+	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can report a page as a false positive in the Topviews application. $1 is the message 'topviews' (name of the app), $2 is the message 'report-false-positive' and $3 is the message 'excluded-pages'.",
 	"faq-source-title": "FAQ - title of the section explaining what the 'source' options are.",
 	"faq-source-pageviews": "FAQ - body of the section explaining what the 'source' options are.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
@@ -228,7 +228,6 @@
 	"projects-placeholder": "Placeholder text for the form input where the user enters the projects they want to view statistics for in the Siteviews application",
 	"statistics": "Link to show a project's statistics page\n{{Identical|Statistics}}",
 	"most-viewed-pages": "Link to view the most viewed pages of a project",
-	"topviews-data-approx": "Text that shows above the list of pages on Topviews that explains the data is approximate. This links to the relevant FAQ section. Please do not alter the link.",
 	"topviews-false-positive": "Text that shows above the list of pages on Topviews that explains there might be false positives. This links to the relevant FAQ section. Please do not alter the link.",
 	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
 	"massviews-title": "Title of the Massviews application, which allows you to import a large list of pages and get the pageviews counts. This title is shown as a header at the top of the page.",
@@ -330,5 +329,5 @@
 	"learn-more": "Link to bring the user to the FAQ.\n{{Identical|Learn more}}",
 	"report-false-positive": "Link to report pages as false positives in the Topviews app.",
 	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
-	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report."
+	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app)."
 }

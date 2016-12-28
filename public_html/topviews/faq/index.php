@@ -32,7 +32,7 @@
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body1'); ?>
             </p>
             <p>
-              <?php echo $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ]); ?>
+              <?php echo $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'topviews' ), $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ]); ?>
             </p>
             <p>
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body2'); ?>

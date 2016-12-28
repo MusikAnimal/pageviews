@@ -163,7 +163,7 @@ class TopViews extends Pv {
         },
         method: 'POST'
       });
-      this.toastSuccess($.i18n('report-false-positive-submitted'));
+      this.toastSuccess($.i18n('report-false-positive-submitted', $.i18n('topviews')));
       $('.report-false-positive').hide();
     });
   }
