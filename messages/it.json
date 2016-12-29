@@ -201,7 +201,6 @@
 	"projects-placeholder": "Scrivi il nome del progetto...",
 	"statistics": "Statistiche",
 	"most-viewed-pages": "Pagine più viste",
-	"topviews-data-approx": "Tutti i dati sulle pagine più viste sono <a href='/topviews/faq#data_caveat'>approssimati</a>.",
 	"topviews-false-positive": "Alcune delle pagine elencate possono essere be <a href='/topviews/faq#false_positive'>falsi positivi</a>.",
 	"unique-devices": "Dispositivi unici",
 	"massviews-title": "Analisi di visualizzazioni di massa",

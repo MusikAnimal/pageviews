@@ -177,7 +177,6 @@
 	"projects-placeholder": "أدخل أسماء المشاريع...",
 	"statistics": "الإحصاءات",
 	"most-viewed-pages": "أكثر الصفحات زيارة",
-	"topviews-data-approx": "كل بيانات \"الأكثر مشاهدة\" <a href='/topviews/faq#data_caveat'>تقريبية</a>.",
 	"topviews-false-positive": "قد تكون بعض الصفحات المذكورة <a href='/topviews/faq#false_positive'>خاطئة</a> .",
 	"unique-devices": "أجهزة فريدة",
 	"massviews-title": "تحليل عدد المشاهدات الجماعية",

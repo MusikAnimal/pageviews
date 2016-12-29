@@ -179,7 +179,6 @@
 	"projects-placeholder": "প্রকল্পের নাম লিখুন...",
 	"statistics": "পরিসংখ্যান",
 	"most-viewed-pages": "সর্বাধিক দেখা পাতাগুলি",
-	"topviews-data-approx": "সব শীর্ষ দর্শনের উপাত্তগুলি <a href='/topviews/faq#data_caveat'>সর্বাপেক্ষা নিকটবর্তী\n</a>।",
 	"topviews-false-positive": "তালিকাভুক্ত কিছু পাতা <a href='/topviews/faq#false_positive'>মিথ্যা ধনাত্মক</a> হতে পারে।",
 	"unique-devices": "স্বতন্ত্র ডিভাইস",
 	"massviews-title": "গণ দর্শনের বিশ্লেষণ",

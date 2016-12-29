@@ -103,9 +103,11 @@
 	"pageviews": "Прегледа",
 	"average": "Просечно",
 	"submit": "Пошаљи",
+	"default": "Подразумевано",
 	"all-languages": "Сви језици",
 	"history": "Историја",
 	"info": "Инфо",
+	"note": "Напомена",
 	"permalink": "Трајна веза",
 	"massviews-empty-set": "$1 не садржи странице!",
 	"category": "Категорија",
@@ -150,5 +152,6 @@
 	"users": "Корисници",
 	"active-users": "Активни корисници",
 	"admins": "Администратори",
-	"data-unavailable": "Подаци недоступни"
+	"data-unavailable": "Подаци недоступни",
+	"show-values": "Прикажи вредности"
 }

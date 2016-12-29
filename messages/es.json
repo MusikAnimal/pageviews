@@ -6,7 +6,8 @@
 			"Peter Bowman",
 			"GamemOfAnime",
 			"Rubentl134",
-			"Fitoschido"
+			"Fitoschido",
+			"Dgstranz"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -121,7 +122,7 @@
 	"pageviews": "Visitas",
 	"average": "Promedio",
 	"submit": "Enviar",
-	"hover-to-exclude": "Pasa sobre las entradas y haz clic en ✖ para excluirlas de la vista",
+	"hover-to-exclude": "Para excluir páginas de la vista, pasa sobre su nombre y haz clic en ✖",
 	"num-languages": "$1 idiomas",
 	"unique-titles": "$1 {{PLURAL:$1|título único|títulos únicos}}",
 	"invalid-project": "$1 no es un <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>proyecto válido</a> o actualmente no se admite.",

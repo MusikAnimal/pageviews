@@ -181,7 +181,6 @@
 	"projects-placeholder": "ชนิดชื่อโครงการ...",
 	"statistics": "สถิติ",
 	"most-viewed-pages": "หน้าที่เข้าชมมากที่สุด",
-	"topviews-data-approx": "ข้อมูลผู้เข้าชมสูงสุดคือ<a href='/topviews/faq#data_caveat'>ค่าประมาณ</a>",
 	"topviews-false-positive": "บางหน้ารายการอาจเป็น<a href='/topviews/faq#false_positive'>ผลบวกลวง</a>",
 	"unique-devices": "อุปกรณ์เฉพาะ",
 	"massviews-title": "การวิเคราะห์มวลการเข้าชม",

@@ -198,7 +198,6 @@
 	"projects-placeholder": "Proje adlarını yazın...",
 	"statistics": "İstatistikler",
 	"most-viewed-pages": "En çok görüntülenen sayfalar",
-	"topviews-data-approx": "Tüm <a href='/topviews/faq#data_caveat'>yaklaşık olarak</a> en çok görüntülenenler verisi.",
 	"topviews-false-positive": "Bazı sayfalardaki listelerde <a href='/topviews/faq#false_positive'>olumlu hatalar</a> bulunabilir.",
 	"unique-devices": "Benzersiz cihazlar",
 	"massviews-title": "Sihirli Kelimeler ile Görüntülemeler Analizi",

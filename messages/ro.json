@@ -210,7 +210,6 @@
 	"projects-placeholder": "Introduceți numele proiectelor...",
 	"statistics": "Statistici",
 	"most-viewed-pages": "Cele mai vizualizate pagini",
-	"topviews-data-approx": "Toate informațiile celor mai vizualizate pagini sunt <a href='/topviews/faq#data_caveat'>aproximative</a>.",
 	"topviews-false-positive": "Unele dintre paginile listate ar putea fi <a href='/topviews/faq#false_positive'>false pozitive</a>.",
 	"unique-devices": "Dispozitive unice",
 	"massviews-title": "Analiza vizualizărilor pe liste de pagini",

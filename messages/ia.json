@@ -162,7 +162,6 @@
 	"projects-placeholder": "Scribe nomines de projecto...",
 	"statistics": "Statisticas",
 	"most-viewed-pages": "Paginas le plus visitate",
-	"topviews-data-approx": "Tote le datos sur paginas le plus visitate es <a href='/topviews/faq#data_caveat'>approximative</a>.",
 	"topviews-false-positive": "Alcun paginas listate pote esser <a href='/topviews/faq#false_positive'>false positivos</a>.",
 	"unique-devices": "Apparatos unic"
 }

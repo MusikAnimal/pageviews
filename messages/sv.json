@@ -214,7 +214,6 @@
 	"projects-placeholder": "Skriv projektnamn...",
 	"statistics": "Statistik",
 	"most-viewed-pages": "Mest besökta sidor",
-	"topviews-data-approx": "All toppvisningsdata är <a href='/topviews/faq#data_caveat'>ungefärlig</a>.",
 	"topviews-false-positive": "En del sidor som listas kan vara <a href='/topviews/faq#false_positive'>falska positiver</a>.",
 	"unique-devices": "Unika enheter",
 	"massviews-title": "Massvisningsanalys",

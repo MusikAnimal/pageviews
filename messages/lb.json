@@ -159,7 +159,6 @@
 	"projects-placeholder": "Tippt Nimm vu Projeten...",
 	"statistics": "Statistiken",
 	"most-viewed-pages": "Meescht gekuckt Säiten",
-	"topviews-data-approx": "All Topviews-Date si <a href='/topviews/faq#data_caveat'>geschat</a>.",
 	"topviews-false-positive": "E puer vun de Säite vun der Lëscht kënne <a href='/topviews/faq#false_positive'>falsch Positiver</a> sinn.",
 	"massviews-empty-set": "$1 huet keng Säiten!",
 	"massviews-oversized-set": "$1 huet $2 Säiten. Aus Performance-Grënn gi just déi éischt $3 Säite verschafft.",
