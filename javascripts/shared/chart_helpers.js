@@ -5,6 +5,8 @@
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
+require('./zoom_plugin');
+
 /**
  * Shared chart-specific logic, used in all apps except Topviews
  * @param {class} superclass - base class
@@ -686,6 +688,8 @@ const ChartHelpers = superclass => class extends superclass {
           options.scale.ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
         } else {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
+          options.scales.xAxes[0].time.displayFormats.day = this.dateFormat;
+          options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1;
         }
 
         // Show labels if option is checked (for linear charts only)

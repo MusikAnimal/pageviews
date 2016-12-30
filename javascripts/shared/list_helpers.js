@@ -242,6 +242,7 @@ const ListHelpers = superclass => class extends superclass {
         options.scale.ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
       } else {
         options.scales.yAxes[0].ticks.beginAtZero = $('.begin-at-zero-option').is(':checked');
+        options.scales.xAxes[0].time.displayFormats.day = this.dateFormat;
       }
 
       const context = $(this.config.chart)[0].getContext('2d');

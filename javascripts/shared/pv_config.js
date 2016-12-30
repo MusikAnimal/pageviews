@@ -45,6 +45,13 @@ class PvConfig {
                   callback: value => {
                     return formatXAxisTick(value);
                   }
+                },
+                type: 'time',
+                time: {
+                  minUnit: 'day',
+                  displayFormats: {
+                    month: 'YYYY/MM'
+                  }
                 }
               }]
             },
@@ -82,6 +89,13 @@ class PvConfig {
                 ticks: {
                   callback: value => {
                     return formatXAxisTick(value);
+                  }
+                },
+                type: 'time',
+                time: {
+                  minUnit: 'day',
+                  displayFormats: {
+                    month: 'YYYY/MM'
                   }
                 }
               }]

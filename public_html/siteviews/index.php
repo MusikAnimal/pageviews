@@ -27,8 +27,9 @@
           </label>
           <span class="btn-group dropdown latest-group">
             <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <?php echo $I18N->msg( 'latest' ); ?>
-              <span class="latest-num">30</span>
+              <span class="latest-text">
+                <?php echo $I18N->msg( 'latest' ); ?>
+              </span>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right date-latest">
