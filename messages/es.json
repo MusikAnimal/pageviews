@@ -7,7 +7,8 @@
 			"GamemOfAnime",
 			"Rubentl134",
 			"Fitoschido",
-			"Dgstranz"
+			"Dgstranz",
+			"Fortega"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -131,11 +132,16 @@
 	"faq-old-data-title": "¿Por qué no puedo ver los datos previos a $1?",
 	"faq-todays-date-title": "¿Por qué no puedo ver los datos de la fecha de hoy?",
 	"faq-redirects-title": "¿Cómo se cuentan las redirecciones?",
+	"faq-date-dot": "¿Qué son los puntos junto a las etiquetas de fecha?",
+	"faq-date-dot-body": "Indica el primer día de la semana. El número de visitas suele ser pequeño durante los fines de semana; este indicador puede ser útil para el ciclo semanal.",
+	"faq-data-dumps-body": "Sí. Se pueden descargar en $1 los volcados de datos completos de todos los sitios de Wikimedia soportados.",
 	"faq-agents-title": "¿Qué son los \"Agentes\"?",
 	"faq-agents-user": "incluye a todas las personas que ven una página. Editores, editores anónimos y a nuestros lectores.",
 	"faq-chart-type-title": "¿Cómo puedo cambiar el tipo de gráfico?",
 	"faq-try-tool": "Puedes encontrar esto en $1.",
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
+	"faq-topviews-false-positive-body2": "Se puede abrir cualquier página en la aplicación Pageviews pulsando el contador de vistas del lado derecho.",
+	"faq-topviews-false-positive-body3": "Puedes <strong>notificar un falso positivo</strong> para mejorar los datos de $1. Para ello, primero oculta la página pasando el ratón por encima y pulsando el icono ✖ al principio de la línea; después pulsa el enlace «$2» encima del campo «$3». Si una página es marcada como falso positivo por un número suficiente de personas, podrá ocultarse automáticamente.",
 	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
 	"faq-massviews-sources-title": "¿Qué son las \"Fuentes\"?",
 	"faq-massviews-subject-page-title": "¿Qué es la opción \"$1\"?",
@@ -229,5 +235,9 @@
 	"active-users": "Usuarios activos",
 	"admins": "Administradores",
 	"data-unavailable": "Datos no disponibles",
-	"show-values": "Mostrar valores"
+	"show-values": "Mostrar valores",
+	"learn-more": "Más información",
+	"report-false-positive": "Notificar falso positivo",
+	"report-false-positive-text": "Utiliza este formulario para seleccionar las página excluidas que quieres notificar como falsos positivos —$1—.",
+	"report-false-positive-submitted": "Tu notificación de falso positivo ha sido enviada. Gracias por mejorar los datos de $1."
 }

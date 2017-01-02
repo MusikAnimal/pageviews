@@ -164,7 +164,8 @@
 	"faq-bug-report-body": "若您願意使用維基提供回饋，請使用元維基上的<a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>回饋討論區</a> 。或是可在<a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>上提出。",
 	"faq-topviews-false-positive-title": "為何一些頁面有相當高的瀏覽次數？",
 	"faq-topviews-false-positive-body1": "此為<strong>回報錯誤</strong>發生，而遺憾的是這屬於不可避免情況。像一些使用自動化搜集網頁資訊的程式便會讓此情況發生。一種辨別回報錯誤的方法是比較桌機端的瀏覽數據與行動裝置版網頁。行動裝置版網頁的瀏覽次數原則上應與桌機端近似，如果行動裝置版網頁的瀏覽次數相當低，這可能會是一個回報錯誤。",
-	"faq-topviews-false-positive-body2": "在此頁面瀏覽應用程式上您可以開取一個頁面來使用進階分析，只要在右側點擊瀏覽數即可。",
+	"faq-topviews-false-positive-body2": "在此頁面瀏覽應用程式上您可以開取任何頁面來使用進階分析，只要在右側點擊瀏覽數即可。",
+	"faq-topviews-false-positive-body3": "您可以<strong>回報誤報</strong>來改進$1資料。若要執行此操作，首先移至在視圖上方後在行列的開頭點擊「✖」來排除頁面。 然後點擊在「$3」輸入內容上方的「$2」連結。如果有一定程度的數量回報一個特定頁面為誤報，這可能將會自動從用於所有用戶的視圖給排除。",
 	"faq-source-title": "什麼是「資料數據來源」？",
 	"faq-source-pageviews": "為該項目所接收到的瀏覽次數",
 	"faq-source-unique-devices": "為瀏覽該網站各設備的數量",
@@ -321,5 +322,9 @@
 	"active-users": "活躍用戶",
 	"admins": "管理員",
 	"data-unavailable": "資料無法使用",
-	"show-values": "顯示值"
+	"show-values": "顯示值",
+	"learn-more": "了解更多",
+	"report-false-positive": "回報誤報",
+	"report-false-positive-text": "使用此表單來選擇您要回報為誤報（$1）的所要排除頁面",
+	"report-false-positive-submitted": "您的誤報回報已提交。感謝改進$1資料！"
 }

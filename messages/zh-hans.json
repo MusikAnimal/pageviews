@@ -162,7 +162,8 @@
 	"faq-bug-report-body": "如果您愿意使用wiki提供反馈，请使用元维基上的<a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>反馈论坛</a>。您也可以在<a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>报告问题。",
 	"faq-topviews-false-positive-title": "为什么一些随机页面有这么高的访问量？",
 	"faq-topviews-false-positive-body1": "这些是<strong>误报</strong>，遗憾的是它们不可避免。举个例子，这可能是因为有人使用了自动化程序搜集页面。识别误报的一个策略是比较桌面端与移动版网站的浏览数据。移动版网站的访问量应该与桌面端类似，如果移动版网站的访问量非常小，它可能是一个误报。",
-	"faq-topviews-false-positive-body2": "您也可以在页面浏览应用程序打开页面以进一步分析。在右侧点击访问量。",
+	"faq-topviews-false-positive-body2": "您也可以在页面浏览应用程序打开任意页面以进一步分析。在右侧点击访问量。",
+	"faq-topviews-false-positive-body3": "您可以<strong>汇报误报</strong>以改进$1数据。要这样做，首先从视图中，通过悬停并点击每行开头的✖排除页面。然后点击“$3”输入内容上方的“$2”链接。如果有足够人汇报特定页面为误报的话，它可能从视图中为所有用户自动排除。",
 	"faq-source-title": "什么是“数据来源”？",
 	"faq-source-pageviews": "是项目收到的页面访问总数。",
 	"faq-source-unique-devices": "是访问网站的单一设备数量。",
@@ -319,5 +320,9 @@
 	"active-users": "活跃用户",
 	"admins": "管理员",
 	"data-unavailable": "数据不可用",
-	"show-values": "显示值"
+	"show-values": "显示值",
+	"learn-more": "了解更多",
+	"report-false-positive": "汇报误报",
+	"report-false-positive-text": "使用该表单选择您希望汇报为误报的被排除页面（$1）",
+	"report-false-positive-submitted": "您的误报汇报已提交。感谢您改进$1数据！"
 }

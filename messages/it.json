@@ -150,7 +150,7 @@
 	"faq-bug-report-title": "Ho una funzionalità da richiedere o un errore da segnalare",
 	"faq-bug-report-body": "Se vuoi utilizzare un wiki per lasciare un commento, usa il <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> su Meta. Puoi anche segnalare anomalie su <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-topviews-false-positive-body1": "Questi sono <strong>falsi positivi</strong>, e purtroppo sono inevitabili. Possono presentarsi perché, ad esempio, qualcuno ha usato un programma automatico per l'estrazione di dati dalla pagina. Un modo per identificare i falsi positivi è paragonare le visualizzazioni desktop con quelle da web mobile. Se le visualizzazioni della pagina da web mobile sono molto basse, potrebbe essere un falso positivo, dato che dovrebbero essere paragonabili, se non più alte, a quelle desktop.",
-	"faq-topviews-false-positive-body2": "Puoi anche aprire una pagina nell'applicazione Pageviews per ulteriori analisi. Basta cliccare nel numero di visualizzazioni sul lato destro.",
+	"faq-topviews-false-positive-body2": "Puoi anche aprire qualsiasi pagina nell'applicazione Pageviews per ulteriori analisi. Basta cliccare nel numero di visualizzazioni sul lato destro.",
 	"faq-source-pageviews": "è il numero totale di visualizzazioni delle pagine che il progetto ha ricevuto.",
 	"faq-source-unique-devices": "è il numero di dispositivi unici che hanno visitato il sito.",
 	"faq-massviews-sources-pagepile": "Inserisci l'ID numerico di un insieme di pagine create con $1.",
@@ -288,5 +288,6 @@
 	"active-users": "Utenti attivi",
 	"admins": "Amministratori:",
 	"data-unavailable": "Dati non disponibili",
-	"show-values": "Mostra valori"
+	"show-values": "Mostra valori",
+	"learn-more": "Ulteriori informazioni"
 }

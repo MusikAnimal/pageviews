@@ -161,7 +161,8 @@
 	"faq-bug-report-body": "Wenn du ein Wiki zum Geben von Rückmeldungen nutzen möchtest, verwende das <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">Rückmeldungs-Forum</a> auf Meta. Du kannst Fehler auch auf <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\">Phabricator</a> melden.",
 	"faq-topviews-false-positive-title": "Warum haben einige zufällige Seiten so hohe Aufrufzahlen?",
 	"faq-topviews-false-positive-body1": "Dies sind <strong>verzerrte Ergebnisse</strong>, die leider unvermeidbar sind. Sie können beispielsweise auftreten, wenn jemand ein automatisches Programm zum Aufrufen der Seite verwendet. Eine Taktik zum Aufspüren verzerrter Ergebnisse ist das Vergleichen der Desktop-Aufrufe mit den Aufrufen aus dem mobilen Web. Beide sollten etwa gleich hoch sein. Wenn die mobilen Abrufe deutlich geringer sind, könnte es sich um ein verzerrtes Ergebnis handeln.",
-	"faq-topviews-false-positive-body2": "Zur weiteren Analyse einer Seite kannst du sie in der Pageviews-App öffnen. Klicke dazu auf der rechten Seite auf den Aufrufzähler.",
+	"faq-topviews-false-positive-body2": "Zur weiteren Analyse kannst du auch eine beliebige Seite in der Pageviews-App öffnen. Klicke dazu auf der rechten Seite auf den Aufrufzähler.",
+	"faq-topviews-false-positive-body3": "Du kannst <strong>falsche Positive melden</strong>, um die $1-Daten zu verbessern. Um dies zu tun, schließe zuerst die Seite von der Ansicht aus, indem du mit der Maus darüber fährst und am Anfang der Zeile das ✖ anklickst. Klicke dann auf den Link „$2“ über der Eingabe „$3“. Falls genügend Menschen eine bestimmte Seite als falsche Positive gemeldet haben, wird sie automatisch für alle Benutzer von der Ansicht ausgeschlossen.",
 	"faq-source-title": "Was sind die „Datenquellen“?",
 	"faq-source-pageviews": "ist die Gesamtanzahl der Seitenaufrufe, die das Projekt erhalten hat.",
 	"faq-source-unique-devices": "ist die Anzahl der unterschiedlichen Geräte, die die Website besucht haben.",
@@ -297,6 +298,7 @@
 	"daily-average": "Täglicher Durchschnitt",
 	"edits": "Bearbeitungen",
 	"editors": "Autoren",
+	"unique-editors": "Unterschiedliche Autoren",
 	"size": "Größe",
 	"protection": "Seitenschutz",
 	"watchers": "Beobachter",
@@ -318,5 +320,10 @@
 	"active-users": "Aktive Benutzer",
 	"admins": "Administratoren",
 	"data-unavailable": "Daten nicht verfügbar",
-	"show-values": "Werte anzeigen"
+	"show-values": "Werte anzeigen",
+	"learn-more": "Mehr erfahren",
+	"report-false-positive": "Falsche Positive melden",
+	"report-false-positive-text": "Verwende dieses Formular, um auszuwählen, welche ausgeschlossenen Seiten du als falsche Positive melden möchtest. ($1)",
+	"report-false-positive-submitted": "Deine Falsch-Positive-Meldung wurde eingesandt. Vielen Dank für die Verbesserung der $1-Daten!",
+	"new-article-warning": "Eine oder mehrere der angeforderten Seiten wurden erst kürzlich erstellt, so dass noch keine Seitenaufrufsdaten verfügbar sind. ($1)"
 }

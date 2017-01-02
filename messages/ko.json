@@ -219,5 +219,7 @@
 	"active-users": "활동적인 사용자",
 	"admins": "관리자",
 	"data-unavailable": "데이터를 사용할 수 없음",
-	"show-values": "값 보기"
+	"show-values": "값 보기",
+	"learn-more": "더 알아보기",
+	"report-false-positive": "거짓 양성 보고하기"
 }
