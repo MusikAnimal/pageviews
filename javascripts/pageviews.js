@@ -571,8 +571,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       label: $.i18n('num-pages', datasets.length),
       sum,
       average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
-      num_edits: datasets.reduce((a, b) => a + b.num_edits, 0),
-      num_users: datasets.reduce((a, b) => a + b.num_users, 0),
+      num_edits: this.entityInfo.totals ? this.entityInfo.totals.num_edits : null,
+      num_users: this.entityInfo.totals ? this.entityInfo.totals.num_users : null,
       length: datasets.reduce((a, b) => a + b.length, 0),
       protection: `${datasets.filter(page => page.protection !== 'none').length} protections`,
       watchers: datasets.reduce((a, b) => a + b.watchers || 0, 0)
