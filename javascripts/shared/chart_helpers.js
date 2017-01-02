@@ -409,6 +409,21 @@ const ChartHelpers = superclass => class extends superclass {
         if (cassandraError) {
           failedEntities.push(entity);
         } else {
+          if (this.app === 'pageviews' && errorData.status === 404) {
+            // check if it is a new page, and if so show a message that the data isn't available yet
+            $.ajax({
+              url: `https://${this.project}.org/w/api.php?action=query&prop=revisions&rvprop=timestamp` +
+                `&rvdir=newer&rvlimit=1&formatversion=2&format=json&titles=${entity}`,
+              dataType: 'jsonp'
+            }).then(data => {
+              const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
+              if (dateCreated && moment(dateCreated).isAfter(this.config.maxDate)) {
+                const faqLink = `<a href='/pageviews/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
+                this.toastWarn($.i18n('new-article-warning', faqLink));
+              }
+            });
+          }
+
           let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
           xhrData.errors.push(
             `${link}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`

@@ -323,5 +323,6 @@
 	"learn-more": "Learn more",
 	"report-false-positive": "Report false positive",
 	"report-false-positive-text": "Use this form to choose which excluded pages you want to report as false positive ($1)",
-	"report-false-positive-submitted": "Your false positive report has been submitted. Thanks for improving $1 data!"
+	"report-false-positive-submitted": "Your false positive report has been submitted. Thanks for improving $1 data!",
+	"new-article-warning": "One or more of the requested pages were recently created, so the pageviews data may not be available yet ($1)"
 }

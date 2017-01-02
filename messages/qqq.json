@@ -330,5 +330,6 @@
 	"learn-more": "Link to bring the user to the FAQ.\n{{Identical|Learn more}}",
 	"report-false-positive": "Link to report pages as false positives in the Topviews app.",
 	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
-	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app)."
+	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app).",
+	"new-article-warning": "Warning that data of new pages may not be available yet. $1 is a link to the FAQ with the message 'learn-more' as the text."
 }
