@@ -260,7 +260,7 @@ const ChartHelpers = superclass => class extends superclass {
       const average = Math.round(sum / (values.filter(val => val !== null)).length),
         label = labels[index].descore();
 
-      const entityInfo = this.entityInfo ? this.entityInfo[label] : {};
+      const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[label] : {};
 
       dataset = Object.assign({
         label,
