@@ -304,6 +304,7 @@
 	"daily-average": "Label for the value showing the daily average of pageviews. This goes under a 'Pageviews' heading, so you do not need to use the word 'Pageviews'.",
 	"edits": "Label for the value showing the number of edits that occurred to the pages during the timeframe.\n{{Identical|Edit}}",
 	"editors": "Label for the value showing the number of editors that contributed to the pages during the timeframe.\n{{Identical|Editor}}",
+	"unique-editors": "Label for the value showing the number of unique editors that contributed to the pages during the timeframe.",
 	"size": "Label for the value showing the size of the page.\n{{Identical|Size}}",
 	"protection": "Label for the value showing the protection level of the page.\n{{Identical|Protection}}",
 	"watchers": "Label for the value showing the number of watchers (i.e. users who added the page to watchlist) a page has. Should use a word that is related to {{msg-mw|watchlist}}.\n{{Identical|Watcher}}",

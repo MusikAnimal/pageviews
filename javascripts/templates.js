@@ -83,8 +83,8 @@ const templates = {
     const totals = {
       sum,
       average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
-      num_edits: scope.outputData.reduce((a, b) => a + b.num_edits, 0),
-      num_users: scope.outputData.reduce((a, b) => a + b.num_users, 0),
+      num_edits: scope.entityInfo.totals ? scope.entityInfo.totals.num_edits : null,
+      num_users: scope.entityInfo.totals ? scope.entityInfo.totals.num_users : null,
       watchers: scope.outputData.reduce((a, b) => a + b.watchers || 0, 0)
     };
 

@@ -25,6 +25,8 @@ class PvConfig {
       }
     };
 
+    const maxDate = moment().subtract(1, 'days').startOf('day');
+
     this.config = {
       apiLimit: 20000,
       apiThrottle: 10,
@@ -209,14 +211,14 @@ class PvConfig {
       },
       daysAgo: 20,
       minDate: moment('2015-07-01').startOf('day'),
-      maxDate: moment().subtract(1, 'days').startOf('day'),
+      maxDate,
       specialRanges: {
         'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-        'this-month': [moment().startOf('month'), moment().subtract(1, 'days').startOf('day')],
+        'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-        'this-year': [moment().startOf('year'), moment().subtract(1, 'days').startOf('day')],
+        'this-year': [moment().startOf('year'), moment().startOf('year').isAfter(maxDate) ? moment().startOf('year') : maxDate],
         'last-year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-        'all-time': [moment('2015-07-01').startOf('day'), moment().subtract(1, 'days').startOf('day')],
+        'all-time': [moment('2015-07-01').startOf('day'), maxDate],
         latest(offset = self.config.daysAgo) {
           return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
         }

@@ -1228,7 +1228,7 @@ class Pv extends PvConfig {
     this.daterangepicker.setEndDate(endDate);
 
     $('.latest-text').text(
-      $.i18n('latest-days', offset)
+      offset ? $.i18n('latest-days', offset) : $.i18n('latest')
     );
 
     return this.specialRange;
@@ -1355,30 +1355,25 @@ class Pv extends PvConfig {
         ))
     );
 
-    /**
-     * The special date range options (buttons the right side of the daterange picker)
-     *
-     * WARNING: we're unable to add class names or data attrs to the range options,
-     * so checking which was clicked is hardcoded based on the index of the LI,
-     * as defined in this.config.specialRanges
-     */
+    /** The special date range options (buttons the right side of the daterange picker) */
     $('.daterangepicker .ranges li').on('click', e => {
-      const index = $('.daterangepicker .ranges li').index(e.target),
-        container = this.daterangepicker.container,
+      if (e.target.innerText === $.i18n('custom-range')) {
+        this.specialRange = null;
+        return app.daterangepicker.clickApply();
+      }
+
+      const container = this.daterangepicker.container,
         inputs = container.find('.daterangepicker_input input');
+
+      /** find out which option they checked */
+      const range = Object.keys(this.config.specialRanges).find(specialRange => {
+        return $.i18n(specialRange) === e.target.innerText;
+      });
+
       this.specialRange = {
-        range: Object.keys(this.config.specialRanges)[index],
+        range,
         value: `${inputs[0].value} - ${inputs[1].value}`
       };
-    });
-
-    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
-      if (action.chosenLabel === $.i18n('custom-range')) {
-        this.specialRange = null;
-
-        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
-        this.daterangepicker.updateElement();
-      }
     });
   }
 

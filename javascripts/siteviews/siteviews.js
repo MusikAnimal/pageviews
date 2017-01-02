@@ -24,7 +24,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     super(config);
     this.app = 'siteviews';
     this.specialRange = null;
-    this.entityInfo = {};
+    this.entityInfo = { entities: {} };
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
@@ -101,7 +101,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     sites.forEach(site => {
       // don't re-query for the same stats
-      if (this.entityInfo[site]) return alwaysCallback();
+      if (this.entityInfo.entities[site]) return alwaysCallback();
 
       $.ajax({
         url: `https://${site}/w/api.php`,
@@ -113,7 +113,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         },
         dataType: 'jsonp'
       }).done(data => {
-        this.entityInfo[site] = data.query.statistics;
+        this.entityInfo.entities[site] = data.query.statistics;
       }).always(alwaysCallback);
     });
 

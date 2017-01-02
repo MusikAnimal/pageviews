@@ -157,7 +157,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     const getPageInfoAndSetDefaults = pages => {
       this.getPageAndEditInfo(pages).then(pageInfo => {
         this.initialQuery = true;
-        const normalizedPageNames = Object.keys(pageInfo);
+        const normalizedPageNames = Object.keys(pageInfo.entities);
 
         // all given pages were invalid, reset view without clearing the error message
         if (!normalizedPageNames.length) return this.resetView(false, false);
@@ -628,17 +628,19 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         }
       }
 
-      this.entityInfo = data;
+      this.entityInfo = { entities: data };
+
       // use Object.keys(data) to get normalized page names
       this.getEditData(Object.keys(data)).done(editData => {
         for (let page in editData.pages) {
           let pageData = editData.pages[page];
 
-          const protection = (this.entityInfo[page].protection || []).find(prot => prot.type === 'edit');
+          const protection = (this.entityInfo.entities[page].protection || []).find(prot => prot.type === 'edit');
           pageData.protection = protection ? protection.level : $.i18n('none').toLowerCase();
 
-          Object.assign(this.entityInfo[page], editData.pages[page]);
+          Object.assign(this.entityInfo.entities[page], editData.pages[page]);
         }
+        this.entityInfo.totals = editData.totals;
         dfd.resolve(this.entityInfo);
       }).fail(() => {
         dfd.resolve(this.entityInfo); // treat as if successful, simply won't show the data
