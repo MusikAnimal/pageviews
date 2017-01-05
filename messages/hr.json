@@ -3,7 +3,8 @@
 		"authors": [
 			"MaGa",
 			"Macofe",
-			"Milicevic01"
+			"Milicevic01",
+			"Ivi104"
 		]
 	},
 	"title": "Analiza pregleda stranice",
@@ -114,7 +115,7 @@
 	"siteviews": "Pregledi mrežnih mjesta",
 	"average": "Prosječno",
 	"submit": "Pošalji",
-	"hover-to-exclude": "Da biste isključili stranice iz pregleda, prijeđite mišem iznad imena i kliknite na ✖",
+	"hover-to-exclude": "Kako biste izuzeli stranice iz pregleda, prijeđite mišem iznad imena i kliknite na ✖",
 	"num-languages": "$1 jezik/a",
 	"unique-titles": "$1 {{PLURAL:$1|jedinstveni naslov|jedinstvena naslova|jedinstvenih naslova}}",
 	"invalid-lang-project": "$1 je nevažeći ili nije višejezični projekt",

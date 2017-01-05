@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Geoleplubo"
+			"Geoleplubo",
+			"Eric.LEWIN"
 		]
 	},
 	"title": "Analyse des paches vues",
@@ -10,6 +11,8 @@
 	"last-week": "Daraine smangne",
 	"this-month": "Ch' moés-lo",
 	"last-month": "Darin moés",
+	"last-year": "Ch'l'an passeu",
+	"all-time": "Eud' tout timps",
 	"custom-range": "Plache parsonnalisée",
 	"project": "Prodjét à vir",
 	"platform": "Plateforme",
@@ -90,6 +93,7 @@
 	"select2-loading": "Chargémint aveuc pus d'résultats...",
 	"select2-max-items": "Os n'povez sélékcionner éq $1 élémint(s)",
 	"select2-no-results": "Poin d'résultat treuvé",
+	"massviews-notice": "Por n'en r'bayer pus equ'$1 paches, t'essaye $2.",
 	"help-translate": "Aïuder à értréduire",
 	"fatal-error": "Fatal bérlurage",
 	"error-timed-out": "Dépassemint du temps autorisé pour foaire l’opéracion.",
@@ -129,6 +133,7 @@
 	"faq-redirects-body": "Si un uzeu accède à ène érdirékcion, ène vue est inrégistrée pour eul érdirékcion, mais poin pour l'pache cibe. Si os voulez avoér ch' total des vues d’ène pache, y compris tout chés érdirékcions, inséyez $1.",
 	"faq-search-redirects-title": "Kmint éq j'puche voér chés vues des ardirékcions ?",
 	"faq-search-redirects-body": "Pour activer ch'trachage des ardirékcions, cangez vote trachage in « $1 » dins ch' panniau $2. Si os volez voér chés vues pour tout chés ardirékcions vers ène pache, ésséyez $3.",
+	"faq-counts-title": "Èch que ché visions d'paches par un même useu, on z'est compte à chaque foés ?",
 	"faq-agents-title": "Ch'est quoé chés \"Adjints\" ?",
 	"faq-agents-user": "Cha comprind tout chés parsonnes qu'ont vu eune pache. Chés éditeus, chés éditeus anonymes, et pi os liseus.",
 	"faq-agents-spider": "inclut ch'moteu d'trachage « <a href='https://en.wikipedia.org/wiki/Web_crawler'>robots d’indécsacion</a> » conme Google qui lit chés paches pour améliorer chés résultats d'archerches. Chés paches peu'te ète vues pèr des robots d’indécsacion, ch'est pourquoé, pèr défaut, chl’otil n’affiche éq des données pour chés uzeus.",

@@ -299,6 +299,7 @@
 	"daily-average": "日平均",
 	"edits": "编辑数",
 	"editors": "编辑者数",
+	"unique-editors": "唯一编辑者",
 	"size": "大小",
 	"protection": "保护",
 	"watchers": "监视者",
@@ -324,5 +325,6 @@
 	"learn-more": "了解更多",
 	"report-false-positive": "汇报误报",
 	"report-false-positive-text": "使用该表单选择您希望汇报为误报的被排除页面（$1）",
-	"report-false-positive-submitted": "您的误报汇报已提交。感谢您改进$1数据！"
+	"report-false-positive-submitted": "您的误报汇报已提交。感谢您改进$1数据！",
+	"new-article-warning": "请求的一个或多个页面最近刚刚创建，所以页面浏览数据可能尚不可用（$1）"
 }

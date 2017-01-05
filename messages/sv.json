@@ -141,6 +141,9 @@
 	"faq-redirects-body": "Om en användare går till en omdirigering registreras en sidvisning, men inte för målsidan. Om du vill få det totala antalet sidvisningar för en sida, inklusive alla omdirigeringar, prova $1.",
 	"faq-search-redirects-title": "Hur kan jag se sidvisningar för omdirigeringar?",
 	"faq-search-redirects-body": "För att aktivera sökning för omdirigeringar, ändra din sökmetod till \"$1\" i panelen $2. Om du vill se sidvisningarna för alla omdirigeringar till en sida, prova $3.",
+	"faq-counts-body": "Ja. Varje gång du läser in en sida registreras en sidvisning, även om du skapade sidan. Du kan läsa mer om definitionen för sidbesök på $1.",
+	"faq-location-title": "Kan jag se vilken geografisk region sidvisningarna kommer från?",
+	"faq-referrals-title": "Kan jag se hur läsarna kom till sidan?",
 	"faq-agents-title": "Vad är \"agenter\"?",
 	"faq-agents-user": "inkluderar alla personer som besöker en sida. Redigerare, anonyma redigerare och alla våra läsare.",
 	"faq-agents-spider": "inkluderar \"<a href='https://sv.wikipedia.org/wiki/Spindel_%28internet%29'>sökmotorsspindlar</a>\", som Google, som läser sidor i syfte att förbättra sina sökresultat. Sidan kan få många visningar från spindlar, som är anledningen till varför verktyget endast visar data från användare som standard.",
@@ -151,10 +154,10 @@
 	"faq-multi-lang-title": "Jag vill se data för en sida på alla språk i ett projekt",
 	"faq-try-tool": "Du kan hitta detta på $1.",
 	"faq-bug-report-title": "Jag vill begära en funktion eller rapportera en bugg",
-	"faq-bug-report-body": "Om du vill använda en wiki för att lämna återkoppling kan du använda <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>återkopplingsforumet</a> på Meta. Du kan också rapportera problem på <a href='https://github.com/MusikAnimal/pageviews/issues'>GitHub</a> och <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
+	"faq-bug-report-body": "Om du vill använda en wiki för att lämna återkoppling kan du använda <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>återkopplingsforumet</a> på Meta. Du kan också rapportera problem på <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-topviews-false-positive-title": "Varför har vissa sidor så högt antal besök?",
 	"faq-topviews-false-positive-body1": "Dessa är <strong>falska positiver</strong> och är dessvärre oundvikliga. Dessa kan förekomma eftersom någon använde ett automatiserat program för att behandla sidan, exempelvis. Ett sätt att identifiera falska positiver är att jämföra datorvisningar med mobila visningar. Mobila webbvisningar bör vara jämförbara om inte högre än datorvisningar, så om mobila webbvisningar är mycket lågt kan det vara en falsk positiv.",
-	"faq-topviews-false-positive-body2": "Du kan också öppna en sida i applikationen Sidvisningar för en ingående analys. Klicka bara på antalet visningar på höger sida.",
+	"faq-topviews-false-positive-body2": "Du kan också öppna någon sida i applikationen Sidvisningar för en ingående analys. Klicka bara på antalet visningar på höger sida.",
 	"faq-source-title": "Vad är \"Datakällor\"?",
 	"faq-source-pageviews": "är det totala antalet sidbesök som projektet får",
 	"faq-source-unique-devices": "är antalet unika enheter som besöker webbplatsen.",
@@ -289,6 +292,7 @@
 	"daily-average": "Genomsnitt per dag",
 	"edits": "Redigeringar",
 	"editors": "Redigerare",
+	"unique-editors": "Unika redigerare",
 	"size": "Storlek",
 	"protection": "Skydd",
 	"watchers": "Bevakare",
@@ -309,5 +313,6 @@
 	"active-users": "Aktiva användare",
 	"admins": "Administratörer",
 	"data-unavailable": "Data ej tillgänglig",
-	"show-values": "Visa värden"
+	"show-values": "Visa värden",
+	"learn-more": "Läs mer"
 }

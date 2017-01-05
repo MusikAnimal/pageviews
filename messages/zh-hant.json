@@ -301,6 +301,7 @@
 	"daily-average": "每日平均瀏覽數",
 	"edits": "編輯次數",
 	"editors": "編輯者數",
+	"unique-editors": "各編輯者",
 	"size": "內容大小",
 	"protection": "頁面保護層級",
 	"watchers": "頁面監視者",
@@ -326,5 +327,6 @@
 	"learn-more": "了解更多",
 	"report-false-positive": "回報誤報",
 	"report-false-positive-text": "使用此表單來選擇您要回報為誤報（$1）的所要排除頁面",
-	"report-false-positive-submitted": "您的誤報回報已提交。感謝改進$1資料！"
+	"report-false-positive-submitted": "您的誤報回報已提交。感謝改進$1資料！",
+	"new-article-warning": "一個或更多的請求頁面為近期所創建，因此該頁面瀏覽資料可能尚無法使用（$1）"
 }

@@ -295,6 +295,7 @@
 	"daily-average": "ממוצע יומי",
 	"edits": "עריכות",
 	"editors": "עורכים",
+	"unique-editors": "עורכים ייחודיים",
 	"size": "גודל",
 	"protection": "הגנה",
 	"watchers": "עוקבים",
@@ -320,5 +321,6 @@
 	"learn-more": "מידע נוסף",
 	"report-false-positive": "דיווח תוצאה שגויה",
 	"report-false-positive-text": "יש להשתמש בטופס הזה כדי לבחור אילו דפים שהוצאו ברצונך לדווח בתור תוצאות שגויות ($1)",
-	"report-false-positive-submitted": "דיווח התוצאה השגויה שלך נשלח. תודה על שיפור $1!"
+	"report-false-positive-submitted": "דיווח התוצאה השגויה שלך נשלח. תודה על שיפור $1!",
+	"new-article-warning": "אחד או יותר מהדפים המבוקשים נוצרו לא מזמן, ולכן ייתכן שנתוני הצפיות עדיין אינם זמינים ($1)"
 }
