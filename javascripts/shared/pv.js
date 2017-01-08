@@ -429,7 +429,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score())}`;
+    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape)}`;
   }
 
   /**
@@ -1003,7 +1003,7 @@ class Pv extends PvConfig {
    * @returns {Object} key/value pairs representation of query string
    */
   parseQueryString(multiParam) {
-    const uri = decodeURI(location.search.slice(1)),
+    const uri = decodeURI(location.search.slice(1)).replace(/\+/g, '%20'),
       chunks = uri.split('&');
     let params = {};
 
@@ -1011,9 +1011,11 @@ class Pv extends PvConfig {
       let chunk = chunks[i].split('=');
 
       if (multiParam && chunk[0] === multiParam) {
-        params[multiParam] = chunk[1].split('|').filter(param => !!param).unique();
+        params[multiParam] = chunk[1].split('|')
+          .map(param => param.replace(/(?:%20|_| )+$/, ''))
+          .filter(param => !!param).unique();
       } else {
-        params[chunk[0]] = chunk[1];
+        params[chunk[0]] = chunk[1].replace(/(?:%20|_| )+$/, '');
       }
     }
 

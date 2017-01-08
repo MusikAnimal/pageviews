@@ -448,7 +448,7 @@ class TopViews extends Pv {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?]/g, escape);
+    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?+]/g, encodeURIComponent);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
@@ -578,7 +578,6 @@ class TopViews extends Pv {
    */
   setSelect2Defaults(pages) {
     pages = pages.map(page => {
-      // page = page.replace(/ /g, '_');
       const escapedText = $('<div>').text(page).html();
       $('<option>' + escapedText + '</option>').appendTo(this.config.select2Input);
       return page;

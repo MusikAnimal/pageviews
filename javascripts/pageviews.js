@@ -60,7 +60,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $.ajax({
         url: `//${metaRoot}/article_analysis/basic_info`,
         data: {
-          pages: pages.join('|'),
+          pages: pages.map(page => encodeURIComponent(page)).join('|'),
           project: this.project,
           start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
           end: this.daterangepicker.endDate.format('YYYY-MM-DD')
@@ -308,7 +308,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   pushParams() {
     const pages = $(this.config.select2Input).select2('val') || [],
-      escapedPages = pages.join('|').replace(/[&%?]/g, escape);
+      escapedPages = pages.join('|').replace(/[&%?+]/g, encodeURIComponent);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -481,7 +481,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   showSinglePageLegend() {
     const page = this.outputData[0];
     const topviewsMonth = this.getTopviewsMonth(false); // 'false' to go off of endDate
-    const topviewsDate = `${this.daterangepicker.endDate.format('YYYY')}/${topviewsMonth.format('MM')}/all-days`;
+    const topviewsDate = `${topviewsMonth.format('YYYY')}/${topviewsMonth.format('MM')}/all-days`;
 
     $.ajax({
       url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/` +
