@@ -601,7 +601,6 @@ const ChartHelpers = superclass => class extends superclass {
     });
 
     dateRangeSelector.on('change', e => {
-      this.setChartPointDetectionRadius(); // FIXME: is this needed?
       this.processInput();
       $('.latest-text').text($.i18n('latest'));
 

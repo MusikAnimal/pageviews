@@ -20,19 +20,19 @@ const appDependencies = {
   'pageviews': {
     css: [
       'vendor/stylesheets/select2.min.css',
-      'vendor/stylesheets/daterangepicker.min.css'
+      'vendor/stylesheets/daterangepicker.css'
     ],
     js: [
       'vendor/javascripts/select2.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/Chart.min.js'
     ]
   },
   'langviews': {
-    css: ['vendor/stylesheets/daterangepicker.min.css'],
+    css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
       'vendor/javascripts/HackTimer.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
     ]
@@ -50,28 +50,28 @@ const appDependencies = {
   'siteviews': {
     css: [
       'vendor/stylesheets/select2.min.css',
-      'vendor/stylesheets/daterangepicker.min.css'
+      'vendor/stylesheets/daterangepicker.css'
     ],
     js: [
       'vendor/javascripts/select2.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/Chart.min.js'
     ]
   },
   'massviews': {
-    css: ['vendor/stylesheets/daterangepicker.min.css'],
+    css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
       'vendor/javascripts/HackTimer.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
     ]
   },
   'redirectviews': {
-    css: ['vendor/stylesheets/daterangepicker.min.css'],
+    css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
       'vendor/javascripts/HackTimer.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
     ]
@@ -79,11 +79,11 @@ const appDependencies = {
   'meta': {
     css: [
       'vendor/stylesheets/select2.min.css',
-      'vendor/stylesheets/daterangepicker.min.css'
+      'vendor/stylesheets/daterangepicker.css'
     ],
     js: [
       'vendor/javascripts/select2.min.js',
-      'vendor/javascripts/daterangepicker.min.js',
+      'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/Chart.min.js'
     ]
   }

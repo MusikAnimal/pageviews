@@ -36,8 +36,8 @@ module.exports = {
     client.click('.save-settings-btn');
     client.waitForElementNotVisible('#settings-modal', 1000);
 
+    client.waitForElementVisible('.summary-column', 5000);
     client.click('.aqs-date-range-selector');
-    client.click('.aqs-date-range-selector'); // second time's the charm?
     client.waitForElementVisible('.daterangepicker', 1000);
 
     startSelector = '.calendar.left tbody tr:nth-child(2) td:first-child';
@@ -66,7 +66,7 @@ module.exports = {
     });
   },
   'Selecting a special range updates the chart, URL parameters, and date selector': client => {
-    client.pause(1000);
+    client.waitForElementVisible('.summary-column', 5000);
     client.click('.aqs-date-range-selector');
     client.waitForElementVisible('.daterangepicker', 1000);
     client.click('.daterangepicker .ranges li:first-child'); // Last week
@@ -80,7 +80,7 @@ module.exports = {
     });
   },
   'Selecting a latest range updates the chart, URL parameters, and date selector': client => {
-    client.pause(1000);
+    client.waitForElementVisible('.summary-column', 5000);
     client.click('.latest-group .dropdown-toggle');
     client.expect.element('.date-latest').to.be.visible.after(1000);
     client.click('.date-latest a:first-child'); // latest 10 days
@@ -94,7 +94,7 @@ module.exports = {
     });
   },
   'Changing platform and agent updates the chart and URL parameters': client => {
-    client.pause(500);
+    client.waitForElementVisible('.summary-column', 5000);
     client.setValue('#platform-select', 'desktop');
     client.execute('$(\'#platform-select\').trigger(\'change\')');
     // try again for Safari

@@ -1015,7 +1015,7 @@ class Pv extends PvConfig {
           .map(param => param.replace(/(?:%20|_| )+$/, ''))
           .filter(param => !!param).unique();
       } else {
-        params[chunk[0]] = chunk[1].replace(/(?:%20|_| )+$/, '');
+        params[chunk[0]] = (chunk[1] || '').replace(/(?:%20|_| )+$/, '');
       }
     }
 
@@ -1376,6 +1376,14 @@ class Pv extends PvConfig {
         range,
         value: `${inputs[0].value} - ${inputs[1].value}`
       };
+    });
+
+    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
+      if (action.chosenLabel === $.i18n('custom-range')) {
+        this.specialRange = null;
+        /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+        this.daterangepicker.updateElement();
+      }
     });
   }
 
