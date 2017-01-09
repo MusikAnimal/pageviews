@@ -286,7 +286,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return history.replaceState(null, document.title, location.href.split('?')[0]);
     }
 
-    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?]/g, escape);
+    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?+]/g, encodeURIComponent);
 
     window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
 
