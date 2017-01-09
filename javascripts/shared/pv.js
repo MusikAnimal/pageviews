@@ -967,7 +967,16 @@ class Pv extends PvConfig {
    */
   getPageInfo(pages) {
     let dfd = $.Deferred();
-    pages = pages.map(page => encodeURIComponent(decodeURIComponent(page)));
+
+    // First make array of pages *fully* URI-encoded so we can easily reference them
+    // The issue is the API only returns encoded page names, so we have to reliably be
+    //   able to encode that and reference the original array
+    try {
+      pages = pages.map(page => encodeURIComponent(decodeURIComponent(page)));
+    } catch (e) {
+      // nothing, this happens when they use an unencoded title like %
+      //   that JavaScript gets confused about when decoding
+    }
 
     return $.ajax({
       url: `https://${this.project}.org/w/api.php?action=query&prop=info&inprop=protection|watchers` +
@@ -977,12 +986,18 @@ class Pv extends PvConfig {
       // restore original order of pages, taking into account out any page names that were normalized
       if (data.query.normalized) {
         data.query.normalized.forEach(n => {
-          pages[pages.indexOf(encodeURIComponent(n.from))] = n.to;
+          // API returns decoded page name, so encode and compare against original array
+          pages[pages.indexOf(encodeURIComponent(n.from))] = encodeURIComponent(n.to);
         });
       }
       let pageData = {};
       pages.forEach(page => {
-        page = decodeURIComponent(page);
+        // decode once more so the return pageData object is human-readable
+        try {
+          page = decodeURIComponent(page);
+        } catch (e) {
+          // same as above, catch error when JavaScript is unable to decode
+        }
         pageData[page] = data.query.pages.find(p => p.title === page);
       });
       return dfd.resolve(pageData);
@@ -1003,7 +1018,7 @@ class Pv extends PvConfig {
    * @returns {Object} key/value pairs representation of query string
    */
   parseQueryString(multiParam) {
-    const uri = decodeURI(location.search.slice(1)).replace(/\+/g, '%20'),
+    const uri = location.search.slice(1).replace(/\+/g, '%20'),
       chunks = uri.split('&');
     let params = {};
 
@@ -1487,9 +1502,7 @@ class Pv extends PvConfig {
    * @returns {array} page names with underscores
    */
   underscorePageNames(pages) {
-    return pages.map(page => {
-      return decodeURIComponent(page).score();
-    });
+    return pages.map(page => page.score());
   }
 
   /**
