@@ -60,7 +60,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $.ajax({
         url: `//${metaRoot}/article_analysis/basic_info`,
         data: {
-          pages: pages.map(page => encodeURIComponent(page)).join('|'),
+          pages: pages.join('|'),
           project: this.project,
           start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
           end: this.daterangepicker.endDate.format('YYYY-MM-DD')
