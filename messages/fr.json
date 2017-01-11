@@ -333,5 +333,5 @@
 	"report-false-positive": "Signaler un faux positif",
 	"report-false-positive-text": "Utiliser ce formulaire pour choisir quelles pages exclues vous voulez signaler comme faux positif ($1)",
 	"report-false-positive-submitted": "Votre signalement de faux positif a été soumis. Merci d’améliorer les données de $1 !",
-	"new-article-warning": "Au moins une des pages demandées a été créée récemment, donc les données de vues de page peuvent ne pas être encore disponibles ($1)"
+	"new-article-warning": "Au moins une des pages demandées a été créée récemment, donc les données de vues des pages peuvent ne pas être encore disponibles ($1)"
 }
