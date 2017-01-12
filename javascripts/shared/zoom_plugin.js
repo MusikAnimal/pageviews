@@ -23,7 +23,7 @@ const zoomPlugin = {
     chartObj.zoom._mouseMoveHandler = e => {
       if (!chartObj.zoom._dragZoomStart) return; // ignore if not dragging
 
-      chartObj.zoom._dragZoomEnd = event;
+      chartObj.zoom._dragZoomEnd = e;
       chartObj.update(0);
     };
     node.addEventListener('mousemove', chartObj.zoom._mouseMoveHandler);
@@ -73,8 +73,8 @@ const zoomPlugin = {
       beginPoint = chartObj.zoom._dragZoomStart,
       endPoint = chartObj.zoom._dragZoomEnd,
       offsetX = beginPoint.target.getBoundingClientRect().left,
-      startX = Math.min(beginPoint.x, endPoint.x) - offsetX,
-      endX = Math.max(beginPoint.x, endPoint.x) - offsetX,
+      startX = Math.min(beginPoint.clientX, endPoint.clientX) - offsetX,
+      endX = Math.max(beginPoint.clientX, endPoint.clientX) - offsetX,
       rectWidth = endX - startX;
 
     ctx.fillStyle = 'rgba(225,225,225,0.3)';

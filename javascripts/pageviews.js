@@ -635,7 +635,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         for (let page in editData.pages) {
           let pageData = editData.pages[page];
 
-          const protection = (this.entityInfo.entities[page].protection || []).find(prot => prot.type === 'edit');
+          // find the edit protection within API response, or use the already fetched one if present
+          let protection = this.entityInfo.entities[page].protection || [];
+          if (Array.isArray(protection)) protection = protection.find(prot => prot.type === 'edit');
+
           pageData.protection = protection ? protection.level : $.i18n('none').toLowerCase();
 
           Object.assign(this.entityInfo.entities[page], editData.pages[page]);
