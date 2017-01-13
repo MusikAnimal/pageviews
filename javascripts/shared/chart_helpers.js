@@ -689,6 +689,7 @@ const ChartHelpers = superclass => class extends superclass {
         } else {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
           options.scales.xAxes[0].time.displayFormats.day = this.dateFormat;
+          options.scales.xAxes[0].time.parser = this.dateFormat;
           options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1;
         }
 
