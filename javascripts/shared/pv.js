@@ -1018,7 +1018,7 @@ class Pv extends PvConfig {
    * @returns {Object} key/value pairs representation of query string
    */
   parseQueryString(multiParam) {
-    const uri = location.search.slice(1).replace(/\+/g, '%20'),
+    const uri = location.search.slice(1).replace(/\+/g, '%20').replace(/%7C/g, '|'),
       chunks = uri.split('&');
     let params = {};
 

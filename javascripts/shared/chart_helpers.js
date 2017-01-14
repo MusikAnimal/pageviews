@@ -244,6 +244,8 @@ const ChartHelpers = superclass => class extends superclass {
         sum = 0, min, max = 0;
 
       dataset.forEach(elem => {
+        // Due to a GOTCHA, the API may only return data for certain dates in the requested date range,
+        //  so here we line them up with the requested date range and fill in zeros for the missing dates
         const value = elem[viewKey];
         let date;
 
