@@ -45,14 +45,7 @@ class PvConfig {
                   callback: value => {
                     return formatXAxisTick(value);
                   }
-                },
-                // type: 'time',
-                // time: {
-                //   minUnit: 'day',
-                //   displayFormats: {
-                //     month: 'YYYY/MM'
-                //   }
-                // }
+                }
               }]
             },
             legendCallback: chart => this.config.chartLegend(self),
@@ -90,14 +83,7 @@ class PvConfig {
                   callback: value => {
                     return formatXAxisTick(value);
                   }
-                },
-                // type: 'time',
-                // time: {
-                //   minUnit: 'day',
-                //   displayFormats: {
-                //     month: 'YYYY/MM'
-                //   }
-                // }
+                }
               }]
             },
             legendCallback: chart => this.config.chartLegend(self),

@@ -684,7 +684,11 @@ const ChartHelpers = superclass => class extends superclass {
       const grandMin = Math.min(...this.outputData.map(d => d.min));
 
       if (this.config.linearCharts.includes(this.chartType)) {
-        const linearData = {labels: this.getDateHeadings(), datasets: this.outputData};
+        const linearData = {
+          labels: this.getDateHeadings(),
+          datasets: this.outputData,
+          dateFormat: this.dateFormat // so it will be accessible in zoom_plugin.js
+        };
 
         if (this.chartType === 'radar') {
           options.scale.ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
@@ -692,7 +696,7 @@ const ChartHelpers = superclass => class extends superclass {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
           // options.scales.xAxes[0].time.displayFormats.day = this.dateFormat;
           // options.scales.xAxes[0].time.parser = this.dateFormat;
-          options.zoom = false; // ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1;
+          options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1;
         }
 
         // Show labels if option is checked (for linear charts only)

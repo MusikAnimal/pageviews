@@ -47,14 +47,21 @@ const zoomPlugin = {
         return;
       }
 
-      /** set start and end date, which will fire the event to re-process the form and render the chart */
-      $('.aqs-date-range-selector').data('daterangepicker').setStartDate(start);
-      $('.aqs-date-range-selector').data('daterangepicker').setEndDate(end);
-
       chartObj.zoom._dragZoomStart = null;
       chartObj.zoom._dragZoomEnd = null;
-      chartObj.destroy();
-      $('.chart-legend').html('');
+
+      /** set start and end date, which will fire the event to re-process the form and render the chart */
+      const dateLabels = chartObj.data.labels,
+        daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
+
+      /** if they selected the same area that is already shown */
+      if (end - start + 1 === dateLabels.length) {
+        return chartObj.update(0);
+      }
+
+      daterangepicker.startDate = moment(dateLabels[start], chartObj.data.dateFormat);
+      daterangepicker.setEndDate(moment(dateLabels[end], chartObj.data.dateFormat));
+      daterangepicker.updateElement();
     };
     node.addEventListener('mouseup', chartObj.zoom._mouseUpHandler);
   },
