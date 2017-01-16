@@ -17,11 +17,11 @@ class PvConfig {
   constructor() {
     let self = this;
     const formatXAxisTick = value => {
-      const dayOfWeek = moment(value, this.dateFormat).weekday();
-      if (dayOfWeek % 7) {
-        return value;
-      } else {
+      const dayOfWeek = moment(value, this.dateFormat).isoWeekday();
+      if (dayOfWeek === 1) {
         return `• ${value}`;
+      } else {
+        return value;
       }
     };
 
@@ -213,7 +213,7 @@ class PvConfig {
       minDate: moment('2015-07-01').startOf('day'),
       maxDate,
       specialRanges: {
-        'last-week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+        'last-week': [moment().subtract(1, 'isoweek').startOf('isoweek'), moment().subtract(1, 'isoweek').endOf('isoweek')],
         'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         'this-year': [moment().startOf('year'), moment().startOf('year').isAfter(maxDate) ? moment().startOf('year') : maxDate],
