@@ -22,6 +22,7 @@ module.exports = {
     });
 
     // Bar
+    client.click('body');
     client.waitForElementPresent('.js-test-change-chart', 5000);
     client.click('.js-test-change-chart');
     client.expect.element('#chart-type-modal').to.be.visible.after(5000);

@@ -37,6 +37,7 @@ module.exports = {
     client.waitForElementNotVisible('#settings-modal', 1000);
 
     client.waitForElementVisible('.chart-buttons', 5000);
+    client.click('body'); // blur
     client.click('.aqs-date-range-selector');
     client.waitForElementVisible('.daterangepicker', 1000);
 
