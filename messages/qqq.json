@@ -167,7 +167,7 @@
 	"faq-bug-report-title": "FAQ - title of the section explaining how to report a bug or request a feature",
 	"faq-bug-report-body": "FAQ - body of the section explaining how to report a bug or request a feature",
 	"faq-topviews-false-positive-title": "FAQ - title of the section explaning that there could be false positives in the Topviews report.",
-	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report.",
+	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report. The \"English Wikipedia\" should be translated as-is.",
 	"faq-topviews-false-positive-body2": "FAQ - an additional body of text explaining that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can report a page as a false positive in the Topviews application. $1 is the message 'topviews' (name of the app), $2 is the message 'report-false-positive' and $3 is the message 'excluded-pages'.",
 	"faq-source-title": "FAQ - title of the section explaining what the 'source' options are.",
