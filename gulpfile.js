@@ -20,11 +20,13 @@ const appDependencies = {
   'pageviews': {
     css: [
       'vendor/stylesheets/select2.min.css',
-      'vendor/stylesheets/daterangepicker.css'
+      'vendor/stylesheets/daterangepicker.css',
+      'vendor/stylesheets/bootstrap-datepicker.min.css'
     ],
     js: [
       'vendor/javascripts/select2.min.js',
       'vendor/javascripts/daterangepicker.js',
+      'vendor/javascripts/bootstrap-datepicker.min.js',
       'vendor/javascripts/Chart.min.js'
     ]
   },
@@ -50,11 +52,13 @@ const appDependencies = {
   'siteviews': {
     css: [
       'vendor/stylesheets/select2.min.css',
-      'vendor/stylesheets/daterangepicker.css'
+      'vendor/stylesheets/daterangepicker.css',
+      'vendor/stylesheets/bootstrap-datepicker.min.css'
     ],
     js: [
       'vendor/javascripts/select2.min.js',
       'vendor/javascripts/daterangepicker.js',
+      'vendor/javascripts/bootstrap-datepicker.min.js',
       'vendor/javascripts/Chart.min.js'
     ]
   },

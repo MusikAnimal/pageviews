@@ -24,7 +24,7 @@ const templates = {
       let infoHash = {
         [$.i18n('pageviews')]: {
           [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
-          [$.i18n('daily-average')]: scope.formatNumber(entity.average)
+          [$.i18n(`${$('#date-type-select').val()}-average`)]: scope.formatNumber(entity.average)
         },
         [$.i18n('revisions')]: {
           [$.i18n('edits')]: editsLink,
@@ -106,6 +106,10 @@ const templates = {
     } else {
       historyRow = '?';
     }
+
+    $('.table-view--average .col-heading').text(
+      $.i18n(`${$('#date-type-select').val()}-average`)
+    );
 
     return `
       <tr>

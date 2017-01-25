@@ -714,5 +714,9 @@ output {
   .home-link {
     display: none; } }
 
+.permalink-copy {
+  position: fixed;
+  top: -100px; }
+
 .special-ranges {
   padding: 5px 20px 0; }

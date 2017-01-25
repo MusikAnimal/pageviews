@@ -713,3 +713,7 @@ output {
     display: none; }
   .home-link {
     display: none; } }
+
+.permalink-copy {
+  position: fixed;
+  top: -100px; }

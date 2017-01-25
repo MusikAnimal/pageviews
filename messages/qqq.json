@@ -302,6 +302,7 @@
 	"loading-cache": "Message shown on the Massviews tool whend data is being loaded from cache, as opposed to being loaded from the server. See the wikidata item for 'Cache (computing)' for a list of possible translations for the word 'cache': https://www.wikidata.org/wiki/Q165596",
 	"views": "Label for the value showing the number of views that viewed to the pages during the timeframe.\n{{Identical|View}}",
 	"daily-average": "Label for the value showing the daily average of pageviews. This goes under a 'Pageviews' heading, so you do not need to use the word 'Pageviews'.",
+	"monthly-average": "Label for the value showing the monthly average of pageviews. This goes under a 'Pageviews' heading, so you do not need to use the word 'Pageviews'.",
 	"edits": "Label for the value showing the number of edits that occurred to the pages during the timeframe.\n{{Identical|Edit}}",
 	"editors": "Label for the value showing the number of editors that contributed to the pages during the timeframe.\n{{Identical|Editor}}",
 	"unique-editors": "Label for the value showing the number of unique editors that contributed to the pages during the timeframe.",

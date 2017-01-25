@@ -21,7 +21,7 @@
         </h4>
       </header>
       <div class="page-selector--container">
-        <div class="date-selector-label">
+        <div class="date-selector">
           <label for="range-input">
             <?php echo $I18N->msg( 'dates' ); ?>
           </label>
@@ -41,6 +41,28 @@
             </ul>
           </span>
           <input class="form-control aqs-date-range-selector" id="range-input">
+        </div>
+        <div class="month-selector input-daterange clearfix">
+          <label for="month-start">
+            <?php echo $I18N->msg( 'dates' ); ?>
+          </label>
+          <div>
+            <input class="form-control input-control month-selector-start pull-left" id="month-start" readonly="readonly">
+            <input class="form-control input-control month-selector-end pull-left" id="month-end" readonly="readonly">
+          </div>
+        </div>
+        <div>
+          <label for="date-type-select">
+            <?php echo $I18N->msg( 'date-type' ); ?>
+          </label>
+          <select class="form-control" id="date-type-select">
+            <option value="daily">
+              <?php echo $I18N->msg( 'daily' ); ?>
+            </option>
+            <option value="monthly">
+              <?php echo $I18N->msg( 'monthly' ); ?>
+            </option>
+          </select>
         </div>
         <div>
           <label for="project-input">
@@ -145,7 +167,9 @@
             <?php foreach( $columns as $column => $translation ) { ?>
               <th class="table-view--<?php echo $column; ?>">
                 <span class="sort-link sort-link--<?php echo $column; ?>" data-type="<?php echo $column; ?>">
-                  <?php echo $I18N->msg( $translation ); ?>
+                  <span class="col-heading">
+                    <?php echo $I18N->msg( $translation ); ?>
+                  </span>
                   <span class="glyphicon glyphicon-sort"></span>
                 </span>
               </th>

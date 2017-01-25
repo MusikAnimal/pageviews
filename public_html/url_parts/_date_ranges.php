@@ -31,9 +31,9 @@
 </dd>
 <dt>start</dt>
 <dd>
-  <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>' ), 'parsemag' => true ) ); ?>
+  <?php echo $I18N->msg( 'url-structure-start-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>end</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
 </dd>
 <dt>end</dt>
 <dd>
-  <?php echo $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
+  <?php echo $I18N->msg( 'url-structure-end-date', array( 'variables' => array( '<code>YYYY-MM-DD</code>', '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
 </dd>

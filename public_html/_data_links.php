@@ -5,6 +5,7 @@
       <?php echo $I18N->msg( 'change-chart' ); ?></button>
       <a class="btn btn-default btn-sm permalink" href=""><span class="glyphicon glyphicon-link"></span>
       <?php echo $I18N->msg( 'permalink' ); ?></a>
+      <input class="permalink-copy">
       <span class="btn-group dropdown download-btn-group">
         <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="glyphicon glyphicon-download-alt"></span>

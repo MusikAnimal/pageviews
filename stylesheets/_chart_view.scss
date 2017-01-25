@@ -177,7 +177,7 @@ body.initial {
   }
 }
 
-.date-selector-label {
+.date-selector {
   position: relative;
 }
 
@@ -196,4 +196,24 @@ body.initial {
 .num-entities-info {
   font-weight: normal;
   margin-left: 10px;
+}
+
+.month-selector {
+  display: none;
+
+  input {
+    text-align: left;
+  }
+}
+
+.month-selector-start {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  width: 50%;
+}
+
+.month-selector-end {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  width: 50%;
 }

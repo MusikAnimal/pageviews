@@ -210,7 +210,18 @@ class Pv extends PvConfig {
     } else if (params.start) {
       const dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
-      // first set defaults
+      // convert year/month for monthly date types to valid date string
+      if (params.start && /^\d{4}-\d{2}$/.test(params.start)) {
+        params.start = `${params.start}-01`;
+        params.monthly = true;
+      }
+      if (params.end && /^\d{4}-\d{2}$/.test(params.end)) {
+        params.end = moment(`${params.end}-01`).endOf('month').format('YYYY-MM-DD');
+      } else {
+        params.monthly = false;
+      }
+
+      // set defaults
       let startDate, endDate;
 
       // then check format of start and end date
@@ -242,9 +253,22 @@ class Pv extends PvConfig {
         return false;
       }
 
-      /** directly assign startDate before calling setEndDate so events will be fired once */
-      this.daterangepicker.startDate = startDate;
-      this.daterangepicker.setEndDate(endDate);
+      if (params.monthly && ['pageviews', 'siteviews'].includes(this.app)) {
+        $('#date-type-select').val('monthly');
+        $('.date-selector').hide();
+        $('.month-selector').show();
+
+        // set initial values
+        this.monthStart = moment(params.start).toDate();
+        this.monthEnd = moment(params.end).startOf('month').toDate();
+
+        // initialize and update month selector
+        this.setupMonthSelector(this.monthStart, this.monthEnd);
+      } else {
+        /** directly assign startDate before calling setEndDate so events will be fired once */
+        this.daterangepicker.startDate = startDate;
+        this.daterangepicker.setEndDate(endDate);
+      }
     } else {
       this.setSpecialRange(this.config.defaults.dateRange);
     }
@@ -264,10 +288,12 @@ class Pv extends PvConfig {
    * @returns {string} date format to passed to parser
    */
   get dateFormat() {
+    const monthly = $('#date-type-select').val() === 'monthly';
+
     if (this.localizeDateFormat === 'true') {
-      return this.getLocaleDateString();
+      return monthly ? 'MMM YYYY' : this.getLocaleDateString();
     } else {
-      return this.config.defaults.dateFormat;
+      return monthly ? 'YYYY-MM' : this.config.defaults.dateFormat;
     }
   }
 
@@ -367,13 +393,16 @@ class Pv extends PvConfig {
    */
   getDateHeadings(localized = true) {
     const dateHeadings = [],
-      endDate = moment(this.daterangepicker.endDate).add(1, 'day');
+      monthly = $('#date-type-select').val() === 'monthly',
+      endDate = moment(this.daterangepicker.endDate).add(monthly ? 0 : 1, 'day'),
+      dateType = monthly ? 'month' : 'day',
+      dateFormat = monthly ? 'YYYY-MM' : 'YYYY-MM-DD';
 
-    for (let date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, 'day')) {
+    for (let date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, dateType)) {
       if (localized) {
         dateHeadings.push(date.format(this.dateFormat));
       } else {
-        dateHeadings.push(date.format('YYYY-MM-DD'));
+        dateHeadings.push(date.format(dateFormat));
       }
     }
     return dateHeadings;
@@ -1291,6 +1320,18 @@ class Pv extends PvConfig {
       this.dataset.value = this.value;
     });
     $(this.config.projectInput).on('change', () => this.validateProject());
+
+    $('.permalink').on('click', e => {
+      $('.permalink-copy').val($('.permalink').prop('href'))[0].select();
+      try {
+        document.execCommand('copy');
+        this.toastSuccess('Permalink copied to clipboard');
+        e.preventDefault();
+        document.activeElement.blur();
+      } catch (e) {
+        // silently ignore
+      }
+    });
   }
 
   /**
@@ -1474,9 +1515,15 @@ class Pv extends PvConfig {
    */
   startSpinny() {
     $('body').addClass('loading');
-    document.activeElement.blur();
+
+    // Remove focus from any focused element
+    // Zero-length timeout is to wait for the rendering threads to catch up
+    setTimeout(() => document.activeElement.blur());
+
+    // Clear the old spinny timeout
     clearTimeout(this.timeout);
 
+    // Set new spinny timeout that will show error after 30 seconds
     this.timeout = setTimeout(err => {
       this.resetView();
       this.toastError(`
