@@ -18,14 +18,16 @@ class PvConfig {
     let self = this;
     const formatXAxisTick = value => {
       const dayOfWeek = moment(value, this.dateFormat).isoWeekday();
-      if (dayOfWeek === 1) {
+      const monthly = $('#date-type-select').val() === 'monthly';
+      if (dayOfWeek === 1 && !monthly) {
         return `• ${value}`;
       } else {
         return value;
       }
     };
 
-    const maxDate = moment().subtract(1, 'days').startOf('day');
+    const maxDate = moment().subtract(1, 'days').startOf('day'),
+      maxMonth = moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
 
     this.config = {
       apiLimit: 20000,
@@ -210,8 +212,10 @@ class PvConfig {
         legendCallback: chart => this.config.chartLegend(chart.data.datasets, self)
       },
       daysAgo: 20,
+      initialMonthStart: moment(maxMonth).subtract(11, 'months').toDate(),
       minDate: moment('2015-07-01').startOf('day'),
       maxDate,
+      maxMonth,
       specialRanges: {
         'last-week': [moment().subtract(1, 'week').startOf('isoweek'), moment().subtract(1, 'week').endOf('isoweek')],
         'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],

@@ -27,6 +27,11 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.sort = 'views';
     this.direction = '1';
 
+    // Keep track of last valid start/end of month (when date type is set to month)
+    // This is because the bootstrap datepicker library does not handle this natively
+    this.monthStart = this.config.initialMonthStart;
+    this.monthEnd = this.config.maxMonth;
+
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
      * caused by race conditions between consecutive ajax calls. They are actually
@@ -291,6 +296,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
      */
     if (this.specialRange && specialRange) {
       params.range = this.specialRange.range;
+    } else if (this.isMonthly()) {
+      params.start = moment(
+        this.monthStartDatepicker.getDate()
+      ).format('YYYY-MM');
+      params.end = moment(
+        this.monthEndDatepicker.getDate()
+      ).format('YYYY-MM');
     } else {
       params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
       params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
@@ -411,6 +423,25 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   setupListeners() {
     super.setupListeners();
     $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
+    $('#date-type-select').on('change', e => {
+      $('.date-selector').toggle(e.target.value === 'daily');
+      $('.month-selector').toggle(e.target.value === 'monthly');
+      if (e.target.value === 'monthly') {
+        // no special ranges for month data type
+        this.specialRange = null;
+
+        this.setupMonthSelector();
+
+        // Set values of normal daterangepicker, which is what is used when we query the API
+        // This will in turn call this.processInput()
+        this.daterangepicker.setStartDate(this.monthStartDatepicker.getDate());
+        this.daterangepicker.setEndDate(
+          moment(this.monthEndDatepicker.getDate()).endOf('month')
+        );
+      } else {
+        this.processInput();
+      }
+    });
     $('.sort-link').on('click', e => {
       const sortType = $(e.currentTarget).data('type');
       this.direction = this.sort === sortType ? -this.direction : 1;
@@ -554,9 +585,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       }
     });
 
-    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
     const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     let hasProtection = false;
     datasets.forEach((item, index) => {

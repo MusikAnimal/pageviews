@@ -19,7 +19,6 @@ const config = {
     excludes: []
   },
   maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
-  maxMonth: moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate(),
   pageSize: 100,
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',

@@ -21,7 +21,7 @@
         </h4>
       </header>
       <div class="page-selector--container">
-        <div class="date-selector-label">
+        <div class="date-selector">
           <label for="range-input">
             <?php echo $I18N->msg( 'dates' ); ?>
           </label>
@@ -42,6 +42,20 @@
           </span>
           <input class="form-control aqs-date-range-selector" id="range-input">
         </div>
+        <!-- %div.month-selector.input-daterange.clearfix -->
+        <!-- %label(for="month-start") -->
+        <!-- = $I18N->msg( 'dates' ) -->
+        <!-- %div -->
+        <!-- %input.form-control.input-control.month-selector-start.pull-left#month-start -->
+        <!-- %input.form-control.input-control.month-selector-end.pull-left#month-end -->
+        <!-- %div -->
+        <!-- %label(for="date-type-select") -->
+        <!-- = $I18N->msg( 'date-type' ) -->
+        <!-- %select.form-control#date-type-select -->
+        <!-- %option(value="daily") -->
+        <!-- = $I18N->msg( 'daily' ) -->
+        <!-- %option(value="monthly") -->
+        <!-- = $I18N->msg( 'monthly' ) -->
         <div>
           <label for="data-source-select">
             <?php echo $I18N->msg( 'metric' ); ?>

@@ -95,6 +95,31 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Get the datepicker (not daterangepicker) instance of the combined
+   *   start and end month selectors, as provided by the library
+   * @return {Object} datepicker
+   */
+  get monthDatepicker() {
+    return $('.month-selector').data('datepicker');
+  }
+
+  /**
+   * Get the datepicker (not daterangepicker) instance of the start month selector
+   * @return {Object} datepicker
+   */
+  get monthStartDatepicker() {
+    return $('.month-selector-start').data('datepicker');
+  }
+
+  /**
+   * Get the datepicker (not daterangepicker) instance of the end month selector
+   * @return {Object} datepicker
+   */
+  get monthEndDatepicker() {
+    return $('.month-selector-end').data('datepicker');
+  }
+
+  /**
    * Set the default chart type or the one from localStorage, based on settings
    * @param {Number} [numDatasets] - number of datasets
    */
@@ -227,6 +252,7 @@ const ChartHelpers = superclass => class extends superclass {
    */
   buildChartData(datasets, labels) {
     let viewKey;
+    const dateFormat = this.isMonthly() ? 'YYYY-MM' : 'YYYY-MM-DD';
 
     // key to use in dataseries varies based on app
     if (this.isPageviews()) {
@@ -252,7 +278,7 @@ const ChartHelpers = superclass => class extends superclass {
         if (this.app === 'metaviews') {
           date = elem.date;
         } else {
-          date = moment(elem.timestamp, this.config.timestampFormat).format('YYYY-MM-DD');
+          date = moment(elem.timestamp, this.config.timestampFormat).format(dateFormat);
         }
 
         values[dateHeadings.indexOf(date)] = value;
@@ -290,18 +316,21 @@ const ChartHelpers = superclass => class extends superclass {
    * @returns {Object} transformed data
    */
   setColorsAndLogValues(outputData) {
-    return outputData.map((dataset, index) => {
-      // don't try to plot zeros on a logarithmic chart
-      const startDate = moment(this.daterangepicker.startDate);
-      const endDate = moment(this.daterangepicker.endDate);
+    // don't try to plot zeros on a logarithmic chart
+    const startDate = moment(this.daterangepicker.startDate),
+      endDate = moment(this.daterangepicker.endDate),
+      dateType = this.isMonthly() ? 'month' : 'day';
 
+    return outputData.map((dataset, index) => {
       // Use zero instead of null for some data due to Gotcha in Pageviews API:
       //   https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
       // For today or yesterday, do use null as the data may not be available yet
       let counter = 0;
-      for (let date = startDate; date <= endDate; date.add(1, 'd')) {
+      for (let date = startDate; date <= endDate; date.add(1, dateType)) {
         if (!dataset.data[counter]) {
-          const edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+          const edgeCase = !this.isMonthly() && (
+            date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'day'))
+          );
           const zeroValue = this.isLogarithmic() ? null : 0;
           dataset.data[counter] = edgeCase ? null : zeroValue;
         }
@@ -325,19 +354,25 @@ const ChartHelpers = superclass => class extends superclass {
   getApiUrl(entity, startDate, endDate) {
     const uriEncodedEntityName = encodeURIComponent(entity);
 
+    const granularity = $('#date-type-select').val() || 'daily';
+
+    if (granularity === 'monthly') {
+      endDate = endDate.endOf('month');
+    }
+
     if (this.app === 'siteviews') {
       return this.isPageviews() ? (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/daily` +
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${granularity}` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       ) : (
-        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/${$(this.config.platformSelector).val()}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/${$(this.config.platformSelector).val()}` +
+        `/${granularity}/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
     } else {
       return (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/daily` +
+        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/${granularity}` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
     }
@@ -351,6 +386,9 @@ const ChartHelpers = superclass => class extends superclass {
   getPageViewsData(entities) {
     let dfd = $.Deferred(), count = 0, failureRetries = {},
       totalRequestCount = entities.length, failedEntities = [];
+
+    const startDate = this.daterangepicker.startDate.startOf('day'),
+      endDate = this.daterangepicker.endDate.startOf('day');
 
     /**
      * everything we need to keep track of for the promises
@@ -366,9 +404,7 @@ const ChartHelpers = superclass => class extends superclass {
     };
 
     const makeRequest = (entity, index) => {
-      const startDate = this.daterangepicker.startDate.startOf('day'),
-        endDate = this.daterangepicker.endDate.startOf('day'),
-        url = this.getApiUrl(entity, startDate, endDate),
+      const url = this.getApiUrl(entity, startDate, endDate),
         promise = $.ajax({ url, dataType: 'json' });
 
       xhrData.promises.push(promise);
@@ -466,6 +502,14 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Is the date type set to monthly?
+   * @return {Boolean} true or false
+   */
+  isMonthly() {
+    return $('#date-type-select').val() === 'monthly';
+  }
+
+  /**
    * Are we currently in logarithmic mode?
    * @returns {Boolean} true or false
    */
@@ -534,11 +578,13 @@ const ChartHelpers = superclass => class extends superclass {
   setChartPointDetectionRadius() {
     if (this.chartType !== 'line') return;
 
-    if (this.numDaysInRange() > 50) {
+    const numTicks = this.getDateHeadings().length;
+
+    if (numTicks > 50) {
       Chart.defaults.global.elements.point.hitRadius = 3;
-    } else if (this.numDaysInRange() > 30) {
+    } else if (numTicks > 30) {
       Chart.defaults.global.elements.point.hitRadius = 5;
-    } else if (this.numDaysInRange() > 20) {
+    } else if (numTicks > 20) {
       Chart.defaults.global.elements.point.hitRadius = 10;
     } else {
       Chart.defaults.global.elements.point.hitRadius = 30;
@@ -613,6 +659,65 @@ const ChartHelpers = superclass => class extends superclass {
         this.specialRange = null;
       }
     });
+  }
+
+  /**
+   * Set up month selector and listeners
+   * @param  {Date} start - date to set as the start month (should be 1st of the month)
+   * @param  {Date} end - date to set as the end month (should be 1st of the month)
+   */
+  setupMonthSelector(start, end) {
+    // destroy old datepicker, if present
+    if (this.monthDatepicker) {
+      this.monthDatepicker.destroy();
+    }
+
+    $('.month-selector').datepicker({
+      autoclose: true,
+      format: 'M yyyy',
+      viewMode: 'months',
+      minViewMode: 'months',
+      startDate: this.config.minDate.toDate(),
+      endDate: this.config.maxMonth,
+      disableTouchKeyboard: true
+    });
+
+    start = start || this.config.initialMonthStart;
+    end = end || this.config.maxMonth;
+
+    const validateDates = (start, end) => {
+      if (start < this.config.minDate.toDate()) start = this.config.minDate;
+      if (end > this.config.maxMonth) end = this.config.maxMonth;
+      if (end < start || start > end) {
+        start = end;
+      }
+      return [start, end];
+    };
+
+    [start, end] = validateDates(start, end);
+
+    this.monthStartDatepicker.setDate(start);
+    this.monthEndDatepicker.setDate(end);
+
+    this.daterangepicker.startDate = moment(start).startOf('month');
+    this.daterangepicker.setEndDate(
+      moment(end).endOf('month')
+    );
+
+    const setDates = () => {
+      const [start, end] = validateDates(
+        this.monthStartDatepicker.getDate(),
+        this.monthEndDatepicker.getDate()
+      );
+
+      this.daterangepicker.startDate = moment(start).startOf('month');
+      this.daterangepicker.setEndDate(
+        moment(end).endOf('month')
+      );
+    };
+
+    $('.month-selector-start').on('hide', setDates);
+    $('.month-selector-end').on('hide', setDates);
   }
 
   /**
@@ -696,7 +801,7 @@ const ChartHelpers = superclass => class extends superclass {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
           // options.scales.xAxes[0].time.displayFormats.day = this.dateFormat;
           // options.scales.xAxes[0].time.parser = this.dateFormat;
-          options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1;
+          options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1 && !this.isMonthly();
         }
 
         // Show labels if option is checked (for linear charts only)
