@@ -11,7 +11,8 @@
 			"Macofe",
 			"Purodha",
 			"Amire80",
-			"Siebrand"
+			"Siebrand",
+			"Arthur2e5"
 		]
 	},
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
@@ -33,7 +34,7 @@
 	"mobile": "Label for option to view statistics for the mobile site in the Siteviews application\n{{Identical|Mobile}}",
 	"agent": "Header for the part of the interface that lets the user choose which type of browser agents to view statistics for. For example, 'User', 'Spider', 'Bot', etc.\n{{Identical|Agent}}",
 	"user": "Label for option to view statistics for user agents only (not spiders or bots)\n{{Identical|User}}",
-	"spider": "Label for option to view statistics for [[wikipedia:Web crawler|spider]] agents only (not users or bots)\n{{Identical|Spider}}",
+	"spider": "Label for option to view statistics for [[wikipedia:Web crawler|spider]] (web crawler) agents only (not users or bots)\n{{Identical|Spider}}",
 	"bot": "Label for option to view statistics for [[wikipedia:Wikipedia:Bots|bot]] agents only (not users or spiders)\n{{Identical|Bot}}",
 	"page": "Header for the singular page input for Langviews application\n{{Identical|Page}}",
 	"pages": "Header for the part of the interface that lets the user enter which pages they want to view statistics for\n{{Identical|Page}}",

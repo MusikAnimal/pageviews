@@ -6,7 +6,8 @@
 			"LNDDYL",
 			"Macofe",
 			"Reke",
-			"Cwlin0416"
+			"Cwlin0416",
+			"Arthur2e5"
 		]
 	},
 	"title": "頁面瀏覽次數分析",
@@ -41,7 +42,7 @@
 	"png": "PNG",
 	"print": "列印",
 	"credits": "此頁面瀏覽分析工具由 $1、$2 與 $3 所設計呈現。",
-	"hosted": "所使用開發環境 $2 以持著 $1 的精神來維護。",
+	"hosted": "持著 $1 託管於 $2 上。",
 	"translation-credits": "本頁面採用$1和$2作翻譯處理",
 	"tool-labs": "工具實驗室 (Tool Labs)",
 	"faq": "常見問題",

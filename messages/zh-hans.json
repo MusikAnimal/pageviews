@@ -4,7 +4,8 @@
 			"Liuxinyu970226",
 			"Yfdyh000",
 			"Lebenschirmvanmidorij",
-			"Dvorapa"
+			"Dvorapa",
+			"Arthur2e5"
 		]
 	},
 	"title": "页面浏览分析",
@@ -26,7 +27,7 @@
 	"mobile": "移动",
 	"agent": "代理",
 	"user": "用户",
-	"spider": "蜘蛛",
+	"spider": "爬虫",
 	"bot": "机器人",
 	"page": "页面",
 	"pages": "页面",
@@ -39,7 +40,7 @@
 	"png": "PNG",
 	"print": "打印",
 	"credits": "由$1、$2和$3为您呈现。",
-	"hosted": "$1有爱地托管于$2。",
+	"hosted": "带着$1托管于$2。",
 	"translation-credits": "翻译采用$1和$2。",
 	"tool-labs": "工具实验室",
 	"faq": "常见问题",
