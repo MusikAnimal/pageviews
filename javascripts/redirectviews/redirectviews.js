@@ -133,7 +133,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
      */
 
     this.outputData = {
-      labels: this.getDateHeadings(true), // labels needed for Charts.js, even though we'll only have one dataset
       link,
       listData: [],
       source: label
