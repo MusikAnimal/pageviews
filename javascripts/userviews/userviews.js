@@ -72,8 +72,8 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.toggleView(this.view);
     });
 
-    // update namespace selector when project is changed
-    $(this.config.projectInput).on('updated', this.setupNamespaceSelector.bind(this));
+    // update namespace selector when project is changed, 0 to force selection of main namespace
+    $(this.config.projectInput).on('updated', this.setupNamespaceSelector.bind(this, 0));
   }
 
   /**
@@ -92,7 +92,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       const namespaces = data[this.project].namespaces;
       for (let ns in namespaces) {
         if (ns < 0) continue;
-        const nsTitle = namespaces[ns]['*'] || 'Main';
+        const nsTitle = namespaces[ns]['*'] || $.i18n('main');
         $('#namespace_input').append(
           `<option value=${ns}>${nsTitle}</option>`
         );
