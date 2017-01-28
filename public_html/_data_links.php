@@ -1,4 +1,4 @@
-<div class="col-lg-12 row data-links invisible">
+<div class="col-lg-12 data-links invisible">
   <span class="chart-buttons">
     <button class="btn btn-default btn-sm btn-chart-type chart-specific js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal"><span class="glyphicon glyphicon-th"></span>
     <?php echo $I18N->msg( 'change-chart' ); ?></button>

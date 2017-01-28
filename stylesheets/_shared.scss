@@ -112,6 +112,7 @@ select {
 }
 
 .chart-container {
+  clear: both;
   min-height: 100px;
   position: relative;
   width: 100%;
@@ -248,7 +249,7 @@ footer {
 }
 
 .data-links {
-  padding-bottom: 15px;
+  padding: 0 0 15px;
 
   .btn {
     margin-left: 10px;

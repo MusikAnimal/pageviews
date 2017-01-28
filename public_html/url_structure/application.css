@@ -481,6 +481,7 @@ select {
   width: 100% !important; }
 
 .chart-container {
+  clear: both;
   min-height: 100px;
   position: relative;
   width: 100%; }
@@ -571,7 +572,7 @@ footer {
   margin-bottom: 10px; }
 
 .data-links {
-  padding-bottom: 15px; }
+  padding: 0 0 15px; }
   .data-links .btn {
     margin-left: 10px; }
     .data-links .btn:first-child {
