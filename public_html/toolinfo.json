@@ -4,7 +4,7 @@
         "title": "Pageviews Analysis",
         "description": "Analysis of pageviews across multiple pages",
         "url": "https://tools.wmflabs.org/pageviews",
-        "keywords": "pageviews,page views,traffic,visitors,statistics,stats,views",
+        "keywords": "pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal, Kaldari, Marcel Ruiz Forns",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -13,7 +13,7 @@
         "title": "Langviews Analysis",
         "description": "Pageviews of an article across all languages",
         "url": "https://tools.wmflabs.org/langviews",
-        "keywords": "langviews,pageviews,page views,traffic,visitors,statistics,stats,views",
+        "keywords": "langviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -22,7 +22,7 @@
         "title": "Topviews Analysis",
         "description": "Most viewed pages of a project",
         "url": "https://tools.wmflabs.org/topviews",
-        "keywords": "topviews,pageviews,page views,traffic,visitors,statistics,stats,views",
+        "keywords": "topviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -31,7 +31,7 @@
         "title": "Siteviews Analysis",
         "description": "Analysis of total pageviews across multiple projects",
         "url": "https://tools.wmflabs.org/siteviews",
-        "keywords": "siteviews,pageviews,page views,traffic,visitors,statistics,stats,views",
+        "keywords": "siteviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -40,7 +40,7 @@
         "title": "Massviews Analysis",
         "description": "Import a list of pages and analyze the pageviews",
         "url": "https://tools.wmflabs.org/massviews",
-        "keywords": "massviews,pageviews,page views,traffic,visitors,statistics,stats,views,glam",
+        "keywords": "massviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views,glam",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
     },
@@ -49,7 +49,16 @@
         "title": "Redirect Views",
         "description": "Get the pageviews of all redirects to a page",
         "url": "https://tools.wmflabs.org/redirectviews",
-        "keywords": "redirectviews,redirects,pageviews,page views,traffic,visitors,statistics,stats,views",
+        "keywords": "redirectviews,redirects,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
+        "author": "MusikAnimal",
+        "repository": "https://github.com/MusikAnimal/pageviews"
+    },
+    {
+        "name" : "userviews",
+        "title": "Userviews",
+        "description": "Get the pageviews of all pages created by a user",
+        "url": "https://tools.wmflabs.org/userviews",
+        "keywords": "userviews,pages created,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
     }
