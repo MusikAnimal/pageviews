@@ -88,6 +88,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('#namespace_input').html(
         `<option value='all'>${$.i18n('all')}</option>`
       );
+
       const namespaces = data[this.project].namespaces;
       for (let ns in namespaces) {
         if (ns < 0) continue;
@@ -96,9 +97,9 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           `<option value=${ns}>${nsTitle}</option>`
         );
       }
+      $('#namespace_input').val(namespace);
       return dfd.resolve();
     });
-    $('#namespace_input').val(namespace);
 
     return dfd;
   }
@@ -663,7 +664,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     $(this.config.platformSelector).val(params.platform);
     $(this.config.agentSelector).val(params.agent);
-    $('#namespace_input').val(params.namespace || '0');
     $('#redirects_select').val(params.redirects || '0');
 
     /** export necessary params to outer scope */
