@@ -1,46 +1,45 @@
-%div.row.data-links.invisible
-  %div.col-lg-12
-    %span.chart-buttons
-      %button.btn.btn-default.btn-sm.btn-chart-type.chart-specific.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal")<
-        %span.glyphicon.glyphicon-th
-        = $I18N->msg( 'change-chart' )
-      %a.btn.btn-default.btn-sm.permalink(href="")<
-        %span.glyphicon.glyphicon-link
-        = $I18N->msg( 'permalink' )
-      %input.permalink-copy
-      %span.btn-group.dropdown.download-btn-group
-        %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-          %span.glyphicon.glyphicon-download-alt
-          = $I18N->msg( 'download-label' )
-          %span.caret
-        %ul.dropdown-menu
-          %li
-            %a.download-csv(href="#")
-              = $I18N->msg( 'csv' )
-          %li
-            %a.download-json(href="#")
-              = $I18N->msg( 'json' )
-          %li.chart-specific
-            %a.download-png(href="#")
-              = $I18N->msg( 'png' )
-          %li.divider.chart-specific(role="separator")
-          %li.chart-specific
-            %a.print-chart(href="#")
-              %span.glyphicon.glyphicon-print
-              = $I18N->msg( 'print' )
+%div.col-lg-12.row.data-links.invisible
+  %span.chart-buttons
+    %button.btn.btn-default.btn-sm.btn-chart-type.chart-specific.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal")<
+      %span.glyphicon.glyphicon-th
+      = $I18N->msg( 'change-chart' )
+    %a.btn.btn-default.btn-sm.permalink(href="")<
+      %span.glyphicon.glyphicon-link
+      = $I18N->msg( 'permalink' )
+    %input.permalink-copy
+    %span.btn-group.dropdown.download-btn-group
+      %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+        %span.glyphicon.glyphicon-download-alt
+        = $I18N->msg( 'download-label' )
+        %span.caret
+      %ul.dropdown-menu
+        %li
+          %a.download-csv(href="#")
+            = $I18N->msg( 'csv' )
+        %li
+          %a.download-json(href="#")
+            = $I18N->msg( 'json' )
+        %li.chart-specific
+          %a.download-png(href="#")
+            = $I18N->msg( 'png' )
+        %li.divider.chart-specific(role="separator")
+        %li.chart-specific
+          %a.print-chart(href="#")
+            %span.glyphicon.glyphicon-print
+            = $I18N->msg( 'print' )
 
-    %span.chart-toggles
-      %span.pull-right.chart-specific
-        %label.logarithmic-scale
-          %input.logarithmic-scale-option(type="checkbox")
-          = $I18N->msg( 'logarithmic-scale' )
+  %span.chart-toggles
+    %span.pull-right.chart-specific
+      %label.logarithmic-scale
+        %input.logarithmic-scale-option(type="checkbox")
+        = $I18N->msg( 'logarithmic-scale' )
 
-      %span.pull-right.chart-specific
-        %label.begin-at-zero
-          %input.begin-at-zero-option(type="checkbox")
-          = $I18N->msg( 'begin-at-zero' )
+    %span.pull-right.chart-specific
+      %label.begin-at-zero
+        %input.begin-at-zero-option(type="checkbox")
+        = $I18N->msg( 'begin-at-zero' )
 
-      %span.pull-right.chart-specific
-        %label.show-labels
-          %input.show-labels-option(type="checkbox")
-          = $I18N->msg( 'show-values' )
+    %span.pull-right.chart-specific
+      %label.show-labels
+        %input.show-labels-option(type="checkbox")
+        = $I18N->msg( 'show-values' )

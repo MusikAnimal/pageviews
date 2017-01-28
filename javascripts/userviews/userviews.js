@@ -446,7 +446,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }).then(data => {
       const editCount = data.query.users[0].editcount;
       if (editCount > 50000) {
-        const userLink = this.getUserLink(user); // FIXME: get rid of User: in link text
+        const userLink = this.getUserLink(user);
         this.toastInfo(
           $.i18n('userviews-edit-count-warning', userLink, editCount)
         );
