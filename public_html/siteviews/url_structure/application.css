@@ -379,10 +379,6 @@ select {
       left: 0;
       right: auto;
       text-align: right; }
-  .rtl .download-btn-group .dropdown-menu {
-    left: auto;
-    right: 0;
-    text-align: right; }
   .rtl .table td,
   .rtl .table th {
     text-align: right; }
@@ -402,6 +398,8 @@ select {
     float: right; }
   .rtl .select2-selection__choice {
     float: right !important; }
+  .rtl .select2-results__options {
+    direction: rtl; }
   .rtl .select2-results__option {
     text-align: right; }
   .rtl .daterangepicker .ranges {
@@ -413,6 +411,10 @@ select {
   .rtl .daterangepicker .calendar th {
     max-width: 32px;
     white-space: initial; }
+  .rtl .download-btn-group .dropdown-menu {
+    left: auto;
+    right: 0;
+    text-align: right; }
   .rtl .download-btn-group .input-group-addon {
     border-radius: 0 3px 3px 0;
     border-right: 1px solid #ccc;
@@ -446,7 +448,7 @@ select {
   .rtl .output-title {
     float: right;
     margin-left: 10px; }
-  .rtl.langviews #source_input {
+  .rtl.langviews #source_input, .rtl.redirectviews #source_input, .rtl.userviews #source_input {
     border-radius: 0 3px 3px 0; }
   .rtl .logarithmic-scale,
   .rtl .begin-at-zero {
@@ -470,6 +472,14 @@ select {
     padding: 15px 15px 15px 25px !important; }
   .rtl #toast-container .toast-message {
     padding-right: 50px; }
+  .rtl .dl-horizontal dt {
+    float: right !important;
+    text-align: left !important; }
+  .rtl .dl-horizontal dd {
+    margin-left: 0;
+    margin-right: 180px !important; }
+  .rtl .url-structure-example {
+    text-align: right; }
 
 .aqs-row {
   padding-bottom: 10px; }

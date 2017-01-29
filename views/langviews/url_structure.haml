@@ -18,7 +18,7 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $langviewsLink = "<pre>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
+          - $langviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/langviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
@@ -59,5 +59,4 @@
           %a(href="/langviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'langviews-title' ) ), 'parsemag' => true ) )
 
-      - $currentApp = "langviews";
       -include "../../_footer.php";

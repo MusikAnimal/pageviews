@@ -122,7 +122,8 @@
           </small>
         </label>
         <span class="clear-pages pull-right">
-          &#x2715; Clear
+          &#x2715;
+          <?php echo $I18N->msg( 'clear' ); ?>
         </span>
         <select class="aqs-select2-selector col-lg-12 invisible" id="site-input" multiple="multiple"></select>
       </div>

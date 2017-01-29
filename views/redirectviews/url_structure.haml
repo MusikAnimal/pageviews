@@ -18,7 +18,7 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $redirectviewsLink = "<pre>//tools.wmflabs.org/redirectviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
+          - $redirectviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/redirectviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
@@ -58,5 +58,4 @@
           %a(href="/redirectviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'redirectviews-title' ) ), 'parsemag' => true ) )
 
-      - $currentApp = "redirectviews";
       -include "../../_footer.php";

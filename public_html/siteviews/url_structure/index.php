@@ -22,7 +22,7 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $siteviewsLink = "<pre>//tools.wmflabs.org/siteviews?sites={{SERVERNAME}}</pre>"; ?>
+          <?php $siteviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/siteviews?sites={{SERVERNAME}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-example-siteviews', [ 'variables' => [ $siteviewsLink ], 'parsemag' => true ] ); ?>
         </div>
         <div>
@@ -77,7 +77,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "siteviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

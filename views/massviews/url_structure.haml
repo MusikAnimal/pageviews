@@ -18,9 +18,9 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $pagePileExample = "<pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"
-          - $categoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"
-          - $wikiCategoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"
+          - $pagePileExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"
+          - $categoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"
+          - $wikiCategoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"
           = $I18N->msg( 'url-structure-massviews-example', array( 'variables' => array( $pagePileExample, $categoryExample, $wikiCategoryExample ), 'parsemag' => true ) )
 
         %div
@@ -66,5 +66,4 @@
           %a(href="/massviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'massviews-title' ) ), 'parsemag' => true ) )
 
-      - $currentApp = "massviews";
       -include "../../_footer.php";

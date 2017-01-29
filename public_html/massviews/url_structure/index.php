@@ -22,9 +22,9 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $pagePileExample = "<pre>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
-          <?php $categoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
-          <?php $wikiCategoryExample = "<pre>//tools.wmflabs.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"; ?>
+          <?php $pagePileExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
+          <?php $categoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
+          <?php $wikiCategoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-massviews-example', array( 'variables' => array( $pagePileExample, $categoryExample, $wikiCategoryExample ), 'parsemag' => true ) ); ?>
         </div>
         <div>
@@ -81,7 +81,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "massviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

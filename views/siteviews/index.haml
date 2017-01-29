@@ -88,7 +88,8 @@
           %small.text-muted.num-entities-info
             = $I18N->msg( 'num-projects-info', [ 'variables' => [ 10 ] ] )
         %span.clear-pages.pull-right
-          &#x2715; Clear
+          &#x2715;
+          = $I18N->msg( 'clear' )
         %select.aqs-select2-selector.col-lg-12.invisible#site-input(multiple="multiple")
 
       - include "../_data_links.php"

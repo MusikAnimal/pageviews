@@ -22,7 +22,7 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $topviewsLink = "<pre>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"; ?>
+          <?php $topviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"; ?>
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
           <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $excludes = "<code>excludes</code>"; ?>
@@ -68,7 +68,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "topviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

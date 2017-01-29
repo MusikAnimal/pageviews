@@ -59,6 +59,7 @@
         </li>
         <li class="divider" role="separator"></li>
         <?php foreach ($langs as $lang => $langName) { ?>
+          <?php if ($lang === 'qqq') continue; ?>
           <li>
             <a class="lang-link" href="#" data-lang="<?php echo $lang; ?>"><?php echo $langName; ?></a>
           </li>

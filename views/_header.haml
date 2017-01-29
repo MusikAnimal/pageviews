@@ -45,6 +45,7 @@
             = $I18N->msg( 'help-translate' )
         %li.divider(role="separator")
         - foreach ($langs as $lang => $langName)
+          - if ($lang === 'qqq') continue;
           %li
             %a.lang-link(href="#" data-lang="#{$lang}")= $langName
 

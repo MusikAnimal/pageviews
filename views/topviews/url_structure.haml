@@ -18,7 +18,7 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $topviewsLink = "<pre>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"
+          - $topviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/topviews?project=en.wikipedia.org</pre>"
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $excludes = "<code>excludes</code>"
@@ -55,5 +55,4 @@
           %a(href="/topviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
 
-      - $currentApp = "topviews";
       - include "../../_footer.php";

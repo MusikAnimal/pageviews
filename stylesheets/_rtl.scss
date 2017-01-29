@@ -36,14 +36,6 @@
   }
 }
 
-.download-btn-group {
-  .dropdown-menu {
-    left: auto;
-    right: 0;
-    text-align: right;
-  }
-}
-
 .table {
   td,
   th {
@@ -79,6 +71,10 @@ input[type=checkbox] {
   float: right !important;
 }
 
+.select2-results__options {
+  direction: rtl;
+}
+
 .select2-results__option {
   text-align: right;
 }
@@ -101,6 +97,12 @@ input[type=checkbox] {
 }
 
 .download-btn-group {
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+    text-align: right;
+  }
+
   .input-group-addon {
     border-radius: 0 3px 3px 0;
     border-right: 1px solid $gray;
@@ -162,7 +164,9 @@ input[type=checkbox] {
   margin-left: 10px;
 }
 
-&.langviews {
+&.langviews,
+&.redirectviews,
+&.userviews {
   #source_input {
     border-radius: 0 3px 3px 0;
   }
@@ -210,4 +214,20 @@ input[type=checkbox] {
   .toast-message {
     padding-right: 50px;
   }
+}
+
+.dl-horizontal {
+  dt {
+    float: right !important;
+    text-align: left !important;
+  }
+
+  dd {
+    margin-left: 0;
+    margin-right: 180px !important;
+  }
+}
+
+.url-structure-example {
+  text-align: right;
 }
