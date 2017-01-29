@@ -215,7 +215,7 @@
 	"url-structure-userviews-example": "To get the latest data on articles you've created, with default options, put a link to the following anywhere in your userspace:\n$1",
 	"url-structure-user": "Escaped username.",
 	"url-structure-userviews-onwiki-link": "For linking to the owner of a userspace page on wiki, use $1",
-	"url-structure-userviews-namespace": "Numerical number for the namespace. Defaults to $1. Use $2 for all namespaces.",
+	"url-structure-userviews-namespace": "The namespace number. Defaults to $1. Use $2 for all namespaces.",
 	"url-structure-userviews-redirects": "$1 to exclude redirects (default), $2 to only include redirects, or $3 to include redirects and non-redirects.",
 	"default": "Default",
 	"all-languages": "All languages",
