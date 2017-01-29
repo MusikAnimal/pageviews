@@ -151,6 +151,7 @@
       <?php
         $columns = array(
           'title' => 'page-title',
+          'class' => 'class',
           'views' => 'views',
           'average' => 'daily-average',
           'edits' => 'edits',

@@ -21,6 +21,9 @@ const templates = {
         editsLink = scope.getHistoryLink(entity.label, scope.formatNumber(entity.num_edits));
       }
 
+      // cache basic info message
+      const basicInfoMsg = $.i18n('basic-information');
+
       let infoHash = {
         [$.i18n('pageviews')]: {
           [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
@@ -30,16 +33,19 @@ const templates = {
           [$.i18n('edits')]: editsLink,
           [$.i18n('editors')]: scope.formatNumber(entity.num_users)
         },
-        [$.i18n('basic-information')]: {
-          [$.i18n('watchers')]: entity.watchers ? scope.formatNumber(entity.watchers) : $.i18n('unknown')
+        [basicInfoMsg]: {
+          [$.i18n('watchers')]: entity.watchers ? scope.formatNumber(entity.watchers) : $.i18n('unknown'),
+          [$.i18n('size')]: entity.length ? scope.formatNumber(entity.length) : ''
         }
       };
 
       if (!multiEntity) {
-        Object.assign(infoHash[$.i18n('basic-information')], {
-          [$.i18n('size')]: entity.length ? scope.formatNumber(entity.length) : '',
+        if (entity.assessment) {
+          infoHash[basicInfoMsg] = { [$.i18n('class')]: entity.assessment };
+        }
+        infoHash[basicInfoMsg] = {
           [$.i18n('protection')]: entity.protection
-        });
+        };
       }
 
       let markup = '';
@@ -85,7 +91,8 @@ const templates = {
       average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
       num_edits: scope.entityInfo.totals ? scope.entityInfo.totals.num_edits : null,
       num_users: scope.entityInfo.totals ? scope.entityInfo.totals.num_users : null,
-      watchers: scope.outputData.reduce((a, b) => a + b.watchers || 0, 0)
+      watchers: scope.outputData.reduce((a, b) => a + b.watchers || 0, 0),
+      length: scope.outputData.reduce((a, b) => a + b.length, 0)
     };
 
     return dataList(totals, true);
@@ -117,6 +124,7 @@ const templates = {
           <span class='table-view--color-block' style="background:${item.color}"></span>
         </${tag}>
         <${tag} class='table-view--title'>${last ? item.label : scope.getPageLink(item.label)}</${tag}>
+        <${tag} class='table-view--class'>${item.assessment || ''}</${tag}>
         <${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
         <${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>

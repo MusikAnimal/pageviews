@@ -784,6 +784,49 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Query PageAssessments API and return the classifications
+   * @param  {Array} pages - pages to query for
+   * @return {Deferred} Promise resolving with object like {page: "//assessment_image.svg"}
+   */
+  getPageAssessments(pages) {
+    const dfd = $.Deferred();
+
+    this.massApi(
+      {
+        prop: 'pageassessments',
+        titles: pages.join('|')
+      },
+      this.project,
+      'pacontinue',
+      'pages'
+    ).done(data => {
+      let assessments = {};
+      data.pages.forEach(page => {
+        // API limit is on the number of assessments, not pages,
+        //   so we might already have the assessment for this page
+        if (!page.pageassessments) return;
+
+        const wikiprojects = Object.keys(page.pageassessments),
+          firstAssessment = page.pageassessments[wikiprojects[0]]; // just go with the first assessment
+
+        if (firstAssessment && firstAssessment.class.length && !assessments[page.title]) {
+          const imgUrl = this.config.pageAssessmentBadges[this.project][firstAssessment.class] || '';
+
+          // skip if no image is available
+          if (!imgUrl.length) return;
+
+          const imgMarkup = `<img class='article-badge' src='https://upload.wikimedia.org/wikipedia/commons/${imgUrl}' ` +
+            `alt='${firstAssessment.class}' title='${firstAssessment.class}' />`;
+          assessments[page.title] = imgMarkup;
+        }
+      });
+      return dfd.resolve(assessments);
+    });
+
+    return dfd;
+  }
+
+  /**
    * Helper to get siteinfo from this.siteInfo for given project, with or without .org
    * @param {String} project - project name, with or without .org
    * @returns {Object|undefined} site information if present
