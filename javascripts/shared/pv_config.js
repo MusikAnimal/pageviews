@@ -232,6 +232,28 @@ class PvConfig {
         agent: ['all-agents', 'user', 'spider', 'bot'],
         platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
         project: siteDomains
+      },
+      pageAssessmentProjects: ['en.wikipedia', 'en.wikivoyage'],
+      pageAssessmentBadges: {
+        'en.wikipedia': {
+          'FA': 'e/e7/Cscr-featured.svg',
+          'GA': '9/94/Symbol_support_vote.svg',
+          'A': '2/25/Symbol_a_class.svg',
+          'B': '5/5f/Symbol_b_class.svg',
+          'C': 'e/e6/Symbol_c_class.svg',
+          'Start': 'a/a4/Symbol_start_class.svg',
+          'Stub': 'f/f5/Symbol_stub_class.svg',
+          'FL': 'e/e7/Cscr-featured.svg',
+          'List': 'd/db/Symbol_list_class.svg',
+          'Dab': '2/2a/Symbol_dab_class.svg'
+        },
+        'en.wikivoyage': {
+          'stub': 'f/f3/Symbol_plain_grey.svg',
+          'outline': 'c/c8/Start-icon.svg',
+          'usable': 'd/d0/Symbol_keep_vote.svg',
+          'guide': '9/94/Symbol_support_vote.svg',
+          'star': 'b/b4/Symbol_star_gold.svg'
+        }
       }
     };
   }

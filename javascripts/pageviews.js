@@ -150,6 +150,11 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     $(this.config.platformSelector).val(params.platform);
     $(this.config.agentSelector).val(params.agent);
 
+    // hide the badges column if it's an unsupported wiki
+    if (!this.config.pageAssessmentProjects.includes(this.project)) {
+      $('.sort-link--badges').hide();
+    }
+
     this.patchUsage();
     this.validateDateRange(params);
 
@@ -496,12 +501,26 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     } else if (this.initialQuery) {
       // We've already gotten data about the intial set of pages
       // This is because we need any page names given to be normalized when the app first loads
-      this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+      this.getPageViewsData(entities).done(xhrData => {
+        this.getPageAssessments(xhrData.entities).then(assessments => {
+          for (let page in assessments) {
+            this.entityInfo.entities[page].assessment = assessments[page];
+          }
+          this.updateChart(xhrData);
+        });
+      });
       // set back to false so we get page and edit info for any newly entered pages
       this.initialQuery = false;
     } else {
       this.getPageAndEditInfo(entities.map(entity => encodeURIComponent(entity))).then(() => {
-        this.getPageViewsData(entities).done(xhrData => this.updateChart(xhrData));
+        this.getPageViewsData(entities).done(xhrData => {
+          this.getPageAssessments(xhrData.entities).then(assessments => {
+            for (let page in assessments) {
+              this.entityInfo.entities[page].assessment = assessments[page];
+            }
+            this.updateChart(xhrData);
+          });
+        });
       });
     }
   }
@@ -535,6 +554,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $('.table-view').hide();
       $('.single-page-stats').html(`
         ${this.getPageLink(page.label)}
+        ${page.assessment ? '&middot;\n' + page.assessment : ''}
         &middot;
         <span class='text-muted'>
           ${$(this.config.dateRangeSelector).val()}
@@ -589,9 +609,11 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
     $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
-    let hasProtection = false;
+    let hasProtection = false,
+      hasAssessment = false;
     datasets.forEach((item, index) => {
       if (item.protection !== $.i18n('none').toLowerCase()) hasProtection = true;
+      if (item.assessment && item.assessment.length) hasAssessment = true;
 
       $('.output-list').append(this.config.templates.tableRow(this, item));
     });
@@ -612,6 +634,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     // hide protection column if no pages are protected
     $('.table-view--protection').toggle(hasProtection);
+    $('.table-view--class').toggle(hasAssessment);
 
     $('.table-view').show();
   }

@@ -345,5 +345,6 @@
 	"current-size": "Current size",
 	"exclude-redirects": "Exclude redirects",
 	"only-redirects": "Only include redirects",
-	"redirects-and-non-redirects": "Redirects and non-redirects"
+	"redirects-and-non-redirects": "Redirects and non-redirects",
+	"class": "Class"
 }

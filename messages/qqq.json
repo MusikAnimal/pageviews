@@ -355,5 +355,6 @@
 	"current-size": "Indicates the current size of a page.\n{{Identical|Current size}}",
 	"exclude-redirects": "Option to exclude redirects in the Userviews tool.",
 	"only-redirects": "Option to return only redirects in the Userviews tool.",
-	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool."
+	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool.",
+	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}"
 }

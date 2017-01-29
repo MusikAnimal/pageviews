@@ -21,6 +21,9 @@ const templates = {
         editsLink = scope.getHistoryLink(entity.label, scope.formatNumber(entity.num_edits));
       }
 
+      // cache basic info message
+      const basicInfoMsg = $.i18n('basic-information');
+
       let infoHash = {
         [$.i18n('pageviews')]: {
           [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
@@ -30,13 +33,16 @@ const templates = {
           [$.i18n('edits')]: editsLink,
           [$.i18n('editors')]: scope.formatNumber(entity.num_users)
         },
-        [$.i18n('basic-information')]: {
+        [basicInfoMsg]: {
           [$.i18n('watchers')]: entity.watchers ? scope.formatNumber(entity.watchers) : $.i18n('unknown')
         }
       };
 
       if (!multiEntity) {
-        Object.assign(infoHash[$.i18n('basic-information')], {
+        if (entity.assessment) {
+          infoHash[basicInfoMsg] = { [$.i18n('class')]: entity.assessment };
+        }
+        Object.assign(infoHash[basicInfoMsg], {
           [$.i18n('size')]: entity.length ? scope.formatNumber(entity.length) : '',
           [$.i18n('protection')]: entity.protection
         });
@@ -117,6 +123,7 @@ const templates = {
           <span class='table-view--color-block' style="background:${item.color}"></span>
         </${tag}>
         <${tag} class='table-view--title'>${last ? item.label : scope.getPageLink(item.label)}</${tag}>
+        <${tag} class='table-view--class'>${item.assessment || ''}</${tag}>
         <${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
         <${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>

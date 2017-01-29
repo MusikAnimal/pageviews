@@ -326,7 +326,7 @@ const ChartHelpers = superclass => class extends superclass {
       //   https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
       // For today or yesterday, do use null as the data may not be available yet
       let counter = 0;
-      for (let date = startDate; date <= endDate; date.add(1, dateType)) {
+      for (let date = moment(startDate); date <= endDate; date.add(1, dateType)) {
         if (!dataset.data[counter]) {
           const edgeCase = !this.isMonthly() && (
             date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'day'))
