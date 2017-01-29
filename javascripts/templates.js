@@ -40,12 +40,13 @@ const templates = {
       };
 
       if (!multiEntity) {
-        if (entity.assessment) {
-          infoHash[basicInfoMsg] = { [$.i18n('class')]: entity.assessment };
-        }
-        infoHash[basicInfoMsg] = {
+        let newHash = {
           [$.i18n('protection')]: entity.protection
         };
+        if (entity.assessment) {
+          newHash[$.i18n('class')] = entity.assessment;
+        }
+        Object.assign(infoHash[basicInfoMsg], newHash);
       }
 
       let markup = '';
