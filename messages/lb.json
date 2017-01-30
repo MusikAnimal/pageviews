@@ -213,6 +213,7 @@
 	"loading-cache": "Aus dem Cache lueden...",
 	"views": "Säitenofruffer",
 	"daily-average": "Deeglechen Duerchschnëtt",
+	"monthly-average": "Duerchschnëtt pro Mount",
 	"edits": "Ännerungen",
 	"editors": "Auteuren",
 	"size": "Gréisst",
@@ -238,5 +239,11 @@
 	"data-unavailable": "Donnéeën net disponibel",
 	"show-values": "Wäerter weisen",
 	"learn-more": "Fir méi ze wëssen",
-	"report-false-positive": "Falsch Positiver mellen"
+	"report-false-positive": "Falsch Positiver mellen",
+	"main": "Haapt",
+	"namespace": "Nummraum",
+	"date-created": "Datum vun der Kreatioun",
+	"current-size": "Aktuell Gréisst",
+	"exclude-redirects": "Viruleedungen ausschléissen",
+	"class": "Klass"
 }

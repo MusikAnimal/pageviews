@@ -200,7 +200,7 @@
 	"url-structure-special-range-latest": "前20天的數據資料",
 	"url-structure-special-range-latest-n": "此<i>N</i>為一個數字。例如 <code>latest-30</code> 會顯示過去30天的瀏覽次數。",
 	"url-structure-start-date": "開始日期使用格式為$1<br/>忽略此參數及參數$2以用於顯示最新資料。",
-	"url-structure-end-date": "結束日期格式為$1，預設值為前一日",
+	"url-structure-end-date": "結束日期格式為$1，預設值為前一日。",
 	"url-structure-agent": "$1(一般用戶查看，預設值)、$2(搜尋引擎使用的網路蜘蛛)、$3(維基媒體基金會使用的網路機器人)或$4($1、$2和$3)以上之一",
 	"url-structure-sort": "所要排序的欄位。",
 	"url-structure-sort-direction": "排列順序。$1為遞減，$2為遞增",
@@ -300,6 +300,7 @@
 	"loading-cache": "從快取載入中...",
 	"views": "瀏覽次數",
 	"daily-average": "每日平均瀏覽數",
+	"monthly-average": "月平均",
 	"edits": "編輯次數",
 	"editors": "編輯者數",
 	"unique-editors": "各編輯者",
@@ -329,5 +330,12 @@
 	"report-false-positive": "回報誤報",
 	"report-false-positive-text": "使用此表單來選擇您要回報為誤報（$1）的所要排除頁面",
 	"report-false-positive-submitted": "您的誤報回報已提交。感謝改進$1資料！",
-	"new-article-warning": "一個或更多的請求頁面為近期所創建，因此該頁面瀏覽資料可能尚無法使用（$1）"
+	"new-article-warning": "一個或更多的請求頁面為近期所創建，因此該頁面瀏覽資料可能尚無法使用（$1）",
+	"namespace": "命名空間",
+	"date-created": "建立日期",
+	"current-size": "目前大小",
+	"exclude-redirects": "排除重定向",
+	"only-redirects": "僅包含重定向",
+	"redirects-and-non-redirects": "重定向與非重定向",
+	"class": "等級"
 }

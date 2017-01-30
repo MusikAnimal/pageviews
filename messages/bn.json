@@ -5,7 +5,8 @@
 			"Bodhisattwa",
 			"Macofe",
 			"আজিজ",
-			"Ziyaurr"
+			"Ziyaurr",
+			"Elias Ahmmad"
 		]
 	},
 	"title": "পৃষ্ঠা দর্শনের বিশ্লেষণ",
@@ -253,8 +254,10 @@
 	"loading-cache": "ক্যাশে থেকে লোড করা হচ্ছে...",
 	"views": "দর্শন",
 	"daily-average": "দৈনিক গড়",
+	"monthly-average": "মাসিক গড়",
 	"edits": "সম্পাদনা",
 	"editors": "সম্পাদক",
+	"unique-editors": "স্বতন্ত্র সম্পাদকগণ",
 	"size": "আকার",
 	"protection": "সুরক্ষা",
 	"watchers": "নজরকারী",

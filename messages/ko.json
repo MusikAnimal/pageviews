@@ -197,6 +197,7 @@
 	"building-dataset": "데이터셋을 만드는 중...",
 	"loading-cache": "캐시로부터 불러오는 중...",
 	"daily-average": "일일 평균",
+	"monthly-average": "월 평균",
 	"edits": "편집",
 	"editors": "편집자",
 	"size": "크기",

@@ -158,6 +158,7 @@
 	"url-structure-siteviews-platform": "Cuando $1 es $2",
 	"url-structure-siteviews-agent": "Sólo se aplica cuando $1 es $2.",
 	"url-structure-view": "$1 para ver los datos como lista, o $2 para ver los datos como gráfico",
+	"url-structure-user": "Nombre de usuario escapado.",
 	"default": "Predeterminado",
 	"all-languages": "Todos los idiomas",
 	"history": "Historial",
@@ -189,6 +190,7 @@
 	"num-transclusions": "$1 {{PLURAL:$1|transclusión|transclusiones}}",
 	"num-subpages": "$1 {{PLURAL:$1|subpágina|subpáginas}}",
 	"num-wikilinks": "$1 {{PLURAL:$1|enlace wiki|enlaces wikis}}",
+	"num-days-span": "Periodo de $1 días",
 	"logarithmic-scale": "Escala logarítmica",
 	"bezier-curve-option": "Usar una curva de Bézier en los gráficos de líneas",
 	"list": "Lista",
@@ -241,5 +243,12 @@
 	"learn-more": "Más información",
 	"report-false-positive": "Notificar falso positivo",
 	"report-false-positive-text": "Utiliza este formulario para seleccionar las página excluidas que quieres notificar como falsos positivos —$1—.",
-	"report-false-positive-submitted": "Tu notificación de falso positivo ha sido enviada. Gracias por mejorar los datos de $1."
+	"report-false-positive-submitted": "Tu notificación de falso positivo ha sido enviada. Gracias por mejorar los datos de $1.",
+	"main": "Principal",
+	"namespace": "Espacio de nombres",
+	"date-created": "Fecha de creación",
+	"exclude-redirects": "Excluir redirecciones",
+	"only-redirects": "Incluir solo redirecciones",
+	"redirects-and-non-redirects": "Redirecciones y no redirecciones",
+	"class": "Clase"
 }

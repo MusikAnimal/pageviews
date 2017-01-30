@@ -184,6 +184,7 @@
 	"url-structure-sort-direction": "Kierunek sortowania. $1 malejąco, $2 rosnąco",
 	"url-structure-siteviews-platform": "Gdy $1 to $2",
 	"url-structure-siteviews-agent": "Ma zastosowanie tylko gdy $1 to $2.",
+	"url-structure-userviews-namespace": "Numeryczna wartość przestrzeni nazw. Domyślnie $1. Użyj $2 dla wszystkich przestrzeni nazw.",
 	"default": "Domyślnie",
 	"all-languages": "Wszystkie języki",
 	"history": "Historia",
@@ -276,5 +277,11 @@
 	"admins": "Administratorów",
 	"data-unavailable": "Dane niedostępne",
 	"show-values": "Pokaż wartości",
-	"learn-more": "Dowiedz się więcej"
+	"learn-more": "Dowiedz się więcej",
+	"main": "Główna",
+	"namespace": "Przestrzeń nazw",
+	"date-created": "Data utworzenia",
+	"current-size": "Aktualny rozmiar",
+	"exclude-redirects": "Bez przekierowań",
+	"class": "Klasa"
 }
