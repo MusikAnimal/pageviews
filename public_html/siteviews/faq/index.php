@@ -59,7 +59,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "siteviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

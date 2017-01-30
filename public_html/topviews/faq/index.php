@@ -49,7 +49,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "topviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

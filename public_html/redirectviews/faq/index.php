@@ -38,7 +38,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "redirectviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

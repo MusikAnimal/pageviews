@@ -109,7 +109,6 @@
           </a>
         </div>
       </main>
-      <?php $currentApp = "massviews"; ?>
       <?php include "../../_footer.php"; ?>
     </div>
   </body>

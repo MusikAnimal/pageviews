@@ -490,6 +490,17 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.destroyChart();
     this.startSpinny(); // show spinny and capture against fatal errors
 
+    const getPageViewsAndAssessments = entities => {
+      this.getPageViewsData(entities).done(xhrData => {
+        this.getPageAssessments(xhrData.entities).then(assessments => {
+          for (let page in assessments) {
+            this.entityInfo.entities[page].assessment = assessments[page];
+          }
+          this.updateChart(xhrData);
+        });
+      });
+    };
+
     if (removedPage) {
       // we've got the data already, just removed a single page so we'll remove that data
       // and re-render the chart
@@ -501,26 +512,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     } else if (this.initialQuery) {
       // We've already gotten data about the intial set of pages
       // This is because we need any page names given to be normalized when the app first loads
-      this.getPageViewsData(entities).done(xhrData => {
-        this.getPageAssessments(xhrData.entities).then(assessments => {
-          for (let page in assessments) {
-            this.entityInfo.entities[page].assessment = assessments[page];
-          }
-          this.updateChart(xhrData);
-        });
-      });
+      getPageViewsAndAssessments(entities);
+
       // set back to false so we get page and edit info for any newly entered pages
       this.initialQuery = false;
     } else {
       this.getPageAndEditInfo(entities.map(entity => encodeURIComponent(entity))).then(() => {
-        this.getPageViewsData(entities).done(xhrData => {
-          this.getPageAssessments(xhrData.entities).then(assessments => {
-            for (let page in assessments) {
-              this.entityInfo.entities[page].assessment = assessments[page];
-            }
-            this.updateChart(xhrData);
-          });
-        });
+        getPageViewsAndAssessments(entities);
       });
     }
   }

@@ -22,7 +22,7 @@
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
-          = $I18N->msg( 'url-structure-example', array( 'variables' => array( $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ), 'parsemag' => true ) )
+          = $I18N->msg( 'url-structure-example', [ 'variables' => [ $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ], 'parsemag' => true ] )
 
         %div
           %h3
@@ -35,7 +35,7 @@
             %dd
               = $I18N->msg( 'url-structure-pages' )
               %br
-              = $I18N->msg( 'url-structure-onwiki-link', array( 'variables' => array( $fullpageNamee ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-onwiki-link', [ 'variables' => [ $fullpageNamee ], 'parsemag' => true ] )
             - $defaultRange = 'latest'
             - include "../url_parts/_date_ranges.php"
             - include "../url_parts/_platform.php"
@@ -44,7 +44,6 @@
 
         %div.col-lg-12.text-center.tm
           %a(href="/pageviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
+            = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'title' ) ], 'parsemag' => true ] )
 
-      - $currentApp = "pageviews";
       - include "../_footer.php";

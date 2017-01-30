@@ -40,13 +40,10 @@ const templates = {
       };
 
       if (!multiEntity) {
-        let newHash = {
-          [$.i18n('protection')]: entity.protection
-        };
-        if (entity.assessment) {
-          newHash[$.i18n('class')] = entity.assessment;
-        }
-        Object.assign(infoHash[basicInfoMsg], newHash);
+        Object.assign(infoHash[basicInfoMsg], {
+          [$.i18n('protection')]: entity.protection,
+          [$.i18n('class')]: entity.assessment
+        });
       }
 
       let markup = '';
@@ -130,7 +127,7 @@ const templates = {
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
         <${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>
         <${tag} class='table-view-editors table-view--edit-data'>${numUsers}</${tag}>
-        <${tag} class='table-view--size'>${scope.formatNumber(item.length)}</${tag}>
+        <${tag} class='table-view--size'>${item.length ? scope.formatNumber(item.length) : '?'}</${tag}>
         <${tag} class='table-view--protection'>${item.protection}</${tag}>
         <${tag} class='table-view--watchers'>${item.watchers ? scope.formatNumber(item.watchers) : $.i18n('unknown')}</${tag}>
         <${tag}>${linksRow}</${tag}>

@@ -800,6 +800,9 @@ class Pv extends PvConfig {
       'pacontinue',
       'pages'
     ).done(data => {
+      // something went wrong
+      if (!data.pages) return dfd.resolve({});
+
       let assessments = {};
       data.pages.forEach(page => {
         // API limit is on the number of assessments, not pages,
@@ -980,7 +983,7 @@ class Pv extends PvConfig {
 
       promise.done(data => {
         // some failures come back as 200s, so we still resolve and let the local app handle it
-        if (data.error) return dfd.resolve(data);
+        if (data.error || !data.query) return dfd.resolve(data);
 
         let isFinished;
 
