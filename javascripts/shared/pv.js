@@ -98,6 +98,14 @@ class Pv extends PvConfig {
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
 
+    // extensions
+    $.extend($.i18n.parser.emitter, {
+      // Handle LINK keywords
+      link: nodes => {
+        return `<a href="${nodes[1].escape()}">${nodes[0].escape()}</a>`;
+      }
+    });
+
     /** set up toastr config. The duration may be overriden later */
     toastr.options = {
       closeButton: true,
@@ -1125,7 +1133,7 @@ class Pv extends PvConfig {
     } else if (metaRoot) {
       return $.ajax({
         url: `//${metaRoot}/usage/${this.app}/${this.project || i18nLang}`,
-        method: this.app === 'topviews' ? 'GET' : 'POST',
+        method: 'POST',
         timeout: 8000
       });
     }

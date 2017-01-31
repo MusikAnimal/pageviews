@@ -274,10 +274,20 @@ html {
   height: 100%; }
 
 body {
-  background: url("/pageviews/images/gradient.png");
   min-height: 100%;
   overflow-x: hidden;
   position: relative; }
+  body::after {
+    background: url("/pageviews/images/gradient.png");
+    content: '';
+    display: block !important;
+    height: 100%;
+    left: 0;
+    opacity: .5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1; }
 
 .spacer {
   clear: both;
@@ -556,7 +566,9 @@ footer {
 .loading .clear-pages {
   display: none !important; }
 
-.loading .data-links,
+.loading .data-links {
+  visibility: hidden; }
+
 .loading output {
   display: none; }
 

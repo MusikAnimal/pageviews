@@ -18,6 +18,7 @@ const config = {
     dateRange: 'last-month',
     excludes: []
   },
+  formStates: ['processing', 'complete', 'search', 'reset'],
   maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
   pageSize: 100,
   platformSelector: '#platform-select',

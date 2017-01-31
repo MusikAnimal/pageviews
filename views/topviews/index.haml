@@ -14,92 +14,128 @@
         %div.site-notice
           - include '../_browser_check.php'
 
-      %div.row.aqs-row.options
-        %div.col-lg-3.col-sm-3
-          %label(for="date-type-select")
-            = $I18N->msg( 'date-type' )
-          %select.form-control#date-type-select
-            %option(value="monthly")
-              = $I18N->msg( 'monthly' )
-            %option(value="daily")
-              = $I18N->msg( 'daily' )
-        %div.col-lg-3.col-sm-3
-          %label(for="range-input")
-            = $I18N->msg( 'date' )
-          %input.form-control.aqs-date-range-selector#range-input
+      %div.form-wrapper
+        %div.row.aqs-row.options
+          %div.col-lg-3.col-sm-3
+            %label(for="date-type-select")
+              = $I18N->msg( 'date-type' )
+            %select.form-control#date-type-select
+              %option(value="monthly")
+                = $I18N->msg( 'monthly' )
+              %option(value="daily")
+                = $I18N->msg( 'daily' )
+          %div.col-lg-3.col-sm-3
+            %label(for="range-input")
+              = $I18N->msg( 'date' )
+            %input.form-control.aqs-date-range-selector#range-input
 
-        %div.col-lg-3.col-sm-3
-          %label(for="project-input")
-            = $I18N->msg( 'project' )
-          %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
+          %div.col-lg-3.col-sm-3
+            %label(for="project-input")
+              = $I18N->msg( 'project' )
+            %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org")
 
-        %div.col-lg-3.col-sm-3
-          %label(for="platform-select")
-            = $I18N->msg( 'platform' )
-          %select.form-control#platform-select
-            %option(value="all-access")
-              = $I18N->msg( 'all' )
-            %option(value="desktop")
-              = $I18N->msg( 'desktop' )
-            %option(value="mobile-app")
-              = $I18N->msg( 'mobile-app' )
-            %option(value="mobile-web")
-              = $I18N->msg( 'mobile-web' )
+          %div.col-lg-3.col-sm-3
+            %label(for="platform-select")
+              = $I18N->msg( 'platform' )
+            %select.form-control#platform-select
+              %option(value="all-access")
+                = $I18N->msg( 'all' )
+              %option(value="desktop")
+                = $I18N->msg( 'desktop' )
+              %option(value="mobile-app")
+                = $I18N->msg( 'mobile-app' )
+              %option(value="mobile-web")
+                = $I18N->msg( 'mobile-web' )
 
-      %div.row.aqs-row
-        %div.col-lg-12
-          %label(for="article-input")
-            = $I18N->msg( 'excluded-pages' )
-          %span.report-false-positive
-            (<a href='#' data-target="#report-false-positive-modal" data-toggle="modal">#{strtolower( $I18N->msg( 'report-false-positive' ) )}</a>)
-          %span.pull-right
-            %label
-              %input.mainspace-only-option(type="checkbox" checked="checked")
-              = $I18N->msg( 'mainspace-only-option' )
-          %select.aqs-select2-selector.col-lg-12.invisible(multiple="multiple")
+        %div.row.aqs-row
+          %div.col-lg-12
+            %label(for="article-input")
+              = $I18N->msg( 'excluded-pages' )
+            %span.report-false-positive
+              (<a href='#' data-target="#report-false-positive-modal" data-toggle="modal">#{strtolower( $I18N->msg( 'report-false-positive' ) )}</a>)
+            %span.pull-right
+              %label
+                %input.mainspace-only-option(type="checkbox" checked="checked")
+                = $I18N->msg( 'mainspace-only-option' )
+            %span.pull-right.percent-mobile-wrapper
+              %label
+                %input.show-percent-mobile(type="checkbox")
+                  = $I18N->msg( 'show-mobile-percentages' )
+            %select.aqs-select2-selector.col-lg-12(multiple="multiple")
 
-          /* Report false positive modal */
-          %div.modal.fade#report-false-positive-modal(role="dialog" tabindex="-1")
-            %div.modal-dialog(role="document")
-              %div.modal-content
-                %div.modal-header
-                  %button.close(arialabel="Close" data-dismiss="modal" type="button")
-                    %span(ariahidden="true") &times;
-                  %h4.modal-title
-                    = $I18N->msg( 'report-false-positive' )
-                %div.modal-body
-                  %p
-                    - $learnMoreLink = "<a href='/topviews/faq#false_positive'>" . strtolower( $I18N->msg( 'learn-more' ) ) . "</a>"
-                    = $I18N->msg( 'report-false-positive-text', [ 'variables' => [ $learnMoreLink ] ] )
-                  %ul.false-positive-list.list-unstyled
-                %div.modal-footer
-                  %button.btn.btn-default(data-dismiss="modal" type="button")
-                    = $I18N->msg( 'cancel' )
-                  %button.btn.btn-primary.submit-false-positive(data-dismiss="modal" type="button")
-                    = $I18N->msg( 'submit' )
+            /* Report false positive modal */
+            %div.modal.fade#report-false-positive-modal(role="dialog" tabindex="-1")
+              %div.modal-dialog(role="document")
+                %div.modal-content
+                  %div.modal-header
+                    %button.close(arialabel="Close" data-dismiss="modal" type="button")
+                      %span(ariahidden="true") &times;
+                    %h4.modal-title
+                      = $I18N->msg( 'report-false-positive' )
+                  %div.modal-body
+                    %p
+                      - $learnMoreLink = "<a href='/topviews/faq#false_positive'>" . strtolower( $I18N->msg( 'learn-more' ) ) . "</a>"
+                      = $I18N->msg( 'report-false-positive-text', [ 'variables' => [ $learnMoreLink ] ] )
+                    %ul.false-positive-list.list-unstyled
+                  %div.modal-footer
+                    %button.btn.btn-default(data-dismiss="modal" type="button")
+                      = $I18N->msg( 'cancel' )
+                    %button.btn.btn-primary.submit-false-positive(data-dismiss="modal" type="button")
+                      = $I18N->msg( 'submit' )
 
-      / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
-      - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
-      %span(class="row search-topviews invisible #{$cols}")
-        %div.input-group
-          %label.input-group-addon(for="topviews_search_field")
-            = $I18N->msg( 'search' )
-          %span.glyphicon.glyphicon-search.topviews-search-icon
-          %input.form-control#topviews_search_field
+            /* List false positives modal */
+            %div.modal.fade#list-false-positives-modal(role="dialog" tabindex="-1")
+              %div.modal-dialog(role="document")
+                %div.modal-content
+                  %div.modal-header
+                    %button.close(arialabel="Close" data-dismiss="modal" type="button")
+                      %span(ariahidden="true") &times;
+                    %h4.modal-title
+                      = $I18N->msg( 'list-false-positives-heading' )
+                  %div.modal-body
+                    %p
+                      - $learnMoreLink = "<a href='/topviews/faq#false_positive'>" . strtolower( $I18N->msg( 'learn-more' ) ) . "</a>"
+                      = $I18N->msg( 'list-false-positives-text', [ 'variables' => [ $learnMoreLink ] ] )
+                    %table.table.table-bordered
+                      %thead
+                        %th= $I18N->msg( 'page' )
+                        %th= $I18N->msg( 'original-rank' )
+                      %tbody.false-positive-list
+                  %div.modal-footer
+                    %button.btn.btn-primary(data-dismiss="modal" type="button")
+                      = $I18N->msg( 'ok' )
 
-      %span.pull-right
-        - include "../_data_links.php"
+        / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
+        - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
+        %span(class="row search-topviews #{$cols}")
+          %div.input-group
+            %label.input-group-addon(for="topviews_search_field")
+              = $I18N->msg( 'search' )
+            %span.glyphicon.glyphicon-search.topviews-search-icon
+            %input.form-control#topviews_search_field
 
-      %div.col-lg-12.data-notice.invisible
-        %small.text-muted
-          = $I18N->msg( 'topviews-false-positive' )
+        %span.pull-right
+          - include "../_data_links.php"
+
+        %div.col-lg-12.data-notice
+          %small.text-muted
+            = $I18N->msg( 'topviews-false-positive' )
+            %span.list-false-positives
 
       %div.message-container.col-lg-10
 
-      %div.chart-container.col-lg-12.loading
+      %div.chart-container.col-lg-12
+        %table.table.output-table
+          %thead
+            %tr.topview-entry
+              %th Rank
+              %th Page
+              %th.topview-entry--mobile % Mobile
+              %th Pageviews
+          %tbody.topview-entries
 
       %div.col-lg-12.text-center
-        %a.expand-chart(href="#")
+        %a.show-more(href="#")
           = $I18N->msg( 'show-more' )
 
     - include '../_footer.php'

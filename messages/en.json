@@ -335,6 +335,10 @@
 	"report-false-positive": "Report false positive",
 	"report-false-positive-text": "Use this form to choose which excluded pages you want to report as false positive ($1)",
 	"report-false-positive-submitted": "Your false positive report has been submitted. Thanks for improving $1 data!",
+	"known-false-positives-link": "$1 {{PLURAL:$1|page|pages}}",
+	"known-false-positives-text": "$1 {{PLURAL:$2|has|have}} been automatically excluded from Topviews.",
+	"list-false-positives-heading": "Known false positives",
+	"list-false-positives-text": "The following pages are known false positives and have been automatically excluded from Topviews ($1):",
 	"new-article-warning": "One or more of the requested pages were recently created, so the pageviews data may not be available yet ($1)",
 	"userviews-title": "Userviews Analysis",
 	"userviews-edit-count-warning": "$1 has made $2 edits! Fetching pages created could take a while. Please be patient.",
@@ -346,5 +350,8 @@
 	"exclude-redirects": "Exclude redirects",
 	"only-redirects": "Only include redirects",
 	"redirects-and-non-redirects": "Redirects and non-redirects",
-	"class": "Class"
+	"class": "Class",
+	"topviews-remove-page": "Remove this page from Topviews rankings",
+	"show-mobile-percentages": "Show mobile percentages",
+	"original-rank": "Original rank"
 }

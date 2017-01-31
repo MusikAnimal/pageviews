@@ -345,6 +345,10 @@
 	"report-false-positive": "Link to report pages as false positives in the Topviews app.",
 	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
 	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app).",
+	"known-false-positives-link": "This message is used as part of the 'known-false-positives-text' message. It may be identical to the 'num-pages' message. $1 is the number of pages that are excluded from the Topviews interface.",
+	"known-false-positives-text": "$1 is a link to show a modal listing the known false positives, with the message 'known-false-positives-link' as the text. $2 is the number of pages that will be listed.",
+	"list-false-positives-heading": "Known false positives",
+	"list-false-positives-text": "The following pages are known false positives and have been automatically excluded from Topviews ($1):",
 	"new-article-warning": "Warning that data of new pages may not be available yet. $1 is a link to the FAQ with the message 'learn-more' as the text.",
 	"userviews-title": "The title of the Userviews tool. This is shown as a header at the top of the page.",
 	"userviews-edit-count-warning": "Warning shown in the Userviews app when the requested user has a high edit count. $1 is a link to the user page and $2 is the number of edits.",
@@ -356,5 +360,8 @@
 	"exclude-redirects": "Option to exclude redirects in the Userviews tool.",
 	"only-redirects": "Option to return only redirects in the Userviews tool.",
 	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool.",
-	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}"
+	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}",
+	"topviews-remove-page": "Text shown when hovering over the X link that removes a page from the Topviews rankings.",
+	"show-mobile-percentages": "Label for a checkbox to show the percentage of mobile pageviews each page has in Topviews.",
+	"original-rank": "Label for the column listing the original rank a false positive page had.\n{{Identical|Original rank}}"
 }
