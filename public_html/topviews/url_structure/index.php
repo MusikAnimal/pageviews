@@ -26,7 +26,7 @@
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
           <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $excludes = "<code>excludes</code>"; ?>
-          <?php echo $I18N->msg( 'url-structure-topviews-example', array( 'variables' => array( $topviewsLink, $project, $sitematrixLink, $excludes ), 'parsemag' => true ) ); ?>
+          <?php echo $I18N->msg( 'url-structure-topviews-example', [ 'variables' => [ $topviewsLink, $project, $sitematrixLink, $excludes ], 'parsemag' => true ] ); ?>
         </div>
         <div>
           <h3>
@@ -42,7 +42,7 @@
             </dd>
             <dt>date</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-topviews-date', array( 'variables' => array( '<code>date</code>' ), 'parsemag' => true ) ); ?>
+              <?php echo $I18N->msg( 'url-structure-topviews-date', [ 'variables' => [ '<code>date</code>' ], 'parsemag' => true ] ); ?>
               <ul class="special-ranges">
                 <li>
                   <code>last-month</code>
@@ -52,19 +52,23 @@
                   <code>yesterday</code>
                 </li>
                 <li>
-                  <?php echo $I18N->msg( 'url-structure-topviews-date-month', array( 'variables' => array( '<code>YYYY-MM</code>' ), 'parsemag' => true ) ); ?>
+                  <?php echo $I18N->msg( 'url-structure-topviews-date-month', [ 'variables' => [ '<code>YYYY-MM</code>' ], 'parsemag' => true ] ); ?>
                 </li>
                 <li>
-                  <?php echo $I18N->msg( 'url-structure-topviews-date-day', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) ); ?>
+                  <?php echo $I18N->msg( 'url-structure-topviews-date-day', [ 'variables' => [ '<code>YYYY-MM-DD</code>' ], 'parsemag' => true ] ); ?>
                 </li>
               </ul>
             </dd>
             <?php include "../../url_parts/_platform.php"; ?>
+            <dt>mobileviews</dt>
+            <dd><?php echo $I18N->msg( 'url-structure-topviews-mobileviews', [ 'variables' => [ $I18N->msg( 'show-mobile-percentages' ), '<code>platform</code>', '<code>all-access</code>' ] ] ); ?></dd>
+            <dt>mainspace</dt>
+            <dd><?php echo $I18N->msg( 'url-structure-topviews-mainspace' ); ?></dd>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">
           <a href="/topviews">
-            <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) ); ?>
+            <?php echo $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'topviews-title' ) ], 'parsemag' => true ] ); ?>
           </a>
         </div>
       </main>

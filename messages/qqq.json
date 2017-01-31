@@ -173,6 +173,7 @@
 	"faq-topviews-false-positive-body1": "FAQ - body of the section explaining that there could be false positives in the Topviews report. The \"English Wikipedia\" should be translated as-is.",
 	"faq-topviews-false-positive-body2": "FAQ - an additional body of text explaining that there could be false positives in the Topviews report.",
 	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can report a page as a false positive in the Topviews application. $1 is the message 'topviews' (name of the app), $2 is the message 'report-false-positive' and $3 is the message 'excluded-pages'.",
+	"faq-topviews-false-positive-body3": "FAQ - an additional body of text explaining how the user can identify false positives in the Topviews application. $1 is the 'show-mobile-percentages' message (label for the checkbox), $2 is the 'platform' message (label for the dropdown), and $3 is the 'all' message (value in the Platform dropdown).",
 	"faq-source-title": "FAQ - title of the section explaining what the 'source' options are.",
 	"faq-source-pageviews": "FAQ - body of the section explaining what the 'source' options are.",
 	"faq-source-unique-devices": "is the number of unique devices that visited the site.",
@@ -193,6 +194,8 @@
 	"url-structure-topviews-date": "Documentation for the 'date' parameter",
 	"url-structure-topviews-date-month": "Documentation for providing a specific month for the 'date' parameter. $1 is the format the date should be in.",
 	"url-structure-topviews-date-day": "Documentation for providing a specific day for the 'date' parameter. $1 is the format the date should be in.",
+	"url-structure-topviews-mobileviews": "Documentation on of the 'mobileviews' parameter. $1 is the 'show-mobile-percentages' message, which is the label for the option in the interface. $2 is the 'platform' parameter, and $3 is the value 'all-access'.",
+	"url-structure-topviews-mainspace": "Documentation for the 'mainspace' parameter, which controls if mainspace pages are shown in Topviews.",
 	"url-structure-parameters": "Heading for the list of parameters\n{{Identical|Parameter}}",
 	"url-structure-parameters-order": "Text explaining that parameters can be used in any order",
 	"url-structure-project": "Documentation for the 'project' parameter. $1 is the default (en.wikipedia.org), $2 is the link to the site matrix",
@@ -344,6 +347,10 @@
 	"report-false-positive": "Link to report pages as false positives in the Topviews app.",
 	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
 	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app).",
+	"known-false-positives-link": "This message is used as part of the 'known-false-positives-text' message. It may be identical to the 'num-pages' message. $1 is the number of pages that are excluded from the Topviews interface.",
+	"known-false-positives-text": "$1 is a link to show a modal listing the known false positives, with the message 'known-false-positives-link' as the text. $2 is the number of pages that will be listed.",
+	"list-false-positives-heading": "Known false positives",
+	"list-false-positives-text": "The following pages are known false positives and have been automatically excluded from Topviews ($1):",
 	"new-article-warning": "Warning that data of new pages may not be available yet. $1 is a link to the FAQ with the message 'learn-more' as the text.",
 	"userviews-title": "The title of the Userviews tool. This is shown as a header at the top of the page.",
 	"userviews-edit-count-warning": "Warning shown in the Userviews app when the requested user has a high edit count. $1 is a link to the user page and $2 is the number of edits.",
@@ -355,5 +362,8 @@
 	"exclude-redirects": "Option to exclude redirects in the Userviews tool.",
 	"only-redirects": "Option to return only redirects in the Userviews tool.",
 	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool.",
-	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}"
+	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}",
+	"topviews-remove-page": "Text shown when hovering over the X link that removes a page from the Topviews rankings.",
+	"show-mobile-percentages": "Label for a checkbox to show the percentage of mobile pageviews each page has in Topviews.",
+	"original-rank": "Label for the column listing the original rank a false positive page had.\n{{Identical|Original rank}}"
 }

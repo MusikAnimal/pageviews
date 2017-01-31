@@ -13,10 +13,24 @@ html {
 }
 
 body {
-  background: url('/pageviews/images/gradient.png');
   min-height: 100%;
   overflow-x: hidden;
   position: relative;
+
+  &::after {
+    background: url('/pageviews/images/gradient.png');
+    content: '';
+    // override Bootstrap
+    // scss-lint:disable ImportantRule
+    display: block !important;
+    height: 100%;
+    left: 0;
+    opacity: .5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  }
 }
 
 .spacer {
@@ -211,7 +225,10 @@ footer {
     display: none !important;
   }
 
-  .data-links,
+  .data-links {
+    visibility: hidden;
+  }
+
   output {
     display: none;
   }

@@ -32,7 +32,10 @@
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body1'); ?>
             </p>
             <p>
-              <?php echo $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'topviews' ), $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ]); ?>
+              <?php echo $I18N->msg( 'faq-topviews-false-positive-body4', [ 'variables' => [ $I18N->msg( 'show-mobile-percentages' ), $I18N->msg( 'platform' ), $I18N->msg( 'all' ) ] ] ); ?>
+            </p>
+            <p>
+              <?php echo $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'topviews' ), $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ] ); ?>
             </p>
             <p>
               <?php echo $I18N->msg( 'faq-topviews-false-positive-body2'); ?>

@@ -4,8 +4,23 @@
 $gray: #ccc;
 
 .chart-container {
-  margin-top: 10px;
   padding: 0;
+}
+
+.output-table {
+  display: none;
+
+  &.show-mobile .topview-entry--mobile {
+    display: table-cell;
+  }
+}
+
+.topview-entry--mobile {
+  display: none;
+}
+
+.percent-mobile-wrapper {
+  display: none;
 }
 
 .download-btn-group .dropdown-menu {
@@ -14,13 +29,15 @@ $gray: #ccc;
 }
 
 .topview-entry {
-  display: flex;
-  margin-bottom: 20px;
-  overflow: hidden;
-  padding: 10px;
-  position: relative;
-  transition: all .5s ease-in;
-  white-space: nowrap;
+  height: 40px;
+  line-height: 40px;
+  overflow: auto;
+
+  td {
+    // override Bootstrap
+    // scss-lint:disable ImportantRule
+    vertical-align: inherit !important;
+  }
 
   &:hover {
     .topview-entry--rank {
@@ -33,20 +50,35 @@ $gray: #ccc;
   }
 }
 
+.topview-entry--rank-wrapper {
+  position: relative;
+  width: 5%;
+}
+
 .topview-entry--remove {
   @include center('vertical');
   cursor: pointer;
   display: none;
-  left: 10px;
 }
 
 .topview-entry--rank {
-  float: left;
   font-weight: bold;
-  margin-right: 8px;
 
   &::after {
     content: '.';
+  }
+}
+
+.topview-entry--background {
+  height: 40px;
+  left: 0;
+  position: absolute;
+  transition: all 1s ease;
+  width: 0;
+  z-index: -1;
+
+  &.animate {
+    width: 100%;
   }
 }
 
@@ -96,7 +128,22 @@ $gray: #ccc;
   }
 }
 
-.report-false-positive {
+.data-links {
+  visibility: visible;
+}
+
+.complete {
+  .show-more {
+    display: block;
+  }
+
+  .output-table {
+    display: table;
+  }
+}
+
+.report-false-positive,
+.list-false-positives {
   display: none;
 }
 
@@ -108,4 +155,52 @@ $gray: #ccc;
   label {
     font-weight: bold;
   }
+}
+
+.search {
+  .output-table {
+    display: table;
+
+    .topview-entry--mobile {
+      display: none;
+    }
+  }
+}
+
+.loading,
+.reset {
+  .form-wrapper {
+    @extend %disabled;
+  }
+
+  .chart-container {
+    @extend %disabled;
+  }
+
+  .data-links {
+    visibility: visible;
+  }
+}
+
+.loading {
+  .output-table {
+    display: table;
+  }
+
+  .chart-container::after {
+    display: none;
+  }
+
+  main::after {
+    @extend %loading;
+    top: 250px;
+  }
+}
+
+.message-container {
+  margin-bottom: 10px;
+}
+
+.mainspace-only-option[type=checkbox] {
+  margin-left: 10px;
 }

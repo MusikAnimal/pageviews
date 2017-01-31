@@ -25,7 +25,9 @@
             %p
               = $I18N->msg( 'faq-topviews-false-positive-body1')
             %p
-              = $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'topviews' ), $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ])
+              = $I18N->msg( 'faq-topviews-false-positive-body4', [ 'variables' => [ $I18N->msg( 'show-mobile-percentages' ), $I18N->msg( 'platform' ), $I18N->msg( 'all' ) ] ] )
+            %p
+              = $I18N->msg( 'faq-topviews-false-positive-body3', [ 'variables' => [ $I18N->msg( 'topviews' ), $I18N->msg( 'report-false-positive' ), $I18N->msg( 'excluded-pages' ) ] ] )
             %p
               = $I18N->msg( 'faq-topviews-false-positive-body2')
           - include "../../faq_parts/_old_data.php"

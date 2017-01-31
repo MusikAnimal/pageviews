@@ -22,7 +22,7 @@
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $excludes = "<code>excludes</code>"
-          = $I18N->msg( 'url-structure-topviews-example', array( 'variables' => array( $topviewsLink, $project, $sitematrixLink, $excludes ), 'parsemag' => true ) )
+          = $I18N->msg( 'url-structure-topviews-example', [ 'variables' => [ $topviewsLink, $project, $sitematrixLink, $excludes ], 'parsemag' => true ] )
 
         %div
           %h3
@@ -37,7 +37,7 @@
 
             %dt date
             %dd
-              = $I18N->msg( 'url-structure-topviews-date', array( 'variables' => array( '<code>date</code>' ), 'parsemag' => true ) )
+              = $I18N->msg( 'url-structure-topviews-date', [ 'variables' => [ '<code>date</code>' ], 'parsemag' => true ] )
               %ul.special-ranges
                 %li
                   %code last-month
@@ -45,14 +45,20 @@
                 %li
                   %code yesterday
                 %li
-                  = $I18N->msg( 'url-structure-topviews-date-month', array( 'variables' => array( '<code>YYYY-MM</code>' ), 'parsemag' => true ) )
+                  = $I18N->msg( 'url-structure-topviews-date-month', [ 'variables' => [ '<code>YYYY-MM</code>' ], 'parsemag' => true ] )
                 %li
-                  = $I18N->msg( 'url-structure-topviews-date-day', array( 'variables' => array( '<code>YYYY-MM-DD</code>' ), 'parsemag' => true ) )
+                  = $I18N->msg( 'url-structure-topviews-date-day', [ 'variables' => [ '<code>YYYY-MM-DD</code>' ], 'parsemag' => true ] )
 
             - include "../../url_parts/_platform.php"
 
+            %dt mobileviews
+            %dd= $I18N->msg( 'url-structure-topviews-mobileviews', [ 'variables' => [ $I18N->msg( 'show-mobile-percentages' ), '<code>platform</code>', '<code>all-access</code>' ] ] )
+
+            %dt mainspace
+            %dd= $I18N->msg( 'url-structure-topviews-mainspace' )
+
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")
-            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'topviews-title' ) ), 'parsemag' => true ) )
+            = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'topviews-title' ) ], 'parsemag' => true ] )
 
       - include "../../_footer.php";

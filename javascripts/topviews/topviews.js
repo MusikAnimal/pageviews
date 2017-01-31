@@ -23,9 +23,11 @@ class TopViews extends Pv {
     this.excludes = [];
     this.autoExcludes = [];
     this.offset = 0;
+    this.offsetEnd = 0;
     this.max = null;
     this.pageData = [];
     this.pageNames = [];
+    this.mobileViews = {};
     this.excludeAdded = false;
   }
 
@@ -44,7 +46,6 @@ class TopViews extends Pv {
    * @returns {Deferred} deferred object from initData
    */
   processInput(force) {
-    this.clearSearch();
     this.pushParams();
 
     /** prevent redundant querying */
@@ -53,15 +54,18 @@ class TopViews extends Pv {
     }
     this.params = location.search;
 
-    this.resetView(false);
-    return this.initData().then(this.drawData.bind(this));
+    $('#topviews_search_field').val('');
+    this.setState('reset');
+    this.setState('processing');
+
+    return this.initData().then(this.showList.bind(this));
   }
 
   /**
    * Print list of top pages
    */
-  drawData() {
-    $('.chart-container').html('');
+  showList() {
+    $('.topview-entries').html('');
 
     let count = 0, index = 0;
 
@@ -72,22 +76,42 @@ class TopViews extends Pv {
       if (!this.max) this.max = item.views;
 
       const width = 100 * (item.views / this.max),
-        direction = !!i18nRtl ? 'to left' : 'to right';
+        direction = !!i18nRtl ? 'to left' : 'to right',
+        offsetTop = (count * 40) + 40;
 
-      $('.chart-container').append(
-        `<div class='topview-entry' id='topview-entry-${index}' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
-         <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
-           title='Remove this page from Topviews rankings' aria-hidden='true'></span>
-         <span class='topview-entry--rank'>${++count}</span>
-         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
-         <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
+      let percentMobile = ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
+      if (percentMobile === '0.0') {
+        percentMobile = '< 0.1';
+      }
+
+      const percentMobileText = this.shouldShowMobile() ? percentMobile + '%' : '';
+
+      $('.topview-entries').append(
+        `<tr class='topview-entry' id='topview-entry-${index}'>
+         <td class='topview-entry--rank-wrapper'>
+           <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
+             title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
+           <span class='topview-entry--rank'>${++count}</span>
+         </td>
+         <td>
+           <span class='topview-entry--background' style='top:${offsetTop}px; background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%); opacity: 0.6'></span>
+           <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+         </td>
+         <td class='topview-entry--mobile'>${percentMobileText}</td>
+         <td>
+           <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}' target='_blank'>${this.formatNumber(item.views)}</a>
+         </td></tr>`
       );
     }
 
-    this.pushParams();
-    this.stopSpinny();
+    this.offsetEnd = index;
 
+    setTimeout(() => {
+      this.setState('complete');
+      $('.topview-entry--background').addClass('animate');
+    });
+
+    this.pushParams();
     this.addExcludeListeners();
   }
 
@@ -112,7 +136,17 @@ class TopViews extends Pv {
       $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
     });
 
-    if (triggerChange) $(this.config.select2Input).val(this.excludes).trigger('change');
+    if (triggerChange) {
+      this.setState('processing');
+      // get mobileViews for the new page that has come into view
+      const excludeOffset = this.excludes.length + this.autoExcludes.length - 1,
+        newPage = this.pageData[this.config.pageSize + this.offset + excludeOffset].article;
+      this.setSingleMobileViews(newPage).always(() => {
+        this.setState('complete');
+        $(this.config.select2Input).val(this.excludes).trigger('change');
+        this.showList();
+      });
+    }
     this.buildReportFalsePositiveForm();
   }
 
@@ -140,7 +174,6 @@ class TopViews extends Pv {
   buildReportFalsePositiveForm() {
     $('.false-positive-list').html('');
     this.excludes.forEach((exclude, index) => {
-      exclude = exclude.escape();
       $('.false-positive-list').append(`
         <li>
           <label>
@@ -159,7 +192,9 @@ class TopViews extends Pv {
       $.ajax({
         url: `//${metaRoot}/usage/topviews/${this.project}/false_positives`,
         data: {
-          pages: excludes
+          pages: excludes,
+          date: this.getParams(false).date,
+          platform: $(this.config.platformSelector).val()
         },
         method: 'POST'
       });
@@ -172,11 +207,20 @@ class TopViews extends Pv {
    * Clear the topviews search
    */
   clearSearch() {
+    this.setState('complete');
     if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
       $('#topviews_search_field').val('');
       $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
-      this.drawData();
+      this.showList();
     }
+  }
+
+  /**
+   * Should the "% Mobile" column be shown?
+   * @return {Boolean} yes or no
+   */
+  shouldShowMobile() {
+    return $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access';
   }
 
   /**
@@ -185,13 +229,15 @@ class TopViews extends Pv {
    * @override
    */
   exportCSV() {
-    let csvContent = 'data:text/csv;charset=utf-8,Page,Views\n';
+    let csvContent = `data:text/csv;charset=utf-8,Page,Views${this.shouldShowMobile() ? ',Mobile views' : ''}\n`;
 
     this.pageData.forEach(entry => {
       // Build an array of page titles for use in the CSV header
-      let title = '"' + entry.article.replace(/"/g, '""') + '"';
+      const title = '"' + entry.article.replace(/"/g, '""') + '"';
 
-      csvContent += `${title},${entry.views}\n`;
+      csvContent += `${title},${entry.views}`;
+      if (this.shouldShowMobile()) csvContent += `,${this.mobileViews[entry.article] || ''}`;
+      csvContent += '\n';
     });
 
     this.downloadData(csvContent, 'csv');
@@ -363,8 +409,7 @@ class TopViews extends Pv {
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
   popParams() {
-    /** show loading indicator and add error handling for timeouts */
-    this.startSpinny();
+    this.setState('processing');
 
     const params = this.validateParams(
       this.parseQueryString('excludes')
@@ -386,22 +431,26 @@ class TopViews extends Pv {
     $(this.config.projectInput).val(params.project);
     $(this.config.platformSelector).val(params.platform);
 
+    if (params.platform === 'all-access') {
+      $('.percent-mobile-wrapper').show();
+      $('.show-percent-mobile').prop('checked', !!params.mobileviews);
+      $('.output-table').toggleClass('show-mobile', !!params.mobileviews);
+    }
+
+    $('.mainspace-only-option').prop('checked', params.mainspace !== 'false');
+
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
 
-    this.patchUsage().done(autoExcludes => {
-      this.autoExcludes = autoExcludes;
+    this.patchUsage();
 
-      // remove autoExcludes from excludes given via URL param
-      this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
+    this.params = location.search;
+
+    this.setupSelect2();
+
+    this.initData().done(() => {
+      this.showList();
     }).always(() => {
-      this.params = location.search;
-
-      this.initData().done(() => {
-        this.drawData();
-      }).always(() => {
-        this.setupSelect2();
-        this.setupListeners();
-      });
+      this.setupListeners();
     });
   }
 
@@ -462,17 +511,51 @@ class TopViews extends Pv {
    * @param {Boolean} [clearSelector] - whether to clear the Select2 control
    */
   resetView(clearSelector = true) {
-    this.max = null;
-    this.offset = 0;
-    this.pageData = [];
-    this.pageNames = [];
-    this.stopSpinny(true);
-    $('.chart-container').html('');
-    $('.message-container').html('');
+    this.setState('reset');
+    this.clearSearch();
+    $('.topview-entries').html('');
+
     if (clearSelector) {
       this.resetSelect2();
       this.excludes = [];
     }
+  }
+
+  /**
+   * Helper to set a CSS class on the `main` node, styling the document
+   *   based on a 'state', along with related JS actions
+   * @param {String} state - class to be added;
+   *   should be one of this.config.formStates
+   * @param {function} [cb] - Optional function to be called after initial state has been set
+   */
+  setState(state, cb) {
+    $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
+
+    switch (state) {
+    case 'initial':
+    case 'reset':
+      this.stopSpinny();
+      this.autoExcludes = [];
+      this.offset = 0;
+      this.offsetEnd = 0;
+      this.max = null;
+      this.pageData = [];
+      this.pageNames = [];
+      this.mobileViews = {};
+      this.excludeAdded = false;
+      $('.message-container').html('');
+      break;
+    case 'processing':
+      this.startSpinny();
+      break;
+    case 'complete':
+      this.stopSpinny();
+      break;
+    case 'search':
+      break;
+    }
+
+    if (typeof cb === 'function') cb();
   }
 
   /**
@@ -485,6 +568,8 @@ class TopViews extends Pv {
       .replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 
     if (!query) return this.clearSearch();
+
+    this.setState('search');
 
     let matchedData = [], count = 0;
 
@@ -500,21 +585,26 @@ class TopViews extends Pv {
       }
     });
 
-    $('.chart-container').html('');
-    $('.expand-chart').hide();
+    $('.topview-entries').html('');
     $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
 
     matchedData.forEach(item => {
-      const width = 100 * (item.views / this.max),
-        direction = !!i18nRtl ? 'to left' : 'to right';
-
-      $('.chart-container').append(
-        `<div class='topview-entry' style='background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%)'>
-         <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index} aria-hidden='true'></span>
-         <span class='topview-entry--rank'>${item.rank}</span>
-         <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
-         <span class='topview-entry--leader'></span>
-         <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}</a></div>`
+      $('.topview-entries').append(
+        `<tr class='topview-entry'>
+         <td class='topview-entry--rank-wrapper'>
+           <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index}
+             title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
+           <span class='topview-entry--rank'>${++count}</span>
+         </td>
+         <td>
+           <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+         </td>
+         <td class='topview-entry--mobile'></td>
+         <td>
+           <a class='topview-entry--views' target='_blank'
+              href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}
+           </a>
+         </td></tr>`
       );
     });
 
@@ -544,6 +634,7 @@ class TopViews extends Pv {
       data: [],
       maximumSelectionLength: 50,
       minimumInputLength: 0,
+      minimumResultsForSearch: Infinity,
       placeholder: $.i18n('hover-to-exclude')
     });
 
@@ -553,19 +644,22 @@ class TopViews extends Pv {
       this.excludes = $(e.target).val() || [];
       this.max = null;
       this.clearSearch();
-      this.drawData();
+
+      /** for topviews we don't want the user input functionality of Select2 */
+      $('.select2-search__field').prop('disabled', true);
     });
 
     select2Input.on('select2:unselect', e => {
-      if (!$(e.target).val()) $('.report-false-positive').hide();
-    });
+      const pageName = e.params.data.text;
 
-    /**
-     * for topviews we don't want the user input functionality of Select2
-     * setTimeout of 0 to let rendering threads catch up and actually disable the field
-     */
-    setTimeout(() => {
-      $('.select2-search__field').prop('disabled', true);
+      if (!this.mobileViews[pageName]) {
+        this.setState('processing');
+        this.setSingleMobileViews(pageName).always(this.showList.bind(this));
+      } else {
+        this.showList();
+      }
+
+      if (!$(e.target).val()) $('.report-false-positive').hide();
     });
   }
 
@@ -621,14 +715,19 @@ class TopViews extends Pv {
   setupListeners() {
     super.setupListeners();
 
-    $(this.config.platformSelector).on('change', this.processInput.bind(this));
+    $(this.config.platformSelector).on('change', e => {
+      $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access');
+      $('.output-table').toggleClass('show-mobile', this.shouldShowMobile());
+      this.processInput();
+    });
     $('#date-type-select').on('change', e => {
       // also calls setupDateRangeSelector
       this.setSpecialRange(this.isMonthly() ? 'last-month' : 'yesterday');
     });
-    $('.expand-chart').on('click', () => {
+    $('.show-more').on('click', () => {
       this.offset += this.config.pageSize;
-      this.drawData();
+      this.setState('processing');
+      this.setMobileViews(this.offsetEnd).always(this.showList.bind(this));
     });
     $(this.config.dateRangeSelector).on('change', e => {
       /** clear out specialRange if it doesn't match our input */
@@ -638,35 +737,12 @@ class TopViews extends Pv {
       this.processInput();
     });
     $('.mainspace-only-option').on('click', this.processInput.bind(this));
+    $('.show-percent-mobile').on('click', e => {
+      $('.output-table').toggleClass('show-mobile', $(e.target).prop('checked'));
+      this.processInput(true);
+    });
     $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
     $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
-  }
-
-  /**
-   * Add the loading indicator class and set the safeguard timeout
-   * @override
-   */
-  startSpinny() {
-    super.startSpinny();
-    $('.expand-chart').hide();
-    $('.data-links').addClass('invisible');
-    $('.search-topviews').addClass('invisible');
-    $('.data-notice').addClass('invisible');
-  }
-
-  /**
-   * Remove loading indicator class and clear the safeguard timeout
-   * @param {Boolean} hideDataLinks - whether or not to hide the data links
-   * @override
-   */
-  stopSpinny(hideDataLinks) {
-    super.stopSpinny();
-    if (!hideDataLinks) {
-      $('.data-links').removeClass('invisible');
-      $('.search-topviews').removeClass('invisible');
-      $('.data-notice').removeClass('invisible');
-      $('.expand-chart').show();
-    }
   }
 
   /**
@@ -709,43 +785,225 @@ class TopViews extends Pv {
   }
 
   /**
+   * Get known false positives for currently selected project, date and platform
+   * @return {Deferred} Promise resolving with an array of page names
+   */
+  getFalsePositives() {
+    return $.ajax({
+      url: `//${metaRoot}/usage/topviews/false_positives`,
+      data: {
+        project: this.project,
+        date: this.getParams(false).date,
+        platform: $(this.config.platformSelector).val()
+      },
+      timeout: 8000
+    });
+  }
+
+  /**
+   * Set this.mobileViews for a single page
+   * @param {String} page - page title
+   * @returns {Deferred} promise resolving with this.mobileViews
+   */
+  setSingleMobileViews(page) {
+    const dfd = $.Deferred();
+
+    let startDate, endDate;
+
+    // set start/end dates
+    const datepickerValue = this.datepicker.getDate();
+    if (this.isMonthly()) {
+      startDate = moment(datepickerValue).startOf('month');
+      endDate = moment(datepickerValue).endOf('month');
+    } else {
+      startDate = moment(datepickerValue);
+      endDate = moment(datepickerValue);
+    }
+
+    let promises = [];
+
+    ['mobile-web', 'mobile-app'].forEach(endpoint => {
+      const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' +
+        `/${this.project}/${endpoint}/all-agents/${page}/${this.isMonthly() ? 'monthly' : 'daily'}` +
+        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
+
+      // if we already have the data, just go straight to resolving via dummy Deferred
+      if (this.mobileViews[page]) {
+        const dummyDfd = $.Deferred();
+        promises.push(dummyDfd);
+        return dummyDfd.resolve();
+      }
+
+      const promise = $.ajax({ url, dataType: 'json' });
+
+      promises.push(promise);
+
+      promise.done(data => {
+        const views = data.items.reduce((a, b) => a + b.views, 0),
+          pageTitle = data.items[0].article.descore();
+        this.mobileViews[pageTitle] = views + (this.mobileViews[pageTitle] || 0);
+      });
+    });
+
+    $.whenAll(...promises).always(() => dfd.resolve(this.mobileViews));
+
+    return dfd;
+  }
+
+  /**
+   * Set this.mobileViews for requested pages
+   * @param {Integer} startIndex - start index of this.pageData
+   * @param {Integer} offset - number of entries to process following startIndex
+   * @returns {Deferred} promise resolving with this.mobileViews
+   */
+  setMobileViews(startIndex = 0, offset = this.config.pageSize) {
+    const dfd = $.Deferred();
+
+    if (!this.shouldShowMobile()) {
+      return dfd.resolve({});
+    }
+
+    let index = startIndex,
+      counter = 0,
+      requestCount = offset,
+      startDate, endDate;
+
+    // set start/end dates
+    const datepickerValue = this.datepicker.getDate();
+    if (this.isMonthly()) {
+      startDate = moment(datepickerValue).startOf('month');
+      endDate = moment(datepickerValue).endOf('month');
+    } else {
+      startDate = moment(datepickerValue);
+      endDate = moment(datepickerValue);
+    }
+
+    const makeRequest = page => {
+      let promises = [];
+
+      ['mobile-web', 'mobile-app'].forEach(endpoint => {
+        const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' +
+          `/${this.project}/${endpoint}/all-agents/${page}/${this.isMonthly() ? 'monthly' : 'daily'}` +
+          `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
+
+        // if we already have the data, just go straight to resolving via dummy Deferred
+        if (this.mobileViews[page]) {
+          const dummyDfd = $.Deferred();
+          promises.push(dummyDfd);
+          return dummyDfd.resolve();
+        }
+
+        const promise = $.ajax({ url, dataType: 'json' });
+
+        promises.push(promise);
+
+        promise.done(data => {
+          const views = data.items.reduce((a, b) => a + b.views, 0),
+            pageTitle = data.items[0].article.descore();
+          this.mobileViews[pageTitle] = views + (this.mobileViews[pageTitle] || 0);
+        });
+      });
+
+      $.whenAll(...promises).always(() => {
+        if (--requestCount === 0) {
+          dfd.resolve(this.mobileViews);
+        }
+      });
+    };
+
+    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this);
+
+    while (counter < offset) {
+    // for (let index = startIndex; index <= endIndex; index++) {
+      const item = this.pageData[index];
+      if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
+        index++;
+        continue;
+      }
+      requestFn(this.pageData[index].article);
+      counter++;
+      index++;
+    }
+
+    return dfd;
+  }
+
+  /**
    * Fetch data from API
    * @returns {Deferred} promise with data
    */
   initData() {
     let dfd = $.Deferred();
 
-    this.startSpinny();
+    this.setState('processing');
 
     const access = $(this.config.platformSelector).val();
 
-    $.ajax({
-      url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/${access}/${this.getAPIDate()}`,
-      dataType: 'json'
-    }).done(data => {
-      // store pageData from API, removing underscores from the page name
-      this.pageData = data.items[0].articles.map(page => {
-        page.article = page.article.descore();
-        return page;
+    const showTopviews = () => {
+      $.ajax({
+        url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/${access}/${this.getAPIDate()}`,
+        dataType: 'json'
+      }).done(data => {
+        // store pageData from API, removing underscores from the page name
+        this.pageData = data.items[0].articles.map(page => {
+          page.article = page.article.descore();
+          return page;
+        });
+
+        /** build the pageNames array for Select2 */
+        this.pageNames = this.pageData.map(page => page.article);
+
+        if ($('.mainspace-only-option').is(':checked')) {
+          this.filterOutNamespace(this.pageNames).done(pageNames => {
+            this.pageNames = pageNames;
+            this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
+
+            if (access === 'all-access') {
+              return this.setMobileViews().then(() => dfd.resolve(this.pageData));
+            } else {
+              return dfd.resolve(this.pageData);
+            }
+          });
+        } else if (access === 'all-access') {
+          return this.setMobileViews().then(() => dfd.resolve(this.pageData));
+        } else {
+          return dfd.resolve(this.pageData);
+        }
+      }).fail(errorData => {
+        this.resetView();
+        this.writeMessage(`${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+        return dfd.reject();
+      });
+    };
+
+    this.getFalsePositives().done(autoExcludes => {
+      this.autoExcludes = autoExcludes;
+
+      if (!autoExcludes.length) return $('.list-false-positives').hide();
+
+      const listFPLink = `<a href='#' data-target='#list-false-positives-modal' data-toggle='modal'>
+          ${$.i18n('known-false-positives-link', this.autoExcludes.length)}
+        </a>`;
+
+      $('.list-false-positives').html(
+        $.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length)
+      );
+
+      $('.list-false-positives').show();
+      $('#list-false-positives-modal').on('show.bs.modal', () => {
+        // list the false positives
+        $('.false-positive-list').html('');
+        this.autoExcludes.forEach(exclude => {
+          const rank = this.pageData.find(page => page.article === exclude).rank;
+          $('.false-positive-list').append(`
+            <tr><td>${this.getPageLink(exclude, this.project)}</td><td>${rank}</td></tr>
+          `);
+        });
       });
 
-      /** build the pageNames array for Select2 */
-      this.pageNames = this.pageData.map(page => page.article);
-
-      if ($('.mainspace-only-option').is(':checked')) {
-        this.filterOutNamespace(this.pageNames).done(pageNames => {
-          this.pageNames = pageNames;
-          this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
-          return dfd.resolve(this.pageData);
-        });
-      } else {
-        return dfd.resolve(this.pageData);
-      }
-    }).fail(errorData => {
-      this.resetView();
-      this.writeMessage(`${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
-      return dfd.reject();
-    });
+      // remove autoExcludes from excludes given via URL param
+      this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
+    }).always(showTopviews);
 
     return dfd;
   }
