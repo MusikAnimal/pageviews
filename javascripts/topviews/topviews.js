@@ -445,9 +445,8 @@ class TopViews extends Pv {
 
     this.params = location.search;
 
-    this.setupSelect2();
-
     this.initData().done(() => {
+      this.setupSelect2();
       this.showList();
     }).always(() => {
       this.setupListeners();
@@ -953,6 +952,9 @@ class TopViews extends Pv {
         /** build the pageNames array for Select2 */
         this.pageNames = this.pageData.map(page => page.article);
 
+        /** set up auto excludes now that we know what pages will be effected */
+        this.setupAutoExcludes();
+
         if ($('.mainspace-only-option').is(':checked')) {
           this.filterOutNamespace(this.pageNames).done(pageNames => {
             this.pageNames = pageNames;
@@ -978,34 +980,45 @@ class TopViews extends Pv {
 
     this.getFalsePositives().done(autoExcludes => {
       this.autoExcludes = autoExcludes;
-
-      if (!autoExcludes.length) return $('.list-false-positives').hide();
-
-      const listFPLink = `<a href='#' data-target='#list-false-positives-modal' data-toggle='modal'>
-          ${$.i18n('known-false-positives-link', this.autoExcludes.length)}
-        </a>`;
-
-      $('.list-false-positives').html(
-        $.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length)
-      );
-
-      $('.list-false-positives').show();
-      $('#list-false-positives-modal').on('show.bs.modal', () => {
-        // list the false positives
-        $('.false-positive-list').html('');
-        this.autoExcludes.forEach(exclude => {
-          const rank = this.pageData.find(page => page.article === exclude).rank;
-          $('.false-positive-list').append(`
-            <tr><td>${this.getPageLink(exclude, this.project)}</td><td>${rank}</td></tr>
-          `);
-        });
-      });
-
-      // remove autoExcludes from excludes given via URL param
-      this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
     }).always(showTopviews);
 
     return dfd;
+  }
+
+  /**
+   * Adds a message below the "Excluded pages" list, that has a link to show
+   *   the automatically excluded pages (as retrieved from /musikanimal/api/topviews/false_positives).
+   * Also reremoves any auto-excluded pages from this.excludes
+   * @returns {null} nothing
+   */
+  setupAutoExcludes() {
+    // remove any that aren't actually in the results
+    this.autoExcludes = this.autoExcludes.filter(page => this.pageNames.includes(page));
+
+    if (!this.autoExcludes.length) return $('.list-false-positives').hide();
+
+    const listFPLink = `<a href='#' data-target='#list-false-positives-modal' data-toggle='modal'>
+        ${$.i18n('known-false-positives-link', this.autoExcludes.length)}
+      </a>`;
+
+    $('.list-false-positives').html(
+      $.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length)
+    );
+
+    $('.list-false-positives').show();
+    $('#list-false-positives-modal').on('show.bs.modal', () => {
+      // list the false positives
+      $('.false-positive-list').html('');
+      this.autoExcludes.forEach(exclude => {
+        const rank = this.pageData.find(page => page.article === exclude).rank;
+        $('.false-positive-list').append(`
+          <tr><td>${this.getPageLink(exclude, this.project)}</td><td>${rank}</td></tr>
+        `);
+      });
+    });
+
+    // remove autoExcludes from excludes given via URL param
+    this.excludes = this.excludes.filter(exclude => this.autoExcludes.indexOf(exclude) === -1);
   }
 
   /**
