@@ -574,7 +574,7 @@ class TopViews extends Pv {
 
     // add ranking to pageData and fetch matches
     this.pageData.forEach((entry, index) => {
-      if (!this.excludes.includes(entry.article)) {
+      if (!this.excludes.includes(entry.article) && !this.autoExcludes.includes(entry.article)) {
         count++;
         if (new RegExp(query, 'i').test(entry.article)) {
           entry.rank = count;
@@ -593,7 +593,7 @@ class TopViews extends Pv {
          <td class='topview-entry--rank-wrapper'>
            <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index}
              title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
-           <span class='topview-entry--rank'>${++count}</span>
+           <span class='topview-entry--rank'>${item.rank}</span>
          </td>
          <td>
            <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
