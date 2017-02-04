@@ -382,8 +382,11 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    */
   showProjectUsage(app) {
     $('.project-output-list').html('');
-    const appName = app.charAt(0).toUpperCase() + app.slice(1);
-    $('#project-list-modal h4').text(`${appName} usage by project`);
+    const appName = app.charAt(0).toUpperCase() + app.slice(1),
+      langProjects = ['siteviews', 'massviews'],
+      usageTerm = langProjects.includes(app) ? 'language' : 'project';
+    $('#project-list-modal h4').text(`${appName} usage by ${usageTerm}`);
+    $('th.project-table-view--title').text(usageTerm.charAt(0).toUpperCase() + usageTerm.slice(1));
     $.ajax({
       url: `//${metaRoot}/usage/${app}-projects`,
       dataType: 'json'
@@ -402,7 +405,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       $('.project-output-list').append(`
         <tr>
           <th class='project-table-view--rank'></th>
-          <th class='project-table-view--title'>${data.length} projects</th>
+          <th class='project-table-view--title'>${data.length} ${usageTerm}s</th>
           <th class='project-table-view--pageloads'>${this.formatNumber(total)} page loads</th>
         </tr>
       `);
