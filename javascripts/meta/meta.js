@@ -403,7 +403,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
         <tr>
           <th class='project-table-view--rank'></th>
           <th class='project-table-view--title'>${data.length} projects</th>
-          <th class='project-table-view--pageloads'>${total} page loads</th>
+          <th class='project-table-view--pageloads'>${this.formatNumber(total)} page loads</th>
         </tr>
       `);
 
@@ -414,7 +414,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
             <td class='project-table-view--title'>
               <a href='//${project.project}.org' target='_blank'>${project.project}</a>
             </td>
-            <td class='project-table-view--pageloads'>${project.count}</td>
+            <td class='project-table-view--pageloads'>${this.formatNumber(project.count)}</td>
           </tr>
         `);
       });
