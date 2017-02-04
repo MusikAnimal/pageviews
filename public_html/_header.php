@@ -20,16 +20,18 @@
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right">
-        <li>
-          <a href="/<?php echo $currentApp; ?>/faq">
-            <?php echo $I18N->msg( 'faq' ); ?>
-          </a>
-        </li>
-        <li>
-          <a href="/<?php echo $currentApp; ?>/url_structure">
-            <?php echo $I18N->msg( 'url-structure' ); ?>
-          </a>
-        </li>
+        <?php if ( $currentApp !== 'metaviews' ) { ?>
+          <li>
+            <a href="/<?php echo $currentApp; ?>/faq">
+              <?php echo $I18N->msg( 'faq' ); ?>
+            </a>
+          </li>
+          <li>
+            <a href="/<?php echo $currentApp; ?>/url_structure">
+              <?php echo $I18N->msg( 'url-structure' ); ?>
+            </a>
+          </li>
+        <?php } ?>
         <li>
           <a href="https://meta.wikimedia.org/wiki/Pageviews_Analysis">
             <?php echo $I18N->msg( 'documentation' ); ?>

@@ -1035,7 +1035,10 @@ class TopViews extends Pv {
         const ns = entry.split(':')[0];
 
         // include main page as non-mainspace
-        if (restrictedNamespace === 0 && entry === this.getSiteInfo(this.project).general.mainpage) {
+        const mainPage = this.getSiteInfo(this.project).general.mainpage;
+
+        // main page may include project namespace, so compare against main page name without namespace, too
+        if (restrictedNamespace === 0 && (entry === mainPage || entry === mainPage.split(':')[1])) {
           return false;
         }
 

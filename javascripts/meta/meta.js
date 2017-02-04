@@ -188,6 +188,13 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    */
   setupListeners() {
     super.setupListeners();
+
+    $('.sort-link').on('click', e => {
+      const sortType = $(e.currentTarget).data('type');
+      this.direction = this.sort === sortType ? -this.direction : 1;
+      this.sort = sortType;
+      this.updateTable();
+    });
   }
 
   /**
@@ -318,7 +325,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
           <td class='table-view--color-col'>
             <span class='table-view--color-block' style="background:${item.color}"></span>
           </td>
-          <td class='table-view--title'><a href='/${item.label}'>${item.label}</a></td>
+          <td class='table-view--title'><a href='#'>${item.label}</a></td>
           <td class='table-view--pageloads'>${this.formatNumber(item.sum)}</td>
           <td class='table-view--average'>${this.formatNumber(item.average)}</td>
         </tr>
@@ -340,6 +347,10 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
         <th class='table-view--average'>${this.formatNumber(totals.average)}</th>
       </tr>
     `);
+
+    $('.output-list .table-view--title a').off('click').on('click', e => {
+      this.showProjectUsage($(e.target).text());
+    });
 
     $('.table-view').show();
   }
@@ -363,6 +374,52 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
         (${this.formatNumber(app.average)}/${$.i18n('day')})
       </span>
     `);
+  }
+
+  /**
+   * Show a modal with all-time per-project usage
+   * @param {String} app - app name
+   */
+  showProjectUsage(app) {
+    $('.project-output-list').html('');
+    const appName = app.charAt(0).toUpperCase() + app.slice(1);
+    $('#project-list-modal h4').text(`${appName} usage by project`);
+    $.ajax({
+      url: `//${metaRoot}/usage/${app}-projects`,
+      dataType: 'json'
+    }).done(data => {
+      data = data.sort((a, b) => {
+        if (a.count < b.count) {
+          return 1;
+        } else if (a.count > b.count) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+      const total = data.reduce((a, b) => a + b.count, 0);
+
+      $('.project-output-list').append(`
+        <tr>
+          <th class='project-table-view--rank'></th>
+          <th class='project-table-view--title'>${data.length} projects</th>
+          <th class='project-table-view--pageloads'>${total} page loads</th>
+        </tr>
+      `);
+
+      data.forEach((project, index) => {
+        $('.project-output-list').append(`
+          <tr>
+            <td class='project-table-view--rank'>${index + 1}</td>
+            <td class='project-table-view--title'>
+              <a href='//${project.project}.org' target='_blank'>${project.project}</a>
+            </td>
+            <td class='project-table-view--pageloads'>${project.count}</td>
+          </tr>
+        `);
+      });
+      $('#project-list-modal').modal('show');
+    });
   }
 
 }

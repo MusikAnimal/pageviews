@@ -46,10 +46,12 @@
     </span>
   </div>
   <div>
-    <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
-    &middot;
-    <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
-    &middot;
+    <?php if ( $currentApp !== 'metaviews' ) { ?>
+      <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
+      &middot;
+      <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
+      &middot;
+    <?php } ?>
     <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>
     &middot;
     <a href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis"><?php echo $I18N->msg( 'report-issue' ); ?></a>

@@ -86,6 +86,30 @@
         </table>
       </output>
     </main>
+    <div class="modal fade" id="project-list-modal" role="dialog" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" arialabel="Close" data-dismiss="modal" type="button">
+              <span ariahidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead class="project-table-view--header">
+                <tr>
+                  <th class="project-table-view--rank">Rank</th>
+                  <th class="project-table-view--title">Project</th>
+                  <th class="project-table-view--pageloads">Page loads</th>
+                </tr>
+              </thead>
+              <tbody class="project-output-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
     <?php include '../_footer.php'; ?>
     <?php include '../_modals.php'; ?>
   </body>

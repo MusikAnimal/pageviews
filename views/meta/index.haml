@@ -71,6 +71,22 @@
                   %span.glyphicon.glyphicon-sort
           %tbody.output-list
 
+    %div.modal.fade#project-list-modal(role="dialog" tabindex="-1")
+      %div.modal-dialog(role="document")
+        %div.modal-content
+          %div.modal-header
+            %button.close(arialabel="Close" data-dismiss="modal" type="button")
+              %span(ariahidden="true") &times;
+            %h4.modal-title
+          %div.modal-body
+            %table.table.table-hover
+              %thead.project-table-view--header
+                %tr
+                  %th(class="project-table-view--rank") Rank
+                  %th(class="project-table-view--title") Project
+                  %th(class="project-table-view--pageloads") Page loads
+              %tbody.project-output-list
+
     - include '../_footer.php'
 
     - include '../_modals.php'

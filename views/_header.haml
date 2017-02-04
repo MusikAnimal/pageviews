@@ -19,12 +19,13 @@
         = $I18N->msg( 'help' )
         %span.caret
       %ul.dropdown-menu.dropdown-menu-right
-        %li
-          %a(href="/#{$currentApp}/faq")
-            = $I18N->msg( 'faq' )
-        %li
-          %a(href="/#{$currentApp}/url_structure")
-            = $I18N->msg( 'url-structure' )
+        - if ( $currentApp !== 'metaviews' )
+          %li
+            %a(href="/#{$currentApp}/faq")
+              = $I18N->msg( 'faq' )
+          %li
+            %a(href="/#{$currentApp}/url_structure")
+              = $I18N->msg( 'url-structure' )
         %li
           %a(href="https://meta.wikimedia.org/wiki/Pageviews_Analysis")
             = $I18N->msg( 'documentation' )
