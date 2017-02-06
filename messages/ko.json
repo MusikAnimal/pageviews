@@ -144,6 +144,7 @@
 	"url-structure-siteviews-platform": "$1이(가) $2일 때",
 	"url-structure-siteviews-agent": "$1이(가) $2일 때에만 적용합니다.",
 	"url-structure-subjectpage": "출처(소스)로서 분류를 사용할 때는 옵션 \"$1\". 활성화는 $2, 비활성화는 $3(기본값)을 사용하세요.",
+	"url-structure-userviews-namespace": "이름공간 번호입니다. 기본값은 $1입니다. 모든 이름공간의 경우 $1을(를) 사용하십시오.",
 	"default": "기본값",
 	"all-languages": "모든 언어",
 	"history": "역사",
@@ -222,5 +223,11 @@
 	"data-unavailable": "데이터를 사용할 수 없음",
 	"show-values": "값 보기",
 	"learn-more": "더 알아보기",
-	"report-false-positive": "거짓 양성 보고하기"
+	"report-false-positive": "거짓 양성 보고하기",
+	"known-false-positives-link": "{{PLURAL:$1|문서}} $1개",
+	"main": "일반",
+	"namespace": "이름공간",
+	"current-size": "현재 크기",
+	"exclude-redirects": "넘겨주기 제외",
+	"only-redirects": "넘겨주기만 포함"
 }

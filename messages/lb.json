@@ -146,6 +146,7 @@
 	"url-structure-projects": "Valabel $1 getrennt duerch d'Zeechen <code>|</code>. Zum Beispill $2",
 	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
+	"url-structure-start-date": "Ufanksdatum am Format $1.<br />Loosst dëse Parameter an de Parameter $2 ewech fir déi rezentst Donnéeë gewisen ze kréien.",
 	"url-structure-sort": "D'Kolonn op déi zortéiert gi soll.",
 	"url-structure-siteviews-platform": "Wann de(n) $1 $2 ass",
 	"default": "Standard",
@@ -180,6 +181,7 @@
 	"num-projects": "$1 Projeten",
 	"num-subpages": "{{PLURAL:$1|Eng Ënnersäit|$1 Ënnersäiten}}",
 	"num-wikilinks": "{{PLURAL:$1|Ee Wikilink|$1 Wikilinken}}",
+	"num-days-span": "Dauer vun $1 Deeg",
 	"logarithmic-scale": "Logarithmesch Skala",
 	"list": "Lëscht",
 	"chart": "Diagramm",
@@ -240,10 +242,15 @@
 	"show-values": "Wäerter weisen",
 	"learn-more": "Fir méi ze wëssen",
 	"report-false-positive": "Falsch Positiver mellen",
+	"known-false-positives-link": "$1 {{PLURAL:$1|Säit|Säiten}}",
+	"list-false-positives-heading": "Bekannt falsch Positiver",
+	"userviews-edit-count-warning": "$1 huet $2 Ännerunge gemaach! D'Opruffe vun den ugeluechte Säite kann e bëssen daueren. Hutt w.e.g. e bësse Gedold.",
 	"main": "Haapt",
 	"namespace": "Nummraum",
 	"date-created": "Datum vun der Kreatioun",
 	"current-size": "Aktuell Gréisst",
 	"exclude-redirects": "Viruleedungen ausschléissen",
-	"class": "Klass"
+	"redirects-and-non-redirects": "Viruleedungen an Net-Viruleedungen",
+	"class": "Klass",
+	"show-mobile-percentages": "Mobil Prozentsätz weisen"
 }

@@ -8,7 +8,8 @@
 			"Alifakoor",
 			"Alirn",
 			"Huji",
-			"Arash.pt"
+			"Arash.pt",
+			"Ebraminio"
 		]
 	},
 	"title": "تحلیل بازدیدهای صفحه",
@@ -191,7 +192,7 @@
 	"options": "گزینه‌ها",
 	"links": "پیوندها",
 	"latest": "آخرین",
-	"clear": "پاک‌کردن",
+	"clear": "پاک کردن",
 	"revisions": "نسخه‌ها",
 	"basic-information": "اطلاعات اولیه",
 	"most-viewed-rank": "رتبهٔ $1 از $2 در $3",

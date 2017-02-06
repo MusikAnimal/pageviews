@@ -6,7 +6,8 @@
 			"Macofe",
 			"Anderson Costa",
 			"!Silent",
-			"Moretti"
+			"Moretti",
+			"Warley Felipe C."
 		]
 	},
 	"title": "Visualizações da página",
@@ -309,5 +310,7 @@
 	"active-users": "Usuários ativos",
 	"admins": "Administradores",
 	"data-unavailable": "Dados indisponíveis",
-	"show-values": "Mostrar valores"
+	"show-values": "Mostrar valores",
+	"date-created": "Data de criação",
+	"class": "Classe"
 }
