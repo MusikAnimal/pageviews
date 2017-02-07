@@ -462,44 +462,37 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const dfd = $.Deferred(),
       username = $(this.config.sourceInput).val();
 
-    if (metaRoot) {
-      let params = {
-        username,
-        project: this.project,
-        redirects: $('#redirects_select').val()
-      };
-      if ($('#namespace_input').val() !== 'all') {
-        params.namespace = $('#namespace_input').val();
-      }
-      $.ajax({
-        url: `//${metaRoot}/user_analysis/pages`,
-        data: params
-      })
-      .done(data => {
-        const pages = data.pages.map(page => {
-          const ns = this.siteInfo[this.project].namespaces[page.namespace]['*'],
-            title = ns === '' ? page.title : `${ns}:${page.title}`;
-          return Object.assign(page, { title });
-        });
-        if (pages.length >= this.config.apiLimit) {
-          this.toastWarn(
-            $.i18n(
-              'userviews-oversized-set',
-              this.getUserLink(username),
-              this.config.apiLimit,
-              this.config.apiLimit
-            )
-          );
-        }
-        return dfd.resolve(pages);
-      })
-      .fail(() => dfd.reject());
-    } else {
-      dfd.resolve({
-        num_edits: 0,
-        num_users: 0
-      });
+    let params = {
+      username,
+      project: this.project + '.org',
+      redirects: $('#redirects_select').val()
+    };
+    if ($('#namespace_input').val() !== 'all') {
+      params.namespace = $('#namespace_input').val();
     }
+    $.ajax({
+      url: '/userviews/api.php',
+      data: params
+    })
+    .done(data => {
+      const pages = data.map(page => {
+        const ns = this.siteInfo[this.project].namespaces[page.namespace]['*'],
+          title = ns === '' ? page.title : `${ns}:${page.title}`;
+        return Object.assign(page, { title });
+      });
+      if (pages.length >= this.config.apiLimit) {
+        this.toastWarn(
+          $.i18n(
+            'userviews-oversized-set',
+            this.getUserLink(username),
+            this.config.apiLimit,
+            this.config.apiLimit
+          )
+        );
+      }
+      return dfd.resolve(pages);
+    })
+    .fail(() => dfd.reject());
 
     return dfd;
   }
