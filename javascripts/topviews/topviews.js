@@ -190,8 +190,9 @@ class TopViews extends Pv {
       if (!excludes.length) return;
 
       $.ajax({
-        url: `//${metaRoot}/usage/topviews/${this.project}/false_positives`,
+        url: '/topviews/api.php',
         data: {
+          project: this.project,
           pages: excludes,
           date: this.getParams(false).date,
           platform: $(this.config.platformSelector).val()
@@ -789,7 +790,7 @@ class TopViews extends Pv {
    */
   getFalsePositives() {
     return $.ajax({
-      url: `//${metaRoot}/usage/topviews/false_positives`,
+      url: '/topviews/api.php',
       data: {
         project: this.project,
         date: this.getParams(false).date,
