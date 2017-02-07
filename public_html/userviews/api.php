@@ -14,10 +14,10 @@ if ( !isset( $_GET['username'] ) || !isset( $_GET['project'] ) ) {
 
 $username = $_GET['username'];
 $project = $_GET['project'];
-$redirects = $_GET['redirects'];
+$redirects = isset( $_GET['redirects'] ) ? $_GET['redirects'] : null;
 
 // get database name given the project
-$site_map = (array) json_decode( file_get_contents( ROOTDIR . 'site_map.json' ) );
+$site_map = (array) json_decode( file_get_contents( ROOTDIR . '/site_map.json' ) );
 $db = $site_map[$project] . '_p';
 
 // connect to database
