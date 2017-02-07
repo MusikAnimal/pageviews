@@ -823,7 +823,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   validateProject() {
     // 'true' validates that it is a multilingual project
-    if (super.validateProject(true)) {
+    if (super.validateProject()) {
       this.setState('initial');
 
       /** kill and re-init typeahead to point to new project */
