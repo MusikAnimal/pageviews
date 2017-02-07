@@ -1132,7 +1132,11 @@ class Pv extends PvConfig {
       });
     } else if (metaRoot) {
       return $.ajax({
-        url: `//${metaRoot}/usage/${this.app}/${this.project || i18nLang}`,
+        url: '/pageviews/meta/app.php',
+        data: {
+          app: this.app,
+          project: this.project || i18nLang
+        },
         method: 'POST',
         timeout: 8000
       });

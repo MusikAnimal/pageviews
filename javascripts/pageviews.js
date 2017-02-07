@@ -63,10 +63,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     if (metaRoot) {
       $.ajax({
-        url: `//${metaRoot}/article_analysis/basic_info`,
+        url: '/pageviews/api.php',
         data: {
           pages: pages.join('|'),
-          project: this.project,
+          project: this.project + '.org',
           start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
           end: this.daterangepicker.endDate.format('YYYY-MM-DD')
         },
