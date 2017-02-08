@@ -241,8 +241,8 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       endDate = this.daterangepicker.endDate.startOf('day');
 
     xhrData.entities.forEach((tool, index) => {
-      const url = `//${metaRoot}/usage/${tool}` +
-        `/${startDate.format('YYYY-MM-DD')}/${endDate.format('YYYY-MM-DD')}`;
+      const url = `/pageviews/meta/api.php?app=${tool}&start=${startDate.format('YYYY-MM-DD')}` +
+        `&end=${endDate.format('YYYY-MM-DD')}&type=timeline`;
 
       const promise = $.ajax({
         url,
@@ -388,7 +388,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
     $('#project-list-modal h4').text(`${appName} usage by ${usageTerm}`);
     $('th.project-table-view--title').text(usageTerm.charAt(0).toUpperCase() + usageTerm.slice(1));
     $.ajax({
-      url: `//${metaRoot}/usage/${app}-projects`,
+      url: `/pageviews/meta/api.php?app=${app}&type=projects`,
       dataType: 'json'
     }).done(data => {
       data = data.sort((a, b) => {

@@ -8,10 +8,6 @@ if ( file_exists( __DIR__ . '/../config.php' ) ) {
   require_once __DIR__ . '/../../config.php';
 }
 
-if ( $_SERVER['REQUEST_METHOD'] !== 'POST' || !isset( $_POST['project'] ) || !isset( $_POST['app'] ) ) {
-  exit();
-}
-
 // connect to database
 $client = new mysqli( META_DB_HOST, META_DB_USER, META_DB_PASSWORD, META_DB_NAME, META_DB_PORT );
 
@@ -21,8 +17,37 @@ if (mysqli_connect_errno()) {
   exit();
 }
 
-// first check if there is already a record for this project/page/platform/date
+if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
+  $app = $_GET['app'];
+
+  if ( $_GET['type'] === 'timeline' ) {
+    $accepted_apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'redirectviews', 'userviews', 'massviews' ];
+    if ( !in_array( $app, $accepted_apps ) ) {
+      exit();
+    }
+
+    $sql = "SELECT * FROM $app" . "_timeline WHERE date >= ? AND date <= ? ORDER BY date ASC";
+    if ( !$stmt = $client->prepare( $sql ) ) {
+      exit();
+    }
+    $stmt->bind_param( 'ss', $_GET['start'], $_GET['end'] );
+    $stmt->execute();
+    echo json_encode( $stmt->get_result()->fetch_all( MYSQLI_ASSOC ) );
+    return;
+  } elseif ( $_GET['type'] === 'projects' ) {
+    $sql = "SELECT * FROM $app" . '_projects';
+    $stmt = $client->prepare( $sql );
+    $stmt->execute();
+    echo json_encode( $stmt->get_result()->fetch_all( MYSQLI_ASSOC ) );
+    return;
+  } else {
+    exit();
+  }
+}
+
 $app = $_POST['app'];
+
+// first check if there is already a record for this project/page/platform/date
 $project = $_POST['project'];
 $exists_sql = "SELECT * FROM " . $app . "_projects WHERE project = '$project'";
 $res = (bool) $client->query( $exists_sql )->fetch_assoc();

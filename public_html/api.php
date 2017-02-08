@@ -17,7 +17,7 @@ $errors = [];
 foreach ($required_fields as $field) {
   if ( !isset( $_GET[$field] ) ) {
     $errors[] = "The '$field' parameter is required";
-  } else if ( ( $field === 'start' || $field === 'end' ) && !preg_match( '/\d{4}-\d{2}-\d{2}/', $_GET[$field] ) ) {
+  } else if ( ( $field === 'start' || $field === 'end' ) && !preg_match( '/^\d{4}-\d{2}-\d{2}$/', $_GET[$field] ) ) {
     $errors[] = "The '$field' parameter must be in the format YYYY-MM-DD";
   }
 }
@@ -55,19 +55,8 @@ $output = [
   'pages' => []
 ];
 
-// if given a year and a month, use the 1st as the day
-if ( preg_match( '/^\d{4}-\d{2}$/', $_GET['start'] ) ) {
-  $start_date = new DateTime( $_GET['start'] . '-01' );
-} else {
-  $start_date = new DateTime( $_GET['start'] );
-}
-// if given a year and a month, use the last day as the end date
-if ( preg_match( '/^\d{4}-\d{2}$/', $_GET['end'] ) ) {
-  $end_date = new DateTime( $_GET['end'] . '-01' );
-  $end_date = new DateTime( $end_date->format( 'Y-m-t' ) );
-} else {
-  $end_date = new DateTime( $_GET['end'] );
-}
+$start_date = new DateTime( $_GET['start'] );
+$end_date = new DateTime( $_GET['end'] );
 
 $url_pages = str_replace( ' ', '_', $_GET['pages'] );
 

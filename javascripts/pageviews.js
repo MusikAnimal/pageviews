@@ -61,30 +61,23 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   getEditData(pages) {
     const dfd = $.Deferred();
 
-    if (metaRoot) {
-      $.ajax({
-        url: '/pageviews/api.php',
-        data: {
-          pages: pages.join('|'),
-          project: this.project + '.org',
-          start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
-          end: this.daterangepicker.endDate.format('YYYY-MM-DD')
-        },
-        timeout: 8000
-      })
-      .done(data => dfd.resolve(data))
-      .fail(() => {
-        // stable flag will be used to handle lack of data, so just resolve with empty data
-        let data = {};
-        pages.forEach(page => data[page] = {});
-        dfd.resolve({ pages: data });
-      });
-    } else {
-      dfd.resolve({
-        num_edits: 0,
-        num_users: 0
-      });
-    }
+    $.ajax({
+      url: '/pageviews/api.php',
+      data: {
+        pages: pages.join('|'),
+        project: this.project + '.org',
+        start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
+        end: this.daterangepicker.endDate.format('YYYY-MM-DD')
+      },
+      timeout: 8000
+    })
+    .done(data => dfd.resolve(data))
+    .fail(() => {
+      // stable flag will be used to handle lack of data, so just resolve with empty data
+      let data = {};
+      pages.forEach(page => data[page] = {});
+      dfd.resolve({ pages: data });
+    });
 
     return dfd;
   }

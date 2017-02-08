@@ -1929,6 +1929,4696 @@ if(b=c.data(a[0],"data"),null!=b)return b;if(a.is("option"))b={id:a.val(),text:a
 
 !function(a){"function"==typeof define&&define.amd?define(["jquery"],a):a("object"==typeof exports?require("jquery"):jQuery)}(function(a,b){function c(){return new Date(Date.UTC.apply(Date,arguments))}function d(){var a=new Date;return c(a.getFullYear(),a.getMonth(),a.getDate())}function e(a,b){return a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth()&&a.getUTCDate()===b.getUTCDate()}function f(a){return function(){return this[a].apply(this,arguments)}}function g(a){return a&&!isNaN(a.getTime())}function h(b,c){function d(a,b){return b.toLowerCase()}var e,f=a(b).data(),g={},h=new RegExp("^"+c.toLowerCase()+"([A-Z])");c=new RegExp("^"+c.toLowerCase());for(var i in f)c.test(i)&&(e=i.replace(h,d),g[e]=f[i]);return g}function i(b){var c={};if(q[b]||(b=b.split("-")[0],q[b])){var d=q[b];return a.each(p,function(a,b){b in d&&(c[b]=d[b])}),c}}var j=function(){var b={get:function(a){return this.slice(a)[0]},contains:function(a){for(var b=a&&a.valueOf(),c=0,d=this.length;d>c;c++)if(0<=this[c].valueOf()-b&&this[c].valueOf()-b<864e5)return c;return-1},remove:function(a){this.splice(a,1)},replace:function(b){b&&(a.isArray(b)||(b=[b]),this.clear(),this.push.apply(this,b))},clear:function(){this.length=0},copy:function(){var a=new j;return a.replace(this),a}};return function(){var c=[];return c.push.apply(c,arguments),a.extend(c,b),c}}(),k=function(b,c){a.data(b,"datepicker",this),this._process_options(c),this.dates=new j,this.viewDate=this.o.defaultViewDate,this.focusDate=null,this.element=a(b),this.isInput=this.element.is("input"),this.inputField=this.isInput?this.element:this.element.find("input"),this.component=this.element.hasClass("date")?this.element.find(".add-on, .input-group-addon, .btn"):!1,this.component&&0===this.component.length&&(this.component=!1),this.isInline=!this.component&&this.element.is("div"),this.picker=a(r.template),this._check_template(this.o.templates.leftArrow)&&this.picker.find(".prev").html(this.o.templates.leftArrow),this._check_template(this.o.templates.rightArrow)&&this.picker.find(".next").html(this.o.templates.rightArrow),this._buildEvents(),this._attachEvents(),this.isInline?this.picker.addClass("datepicker-inline").appendTo(this.element):this.picker.addClass("datepicker-dropdown dropdown-menu"),this.o.rtl&&this.picker.addClass("datepicker-rtl"),this.o.calendarWeeks&&this.picker.find(".datepicker-days .datepicker-switch, thead .datepicker-title, tfoot .today, tfoot .clear").attr("colspan",function(a,b){return Number(b)+1}),this._allow_update=!1,this.setStartDate(this._o.startDate),this.setEndDate(this._o.endDate),this.setDaysOfWeekDisabled(this.o.daysOfWeekDisabled),this.setDaysOfWeekHighlighted(this.o.daysOfWeekHighlighted),this.setDatesDisabled(this.o.datesDisabled),this.setViewMode(this.o.startView),this.fillDow(),this.fillMonths(),this._allow_update=!0,this.update(),this.isInline&&this.show()};k.prototype={constructor:k,_resolveViewName:function(b){return a.each(r.viewModes,function(c,d){return b===c||-1!==a.inArray(b,d.names)?(b=c,!1):void 0}),b},_resolveDaysOfWeek:function(b){return a.isArray(b)||(b=b.split(/[,\s]*/)),a.map(b,Number)},_check_template:function(c){try{if(c===b||""===c)return!1;if((c.match(/[<>]/g)||[]).length<=0)return!0;var d=a(c);return d.length>0}catch(e){return!1}},_process_options:function(b){this._o=a.extend({},this._o,b);var e=this.o=a.extend({},this._o),f=e.language;q[f]||(f=f.split("-")[0],q[f]||(f=o.language)),e.language=f,e.startView=this._resolveViewName(e.startView),e.minViewMode=this._resolveViewName(e.minViewMode),e.maxViewMode=this._resolveViewName(e.maxViewMode),e.startView=Math.max(this.o.minViewMode,Math.min(this.o.maxViewMode,e.startView)),e.multidate!==!0&&(e.multidate=Number(e.multidate)||!1,e.multidate!==!1&&(e.multidate=Math.max(0,e.multidate))),e.multidateSeparator=String(e.multidateSeparator),e.weekStart%=7,e.weekEnd=(e.weekStart+6)%7;var g=r.parseFormat(e.format);e.startDate!==-(1/0)&&(e.startDate?e.startDate instanceof Date?e.startDate=this._local_to_utc(this._zero_time(e.startDate)):e.startDate=r.parseDate(e.startDate,g,e.language,e.assumeNearbyYear):e.startDate=-(1/0)),e.endDate!==1/0&&(e.endDate?e.endDate instanceof Date?e.endDate=this._local_to_utc(this._zero_time(e.endDate)):e.endDate=r.parseDate(e.endDate,g,e.language,e.assumeNearbyYear):e.endDate=1/0),e.daysOfWeekDisabled=this._resolveDaysOfWeek(e.daysOfWeekDisabled||[]),e.daysOfWeekHighlighted=this._resolveDaysOfWeek(e.daysOfWeekHighlighted||[]),e.datesDisabled=e.datesDisabled||[],a.isArray(e.datesDisabled)||(e.datesDisabled=e.datesDisabled.split(",")),e.datesDisabled=a.map(e.datesDisabled,function(a){return r.parseDate(a,g,e.language,e.assumeNearbyYear)});var h=String(e.orientation).toLowerCase().split(/\s+/g),i=e.orientation.toLowerCase();if(h=a.grep(h,function(a){return/^auto|left|right|top|bottom$/.test(a)}),e.orientation={x:"auto",y:"auto"},i&&"auto"!==i)if(1===h.length)switch(h[0]){case"top":case"bottom":e.orientation.y=h[0];break;case"left":case"right":e.orientation.x=h[0]}else i=a.grep(h,function(a){return/^left|right$/.test(a)}),e.orientation.x=i[0]||"auto",i=a.grep(h,function(a){return/^top|bottom$/.test(a)}),e.orientation.y=i[0]||"auto";else;if(e.defaultViewDate){var j=e.defaultViewDate.year||(new Date).getFullYear(),k=e.defaultViewDate.month||0,l=e.defaultViewDate.day||1;e.defaultViewDate=c(j,k,l)}else e.defaultViewDate=d()},_events:[],_secondaryEvents:[],_applyEvents:function(a){for(var c,d,e,f=0;f<a.length;f++)c=a[f][0],2===a[f].length?(d=b,e=a[f][1]):3===a[f].length&&(d=a[f][1],e=a[f][2]),c.on(e,d)},_unapplyEvents:function(a){for(var c,d,e,f=0;f<a.length;f++)c=a[f][0],2===a[f].length?(e=b,d=a[f][1]):3===a[f].length&&(e=a[f][1],d=a[f][2]),c.off(d,e)},_buildEvents:function(){var b={keyup:a.proxy(function(b){-1===a.inArray(b.keyCode,[27,37,39,38,40,32,13,9])&&this.update()},this),keydown:a.proxy(this.keydown,this),paste:a.proxy(this.paste,this)};this.o.showOnFocus===!0&&(b.focus=a.proxy(this.show,this)),this.isInput?this._events=[[this.element,b]]:this.component&&this.inputField.length?this._events=[[this.inputField,b],[this.component,{click:a.proxy(this.show,this)}]]:this._events=[[this.element,{click:a.proxy(this.show,this),keydown:a.proxy(this.keydown,this)}]],this._events.push([this.element,"*",{blur:a.proxy(function(a){this._focused_from=a.target},this)}],[this.element,{blur:a.proxy(function(a){this._focused_from=a.target},this)}]),this.o.immediateUpdates&&this._events.push([this.element,{"changeYear changeMonth":a.proxy(function(a){this.update(a.date)},this)}]),this._secondaryEvents=[[this.picker,{click:a.proxy(this.click,this)}],[this.picker,".prev, .next",{click:a.proxy(this.navArrowsClick,this)}],[a(window),{resize:a.proxy(this.place,this)}],[a(document),{"mousedown touchstart":a.proxy(function(a){this.element.is(a.target)||this.element.find(a.target).length||this.picker.is(a.target)||this.picker.find(a.target).length||this.isInline||this.hide()},this)}]]},_attachEvents:function(){this._detachEvents(),this._applyEvents(this._events)},_detachEvents:function(){this._unapplyEvents(this._events)},_attachSecondaryEvents:function(){this._detachSecondaryEvents(),this._applyEvents(this._secondaryEvents)},_detachSecondaryEvents:function(){this._unapplyEvents(this._secondaryEvents)},_trigger:function(b,c){var d=c||this.dates.get(-1),e=this._utc_to_local(d);this.element.trigger({type:b,date:e,viewMode:this.viewMode,dates:a.map(this.dates,this._utc_to_local),format:a.proxy(function(a,b){0===arguments.length?(a=this.dates.length-1,b=this.o.format):"string"==typeof a&&(b=a,a=this.dates.length-1),b=b||this.o.format;var c=this.dates.get(a);return r.formatDate(c,b,this.o.language)},this)})},show:function(){return this.inputField.prop("disabled")||this.inputField.prop("readonly")&&this.o.enableOnReadonly===!1?void 0:(this.isInline||this.picker.appendTo(this.o.container),this.place(),this.picker.show(),this._attachSecondaryEvents(),this._trigger("show"),(window.navigator.msMaxTouchPoints||"ontouchstart"in document)&&this.o.disableTouchKeyboard&&a(this.element).blur(),this)},hide:function(){return this.isInline||!this.picker.is(":visible")?this:(this.focusDate=null,this.picker.hide().detach(),this._detachSecondaryEvents(),this.setViewMode(this.o.startView),this.o.forceParse&&this.inputField.val()&&this.setValue(),this._trigger("hide"),this)},destroy:function(){return this.hide(),this._detachEvents(),this._detachSecondaryEvents(),this.picker.remove(),delete this.element.data().datepicker,this.isInput||delete this.element.data().date,this},paste:function(b){var c;if(b.originalEvent.clipboardData&&b.originalEvent.clipboardData.types&&-1!==a.inArray("text/plain",b.originalEvent.clipboardData.types))c=b.originalEvent.clipboardData.getData("text/plain");else{if(!window.clipboardData)return;c=window.clipboardData.getData("Text")}this.setDate(c),this.update(),b.preventDefault()},_utc_to_local:function(a){return a&&new Date(a.getTime()+6e4*a.getTimezoneOffset())},_local_to_utc:function(a){return a&&new Date(a.getTime()-6e4*a.getTimezoneOffset())},_zero_time:function(a){return a&&new Date(a.getFullYear(),a.getMonth(),a.getDate())},_zero_utc_time:function(a){return a&&c(a.getUTCFullYear(),a.getUTCMonth(),a.getUTCDate())},getDates:function(){return a.map(this.dates,this._utc_to_local)},getUTCDates:function(){return a.map(this.dates,function(a){return new Date(a)})},getDate:function(){return this._utc_to_local(this.getUTCDate())},getUTCDate:function(){var a=this.dates.get(-1);return a!==b?new Date(a):null},clearDates:function(){this.inputField.val(""),this.update(),this._trigger("changeDate"),this.o.autoclose&&this.hide()},setDates:function(){var b=a.isArray(arguments[0])?arguments[0]:arguments;return this.update.apply(this,b),this._trigger("changeDate"),this.setValue(),this},setUTCDates:function(){var b=a.isArray(arguments[0])?arguments[0]:arguments;return this.setDates.apply(this,a.map(b,this._utc_to_local)),this},setDate:f("setDates"),setUTCDate:f("setUTCDates"),remove:f("destroy"),setValue:function(){var a=this.getFormattedDate();return this.inputField.val(a),this},getFormattedDate:function(c){c===b&&(c=this.o.format);var d=this.o.language;return a.map(this.dates,function(a){return r.formatDate(a,c,d)}).join(this.o.multidateSeparator)},getStartDate:function(){return this.o.startDate},setStartDate:function(a){return this._process_options({startDate:a}),this.update(),this.updateNavArrows(),this},getEndDate:function(){return this.o.endDate},setEndDate:function(a){return this._process_options({endDate:a}),this.update(),this.updateNavArrows(),this},setDaysOfWeekDisabled:function(a){return this._process_options({daysOfWeekDisabled:a}),this.update(),this},setDaysOfWeekHighlighted:function(a){return this._process_options({daysOfWeekHighlighted:a}),this.update(),this},setDatesDisabled:function(a){return this._process_options({datesDisabled:a}),this.update(),this},place:function(){if(this.isInline)return this;var b=this.picker.outerWidth(),c=this.picker.outerHeight(),d=10,e=a(this.o.container),f=e.width(),g="body"===this.o.container?a(document).scrollTop():e.scrollTop(),h=e.offset(),i=[];this.element.parents().each(function(){var b=a(this).css("z-index");"auto"!==b&&0!==b&&i.push(parseInt(b))});var j=Math.max.apply(Math,i)+this.o.zIndexOffset,k=this.component?this.component.parent().offset():this.element.offset(),l=this.component?this.component.outerHeight(!0):this.element.outerHeight(!1),m=this.component?this.component.outerWidth(!0):this.element.outerWidth(!1),n=k.left-h.left,o=k.top-h.top;"body"!==this.o.container&&(o+=g),this.picker.removeClass("datepicker-orient-top datepicker-orient-bottom datepicker-orient-right datepicker-orient-left"),"auto"!==this.o.orientation.x?(this.picker.addClass("datepicker-orient-"+this.o.orientation.x),"right"===this.o.orientation.x&&(n-=b-m)):k.left<0?(this.picker.addClass("datepicker-orient-left"),n-=k.left-d):n+b>f?(this.picker.addClass("datepicker-orient-right"),n+=m-b):this.picker.addClass("datepicker-orient-left");var p,q=this.o.orientation.y;if("auto"===q&&(p=-g+o-c,q=0>p?"bottom":"top"),this.picker.addClass("datepicker-orient-"+q),"top"===q?o-=c+parseInt(this.picker.css("padding-top")):o+=l,this.o.rtl){var r=f-(n+m);this.picker.css({top:o,right:r,zIndex:j})}else this.picker.css({top:o,left:n,zIndex:j});return this},_allow_update:!0,update:function(){if(!this._allow_update)return this;var b=this.dates.copy(),c=[],d=!1;return arguments.length?(a.each(arguments,a.proxy(function(a,b){b instanceof Date&&(b=this._local_to_utc(b)),c.push(b)},this)),d=!0):(c=this.isInput?this.element.val():this.element.data("date")||this.inputField.val(),c=c&&this.o.multidate?c.split(this.o.multidateSeparator):[c],delete this.element.data().date),c=a.map(c,a.proxy(function(a){return r.parseDate(a,this.o.format,this.o.language,this.o.assumeNearbyYear)},this)),c=a.grep(c,a.proxy(function(a){return!this.dateWithinRange(a)||!a},this),!0),this.dates.replace(c),this.dates.length?this.viewDate=new Date(this.dates.get(-1)):this.viewDate<this.o.startDate?this.viewDate=new Date(this.o.startDate):this.viewDate>this.o.endDate?this.viewDate=new Date(this.o.endDate):this.viewDate=this.o.defaultViewDate,d?(this.setValue(),this.element.change()):this.dates.length&&String(b)!==String(this.dates)&&d&&(this._trigger("changeDate"),this.element.change()),!this.dates.length&&b.length&&(this._trigger("clearDate"),this.element.change()),this.fill(),this},fillDow:function(){var b=this.o.weekStart,c="<tr>";for(this.o.calendarWeeks&&(c+='<th class="cw">&#160;</th>');b<this.o.weekStart+7;)c+='<th class="dow',-1!==a.inArray(b,this.o.daysOfWeekDisabled)&&(c+=" disabled"),c+='">'+q[this.o.language].daysMin[b++%7]+"</th>";c+="</tr>",this.picker.find(".datepicker-days thead").append(c)},fillMonths:function(){for(var a=this._utc_to_local(this.viewDate),b="",c=0;12>c;){var d=a&&a.getMonth()===c?" focused":"";b+='<span class="month'+d+'">'+q[this.o.language].monthsShort[c++]+"</span>"}this.picker.find(".datepicker-months td").html(b)},setRange:function(b){b&&b.length?this.range=a.map(b,function(a){return a.valueOf()}):delete this.range,this.fill()},getClassNames:function(b){var c=[],f=this.viewDate.getUTCFullYear(),g=this.viewDate.getUTCMonth(),h=d();return b.getUTCFullYear()<f||b.getUTCFullYear()===f&&b.getUTCMonth()<g?c.push("old"):(b.getUTCFullYear()>f||b.getUTCFullYear()===f&&b.getUTCMonth()>g)&&c.push("new"),this.focusDate&&b.valueOf()===this.focusDate.valueOf()&&c.push("focused"),this.o.todayHighlight&&e(b,h)&&c.push("today"),-1!==this.dates.contains(b)&&c.push("active"),this.dateWithinRange(b)||c.push("disabled"),this.dateIsDisabled(b)&&c.push("disabled","disabled-date"),-1!==a.inArray(b.getUTCDay(),this.o.daysOfWeekHighlighted)&&c.push("highlighted"),this.range&&(b>this.range[0]&&b<this.range[this.range.length-1]&&c.push("range"),-1!==a.inArray(b.valueOf(),this.range)&&c.push("selected"),b.valueOf()===this.range[0]&&c.push("range-start"),b.valueOf()===this.range[this.range.length-1]&&c.push("range-end")),c},_fill_yearsView:function(c,d,e,f,g,h,i,j){var k,l,m,n,o,p,q,r,s,t,u;for(k="",l=this.picker.find(c),m=parseInt(g/e,10)*e,o=parseInt(h/f,10)*f,p=parseInt(i/f,10)*f,n=a.map(this.dates,function(a){return parseInt(a.getUTCFullYear()/f,10)*f}),l.find(".datepicker-switch").text(m+"-"+(m+9*f)),q=m-f,r=-1;11>r;r+=1)s=[d],t=null,-1===r?s.push("old"):10===r&&s.push("new"),-1!==a.inArray(q,n)&&s.push("active"),(o>q||q>p)&&s.push("disabled"),q===this.viewDate.getFullYear()&&s.push("focused"),j!==a.noop&&(u=j(new Date(q,0,1)),u===b?u={}:"boolean"==typeof u?u={enabled:u}:"string"==typeof u&&(u={classes:u}),u.enabled===!1&&s.push("disabled"),u.classes&&(s=s.concat(u.classes.split(/\s+/))),u.tooltip&&(t=u.tooltip)),k+='<span class="'+s.join(" ")+'"'+(t?' title="'+t+'"':"")+">"+q+"</span>",q+=f;l.find("td").html(k)},fill:function(){var d,e,f=new Date(this.viewDate),g=f.getUTCFullYear(),h=f.getUTCMonth(),i=this.o.startDate!==-(1/0)?this.o.startDate.getUTCFullYear():-(1/0),j=this.o.startDate!==-(1/0)?this.o.startDate.getUTCMonth():-(1/0),k=this.o.endDate!==1/0?this.o.endDate.getUTCFullYear():1/0,l=this.o.endDate!==1/0?this.o.endDate.getUTCMonth():1/0,m=q[this.o.language].today||q.en.today||"",n=q[this.o.language].clear||q.en.clear||"",o=q[this.o.language].titleFormat||q.en.titleFormat;if(!isNaN(g)&&!isNaN(h)){this.picker.find(".datepicker-days .datepicker-switch").text(r.formatDate(f,o,this.o.language)),this.picker.find("tfoot .today").text(m).toggle(this.o.todayBtn!==!1),this.picker.find("tfoot .clear").text(n).toggle(this.o.clearBtn!==!1),this.picker.find("thead .datepicker-title").text(this.o.title).toggle(""!==this.o.title),this.updateNavArrows(),this.fillMonths();var p=c(g,h,0),s=p.getUTCDate();p.setUTCDate(s-(p.getUTCDay()-this.o.weekStart+7)%7);var t=new Date(p);p.getUTCFullYear()<100&&t.setUTCFullYear(p.getUTCFullYear()),t.setUTCDate(t.getUTCDate()+42),t=t.valueOf();for(var u,v,w=[];p.valueOf()<t;){if(u=p.getUTCDay(),u===this.o.weekStart&&(w.push("<tr>"),this.o.calendarWeeks)){var x=new Date(+p+(this.o.weekStart-u-7)%7*864e5),y=new Date(Number(x)+(11-x.getUTCDay())%7*864e5),z=new Date(Number(z=c(y.getUTCFullYear(),0,1))+(11-z.getUTCDay())%7*864e5),A=(y-z)/864e5/7+1;w.push('<td class="cw">'+A+"</td>")}v=this.getClassNames(p),v.push("day"),this.o.beforeShowDay!==a.noop&&(e=this.o.beforeShowDay(this._utc_to_local(p)),e===b?e={}:"boolean"==typeof e?e={enabled:e}:"string"==typeof e&&(e={classes:e}),e.enabled===!1&&v.push("disabled"),e.classes&&(v=v.concat(e.classes.split(/\s+/))),e.tooltip&&(d=e.tooltip)),v=a.isFunction(a.uniqueSort)?a.uniqueSort(v):a.unique(v),w.push('<td class="'+v.join(" ")+'"'+(d?' title="'+d+'"':"")+(this.o.dateCells?' data-date="'+p.getTime().toString()+'"':"")+">"+p.getUTCDate()+"</td>"),d=null,u===this.o.weekEnd&&w.push("</tr>"),p.setUTCDate(p.getUTCDate()+1)}this.picker.find(".datepicker-days tbody").html(w.join(""));var B=q[this.o.language].monthsTitle||q.en.monthsTitle||"Months",C=this.picker.find(".datepicker-months").find(".datepicker-switch").text(this.o.maxViewMode<2?B:g).end().find("tbody span").removeClass("active");if(a.each(this.dates,function(a,b){b.getUTCFullYear()===g&&C.eq(b.getUTCMonth()).addClass("active")}),(i>g||g>k)&&C.addClass("disabled"),g===i&&C.slice(0,j).addClass("disabled"),g===k&&C.slice(l+1).addClass("disabled"),this.o.beforeShowMonth!==a.noop){var D=this;a.each(C,function(c,d){var e=new Date(g,c,1),f=D.o.beforeShowMonth(e);f===b?f={}:"boolean"==typeof f?f={enabled:f}:"string"==typeof f&&(f={classes:f}),f.enabled!==!1||a(d).hasClass("disabled")||a(d).addClass("disabled"),f.classes&&a(d).addClass(f.classes),f.tooltip&&a(d).prop("title",f.tooltip)})}this._fill_yearsView(".datepicker-years","year",10,1,g,i,k,this.o.beforeShowYear),this._fill_yearsView(".datepicker-decades","decade",100,10,g,i,k,this.o.beforeShowDecade),this._fill_yearsView(".datepicker-centuries","century",1e3,100,g,i,k,this.o.beforeShowCentury)}},updateNavArrows:function(){if(this._allow_update){var a,b,c=new Date(this.viewDate),d=c.getUTCFullYear(),e=c.getUTCMonth();switch(this.viewMode){case 0:a=this.o.startDate!==-(1/0)&&d<=this.o.startDate.getUTCFullYear()&&e<=this.o.startDate.getUTCMonth(),b=this.o.endDate!==1/0&&d>=this.o.endDate.getUTCFullYear()&&e>=this.o.endDate.getUTCMonth();break;case 1:case 2:case 3:case 4:a=this.o.startDate!==-(1/0)&&d<=this.o.startDate.getUTCFullYear(),b=this.o.endDate!==1/0&&d>=this.o.endDate.getUTCFullYear()}this.picker.find(".prev").toggleClass("disabled",a),this.picker.find(".next").toggleClass("disabled",b)}},click:function(b){b.preventDefault(),b.stopPropagation();var e,f,g,h,i;e=a(b.target),e.hasClass("datepicker-switch")&&this.viewMode!==this.o.maxViewMode&&this.setViewMode(this.viewMode+1),e.hasClass("today")&&!e.hasClass("day")&&(this.setViewMode(0),this._setDate(d(),"linked"===this.o.todayBtn?null:"view")),e.hasClass("clear")&&this.clearDates(),e.hasClass("disabled")||(e.hasClass("day")&&(g=Number(e.text()),h=this.viewDate.getUTCFullYear(),i=this.viewDate.getUTCMonth(),(e.hasClass("old")||e.hasClass("new"))&&(f=e.hasClass("old")?-1:1,i=(i+f+12)%12,(-1===f&&11===i||1===f&&0===i)&&(h+=f,this._trigger("changeYear",this.viewDate)),this._trigger("changeMonth",this.viewDate)),this._setDate(c(h,i,g))),(e.hasClass("month")||e.hasClass("year")||e.hasClass("decade")||e.hasClass("century"))&&(this.viewDate.setUTCDate(1),g=1,1===this.viewMode?(i=e.parent().find("span").index(e),h=this.viewDate.getUTCFullYear(),this.viewDate.setUTCMonth(i)):(i=0,h=Number(e.text()),this.viewDate.setUTCFullYear(h)),this._trigger(r.viewModes[this.viewMode-1].e,this.viewDate),this.viewMode===this.o.minViewMode?this._setDate(c(h,i,g)):(this.setViewMode(this.viewMode-1),this.fill()))),this.picker.is(":visible")&&this._focused_from&&this._focused_from.focus(),delete this._focused_from},navArrowsClick:function(b){var c=a(b.target),d=c.hasClass("prev")?-1:1;0!==this.viewMode&&(d*=12*r.viewModes[this.viewMode].navStep),this.viewDate=this.moveMonth(this.viewDate,d),this._trigger(r.viewModes[this.viewMode].e,this.viewDate),this.fill()},_toggle_multidate:function(a){var b=this.dates.contains(a);if(a||this.dates.clear(),-1!==b?(this.o.multidate===!0||this.o.multidate>1||this.o.toggleActive)&&this.dates.remove(b):this.o.multidate===!1?(this.dates.clear(),this.dates.push(a)):this.dates.push(a),"number"==typeof this.o.multidate)for(;this.dates.length>this.o.multidate;)this.dates.remove(0)},_setDate:function(a,b){b&&"date"!==b||this._toggle_multidate(a&&new Date(a)),b&&"view"!==b||(this.viewDate=a&&new Date(a)),this.fill(),this.setValue(),b&&"view"===b||this._trigger("changeDate"),this.inputField.trigger("change"),!this.o.autoclose||b&&"date"!==b||this.hide()},moveDay:function(a,b){var c=new Date(a);return c.setUTCDate(a.getUTCDate()+b),c},moveWeek:function(a,b){return this.moveDay(a,7*b)},moveMonth:function(a,b){if(!g(a))return this.o.defaultViewDate;if(!b)return a;var c,d,e=new Date(a.valueOf()),f=e.getUTCDate(),h=e.getUTCMonth(),i=Math.abs(b);if(b=b>0?1:-1,1===i)d=-1===b?function(){return e.getUTCMonth()===h}:function(){return e.getUTCMonth()!==c},c=h+b,e.setUTCMonth(c),c=(c+12)%12;else{for(var j=0;i>j;j++)e=this.moveMonth(e,b);c=e.getUTCMonth(),e.setUTCDate(f),d=function(){return c!==e.getUTCMonth()}}for(;d();)e.setUTCDate(--f),e.setUTCMonth(c);return e},moveYear:function(a,b){return this.moveMonth(a,12*b)},moveAvailableDate:function(a,b,c){do{if(a=this[c](a,b),!this.dateWithinRange(a))return!1;c="moveDay"}while(this.dateIsDisabled(a));return a},weekOfDateIsDisabled:function(b){return-1!==a.inArray(b.getUTCDay(),this.o.daysOfWeekDisabled)},dateIsDisabled:function(b){return this.weekOfDateIsDisabled(b)||a.grep(this.o.datesDisabled,function(a){return e(b,a)}).length>0},dateWithinRange:function(a){return a>=this.o.startDate&&a<=this.o.endDate},keydown:function(a){if(!this.picker.is(":visible"))return void((40===a.keyCode||27===a.keyCode)&&(this.show(),a.stopPropagation()));var b,c,d=!1,e=this.focusDate||this.viewDate;switch(a.keyCode){case 27:this.focusDate?(this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.fill()):this.hide(),a.preventDefault(),a.stopPropagation();break;case 37:case 38:case 39:case 40:if(!this.o.keyboardNavigation||7===this.o.daysOfWeekDisabled.length)break;b=37===a.keyCode||38===a.keyCode?-1:1,0===this.viewMode?a.ctrlKey?(c=this.moveAvailableDate(e,b,"moveYear"),c&&this._trigger("changeYear",this.viewDate)):a.shiftKey?(c=this.moveAvailableDate(e,b,"moveMonth"),c&&this._trigger("changeMonth",this.viewDate)):37===a.keyCode||39===a.keyCode?c=this.moveAvailableDate(e,b,"moveDay"):this.weekOfDateIsDisabled(e)||(c=this.moveAvailableDate(e,b,"moveWeek")):1===this.viewMode?((38===a.keyCode||40===a.keyCode)&&(b=4*b),c=this.moveAvailableDate(e,b,"moveMonth")):2===this.viewMode&&((38===a.keyCode||40===a.keyCode)&&(b=4*b),c=this.moveAvailableDate(e,b,"moveYear")),c&&(this.focusDate=this.viewDate=c,this.setValue(),this.fill(),a.preventDefault());break;case 13:if(!this.o.forceParse)break;e=this.focusDate||this.dates.get(-1)||this.viewDate,this.o.keyboardNavigation&&(this._toggle_multidate(e),d=!0),this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.setValue(),this.fill(),this.picker.is(":visible")&&(a.preventDefault(),a.stopPropagation(),this.o.autoclose&&this.hide());break;case 9:this.focusDate=null,this.viewDate=this.dates.get(-1)||this.viewDate,this.fill(),this.hide()}d&&(this.dates.length?this._trigger("changeDate"):this._trigger("clearDate"),this.inputField.trigger("change"))},setViewMode:function(a){this.viewMode=a,this.picker.children("div").hide().filter(".datepicker-"+r.viewModes[this.viewMode].clsName).show(),this.updateNavArrows(),this._trigger("changeViewMode",new Date(this.viewDate))}};var l=function(b,c){a.data(b,"datepicker",this),this.element=a(b),this.inputs=a.map(c.inputs,function(a){return a.jquery?a[0]:a}),delete c.inputs,this.keepEmptyValues=c.keepEmptyValues,delete c.keepEmptyValues,n.call(a(this.inputs),c).on("changeDate",a.proxy(this.dateUpdated,this)),this.pickers=a.map(this.inputs,function(b){return a.data(b,"datepicker")}),this.updateDates()};l.prototype={updateDates:function(){this.dates=a.map(this.pickers,function(a){return a.getUTCDate()}),this.updateRanges()},updateRanges:function(){var b=a.map(this.dates,function(a){return a.valueOf()});a.each(this.pickers,function(a,c){c.setRange(b)})},dateUpdated:function(c){if(!this.updating){this.updating=!0;var d=a.data(c.target,"datepicker");if(d!==b){var e=d.getUTCDate(),f=this.keepEmptyValues,g=a.inArray(c.target,this.inputs),h=g-1,i=g+1,j=this.inputs.length;if(-1!==g){if(a.each(this.pickers,function(a,b){b.getUTCDate()||b!==d&&f||b.setUTCDate(e)}),e<this.dates[h])for(;h>=0&&e<this.dates[h];)this.pickers[h--].setUTCDate(e);else if(e>this.dates[i])for(;j>i&&e>this.dates[i];)this.pickers[i++].setUTCDate(e);this.updateDates(),delete this.updating}}}},destroy:function(){a.map(this.pickers,function(a){a.destroy()}),delete this.element.data().datepicker},remove:f("destroy")};var m=a.fn.datepicker,n=function(c){var d=Array.apply(null,arguments);d.shift();var e;if(this.each(function(){var b=a(this),f=b.data("datepicker"),g="object"==typeof c&&c;if(!f){var j=h(this,"date"),m=a.extend({},o,j,g),n=i(m.language),p=a.extend({},o,n,j,g);b.hasClass("input-daterange")||p.inputs?(a.extend(p,{inputs:p.inputs||b.find("input").toArray()}),f=new l(this,p)):f=new k(this,p),b.data("datepicker",f)}"string"==typeof c&&"function"==typeof f[c]&&(e=f[c].apply(f,d))}),e===b||e instanceof k||e instanceof l)return this;if(this.length>1)throw new Error("Using only allowed for the collection of a single element ("+c+" function)");return e};a.fn.datepicker=n;var o=a.fn.datepicker.defaults={assumeNearbyYear:!1,autoclose:!1,beforeShowDay:a.noop,beforeShowMonth:a.noop,beforeShowYear:a.noop,beforeShowDecade:a.noop,beforeShowCentury:a.noop,calendarWeeks:!1,clearBtn:!1,toggleActive:!1,daysOfWeekDisabled:[],daysOfWeekHighlighted:[],datesDisabled:[],endDate:1/0,forceParse:!0,format:"mm/dd/yyyy",keepEmptyValues:!1,keyboardNavigation:!0,language:"en",minViewMode:0,maxViewMode:4,multidate:!1,multidateSeparator:",",orientation:"auto",rtl:!1,startDate:-(1/0),startView:0,todayBtn:!1,todayHighlight:!1,weekStart:0,disableTouchKeyboard:!1,enableOnReadonly:!0,showOnFocus:!0,zIndexOffset:10,container:"body",immediateUpdates:!1,dateCells:!1,title:"",templates:{leftArrow:"&laquo;",rightArrow:"&raquo;"}},p=a.fn.datepicker.locale_opts=["format","rtl","weekStart"];a.fn.datepicker.Constructor=k;var q=a.fn.datepicker.dates={en:{days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],daysShort:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],daysMin:["Su","Mo","Tu","We","Th","Fr","Sa"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],monthsShort:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],today:"Today",clear:"Clear",titleFormat:"MM yyyy"}},r={viewModes:[{names:["days","month"],clsName:"days",e:"changeMonth"},{names:["months","year"],clsName:"months",e:"changeYear",navStep:1},{names:["years","decade"],clsName:"years",e:"changeDecade",navStep:10},{names:["decades","century"],clsName:"decades",e:"changeCentury",navStep:100},{names:["centuries","millennium"],clsName:"centuries",e:"changeMillennium",navStep:1e3}],validParts:/dd?|DD?|mm?|MM?|yy(?:yy)?/g,nonpunctuation:/[^ -\/:-@\u5e74\u6708\u65e5\[-`{-~\t\n\r]+/g,parseFormat:function(a){if("function"==typeof a.toValue&&"function"==typeof a.toDisplay)return a;var b=a.replace(this.validParts,"\x00").split("\x00"),c=a.match(this.validParts);if(!b||!b.length||!c||0===c.length)throw new Error("Invalid date format.");return{separators:b,parts:c}},parseDate:function(e,f,g,h){function i(a,b){return b===!0&&(b=10),100>a&&(a+=2e3,a>(new Date).getFullYear()+b&&(a-=100)),a}function j(){var a=this.slice(0,l[o].length),b=l[o].slice(0,a.length);return a.toLowerCase()===b.toLowerCase()}if(!e)return b;if(e instanceof Date)return e;if("string"==typeof f&&(f=r.parseFormat(f)),f.toValue)return f.toValue(e,f,g);var l,m,n,o,p,s={d:"moveDay",m:"moveMonth",w:"moveWeek",y:"moveYear"},t={yesterday:"-1d",today:"+0d",tomorrow:"+1d"};if(e in t&&(e=t[e]),/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/i.test(e)){for(l=e.match(/([\-+]\d+)([dmwy])/gi),e=new Date,o=0;o<l.length;o++)m=l[o].match(/([\-+]\d+)([dmwy])/i),n=Number(m[1]),p=s[m[2].toLowerCase()],e=k.prototype[p](e,n);return c(e.getUTCFullYear(),e.getUTCMonth(),e.getUTCDate())}l=e&&e.match(this.nonpunctuation)||[],e=new Date;var u,v,w={},x=["yyyy","yy","M","MM","m","mm","d","dd"],y={yyyy:function(a,b){return a.setUTCFullYear(h?i(b,h):b)},m:function(a,b){if(isNaN(a))return a;for(b-=1;0>b;)b+=12;for(b%=12,a.setUTCMonth(b);a.getUTCMonth()!==b;)a.setUTCDate(a.getUTCDate()-1);return a},d:function(a,b){return a.setUTCDate(b)}};y.yy=y.yyyy,y.M=y.MM=y.mm=y.m,y.dd=y.d,e=d();var z=f.parts.slice();if(l.length!==z.length&&(z=a(z).filter(function(b,c){return-1!==a.inArray(c,x)}).toArray()),l.length===z.length){var A;for(o=0,A=z.length;A>o;o++){if(u=parseInt(l[o],10),m=z[o],isNaN(u))switch(m){case"MM":v=a(q[g].months).filter(j),u=a.inArray(v[0],q[g].months)+1;break;case"M":v=a(q[g].monthsShort).filter(j),u=a.inArray(v[0],q[g].monthsShort)+1}w[m]=u}var B,C;for(o=0;o<x.length;o++)C=x[o],C in w&&!isNaN(w[C])&&(B=new Date(e),y[C](B,w[C]),isNaN(B)||(e=B))}return e},formatDate:function(b,c,d){if(!b)return"";if("string"==typeof c&&(c=r.parseFormat(c)),c.toDisplay)return c.toDisplay(b,c,d);var e={d:b.getUTCDate(),D:q[d].daysShort[b.getUTCDay()],DD:q[d].days[b.getUTCDay()],m:b.getUTCMonth()+1,M:q[d].monthsShort[b.getUTCMonth()],MM:q[d].months[b.getUTCMonth()],yy:b.getUTCFullYear().toString().substring(2),yyyy:b.getUTCFullYear()};e.dd=(e.d<10?"0":"")+e.d,e.mm=(e.m<10?"0":"")+e.m,b=[];for(var f=a.extend([],c.separators),g=0,h=c.parts.length;h>=g;g++)f.length&&b.push(f.shift()),b.push(e[c.parts[g]]);return b.join("")},headTemplate:'<thead><tr><th colspan="7" class="datepicker-title"></th></tr><tr><th class="prev">&laquo;</th><th colspan="5" class="datepicker-switch"></th><th class="next">&raquo;</th></tr></thead>',contTemplate:'<tbody><tr><td colspan="7"></td></tr></tbody>',footTemplate:'<tfoot><tr><th colspan="7" class="today"></th></tr><tr><th colspan="7" class="clear"></th></tr></tfoot>'};r.template='<div class="datepicker"><div class="datepicker-days"><table class="table-condensed">'+r.headTemplate+"<tbody></tbody>"+r.footTemplate+'</table></div><div class="datepicker-months"><table class="table-condensed">'+r.headTemplate+r.contTemplate+r.footTemplate+'</table></div><div class="datepicker-years"><table class="table-condensed">'+r.headTemplate+r.contTemplate+r.footTemplate+'</table></div><div class="datepicker-decades"><table class="table-condensed">'+r.headTemplate+r.contTemplate+r.footTemplate+'</table></div><div class="datepicker-centuries"><table class="table-condensed">'+r.headTemplate+r.contTemplate+r.footTemplate+"</table></div></div>",
 a.fn.datepicker.DPGlobal=r,a.fn.datepicker.noConflict=function(){return a.fn.datepicker=m,this},a.fn.datepicker.version="1.7.0-dev",a(document).on("focus.datepicker.data-api click.datepicker.data-api",'[data-provide="datepicker"]',function(b){var c=a(this);c.data("datepicker")||(b.preventDefault(),n.call(c,"show"))}),a(function(){n.call(a('[data-provide="datepicker-inline"]'))})});
-!function i(e,o,t){function r(n,s){if(!o[n]){if(!e[n]){var k="function"==typeof require&&require;if(!s&&k)return k(n,!0);if(a)return a(n,!0);var w=new Error("Cannot find module '"+n+"'");throw w.code="MODULE_NOT_FOUND",w}var c=o[n]={exports:{}};e[n][0].call(c.exports,function(i){var o=e[n][1][i];return r(o?o:i)},c,c.exports,i,e,o,t)}return o[n].exports}for(var a="function"==typeof require&&require,n=0;n<t.length;n++)r(t[n]);return r}({1:[function(i,e,o){"use strict";function t(i,e){if(!(i instanceof e))throw new TypeError("Cannot call a class as a function")}var r=function(){function i(i,e){for(var o=0;o<e.length;o++){var t=e[o];t.enumerable=t.enumerable||!1,t.configurable=!0,"value"in t&&(t.writable=!0),Object.defineProperty(i,t.key,t)}}return function(e,o,t){return o&&i(e.prototype,o),t&&i(e,t),e}}();String.prototype.descore=function(){return this.replace(/_/g," ")},String.prototype.score=function(){return this.replace(/ /g,"_")},String.prototype.upcase=function(){return this.charAt(0).toUpperCase()+this.slice(1)},String.prototype.escape=function(){var i={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","/":"&#x2F;"};return this.replace(/[&<>"'\/]/g,function(e){return i[e]})},Array.prototype.unique=function(){return this.filter(function(i,e,o){return o.indexOf(i)===e})},window.mix=function(i){return new a(i)};var a=function(){function i(e){t(this,i),this.superclass=e}return r(i,[{key:"with",value:function(){for(var i=arguments.length,e=Array(i),o=0;o<i;o++)e[o]=arguments[o];return e.reduce(function(i,e){return e(i)},this.superclass)}}]),i}();$.whenAll=function(){var i=$.Deferred(),e=0,o="resolved",t=new(Function.prototype.bind.apply(Array,[null].concat(Array.prototype.slice.call(arguments)))),r=function(){"rejected"===this.state&&(o="rejected"),e++,e===t.length&&i["rejected"===o?"reject":"resolve"]()};return $.each(t,function(i,e){e.always(r)}),i.promise()}},{}],2:[function(i,e,o){"use strict";Array.prototype.includes||(Array.prototype.includes=function(i){return this.indexOf(i)!==-1}),String.prototype.includes||(String.prototype.includes=function(i,e){return"number"!=typeof e&&(e=0),!(e+i.length>this.length)&&this.indexOf(i,e)!==-1}),"function"!=typeof Object.assign&&!function(){Object.assign=function(i){if(void 0===i||null===i)throw new TypeError("Cannot convert undefined or null to object");for(var e=Object(i),o=1;o<arguments.length;o++){var t=arguments[o];if(void 0!==t&&null!==t)for(var r in t)t.hasOwnProperty(r)&&(e[r]=t[r])}return e}}(),"remove"in Element.prototype||(Element.prototype.remove=function(){this.parentNode.removeChild(this)}),String.prototype.startsWith||(String.prototype.startsWith=function(i,e){return e=e||0,this.substr(e,i.length)===i}),Array.of||(Array.of=function(){return Array.prototype.slice.call(arguments)}),Array.prototype.find||(Array.prototype.find=function(i){if(null===this)throw new TypeError("Array.prototype.find called on null or undefined");if("function"!=typeof i)throw new TypeError("predicate must be a function");for(var e=Object(this),o=e.length>>>0,t=arguments[1],r=void 0,a=0;a<o;a++)if(r=e[a],i.call(t,r,a,e))return r}),Array.prototype.fill||(Array.prototype.fill=function(i){if(null===this)throw new TypeError("this is null or not defined");for(var e=Object(this),o=e.length>>>0,t=arguments[1],r=t>>0,a=r<0?Math.max(o+r,0):Math.min(r,o),n=arguments[2],s=void 0===n?o:n>>0,k=s<0?Math.max(o+s,0):Math.min(s,o);a<k;)e[a]=i,a++;return e})},{}],3:[function(i,e,o){"use strict";function t(i,e,o){return e in i?Object.defineProperty(i,e,{value:o,enumerable:!0,configurable:!0,writable:!0}):i[e]=o,i}function r(i,e){if(!(i instanceof e))throw new TypeError("Cannot call a class as a function")}function a(i,e){if(!i)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?i:e}function n(i,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);i.prototype=Object.create(e&&e.prototype,{constructor:{value:i,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(i,e):i.__proto__=e)}var s=function(){function i(i,e){var o=[],t=!0,r=!1,a=void 0;try{for(var n,s=i[Symbol.iterator]();!(t=(n=s.next()).done)&&(o.push(n.value),!e||o.length!==e);t=!0);}catch(i){r=!0,a=i}finally{try{!t&&s.return&&s.return()}finally{if(r)throw a}}return o}return function(e,o){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return i(e,o);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),k="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(i){return typeof i}:function(i){return i&&"function"==typeof Symbol&&i.constructor===Symbol?"symbol":typeof i},w=function(){function i(i,e){for(var o=0;o<e.length;o++){var t=e[o];t.enumerable=t.enumerable||!1,t.configurable=!0,"value"in t&&(t.writable=!0),Object.defineProperty(i,t.key,t)}}return function(e,o,t){return o&&i(e.prototype,o),t&&i(e,t),e}}();i("./core_extensions"),i("./polyfills");var c=i("./pv_config"),g=i("./site_map"),l=Object.keys(g).map(function(i){return g[i]}),u=function(i){function e(i){r(this,e);var o=a(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,i)),n=o.config.defaults,s=o.config.validParams;if(o.config=Object.assign({},o.config,i),o.config.defaults=Object.assign({},n,i.defaults),o.config.validParams=Object.assign({},s,i.validParams),o.colorsStyleEl=void 0,o.storage={},["localizeDateFormat","numericalFormatting","bezierCurve","autocomplete","autoLogDetection","beginAtZero","rememberChart"].forEach(function(i){o[i]=o.getFromLocalStorage("pageviews-settings-"+i)||o.config.defaults[i]}),o.setupSettingsModal(),o.params=null,o.siteInfo={},o.processStart=null,o.debug=location.search.includes("debug=true")||"localhost"===location.host,location.pathname.includes("-test")&&!location.search.includes("debug=true")){var w=function(){var i=location.pathname.replace(/-test\/?/,"");$("body").html("\n        <p class='tm text-center'>This is the staging environment!</p>\n        <p class='tm text-center'>To use the staging app, append <code>debug=true</code> to the URL</p>\n        <p class='tm text-center'>Otherwise, please update your links to use\n          <strong><a href='"+i+"'>https://"+location.host+i+"</a></strong>\n        </p>\n        <p class='text-center' style='margin-top:50px; font-weight:bold'>\n          Redirecting you to the production "+document.title+" in\n          <span class='countdown'>10</span>...\n        </p>\n      ");var e=10;return setInterval(function(){return 0===--e?document.location=i:void $(".countdown").text(e)},1e3),{v:a(o)}}();if("object"===("undefined"==typeof w?"undefined":k(w)))return w.v}o.debug?window.app=o:o.splash();var c=t({},i18nLang,"/pageviews/messages/"+i18nLang+".json");return"en"!==i18nLang&&(c.en="/pageviews/messages/en.json"),$.i18n({locale:i18nLang}).load(c).then(o.initialize.bind(o)),$.extend($.i18n.parser.emitter,{link:function(i){return'<a href="'+i[1].escape()+'">'+i[0].escape()+"</a>"}}),toastr.options={closeButton:!0,debug:"localhost"===location.host,newestOnTop:!1,progressBar:!1,positionClass:"toast-top-center",preventDuplicates:!0,onclick:null,showDuration:"300",hideDuration:"1000",timeOut:"5000",extendedTimeOut:"3000",showEasing:"swing",hideEasing:"linear",showMethod:"fadeIn",hideMethod:"fadeOut",toastClass:"alert",iconClasses:{error:"alert-danger",info:"alert-info",success:"alert-success",warning:"alert-warning"}},o}return n(e,i),w(e,[{key:"toast",value:function(i){var e=i.title?"<strong>"+i.title+"</strong> ":"";i=Object.assign({message:e+i.message,level:"warning",timeout:10},i),toastr.options.timeOut=1e3*i.timeout,toastr[i.level](i.message)}},{key:"toastSuccess",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:10;this.toast({message:i,level:"success",timeout:e})}},{key:"toastInfo",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:10;this.toast({message:i,level:"info",timeout:e})}},{key:"toastWarn",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:10;this.toast({message:i,level:"warning",timeout:e})}},{key:"toastError",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:10;this.toast({message:i,level:"error",timeout:e})}},{key:"addInvalidParamNotice",value:function(i){var e="<a href='/"+this.app+"/url_structure'>"+$.i18n("documentation").toLowerCase()+"</a>";this.toastError("\n      <strong>"+$.i18n("invalid-params")+"</strong>\n      "+$.i18n("param-error-3",i,e)+"\n    ")}},{key:"validateDateRange",value:function(i){if(i.range)this.setSpecialRange(i.range)||(this.addInvalidParamNotice("range"),this.setSpecialRange(this.config.defaults.dateRange));else if(i.start){var e=/\d{4}-\d{2}-\d{2}$/;i.start&&/^\d{4}-\d{2}$/.test(i.start)&&(i.start=i.start+"-01",i.monthly=!0),i.end&&/^\d{4}-\d{2}$/.test(i.end)?i.end=moment(i.end+"-01").endOf("month").format("YYYY-MM-DD"):i.monthly=!1;var o=void 0,t=void 0;if(!i.start||!e.test(i.start))return this.addInvalidParamNotice("start"),!1;if(o=moment(i.start),!i.end||!e.test(i.end))return this.addInvalidParamNotice("end"),!1;if(t=moment(i.end),o<this.config.minDate||t<this.config.minDate)return this.toastError("\n          <strong>"+$.i18n("invalid-params")+"</strong>\n          "+$.i18n("param-error-1",moment(this.config.minDate).format(this.dateFormat))+"\n        "),!1;if(o>t)return this.toastError("\n          <strong>"+$.i18n("param-error-2")+"</strong>\n          "+$.i18n("invalid-params")+"\n        "),!1;i.monthly&&["pageviews","siteviews"].includes(this.app)?($("#date-type-select").val("monthly"),$(".date-selector").hide(),$(".month-selector").show(),this.monthStart=moment(i.start).toDate(),this.monthEnd=moment(i.end).startOf("month").toDate(),this.setupMonthSelector(this.monthStart,this.monthEnd)):(this.daterangepicker.startDate=o,this.daterangepicker.setEndDate(t))}else this.setSpecialRange(this.config.defaults.dateRange);return!0}},{key:"clearMessages",value:function(){$(".message-container").html("")}},{key:"dbName",value:function(i){return Object.keys(g).find(function(e){return g[e]===i.replace(/\.org$/,"")+".org"})}},{key:"downloadData",value:function(i,e){var o=encodeURI(i),t=document.createElement("a");if("string"==typeof t.download){document.body.appendChild(t);var r=this.getExportFilename()+"."+e;t.download=r,t.href=o,t.click(),document.body.removeChild(t)}else window.open(o)}},{key:"fillInSettings",value:function(){var i=this;$.each($("#settings-modal input"),function(e,o){"checkbox"===o.type?o.checked="true"===i[o.name]:o.checked=i[o.name]===o.value})}},{key:"focusSelect2",value:function(){$(".select2-selection").trigger("click"),$(".select2-search__field").focus()}},{key:"formatNumber",value:function(i){var e=this.getFromLocalStorage("pageviews-settings-numericalFormatting")||this.config.defaults.numericalFormatting;return"true"===e?this.n(i):i}},{key:"formatYAxisNumber",value:function(i){return i%1===0?this.formatNumber(i):null}},{key:"getDateHeadings",value:function(){for(var i=!(arguments.length>0&&void 0!==arguments[0])||arguments[0],e=[],o="monthly"===$("#date-type-select").val(),t=moment(this.daterangepicker.endDate).add(o?0:1,"day"),r=o?"month":"day",a=o?"YYYY-MM":"YYYY-MM-DD",n=moment(this.daterangepicker.startDate);n.isBefore(t);n.add(1,r))i?e.push(n.format(this.dateFormat)):e.push(n.format(a));return e}},{key:"getExpandedPageURL",value:function(i){return"//"+this.project+".org/w/index.php?title="+encodeURIComponent(i.score()).replace(/'/,escape)}},{key:"getHistoryLink",value:function(i,e){return'<a href="'+this.getExpandedPageURL(i)+'&action=history" target="_blank">\n        '+e+"\n      </a>"}},{key:"getExportFilename",value:function(){var i=this.daterangepicker.startDate.startOf("day").format("YYYYMMDD"),e=this.daterangepicker.endDate.startOf("day").format("YYYYMMDD");return this.app+"-"+i+"-"+e}},{key:"getPageLink",value:function(i,e){return'<a target="_blank" href="'+this.getPageURL(i,e)+'">'+i.descore().escape()+"</a>"}},{key:"getPageURL",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:this.project;return"//"+e.replace(/\.org$/,"").escape()+".org/wiki/"+encodeURIComponent(i.score()).replace(/%3A|%2F/g,unescape)}},{key:"getSiteLink",value:function(i){return'<a target="_blank" href="//'+i.replace(/\.org$/,"")+'.org">'+i+"</a>"}},{key:"getLocaleDateString",value:function(){if(!navigator.language)return this.config.defaults.dateFormat;var i={"ar-sa":"DD/MM/YY","bg-bg":"DD.M.YYYY","ca-es":"DD/MM/YYYY","zh-tw":"YYYY/M/D","cs-cz":"D.M.YYYY","da-dk":"DD-MM-YYYY","de-de":"DD.MM.YYYY","el-gr":"D/M/YYYY","en-us":"M/D/YYYY","fi-fi":"D.M.YYYY","fr-fr":"DD/MM/YYYY","he-il":"DD/MM/YYYY","hu-hu":"YYYY. MM. DD.","is-is":"D.M.YYYY","it-it":"DD/MM/YYYY","ja-jp":"YYYY/MM/DD","ko-kr":"YYYY-MM-DD","nl-nl":"D-M-YYYY","nb-no":"DD.MM.YYYY","pl-pl":"YYYY-MM-DD","pt-br":"D/M/YYYY","ro-ro":"DD.MM.YYYY","ru-ru":"DD.MM.YYYY","hr-hr":"D.M.YYYY","sk-sk":"D. M. YYYY","sq-al":"YYYY-MM-DD","sv-se":"YYYY-MM-DD","th-th":"D/M/YYYY","tr-tr":"DD.MM.YYYY","ur-pk":"DD/MM/YYYY","id-id":"DD/MM/YYYY","uk-ua":"DD.MM.YYYY","be-by":"DD.MM.YYYY","sl-si":"D.M.YYYY","et-ee":"D.MM.YYYY","lv-lv":"YYYY.MM.DD.","lt-lt":"YYYY.MM.DD","fa-ir":"MM/DD/YYYY","vi-vn":"DD/MM/YYYY","hy-am":"DD.MM.YYYY","az-latn-az":"DD.MM.YYYY","eu-es":"YYYY/MM/DD","mk-mk":"DD.MM.YYYY","af-za":"YYYY/MM/DD","ka-ge":"DD.MM.YYYY","fo-fo":"DD-MM-YYYY","hi-in":"DD-MM-YYYY","ms-my":"DD/MM/YYYY","kk-kz":"DD.MM.YYYY","ky-kg":"DD.MM.YY","sw-ke":"M/d/YYYY","uz-latn-uz":"DD/MM YYYY","tt-ru":"DD.MM.YYYY","pa-in":"DD-MM-YY","gu-in":"DD-MM-YY","ta-in":"DD-MM-YYYY","te-in":"DD-MM-YY","kn-in":"DD-MM-YY","mr-in":"DD-MM-YYYY","sa-in":"DD-MM-YYYY","mn-mn":"YY.MM.DD","gl-es":"DD/MM/YY","kok-in":"DD-MM-YYYY","syr-sy":"DD/MM/YYYY","dv-mv":"DD/MM/YY","ar-iq":"DD/MM/YYYY","zh-cn":"YYYY/M/D","de-ch":"DD.MM.YYYY","en-gb":"DD/MM/YYYY","es-mx":"DD/MM/YYYY","fr-be":"D/MM/YYYY","it-ch":"DD.MM.YYYY","nl-be":"D/MM/YYYY","nn-no":"DD.MM.YYYY","pt-pt":"DD-MM-YYYY","sr-latn-cs":"D.M.YYYY","sv-fi":"D.M.YYYY","az-cyrl-az":"DD.MM.YYYY","ms-bn":"DD/MM/YYYY","uz-cyrl-uz":"DD.MM.YYYY","ar-eg":"DD/MM/YYYY","zh-hk":"D/M/YYYY","de-at":"DD.MM.YYYY","en-au":"D/MM/YYYY","es-es":"DD/MM/YYYY","fr-ca":"YYYY-MM-DD","sr-cyrl-cs":"D.M.YYYY","ar-ly":"DD/MM/YYYY","zh-sg":"D/M/YYYY","de-lu":"DD.MM.YYYY","en-ca":"DD/MM/YYYY","es-gt":"DD/MM/YYYY","fr-ch":"DD.MM.YYYY","ar-dz":"DD-MM-YYYY","zh-mo":"D/M/YYYY","de-li":"DD.MM.YYYY","en-nz":"D/MM/YYYY","es-cr":"DD/MM/YYYY","fr-lu":"DD/MM/YYYY","ar-ma":"DD-MM-YYYY","en-ie":"DD/MM/YYYY","es-pa":"MM/DD/YYYY","fr-mc":"DD/MM/YYYY","ar-tn":"DD-MM-YYYY","en-za":"YYYY/MM/DD","es-do":"DD/MM/YYYY","ar-om":"DD/MM/YYYY","en-jm":"DD/MM/YYYY","es-ve":"DD/MM/YYYY","ar-ye":"DD/MM/YYYY","en-029":"MM/DD/YYYY","es-co":"DD/MM/YYYY","ar-sy":"DD/MM/YYYY","en-bz":"DD/MM/YYYY","es-pe":"DD/MM/YYYY","ar-jo":"DD/MM/YYYY","en-tt":"DD/MM/YYYY","es-ar":"DD/MM/YYYY","ar-lb":"DD/MM/YYYY","en-zw":"M/D/YYYY","es-ec":"DD/MM/YYYY","ar-kw":"DD/MM/YYYY","en-ph":"M/D/YYYY","es-cl":"DD-MM-YYYY","ar-ae":"DD/MM/YYYY","es-uy":"DD/MM/YYYY","ar-bh":"DD/MM/YYYY","es-py":"DD/MM/YYYY","ar-qa":"DD/MM/YYYY","es-bo":"DD/MM/YYYY","es-sv":"DD/MM/YYYY","es-hn":"DD/MM/YYYY","es-ni":"DD/MM/YYYY","es-pr":"DD/MM/YYYY","am-et":"D/M/YYYY","tzm-latn-dz":"DD-MM-YYYY","iu-latn-ca":"D/MM/YYYY","sma-no":"DD.MM.YYYY","mn-mong-cn":"YYYY/M/D","gd-gb":"DD/MM/YYYY","en-my":"D/M/YYYY","prs-af":"DD/MM/YY","bn-bd":"DD-MM-YY","wo-sn":"DD/MM/YYYY","rw-rw":"M/D/YYYY","qut-gt":"DD/MM/YYYY","sah-ru":"MM.DD.YYYY","gsw-fr":"DD/MM/YYYY","co-fr":"DD/MM/YYYY","oc-fr":"DD/MM/YYYY","mi-nz":"DD/MM/YYYY","ga-ie":"DD/MM/YYYY","se-se":"YYYY-MM-DD","br-fr":"DD/MM/YYYY","smn-fi":"D.M.YYYY","moh-ca":"M/D/YYYY","arn-cl":"DD-MM-YYYY","ii-cn":"YYYY/M/D","dsb-de":"D. M. YYYY","ig-ng":"D/M/YYYY","kl-gl":"DD-MM-YYYY","lb-lu":"DD/MM/YYYY","ba-ru":"DD.MM.YY","nso-za":"YYYY/MM/DD","quz-bo":"DD/MM/YYYY","yo-ng":"D/M/YYYY","ha-latn-ng":"D/M/YYYY","fil-ph":"M/D/YYYY","ps-af":"DD/MM/YY","fy-nl":"D-M-YYYY","ne-np":"M/D/YYYY","se-no":"DD.MM.YYYY","iu-cans-ca":"D/M/YYYY","sr-latn-rs":"D.M.YYYY","si-lk":"YYYY-MM-DD","sr-cyrl-rs":"D.M.YYYY","lo-la":"DD/MM/YYYY","km-kh":"YYYY-MM-DD","cy-gb":"DD/MM/YYYY","bo-cn":"YYYY/M/D","sms-fi":"D.M.YYYY","as-in":"DD-MM-YYYY","ml-in":"DD-MM-YY","en-in":"DD-MM-YYYY","or-in":"DD-MM-YY","bn-in":"DD-MM-YY","tk-tm":"DD.MM.YY","bs-latn-ba":"D.M.YYYY","mt-mt":"DD/MM/YYYY","sr-cyrl-me":"D.M.YYYY","se-fi":"D.M.YYYY","zu-za":"YYYY/MM/DD","xh-za":"YYYY/MM/DD","tn-za":"YYYY/MM/DD","hsb-de":"D. M. YYYY","bs-cyrl-ba":"D.M.YYYY","tg-cyrl-tj":"DD.MM.yy","sr-latn-ba":"D.M.YYYY","smj-no":"DD.MM.YYYY","rm-ch":"DD/MM/YYYY","smj-se":"YYYY-MM-DD","quz-ec":"DD/MM/YYYY","quz-pe":"DD/MM/YYYY","hr-ba":"D.M.YYYY.","sr-latn-me":"D.M.YYYY","sma-se":"YYYY-MM-DD","en-sg":"D/M/YYYY","ug-cn":"YYYY-M-D","sr-cyrl-ba":"D.M.YYYY","es-us":"M/D/YYYY"},e=navigator.language.toLowerCase();return i[e]||this.config.defaults.dateFormat}},{key:"getFromLocalStorage",value:function(i){try{return localStorage.getItem(i)}catch(e){return storage[i]}}},{key:"getBugReportURL",value:function(i,e){var o="https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit&section=new&preloadtitle="+(e||this.app.upcase()+" bug report");return i?o+"&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]="+i:o}},{key:"fetchSiteInfo",value:function(i){var e=this;i=i.replace(/\.org$/,"");var o=$.Deferred(),t="pageviews-siteinfo-"+i;return this.siteInfo[i]?o.resolve(this.siteInfo):(simpleStorage.hasKey(t)?(this.siteInfo[i]=simpleStorage.get(t),o.resolve(this.siteInfo)):$.ajax({url:"https://"+i+".org/w/api.php",data:{action:"query",meta:"siteinfo",siprop:"general|namespaces",format:"json"},dataType:"jsonp"}).done(function(r){e.siteInfo[i]=r.query,simpleStorage.set(t,e.siteInfo[i],{TTL:6048e5}),o.resolve(e.siteInfo)}).fail(function(i){o.reject(i)}),o)}},{key:"getPageAssessments",value:function(i){var e=this,o=$.Deferred();return this.massApi({prop:"pageassessments",titles:i.join("|")},this.project,"pacontinue","pages").done(function(i){if(!i.pages)return o.resolve({});var t={};return i.pages.forEach(function(i){if(i.pageassessments){var o=Object.keys(i.pageassessments),r=i.pageassessments[o[0]];if(r&&r.class.length&&!t[i.title]){var a=e.config.pageAssessmentBadges[e.project][r.class]||"";if(!a.length)return;var n="<img class='article-badge' src='https://upload.wikimedia.org/wikipedia/commons/"+a+"' "+("alt='"+r.class+"' title='"+r.class+"' />");t[i.title]=n}}}),o.resolve(t)}),o}},{key:"getSiteInfo",value:function(i){return this.siteInfo[i.replace(/\.org$/,"")]}},{key:"getTopviewsMonth",value:function(){var i=!(arguments.length>0&&void 0!==arguments[0])||arguments[0],e=i?"startDate":"endDate",o=moment(this.daterangepicker[e]);return o.month()!==moment().month()&&o.month()!==moment().subtract(2,"days").month()||o.subtract(1,"month"),o}},{key:"getTopviewsMonthURL",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:this.getTopviewsMonth(),o={project:i,platform:"all-access",date:e.startOf("month").format("YYYY-MM")};return"/topviews?"+$.param(o)}},{key:"getUserAgent",value:function(){return navigator.userAgent?navigator.userAgent:"Unknown"}},{key:"setLocalStorage",value:function(i,e){try{return localStorage.setItem(i,e)}catch(o){return storage[i]=e}}},{key:"hashCode",value:function(i){return i.split("").reduce(function(i,e){return(i<<5)-i+e.charCodeAt(0)},0)}},{key:"isChartApp",value:function(){return!this.isListApp()}},{key:"isListApp",value:function(){return["langviews","massviews","redirectviews","userviews"].includes(this.app)}},{key:"isMultilangProject",value:function(){return new RegExp(".*?\\.("+e.multilangProjects.join("|")+")").test(this.project)}},{key:"massApi",value:function(i,e){var o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:"continue",t=arguments[3],r=arguments.length>4&&void 0!==arguments[4]?arguments[4]:this.config.apiLimit;/\.org$/.test(e)||(e+=".org");var a=$.Deferred(),n={pages:[]},s=function s(k){var w=Object.assign({action:"query",format:"json",formatversion:"2"},i);k&&(w[o]=k);var c=$.ajax({url:"https://"+e+"/w/api.php",jsonp:"callback",dataType:"jsonp",data:w});c.done(function(i){if(i.error||!i.query)return a.resolve(i);var e=void 0;"function"==typeof t?(n.pages=n.pages.concat(t(i.query)),e=n.pages.length>=r):(i.query.pages&&(n.pages=n.pages.concat(i.query.pages)),i.query[t]&&(n[t]=(n[t]||[]).concat(i.query[t])),e=n.pages.length>=r||n[t].length>=r),!e&&i.continue&&i.continue[o]?setTimeout(function(){s(i.continue[o])},100):(i.continue&&(n.continue=!0),a.resolve(n))}).fail(function(i){a.reject(i)})};return s(),a}},{key:"n",value:function(i){return new Number(i).toLocaleString()}},{key:"getPageInfo",value:function(i){var e=$.Deferred();try{i=i.map(function(i){return encodeURIComponent(decodeURIComponent(i))})}catch(i){}return $.ajax({url:"https://"+this.project+".org/w/api.php?action=query&prop=info&inprop=protection|watchers&formatversion=2&format=json&titles="+i.join("|"),dataType:"jsonp"}).then(function(o){o.query.normalized&&o.query.normalized.forEach(function(e){i[i.indexOf(encodeURIComponent(e.from))]=encodeURIComponent(e.to)});var t={};return i.forEach(function(i){try{i=decodeURIComponent(i)}catch(i){}t[i]=o.query.pages.find(function(e){return e.title===i})}),e.resolve(t)})}},{key:"numDaysInRange",value:function(){return this.daterangepicker.endDate.diff(this.daterangepicker.startDate,"days")+1}},{key:"parseQueryString",value:function(i){for(var e=location.search.slice(1).replace(/\+/g,"%20").replace(/%7C/g,"|"),o=e.split("&"),t={},r=0;r<o.length;r++){var a=o[r].split("=");i&&a[0]===i?t[i]=a[1].split("|").map(function(i){return i.replace(/(?:%20|_| )+$/,"")}).filter(function(i){return!!i}).unique():t[a[0]]=(a[1]||"").replace(/(?:%20|_| )+$/,"")}return t}},{key:"patchUsage",value:function(){if(location.pathname.includes("-test"))$.ajax({url:"//"+metaRoot+"/usage/"+this.app+"-test/"+(this.project||i18nLang),method:"POST"});else if(metaRoot)return $.ajax({url:"/pageviews/meta/api.php",data:{app:this.app,project:this.project||i18nLang},method:"POST",timeout:8e3})}},{key:"processStarted",value:function(){return this.processStart=moment()}},{key:"processEnded",value:function(){var i=moment(),e=i.diff(this.processStart,"milliseconds");try{$(".elapsed-time").attr("datetime",i.format()).text($.i18n("elapsed-time",e/1e3))}catch(i){}return e}},{key:"rateLimit",value:function(i,e,o){var t=[],r=void 0,a=function(){var e=t.shift();e&&i.apply(e.context,e.arguments),0===t.length&&(clearInterval(r),r=null)};return function(){t.push({context:o||this,arguments:[].slice.call(arguments)}),r||(a(),r=setInterval(a,e))}}},{key:"resetSelect2",value:function(){var i=$(this.config.select2Input);i.data("select2")&&(i.off("change"),i.select2("val",null),i.select2("data",null),i.select2("destroy")),this.setupSelect2()}},{key:"rgba",value:function(i,e){return i.replace(/,\s*\d\)/,", "+e+")")}},{key:"saveSetting",value:function(i,e){this[i]=e,this.setLocalStorage("pageviews-settings-"+i,e)}},{key:"saveSettings",value:function(){var i=this,e="no_autocomplete"===this.autocomplete;$.each($("#settings-modal input"),function(e,o){"checkbox"===o.type?i.saveSetting(o.name,o.checked?"true":"false"):o.checked&&i.saveSetting(o.name,o.value)}),"topviews"!==this.app&&(this.daterangepicker.locale.format=this.dateFormat,this.daterangepicker.updateElement(),this.setupSelect2Colors(),"no_autocomplete"===this.autocomplete!==e&&this.resetSelect2(),"true"===this.beginAtZero&&$(".begin-at-zero-option").prop("checked",!0)),this.processInput(!0)}},{key:"setSelect2Defaults",value:function(i){var e=this;return i.forEach(function(i){var o=$("<div>").text(i).html();$("<option>"+o+"</option>").appendTo(e.config.select2Input)}),$(this.config.select2Input).select2("val",i),$(this.config.select2Input).trigger("select2:select"),i}},{key:"setSpecialRange",value:function(i){var e=Object.keys(this.config.specialRanges).indexOf(i),o=void 0,t=void 0,r=void 0;if(i.includes("latest-")){r=parseInt(i.replace("latest-",""),10)||20;var a=this.config.specialRanges.latest(r),n=s(a,2);o=n[0],t=n[1]}else{if(!(e>=0))return;var k="latest"===i?this.config.specialRanges.latest():this.config.specialRanges[i],w=s(k,2);o=w[0],t=w[1],$(".daterangepicker .ranges li").eq(e).trigger("click")}return this.specialRange={range:i,value:o.format(this.dateFormat)+" - "+t.format(this.dateFormat)},this.daterangepicker.startDate=o,this.daterangepicker.setEndDate(t),$(".latest-text").text(r?$.i18n("latest-days",r):$.i18n("latest")),this.specialRange}},{key:"setupSelect2Colors",value:function(){var i=this;return this.colorsStyleEl&&this.colorsStyleEl.remove(),this.colorsStyleEl=document.createElement("style"),this.colorsStyleEl.appendChild(document.createTextNode("")),document.head.appendChild(this.colorsStyleEl),this.config.colors.forEach(function(e,o){i.colorsStyleEl.sheet.insertRule(".select2-selection__choice:nth-of-type("+(o+1)+") { background: "+e+" !important }",0)}),this.colorsStyleEl.sheet}},{key:"setupListeners",value:function(){var i=this;$("a[href='#']").on("click",function(i){return i.preventDefault()}),$(".download-csv").on("click",this.exportCSV.bind(this)),$(".download-json").on("click",this.exportJSON.bind(this)),$(this.config.projectInput).on("focusin",function(){this.dataset.value=this.value}),$(this.config.projectInput).on("change",function(){return i.validateProject()}),$(".permalink").on("click",function(e){$(".permalink-copy").val($(".permalink").prop("href"))[0].select();try{document.execCommand("copy"),i.toastSuccess("Permalink copied to clipboard"),e.preventDefault(),document.activeElement.blur()}catch(i){}})}},{key:"setupSettingsModal",value:function(){this.fillInSettings(),$(".save-settings-btn").on("click",this.saveSettings.bind(this)),$(".cancel-settings-btn").on("click",this.fillInSettings.bind(this))}},{key:"setupDateRangeSelector",value:function(){var i=this,e=$(this.config.dateRangeSelector),o={};Object.keys(this.config.specialRanges).forEach(function(e){"latest"!==e&&(o[$.i18n(e)]=i.config.specialRanges[e])});var t={locale:{format:this.dateFormat,applyLabel:$.i18n("apply"),cancelLabel:$.i18n("cancel"),customRangeLabel:$.i18n("custom-range"),daysOfWeek:[$.i18n("su"),$.i18n("mo"),$.i18n("tu"),$.i18n("we"),$.i18n("th"),$.i18n("fr"),$.i18n("sa")],monthNames:[$.i18n("january"),$.i18n("february"),$.i18n("march"),$.i18n("april"),$.i18n("may"),$.i18n("june"),$.i18n("july"),$.i18n("august"),$.i18n("september"),$.i18n("october"),$.i18n("november"),$.i18n("december")]},startDate:moment().subtract(this.config.daysAgo,"days"),minDate:this.config.minDate,maxDate:this.config.maxDate,ranges:o};this.config.dateLimit&&(t.dateLimit={days:this.config.dateLimit}),e.daterangepicker(t),$(".daterangepicker").append($("<div>").addClass("daterange-notice").html($.i18n("date-notice",document.title,"<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",$.i18n("july")+" 2015"))),$(".daterangepicker .ranges li").on("click",function(e){if(e.target.innerText===$.i18n("custom-range"))return i.specialRange=null,app.daterangepicker.clickApply();var o=i.daterangepicker.container,t=o.find(".daterangepicker_input input"),r=Object.keys(i.config.specialRanges).find(function(i){return $.i18n(i)===e.target.innerText});i.specialRange={range:r,value:t[0].value+" - "+t[1].value}}),$(this.config.dateRangeSelector).on("apply.daterangepicker",function(e,o){o.chosenLabel===$.i18n("custom-range")&&(i.specialRange=null,i.daterangepicker.updateElement())})}},{key:"showFatalErrors",value:function(i){var e=this;this.resetView(),i.forEach(function(i){e.writeMessage("<strong>"+$.i18n("fatal-error")+"</strong>: <code>"+i+"</code>")});var o=function(i){return e.toastError("\n      <strong>"+$.i18n("fatal-error")+"</strong>: "+$.i18n("error-please-report",e.getBugReportURL(i))+"\n    ",0)};if(this.debug)throw i[0];i&&i[0]&&i[0].stack&&$.ajax({method:"POST",url:"//tools.wmflabs.org/musikanimal/paste",data:{content:"\ndate:      "+moment().utc().format()+("\ntool:      "+this.app)+("\nlanguage:  "+i18nLang)+("\nchart:     "+this.chartType)+("\nurl:       "+document.location.href)+("\nuserAgent: "+this.getUserAgent())+("\ntrace:     "+i[0].stack),title:"Pageviews Analysis error report: "+i[0]}}).done(function(i){i&&i.result&&i.result.objectName?o(i.result.objectName):o()}).fail(function(){o()})}},{key:"splash",value:function(){var i="background: #eee; color: #555; padding: 4px; font-family:monospace";console.log("%c      ___            __ _                     _                             ",i),console.log("%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ",i),console.log("%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ",i),console.log("%c    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ",i),console.log('%c  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ',i),console.log("%c  \"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'  ",i),console.log("%c              ___                     _  _     _               _            ",i),console.log("%c      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ",i),console.log("%c     o       | - |  | ' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ",i),console.log("%c    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ",i),console.log('%c   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ',i),console.log("%c  ./o--000'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-' ",i),console.log("%c                                                                            ",i),console.log("%c  Copyright © "+(new Date).getFullYear()+" MusikAnimal, Kaldari, Marcel Ruiz Forns                  ",i)}},{key:"startSpinny",value:function(){var i=this;$("body").addClass("loading"),setTimeout(function(){return document.activeElement.blur()}),clearTimeout(this.timeout),this.timeout=setTimeout(function(e){i.resetView(),i.toastError("\n        <strong>"+$.i18n("fatal-error")+"</strong>:\n        "+$.i18n("error-timed-out")+"\n        "+$.i18n("error-please-report",i.getBugReportURL())+"\n      ")},3e4)}},{key:"stopSpinny",value:function(){$("body").removeClass("loading initial"),clearTimeout(this.timeout)}},{key:"underscorePageNames",value:function(i){return i.map(function(i){return i.score()})}},{key:"updateInterAppLinks",value:function(){var i=this;$(".interapp-link").each(function(e,o){var t=o.href.split("?")[0];o.classList.contains("interapp-link--siteviews")?o.href=t+"?sites="+i.project.escape()+".org":o.href=t+"?project="+i.project.escape()+".org"})}},{key:"validateParams",value:function(i){var e=this;return this.config.validateParams.forEach(function(o){"project"===o&&i.project&&(i.project=i.project.replace(/^www\./,""));var t=e.config.defaults[o],r=i[o];void 0===t||e.config.validParams[o].includes(r)||(r&&e.addInvalidParamNotice(o),i[o]=t)}),i}},{key:"validateProject",value:function(){var i=arguments.length>0&&void 0!==arguments[0]&&arguments[0],e=$(this.config.projectInput)[0],o=e.value.replace(/^www\./,""),t=!1;return i&&!this.isMultilangProject()?(this.toastWarn($.i18n("invalid-lang-project","<a href='//"+o.escape()+"'>"+o.escape()+"</a>")),o=e.dataset.value):l.includes(o)?(this.updateInterAppLinks(),t=!0):(this.toastWarn($.i18n("invalid-project","<a href='//"+o.escape()+"'>"+o.escape()+"</a>")),o=e.dataset.value),t&&$(this.config.projectInput).trigger("updated"),e.value=o,t}},{key:"writeMessage",value:function(i){var e=arguments.length>1&&void 0!==arguments[1]&&arguments[1];return e&&this.clearMessages(),$(".message-container").append("<div class='error-message'>"+i+"</div>")}},{key:"dateFormat",get:function(){var i="monthly"===$("#date-type-select").val();return"true"===this.localizeDateFormat?i?"MMM YYYY":this.getLocaleDateString():i?"YYYY-MM":this.config.defaults.dateFormat;
-}},{key:"daterangepicker",get:function(){return $(this.config.dateRangeSelector).data("daterangepicker")}},{key:"project",get:function(){var i=$(this.config.projectInput).val();return i?i.toLowerCase().replace(/.org$/,""):null}}],[{key:"multilangProjects",get:function(){return["wikipedia","wikibooks","wikinews","wikiquote","wikisource","wikiversity","wikivoyage"]}}]),e}(c);e.exports=u},{"./core_extensions":1,"./polyfills":2,"./pv_config":4,"./site_map":5}],4:[function(i,e,o){"use strict";function t(i,e){if(!(i instanceof e))throw new TypeError("Cannot call a class as a function")}var r=function(){function i(i,e){for(var o=0;o<e.length;o++){var t=e[o];t.enumerable=t.enumerable||!1,t.configurable=!0,"value"in t&&(t.writable=!0),Object.defineProperty(i,t.key,t)}}return function(e,o,t){return o&&i(e.prototype,o),t&&i(e,t),e}}(),a=i("./site_map"),n=Object.keys(a).map(function(i){return a[i]}),s=function(){function i(){var e=this;t(this,i);var o=this,r=function(i){var o=moment(i,e.dateFormat).isoWeekday(),t="monthly"===$("#date-type-select").val();return 1!==o||t?i:"• "+i},a=moment().subtract(1,"days").startOf("day"),s=moment().subtract(1,"month").subtract(2,"days").startOf("month").toDate();this.config={apiLimit:2e4,apiThrottle:10,apps:["pageviews","topviews","langviews","siteviews","massviews","redirectviews","userviews"],chartConfig:{line:{opts:{scales:{yAxes:[{ticks:{callback:function(i){return e.formatYAxisNumber(i)}}}],xAxes:[{ticks:{callback:function(i){return r(i)}}}]},legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.linearTooltips()},dataset:function(i){return{color:i,backgroundColor:"rgba(0,0,0,0)",borderWidth:2,borderColor:i,pointColor:i,pointBackgroundColor:i,pointBorderColor:o.rgba(i,.2),pointHoverBackgroundColor:i,pointHoverBorderColor:i,pointHoverBorderWidth:2,pointHoverRadius:5,tension:"true"===o.bezierCurve?.4:0}}},bar:{opts:{scales:{yAxes:[{ticks:{callback:function(i){return e.formatYAxisNumber(i)}}}],xAxes:[{barPercentage:1,categoryPercentage:.85,ticks:{callback:function(i){return r(i)}}}]},legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.linearTooltips("label")},dataset:function(i){return{color:i,backgroundColor:o.rgba(i,.6),borderColor:o.rgba(i,.9),borderWidth:2,hoverBackgroundColor:o.rgba(i,.75),hoverBorderColor:i}}},radar:{opts:{scale:{ticks:{callback:function(i){return e.formatNumber(i)}}},legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.linearTooltips()},dataset:function(i){return{color:i,backgroundColor:o.rgba(i,.1),borderColor:i,borderWidth:2,pointBackgroundColor:i,pointBorderColor:o.rgba(i,.8),pointHoverBackgroundColor:i,pointHoverBorderColor:i,pointHoverRadius:5}}},pie:{opts:{legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.circularTooltips},dataset:function(i){return{color:i,backgroundColor:i,hoverBackgroundColor:o.rgba(i,.8)}}},doughnut:{opts:{legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.circularTooltips},dataset:function(i){return{color:i,backgroundColor:i,hoverBackgroundColor:o.rgba(i,.8)}}},polarArea:{opts:{scale:{ticks:{beginAtZero:!0,callback:function(i){return e.formatNumber(i)}}},legendCallback:function(i){return e.config.chartLegend(o)},tooltips:this.circularTooltips},dataset:function(i){return{color:i,backgroundColor:o.rgba(i,.7),hoverBackgroundColor:o.rgba(i,.9)}}}},circularCharts:["pie","doughnut","polarArea"],colors:["rgba(171, 212, 235, 1)","rgba(178, 223, 138, 1)","rgba(251, 154, 153, 1)","rgba(253, 191, 111, 1)","rgba(202, 178, 214, 1)","rgba(207, 182, 128, 1)","rgba(141, 211, 199, 1)","rgba(252, 205, 229, 1)","rgba(255, 247, 161, 1)","rgba(217, 217, 217, 1)"],defaults:{autocomplete:"autocomplete",chartType:function(i){return i>1?"line":"bar"},dateFormat:"YYYY-MM-DD",localizeDateFormat:"true",numericalFormatting:"true",bezierCurve:"false",autoLogDetection:"false",beginAtZero:"false",rememberChart:"false",agent:"user",platform:"all-access",project:"en.wikipedia.org"},globalChartOpts:{animation:{duration:500,easing:"easeInOutQuart"},hover:{animationDuration:0},legend:{display:!1}},linearCharts:["line","bar","radar"],linearOpts:{scales:{yAxes:[{ticks:{callback:function(i){return e.formatNumber(i)}}}]},legendCallback:function(i){return e.config.chartLegend(i.data.datasets,o)}},daysAgo:20,initialMonthStart:moment(s).subtract(11,"months").toDate(),minDate:moment("2015-07-01").startOf("day"),maxDate:a,maxMonth:s,specialRanges:{"last-week":[moment().subtract(1,"week").startOf("isoweek"),moment().subtract(1,"week").endOf("isoweek")],"this-month":[moment().startOf("month"),moment().startOf("month").isAfter(a)?moment().startOf("month"):a],"last-month":[moment().subtract(1,"month").startOf("month"),moment().subtract(1,"month").endOf("month")],"this-year":[moment().startOf("year"),moment().startOf("year").isAfter(a)?moment().startOf("year"):a],"last-year":[moment().subtract(1,"year").startOf("year"),moment().subtract(1,"year").endOf("year")],"all-time":[moment("2015-07-01").startOf("day"),a],latest:function(){var i=arguments.length>0&&void 0!==arguments[0]?arguments[0]:o.config.daysAgo;return[moment().subtract(i,"days").startOf("day"),o.config.maxDate]}},timestampFormat:"YYYYMMDD00",validParams:{agent:["all-agents","user","spider","bot"],platform:["all-access","desktop","mobile-app","mobile-web"],project:n},pageAssessmentProjects:["en.wikipedia","en.wikivoyage"],pageAssessmentBadges:{"en.wikipedia":{FA:"e/e7/Cscr-featured.svg",GA:"9/94/Symbol_support_vote.svg",A:"2/25/Symbol_a_class.svg",B:"5/5f/Symbol_b_class.svg",C:"e/e6/Symbol_c_class.svg",Start:"a/a4/Symbol_start_class.svg",Stub:"f/f5/Symbol_stub_class.svg",FL:"e/e7/Cscr-featured.svg",List:"d/db/Symbol_list_class.svg",Dab:"2/2a/Symbol_dab_class.svg"},"en.wikivoyage":{stub:"f/f3/Symbol_plain_grey.svg",outline:"c/c8/Start-icon.svg",usable:"d/d0/Symbol_keep_vote.svg",guide:"9/94/Symbol_support_vote.svg",star:"b/b4/Symbol_star_gold.svg"}}}}return r(i,[{key:"linearTooltips",value:function(i){var e=this;return{mode:i||"x-axis",callbacks:{label:function(i){return Number.isNaN(i.yLabel)?" "+$.i18n("unknown"):" "+e.formatNumber(i.yLabel)}},bodyFontSize:14,bodySpacing:7,caretSize:0,titleFontSize:14}}},{key:"circularTooltips",get:function(){var i=this;return{callbacks:{label:function e(o,t){var r=t.datasets[o.datasetIndex].data[o.index],e=t.labels[o.index];return Number.isNaN(r)?e+": "+$.i18n("unknown"):e+": "+i.formatNumber(r)}},bodyFontSize:14,bodySpacing:7,caretSize:0,titleFontSize:14}}}]),i}();e.exports=s},{"./site_map":5}],5:[function(i,e,o){"use strict";var t={aawiki:"aa.wikipedia.org",aawiktionary:"aa.wiktionary.org",aawikibooks:"aa.wikibooks.org",abwiki:"ab.wikipedia.org",abwiktionary:"ab.wiktionary.org",acewiki:"ace.wikipedia.org",adywiki:"ady.wikipedia.org",afwiki:"af.wikipedia.org",afwiktionary:"af.wiktionary.org",afwikibooks:"af.wikibooks.org",afwikiquote:"af.wikiquote.org",akwiki:"ak.wikipedia.org",akwiktionary:"ak.wiktionary.org",akwikibooks:"ak.wikibooks.org",alswiki:"als.wikipedia.org",alswiktionary:"als.wiktionary.org",alswikibooks:"als.wikibooks.org",alswikiquote:"als.wikiquote.org",amwiki:"am.wikipedia.org",amwiktionary:"am.wiktionary.org",amwikiquote:"am.wikiquote.org",anwiki:"an.wikipedia.org",anwiktionary:"an.wiktionary.org",angwiki:"ang.wikipedia.org",angwiktionary:"ang.wiktionary.org",angwikibooks:"ang.wikibooks.org",angwikiquote:"ang.wikiquote.org",angwikisource:"ang.wikisource.org",arwiki:"ar.wikipedia.org",arwiktionary:"ar.wiktionary.org",arwikibooks:"ar.wikibooks.org",arwikinews:"ar.wikinews.org",arwikiquote:"ar.wikiquote.org",arwikisource:"ar.wikisource.org",arwikiversity:"ar.wikiversity.org",arcwiki:"arc.wikipedia.org",arzwiki:"arz.wikipedia.org",aswiki:"as.wikipedia.org",aswiktionary:"as.wiktionary.org",aswikibooks:"as.wikibooks.org",aswikisource:"as.wikisource.org",astwiki:"ast.wikipedia.org",astwiktionary:"ast.wiktionary.org",astwikibooks:"ast.wikibooks.org",astwikiquote:"ast.wikiquote.org",avwiki:"av.wikipedia.org",avwiktionary:"av.wiktionary.org",aywiki:"ay.wikipedia.org",aywiktionary:"ay.wiktionary.org",aywikibooks:"ay.wikibooks.org",azwiki:"az.wikipedia.org",azwiktionary:"az.wiktionary.org",azwikibooks:"az.wikibooks.org",azwikiquote:"az.wikiquote.org",azwikisource:"az.wikisource.org",azbwiki:"azb.wikipedia.org",bawiki:"ba.wikipedia.org",bawikibooks:"ba.wikibooks.org",barwiki:"bar.wikipedia.org",bat_smgwiki:"bat-smg.wikipedia.org",bclwiki:"bcl.wikipedia.org",bewiki:"be.wikipedia.org",bewiktionary:"be.wiktionary.org",bewikibooks:"be.wikibooks.org",bewikiquote:"be.wikiquote.org",bewikisource:"be.wikisource.org",be_x_oldwiki:"be-tarask.wikipedia.org",bgwiki:"bg.wikipedia.org",bgwiktionary:"bg.wiktionary.org",bgwikibooks:"bg.wikibooks.org",bgwikinews:"bg.wikinews.org",bgwikiquote:"bg.wikiquote.org",bgwikisource:"bg.wikisource.org",bhwiki:"bh.wikipedia.org",bhwiktionary:"bh.wiktionary.org",biwiki:"bi.wikipedia.org",biwiktionary:"bi.wiktionary.org",biwikibooks:"bi.wikibooks.org",bjnwiki:"bjn.wikipedia.org",bmwiki:"bm.wikipedia.org",bmwiktionary:"bm.wiktionary.org",bmwikibooks:"bm.wikibooks.org",bmwikiquote:"bm.wikiquote.org",bnwiki:"bn.wikipedia.org",bnwiktionary:"bn.wiktionary.org",bnwikibooks:"bn.wikibooks.org",bnwikisource:"bn.wikisource.org",bowiki:"bo.wikipedia.org",bowiktionary:"bo.wiktionary.org",bowikibooks:"bo.wikibooks.org",bpywiki:"bpy.wikipedia.org",brwiki:"br.wikipedia.org",brwiktionary:"br.wiktionary.org",brwikiquote:"br.wikiquote.org",brwikisource:"br.wikisource.org",bswiki:"bs.wikipedia.org",bswiktionary:"bs.wiktionary.org",bswikibooks:"bs.wikibooks.org",bswikinews:"bs.wikinews.org",bswikiquote:"bs.wikiquote.org",bswikisource:"bs.wikisource.org",bugwiki:"bug.wikipedia.org",bxrwiki:"bxr.wikipedia.org",cawiki:"ca.wikipedia.org",cawiktionary:"ca.wiktionary.org",cawikibooks:"ca.wikibooks.org",cawikinews:"ca.wikinews.org",cawikiquote:"ca.wikiquote.org",cawikisource:"ca.wikisource.org",cbk_zamwiki:"cbk-zam.wikipedia.org",cdowiki:"cdo.wikipedia.org",cewiki:"ce.wikipedia.org",cebwiki:"ceb.wikipedia.org",chwiki:"ch.wikipedia.org",chwiktionary:"ch.wiktionary.org",chwikibooks:"ch.wikibooks.org",chowiki:"cho.wikipedia.org",chrwiki:"chr.wikipedia.org",chrwiktionary:"chr.wiktionary.org",chywiki:"chy.wikipedia.org",ckbwiki:"ckb.wikipedia.org",cowiki:"co.wikipedia.org",cowiktionary:"co.wiktionary.org",cowikibooks:"co.wikibooks.org",cowikiquote:"co.wikiquote.org",crwiki:"cr.wikipedia.org",crwiktionary:"cr.wiktionary.org",crwikiquote:"cr.wikiquote.org",crhwiki:"crh.wikipedia.org",cswiki:"cs.wikipedia.org",cswiktionary:"cs.wiktionary.org",cswikibooks:"cs.wikibooks.org",cswikinews:"cs.wikinews.org",cswikiquote:"cs.wikiquote.org",cswikisource:"cs.wikisource.org",cswikiversity:"cs.wikiversity.org",csbwiki:"csb.wikipedia.org",csbwiktionary:"csb.wiktionary.org",cuwiki:"cu.wikipedia.org",cvwiki:"cv.wikipedia.org",cvwikibooks:"cv.wikibooks.org",cywiki:"cy.wikipedia.org",cywiktionary:"cy.wiktionary.org",cywikibooks:"cy.wikibooks.org",cywikiquote:"cy.wikiquote.org",cywikisource:"cy.wikisource.org",dawiki:"da.wikipedia.org",dawiktionary:"da.wiktionary.org",dawikibooks:"da.wikibooks.org",dawikiquote:"da.wikiquote.org",dawikisource:"da.wikisource.org",dewiki:"de.wikipedia.org",dewiktionary:"de.wiktionary.org",dewikibooks:"de.wikibooks.org",dewikinews:"de.wikinews.org",dewikiquote:"de.wikiquote.org",dewikisource:"de.wikisource.org",dewikiversity:"de.wikiversity.org",dewikivoyage:"de.wikivoyage.org",diqwiki:"diq.wikipedia.org",dsbwiki:"dsb.wikipedia.org",dvwiki:"dv.wikipedia.org",dvwiktionary:"dv.wiktionary.org",dzwiki:"dz.wikipedia.org",dzwiktionary:"dz.wiktionary.org",eewiki:"ee.wikipedia.org",elwiki:"el.wikipedia.org",elwiktionary:"el.wiktionary.org",elwikibooks:"el.wikibooks.org",elwikinews:"el.wikinews.org",elwikiquote:"el.wikiquote.org",elwikisource:"el.wikisource.org",elwikiversity:"el.wikiversity.org",elwikivoyage:"el.wikivoyage.org",emlwiki:"eml.wikipedia.org",enwiki:"en.wikipedia.org",enwiktionary:"en.wiktionary.org",enwikibooks:"en.wikibooks.org",enwikinews:"en.wikinews.org",enwikiquote:"en.wikiquote.org",enwikisource:"en.wikisource.org",enwikiversity:"en.wikiversity.org",enwikivoyage:"en.wikivoyage.org",eowiki:"eo.wikipedia.org",eowiktionary:"eo.wiktionary.org",eowikibooks:"eo.wikibooks.org",eowikinews:"eo.wikinews.org",eowikiquote:"eo.wikiquote.org",eowikisource:"eo.wikisource.org",eswiki:"es.wikipedia.org",eswiktionary:"es.wiktionary.org",eswikibooks:"es.wikibooks.org",eswikinews:"es.wikinews.org",eswikiquote:"es.wikiquote.org",eswikisource:"es.wikisource.org",eswikiversity:"es.wikiversity.org",eswikivoyage:"es.wikivoyage.org",etwiki:"et.wikipedia.org",etwiktionary:"et.wiktionary.org",etwikibooks:"et.wikibooks.org",etwikiquote:"et.wikiquote.org",etwikisource:"et.wikisource.org",euwiki:"eu.wikipedia.org",euwiktionary:"eu.wiktionary.org",euwikibooks:"eu.wikibooks.org",euwikiquote:"eu.wikiquote.org",extwiki:"ext.wikipedia.org",fawiki:"fa.wikipedia.org",fawiktionary:"fa.wiktionary.org",fawikibooks:"fa.wikibooks.org",fawikinews:"fa.wikinews.org",fawikiquote:"fa.wikiquote.org",fawikisource:"fa.wikisource.org",fawikivoyage:"fa.wikivoyage.org",ffwiki:"ff.wikipedia.org",fiwiki:"fi.wikipedia.org",fiwiktionary:"fi.wiktionary.org",fiwikibooks:"fi.wikibooks.org",fiwikinews:"fi.wikinews.org",fiwikiquote:"fi.wikiquote.org",fiwikisource:"fi.wikisource.org",fiwikiversity:"fi.wikiversity.org",fiu_vrowiki:"fiu-vro.wikipedia.org",fjwiki:"fj.wikipedia.org",fjwiktionary:"fj.wiktionary.org",fowiki:"fo.wikipedia.org",fowiktionary:"fo.wiktionary.org",fowikisource:"fo.wikisource.org",frwiki:"fr.wikipedia.org",frwiktionary:"fr.wiktionary.org",frwikibooks:"fr.wikibooks.org",frwikinews:"fr.wikinews.org",frwikiquote:"fr.wikiquote.org",frwikisource:"fr.wikisource.org",frwikiversity:"fr.wikiversity.org",frwikivoyage:"fr.wikivoyage.org",frpwiki:"frp.wikipedia.org",frrwiki:"frr.wikipedia.org",furwiki:"fur.wikipedia.org",fywiki:"fy.wikipedia.org",fywiktionary:"fy.wiktionary.org",fywikibooks:"fy.wikibooks.org",gawiki:"ga.wikipedia.org",gawiktionary:"ga.wiktionary.org",gawikibooks:"ga.wikibooks.org",gawikiquote:"ga.wikiquote.org",gagwiki:"gag.wikipedia.org",ganwiki:"gan.wikipedia.org",gdwiki:"gd.wikipedia.org",gdwiktionary:"gd.wiktionary.org",glwiki:"gl.wikipedia.org",glwiktionary:"gl.wiktionary.org",glwikibooks:"gl.wikibooks.org",glwikiquote:"gl.wikiquote.org",glwikisource:"gl.wikisource.org",glkwiki:"glk.wikipedia.org",gnwiki:"gn.wikipedia.org",gnwiktionary:"gn.wiktionary.org",gnwikibooks:"gn.wikibooks.org",gomwiki:"gom.wikipedia.org",gotwiki:"got.wikipedia.org",gotwikibooks:"got.wikibooks.org",guwiki:"gu.wikipedia.org",guwiktionary:"gu.wiktionary.org",guwikibooks:"gu.wikibooks.org",guwikiquote:"gu.wikiquote.org",guwikisource:"gu.wikisource.org",gvwiki:"gv.wikipedia.org",gvwiktionary:"gv.wiktionary.org",hawiki:"ha.wikipedia.org",hawiktionary:"ha.wiktionary.org",hakwiki:"hak.wikipedia.org",hawwiki:"haw.wikipedia.org",hewiki:"he.wikipedia.org",hewiktionary:"he.wiktionary.org",hewikibooks:"he.wikibooks.org",hewikinews:"he.wikinews.org",hewikiquote:"he.wikiquote.org",hewikisource:"he.wikisource.org",hewikivoyage:"he.wikivoyage.org",hiwiki:"hi.wikipedia.org",hiwiktionary:"hi.wiktionary.org",hiwikibooks:"hi.wikibooks.org",hiwikiquote:"hi.wikiquote.org",hifwiki:"hif.wikipedia.org",howiki:"ho.wikipedia.org",hrwiki:"hr.wikipedia.org",hrwiktionary:"hr.wiktionary.org",hrwikibooks:"hr.wikibooks.org",hrwikiquote:"hr.wikiquote.org",hrwikisource:"hr.wikisource.org",hsbwiki:"hsb.wikipedia.org",hsbwiktionary:"hsb.wiktionary.org",htwiki:"ht.wikipedia.org",htwikisource:"ht.wikisource.org",huwiki:"hu.wikipedia.org",huwiktionary:"hu.wiktionary.org",huwikibooks:"hu.wikibooks.org",huwikinews:"hu.wikinews.org",huwikiquote:"hu.wikiquote.org",huwikisource:"hu.wikisource.org",hywiki:"hy.wikipedia.org",hywiktionary:"hy.wiktionary.org",hywikibooks:"hy.wikibooks.org",hywikiquote:"hy.wikiquote.org",hywikisource:"hy.wikisource.org",hzwiki:"hz.wikipedia.org",iawiki:"ia.wikipedia.org",iawiktionary:"ia.wiktionary.org",iawikibooks:"ia.wikibooks.org",idwiki:"id.wikipedia.org",idwiktionary:"id.wiktionary.org",idwikibooks:"id.wikibooks.org",idwikiquote:"id.wikiquote.org",idwikisource:"id.wikisource.org",iewiki:"ie.wikipedia.org",iewiktionary:"ie.wiktionary.org",iewikibooks:"ie.wikibooks.org",igwiki:"ig.wikipedia.org",iiwiki:"ii.wikipedia.org",ikwiki:"ik.wikipedia.org",ikwiktionary:"ik.wiktionary.org",ilowiki:"ilo.wikipedia.org",iowiki:"io.wikipedia.org",iowiktionary:"io.wiktionary.org",iswiki:"is.wikipedia.org",iswiktionary:"is.wiktionary.org",iswikibooks:"is.wikibooks.org",iswikiquote:"is.wikiquote.org",iswikisource:"is.wikisource.org",itwiki:"it.wikipedia.org",itwiktionary:"it.wiktionary.org",itwikibooks:"it.wikibooks.org",itwikinews:"it.wikinews.org",itwikiquote:"it.wikiquote.org",itwikisource:"it.wikisource.org",itwikiversity:"it.wikiversity.org",itwikivoyage:"it.wikivoyage.org",iuwiki:"iu.wikipedia.org",iuwiktionary:"iu.wiktionary.org",jawiki:"ja.wikipedia.org",jawiktionary:"ja.wiktionary.org",jawikibooks:"ja.wikibooks.org",jawikinews:"ja.wikinews.org",jawikiquote:"ja.wikiquote.org",jawikisource:"ja.wikisource.org",jawikiversity:"ja.wikiversity.org",jbowiki:"jbo.wikipedia.org",jbowiktionary:"jbo.wiktionary.org",jvwiki:"jv.wikipedia.org",jvwiktionary:"jv.wiktionary.org",kawiki:"ka.wikipedia.org",kawiktionary:"ka.wiktionary.org",kawikibooks:"ka.wikibooks.org",kawikiquote:"ka.wikiquote.org",kaawiki:"kaa.wikipedia.org",kabwiki:"kab.wikipedia.org",kbdwiki:"kbd.wikipedia.org",kgwiki:"kg.wikipedia.org",kiwiki:"ki.wikipedia.org",kjwiki:"kj.wikipedia.org",kkwiki:"kk.wikipedia.org",kkwiktionary:"kk.wiktionary.org",kkwikibooks:"kk.wikibooks.org",kkwikiquote:"kk.wikiquote.org",klwiki:"kl.wikipedia.org",klwiktionary:"kl.wiktionary.org",kmwiki:"km.wikipedia.org",kmwiktionary:"km.wiktionary.org",kmwikibooks:"km.wikibooks.org",knwiki:"kn.wikipedia.org",knwiktionary:"kn.wiktionary.org",knwikibooks:"kn.wikibooks.org",knwikiquote:"kn.wikiquote.org",knwikisource:"kn.wikisource.org",kowiki:"ko.wikipedia.org",kowiktionary:"ko.wiktionary.org",kowikibooks:"ko.wikibooks.org",kowikinews:"ko.wikinews.org",kowikiquote:"ko.wikiquote.org",kowikisource:"ko.wikisource.org",kowikiversity:"ko.wikiversity.org",koiwiki:"koi.wikipedia.org",krwiki:"kr.wikipedia.org",krwikiquote:"kr.wikiquote.org",krcwiki:"krc.wikipedia.org",kswiki:"ks.wikipedia.org",kswiktionary:"ks.wiktionary.org",kswikibooks:"ks.wikibooks.org",kswikiquote:"ks.wikiquote.org",kshwiki:"ksh.wikipedia.org",kuwiki:"ku.wikipedia.org",kuwiktionary:"ku.wiktionary.org",kuwikibooks:"ku.wikibooks.org",kuwikiquote:"ku.wikiquote.org",kvwiki:"kv.wikipedia.org",kwwiki:"kw.wikipedia.org",kwwiktionary:"kw.wiktionary.org",kwwikiquote:"kw.wikiquote.org",kywiki:"ky.wikipedia.org",kywiktionary:"ky.wiktionary.org",kywikibooks:"ky.wikibooks.org",kywikiquote:"ky.wikiquote.org",lawiki:"la.wikipedia.org",lawiktionary:"la.wiktionary.org",lawikibooks:"la.wikibooks.org",lawikiquote:"la.wikiquote.org",lawikisource:"la.wikisource.org",ladwiki:"lad.wikipedia.org",lbwiki:"lb.wikipedia.org",lbwiktionary:"lb.wiktionary.org",lbwikibooks:"lb.wikibooks.org",lbwikiquote:"lb.wikiquote.org",lbewiki:"lbe.wikipedia.org",lezwiki:"lez.wikipedia.org",lgwiki:"lg.wikipedia.org",liwiki:"li.wikipedia.org",liwiktionary:"li.wiktionary.org",liwikibooks:"li.wikibooks.org",liwikiquote:"li.wikiquote.org",liwikisource:"li.wikisource.org",lijwiki:"lij.wikipedia.org",lmowiki:"lmo.wikipedia.org",lnwiki:"ln.wikipedia.org",lnwiktionary:"ln.wiktionary.org",lnwikibooks:"ln.wikibooks.org",lowiki:"lo.wikipedia.org",lowiktionary:"lo.wiktionary.org",lrcwiki:"lrc.wikipedia.org",ltwiki:"lt.wikipedia.org",ltwiktionary:"lt.wiktionary.org",ltwikibooks:"lt.wikibooks.org",ltwikiquote:"lt.wikiquote.org",ltwikisource:"lt.wikisource.org",ltgwiki:"ltg.wikipedia.org",lvwiki:"lv.wikipedia.org",lvwiktionary:"lv.wiktionary.org",lvwikibooks:"lv.wikibooks.org",maiwiki:"mai.wikipedia.org",map_bmswiki:"map-bms.wikipedia.org",mdfwiki:"mdf.wikipedia.org",mgwiki:"mg.wikipedia.org",mgwiktionary:"mg.wiktionary.org",mgwikibooks:"mg.wikibooks.org",mhwiki:"mh.wikipedia.org",mhwiktionary:"mh.wiktionary.org",mhrwiki:"mhr.wikipedia.org",miwiki:"mi.wikipedia.org",miwiktionary:"mi.wiktionary.org",miwikibooks:"mi.wikibooks.org",minwiki:"min.wikipedia.org",mkwiki:"mk.wikipedia.org",mkwiktionary:"mk.wiktionary.org",mkwikibooks:"mk.wikibooks.org",mkwikisource:"mk.wikisource.org",mlwiki:"ml.wikipedia.org",mlwiktionary:"ml.wiktionary.org",mlwikibooks:"ml.wikibooks.org",mlwikiquote:"ml.wikiquote.org",mlwikisource:"ml.wikisource.org",mnwiki:"mn.wikipedia.org",mnwiktionary:"mn.wiktionary.org",mnwikibooks:"mn.wikibooks.org",mowiki:"mo.wikipedia.org",mowiktionary:"mo.wiktionary.org",mrwiki:"mr.wikipedia.org",mrwiktionary:"mr.wiktionary.org",mrwikibooks:"mr.wikibooks.org",mrwikiquote:"mr.wikiquote.org",mrwikisource:"mr.wikisource.org",mrjwiki:"mrj.wikipedia.org",mswiki:"ms.wikipedia.org",mswiktionary:"ms.wiktionary.org",mswikibooks:"ms.wikibooks.org",mtwiki:"mt.wikipedia.org",mtwiktionary:"mt.wiktionary.org",muswiki:"mus.wikipedia.org",mwlwiki:"mwl.wikipedia.org",mywiki:"my.wikipedia.org",mywiktionary:"my.wiktionary.org",mywikibooks:"my.wikibooks.org",myvwiki:"myv.wikipedia.org",mznwiki:"mzn.wikipedia.org",nawiki:"na.wikipedia.org",nawiktionary:"na.wiktionary.org",nawikibooks:"na.wikibooks.org",nawikiquote:"na.wikiquote.org",nahwiki:"nah.wikipedia.org",nahwiktionary:"nah.wiktionary.org",nahwikibooks:"nah.wikibooks.org",napwiki:"nap.wikipedia.org",ndswiki:"nds.wikipedia.org",ndswiktionary:"nds.wiktionary.org",ndswikibooks:"nds.wikibooks.org",ndswikiquote:"nds.wikiquote.org",nds_nlwiki:"nds-nl.wikipedia.org",newiki:"ne.wikipedia.org",newiktionary:"ne.wiktionary.org",newikibooks:"ne.wikibooks.org",newwiki:"new.wikipedia.org",ngwiki:"ng.wikipedia.org",nlwiki:"nl.wikipedia.org",nlwiktionary:"nl.wiktionary.org",nlwikibooks:"nl.wikibooks.org",nlwikinews:"nl.wikinews.org",nlwikiquote:"nl.wikiquote.org",nlwikisource:"nl.wikisource.org",nlwikivoyage:"nl.wikivoyage.org",nnwiki:"nn.wikipedia.org",nnwiktionary:"nn.wiktionary.org",nnwikiquote:"nn.wikiquote.org",nowiki:"no.wikipedia.org",nowiktionary:"no.wiktionary.org",nowikibooks:"no.wikibooks.org",nowikinews:"no.wikinews.org",nowikiquote:"no.wikiquote.org",nowikisource:"no.wikisource.org",novwiki:"nov.wikipedia.org",nrmwiki:"nrm.wikipedia.org",nsowiki:"nso.wikipedia.org",nvwiki:"nv.wikipedia.org",nywiki:"ny.wikipedia.org",ocwiki:"oc.wikipedia.org",ocwiktionary:"oc.wiktionary.org",ocwikibooks:"oc.wikibooks.org",omwiki:"om.wikipedia.org",omwiktionary:"om.wiktionary.org",orwiki:"or.wikipedia.org",orwiktionary:"or.wiktionary.org",orwikisource:"or.wikisource.org",oswiki:"os.wikipedia.org",pawiki:"pa.wikipedia.org",pawiktionary:"pa.wiktionary.org",pawikibooks:"pa.wikibooks.org",pagwiki:"pag.wikipedia.org",pamwiki:"pam.wikipedia.org",papwiki:"pap.wikipedia.org",pcdwiki:"pcd.wikipedia.org",pdcwiki:"pdc.wikipedia.org",pflwiki:"pfl.wikipedia.org",piwiki:"pi.wikipedia.org",piwiktionary:"pi.wiktionary.org",pihwiki:"pih.wikipedia.org",plwiki:"pl.wikipedia.org",plwiktionary:"pl.wiktionary.org",plwikibooks:"pl.wikibooks.org",plwikinews:"pl.wikinews.org",plwikiquote:"pl.wikiquote.org",plwikisource:"pl.wikisource.org",plwikivoyage:"pl.wikivoyage.org",pmswiki:"pms.wikipedia.org",pnbwiki:"pnb.wikipedia.org",pnbwiktionary:"pnb.wiktionary.org",pntwiki:"pnt.wikipedia.org",pswiki:"ps.wikipedia.org",pswiktionary:"ps.wiktionary.org",pswikibooks:"ps.wikibooks.org",ptwiki:"pt.wikipedia.org",ptwiktionary:"pt.wiktionary.org",ptwikibooks:"pt.wikibooks.org",ptwikinews:"pt.wikinews.org",ptwikiquote:"pt.wikiquote.org",ptwikisource:"pt.wikisource.org",ptwikiversity:"pt.wikiversity.org",ptwikivoyage:"pt.wikivoyage.org",quwiki:"qu.wikipedia.org",quwiktionary:"qu.wiktionary.org",quwikibooks:"qu.wikibooks.org",quwikiquote:"qu.wikiquote.org",rmwiki:"rm.wikipedia.org",rmwiktionary:"rm.wiktionary.org",rmwikibooks:"rm.wikibooks.org",rmywiki:"rmy.wikipedia.org",rnwiki:"rn.wikipedia.org",rnwiktionary:"rn.wiktionary.org",rowiki:"ro.wikipedia.org",rowiktionary:"ro.wiktionary.org",rowikibooks:"ro.wikibooks.org",rowikinews:"ro.wikinews.org",rowikiquote:"ro.wikiquote.org",rowikisource:"ro.wikisource.org",rowikivoyage:"ro.wikivoyage.org",roa_rupwiki:"roa-rup.wikipedia.org",roa_rupwiktionary:"roa-rup.wiktionary.org",roa_tarawiki:"roa-tara.wikipedia.org",ruwiki:"ru.wikipedia.org",ruwiktionary:"ru.wiktionary.org",ruwikibooks:"ru.wikibooks.org",ruwikinews:"ru.wikinews.org",ruwikiquote:"ru.wikiquote.org",ruwikisource:"ru.wikisource.org",ruwikiversity:"ru.wikiversity.org",ruwikivoyage:"ru.wikivoyage.org",ruewiki:"rue.wikipedia.org",rwwiki:"rw.wikipedia.org",rwwiktionary:"rw.wiktionary.org",sawiki:"sa.wikipedia.org",sawiktionary:"sa.wiktionary.org",sawikibooks:"sa.wikibooks.org",sawikiquote:"sa.wikiquote.org",sawikisource:"sa.wikisource.org",sahwiki:"sah.wikipedia.org",sahwikisource:"sah.wikisource.org",scwiki:"sc.wikipedia.org",scwiktionary:"sc.wiktionary.org",scnwiki:"scn.wikipedia.org",scnwiktionary:"scn.wiktionary.org",scowiki:"sco.wikipedia.org",sdwiki:"sd.wikipedia.org",sdwiktionary:"sd.wiktionary.org",sdwikinews:"sd.wikinews.org",sewiki:"se.wikipedia.org",sewikibooks:"se.wikibooks.org",sgwiki:"sg.wikipedia.org",sgwiktionary:"sg.wiktionary.org",shwiki:"sh.wikipedia.org",shwiktionary:"sh.wiktionary.org",siwiki:"si.wikipedia.org",siwiktionary:"si.wiktionary.org",siwikibooks:"si.wikibooks.org",simplewiki:"simple.wikipedia.org",simplewiktionary:"simple.wiktionary.org",simplewikibooks:"simple.wikibooks.org",simplewikiquote:"simple.wikiquote.org",skwiki:"sk.wikipedia.org",skwiktionary:"sk.wiktionary.org",skwikibooks:"sk.wikibooks.org",skwikiquote:"sk.wikiquote.org",skwikisource:"sk.wikisource.org",slwiki:"sl.wikipedia.org",slwiktionary:"sl.wiktionary.org",slwikibooks:"sl.wikibooks.org",slwikiquote:"sl.wikiquote.org",slwikisource:"sl.wikisource.org",slwikiversity:"sl.wikiversity.org",smwiki:"sm.wikipedia.org",smwiktionary:"sm.wiktionary.org",snwiki:"sn.wikipedia.org",snwiktionary:"sn.wiktionary.org",sowiki:"so.wikipedia.org",sowiktionary:"so.wiktionary.org",sqwiki:"sq.wikipedia.org",sqwiktionary:"sq.wiktionary.org",sqwikibooks:"sq.wikibooks.org",sqwikinews:"sq.wikinews.org",sqwikiquote:"sq.wikiquote.org",srwiki:"sr.wikipedia.org",srwiktionary:"sr.wiktionary.org",srwikibooks:"sr.wikibooks.org",srwikinews:"sr.wikinews.org",srwikiquote:"sr.wikiquote.org",srwikisource:"sr.wikisource.org",srnwiki:"srn.wikipedia.org",sswiki:"ss.wikipedia.org",sswiktionary:"ss.wiktionary.org",stwiki:"st.wikipedia.org",stwiktionary:"st.wiktionary.org",stqwiki:"stq.wikipedia.org",suwiki:"su.wikipedia.org",suwiktionary:"su.wiktionary.org",suwikibooks:"su.wikibooks.org",suwikiquote:"su.wikiquote.org",svwiki:"sv.wikipedia.org",svwiktionary:"sv.wiktionary.org",svwikibooks:"sv.wikibooks.org",svwikinews:"sv.wikinews.org",svwikiquote:"sv.wikiquote.org",svwikisource:"sv.wikisource.org",svwikiversity:"sv.wikiversity.org",svwikivoyage:"sv.wikivoyage.org",swwiki:"sw.wikipedia.org",swwiktionary:"sw.wiktionary.org",swwikibooks:"sw.wikibooks.org",szlwiki:"szl.wikipedia.org",tawiki:"ta.wikipedia.org",tawiktionary:"ta.wiktionary.org",tawikibooks:"ta.wikibooks.org",tawikinews:"ta.wikinews.org",tawikiquote:"ta.wikiquote.org",tawikisource:"ta.wikisource.org",tewiki:"te.wikipedia.org",tewiktionary:"te.wiktionary.org",tewikibooks:"te.wikibooks.org",tewikiquote:"te.wikiquote.org",tewikisource:"te.wikisource.org",tetwiki:"tet.wikipedia.org",tgwiki:"tg.wikipedia.org",tgwiktionary:"tg.wiktionary.org",tgwikibooks:"tg.wikibooks.org",thwiki:"th.wikipedia.org",thwiktionary:"th.wiktionary.org",thwikibooks:"th.wikibooks.org",thwikinews:"th.wikinews.org",thwikiquote:"th.wikiquote.org",thwikisource:"th.wikisource.org",tiwiki:"ti.wikipedia.org",tiwiktionary:"ti.wiktionary.org",tkwiki:"tk.wikipedia.org",tkwiktionary:"tk.wiktionary.org",tkwikibooks:"tk.wikibooks.org",tkwikiquote:"tk.wikiquote.org",tlwiki:"tl.wikipedia.org",tlwiktionary:"tl.wiktionary.org",tlwikibooks:"tl.wikibooks.org",tnwiki:"tn.wikipedia.org",tnwiktionary:"tn.wiktionary.org",towiki:"to.wikipedia.org",towiktionary:"to.wiktionary.org",tpiwiki:"tpi.wikipedia.org",tpiwiktionary:"tpi.wiktionary.org",trwiki:"tr.wikipedia.org",trwiktionary:"tr.wiktionary.org",trwikibooks:"tr.wikibooks.org",trwikinews:"tr.wikinews.org",trwikiquote:"tr.wikiquote.org",trwikisource:"tr.wikisource.org",tswiki:"ts.wikipedia.org",tswiktionary:"ts.wiktionary.org",ttwiki:"tt.wikipedia.org",ttwiktionary:"tt.wiktionary.org",ttwikibooks:"tt.wikibooks.org",ttwikiquote:"tt.wikiquote.org",tumwiki:"tum.wikipedia.org",twwiki:"tw.wikipedia.org",twwiktionary:"tw.wiktionary.org",tywiki:"ty.wikipedia.org",tyvwiki:"tyv.wikipedia.org",udmwiki:"udm.wikipedia.org",ugwiki:"ug.wikipedia.org",ugwiktionary:"ug.wiktionary.org",ugwikibooks:"ug.wikibooks.org",ugwikiquote:"ug.wikiquote.org",ukwiki:"uk.wikipedia.org",ukwiktionary:"uk.wiktionary.org",ukwikibooks:"uk.wikibooks.org",ukwikinews:"uk.wikinews.org",ukwikiquote:"uk.wikiquote.org",ukwikisource:"uk.wikisource.org",ukwikivoyage:"uk.wikivoyage.org",urwiki:"ur.wikipedia.org",urwiktionary:"ur.wiktionary.org",urwikibooks:"ur.wikibooks.org",urwikiquote:"ur.wikiquote.org",uzwiki:"uz.wikipedia.org",uzwiktionary:"uz.wiktionary.org",uzwikibooks:"uz.wikibooks.org",uzwikiquote:"uz.wikiquote.org",vewiki:"ve.wikipedia.org",vecwiki:"vec.wikipedia.org",vecwiktionary:"vec.wiktionary.org",vecwikisource:"vec.wikisource.org",vepwiki:"vep.wikipedia.org",viwiki:"vi.wikipedia.org",viwiktionary:"vi.wiktionary.org",viwikibooks:"vi.wikibooks.org",viwikiquote:"vi.wikiquote.org",viwikisource:"vi.wikisource.org",viwikivoyage:"vi.wikivoyage.org",vlswiki:"vls.wikipedia.org",vowiki:"vo.wikipedia.org",vowiktionary:"vo.wiktionary.org",vowikibooks:"vo.wikibooks.org",vowikiquote:"vo.wikiquote.org",wawiki:"wa.wikipedia.org",wawiktionary:"wa.wiktionary.org",wawikibooks:"wa.wikibooks.org",warwiki:"war.wikipedia.org",wowiki:"wo.wikipedia.org",wowiktionary:"wo.wiktionary.org",wowikiquote:"wo.wikiquote.org",wuuwiki:"wuu.wikipedia.org",xalwiki:"xal.wikipedia.org",xhwiki:"xh.wikipedia.org",xhwiktionary:"xh.wiktionary.org",xhwikibooks:"xh.wikibooks.org",xmfwiki:"xmf.wikipedia.org",yiwiki:"yi.wikipedia.org",yiwiktionary:"yi.wiktionary.org",yiwikisource:"yi.wikisource.org",yowiki:"yo.wikipedia.org",yowiktionary:"yo.wiktionary.org",yowikibooks:"yo.wikibooks.org",zawiki:"za.wikipedia.org",zawiktionary:"za.wiktionary.org",zawikibooks:"za.wikibooks.org",zawikiquote:"za.wikiquote.org",zeawiki:"zea.wikipedia.org",zhwiki:"zh.wikipedia.org",zhwiktionary:"zh.wiktionary.org",zhwikibooks:"zh.wikibooks.org",zhwikinews:"zh.wikinews.org",zhwikiquote:"zh.wikiquote.org",zhwikisource:"zh.wikisource.org",zhwikivoyage:"zh.wikivoyage.org",zh_classicalwiki:"zh-classical.wikipedia.org",zh_min_nanwiki:"zh-min-nan.wikipedia.org",zh_min_nanwiktionary:"zh-min-nan.wiktionary.org",zh_min_nanwikibooks:"zh-min-nan.wikibooks.org",zh_min_nanwikiquote:"zh-min-nan.wikiquote.org",zh_min_nanwikisource:"zh-min-nan.wikisource.org",zh_yuewiki:"zh-yue.wikipedia.org",zuwiki:"zu.wikipedia.org",zuwiktionary:"zu.wiktionary.org",zuwikibooks:"zu.wikibooks.org",arwikimedia:"ar.wikimedia.org",bdwikimedia:"bd.wikimedia.org",bewikimedia:"be.wikimedia.org",betawikiversity:"beta.wikiversity.org",brwikimedia:"br.wikimedia.org",cawikimedia:"ca.wikimedia.org",cnwikimedia:"cn.wikimedia.org",cowikimedia:"co.wikimedia.org",commonswiki:"commons.wikimedia.org",dkwikimedia:"dk.wikimedia.org",etwikimedia:"ee.wikimedia.org",fiwikimedia:"fi.wikimedia.org",foundationwiki:"wikimediafoundation.org",iegcomwiki:"iegcom.wikimedia.org",ilwikimedia:"il.wikimedia.org",incubatorwiki:"incubator.wikimedia.org",labswiki:"wikitech.wikimedia.org",loginwiki:"login.wikimedia.org",mediawikiwiki:"mediawiki.org",metawiki:"meta.wikimedia.org",mkwikimedia:"mk.wikimedia.org",mxwikimedia:"mx.wikimedia.org",nlwikimedia:"nl.wikimedia.org",nowikimedia:"no.wikimedia.org",nostalgiawiki:"nostalgia.wikipedia.org",nzwikimedia:"nz.wikimedia.org",outreachwiki:"outreach.wikimedia.org",pa_uswikimedia:"pa-us.wikimedia.org",plwikimedia:"pl.wikimedia.org",rswikimedia:"rs.wikimedia.org",
-ruwikimedia:"ru.wikimedia.org",sewikimedia:"se.wikimedia.org",sourceswiki:"wikisource.org",specieswiki:"species.wikimedia.org",trwikimedia:"tr.wikimedia.org",uawikimedia:"ua.wikimedia.org",ukwikimedia:"uk.wikimedia.org",wg_enwiki:"wg-en.wikipedia.org",wikidatawiki:"wikidata.org"};e.exports=t},{}],6:[function(i,e,o){"use strict";var t=(i("../shared/pv"),{select2Input:".aqs-select2-selector",dateRangeSelector:".aqs-date-range-selector",defaults:{dateRange:"last-month",excludes:[]},formStates:["processing","complete","search","reset"],maxDate:moment(moment().utc().subtract(1,"day").startOf("day").toDate()).startOf("day").toDate(),pageSize:100,platformSelector:"#platform-select",projectInput:".aqs-project-input",validateParams:["project","platform"],timestampFormat:"YYYYMMDD00"});e.exports=t},{"../shared/pv":3}],7:[function(i,e,o){"use strict";function t(i,e){if(!(i instanceof e))throw new TypeError("Cannot call a class as a function")}function r(i,e){if(!i)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?i:e}function a(i,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);i.prototype=Object.create(e&&e.prototype,{constructor:{value:i,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(i,e):i.__proto__=e)}var n=function(){function i(i,e){for(var o=0;o<e.length;o++){var t=e[o];t.enumerable=t.enumerable||!1,t.configurable=!0,"value"in t&&(t.writable=!0),Object.defineProperty(i,t.key,t)}}return function(e,o,t){return o&&i(e.prototype,o),t&&i(e,t),e}}(),s=function i(e,o,t){null===e&&(e=Function.prototype);var r=Object.getOwnPropertyDescriptor(e,o);if(void 0===r){var a=Object.getPrototypeOf(e);return null===a?void 0:i(a,o,t)}if("value"in r)return r.value;var n=r.get;if(void 0!==n)return n.call(t)},k=i("./config"),w=i("../shared/pv"),c=function(i){function e(){t(this,e);var i=r(this,(e.__proto__||Object.getPrototypeOf(e)).call(this,k));return i.app="topviews",i.excludes=[],i.autoExcludes=[],i.offset=0,i.offsetEnd=0,i.max=null,i.pageData=[],i.pageNames=[],i.mobileViews={},i.excludeAdded=!1,i}return a(e,i),n(e,[{key:"initialize",value:function(){this.popParams(),this.updateInterAppLinks()}},{key:"processInput",value:function(i){return this.pushParams(),!(location.search===this.params&&!i)&&(this.params=location.search,$("#topviews_search_field").val(""),this.setState("reset"),this.setState("processing"),this.initData().then(this.showList.bind(this)))}},{key:"showList",value:function(){var i=this;$(".topview-entries").html("");for(var e=0,o=0;e<this.config.pageSize+this.offset;){var t=this.pageData[o++];if(!this.excludes.includes(t.article)&&!this.autoExcludes.includes(t.article)){this.max||(this.max=t.views);var r=100*(t.views/this.max),a=i18nRtl?"to left":"to right",n=40*e+40,s=(this.mobileViews[t.article]/t.views*100).toFixed(1);"0.0"===s&&(s="< 0.1");var k=this.shouldShowMobile()?s+"%":"";$(".topview-entries").append("<tr class='topview-entry' id='topview-entry-"+o+"'>\n         <td class='topview-entry--rank-wrapper'>\n           <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id="+(o-1)+"\n             title='"+$.i18n("topviews-remove-page")+"' aria-hidden='true'></span>\n           <span class='topview-entry--rank'>"+ ++e+"</span>\n         </td>\n         <td>\n           <span class='topview-entry--background' style='top:"+n+"px; background:linear-gradient("+a+", #EEE "+r+"%, transparent "+r+"%); opacity: 0.6'></span>\n           <a class='topview-entry--label' href=\""+this.getPageURL(t.article)+'" target="_blank">'+t.article+"</a>\n         </td>\n         <td class='topview-entry--mobile'>"+k+"</td>\n         <td>\n           <a class='topview-entry--views' href='"+this.getPageviewsURL(t.article)+"' target='_blank'>"+this.formatNumber(t.views)+"</a>\n         </td></tr>")}}this.offsetEnd=o,setTimeout(function(){i.setState("complete"),$(".topview-entry--background").addClass("animate")}),this.pushParams(),this.addExcludeListeners()}},{key:"addExclude",value:function(i){var e=this,o=!(arguments.length>1&&void 0!==arguments[1])||arguments[1];if(Array.isArray(i)||(i=[i]),i.forEach(function(i){e.excludes.includes(i)||e.excludes.push(i)}),$(this.config.select2Input).html(""),this.excludes.forEach(function(i){var o=$("<div>").text(i).html();$("<option>"+o+"</option>").appendTo(e.config.select2Input)}),o){this.setState("processing");var t=this.excludes.length+this.autoExcludes.length-1,r=this.pageData[this.config.pageSize+this.offset+t].article;this.setSingleMobileViews(r).always(function(){e.setState("complete"),$(e.config.select2Input).val(e.excludes).trigger("change"),e.showList()})}this.buildReportFalsePositiveForm()}},{key:"addExcludeListeners",value:function(){var i=this;$(".topview-entry--remove").off("click").on("click",function(e){i.excludeAdded||(i.excludeAdded=!0,$(".report-false-positive").show());var o=i.pageNames[$(e.target).data("article-id")];i.addExclude(o),i.pushParams()})}},{key:"buildReportFalsePositiveForm",value:function(){var i=this;$(".false-positive-list").html(""),this.excludes.forEach(function(i,e){$(".false-positive-list").append("\n        <li>\n          <label>\n            <input type='checkbox' data-index='"+e+"' />\n            "+i.escape()+"\n          </label>\n        </li>\n      ")}),$(".submit-false-positive").off("click").on("click",function(){var e=$.map($(".false-positive-list input:checked"),function(e){return i.excludes[parseInt(e.dataset.index,10)]});e.length&&($.ajax({url:"/topviews/api.php",data:{project:i.project,pages:e,date:i.getParams(!1).date,platform:$(i.config.platformSelector).val()},method:"POST"}),i.toastSuccess($.i18n("report-false-positive-submitted",$.i18n("topviews"))),$(".report-false-positive").hide())})}},{key:"clearSearch",value:function(){this.setState("complete"),$(".topviews-search-icon").hasClass("glyphicon-remove")&&($("#topviews_search_field").val(""),$(".topviews-search-icon").removeClass("glyphicon-remove").addClass("glyphicon-search"),this.showList())}},{key:"shouldShowMobile",value:function(){return $(".show-percent-mobile").is(":checked")&&"all-access"===$(this.config.platformSelector).val()}},{key:"exportCSV",value:function(){var i=this,e="data:text/csv;charset=utf-8,Page,Views"+(this.shouldShowMobile()?",Mobile views":"")+"\n";this.pageData.forEach(function(o){var t='"'+o.article.replace(/"/g,'""')+'"';e+=t+","+o.views,i.shouldShowMobile()&&(e+=","+(i.mobileViews[o.article]||"")),e+="\n"}),this.downloadData(e,"csv")}},{key:"exportJSON",value:function(){var i="data:text/json;charset=utf-8,"+JSON.stringify(this.pageData);this.downloadData(i,"json")}},{key:"getExportFilename",value:function(){var i=this.datepicker.getDate(),e=void 0;return e=this.isMonthly()?moment(i).format("YYYY/MM"):moment(i).format("YYYY/MM/DD"),this.app+"-"+e}},{key:"getPageviewsURL",value:function(i){var e=moment(this.datepicker.getDate()),o=void 0,t=void 0;this.isMonthly()?(o=e.format("YYYY-MM-01"),t=e.endOf("month").format("YYYY-MM-DD")):(o=moment(e).subtract(3,"days").format("YYYY-MM-DD"),t=e.add(3,"days").format("YYYY-MM-DD"));var r=$(this.config.platformSelector).val(),a=$(this.config.projectInput).val();return"/pageviews?start="+o+"&end="+t+"&project="+a+"&platform="+r+"&pages="+i}},{key:"getParams",value:function(){var i=!(arguments.length>0&&void 0!==arguments[0])||arguments[0],e={project:$(this.config.projectInput).val(),platform:$(this.config.platformSelector).val()},o=this.datepicker.getDate();return this.specialRange&&i?e.date=this.specialRange.range:this.isMonthly()?e.date=moment(o).format("YYYY-MM"):e.date=moment(o).format("YYYY-MM-DD"),e}},{key:"getPermaLink",value:function(){var i=this.getParams(!1);return delete i.range,i}},{key:"setSpecialRange",value:function(i){if("last-month"===i)this.setupDateRangeSelector("monthly"),this.datepicker.setDate(this.config.maxMonth),this.specialRange={range:i,value:moment(this.config.maxMonth).format("YYYY/MM")};else{if("yesterday"!==i)return!1;this.setupDateRangeSelector("daily"),this.datepicker.setDate(this.config.maxDate),this.specialRange={range:i,value:moment(this.config.maxDate).format("YYYY-MM-DD")}}return!0}},{key:"setDate",value:function(i){var o=void 0;if(/\d{4}-\d{2}$/.test(i))this.setupDateRangeSelector("monthly"),o=moment(i+"-01").toDate(),o>this.config.maxMonth&&(o=this.config.maxMonth);else{if(!/\d{4}-\d{2}-\d{2}$/.test(i))return this.setSpecialRange(i)||this.setSpecialRange(this.config.defaults.dateRange);this.setupDateRangeSelector("daily"),o=moment(i).toDate(),o>this.config.maxDate&&(o=this.config.maxDate)}return o<this.config.minDate.toDate()&&(this.toastError("\n        <strong>"+$.i18n("invalid-params")+"</strong>\n        "+$.i18n("param-error-1",moment(this.config.minDate).format(s(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"dateFormat",this)))+"\n      "),o=this.config.minDate.toDate()),this.datepicker.setDate(o)}},{key:"popParams",value:function(){var i=this;this.setState("processing");var e=this.validateParams(this.parseQueryString("excludes"));(e.range||e.start||e.end)&&(this.fixLegacyDates(e),this.toastWarn("\n        <strong>Topviews has been revamped!</strong>\n        Custom date ranges are\n        <a href='//meta.wikimedia.org/wiki/Special:Permalink/15931284#Topviews_revamped'>no longer supported</a>.\n        Using defaults instead.\n      ")),this.setDate(e.date),$(this.config.projectInput).val(e.project),$(this.config.platformSelector).val(e.platform),"all-access"===e.platform&&($(".percent-mobile-wrapper").show(),$(".show-percent-mobile").prop("checked",!!e.mobileviews),$(".output-table").toggleClass("show-mobile",!!e.mobileviews)),$(".mainspace-only-option").prop("checked","false"!==e.mainspace),this.excludes=(e.excludes||[]).map(function(i){return decodeURIComponent(i.descore())}),this.patchUsage(),this.params=location.search,this.initData().done(function(){i.setupSelect2(),i.showList()}).always(function(){i.setupListeners()})}},{key:"fixLegacyDates",value:function(i){if(i.date||!i.start&&!i.end&&!i.range)return i;if(i.range)return i.date="last-month",i;var e=/\d{4}-\d{2}-\d{2}$/;if(!e.test(i.start)&&!e.test(i.end))return i.date="last-month",i;var o=moment(i.start,"YYYY-MM-DD"),t=moment(i.end,"YYYY-MM-DD"),r=Math.abs(t.diff(o,"days"));return r>3?i.date=o.format("YYYY-MM"):i.date=i.start,i}},{key:"pushParams",value:function(){var i=this.underscorePageNames(this.excludes).join("|").replace(/[&%?+]/g,encodeURIComponent);window.history&&window.history.replaceState&&window.history.replaceState({},document.title,"?"+$.param(this.getParams())+"&excludes="+i),$(".permalink").prop("href","?"+$.param(this.getPermaLink())+"&excludes="+i)}},{key:"resetView",value:function(){var i=!(arguments.length>0&&void 0!==arguments[0])||arguments[0];this.setState("reset"),this.clearSearch(),$(".topview-entries").html(""),i&&(this.resetSelect2(),this.excludes=[])}},{key:"setState",value:function(i,e){switch($("main").removeClass(this.config.formStates.join(" ")).addClass(i),i){case"initial":case"reset":this.stopSpinny(),this.autoExcludes=[],this.offset=0,this.offsetEnd=0,this.max=null,this.pageData=[],this.pageNames=[],this.mobileViews={},this.excludeAdded=!1,$(".message-container").html("");break;case"processing":this.startSpinny();break;case"complete":this.stopSpinny();break;case"search":}"function"==typeof e&&e()}},{key:"searchTopviews",value:function(){var i=this,e=$("#topviews_search_field").val().replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");if(!e)return this.clearSearch();this.setState("search");var o=[],t=0;this.pageData.forEach(function(r,a){i.excludes.includes(r.article)||i.autoExcludes.includes(r.article)||(t++,new RegExp(e,"i").test(r.article)&&(r.rank=t,r.index=a,o.push(r)))}),$(".topview-entries").html(""),$(".topviews-search-icon").removeClass("glyphicon-search").addClass("glyphicon-remove"),o.forEach(function(e){$(".topview-entries").append("<tr class='topview-entry'>\n         <td class='topview-entry--rank-wrapper'>\n           <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id="+e.index+"\n             title='"+$.i18n("topviews-remove-page")+"' aria-hidden='true'></span>\n           <span class='topview-entry--rank'>"+e.rank+"</span>\n         </td>\n         <td>\n           <a class='topview-entry--label' href=\""+i.getPageURL(e.article)+'" target="_blank">'+e.article+"</a>\n         </td>\n         <td class='topview-entry--mobile'></td>\n         <td>\n           <a class='topview-entry--views' target='_blank'\n              href='"+i.getPageviewsURL(e.article)+"'>"+i.formatNumber(e.views)+"\n           </a>\n         </td></tr>")}),this.addExcludeListeners()}},{key:"validateProject",value:function(){s(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"validateProject",this).call(this)&&(this.resetView(!0),this.processInput())}},{key:"setupSelect2",value:function(){var i=this,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:this.excludes,o=$(this.config.select2Input);o.select2({data:[],maximumSelectionLength:50,minimumInputLength:0,minimumResultsForSearch:1/0,placeholder:$.i18n("hover-to-exclude")}),e.length&&this.setSelect2Defaults(e),o.on("change",function(e){i.excludes=$(e.target).val()||[],i.max=null,i.clearSearch(),$(".select2-search__field").prop("disabled",!0)}),o.on("select2:unselect",function(e){var o=e.params.data.text;i.mobileViews[o]?i.showList():(i.setState("processing"),i.setSingleMobileViews(o).always(i.showList.bind(i))),$(e.target).val()||$(".report-false-positive").hide()})}},{key:"setSelect2Defaults",value:function(i){var e=this;return i=i.map(function(i){var o=$("<div>").text(i).html();return $("<option>"+o+"</option>").appendTo(e.config.select2Input),i}),$(this.config.select2Input).select2("val",i),i}},{key:"setupDateRangeSelector",value:function(){var i=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"monthly";$("#date-type-select").val(i);var e="monthly"===i?{format:"MM yyyy",viewMode:"months",minViewMode:"months",endDate:this.config.maxMonth}:{format:this.dateFormat,viewMode:"days",endDate:this.config.maxDate};$(this.config.dateRangeSelector).datepicker("destroy"),$(this.config.dateRangeSelector).datepicker(Object.assign({autoclose:!0,startDate:this.config.minDate.toDate()},e))}},{key:"setupListeners",value:function(){var i=this;s(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"setupListeners",this).call(this),$(this.config.platformSelector).on("change",function(e){$(".percent-mobile-wrapper").toggle("all-access"===e.target.value),$(".output-table").toggleClass("show-mobile",i.shouldShowMobile()),i.processInput()}),$("#date-type-select").on("change",function(e){i.setSpecialRange(i.isMonthly()?"last-month":"yesterday")}),$(".show-more").on("click",function(){i.offset+=i.config.pageSize,i.setState("processing"),i.setMobileViews(i.offsetEnd).always(i.showList.bind(i))}),$(this.config.dateRangeSelector).on("change",function(e){i.specialRange&&i.specialRange.value!==e.target.value&&(i.specialRange=null),i.processInput()}),$(".mainspace-only-option").on("click",this.processInput.bind(this)),$(".show-percent-mobile").on("click",function(e){$(".output-table").toggleClass("show-mobile",$(e.target).prop("checked")),i.processInput(!0)}),$("#topviews_search_field").on("keyup",this.searchTopviews.bind(this)),$(".topviews-search-icon").on("click",this.clearSearch.bind(this))}},{key:"isMonthly",value:function(){return"monthly"===$("#date-type-select").val()}},{key:"getAPIDate",value:function(){var i=this.datepicker.getDate();return this.isMonthly()?moment(i).format("YYYY/MM")+"/all-days":moment(i).format("YYYY/MM/DD")}},{key:"getFalsePositives",value:function(){return $.ajax({url:"/topviews/api.php",data:{project:this.project,date:this.getParams(!1).date,platform:$(this.config.platformSelector).val()},timeout:8e3})}},{key:"setSingleMobileViews",value:function(i){var e,o=this,t=$.Deferred(),r=void 0,a=void 0,n=this.datepicker.getDate();this.isMonthly()?(r=moment(n).startOf("month"),a=moment(n).endOf("month")):(r=moment(n),a=moment(n));var s=[];return["mobile-web","mobile-app"].forEach(function(e){var t="https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"+("/"+o.project+"/"+e+"/all-agents/"+i+"/"+(o.isMonthly()?"monthly":"daily"))+("/"+r.format(o.config.timestampFormat)+"/"+a.format(o.config.timestampFormat));if(o.mobileViews[i]){var n=$.Deferred();return s.push(n),n.resolve()}var k=$.ajax({url:t,dataType:"json"});s.push(k),k.done(function(i){var e=i.items.reduce(function(i,e){return i+e.views},0),t=i.items[0].article.descore();o.mobileViews[t]=e+(o.mobileViews[t]||0)})}),(e=$).whenAll.apply(e,s).always(function(){return t.resolve(o.mobileViews)}),t}},{key:"setMobileViews",value:function(){var i=this,e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:this.config.pageSize,t=$.Deferred();if(!this.shouldShowMobile())return t.resolve({});var r=e,a=0,n=o,s=void 0,k=void 0,w=this.datepicker.getDate();this.isMonthly()?(s=moment(w).startOf("month"),k=moment(w).endOf("month")):(s=moment(w),k=moment(w));for(var c=function(e){var o,r=[];["mobile-web","mobile-app"].forEach(function(o){var t="https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"+("/"+i.project+"/"+o+"/all-agents/"+e+"/"+(i.isMonthly()?"monthly":"daily"))+("/"+s.format(i.config.timestampFormat)+"/"+k.format(i.config.timestampFormat));if(i.mobileViews[e]){var a=$.Deferred();return r.push(a),a.resolve()}var n=$.ajax({url:t,dataType:"json"});r.push(n),n.done(function(e){var o=e.items.reduce(function(i,e){return i+e.views},0),t=e.items[0].article.descore();i.mobileViews[t]=o+(i.mobileViews[t]||0)})}),(o=$).whenAll.apply(o,r).always(function(){0===--n&&t.resolve(i.mobileViews)})},g=this.rateLimit(c,2*this.config.apiThrottle,this);a<o;){var l=this.pageData[r];this.excludes.includes(l.article)||this.autoExcludes.includes(l.article)?r++:(g(this.pageData[r].article),a++,r++)}return t}},{key:"initData",value:function(){var i=this,e=$.Deferred();this.setState("processing");var o=$(this.config.platformSelector).val(),t=function(){$.ajax({url:"https://wikimedia.org/api/rest_v1/metrics/pageviews/top/"+i.project+"/"+o+"/"+i.getAPIDate(),dataType:"json"}).done(function(t){return i.pageData=t.items[0].articles.map(function(i){return i.article=i.article.descore(),i}),i.pageNames=i.pageData.map(function(i){return i.article}),i.setupAutoExcludes(),$(".mainspace-only-option").is(":checked")?void i.filterOutNamespace(i.pageNames).done(function(t){return i.pageNames=t,i.pageData=i.pageData.filter(function(i){return t.includes(i.article)}),"all-access"===o?i.setMobileViews().then(function(){return e.resolve(i.pageData)}):e.resolve(i.pageData)}):"all-access"===o?i.setMobileViews().then(function(){return e.resolve(i.pageData)}):e.resolve(i.pageData)}).fail(function(o){return i.resetView(),i.writeMessage($.i18n("api-error","Pageviews API")+" - "+o.responseJSON.title),e.reject()})};return this.getFalsePositives().done(function(e){i.autoExcludes=e}).always(t),e}},{key:"setupAutoExcludes",value:function(){var i=this;if(this.autoExcludes=this.autoExcludes.filter(function(e){return i.pageNames.includes(e)}),!this.autoExcludes.length)return $(".list-false-positives").hide();var e="<a href='#' data-target='#list-false-positives-modal' data-toggle='modal'>\n        "+$.i18n("known-false-positives-link",this.autoExcludes.length)+"\n      </a>";$(".list-false-positives").html($.i18n("known-false-positives-text",e,this.autoExcludes.length)),$(".list-false-positives").show(),$("#list-false-positives-modal").on("show.bs.modal",function(){$(".false-positive-list").html(""),i.autoExcludes.forEach(function(e){var o=i.pageData.find(function(i){return i.article===e}).rank;$(".false-positive-list").append("\n          <tr><td>"+i.getPageLink(e,i.project)+"</td><td>"+o+"</td></tr>\n        ")})}),this.excludes=this.excludes.filter(function(e){return i.autoExcludes.indexOf(e)===-1})}},{key:"filterOutNamespace",value:function(i){var e=this,o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:0,t=$.Deferred(),r=function(i,t){return i.filter(function(i){var r=i.split(":")[0],a=e.getSiteInfo(e.project).general.mainpage;return(0!==o||i!==a&&i!==a.split(":")[1])&&(!i.includes(":")||!t.includes(r))})};return this.fetchSiteInfo(this.project).done(function(){var a=[];0===o&&(a=["Wikipedia","Special","Sp?cial"]);for(var n in e.getSiteInfo(e.project).namespaces)a.push(e.getSiteInfo(e.project).namespaces[n]["*"]);i=r(i,a),e.excludes=r(e.excludes,a),t.resolve(i)}).fail(function(){e.writeMessage(""+$.i18n("api-error","Siteinfo API")),t.resolve(i)}),t}},{key:"dateFormat",get:function(){return s(e.prototype.__proto__||Object.getPrototypeOf(e.prototype),"dateFormat",this).toLowerCase()}},{key:"datepicker",get:function(){return $(this.config.dateRangeSelector).data("datepicker")}}]),e}(w);$(document).ready(function(){return document.location.hash&&!document.location.search?document.location.href=document.location.href.replace("#","?"):document.location.hash?document.location.href=document.location.href.replace(/\#.*/,""):void new c})},{"../shared/pv":3,"./config":6}]},{},[7]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @file Core JavaScript extensions, either to native JS or a library.
+ *   Polyfills have their own file [polyfills.js](global.html#polyfills)
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+String.prototype.descore = function () {
+  return this.replace(/_/g, ' ');
+};
+String.prototype.score = function () {
+  return this.replace(/ /g, '_');
+};
+String.prototype.upcase = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+};
+String.prototype.escape = function () {
+  var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+
+  return this.replace(/[&<>"'\/]/g, function (s) {
+    return entityMap[s];
+  });
+};
+
+// remove duplicate values from Array
+Array.prototype.unique = function () {
+  return this.filter(function (value, index, array) {
+    return array.indexOf(value) === index;
+  });
+};
+
+// Improve syntax to emulate mixins in ES6
+window.mix = function (superclass) {
+  return new MixinBuilder(superclass);
+};
+
+var MixinBuilder = function () {
+  /**
+   * set super class instance variable
+   * @param  {class} superclass
+   */
+
+  function MixinBuilder(superclass) {
+    _classCallCheck(this, MixinBuilder);
+
+    this.superclass = superclass;
+  }
+
+  /**
+   * blend given classes with current superclass
+   * @param  {...class} mixins
+   * @returns {Array} classes
+   */
+
+
+  _createClass(MixinBuilder, [{
+    key: 'with',
+    value: function _with() {
+      for (var _len = arguments.length, mixins = Array(_len), _key = 0; _key < _len; _key++) {
+        mixins[_key] = arguments[_key];
+      }
+
+      return mixins.reduce(function (c, mixin) {
+        return mixin(c);
+      }, this.superclass);
+    }
+  }]);
+
+  return MixinBuilder;
+}();
+
+$.whenAll = function () {
+  var dfd = $.Deferred(),
+      counter = 0,
+      state = 'resolved',
+      promises = new (Function.prototype.bind.apply(Array, [null].concat(Array.prototype.slice.call(arguments))))();
+
+  var resolveOrReject = function resolveOrReject() {
+    if (this.state === 'rejected') {
+      state = 'rejected';
+    }
+    counter++;
+
+    if (counter === promises.length) {
+      dfd[state === 'rejected' ? 'reject' : 'resolve']();
+    }
+  };
+
+  $.each(promises, function (_i, promise) {
+    promise.always(resolveOrReject);
+  });
+
+  return dfd.promise();
+};
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+/**
+ * @file Polyfills for users who refuse to upgrade their browsers
+ *   Most code is adapted from [MDN](https://developer.mozilla.org)
+ */
+
+// Array.includes function polyfill
+// This is not a full implementation, just a shorthand to indexOf !== -1
+if (!Array.prototype.includes) {
+  Array.prototype.includes = function (search) {
+    return this.indexOf(search) !== -1;
+  };
+}
+
+// String.includes function polyfill
+if (!String.prototype.includes) {
+  String.prototype.includes = function (search, start) {
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+  };
+}
+
+// Object.assign
+if (typeof Object.assign !== 'function') {
+  (function () {
+    Object.assign = function (target) {
+      if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var output = Object(target);
+      for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
+        if (source !== undefined && source !== null) {
+          for (var nextKey in source) {
+            if (source.hasOwnProperty(nextKey)) {
+              output[nextKey] = source[nextKey];
+            }
+          }
+        }
+      }
+      return output;
+    };
+  })();
+}
+
+// ChildNode.remove
+if (!('remove' in Element.prototype)) {
+  Element.prototype.remove = function () {
+    this.parentNode.removeChild(this);
+  };
+}
+
+// String.startsWith
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function (searchString, position) {
+    position = position || 0;
+    return this.substr(position, searchString.length) === searchString;
+  };
+}
+
+// Array.of
+if (!Array.of) {
+  Array.of = function () {
+    return Array.prototype.slice.call(arguments);
+  };
+}
+
+// Array.find
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.find called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value = void 0;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+}
+
+// Array.fill
+if (!Array.prototype.fill) {
+  Array.prototype.fill = function (value) {
+
+    // Steps 1-2.
+    if (this === null) {
+      throw new TypeError('this is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // Steps 3-5.
+    var len = O.length >>> 0;
+
+    // Steps 6-7.
+    var start = arguments[1];
+    var relativeStart = start >> 0;
+
+    // Step 8.
+    var k = relativeStart < 0 ? Math.max(len + relativeStart, 0) : Math.min(relativeStart, len);
+
+    // Steps 9-10.
+    var end = arguments[2];
+    var relativeEnd = end === undefined ? len : end >> 0;
+
+    // Step 11.
+    var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0) : Math.min(relativeEnd, len);
+
+    // Step 12.
+    while (k < final) {
+      O[k] = value;
+      k++;
+    }
+
+    // Step 13.
+    return O;
+  };
+}
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
+ * @author MusikAnimal, Kaldari
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+/** class-less files with global overrides */
+require('./core_extensions');
+require('./polyfills');
+
+var PvConfig = require('./pv_config');
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
+
+/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
+
+var Pv = function (_PvConfig) {
+  _inherits(Pv, _PvConfig);
+
+  /**
+   * Main constructor for each app, giving way to the parent constructor in list_helpers or chart_helpers
+   * @param {Object} appConfig - as defined in the app's config.js
+   * @override
+   */
+
+  function Pv(appConfig) {
+    _classCallCheck(this, Pv);
+
+    /** assign initial class properties */
+
+    var _this = _possibleConstructorReturn(this, (Pv.__proto__ || Object.getPrototypeOf(Pv)).call(this, appConfig));
+
+    var defaults = _this.config.defaults,
+        validParams = _this.config.validParams;
+    _this.config = Object.assign({}, _this.config, appConfig);
+    _this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
+    _this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
+
+    _this.colorsStyleEl = undefined;
+    _this.storage = {}; // used as fallback when localStorage is not supported
+
+    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(function (setting) {
+      _this[setting] = _this.getFromLocalStorage('pageviews-settings-' + setting) || _this.config.defaults[setting];
+    });
+    _this.setupSettingsModal();
+
+    _this.params = null;
+    _this.siteInfo = {};
+
+    /**
+     * tracking of elapsed time
+     * @type {null|Date}
+     */
+    _this.processStart = null;
+
+    _this.debug = location.search.includes('debug=true') || location.host === 'localhost';
+
+    /** redirect to production if debug flag isn't given */
+    if (location.pathname.includes('-test') && !location.search.includes('debug=true')) {
+      var _ret = function () {
+        var actualPathName = location.pathname.replace(/-test\/?/, '');
+        $('body').html('\n        <p class=\'tm text-center\'>This is the staging environment!</p>\n        <p class=\'tm text-center\'>To use the staging app, append <code>debug=true</code> to the URL</p>\n        <p class=\'tm text-center\'>Otherwise, please update your links to use\n          <strong><a href=\'' + actualPathName + '\'>https://' + location.host + actualPathName + '</a></strong>\n        </p>\n        <p class=\'text-center\' style=\'margin-top:50px; font-weight:bold\'>\n          Redirecting you to the production ' + document.title + ' in\n          <span class=\'countdown\'>10</span>...\n        </p>\n      ');
+
+        var count = 10;
+
+        setInterval(function () {
+          if (--count === 0) {
+            return document.location = actualPathName;
+          }
+          $('.countdown').text(count);
+        }, 1000);
+
+        return {
+          v: _possibleConstructorReturn(_this)
+        };
+      }();
+
+      if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    }
+
+    /** assign app instance to window for debugging on local environment */
+    if (_this.debug) {
+      window.app = _this;
+    } else {
+      _this.splash();
+    }
+
+    /**
+     * Load translations then initialize the app.
+     * Each app has it's own initialize method.
+     * Make sure we load 'en.json' as a fallback
+     */
+    var messagesToLoad = _defineProperty({}, i18nLang, '/pageviews/messages/' + i18nLang + '.json');
+    if (i18nLang !== 'en') {
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+    $.i18n({
+      locale: i18nLang
+    }).load(messagesToLoad).then(_this.initialize.bind(_this));
+
+    // extensions
+    $.extend($.i18n.parser.emitter, {
+      // Handle LINK keywords
+      link: function link(nodes) {
+        return '<a href="' + nodes[1].escape() + '">' + nodes[0].escape() + '</a>';
+      }
+    });
+
+    /** set up toastr config. The duration may be overriden later */
+    toastr.options = {
+      closeButton: true,
+      debug: location.host === 'localhost',
+      newestOnTop: false,
+      progressBar: false,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+      onclick: null,
+      showDuration: '300',
+      hideDuration: '1000',
+      timeOut: '5000',
+      extendedTimeOut: '3000',
+      showEasing: 'swing',
+      hideEasing: 'linear',
+      showMethod: 'fadeIn',
+      hideMethod: 'fadeOut',
+      toastClass: 'alert',
+      iconClasses: {
+        error: 'alert-danger',
+        info: 'alert-info',
+        success: 'alert-success',
+        warning: 'alert-warning'
+      }
+    };
+    return _this;
+  }
+
+  /**
+   * Add a site notice (Bootstrap alert)
+   * @param {Object} opts - as follows:
+   * {
+   *   message: '',       // {String} message - message to show
+   *   level: 'warning',  // one of 'success', 'info', 'warning', 'error'
+   *   timeout: 10,       // {Number} [timeout] - in seconds. Use 0 to show indefinitely
+   *   title: ''          // {String} [title] - will appear in bold and in front of the message
+   * }
+   */
+
+
+  _createClass(Pv, [{
+    key: 'toast',
+    value: function toast(opts) {
+      var title = opts.title ? '<strong>' + opts.title + '</strong> ' : '';
+      opts = Object.assign({
+        message: title + opts.message,
+        level: 'warning',
+        timeout: 10
+      }, opts);
+
+      toastr.options.timeOut = opts.timeout * 1000;
+      toastr[opts.level](opts.message);
+    }
+
+    /**
+     * Show success message to user via this.toast
+     * @param {String} message
+     * @param {Number} [timeout] - in seconds
+     */
+
+  }, {
+    key: 'toastSuccess',
+    value: function toastSuccess(message) {
+      var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      this.toast({ message: message, level: 'success', timeout: timeout });
+    }
+
+    /**
+     * Show info message to user via this.toast
+     * @param {String} message
+     * @param {Number} [timeout] - in seconds
+     */
+
+  }, {
+    key: 'toastInfo',
+    value: function toastInfo(message) {
+      var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      this.toast({ message: message, level: 'info', timeout: timeout });
+    }
+
+    /**
+     * Show warning to user via this.toast
+     * @param {String} message
+     * @param {Number} [timeout] - in seconds
+     */
+
+  }, {
+    key: 'toastWarn',
+    value: function toastWarn(message) {
+      var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      this.toast({ message: message, level: 'warning', timeout: timeout });
+    }
+
+    /**
+     * Show an error to user via this.toast
+     * @param {String} message
+     * @param {Number} [timeout] - in seconds
+     */
+
+  }, {
+    key: 'toastError',
+    value: function toastError(message) {
+      var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+
+      this.toast({ message: message, level: 'error', timeout: timeout });
+    }
+
+    /**
+     * Add site notice for invalid parameter
+     * @param {String} param - name of parameter
+     */
+
+  }, {
+    key: 'addInvalidParamNotice',
+    value: function addInvalidParamNotice(param) {
+      var docLink = '<a href=\'/' + this.app + '/url_structure\'>' + $.i18n('documentation').toLowerCase() + '</a>';
+      this.toastError('\n      <strong>' + $.i18n('invalid-params') + '</strong>\n      ' + $.i18n('param-error-3', param, docLink) + '\n    ');
+    }
+
+    /**
+     * Validate the date range of given params
+     *   and throw errors as necessary and/or set defaults
+     * @param {Object} params - as returned by this.parseQueryString()
+     * @returns {Boolean} true if there were no errors, false otherwise
+     */
+
+  }, {
+    key: 'validateDateRange',
+    value: function validateDateRange(params) {
+      if (params.range) {
+        if (!this.setSpecialRange(params.range)) {
+          this.addInvalidParamNotice('range');
+          this.setSpecialRange(this.config.defaults.dateRange);
+        }
+      } else if (params.start) {
+        var dateRegex = /\d{4}-\d{2}-\d{2}$/;
+
+        // convert year/month for monthly date types to valid date string
+        if (params.start && /^\d{4}-\d{2}$/.test(params.start)) {
+          params.start = params.start + '-01';
+          params.monthly = true;
+        }
+        if (params.end && /^\d{4}-\d{2}$/.test(params.end)) {
+          params.end = moment(params.end + '-01').endOf('month').format('YYYY-MM-DD');
+        } else {
+          params.monthly = false;
+        }
+
+        // set defaults
+        var startDate = void 0,
+            endDate = void 0;
+
+        // then check format of start and end date
+        if (params.start && dateRegex.test(params.start)) {
+          startDate = moment(params.start);
+        } else {
+          this.addInvalidParamNotice('start');
+          return false;
+        }
+        if (params.end && dateRegex.test(params.end)) {
+          endDate = moment(params.end);
+        } else {
+          this.addInvalidParamNotice('end');
+          return false;
+        }
+
+        // check if they are outside the valid range or if in the wrong order
+        if (startDate < this.config.minDate || endDate < this.config.minDate) {
+          this.toastError('\n          <strong>' + $.i18n('invalid-params') + '</strong>\n          ' + $.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat)) + '\n        ');
+          return false;
+        } else if (startDate > endDate) {
+          this.toastError('\n          <strong>' + $.i18n('param-error-2') + '</strong>\n          ' + $.i18n('invalid-params') + '\n        ');
+          return false;
+        }
+
+        if (params.monthly && ['pageviews', 'siteviews'].includes(this.app)) {
+          $('#date-type-select').val('monthly');
+          $('.date-selector').hide();
+          $('.month-selector').show();
+
+          // set initial values
+          this.monthStart = moment(params.start).toDate();
+          this.monthEnd = moment(params.end).startOf('month').toDate();
+
+          // initialize and update month selector
+          this.setupMonthSelector(this.monthStart, this.monthEnd);
+        } else {
+          /** directly assign startDate before calling setEndDate so events will be fired once */
+          this.daterangepicker.startDate = startDate;
+          this.daterangepicker.setEndDate(endDate);
+        }
+      } else {
+        this.setSpecialRange(this.config.defaults.dateRange);
+      }
+
+      return true;
+    }
+
+    /**
+     * Clear inline messages used to show non-critical errors
+     */
+
+  }, {
+    key: 'clearMessages',
+    value: function clearMessages() {
+      $('.message-container').html('');
+    }
+
+    /**
+     * Get date format to use based on settings
+     * @returns {string} date format to passed to parser
+     */
+
+  }, {
+    key: 'dbName',
+
+
+    /**
+     * Get the database name of the given projet
+     * @param  {String} project - with or without .org
+     * @return {String} database name
+     */
+    value: function dbName(project) {
+      return Object.keys(siteMap).find(function (key) {
+        return siteMap[key] === project.replace(/\.org$/, '') + '.org';
+      });
+    }
+
+    /**
+     * Force download of given data, or open in a new tab if HTML5 <a> download attribute is not supported
+     * @param {String} data - Raw data prepended with data type, e.g. "data:text/csv;charset=utf-8,my data..."
+     * @param {String} extension - the file extension to use
+     */
+
+  }, {
+    key: 'downloadData',
+    value: function downloadData(data, extension) {
+      var encodedUri = encodeURI(data);
+
+      // create HTML5 download element and force click so we can specify a filename
+      var link = document.createElement('a');
+      if (typeof link.download === 'string') {
+        document.body.appendChild(link); // Firefox requires the link to be in the body
+
+        var filename = this.getExportFilename() + '.' + extension;
+        link.download = filename;
+        link.href = encodedUri;
+        link.click();
+
+        document.body.removeChild(link); // remove the link when done
+      } else {
+          window.open(encodedUri); // open in new tab if download isn't supported (*cough* Safari)
+        }
+    }
+
+    /**
+     * Fill in values within settings modal with what's in the session object
+     */
+
+  }, {
+    key: 'fillInSettings',
+    value: function fillInSettings() {
+      var _this2 = this;
+
+      $.each($('#settings-modal input'), function (index, el) {
+        if (el.type === 'checkbox') {
+          el.checked = _this2[el.name] === 'true';
+        } else {
+          el.checked = _this2[el.name] === el.value;
+        }
+      });
+    }
+
+    /**
+     * Add focus to Select2 input field
+     */
+
+  }, {
+    key: 'focusSelect2',
+    value: function focusSelect2() {
+      $('.select2-selection').trigger('click');
+      $('.select2-search__field').focus();
+    }
+
+    /**
+     * Format number based on current settings, e.g. localize with comma delimeters
+     * @param {number|string} num - number to format
+     * @returns {string} formatted number
+     */
+
+  }, {
+    key: 'formatNumber',
+    value: function formatNumber(num) {
+      var numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+      if (numericalFormatting === 'true') {
+        return this.n(num);
+      } else {
+        return num;
+      }
+    }
+
+    /**
+     * show every other number in the y-axis, called from PvConfig
+     * @param  {Number} num - numerical value
+     * @return {String|null} formatted number or null if an even number
+     */
+
+  }, {
+    key: 'formatYAxisNumber',
+    value: function formatYAxisNumber(num) {
+      if (num % 1 === 0) {
+        return this.formatNumber(num);
+      } else {
+        return null;
+      }
+    }
+
+    /**
+     * Gets the date headings as strings - i18n compliant
+     * @param {boolean} localized - whether the dates should be localized per browser language
+     * @returns {Array} the date headings as strings
+     */
+
+  }, {
+    key: 'getDateHeadings',
+    value: function getDateHeadings() {
+      var localized = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      var dateHeadings = [],
+          monthly = $('#date-type-select').val() === 'monthly',
+          endDate = moment(this.daterangepicker.endDate).add(monthly ? 0 : 1, 'day'),
+          dateType = monthly ? 'month' : 'day',
+          dateFormat = monthly ? 'YYYY-MM' : 'YYYY-MM-DD';
+
+      for (var date = moment(this.daterangepicker.startDate); date.isBefore(endDate); date.add(1, dateType)) {
+        if (localized) {
+          dateHeadings.push(date.format(this.dateFormat));
+        } else {
+          dateHeadings.push(date.format(dateFormat));
+        }
+      }
+      return dateHeadings;
+    }
+
+    /**
+     * Get the explanded wiki URL given the page name
+     * This should be used instead of getPageURL when you want to chain query string parameters
+     *
+     * @param {string} page name
+     * @returns {string} URL for the page
+     */
+
+  }, {
+    key: 'getExpandedPageURL',
+    value: function getExpandedPageURL(page) {
+      return '//' + this.project + '.org/w/index.php?title=' + encodeURIComponent(page.score()).replace(/'/, escape);
+    }
+
+    /**
+     * Get full link to page history for given page and project
+     * @param  {string} page - page to link to
+     * @param  {string} content - what to put as the link text
+     * @return {string} HTML markup
+     */
+
+  }, {
+    key: 'getHistoryLink',
+    value: function getHistoryLink(page, content) {
+      return '<a href="' + this.getExpandedPageURL(page) + '&action=history" target="_blank">\n        ' + content + '\n      </a>';
+    }
+
+    /**
+     * Get informative filename without extension to be used for export options
+     * @return {string} filename without an extension
+     */
+
+  }, {
+    key: 'getExportFilename',
+    value: function getExportFilename() {
+      var startDate = this.daterangepicker.startDate.startOf('day').format('YYYYMMDD'),
+          endDate = this.daterangepicker.endDate.startOf('day').format('YYYYMMDD');
+      return this.app + '-' + startDate + '-' + endDate;
+    }
+
+    /**
+     * Get a full link for the given page and project
+     * @param  {string} page - page to link to
+     * @param  {string} [project] - project link, defaults to `this.project`
+     * @return {string} HTML markup
+     */
+
+  }, {
+    key: 'getPageLink',
+    value: function getPageLink(page, project) {
+      return '<a target="_blank" href="' + this.getPageURL(page, project) + '">' + page.descore().escape() + '</a>';
+    }
+
+    /**
+     * Get the wiki URL given the page name
+     * @param {string} page - page name
+     * @param {string} [project] - project, or this.project (for chart-based apps)
+     * @returns {string} URL for the page
+     */
+
+  }, {
+    key: 'getPageURL',
+    value: function getPageURL(page) {
+      var project = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.project;
+
+      return '//' + project.replace(/\.org$/, '').escape() + '.org/wiki/' + encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape);
+    }
+
+    /**
+     * Get the wiki URL given the page name
+     *
+     * @param {string} site - site name (e.g. en.wikipedia.org)
+     * @returns {string} URL for the site
+     */
+
+  }, {
+    key: 'getSiteLink',
+    value: function getSiteLink(site) {
+      return '<a target="_blank" href="//' + site.replace(/\.org$/, '') + '.org">' + site + '</a>';
+    }
+
+    /**
+     * Get the project name (without the .org)
+     *
+     * @returns {boolean} lang.projectname
+     */
+
+  }, {
+    key: 'getLocaleDateString',
+
+
+    /**
+     * get date format for the browser's locale
+     * @return {String} format to be passed to moment.format()
+     */
+    value: function getLocaleDateString() {
+      if (!navigator.language) {
+        return this.config.defaults.dateFormat;
+      }
+
+      var formats = {
+        'ar-sa': 'DD/MM/YY',
+        'bg-bg': 'DD.M.YYYY',
+        'ca-es': 'DD/MM/YYYY',
+        'zh-tw': 'YYYY/M/D',
+        'cs-cz': 'D.M.YYYY',
+        'da-dk': 'DD-MM-YYYY',
+        'de-de': 'DD.MM.YYYY',
+        'el-gr': 'D/M/YYYY',
+        'en-us': 'M/D/YYYY',
+        'fi-fi': 'D.M.YYYY',
+        'fr-fr': 'DD/MM/YYYY',
+        'he-il': 'DD/MM/YYYY',
+        'hu-hu': 'YYYY. MM. DD.',
+        'is-is': 'D.M.YYYY',
+        'it-it': 'DD/MM/YYYY',
+        'ja-jp': 'YYYY/MM/DD',
+        'ko-kr': 'YYYY-MM-DD',
+        'nl-nl': 'D-M-YYYY',
+        'nb-no': 'DD.MM.YYYY',
+        'pl-pl': 'YYYY-MM-DD',
+        'pt-br': 'D/M/YYYY',
+        'ro-ro': 'DD.MM.YYYY',
+        'ru-ru': 'DD.MM.YYYY',
+        'hr-hr': 'D.M.YYYY',
+        'sk-sk': 'D. M. YYYY',
+        'sq-al': 'YYYY-MM-DD',
+        'sv-se': 'YYYY-MM-DD',
+        'th-th': 'D/M/YYYY',
+        'tr-tr': 'DD.MM.YYYY',
+        'ur-pk': 'DD/MM/YYYY',
+        'id-id': 'DD/MM/YYYY',
+        'uk-ua': 'DD.MM.YYYY',
+        'be-by': 'DD.MM.YYYY',
+        'sl-si': 'D.M.YYYY',
+        'et-ee': 'D.MM.YYYY',
+        'lv-lv': 'YYYY.MM.DD.',
+        'lt-lt': 'YYYY.MM.DD',
+        'fa-ir': 'MM/DD/YYYY',
+        'vi-vn': 'DD/MM/YYYY',
+        'hy-am': 'DD.MM.YYYY',
+        'az-latn-az': 'DD.MM.YYYY',
+        'eu-es': 'YYYY/MM/DD',
+        'mk-mk': 'DD.MM.YYYY',
+        'af-za': 'YYYY/MM/DD',
+        'ka-ge': 'DD.MM.YYYY',
+        'fo-fo': 'DD-MM-YYYY',
+        'hi-in': 'DD-MM-YYYY',
+        'ms-my': 'DD/MM/YYYY',
+        'kk-kz': 'DD.MM.YYYY',
+        'ky-kg': 'DD.MM.YY',
+        'sw-ke': 'M/d/YYYY',
+        'uz-latn-uz': 'DD/MM YYYY',
+        'tt-ru': 'DD.MM.YYYY',
+        'pa-in': 'DD-MM-YY',
+        'gu-in': 'DD-MM-YY',
+        'ta-in': 'DD-MM-YYYY',
+        'te-in': 'DD-MM-YY',
+        'kn-in': 'DD-MM-YY',
+        'mr-in': 'DD-MM-YYYY',
+        'sa-in': 'DD-MM-YYYY',
+        'mn-mn': 'YY.MM.DD',
+        'gl-es': 'DD/MM/YY',
+        'kok-in': 'DD-MM-YYYY',
+        'syr-sy': 'DD/MM/YYYY',
+        'dv-mv': 'DD/MM/YY',
+        'ar-iq': 'DD/MM/YYYY',
+        'zh-cn': 'YYYY/M/D',
+        'de-ch': 'DD.MM.YYYY',
+        'en-gb': 'DD/MM/YYYY',
+        'es-mx': 'DD/MM/YYYY',
+        'fr-be': 'D/MM/YYYY',
+        'it-ch': 'DD.MM.YYYY',
+        'nl-be': 'D/MM/YYYY',
+        'nn-no': 'DD.MM.YYYY',
+        'pt-pt': 'DD-MM-YYYY',
+        'sr-latn-cs': 'D.M.YYYY',
+        'sv-fi': 'D.M.YYYY',
+        'az-cyrl-az': 'DD.MM.YYYY',
+        'ms-bn': 'DD/MM/YYYY',
+        'uz-cyrl-uz': 'DD.MM.YYYY',
+        'ar-eg': 'DD/MM/YYYY',
+        'zh-hk': 'D/M/YYYY',
+        'de-at': 'DD.MM.YYYY',
+        'en-au': 'D/MM/YYYY',
+        'es-es': 'DD/MM/YYYY',
+        'fr-ca': 'YYYY-MM-DD',
+        'sr-cyrl-cs': 'D.M.YYYY',
+        'ar-ly': 'DD/MM/YYYY',
+        'zh-sg': 'D/M/YYYY',
+        'de-lu': 'DD.MM.YYYY',
+        'en-ca': 'DD/MM/YYYY',
+        'es-gt': 'DD/MM/YYYY',
+        'fr-ch': 'DD.MM.YYYY',
+        'ar-dz': 'DD-MM-YYYY',
+        'zh-mo': 'D/M/YYYY',
+        'de-li': 'DD.MM.YYYY',
+        'en-nz': 'D/MM/YYYY',
+        'es-cr': 'DD/MM/YYYY',
+        'fr-lu': 'DD/MM/YYYY',
+        'ar-ma': 'DD-MM-YYYY',
+        'en-ie': 'DD/MM/YYYY',
+        'es-pa': 'MM/DD/YYYY',
+        'fr-mc': 'DD/MM/YYYY',
+        'ar-tn': 'DD-MM-YYYY',
+        'en-za': 'YYYY/MM/DD',
+        'es-do': 'DD/MM/YYYY',
+        'ar-om': 'DD/MM/YYYY',
+        'en-jm': 'DD/MM/YYYY',
+        'es-ve': 'DD/MM/YYYY',
+        'ar-ye': 'DD/MM/YYYY',
+        'en-029': 'MM/DD/YYYY',
+        'es-co': 'DD/MM/YYYY',
+        'ar-sy': 'DD/MM/YYYY',
+        'en-bz': 'DD/MM/YYYY',
+        'es-pe': 'DD/MM/YYYY',
+        'ar-jo': 'DD/MM/YYYY',
+        'en-tt': 'DD/MM/YYYY',
+        'es-ar': 'DD/MM/YYYY',
+        'ar-lb': 'DD/MM/YYYY',
+        'en-zw': 'M/D/YYYY',
+        'es-ec': 'DD/MM/YYYY',
+        'ar-kw': 'DD/MM/YYYY',
+        'en-ph': 'M/D/YYYY',
+        'es-cl': 'DD-MM-YYYY',
+        'ar-ae': 'DD/MM/YYYY',
+        'es-uy': 'DD/MM/YYYY',
+        'ar-bh': 'DD/MM/YYYY',
+        'es-py': 'DD/MM/YYYY',
+        'ar-qa': 'DD/MM/YYYY',
+        'es-bo': 'DD/MM/YYYY',
+        'es-sv': 'DD/MM/YYYY',
+        'es-hn': 'DD/MM/YYYY',
+        'es-ni': 'DD/MM/YYYY',
+        'es-pr': 'DD/MM/YYYY',
+        'am-et': 'D/M/YYYY',
+        'tzm-latn-dz': 'DD-MM-YYYY',
+        'iu-latn-ca': 'D/MM/YYYY',
+        'sma-no': 'DD.MM.YYYY',
+        'mn-mong-cn': 'YYYY/M/D',
+        'gd-gb': 'DD/MM/YYYY',
+        'en-my': 'D/M/YYYY',
+        'prs-af': 'DD/MM/YY',
+        'bn-bd': 'DD-MM-YY',
+        'wo-sn': 'DD/MM/YYYY',
+        'rw-rw': 'M/D/YYYY',
+        'qut-gt': 'DD/MM/YYYY',
+        'sah-ru': 'MM.DD.YYYY',
+        'gsw-fr': 'DD/MM/YYYY',
+        'co-fr': 'DD/MM/YYYY',
+        'oc-fr': 'DD/MM/YYYY',
+        'mi-nz': 'DD/MM/YYYY',
+        'ga-ie': 'DD/MM/YYYY',
+        'se-se': 'YYYY-MM-DD',
+        'br-fr': 'DD/MM/YYYY',
+        'smn-fi': 'D.M.YYYY',
+        'moh-ca': 'M/D/YYYY',
+        'arn-cl': 'DD-MM-YYYY',
+        'ii-cn': 'YYYY/M/D',
+        'dsb-de': 'D. M. YYYY',
+        'ig-ng': 'D/M/YYYY',
+        'kl-gl': 'DD-MM-YYYY',
+        'lb-lu': 'DD/MM/YYYY',
+        'ba-ru': 'DD.MM.YY',
+        'nso-za': 'YYYY/MM/DD',
+        'quz-bo': 'DD/MM/YYYY',
+        'yo-ng': 'D/M/YYYY',
+        'ha-latn-ng': 'D/M/YYYY',
+        'fil-ph': 'M/D/YYYY',
+        'ps-af': 'DD/MM/YY',
+        'fy-nl': 'D-M-YYYY',
+        'ne-np': 'M/D/YYYY',
+        'se-no': 'DD.MM.YYYY',
+        'iu-cans-ca': 'D/M/YYYY',
+        'sr-latn-rs': 'D.M.YYYY',
+        'si-lk': 'YYYY-MM-DD',
+        'sr-cyrl-rs': 'D.M.YYYY',
+        'lo-la': 'DD/MM/YYYY',
+        'km-kh': 'YYYY-MM-DD',
+        'cy-gb': 'DD/MM/YYYY',
+        'bo-cn': 'YYYY/M/D',
+        'sms-fi': 'D.M.YYYY',
+        'as-in': 'DD-MM-YYYY',
+        'ml-in': 'DD-MM-YY',
+        'en-in': 'DD-MM-YYYY',
+        'or-in': 'DD-MM-YY',
+        'bn-in': 'DD-MM-YY',
+        'tk-tm': 'DD.MM.YY',
+        'bs-latn-ba': 'D.M.YYYY',
+        'mt-mt': 'DD/MM/YYYY',
+        'sr-cyrl-me': 'D.M.YYYY',
+        'se-fi': 'D.M.YYYY',
+        'zu-za': 'YYYY/MM/DD',
+        'xh-za': 'YYYY/MM/DD',
+        'tn-za': 'YYYY/MM/DD',
+        'hsb-de': 'D. M. YYYY',
+        'bs-cyrl-ba': 'D.M.YYYY',
+        'tg-cyrl-tj': 'DD.MM.yy',
+        'sr-latn-ba': 'D.M.YYYY',
+        'smj-no': 'DD.MM.YYYY',
+        'rm-ch': 'DD/MM/YYYY',
+        'smj-se': 'YYYY-MM-DD',
+        'quz-ec': 'DD/MM/YYYY',
+        'quz-pe': 'DD/MM/YYYY',
+        'hr-ba': 'D.M.YYYY.',
+        'sr-latn-me': 'D.M.YYYY',
+        'sma-se': 'YYYY-MM-DD',
+        'en-sg': 'D/M/YYYY',
+        'ug-cn': 'YYYY-M-D',
+        'sr-cyrl-ba': 'D.M.YYYY',
+        'es-us': 'M/D/YYYY'
+      };
+
+      var key = navigator.language.toLowerCase();
+      return formats[key] || this.config.defaults.dateFormat;
+    }
+
+    /**
+     * Get a value from localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to retrieve
+     * @returns {Mixed} stored value
+     */
+
+  }, {
+    key: 'getFromLocalStorage',
+    value: function getFromLocalStorage(key) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.getItem(key);
+      } catch (err) {
+        return storage[key];
+      }
+    }
+
+    /**
+     * Get URL to file a report on Meta, preloaded with permalink
+     * @param {String} [phabPaste] URL to auto-generated error report on Phabricator
+     * @param {String} [titleOverride] goes in the title input field of the wiki editing interface
+     * @return {String} URL
+     */
+
+  }, {
+    key: 'getBugReportURL',
+    value: function getBugReportURL(phabPaste, titleOverride) {
+      var reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' + ('&section=new&preloadtitle=' + (titleOverride || this.app.upcase() + ' bug report'));
+
+      if (phabPaste) {
+        return reportURL + '&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=' + phabPaste;
+      } else {
+        return reportURL;
+      }
+    }
+
+    /**
+     * Get general information about a project, such as namespaces, title of the main page, etc.
+     * Data returned by the api is also stored in this.siteInfo
+     * @param {String} project - project such as en.wikipedia (with or without .org)
+     * @returns {Deferred} promise resolving with siteinfo,
+     *   along with any other cached siteinfo for other projects
+     */
+
+  }, {
+    key: 'fetchSiteInfo',
+    value: function fetchSiteInfo(project) {
+      var _this3 = this;
+
+      project = project.replace(/\.org$/, '');
+      var dfd = $.Deferred(),
+          cacheKey = 'pageviews-siteinfo-' + project;
+
+      if (this.siteInfo[project]) return dfd.resolve(this.siteInfo);
+
+      // use cached site info if present
+      if (simpleStorage.hasKey(cacheKey)) {
+        this.siteInfo[project] = simpleStorage.get(cacheKey);
+        dfd.resolve(this.siteInfo);
+      } else {
+        // otherwise fetch siteinfo and store in cache
+        $.ajax({
+          url: 'https://' + project + '.org/w/api.php',
+          data: {
+            action: 'query',
+            meta: 'siteinfo',
+            siprop: 'general|namespaces',
+            format: 'json'
+          },
+          dataType: 'jsonp'
+        }).done(function (data) {
+          _this3.siteInfo[project] = data.query;
+
+          // cache for one week (TTL is in milliseconds)
+          simpleStorage.set(cacheKey, _this3.siteInfo[project], { TTL: 1000 * 60 * 60 * 24 * 7 });
+
+          dfd.resolve(_this3.siteInfo);
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      }
+
+      return dfd;
+    }
+
+    /**
+     * Query PageAssessments API and return the classifications
+     * @param  {Array} pages - pages to query for
+     * @return {Deferred} Promise resolving with object like {page: "//assessment_image.svg"}
+     */
+
+  }, {
+    key: 'getPageAssessments',
+    value: function getPageAssessments(pages) {
+      var _this4 = this;
+
+      var dfd = $.Deferred();
+
+      this.massApi({
+        prop: 'pageassessments',
+        titles: pages.join('|')
+      }, this.project, 'pacontinue', 'pages').done(function (data) {
+        // something went wrong
+        if (!data.pages) return dfd.resolve({});
+
+        var assessments = {};
+        data.pages.forEach(function (page) {
+          // API limit is on the number of assessments, not pages,
+          //   so we might already have the assessment for this page
+          if (!page.pageassessments) return;
+
+          var wikiprojects = Object.keys(page.pageassessments),
+              firstAssessment = page.pageassessments[wikiprojects[0]]; // just go with the first assessment
+
+          if (firstAssessment && firstAssessment.class.length && !assessments[page.title]) {
+            var imgUrl = _this4.config.pageAssessmentBadges[_this4.project][firstAssessment.class] || '';
+
+            // skip if no image is available
+            if (!imgUrl.length) return;
+
+            var imgMarkup = '<img class=\'article-badge\' src=\'https://upload.wikimedia.org/wikipedia/commons/' + imgUrl + '\' ' + ('alt=\'' + firstAssessment.class + '\' title=\'' + firstAssessment.class + '\' />');
+            assessments[page.title] = imgMarkup;
+          }
+        });
+        return dfd.resolve(assessments);
+      });
+
+      return dfd;
+    }
+
+    /**
+     * Helper to get siteinfo from this.siteInfo for given project, with or without .org
+     * @param {String} project - project name, with or without .org
+     * @returns {Object|undefined} site information if present
+     */
+
+  }, {
+    key: 'getSiteInfo',
+    value: function getSiteInfo(project) {
+      return this.siteInfo[project.replace(/\.org$/, '')];
+    }
+
+    /**
+     * Get month that would be shown in Topviews based on start date or end date, as specified
+     * @param {Boolean} [useStartDate] - if false, the end date will be used
+     * @return {moment} date within the month that will be used
+     */
+
+  }, {
+    key: 'getTopviewsMonth',
+    value: function getTopviewsMonth() {
+      var useStartDate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      var dateKey = useStartDate ? 'startDate' : 'endDate';
+      var targetMonth = moment(this.daterangepicker[dateKey]);
+
+      // Use the month of the target date as the date value for Topviews.
+      // If we are on the cusp of a new month, use the previous month as last month's data may not be available yet.
+      if (targetMonth.month() === moment().month() || targetMonth.month() === moment().subtract(2, 'days').month()) {
+        targetMonth.subtract(1, 'month');
+      }
+
+      return targetMonth;
+    }
+
+    /**
+     * Link to /topviews for given project and chosen options
+     * @param {String} project - project to link to
+     * @param {moment} [month] - date that lies within the month we want to link to
+     * @returns {String} URL
+     */
+
+  }, {
+    key: 'getTopviewsMonthURL',
+    value: function getTopviewsMonthURL(project) {
+      var month = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getTopviewsMonth();
+
+      var params = {
+        project: project,
+        platform: 'all-access',
+        date: month.startOf('month').format('YYYY-MM')
+      };
+
+      return '/topviews?' + $.param(params);
+    }
+
+    /**
+     * Get user agent, if supported
+     * @returns {string} user-agent
+     */
+
+  }, {
+    key: 'getUserAgent',
+    value: function getUserAgent() {
+      return navigator.userAgent ? navigator.userAgent : 'Unknown';
+    }
+
+    /**
+     * Set a value to localStorage, using a temporary storage if localStorage is not supported
+     * @param {string} key - key for the value to set
+     * @param {Mixed} value - value to store
+     * @returns {Mixed} stored value
+     */
+
+  }, {
+    key: 'setLocalStorage',
+    value: function setLocalStorage(key, value) {
+      // See if localStorage is supported and enabled
+      try {
+        return localStorage.setItem(key, value);
+      } catch (err) {
+        return storage[key] = value;
+      }
+    }
+
+    /**
+     * Generate a unique hash code from given string
+     * @param  {String} str - to be hashed
+     * @return {String} the hash
+     */
+
+  }, {
+    key: 'hashCode',
+    value: function hashCode(str) {
+      return str.split('').reduce(function (prevHash, currVal) {
+        return (prevHash << 5) - prevHash + currVal.charCodeAt(0);
+      }, 0);
+    }
+
+    /**
+     * Is this one of the chart-view apps (that does not have a list view)?
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'isChartApp',
+    value: function isChartApp() {
+      return !this.isListApp();
+    }
+
+    /**
+     * Is this one of the list-view apps?
+     * @return {Boolean} true or false
+     */
+
+  }, {
+    key: 'isListApp',
+    value: function isListApp() {
+      return ['langviews', 'massviews', 'redirectviews', 'userviews'].includes(this.app);
+    }
+
+    /**
+     * Test if the current project is a multilingual project
+     * @returns {Boolean} is multilingual or not
+     */
+
+  }, {
+    key: 'isMultilangProject',
+    value: function isMultilangProject() {
+      return new RegExp('.*?\\.(' + Pv.multilangProjects.join('|') + ')').test(this.project);
+    }
+
+    /**
+     * List of valid multilingual projects
+     * @return {Array} base projects, without the language
+     */
+
+  }, {
+    key: 'massApi',
+
+
+    /**
+     * Make mass requests to MediaWiki API
+     * The API normally limits to 500 pages, but gives you a 'continue' value
+     *   to finish iterating through the resource.
+     * @param {Object} params - parameters to pass to the API
+     * @param {String} project - project to query, e.g. en.wikipedia (.org is optional)
+     * @param {String} [continueKey] - the key to look in the continue hash, if present (e.g. cmcontinue for API:Categorymembers)
+     * @param {String|Function} [dataKey] - the key for the main chunk of data, in the query hash (e.g. categorymembers for API:Categorymembers)
+     *   If this is a function it is given the response data, and expected to return the data we want to concatentate.
+     * @param {Number} [limit] - max number of pages to fetch
+     * @return {Deferred} promise resolving with data
+     */
+    value: function massApi(params, project) {
+      var continueKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'continue';
+      var dataKey = arguments[3];
+      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.config.apiLimit;
+
+      if (!/\.org$/.test(project)) project += '.org';
+
+      var dfd = $.Deferred();
+      var resolveData = {
+        pages: []
+      };
+
+      var makeRequest = function makeRequest(continueValue) {
+        var requestData = Object.assign({
+          action: 'query',
+          format: 'json',
+          formatversion: '2'
+        }, params);
+
+        if (continueValue) requestData[continueKey] = continueValue;
+
+        var promise = $.ajax({
+          url: 'https://' + project + '/w/api.php',
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          data: requestData
+        });
+
+        promise.done(function (data) {
+          // some failures come back as 200s, so we still resolve and let the local app handle it
+          if (data.error || !data.query) return dfd.resolve(data);
+
+          var isFinished = void 0;
+
+          // allow custom function to parse the data we want, if provided
+          if (typeof dataKey === 'function') {
+            resolveData.pages = resolveData.pages.concat(dataKey(data.query));
+            isFinished = resolveData.pages.length >= limit;
+          } else {
+            // append new data to data from last request. We might want both 'pages' and dataKey
+            if (data.query.pages) {
+              resolveData.pages = resolveData.pages.concat(data.query.pages);
+            }
+            if (data.query[dataKey]) {
+              resolveData[dataKey] = (resolveData[dataKey] || []).concat(data.query[dataKey]);
+            }
+            // If pages is not the collection we want, it will be either an empty array or one entry with basic page info
+            //   depending on what API we're hitting. So resolveData[dataKey] will hit the limit
+            isFinished = resolveData.pages.length >= limit || resolveData[dataKey].length >= limit;
+          }
+
+          // make recursive call if needed, waiting 100ms
+          if (!isFinished && data.continue && data.continue[continueKey]) {
+            setTimeout(function () {
+              makeRequest(data.continue[continueKey]);
+            }, 100);
+          } else {
+            // indicate there were more entries than the limit
+            if (data.continue) resolveData.continue = true;
+            dfd.resolve(resolveData);
+          }
+        }).fail(function (data) {
+          dfd.reject(data);
+        });
+      };
+
+      makeRequest();
+
+      return dfd;
+    }
+
+    /**
+     * Localize Number object with delimiters
+     *
+     * @param {Number} value - the Number, e.g. 1234567
+     * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
+     */
+
+  }, {
+    key: 'n',
+    value: function n(value) {
+      return new Number(value).toLocaleString();
+    }
+
+    /**
+     * Get basic info on given pages, including the normalized page names.
+     * E.g. masculine versus feminine namespaces on dewiki
+     * @param {array} pages - array of page names
+     * @returns {Deferred} promise with data fetched from API
+     */
+
+  }, {
+    key: 'getPageInfo',
+    value: function getPageInfo(pages) {
+      var dfd = $.Deferred();
+
+      // First make array of pages *fully* URI-encoded so we can easily reference them
+      // The issue is the API only returns encoded page names, so we have to reliably be
+      //   able to encode that and reference the original array
+      try {
+        pages = pages.map(function (page) {
+          return encodeURIComponent(decodeURIComponent(page));
+        });
+      } catch (e) {
+        // nothing, this happens when they use an unencoded title like %
+        //   that JavaScript gets confused about when decoding
+      }
+
+      return $.ajax({
+        url: 'https://' + this.project + '.org/w/api.php?action=query&prop=info&inprop=protection|watchers' + ('&formatversion=2&format=json&titles=' + pages.join('|')),
+        dataType: 'jsonp'
+      }).then(function (data) {
+        // restore original order of pages, taking into account out any page names that were normalized
+        if (data.query.normalized) {
+          data.query.normalized.forEach(function (n) {
+            // API returns decoded page name, so encode and compare against original array
+            pages[pages.indexOf(encodeURIComponent(n.from))] = encodeURIComponent(n.to);
+          });
+        }
+        var pageData = {};
+        pages.forEach(function (page) {
+          // decode once more so the return pageData object is human-readable
+          try {
+            page = decodeURIComponent(page);
+          } catch (e) {
+            // same as above, catch error when JavaScript is unable to decode
+          }
+          pageData[page] = data.query.pages.find(function (p) {
+            return p.title === page;
+          });
+        });
+        return dfd.resolve(pageData);
+      });
+    }
+
+    /**
+     * Compute how many days are in the selected date range
+     * @returns {integer} number of days
+     */
+
+  }, {
+    key: 'numDaysInRange',
+    value: function numDaysInRange() {
+      return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
+    }
+
+    /**
+     * Generate key/value pairs of URL query string
+     * @param {string} [multiParam] - parameter whose values needs to split by pipe character
+     * @returns {Object} key/value pairs representation of query string
+     */
+
+  }, {
+    key: 'parseQueryString',
+    value: function parseQueryString(multiParam) {
+      var uri = location.search.slice(1).replace(/\+/g, '%20').replace(/%7C/g, '|'),
+          chunks = uri.split('&');
+      var params = {};
+
+      for (var i = 0; i < chunks.length; i++) {
+        var chunk = chunks[i].split('=');
+
+        if (multiParam && chunk[0] === multiParam) {
+          params[multiParam] = chunk[1].split('|').map(function (param) {
+            return param.replace(/(?:%20|_| )+$/, '');
+          }).filter(function (param) {
+            return !!param;
+          }).unique();
+        } else {
+          params[chunk[0]] = (chunk[1] || '').replace(/(?:%20|_| )+$/, '');
+        }
+      }
+
+      return params;
+    }
+
+    /**
+     * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
+     * @returns {Deferred|null} Null or a promise resolving with autoExcludes for the Topviews app
+     */
+
+  }, {
+    key: 'patchUsage',
+    value: function patchUsage() {
+      if (location.pathname.includes('-test')) {
+        $.ajax({
+          url: '//' + metaRoot + '/usage/' + this.app + '-test/' + (this.project || i18nLang),
+          method: 'POST'
+        });
+      } else if (metaRoot) {
+        return $.ajax({
+          url: '/pageviews/meta/api.php',
+          data: {
+            app: this.app,
+            project: this.project || i18nLang
+          },
+          method: 'POST',
+          timeout: 8000
+        });
+      }
+    }
+
+    /**
+     * Set timestamp of when process started
+     * @return {moment} start time
+     */
+
+  }, {
+    key: 'processStarted',
+    value: function processStarted() {
+      return this.processStart = moment();
+    }
+
+    /**
+     * Get elapsed time from this.processStart, and show it
+     * @return {moment} Elapsed time from `this.processStart` in milliseconds
+     */
+
+  }, {
+    key: 'processEnded',
+    value: function processEnded() {
+      var endTime = moment(),
+          elapsedTime = endTime.diff(this.processStart, 'milliseconds');
+
+      /** FIXME: report this bug: some languages don't parse PLURAL correctly ('he' for example) with the English fallback message */
+      try {
+        $('.elapsed-time').attr('datetime', endTime.format()).text($.i18n('elapsed-time', elapsedTime / 1000));
+      } catch (e) {
+        // intentionall nothing, everything will still show
+      }
+
+      return elapsedTime;
+    }
+
+    /**
+     * Adapted from http://jsfiddle.net/dandv/47cbj/ courtesy of dandv
+     *
+     * Same as _.debounce but queues and executes all function calls
+     * @param  {Function} fn - function to debounce
+     * @param  {delay} delay - delay duration of milliseconds
+     * @param  {object} context - scope the function should refer to
+     * @return {Function} rate-limited function to call instead of your function
+     */
+
+  }, {
+    key: 'rateLimit',
+    value: function rateLimit(fn, delay, context) {
+      var queue = [],
+          timer = void 0;
+
+      var processQueue = function processQueue() {
+        var item = queue.shift();
+        if (item) {
+          fn.apply(item.context, item.arguments);
+        }
+        if (queue.length === 0) {
+          clearInterval(timer), timer = null;
+        }
+      };
+
+      return function limited() {
+        queue.push({
+          context: context || this,
+          arguments: [].slice.call(arguments)
+        });
+
+        if (!timer) {
+          processQueue(); // start immediately on the first invocation
+          timer = setInterval(processQueue, delay);
+        }
+      };
+    }
+
+    /**
+     * Removes all Select2 related stuff then adds it back
+     * Also might result in the chart being re-rendered
+     */
+
+  }, {
+    key: 'resetSelect2',
+    value: function resetSelect2() {
+      var select2Input = $(this.config.select2Input);
+      if (select2Input.data('select2')) {
+        select2Input.off('change');
+        select2Input.select2('val', null);
+        select2Input.select2('data', null);
+        select2Input.select2('destroy');
+      }
+      this.setupSelect2();
+    }
+
+    /**
+     * Change alpha level of an rgba value
+     *
+     * @param {string} value - rgba value
+     * @param {float|string} alpha - transparency as float value
+     * @returns {string} rgba value
+     */
+
+  }, {
+    key: 'rgba',
+    value: function rgba(value, alpha) {
+      return value.replace(/,\s*\d\)/, ', ' + alpha + ')');
+    }
+
+    /**
+     * Save a particular setting to session and localStorage
+     *
+     * @param {string} key - settings key
+     * @param {string|boolean} value - value to save
+     */
+
+  }, {
+    key: 'saveSetting',
+    value: function saveSetting(key, value) {
+      this[key] = value;
+      this.setLocalStorage('pageviews-settings-' + key, value);
+    }
+
+    /**
+     * Save the selected settings within the settings modal
+     * Prefer this implementation over a large library like serializeObject or serializeJSON
+     */
+
+  }, {
+    key: 'saveSettings',
+    value: function saveSettings() {
+      var _this5 = this;
+
+      /** track if we're changing to no_autocomplete mode */
+      var wasAutocomplete = this.autocomplete === 'no_autocomplete';
+
+      $.each($('#settings-modal input'), function (index, el) {
+        if (el.type === 'checkbox') {
+          _this5.saveSetting(el.name, el.checked ? 'true' : 'false');
+        } else if (el.checked) {
+          _this5.saveSetting(el.name, el.value);
+        }
+      });
+
+      if (this.app !== 'topviews') {
+        this.daterangepicker.locale.format = this.dateFormat;
+        this.daterangepicker.updateElement();
+
+        this.setupSelect2Colors();
+
+        /**
+         * If we changed to/from no_autocomplete we have to reset Select2 entirely
+         *   as setSelect2Defaults is super buggy due to Select2 constraints
+         * So let's only reset if we have to
+         */
+        if (this.autocomplete === 'no_autocomplete' !== wasAutocomplete) {
+          this.resetSelect2();
+        }
+
+        if (this.beginAtZero === 'true') {
+          $('.begin-at-zero-option').prop('checked', true);
+        }
+      }
+
+      this.processInput(true);
+    }
+
+    /**
+     * Directly set items in Select2
+     * Currently is not able to remove underscores from page names
+     *
+     * @param {array} items - page titles
+     * @returns {array} - untouched array of items
+     */
+
+  }, {
+    key: 'setSelect2Defaults',
+    value: function setSelect2Defaults(items) {
+      var _this6 = this;
+
+      items.forEach(function (item) {
+        var escapedText = $('<div>').text(item).html();
+        $('<option>' + escapedText + '</option>').appendTo(_this6.config.select2Input);
+      });
+      $(this.config.select2Input).select2('val', items);
+      $(this.config.select2Input).trigger('select2:select');
+
+      return items;
+    }
+
+    /**
+     * Sets the daterange picker values and this.specialRange based on provided special range key
+     * WARNING: not to be called on daterange picker GUI events (e.g. special range buttons)
+     *
+     * @param {string} type - one of special ranges defined in this.config.specialRanges,
+     *   including dynamic latest range, such as `latest-15` for latest 15 days
+     * @returns {object|null} updated this.specialRange object or null if type was invalid
+     */
+
+  }, {
+    key: 'setSpecialRange',
+    value: function setSpecialRange(type) {
+      var rangeIndex = Object.keys(this.config.specialRanges).indexOf(type);
+      var startDate = void 0,
+          endDate = void 0,
+          offset = void 0;
+
+      if (type.includes('latest-')) {
+        offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+
+        var _config$specialRanges = this.config.specialRanges.latest(offset);
+
+        var _config$specialRanges2 = _slicedToArray(_config$specialRanges, 2);
+
+        startDate = _config$specialRanges2[0];
+        endDate = _config$specialRanges2[1];
+      } else if (rangeIndex >= 0) {
+        var _ref = type === 'latest' ? this.config.specialRanges.latest() : this.config.specialRanges[type];
+        /** treat 'latest' as a function */
+
+
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        startDate = _ref2[0];
+        endDate = _ref2[1];
+
+        $('.daterangepicker .ranges li').eq(rangeIndex).trigger('click');
+      } else {
+        return;
+      }
+
+      this.specialRange = {
+        range: type,
+        value: startDate.format(this.dateFormat) + ' - ' + endDate.format(this.dateFormat)
+      };
+
+      /** directly assign startDate then use setEndDate so that the events will be fired once */
+      this.daterangepicker.startDate = startDate;
+      this.daterangepicker.setEndDate(endDate);
+
+      $('.latest-text').text(offset ? $.i18n('latest-days', offset) : $.i18n('latest'));
+
+      return this.specialRange;
+    }
+
+    /**
+     * Setup colors for Select2 entries so we can dynamically change them
+     * This is a necessary evil, as we have to mark them as !important
+     *   and since there are any number of entires, we need to use nth-child selectors
+     * @returns {CSSStylesheet} our new stylesheet
+     */
+
+  }, {
+    key: 'setupSelect2Colors',
+    value: function setupSelect2Colors() {
+      var _this7 = this;
+
+      /** first delete old stylesheet, if present */
+      if (this.colorsStyleEl) this.colorsStyleEl.remove();
+
+      /** create new stylesheet */
+      this.colorsStyleEl = document.createElement('style');
+      this.colorsStyleEl.appendChild(document.createTextNode('')); // WebKit hack :(
+      document.head.appendChild(this.colorsStyleEl);
+
+      /** add color rules */
+      this.config.colors.forEach(function (color, index) {
+        _this7.colorsStyleEl.sheet.insertRule('.select2-selection__choice:nth-of-type(' + (index + 1) + ') { background: ' + color + ' !important }', 0);
+      });
+
+      return this.colorsStyleEl.sheet;
+    }
+
+    /**
+     * Cross-application listeners
+     * Each app has it's own setupListeners() that should call super.setupListeners()
+     */
+
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this8 = this;
+
+      /** prevent browser's default behaviour for any link with href="#" */
+      $("a[href='#']").on('click', function (e) {
+        return e.preventDefault();
+      });
+
+      /** download listeners */
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
+
+      /** project input listeners, saving and restoring old value if new one is invalid */
+      $(this.config.projectInput).on('focusin', function () {
+        this.dataset.value = this.value;
+      });
+      $(this.config.projectInput).on('change', function () {
+        return _this8.validateProject();
+      });
+
+      $('.permalink').on('click', function (e) {
+        $('.permalink-copy').val($('.permalink').prop('href'))[0].select();
+        try {
+          document.execCommand('copy');
+          _this8.toastSuccess('Permalink copied to clipboard');
+          e.preventDefault();
+          document.activeElement.blur();
+        } catch (e) {
+          // silently ignore
+        }
+      });
+    }
+
+    /**
+     * Set values of form based on localStorage or defaults, add listeners
+     */
+
+  }, {
+    key: 'setupSettingsModal',
+    value: function setupSettingsModal() {
+      /** fill in values, everything is either a checkbox or radio */
+      this.fillInSettings();
+
+      /** add listener */
+      $('.save-settings-btn').on('click', this.saveSettings.bind(this));
+      $('.cancel-settings-btn').on('click', this.fillInSettings.bind(this));
+    }
+
+    /**
+     * sets up the daterange selector and adds listeners
+     */
+
+  }, {
+    key: 'setupDateRangeSelector',
+    value: function setupDateRangeSelector() {
+      var _this9 = this;
+
+      var dateRangeSelector = $(this.config.dateRangeSelector);
+
+      /**
+       * Transform this.config.specialRanges to have i18n as keys
+       * This is what is shown as the special ranges (Last month, etc.) in the datepicker menu
+       * @type {Object}
+       */
+      var ranges = {};
+      Object.keys(this.config.specialRanges).forEach(function (key) {
+        if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
+        ranges[$.i18n(key)] = _this9.config.specialRanges[key];
+      });
+
+      var datepickerOptions = {
+        locale: {
+          format: this.dateFormat,
+          applyLabel: $.i18n('apply'),
+          cancelLabel: $.i18n('cancel'),
+          customRangeLabel: $.i18n('custom-range'),
+          daysOfWeek: [$.i18n('su'), $.i18n('mo'), $.i18n('tu'), $.i18n('we'), $.i18n('th'), $.i18n('fr'), $.i18n('sa')],
+          monthNames: [$.i18n('january'), $.i18n('february'), $.i18n('march'), $.i18n('april'), $.i18n('may'), $.i18n('june'), $.i18n('july'), $.i18n('august'), $.i18n('september'), $.i18n('october'), $.i18n('november'), $.i18n('december')]
+        },
+        startDate: moment().subtract(this.config.daysAgo, 'days'),
+        minDate: this.config.minDate,
+        maxDate: this.config.maxDate,
+        ranges: ranges
+      };
+
+      if (this.config.dateLimit) datepickerOptions.dateLimit = { days: this.config.dateLimit };
+
+      dateRangeSelector.daterangepicker(datepickerOptions);
+
+      /** so people know why they can't query data older than July 2015 */
+      $('.daterangepicker').append($('<div>').addClass('daterange-notice').html($.i18n('date-notice', document.title, "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>", $.i18n('july') + ' 2015')));
+
+      /** The special date range options (buttons the right side of the daterange picker) */
+      $('.daterangepicker .ranges li').on('click', function (e) {
+        if (e.target.innerText === $.i18n('custom-range')) {
+          _this9.specialRange = null;
+          return app.daterangepicker.clickApply();
+        }
+
+        var container = _this9.daterangepicker.container,
+            inputs = container.find('.daterangepicker_input input');
+
+        /** find out which option they checked */
+        var range = Object.keys(_this9.config.specialRanges).find(function (specialRange) {
+          return $.i18n(specialRange) === e.target.innerText;
+        });
+
+        _this9.specialRange = {
+          range: range,
+          value: inputs[0].value + ' - ' + inputs[1].value
+        };
+      });
+
+      $(this.config.dateRangeSelector).on('apply.daterangepicker', function (e, action) {
+        if (action.chosenLabel === $.i18n('custom-range')) {
+          _this9.specialRange = null;
+          /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
+          _this9.daterangepicker.updateElement();
+        }
+      });
+    }
+
+    /**
+     * Loop through given errors and show them to the user, also creating a paste on phabricator
+     * @param  {Array} errors - list of error messages (strings)
+     */
+
+  }, {
+    key: 'showFatalErrors',
+    value: function showFatalErrors(errors) {
+      var _this10 = this;
+
+      this.resetView();
+      errors.forEach(function (error) {
+        _this10.writeMessage('<strong>' + $.i18n('fatal-error') + '</strong>: <code>' + error + '</code>');
+      });
+
+      var throwToastError = function throwToastError(bugUrl) {
+        return _this10.toastError('\n      <strong>' + $.i18n('fatal-error') + '</strong>: ' + $.i18n('error-please-report', _this10.getBugReportURL(bugUrl)) + '\n    ', 0);
+      };
+
+      if (this.debug) {
+        throw errors[0];
+      } else if (errors && errors[0] && errors[0].stack) {
+        $.ajax({
+          method: 'POST',
+          url: '//tools.wmflabs.org/musikanimal/paste',
+          data: {
+            content: '' + ('\ndate:      ' + moment().utc().format()) + ('\ntool:      ' + this.app) + ('\nlanguage:  ' + i18nLang) + ('\nchart:     ' + this.chartType) + ('\nurl:       ' + document.location.href) + ('\nuserAgent: ' + this.getUserAgent()) + ('\ntrace:     ' + errors[0].stack),
+
+            title: 'Pageviews Analysis error report: ' + errors[0]
+          }
+        }).done(function (data) {
+          if (data && data.result && data.result.objectName) {
+            throwToastError(data.result.objectName);
+          } else {
+            throwToastError();
+          }
+        }).fail(function () {
+          throwToastError();
+        });
+      }
+    }
+
+    /**
+     * Splash in console, just for fun
+     */
+
+  }, {
+    key: 'splash',
+    value: function splash() {
+      var style = 'background: #eee; color: #555; padding: 4px; font-family:monospace';
+      console.log('%c      ___            __ _                     _                             ', style);
+      console.log('%c     | _ \\  __ _    / _` |   ___    __ __    (_)     ___   __ __ __  ___    ', style);
+      console.log('%c     |  _/ / _` |   \\__, |  / -_)   \\ V /    | |    / -_)  \\ V  V / (_-<    ', style);
+      console.log('%c    _|_|_  \\__,_|   |___/   \\___|   _\\_/_   _|_|_   \\___|   \\_/\\_/  /__/_   ', style);
+      console.log('%c  _| """ |_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|  ', style);
+      console.log('%c  "`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'  ', style);
+      console.log('%c              ___                     _  _     _               _            ', style);
+      console.log('%c      o O O  /   \\   _ _     __ _    | || |   | |     ___     (_)     ___   ', style);
+      console.log('%c     o       | - |  | \' \\   / _` |    \\_, |   | |    (_-<     | |    (_-<   ', style);
+      console.log('%c    TS__[O]  |_|_|  |_||_|  \\__,_|   _|__/   _|_|_   /__/_   _|_|_   /__/_  ', style);
+      console.log('%c   {======|_|"""""|_|"""""|_|"""""|_| """"|_|"""""|_|"""""|_|"""""|_|"""""| ', style);
+      console.log('%c  ./o--000\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\'"`-0-0-\' ', style);
+      console.log('%c                                                                            ', style);
+      console.log('%c  Copyright © ' + new Date().getFullYear() + ' MusikAnimal, Kaldari, Marcel Ruiz Forns                  ', style);
+    }
+
+    /**
+     * Add the loading indicator class and set the safeguard timeout
+     */
+
+  }, {
+    key: 'startSpinny',
+    value: function startSpinny() {
+      var _this11 = this;
+
+      $('body').addClass('loading');
+
+      // Remove focus from any focused element
+      // Zero-length timeout is to wait for the rendering threads to catch up
+      setTimeout(function () {
+        return document.activeElement.blur();
+      });
+
+      // Clear the old spinny timeout
+      clearTimeout(this.timeout);
+
+      // Set new spinny timeout that will show error after 30 seconds
+      this.timeout = setTimeout(function (err) {
+        _this11.resetView();
+        _this11.toastError('\n        <strong>' + $.i18n('fatal-error') + '</strong>:\n        ' + $.i18n('error-timed-out') + '\n        ' + $.i18n('error-please-report', _this11.getBugReportURL()) + '\n      ');
+      }, 30 * 1000);
+    }
+
+    /**
+     * Remove loading indicator class and clear the safeguard timeout
+     */
+
+  }, {
+    key: 'stopSpinny',
+    value: function stopSpinny() {
+      $('body').removeClass('loading initial');
+      clearTimeout(this.timeout);
+    }
+
+    /**
+     * Replace spaces with underscores
+     *
+     * @param {array} pages - array of page names
+     * @returns {array} page names with underscores
+     */
+
+  }, {
+    key: 'underscorePageNames',
+    value: function underscorePageNames(pages) {
+      return pages.map(function (page) {
+        return page.score();
+      });
+    }
+
+    /**
+     * Update hrefs of inter-app links to load currently selected project
+     */
+
+  }, {
+    key: 'updateInterAppLinks',
+    value: function updateInterAppLinks() {
+      var _this12 = this;
+
+      $('.interapp-link').each(function (i, link) {
+        var url = link.href.split('?')[0];
+
+        if (link.classList.contains('interapp-link--siteviews')) {
+          link.href = url + '?sites=' + _this12.project.escape() + '.org';
+        } else {
+          link.href = url + '?project=' + _this12.project.escape() + '.org';
+        }
+      });
+    }
+
+    /**
+     * Validate basic params against what is defined in the config,
+     *   and if they are invalid set the default
+     * @param {Object} params - params as fetched by this.parseQueryString()
+     * @returns {Object} same params with some invalid parameters correted, as necessary
+     */
+
+  }, {
+    key: 'validateParams',
+    value: function validateParams(params) {
+      var _this13 = this;
+
+      this.config.validateParams.forEach(function (paramKey) {
+        if (paramKey === 'project' && params.project) {
+          params.project = params.project.replace(/^www\./, '');
+        }
+
+        var defaultValue = _this13.config.defaults[paramKey],
+            paramValue = params[paramKey];
+
+        if (defaultValue !== undefined && !_this13.config.validParams[paramKey].includes(paramValue)) {
+          // only throw error if they tried to provide an invalid value
+          if (!!paramValue) {
+            _this13.addInvalidParamNotice(paramKey);
+          }
+
+          params[paramKey] = defaultValue;
+        }
+      });
+
+      return params;
+    }
+
+    /**
+     * Adds listeners to the project input for validations against the site map,
+     *   reverting to the old value if the new one is invalid
+     * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
+     * @returns {Boolean} whether or not validations passed
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      var multilingual = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+      var projectInput = $(this.config.projectInput)[0];
+      var project = projectInput.value.replace(/^www\./, ''),
+          valid = false;
+
+      if (multilingual && !this.isMultilangProject()) {
+        this.toastWarn($.i18n('invalid-lang-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'));
+        project = projectInput.dataset.value;
+      } else if (siteDomains.includes(project)) {
+        this.updateInterAppLinks();
+        valid = true;
+      } else {
+        this.toastWarn($.i18n('invalid-project', '<a href=\'//' + project.escape() + '\'>' + project.escape() + '</a>'));
+        project = projectInput.dataset.value;
+      }
+
+      // fire custom event that the project has changed
+      if (valid) $(this.config.projectInput).trigger('updated');
+
+      projectInput.value = project;
+
+      return valid;
+    }
+
+    /**
+     * Writes message just below the chart or list of data
+     * @param {string} message - message to write
+     * @param {boolean} [clear] - whether to clear any existing messages
+     * @returns {jQuery} - jQuery object of message container
+     */
+
+  }, {
+    key: 'writeMessage',
+    value: function writeMessage(message) {
+      var clear = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (clear) this.clearMessages();
+      return $('.message-container').append('<div class=\'error-message\'>' + message + '</div>');
+    }
+  }, {
+    key: 'dateFormat',
+    get: function get() {
+      var monthly = $('#date-type-select').val() === 'monthly';
+
+      if (this.localizeDateFormat === 'true') {
+        return monthly ? 'MMM YYYY' : this.getLocaleDateString();
+      } else {
+        return monthly ? 'YYYY-MM' : this.config.defaults.dateFormat;
+      }
+    }
+
+    /**
+     * Get the daterangepicker instance. Plain and simple.
+     * @return {Object} daterange picker
+     */
+
+  }, {
+    key: 'daterangepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('daterangepicker');
+    }
+  }, {
+    key: 'project',
+    get: function get() {
+      var project = $(this.config.projectInput).val();
+      /** Get the first 2 characters from the project code to get the language */
+      return project ? project.toLowerCase().replace(/.org$/, '') : null;
+    }
+  }], [{
+    key: 'multilangProjects',
+    get: function get() {
+      return ['wikipedia', 'wikibooks', 'wikinews', 'wikiquote', 'wikisource', 'wikiversity', 'wikivoyage'];
+    }
+  }]);
+
+  return Pv;
+}(PvConfig);
+
+module.exports = Pv;
+
+},{"./core_extensions":1,"./polyfills":2,"./pv_config":4,"./site_map":5}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @file Shared config amongst all apps
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ */
+
+var siteMap = require('./site_map');
+var siteDomains = Object.keys(siteMap).map(function (key) {
+  return siteMap[key];
+});
+
+/**
+ * Configuration for all Pageviews applications.
+ * Some properties may be overriden by app-specific configs
+ */
+
+var PvConfig = function () {
+  /** set instance variable (config), also defining any private methods */
+
+  function PvConfig() {
+    var _this = this;
+
+    _classCallCheck(this, PvConfig);
+
+    var self = this;
+    var formatXAxisTick = function formatXAxisTick(value) {
+      var dayOfWeek = moment(value, _this.dateFormat).isoWeekday();
+      var monthly = $('#date-type-select').val() === 'monthly';
+      if (dayOfWeek === 1 && !monthly) {
+        return '• ' + value;
+      } else {
+        return value;
+      }
+    };
+
+    var maxDate = moment().subtract(1, 'days').startOf('day'),
+        maxMonth = moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
+
+    this.config = {
+      apiLimit: 20000,
+      apiThrottle: 10,
+      apps: ['pageviews', 'topviews', 'langviews', 'siteviews', 'massviews', 'redirectviews', 'userviews'],
+      chartConfig: {
+        line: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatYAxisNumber(value);
+                  }
+                }
+              }],
+              xAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return formatXAxisTick(value);
+                  }
+                }
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.linearTooltips()
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: 'rgba(0,0,0,0)',
+              borderWidth: 2,
+              borderColor: color,
+              pointColor: color,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.2),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverBorderWidth: 2,
+              pointHoverRadius: 5,
+              tension: self.bezierCurve === 'true' ? 0.4 : 0
+            };
+          }
+        },
+        bar: {
+          opts: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  callback: function callback(value) {
+                    return _this.formatYAxisNumber(value);
+                  }
+                }
+              }],
+              xAxes: [{
+                barPercentage: 1.0,
+                categoryPercentage: 0.85,
+                ticks: {
+                  callback: function callback(value) {
+                    return formatXAxisTick(value);
+                  }
+                }
+              }]
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.linearTooltips('label')
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.6),
+              borderColor: self.rgba(color, 0.9),
+              borderWidth: 2,
+              hoverBackgroundColor: self.rgba(color, 0.75),
+              hoverBorderColor: color
+            };
+          }
+        },
+        radar: {
+          opts: {
+            scale: {
+              ticks: {
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.linearTooltips()
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.1),
+              borderColor: color,
+              borderWidth: 2,
+              pointBackgroundColor: color,
+              pointBorderColor: self.rgba(color, 0.8),
+              pointHoverBackgroundColor: color,
+              pointHoverBorderColor: color,
+              pointHoverRadius: 5
+            };
+          }
+        },
+        pie: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        doughnut: {
+          opts: {
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: color,
+              hoverBackgroundColor: self.rgba(color, 0.8)
+            };
+          }
+        },
+        polarArea: {
+          opts: {
+            scale: {
+              ticks: {
+                beginAtZero: true,
+                callback: function callback(value) {
+                  return _this.formatNumber(value);
+                }
+              }
+            },
+            legendCallback: function legendCallback(chart) {
+              return _this.config.chartLegend(self);
+            },
+            tooltips: this.circularTooltips
+          },
+          dataset: function dataset(color) {
+            return {
+              color: color,
+              backgroundColor: self.rgba(color, 0.7),
+              hoverBackgroundColor: self.rgba(color, 0.9)
+            };
+          }
+        }
+      },
+      circularCharts: ['pie', 'doughnut', 'polarArea'],
+      colors: ['rgba(171, 212, 235, 1)', 'rgba(178, 223, 138, 1)', 'rgba(251, 154, 153, 1)', 'rgba(253, 191, 111, 1)', 'rgba(202, 178, 214, 1)', 'rgba(207, 182, 128, 1)', 'rgba(141, 211, 199, 1)', 'rgba(252, 205, 229, 1)', 'rgba(255, 247, 161, 1)', 'rgba(217, 217, 217, 1)'],
+      defaults: {
+        autocomplete: 'autocomplete',
+        chartType: function chartType(numDatasets) {
+          return numDatasets > 1 ? 'line' : 'bar';
+        },
+        dateFormat: 'YYYY-MM-DD',
+        localizeDateFormat: 'true',
+        numericalFormatting: 'true',
+        bezierCurve: 'false',
+        autoLogDetection: 'false',
+        beginAtZero: 'false',
+        rememberChart: 'false',
+        agent: 'user',
+        platform: 'all-access',
+        project: 'en.wikipedia.org'
+      },
+      globalChartOpts: {
+        animation: {
+          duration: 500,
+          easing: 'easeInOutQuart'
+        },
+        hover: {
+          animationDuration: 0
+        },
+        legend: {
+          display: false
+        }
+      },
+      linearCharts: ['line', 'bar', 'radar'],
+      linearOpts: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              callback: function callback(value) {
+                return _this.formatNumber(value);
+              }
+            }
+          }]
+        },
+        legendCallback: function legendCallback(chart) {
+          return _this.config.chartLegend(chart.data.datasets, self);
+        }
+      },
+      daysAgo: 20,
+      initialMonthStart: moment(maxMonth).subtract(11, 'months').toDate(),
+      minDate: moment('2015-07-01').startOf('day'),
+      maxDate: maxDate,
+      maxMonth: maxMonth,
+      specialRanges: {
+        'last-week': [moment().subtract(1, 'week').startOf('isoweek'), moment().subtract(1, 'week').endOf('isoweek')],
+        'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],
+        'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        'this-year': [moment().startOf('year'), moment().startOf('year').isAfter(maxDate) ? moment().startOf('year') : maxDate],
+        'last-year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+        'all-time': [moment('2015-07-01').startOf('day'), maxDate],
+        latest: function latest() {
+          var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.config.daysAgo;
+
+          return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
+        }
+      },
+      timestampFormat: 'YYYYMMDD00',
+      validParams: {
+        agent: ['all-agents', 'user', 'spider', 'bot'],
+        platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
+        project: siteDomains
+      },
+      pageAssessmentProjects: ['en.wikipedia', 'en.wikivoyage'],
+      pageAssessmentBadges: {
+        'en.wikipedia': {
+          'FA': 'e/e7/Cscr-featured.svg',
+          'GA': '9/94/Symbol_support_vote.svg',
+          'A': '2/25/Symbol_a_class.svg',
+          'B': '5/5f/Symbol_b_class.svg',
+          'C': 'e/e6/Symbol_c_class.svg',
+          'Start': 'a/a4/Symbol_start_class.svg',
+          'Stub': 'f/f5/Symbol_stub_class.svg',
+          'FL': 'e/e7/Cscr-featured.svg',
+          'List': 'd/db/Symbol_list_class.svg',
+          'Dab': '2/2a/Symbol_dab_class.svg'
+        },
+        'en.wikivoyage': {
+          'stub': 'f/f3/Symbol_plain_grey.svg',
+          'outline': 'c/c8/Start-icon.svg',
+          'usable': 'd/d0/Symbol_keep_vote.svg',
+          'guide': '9/94/Symbol_support_vote.svg',
+          'star': 'b/b4/Symbol_star_gold.svg'
+        }
+      }
+    };
+  }
+
+  /**
+   * Get config for tooltips shown on linear charts, used by Chart.js
+   * @param {String} [mode] - x-axis or label depending on chart type
+   * @return {Object}
+   */
+
+
+  _createClass(PvConfig, [{
+    key: 'linearTooltips',
+    value: function linearTooltips(mode) {
+      var _this2 = this;
+
+      return {
+        mode: mode || 'x-axis',
+        callbacks: {
+          label: function label(tooltipItem) {
+            if (Number.isNaN(tooltipItem.yLabel)) {
+              return ' ' + $.i18n('unknown');
+            } else {
+              return ' ' + _this2.formatNumber(tooltipItem.yLabel);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+
+    /**
+     * Get config for tooltips shown on circular charts, used by Chart.js
+     * @return {Object}
+     */
+
+  }, {
+    key: 'circularTooltips',
+    get: function get() {
+      var _this3 = this;
+
+      return {
+        callbacks: {
+          label: function label(tooltipItem, chartInstance) {
+            var value = chartInstance.datasets[tooltipItem.datasetIndex].data[tooltipItem.index],
+                label = chartInstance.labels[tooltipItem.index];
+
+            if (Number.isNaN(value)) {
+              return label + ': ' + $.i18n('unknown');
+            } else {
+              return label + ': ' + _this3.formatNumber(value);
+            }
+          }
+        },
+        bodyFontSize: 14,
+        bodySpacing: 7,
+        caretSize: 0,
+        titleFontSize: 14
+      };
+    }
+  }]);
+
+  return PvConfig;
+}();
+
+module.exports = PvConfig;
+
+},{"./site_map":5}],5:[function(require,module,exports){
+'use strict';
+
+/**
+ * @file WMF [site matrix](https://www.mediawiki.org/w/api.php?action=sitematrix), with some unsupported wikis removed
+ */
+
+/**
+ * Sitematrix of all supported WMF wikis
+ * @type {Object}
+ */
+var siteMap = {
+  'aawiki': 'aa.wikipedia.org',
+  'aawiktionary': 'aa.wiktionary.org',
+  'aawikibooks': 'aa.wikibooks.org',
+  'abwiki': 'ab.wikipedia.org',
+  'abwiktionary': 'ab.wiktionary.org',
+  'acewiki': 'ace.wikipedia.org',
+  'adywiki': 'ady.wikipedia.org',
+  'afwiki': 'af.wikipedia.org',
+  'afwiktionary': 'af.wiktionary.org',
+  'afwikibooks': 'af.wikibooks.org',
+  'afwikiquote': 'af.wikiquote.org',
+  'akwiki': 'ak.wikipedia.org',
+  'akwiktionary': 'ak.wiktionary.org',
+  'akwikibooks': 'ak.wikibooks.org',
+  'alswiki': 'als.wikipedia.org',
+  'alswiktionary': 'als.wiktionary.org',
+  'alswikibooks': 'als.wikibooks.org',
+  'alswikiquote': 'als.wikiquote.org',
+  'amwiki': 'am.wikipedia.org',
+  'amwiktionary': 'am.wiktionary.org',
+  'amwikiquote': 'am.wikiquote.org',
+  'anwiki': 'an.wikipedia.org',
+  'anwiktionary': 'an.wiktionary.org',
+  'angwiki': 'ang.wikipedia.org',
+  'angwiktionary': 'ang.wiktionary.org',
+  'angwikibooks': 'ang.wikibooks.org',
+  'angwikiquote': 'ang.wikiquote.org',
+  'angwikisource': 'ang.wikisource.org',
+  'arwiki': 'ar.wikipedia.org',
+  'arwiktionary': 'ar.wiktionary.org',
+  'arwikibooks': 'ar.wikibooks.org',
+  'arwikinews': 'ar.wikinews.org',
+  'arwikiquote': 'ar.wikiquote.org',
+  'arwikisource': 'ar.wikisource.org',
+  'arwikiversity': 'ar.wikiversity.org',
+  'arcwiki': 'arc.wikipedia.org',
+  'arzwiki': 'arz.wikipedia.org',
+  'aswiki': 'as.wikipedia.org',
+  'aswiktionary': 'as.wiktionary.org',
+  'aswikibooks': 'as.wikibooks.org',
+  'aswikisource': 'as.wikisource.org',
+  'astwiki': 'ast.wikipedia.org',
+  'astwiktionary': 'ast.wiktionary.org',
+  'astwikibooks': 'ast.wikibooks.org',
+  'astwikiquote': 'ast.wikiquote.org',
+  'avwiki': 'av.wikipedia.org',
+  'avwiktionary': 'av.wiktionary.org',
+  'aywiki': 'ay.wikipedia.org',
+  'aywiktionary': 'ay.wiktionary.org',
+  'aywikibooks': 'ay.wikibooks.org',
+  'azwiki': 'az.wikipedia.org',
+  'azwiktionary': 'az.wiktionary.org',
+  'azwikibooks': 'az.wikibooks.org',
+  'azwikiquote': 'az.wikiquote.org',
+  'azwikisource': 'az.wikisource.org',
+  'azbwiki': 'azb.wikipedia.org',
+  'bawiki': 'ba.wikipedia.org',
+  'bawikibooks': 'ba.wikibooks.org',
+  'barwiki': 'bar.wikipedia.org',
+  'bat_smgwiki': 'bat-smg.wikipedia.org',
+  'bclwiki': 'bcl.wikipedia.org',
+  'bewiki': 'be.wikipedia.org',
+  'bewiktionary': 'be.wiktionary.org',
+  'bewikibooks': 'be.wikibooks.org',
+  'bewikiquote': 'be.wikiquote.org',
+  'bewikisource': 'be.wikisource.org',
+  'be_x_oldwiki': 'be-tarask.wikipedia.org',
+  'bgwiki': 'bg.wikipedia.org',
+  'bgwiktionary': 'bg.wiktionary.org',
+  'bgwikibooks': 'bg.wikibooks.org',
+  'bgwikinews': 'bg.wikinews.org',
+  'bgwikiquote': 'bg.wikiquote.org',
+  'bgwikisource': 'bg.wikisource.org',
+  'bhwiki': 'bh.wikipedia.org',
+  'bhwiktionary': 'bh.wiktionary.org',
+  'biwiki': 'bi.wikipedia.org',
+  'biwiktionary': 'bi.wiktionary.org',
+  'biwikibooks': 'bi.wikibooks.org',
+  'bjnwiki': 'bjn.wikipedia.org',
+  'bmwiki': 'bm.wikipedia.org',
+  'bmwiktionary': 'bm.wiktionary.org',
+  'bmwikibooks': 'bm.wikibooks.org',
+  'bmwikiquote': 'bm.wikiquote.org',
+  'bnwiki': 'bn.wikipedia.org',
+  'bnwiktionary': 'bn.wiktionary.org',
+  'bnwikibooks': 'bn.wikibooks.org',
+  'bnwikisource': 'bn.wikisource.org',
+  'bowiki': 'bo.wikipedia.org',
+  'bowiktionary': 'bo.wiktionary.org',
+  'bowikibooks': 'bo.wikibooks.org',
+  'bpywiki': 'bpy.wikipedia.org',
+  'brwiki': 'br.wikipedia.org',
+  'brwiktionary': 'br.wiktionary.org',
+  'brwikiquote': 'br.wikiquote.org',
+  'brwikisource': 'br.wikisource.org',
+  'bswiki': 'bs.wikipedia.org',
+  'bswiktionary': 'bs.wiktionary.org',
+  'bswikibooks': 'bs.wikibooks.org',
+  'bswikinews': 'bs.wikinews.org',
+  'bswikiquote': 'bs.wikiquote.org',
+  'bswikisource': 'bs.wikisource.org',
+  'bugwiki': 'bug.wikipedia.org',
+  'bxrwiki': 'bxr.wikipedia.org',
+  'cawiki': 'ca.wikipedia.org',
+  'cawiktionary': 'ca.wiktionary.org',
+  'cawikibooks': 'ca.wikibooks.org',
+  'cawikinews': 'ca.wikinews.org',
+  'cawikiquote': 'ca.wikiquote.org',
+  'cawikisource': 'ca.wikisource.org',
+  'cbk_zamwiki': 'cbk-zam.wikipedia.org',
+  'cdowiki': 'cdo.wikipedia.org',
+  'cewiki': 'ce.wikipedia.org',
+  'cebwiki': 'ceb.wikipedia.org',
+  'chwiki': 'ch.wikipedia.org',
+  'chwiktionary': 'ch.wiktionary.org',
+  'chwikibooks': 'ch.wikibooks.org',
+  'chowiki': 'cho.wikipedia.org',
+  'chrwiki': 'chr.wikipedia.org',
+  'chrwiktionary': 'chr.wiktionary.org',
+  'chywiki': 'chy.wikipedia.org',
+  'ckbwiki': 'ckb.wikipedia.org',
+  'cowiki': 'co.wikipedia.org',
+  'cowiktionary': 'co.wiktionary.org',
+  'cowikibooks': 'co.wikibooks.org',
+  'cowikiquote': 'co.wikiquote.org',
+  'crwiki': 'cr.wikipedia.org',
+  'crwiktionary': 'cr.wiktionary.org',
+  'crwikiquote': 'cr.wikiquote.org',
+  'crhwiki': 'crh.wikipedia.org',
+  'cswiki': 'cs.wikipedia.org',
+  'cswiktionary': 'cs.wiktionary.org',
+  'cswikibooks': 'cs.wikibooks.org',
+  'cswikinews': 'cs.wikinews.org',
+  'cswikiquote': 'cs.wikiquote.org',
+  'cswikisource': 'cs.wikisource.org',
+  'cswikiversity': 'cs.wikiversity.org',
+  'csbwiki': 'csb.wikipedia.org',
+  'csbwiktionary': 'csb.wiktionary.org',
+  'cuwiki': 'cu.wikipedia.org',
+  'cvwiki': 'cv.wikipedia.org',
+  'cvwikibooks': 'cv.wikibooks.org',
+  'cywiki': 'cy.wikipedia.org',
+  'cywiktionary': 'cy.wiktionary.org',
+  'cywikibooks': 'cy.wikibooks.org',
+  'cywikiquote': 'cy.wikiquote.org',
+  'cywikisource': 'cy.wikisource.org',
+  'dawiki': 'da.wikipedia.org',
+  'dawiktionary': 'da.wiktionary.org',
+  'dawikibooks': 'da.wikibooks.org',
+  'dawikiquote': 'da.wikiquote.org',
+  'dawikisource': 'da.wikisource.org',
+  'dewiki': 'de.wikipedia.org',
+  'dewiktionary': 'de.wiktionary.org',
+  'dewikibooks': 'de.wikibooks.org',
+  'dewikinews': 'de.wikinews.org',
+  'dewikiquote': 'de.wikiquote.org',
+  'dewikisource': 'de.wikisource.org',
+  'dewikiversity': 'de.wikiversity.org',
+  'dewikivoyage': 'de.wikivoyage.org',
+  'diqwiki': 'diq.wikipedia.org',
+  'dsbwiki': 'dsb.wikipedia.org',
+  'dvwiki': 'dv.wikipedia.org',
+  'dvwiktionary': 'dv.wiktionary.org',
+  'dzwiki': 'dz.wikipedia.org',
+  'dzwiktionary': 'dz.wiktionary.org',
+  'eewiki': 'ee.wikipedia.org',
+  'elwiki': 'el.wikipedia.org',
+  'elwiktionary': 'el.wiktionary.org',
+  'elwikibooks': 'el.wikibooks.org',
+  'elwikinews': 'el.wikinews.org',
+  'elwikiquote': 'el.wikiquote.org',
+  'elwikisource': 'el.wikisource.org',
+  'elwikiversity': 'el.wikiversity.org',
+  'elwikivoyage': 'el.wikivoyage.org',
+  'emlwiki': 'eml.wikipedia.org',
+  'enwiki': 'en.wikipedia.org',
+  'enwiktionary': 'en.wiktionary.org',
+  'enwikibooks': 'en.wikibooks.org',
+  'enwikinews': 'en.wikinews.org',
+  'enwikiquote': 'en.wikiquote.org',
+  'enwikisource': 'en.wikisource.org',
+  'enwikiversity': 'en.wikiversity.org',
+  'enwikivoyage': 'en.wikivoyage.org',
+  'eowiki': 'eo.wikipedia.org',
+  'eowiktionary': 'eo.wiktionary.org',
+  'eowikibooks': 'eo.wikibooks.org',
+  'eowikinews': 'eo.wikinews.org',
+  'eowikiquote': 'eo.wikiquote.org',
+  'eowikisource': 'eo.wikisource.org',
+  'eswiki': 'es.wikipedia.org',
+  'eswiktionary': 'es.wiktionary.org',
+  'eswikibooks': 'es.wikibooks.org',
+  'eswikinews': 'es.wikinews.org',
+  'eswikiquote': 'es.wikiquote.org',
+  'eswikisource': 'es.wikisource.org',
+  'eswikiversity': 'es.wikiversity.org',
+  'eswikivoyage': 'es.wikivoyage.org',
+  'etwiki': 'et.wikipedia.org',
+  'etwiktionary': 'et.wiktionary.org',
+  'etwikibooks': 'et.wikibooks.org',
+  'etwikiquote': 'et.wikiquote.org',
+  'etwikisource': 'et.wikisource.org',
+  'euwiki': 'eu.wikipedia.org',
+  'euwiktionary': 'eu.wiktionary.org',
+  'euwikibooks': 'eu.wikibooks.org',
+  'euwikiquote': 'eu.wikiquote.org',
+  'extwiki': 'ext.wikipedia.org',
+  'fawiki': 'fa.wikipedia.org',
+  'fawiktionary': 'fa.wiktionary.org',
+  'fawikibooks': 'fa.wikibooks.org',
+  'fawikinews': 'fa.wikinews.org',
+  'fawikiquote': 'fa.wikiquote.org',
+  'fawikisource': 'fa.wikisource.org',
+  'fawikivoyage': 'fa.wikivoyage.org',
+  'ffwiki': 'ff.wikipedia.org',
+  'fiwiki': 'fi.wikipedia.org',
+  'fiwiktionary': 'fi.wiktionary.org',
+  'fiwikibooks': 'fi.wikibooks.org',
+  'fiwikinews': 'fi.wikinews.org',
+  'fiwikiquote': 'fi.wikiquote.org',
+  'fiwikisource': 'fi.wikisource.org',
+  'fiwikiversity': 'fi.wikiversity.org',
+  'fiu_vrowiki': 'fiu-vro.wikipedia.org',
+  'fjwiki': 'fj.wikipedia.org',
+  'fjwiktionary': 'fj.wiktionary.org',
+  'fowiki': 'fo.wikipedia.org',
+  'fowiktionary': 'fo.wiktionary.org',
+  'fowikisource': 'fo.wikisource.org',
+  'frwiki': 'fr.wikipedia.org',
+  'frwiktionary': 'fr.wiktionary.org',
+  'frwikibooks': 'fr.wikibooks.org',
+  'frwikinews': 'fr.wikinews.org',
+  'frwikiquote': 'fr.wikiquote.org',
+  'frwikisource': 'fr.wikisource.org',
+  'frwikiversity': 'fr.wikiversity.org',
+  'frwikivoyage': 'fr.wikivoyage.org',
+  'frpwiki': 'frp.wikipedia.org',
+  'frrwiki': 'frr.wikipedia.org',
+  'furwiki': 'fur.wikipedia.org',
+  'fywiki': 'fy.wikipedia.org',
+  'fywiktionary': 'fy.wiktionary.org',
+  'fywikibooks': 'fy.wikibooks.org',
+  'gawiki': 'ga.wikipedia.org',
+  'gawiktionary': 'ga.wiktionary.org',
+  'gawikibooks': 'ga.wikibooks.org',
+  'gawikiquote': 'ga.wikiquote.org',
+  'gagwiki': 'gag.wikipedia.org',
+  'ganwiki': 'gan.wikipedia.org',
+  'gdwiki': 'gd.wikipedia.org',
+  'gdwiktionary': 'gd.wiktionary.org',
+  'glwiki': 'gl.wikipedia.org',
+  'glwiktionary': 'gl.wiktionary.org',
+  'glwikibooks': 'gl.wikibooks.org',
+  'glwikiquote': 'gl.wikiquote.org',
+  'glwikisource': 'gl.wikisource.org',
+  'glkwiki': 'glk.wikipedia.org',
+  'gnwiki': 'gn.wikipedia.org',
+  'gnwiktionary': 'gn.wiktionary.org',
+  'gnwikibooks': 'gn.wikibooks.org',
+  'gomwiki': 'gom.wikipedia.org',
+  'gotwiki': 'got.wikipedia.org',
+  'gotwikibooks': 'got.wikibooks.org',
+  'guwiki': 'gu.wikipedia.org',
+  'guwiktionary': 'gu.wiktionary.org',
+  'guwikibooks': 'gu.wikibooks.org',
+  'guwikiquote': 'gu.wikiquote.org',
+  'guwikisource': 'gu.wikisource.org',
+  'gvwiki': 'gv.wikipedia.org',
+  'gvwiktionary': 'gv.wiktionary.org',
+  'hawiki': 'ha.wikipedia.org',
+  'hawiktionary': 'ha.wiktionary.org',
+  'hakwiki': 'hak.wikipedia.org',
+  'hawwiki': 'haw.wikipedia.org',
+  'hewiki': 'he.wikipedia.org',
+  'hewiktionary': 'he.wiktionary.org',
+  'hewikibooks': 'he.wikibooks.org',
+  'hewikinews': 'he.wikinews.org',
+  'hewikiquote': 'he.wikiquote.org',
+  'hewikisource': 'he.wikisource.org',
+  'hewikivoyage': 'he.wikivoyage.org',
+  'hiwiki': 'hi.wikipedia.org',
+  'hiwiktionary': 'hi.wiktionary.org',
+  'hiwikibooks': 'hi.wikibooks.org',
+  'hiwikiquote': 'hi.wikiquote.org',
+  'hifwiki': 'hif.wikipedia.org',
+  'howiki': 'ho.wikipedia.org',
+  'hrwiki': 'hr.wikipedia.org',
+  'hrwiktionary': 'hr.wiktionary.org',
+  'hrwikibooks': 'hr.wikibooks.org',
+  'hrwikiquote': 'hr.wikiquote.org',
+  'hrwikisource': 'hr.wikisource.org',
+  'hsbwiki': 'hsb.wikipedia.org',
+  'hsbwiktionary': 'hsb.wiktionary.org',
+  'htwiki': 'ht.wikipedia.org',
+  'htwikisource': 'ht.wikisource.org',
+  'huwiki': 'hu.wikipedia.org',
+  'huwiktionary': 'hu.wiktionary.org',
+  'huwikibooks': 'hu.wikibooks.org',
+  'huwikinews': 'hu.wikinews.org',
+  'huwikiquote': 'hu.wikiquote.org',
+  'huwikisource': 'hu.wikisource.org',
+  'hywiki': 'hy.wikipedia.org',
+  'hywiktionary': 'hy.wiktionary.org',
+  'hywikibooks': 'hy.wikibooks.org',
+  'hywikiquote': 'hy.wikiquote.org',
+  'hywikisource': 'hy.wikisource.org',
+  'hzwiki': 'hz.wikipedia.org',
+  'iawiki': 'ia.wikipedia.org',
+  'iawiktionary': 'ia.wiktionary.org',
+  'iawikibooks': 'ia.wikibooks.org',
+  'idwiki': 'id.wikipedia.org',
+  'idwiktionary': 'id.wiktionary.org',
+  'idwikibooks': 'id.wikibooks.org',
+  'idwikiquote': 'id.wikiquote.org',
+  'idwikisource': 'id.wikisource.org',
+  'iewiki': 'ie.wikipedia.org',
+  'iewiktionary': 'ie.wiktionary.org',
+  'iewikibooks': 'ie.wikibooks.org',
+  'igwiki': 'ig.wikipedia.org',
+  'iiwiki': 'ii.wikipedia.org',
+  'ikwiki': 'ik.wikipedia.org',
+  'ikwiktionary': 'ik.wiktionary.org',
+  'ilowiki': 'ilo.wikipedia.org',
+  'iowiki': 'io.wikipedia.org',
+  'iowiktionary': 'io.wiktionary.org',
+  'iswiki': 'is.wikipedia.org',
+  'iswiktionary': 'is.wiktionary.org',
+  'iswikibooks': 'is.wikibooks.org',
+  'iswikiquote': 'is.wikiquote.org',
+  'iswikisource': 'is.wikisource.org',
+  'itwiki': 'it.wikipedia.org',
+  'itwiktionary': 'it.wiktionary.org',
+  'itwikibooks': 'it.wikibooks.org',
+  'itwikinews': 'it.wikinews.org',
+  'itwikiquote': 'it.wikiquote.org',
+  'itwikisource': 'it.wikisource.org',
+  'itwikiversity': 'it.wikiversity.org',
+  'itwikivoyage': 'it.wikivoyage.org',
+  'iuwiki': 'iu.wikipedia.org',
+  'iuwiktionary': 'iu.wiktionary.org',
+  'jawiki': 'ja.wikipedia.org',
+  'jawiktionary': 'ja.wiktionary.org',
+  'jawikibooks': 'ja.wikibooks.org',
+  'jawikinews': 'ja.wikinews.org',
+  'jawikiquote': 'ja.wikiquote.org',
+  'jawikisource': 'ja.wikisource.org',
+  'jawikiversity': 'ja.wikiversity.org',
+  'jbowiki': 'jbo.wikipedia.org',
+  'jbowiktionary': 'jbo.wiktionary.org',
+  'jvwiki': 'jv.wikipedia.org',
+  'jvwiktionary': 'jv.wiktionary.org',
+  'kawiki': 'ka.wikipedia.org',
+  'kawiktionary': 'ka.wiktionary.org',
+  'kawikibooks': 'ka.wikibooks.org',
+  'kawikiquote': 'ka.wikiquote.org',
+  'kaawiki': 'kaa.wikipedia.org',
+  'kabwiki': 'kab.wikipedia.org',
+  'kbdwiki': 'kbd.wikipedia.org',
+  'kgwiki': 'kg.wikipedia.org',
+  'kiwiki': 'ki.wikipedia.org',
+  'kjwiki': 'kj.wikipedia.org',
+  'kkwiki': 'kk.wikipedia.org',
+  'kkwiktionary': 'kk.wiktionary.org',
+  'kkwikibooks': 'kk.wikibooks.org',
+  'kkwikiquote': 'kk.wikiquote.org',
+  'klwiki': 'kl.wikipedia.org',
+  'klwiktionary': 'kl.wiktionary.org',
+  'kmwiki': 'km.wikipedia.org',
+  'kmwiktionary': 'km.wiktionary.org',
+  'kmwikibooks': 'km.wikibooks.org',
+  'knwiki': 'kn.wikipedia.org',
+  'knwiktionary': 'kn.wiktionary.org',
+  'knwikibooks': 'kn.wikibooks.org',
+  'knwikiquote': 'kn.wikiquote.org',
+  'knwikisource': 'kn.wikisource.org',
+  'kowiki': 'ko.wikipedia.org',
+  'kowiktionary': 'ko.wiktionary.org',
+  'kowikibooks': 'ko.wikibooks.org',
+  'kowikinews': 'ko.wikinews.org',
+  'kowikiquote': 'ko.wikiquote.org',
+  'kowikisource': 'ko.wikisource.org',
+  'kowikiversity': 'ko.wikiversity.org',
+  'koiwiki': 'koi.wikipedia.org',
+  'krwiki': 'kr.wikipedia.org',
+  'krwikiquote': 'kr.wikiquote.org',
+  'krcwiki': 'krc.wikipedia.org',
+  'kswiki': 'ks.wikipedia.org',
+  'kswiktionary': 'ks.wiktionary.org',
+  'kswikibooks': 'ks.wikibooks.org',
+  'kswikiquote': 'ks.wikiquote.org',
+  'kshwiki': 'ksh.wikipedia.org',
+  'kuwiki': 'ku.wikipedia.org',
+  'kuwiktionary': 'ku.wiktionary.org',
+  'kuwikibooks': 'ku.wikibooks.org',
+  'kuwikiquote': 'ku.wikiquote.org',
+  'kvwiki': 'kv.wikipedia.org',
+  'kwwiki': 'kw.wikipedia.org',
+  'kwwiktionary': 'kw.wiktionary.org',
+  'kwwikiquote': 'kw.wikiquote.org',
+  'kywiki': 'ky.wikipedia.org',
+  'kywiktionary': 'ky.wiktionary.org',
+  'kywikibooks': 'ky.wikibooks.org',
+  'kywikiquote': 'ky.wikiquote.org',
+  'lawiki': 'la.wikipedia.org',
+  'lawiktionary': 'la.wiktionary.org',
+  'lawikibooks': 'la.wikibooks.org',
+  'lawikiquote': 'la.wikiquote.org',
+  'lawikisource': 'la.wikisource.org',
+  'ladwiki': 'lad.wikipedia.org',
+  'lbwiki': 'lb.wikipedia.org',
+  'lbwiktionary': 'lb.wiktionary.org',
+  'lbwikibooks': 'lb.wikibooks.org',
+  'lbwikiquote': 'lb.wikiquote.org',
+  'lbewiki': 'lbe.wikipedia.org',
+  'lezwiki': 'lez.wikipedia.org',
+  'lgwiki': 'lg.wikipedia.org',
+  'liwiki': 'li.wikipedia.org',
+  'liwiktionary': 'li.wiktionary.org',
+  'liwikibooks': 'li.wikibooks.org',
+  'liwikiquote': 'li.wikiquote.org',
+  'liwikisource': 'li.wikisource.org',
+  'lijwiki': 'lij.wikipedia.org',
+  'lmowiki': 'lmo.wikipedia.org',
+  'lnwiki': 'ln.wikipedia.org',
+  'lnwiktionary': 'ln.wiktionary.org',
+  'lnwikibooks': 'ln.wikibooks.org',
+  'lowiki': 'lo.wikipedia.org',
+  'lowiktionary': 'lo.wiktionary.org',
+  'lrcwiki': 'lrc.wikipedia.org',
+  'ltwiki': 'lt.wikipedia.org',
+  'ltwiktionary': 'lt.wiktionary.org',
+  'ltwikibooks': 'lt.wikibooks.org',
+  'ltwikiquote': 'lt.wikiquote.org',
+  'ltwikisource': 'lt.wikisource.org',
+  'ltgwiki': 'ltg.wikipedia.org',
+  'lvwiki': 'lv.wikipedia.org',
+  'lvwiktionary': 'lv.wiktionary.org',
+  'lvwikibooks': 'lv.wikibooks.org',
+  'maiwiki': 'mai.wikipedia.org',
+  'map_bmswiki': 'map-bms.wikipedia.org',
+  'mdfwiki': 'mdf.wikipedia.org',
+  'mgwiki': 'mg.wikipedia.org',
+  'mgwiktionary': 'mg.wiktionary.org',
+  'mgwikibooks': 'mg.wikibooks.org',
+  'mhwiki': 'mh.wikipedia.org',
+  'mhwiktionary': 'mh.wiktionary.org',
+  'mhrwiki': 'mhr.wikipedia.org',
+  'miwiki': 'mi.wikipedia.org',
+  'miwiktionary': 'mi.wiktionary.org',
+  'miwikibooks': 'mi.wikibooks.org',
+  'minwiki': 'min.wikipedia.org',
+  'mkwiki': 'mk.wikipedia.org',
+  'mkwiktionary': 'mk.wiktionary.org',
+  'mkwikibooks': 'mk.wikibooks.org',
+  'mkwikisource': 'mk.wikisource.org',
+  'mlwiki': 'ml.wikipedia.org',
+  'mlwiktionary': 'ml.wiktionary.org',
+  'mlwikibooks': 'ml.wikibooks.org',
+  'mlwikiquote': 'ml.wikiquote.org',
+  'mlwikisource': 'ml.wikisource.org',
+  'mnwiki': 'mn.wikipedia.org',
+  'mnwiktionary': 'mn.wiktionary.org',
+  'mnwikibooks': 'mn.wikibooks.org',
+  'mowiki': 'mo.wikipedia.org',
+  'mowiktionary': 'mo.wiktionary.org',
+  'mrwiki': 'mr.wikipedia.org',
+  'mrwiktionary': 'mr.wiktionary.org',
+  'mrwikibooks': 'mr.wikibooks.org',
+  'mrwikiquote': 'mr.wikiquote.org',
+  'mrwikisource': 'mr.wikisource.org',
+  'mrjwiki': 'mrj.wikipedia.org',
+  'mswiki': 'ms.wikipedia.org',
+  'mswiktionary': 'ms.wiktionary.org',
+  'mswikibooks': 'ms.wikibooks.org',
+  'mtwiki': 'mt.wikipedia.org',
+  'mtwiktionary': 'mt.wiktionary.org',
+  'muswiki': 'mus.wikipedia.org',
+  'mwlwiki': 'mwl.wikipedia.org',
+  'mywiki': 'my.wikipedia.org',
+  'mywiktionary': 'my.wiktionary.org',
+  'mywikibooks': 'my.wikibooks.org',
+  'myvwiki': 'myv.wikipedia.org',
+  'mznwiki': 'mzn.wikipedia.org',
+  'nawiki': 'na.wikipedia.org',
+  'nawiktionary': 'na.wiktionary.org',
+  'nawikibooks': 'na.wikibooks.org',
+  'nawikiquote': 'na.wikiquote.org',
+  'nahwiki': 'nah.wikipedia.org',
+  'nahwiktionary': 'nah.wiktionary.org',
+  'nahwikibooks': 'nah.wikibooks.org',
+  'napwiki': 'nap.wikipedia.org',
+  'ndswiki': 'nds.wikipedia.org',
+  'ndswiktionary': 'nds.wiktionary.org',
+  'ndswikibooks': 'nds.wikibooks.org',
+  'ndswikiquote': 'nds.wikiquote.org',
+  'nds_nlwiki': 'nds-nl.wikipedia.org',
+  'newiki': 'ne.wikipedia.org',
+  'newiktionary': 'ne.wiktionary.org',
+  'newikibooks': 'ne.wikibooks.org',
+  'newwiki': 'new.wikipedia.org',
+  'ngwiki': 'ng.wikipedia.org',
+  'nlwiki': 'nl.wikipedia.org',
+  'nlwiktionary': 'nl.wiktionary.org',
+  'nlwikibooks': 'nl.wikibooks.org',
+  'nlwikinews': 'nl.wikinews.org',
+  'nlwikiquote': 'nl.wikiquote.org',
+  'nlwikisource': 'nl.wikisource.org',
+  'nlwikivoyage': 'nl.wikivoyage.org',
+  'nnwiki': 'nn.wikipedia.org',
+  'nnwiktionary': 'nn.wiktionary.org',
+  'nnwikiquote': 'nn.wikiquote.org',
+  'nowiki': 'no.wikipedia.org',
+  'nowiktionary': 'no.wiktionary.org',
+  'nowikibooks': 'no.wikibooks.org',
+  'nowikinews': 'no.wikinews.org',
+  'nowikiquote': 'no.wikiquote.org',
+  'nowikisource': 'no.wikisource.org',
+  'novwiki': 'nov.wikipedia.org',
+  'nrmwiki': 'nrm.wikipedia.org',
+  'nsowiki': 'nso.wikipedia.org',
+  'nvwiki': 'nv.wikipedia.org',
+  'nywiki': 'ny.wikipedia.org',
+  'ocwiki': 'oc.wikipedia.org',
+  'ocwiktionary': 'oc.wiktionary.org',
+  'ocwikibooks': 'oc.wikibooks.org',
+  'omwiki': 'om.wikipedia.org',
+  'omwiktionary': 'om.wiktionary.org',
+  'orwiki': 'or.wikipedia.org',
+  'orwiktionary': 'or.wiktionary.org',
+  'orwikisource': 'or.wikisource.org',
+  'oswiki': 'os.wikipedia.org',
+  'pawiki': 'pa.wikipedia.org',
+  'pawiktionary': 'pa.wiktionary.org',
+  'pawikibooks': 'pa.wikibooks.org',
+  'pagwiki': 'pag.wikipedia.org',
+  'pamwiki': 'pam.wikipedia.org',
+  'papwiki': 'pap.wikipedia.org',
+  'pcdwiki': 'pcd.wikipedia.org',
+  'pdcwiki': 'pdc.wikipedia.org',
+  'pflwiki': 'pfl.wikipedia.org',
+  'piwiki': 'pi.wikipedia.org',
+  'piwiktionary': 'pi.wiktionary.org',
+  'pihwiki': 'pih.wikipedia.org',
+  'plwiki': 'pl.wikipedia.org',
+  'plwiktionary': 'pl.wiktionary.org',
+  'plwikibooks': 'pl.wikibooks.org',
+  'plwikinews': 'pl.wikinews.org',
+  'plwikiquote': 'pl.wikiquote.org',
+  'plwikisource': 'pl.wikisource.org',
+  'plwikivoyage': 'pl.wikivoyage.org',
+  'pmswiki': 'pms.wikipedia.org',
+  'pnbwiki': 'pnb.wikipedia.org',
+  'pnbwiktionary': 'pnb.wiktionary.org',
+  'pntwiki': 'pnt.wikipedia.org',
+  'pswiki': 'ps.wikipedia.org',
+  'pswiktionary': 'ps.wiktionary.org',
+  'pswikibooks': 'ps.wikibooks.org',
+  'ptwiki': 'pt.wikipedia.org',
+  'ptwiktionary': 'pt.wiktionary.org',
+  'ptwikibooks': 'pt.wikibooks.org',
+  'ptwikinews': 'pt.wikinews.org',
+  'ptwikiquote': 'pt.wikiquote.org',
+  'ptwikisource': 'pt.wikisource.org',
+  'ptwikiversity': 'pt.wikiversity.org',
+  'ptwikivoyage': 'pt.wikivoyage.org',
+  'quwiki': 'qu.wikipedia.org',
+  'quwiktionary': 'qu.wiktionary.org',
+  'quwikibooks': 'qu.wikibooks.org',
+  'quwikiquote': 'qu.wikiquote.org',
+  'rmwiki': 'rm.wikipedia.org',
+  'rmwiktionary': 'rm.wiktionary.org',
+  'rmwikibooks': 'rm.wikibooks.org',
+  'rmywiki': 'rmy.wikipedia.org',
+  'rnwiki': 'rn.wikipedia.org',
+  'rnwiktionary': 'rn.wiktionary.org',
+  'rowiki': 'ro.wikipedia.org',
+  'rowiktionary': 'ro.wiktionary.org',
+  'rowikibooks': 'ro.wikibooks.org',
+  'rowikinews': 'ro.wikinews.org',
+  'rowikiquote': 'ro.wikiquote.org',
+  'rowikisource': 'ro.wikisource.org',
+  'rowikivoyage': 'ro.wikivoyage.org',
+  'roa_rupwiki': 'roa-rup.wikipedia.org',
+  'roa_rupwiktionary': 'roa-rup.wiktionary.org',
+  'roa_tarawiki': 'roa-tara.wikipedia.org',
+  'ruwiki': 'ru.wikipedia.org',
+  'ruwiktionary': 'ru.wiktionary.org',
+  'ruwikibooks': 'ru.wikibooks.org',
+  'ruwikinews': 'ru.wikinews.org',
+  'ruwikiquote': 'ru.wikiquote.org',
+  'ruwikisource': 'ru.wikisource.org',
+  'ruwikiversity': 'ru.wikiversity.org',
+  'ruwikivoyage': 'ru.wikivoyage.org',
+  'ruewiki': 'rue.wikipedia.org',
+  'rwwiki': 'rw.wikipedia.org',
+  'rwwiktionary': 'rw.wiktionary.org',
+  'sawiki': 'sa.wikipedia.org',
+  'sawiktionary': 'sa.wiktionary.org',
+  'sawikibooks': 'sa.wikibooks.org',
+  'sawikiquote': 'sa.wikiquote.org',
+  'sawikisource': 'sa.wikisource.org',
+  'sahwiki': 'sah.wikipedia.org',
+  'sahwikisource': 'sah.wikisource.org',
+  'scwiki': 'sc.wikipedia.org',
+  'scwiktionary': 'sc.wiktionary.org',
+  'scnwiki': 'scn.wikipedia.org',
+  'scnwiktionary': 'scn.wiktionary.org',
+  'scowiki': 'sco.wikipedia.org',
+  'sdwiki': 'sd.wikipedia.org',
+  'sdwiktionary': 'sd.wiktionary.org',
+  'sdwikinews': 'sd.wikinews.org',
+  'sewiki': 'se.wikipedia.org',
+  'sewikibooks': 'se.wikibooks.org',
+  'sgwiki': 'sg.wikipedia.org',
+  'sgwiktionary': 'sg.wiktionary.org',
+  'shwiki': 'sh.wikipedia.org',
+  'shwiktionary': 'sh.wiktionary.org',
+  'siwiki': 'si.wikipedia.org',
+  'siwiktionary': 'si.wiktionary.org',
+  'siwikibooks': 'si.wikibooks.org',
+  'simplewiki': 'simple.wikipedia.org',
+  'simplewiktionary': 'simple.wiktionary.org',
+  'simplewikibooks': 'simple.wikibooks.org',
+  'simplewikiquote': 'simple.wikiquote.org',
+  'skwiki': 'sk.wikipedia.org',
+  'skwiktionary': 'sk.wiktionary.org',
+  'skwikibooks': 'sk.wikibooks.org',
+  'skwikiquote': 'sk.wikiquote.org',
+  'skwikisource': 'sk.wikisource.org',
+  'slwiki': 'sl.wikipedia.org',
+  'slwiktionary': 'sl.wiktionary.org',
+  'slwikibooks': 'sl.wikibooks.org',
+  'slwikiquote': 'sl.wikiquote.org',
+  'slwikisource': 'sl.wikisource.org',
+  'slwikiversity': 'sl.wikiversity.org',
+  'smwiki': 'sm.wikipedia.org',
+  'smwiktionary': 'sm.wiktionary.org',
+  'snwiki': 'sn.wikipedia.org',
+  'snwiktionary': 'sn.wiktionary.org',
+  'sowiki': 'so.wikipedia.org',
+  'sowiktionary': 'so.wiktionary.org',
+  'sqwiki': 'sq.wikipedia.org',
+  'sqwiktionary': 'sq.wiktionary.org',
+  'sqwikibooks': 'sq.wikibooks.org',
+  'sqwikinews': 'sq.wikinews.org',
+  'sqwikiquote': 'sq.wikiquote.org',
+  'srwiki': 'sr.wikipedia.org',
+  'srwiktionary': 'sr.wiktionary.org',
+  'srwikibooks': 'sr.wikibooks.org',
+  'srwikinews': 'sr.wikinews.org',
+  'srwikiquote': 'sr.wikiquote.org',
+  'srwikisource': 'sr.wikisource.org',
+  'srnwiki': 'srn.wikipedia.org',
+  'sswiki': 'ss.wikipedia.org',
+  'sswiktionary': 'ss.wiktionary.org',
+  'stwiki': 'st.wikipedia.org',
+  'stwiktionary': 'st.wiktionary.org',
+  'stqwiki': 'stq.wikipedia.org',
+  'suwiki': 'su.wikipedia.org',
+  'suwiktionary': 'su.wiktionary.org',
+  'suwikibooks': 'su.wikibooks.org',
+  'suwikiquote': 'su.wikiquote.org',
+  'svwiki': 'sv.wikipedia.org',
+  'svwiktionary': 'sv.wiktionary.org',
+  'svwikibooks': 'sv.wikibooks.org',
+  'svwikinews': 'sv.wikinews.org',
+  'svwikiquote': 'sv.wikiquote.org',
+  'svwikisource': 'sv.wikisource.org',
+  'svwikiversity': 'sv.wikiversity.org',
+  'svwikivoyage': 'sv.wikivoyage.org',
+  'swwiki': 'sw.wikipedia.org',
+  'swwiktionary': 'sw.wiktionary.org',
+  'swwikibooks': 'sw.wikibooks.org',
+  'szlwiki': 'szl.wikipedia.org',
+  'tawiki': 'ta.wikipedia.org',
+  'tawiktionary': 'ta.wiktionary.org',
+  'tawikibooks': 'ta.wikibooks.org',
+  'tawikinews': 'ta.wikinews.org',
+  'tawikiquote': 'ta.wikiquote.org',
+  'tawikisource': 'ta.wikisource.org',
+  'tewiki': 'te.wikipedia.org',
+  'tewiktionary': 'te.wiktionary.org',
+  'tewikibooks': 'te.wikibooks.org',
+  'tewikiquote': 'te.wikiquote.org',
+  'tewikisource': 'te.wikisource.org',
+  'tetwiki': 'tet.wikipedia.org',
+  'tgwiki': 'tg.wikipedia.org',
+  'tgwiktionary': 'tg.wiktionary.org',
+  'tgwikibooks': 'tg.wikibooks.org',
+  'thwiki': 'th.wikipedia.org',
+  'thwiktionary': 'th.wiktionary.org',
+  'thwikibooks': 'th.wikibooks.org',
+  'thwikinews': 'th.wikinews.org',
+  'thwikiquote': 'th.wikiquote.org',
+  'thwikisource': 'th.wikisource.org',
+  'tiwiki': 'ti.wikipedia.org',
+  'tiwiktionary': 'ti.wiktionary.org',
+  'tkwiki': 'tk.wikipedia.org',
+  'tkwiktionary': 'tk.wiktionary.org',
+  'tkwikibooks': 'tk.wikibooks.org',
+  'tkwikiquote': 'tk.wikiquote.org',
+  'tlwiki': 'tl.wikipedia.org',
+  'tlwiktionary': 'tl.wiktionary.org',
+  'tlwikibooks': 'tl.wikibooks.org',
+  'tnwiki': 'tn.wikipedia.org',
+  'tnwiktionary': 'tn.wiktionary.org',
+  'towiki': 'to.wikipedia.org',
+  'towiktionary': 'to.wiktionary.org',
+  'tpiwiki': 'tpi.wikipedia.org',
+  'tpiwiktionary': 'tpi.wiktionary.org',
+  'trwiki': 'tr.wikipedia.org',
+  'trwiktionary': 'tr.wiktionary.org',
+  'trwikibooks': 'tr.wikibooks.org',
+  'trwikinews': 'tr.wikinews.org',
+  'trwikiquote': 'tr.wikiquote.org',
+  'trwikisource': 'tr.wikisource.org',
+  'tswiki': 'ts.wikipedia.org',
+  'tswiktionary': 'ts.wiktionary.org',
+  'ttwiki': 'tt.wikipedia.org',
+  'ttwiktionary': 'tt.wiktionary.org',
+  'ttwikibooks': 'tt.wikibooks.org',
+  'ttwikiquote': 'tt.wikiquote.org',
+  'tumwiki': 'tum.wikipedia.org',
+  'twwiki': 'tw.wikipedia.org',
+  'twwiktionary': 'tw.wiktionary.org',
+  'tywiki': 'ty.wikipedia.org',
+  'tyvwiki': 'tyv.wikipedia.org',
+  'udmwiki': 'udm.wikipedia.org',
+  'ugwiki': 'ug.wikipedia.org',
+  'ugwiktionary': 'ug.wiktionary.org',
+  'ugwikibooks': 'ug.wikibooks.org',
+  'ugwikiquote': 'ug.wikiquote.org',
+  'ukwiki': 'uk.wikipedia.org',
+  'ukwiktionary': 'uk.wiktionary.org',
+  'ukwikibooks': 'uk.wikibooks.org',
+  'ukwikinews': 'uk.wikinews.org',
+  'ukwikiquote': 'uk.wikiquote.org',
+  'ukwikisource': 'uk.wikisource.org',
+  'ukwikivoyage': 'uk.wikivoyage.org',
+  'urwiki': 'ur.wikipedia.org',
+  'urwiktionary': 'ur.wiktionary.org',
+  'urwikibooks': 'ur.wikibooks.org',
+  'urwikiquote': 'ur.wikiquote.org',
+  'uzwiki': 'uz.wikipedia.org',
+  'uzwiktionary': 'uz.wiktionary.org',
+  'uzwikibooks': 'uz.wikibooks.org',
+  'uzwikiquote': 'uz.wikiquote.org',
+  'vewiki': 've.wikipedia.org',
+  'vecwiki': 'vec.wikipedia.org',
+  'vecwiktionary': 'vec.wiktionary.org',
+  'vecwikisource': 'vec.wikisource.org',
+  'vepwiki': 'vep.wikipedia.org',
+  'viwiki': 'vi.wikipedia.org',
+  'viwiktionary': 'vi.wiktionary.org',
+  'viwikibooks': 'vi.wikibooks.org',
+  'viwikiquote': 'vi.wikiquote.org',
+  'viwikisource': 'vi.wikisource.org',
+  'viwikivoyage': 'vi.wikivoyage.org',
+  'vlswiki': 'vls.wikipedia.org',
+  'vowiki': 'vo.wikipedia.org',
+  'vowiktionary': 'vo.wiktionary.org',
+  'vowikibooks': 'vo.wikibooks.org',
+  'vowikiquote': 'vo.wikiquote.org',
+  'wawiki': 'wa.wikipedia.org',
+  'wawiktionary': 'wa.wiktionary.org',
+  'wawikibooks': 'wa.wikibooks.org',
+  'warwiki': 'war.wikipedia.org',
+  'wowiki': 'wo.wikipedia.org',
+  'wowiktionary': 'wo.wiktionary.org',
+  'wowikiquote': 'wo.wikiquote.org',
+  'wuuwiki': 'wuu.wikipedia.org',
+  'xalwiki': 'xal.wikipedia.org',
+  'xhwiki': 'xh.wikipedia.org',
+  'xhwiktionary': 'xh.wiktionary.org',
+  'xhwikibooks': 'xh.wikibooks.org',
+  'xmfwiki': 'xmf.wikipedia.org',
+  'yiwiki': 'yi.wikipedia.org',
+  'yiwiktionary': 'yi.wiktionary.org',
+  'yiwikisource': 'yi.wikisource.org',
+  'yowiki': 'yo.wikipedia.org',
+  'yowiktionary': 'yo.wiktionary.org',
+  'yowikibooks': 'yo.wikibooks.org',
+  'zawiki': 'za.wikipedia.org',
+  'zawiktionary': 'za.wiktionary.org',
+  'zawikibooks': 'za.wikibooks.org',
+  'zawikiquote': 'za.wikiquote.org',
+  'zeawiki': 'zea.wikipedia.org',
+  'zhwiki': 'zh.wikipedia.org',
+  'zhwiktionary': 'zh.wiktionary.org',
+  'zhwikibooks': 'zh.wikibooks.org',
+  'zhwikinews': 'zh.wikinews.org',
+  'zhwikiquote': 'zh.wikiquote.org',
+  'zhwikisource': 'zh.wikisource.org',
+  'zhwikivoyage': 'zh.wikivoyage.org',
+  'zh_classicalwiki': 'zh-classical.wikipedia.org',
+  'zh_min_nanwiki': 'zh-min-nan.wikipedia.org',
+  'zh_min_nanwiktionary': 'zh-min-nan.wiktionary.org',
+  'zh_min_nanwikibooks': 'zh-min-nan.wikibooks.org',
+  'zh_min_nanwikiquote': 'zh-min-nan.wikiquote.org',
+  'zh_min_nanwikisource': 'zh-min-nan.wikisource.org',
+  'zh_yuewiki': 'zh-yue.wikipedia.org',
+  'zuwiki': 'zu.wikipedia.org',
+  'zuwiktionary': 'zu.wiktionary.org',
+  'zuwikibooks': 'zu.wikibooks.org',
+  'arwikimedia': 'ar.wikimedia.org',
+  'bdwikimedia': 'bd.wikimedia.org',
+  'bewikimedia': 'be.wikimedia.org',
+  'betawikiversity': 'beta.wikiversity.org',
+  'brwikimedia': 'br.wikimedia.org',
+  'cawikimedia': 'ca.wikimedia.org',
+  'cnwikimedia': 'cn.wikimedia.org',
+  'cowikimedia': 'co.wikimedia.org',
+  'commonswiki': 'commons.wikimedia.org',
+  'dkwikimedia': 'dk.wikimedia.org',
+  'etwikimedia': 'ee.wikimedia.org',
+  'fiwikimedia': 'fi.wikimedia.org',
+  'foundationwiki': 'wikimediafoundation.org',
+  'iegcomwiki': 'iegcom.wikimedia.org',
+  'ilwikimedia': 'il.wikimedia.org',
+  'incubatorwiki': 'incubator.wikimedia.org',
+  'labswiki': 'wikitech.wikimedia.org',
+  'loginwiki': 'login.wikimedia.org',
+  'mediawikiwiki': 'mediawiki.org',
+  'metawiki': 'meta.wikimedia.org',
+  'mkwikimedia': 'mk.wikimedia.org',
+  'mxwikimedia': 'mx.wikimedia.org',
+  'nlwikimedia': 'nl.wikimedia.org',
+  'nowikimedia': 'no.wikimedia.org',
+  'nostalgiawiki': 'nostalgia.wikipedia.org',
+  'nzwikimedia': 'nz.wikimedia.org',
+  'outreachwiki': 'outreach.wikimedia.org',
+  'pa_uswikimedia': 'pa-us.wikimedia.org',
+  'plwikimedia': 'pl.wikimedia.org',
+  'rswikimedia': 'rs.wikimedia.org',
+  'ruwikimedia': 'ru.wikimedia.org',
+  'sewikimedia': 'se.wikimedia.org',
+  'sourceswiki': 'wikisource.org',
+  'specieswiki': 'species.wikimedia.org',
+  'trwikimedia': 'tr.wikimedia.org',
+  'uawikimedia': 'ua.wikimedia.org',
+  'ukwikimedia': 'uk.wikimedia.org',
+  'wg_enwiki': 'wg-en.wikipedia.org',
+  'wikidatawiki': 'wikidata.org'
+};
+
+module.exports = siteMap;
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+/**
+ * @file Configuration for Topviews application
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ */
+
+var pv = require('../shared/pv');
+
+/**
+ * Configuration for Topviews application.
+ * This includes selectors, defaults, and other constants specific to Topviews
+ * @type {Object}
+ */
+var config = {
+  select2Input: '.aqs-select2-selector',
+  dateRangeSelector: '.aqs-date-range-selector',
+  defaults: {
+    dateRange: 'last-month',
+    excludes: []
+  },
+  formStates: ['processing', 'complete', 'search', 'reset'],
+  maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
+  pageSize: 100,
+  platformSelector: '#platform-select',
+  projectInput: '.aqs-project-input',
+  validateParams: ['project', 'platform'],
+  timestampFormat: 'YYYYMMDD00'
+};
+
+module.exports = config;
+
+},{"../shared/pv":3}],7:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Topviews Analysis tool
+ * @file Main file for Topviews application
+ * @author MusikAnimal
+ * @copyright 2016 MusikAnimal
+ * @license MIT License: https://opensource.org/licenses/MIT
+ * @requires Pv
+ */
+
+var config = require('./config');
+var Pv = require('../shared/pv');
+
+/** Main TopViews class */
+
+var TopViews = function (_Pv) {
+  _inherits(TopViews, _Pv);
+
+  /**
+   * Set instance variables and boot the app via pv.constructor
+   * @override
+   */
+
+  function TopViews() {
+    _classCallCheck(this, TopViews);
+
+    var _this = _possibleConstructorReturn(this, (TopViews.__proto__ || Object.getPrototypeOf(TopViews)).call(this, config));
+
+    _this.app = 'topviews';
+
+    _this.excludes = [];
+    _this.autoExcludes = [];
+    _this.offset = 0;
+    _this.offsetEnd = 0;
+    _this.max = null;
+    _this.pageData = [];
+    _this.pageNames = [];
+    _this.mobileViews = {};
+    _this.excludeAdded = false;
+    return _this;
+  }
+
+  /**
+   * Initialize the application.
+   * Called in `pv.js` after translations have loaded
+   */
+
+
+  _createClass(TopViews, [{
+    key: 'initialize',
+    value: function initialize() {
+      this.popParams();
+      this.updateInterAppLinks();
+    }
+
+    /**
+     * Apply user input by updating the URL query string and view, if needed
+     * @param {boolean} force - apply all user options even if we've detected nothing has changed
+     * @returns {Deferred} deferred object from initData
+     */
+
+  }, {
+    key: 'processInput',
+    value: function processInput(force) {
+      this.pushParams();
+
+      /** prevent redundant querying */
+      if (location.search === this.params && !force) {
+        return false;
+      }
+      this.params = location.search;
+
+      $('#topviews_search_field').val('');
+      this.setState('reset');
+      this.setState('processing');
+
+      return this.initData().then(this.showList.bind(this));
+    }
+
+    /**
+     * Print list of top pages
+     */
+
+  }, {
+    key: 'showList',
+    value: function showList() {
+      var _this2 = this;
+
+      $('.topview-entries').html('');
+
+      var count = 0,
+          index = 0;
+
+      while (count < this.config.pageSize + this.offset) {
+        var item = this.pageData[index++];
+
+        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) continue;
+        if (!this.max) this.max = item.views;
+
+        var width = 100 * (item.views / this.max),
+            direction = !!i18nRtl ? 'to left' : 'to right',
+            offsetTop = count * 40 + 40;
+
+        var percentMobile = (this.mobileViews[item.article] / item.views * 100).toFixed(1);
+        if (percentMobile === '0.0') {
+          percentMobile = '< 0.1';
+        }
+
+        var percentMobileText = this.shouldShowMobile() ? percentMobile + '%' : '';
+
+        $('.topview-entries').append('<tr class=\'topview-entry\' id=\'topview-entry-' + index + '\'>\n         <td class=\'topview-entry--rank-wrapper\'>\n           <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + '\n             title=\'' + $.i18n('topviews-remove-page') + '\' aria-hidden=\'true\'></span>\n           <span class=\'topview-entry--rank\'>' + ++count + '</span>\n         </td>\n         <td>\n           <span class=\'topview-entry--background\' style=\'top:' + offsetTop + 'px; background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%); opacity: 0.6\'></span>\n           <a class=\'topview-entry--label\' href="' + this.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         </td>\n         <td class=\'topview-entry--mobile\'>' + percentMobileText + '</td>\n         <td>\n           <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\' target=\'_blank\'>' + this.formatNumber(item.views) + '</a>\n         </td></tr>');
+      }
+
+      this.offsetEnd = index;
+
+      setTimeout(function () {
+        _this2.setState('complete');
+        $('.topview-entry--background').addClass('animate');
+      });
+
+      this.pushParams();
+      this.addExcludeListeners();
+    }
+
+    /**
+     * Add given page(s) to list of excluded pages and optionally re-render the view
+     * @param {Array|String} pages - page(s) to add to excludes
+     * @param {Boolean} [triggerChange] - whether or not to re-render the view
+     */
+
+  }, {
+    key: 'addExclude',
+    value: function addExclude(pages) {
+      var _this3 = this;
+
+      var triggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+      if (!Array.isArray(pages)) pages = [pages];
+
+      pages.forEach(function (page) {
+        if (!_this3.excludes.includes(page)) {
+          _this3.excludes.push(page);
+        }
+      });
+
+      $(this.config.select2Input).html('');
+
+      this.excludes.forEach(function (exclude) {
+        var escapedText = $('<div>').text(exclude).html();
+        $('<option>' + escapedText + '</option>').appendTo(_this3.config.select2Input);
+      });
+
+      if (triggerChange) {
+        this.setState('processing');
+        // get mobileViews for the new page that has come into view
+        var excludeOffset = this.excludes.length + this.autoExcludes.length - 1,
+            newPage = this.pageData[this.config.pageSize + this.offset + excludeOffset].article;
+        this.setSingleMobileViews(newPage).always(function () {
+          _this3.setState('complete');
+          $(_this3.config.select2Input).val(_this3.excludes).trigger('change');
+          _this3.showList();
+        });
+      }
+      this.buildReportFalsePositiveForm();
+    }
+
+    /**
+     * Re-add listeners to exclude pages, called after sorting or changing params
+     */
+
+  }, {
+    key: 'addExcludeListeners',
+    value: function addExcludeListeners() {
+      var _this4 = this;
+
+      $('.topview-entry--remove').off('click').on('click', function (e) {
+        // show 'Report false positive' button if they've manually excluded a page
+        if (!_this4.excludeAdded) {
+          _this4.excludeAdded = true;
+          $('.report-false-positive').show();
+        }
+
+        var pageName = _this4.pageNames[$(e.target).data('article-id')];
+        _this4.addExclude(pageName);
+        _this4.pushParams();
+      });
+    }
+
+    /**
+     * Uses this.excludes to build a list of pages
+     * that the user can report as a false positive.
+     */
+
+  }, {
+    key: 'buildReportFalsePositiveForm',
+    value: function buildReportFalsePositiveForm() {
+      var _this5 = this;
+
+      $('.false-positive-list').html('');
+      this.excludes.forEach(function (exclude, index) {
+        $('.false-positive-list').append('\n        <li>\n          <label>\n            <input type=\'checkbox\' data-index=\'' + index + '\' />\n            ' + exclude.escape() + '\n          </label>\n        </li>\n      ');
+      });
+      $('.submit-false-positive').off('click').on('click', function () {
+        var excludes = $.map($('.false-positive-list input:checked'), function (el) {
+          return _this5.excludes[parseInt(el.dataset.index, 10)];
+        });
+        if (!excludes.length) return;
+
+        $.ajax({
+          url: '/topviews/api.php',
+          data: {
+            project: _this5.project,
+            pages: excludes,
+            date: _this5.getParams(false).date,
+            platform: $(_this5.config.platformSelector).val()
+          },
+          method: 'POST'
+        });
+        _this5.toastSuccess($.i18n('report-false-positive-submitted', $.i18n('topviews')));
+        $('.report-false-positive').hide();
+      });
+    }
+
+    /**
+     * Clear the topviews search
+     */
+
+  }, {
+    key: 'clearSearch',
+    value: function clearSearch() {
+      this.setState('complete');
+      if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
+        $('#topviews_search_field').val('');
+        $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+        this.showList();
+      }
+    }
+
+    /**
+     * Should the "% Mobile" column be shown?
+     * @return {Boolean} yes or no
+     */
+
+  }, {
+    key: 'shouldShowMobile',
+    value: function shouldShowMobile() {
+      return $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access';
+    }
+
+    /**
+     * Exports current chart data to CSV format and loads it in a new tab
+     * With the prepended data:text/csv this should cause the browser to download the data
+     * @override
+     */
+
+  }, {
+    key: 'exportCSV',
+    value: function exportCSV() {
+      var _this6 = this;
+
+      var csvContent = 'data:text/csv;charset=utf-8,Page,Views' + (this.shouldShowMobile() ? ',Mobile views' : '') + '\n';
+
+      this.pageData.forEach(function (entry) {
+        // Build an array of page titles for use in the CSV header
+        var title = '"' + entry.article.replace(/"/g, '""') + '"';
+
+        csvContent += title + ',' + entry.views;
+        if (_this6.shouldShowMobile()) csvContent += ',' + (_this6.mobileViews[entry.article] || '');
+        csvContent += '\n';
+      });
+
+      this.downloadData(csvContent, 'csv');
+    }
+
+    /**
+     * Exports current chart data to JSON format and loads it in a new tab
+     * @override
+     */
+
+  }, {
+    key: 'exportJSON',
+    value: function exportJSON() {
+      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.pageData);
+      this.downloadData(jsonContent, 'json');
+    }
+
+    /**
+     * Get informative filename without extension to be used for export options
+     * @return {string} filename without an extension
+     * @override
+     */
+
+  }, {
+    key: 'getExportFilename',
+    value: function getExportFilename() {
+      var datepickerValue = this.datepicker.getDate();
+      var date = void 0;
+
+      if (this.isMonthly()) {
+        date = moment(datepickerValue).format('YYYY/MM');
+      } else {
+        date = moment(datepickerValue).format('YYYY/MM/DD');
+      }
+
+      return this.app + '-' + date;
+    }
+
+    /**
+     * Link to /pageviews for given article and chosen daterange
+     * @param {string} article - page name
+     * @returns {string} URL
+     */
+
+  }, {
+    key: 'getPageviewsURL',
+    value: function getPageviewsURL(article) {
+      // first get the date range
+      var date = moment(this.datepicker.getDate());
+      var startDate = void 0,
+          endDate = void 0;
+      if (this.isMonthly()) {
+        startDate = date.format('YYYY-MM-01');
+        endDate = date.endOf('month').format('YYYY-MM-DD');
+      } else {
+        // surround single dates with 3 days to make the pageviews chart meaningful
+        startDate = moment(date).subtract(3, 'days').format('YYYY-MM-DD');
+        endDate = date.add(3, 'days').format('YYYY-MM-DD');
+      }
+
+      var platform = $(this.config.platformSelector).val(),
+          project = $(this.config.projectInput).val();
+
+      return '/pageviews?start=' + startDate + '&end=' + endDate + '&project=' + project + '&platform=' + platform + '&pages=' + article;
+    }
+
+    /**
+     * Get all user-inputted parameters except the pages
+     * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
+     * @return {Object} project, platform, excludes, etc.
+     */
+
+  }, {
+    key: 'getParams',
+    value: function getParams() {
+      var specialRange = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      var params = {
+        project: $(this.config.projectInput).val(),
+        platform: $(this.config.platformSelector).val()
+      };
+
+      var datepickerValue = this.datepicker.getDate();
+
+      /**
+       * Override start and end with custom range values,
+       *   if configured (set by URL params or setupDateRangeSelector)
+       */
+      if (this.specialRange && specialRange) {
+        params.date = this.specialRange.range;
+      } else if (this.isMonthly()) {
+        params.date = moment(datepickerValue).format('YYYY-MM');
+      } else {
+        params.date = moment(datepickerValue).format('YYYY-MM-DD');
+      }
+
+      return params;
+    }
+
+    /**
+     * Get params needed to create a permanent link of visible data
+     * @return {Object} hash of params
+     */
+
+  }, {
+    key: 'getPermaLink',
+    value: function getPermaLink() {
+      var params = this.getParams(false);
+      delete params.range;
+      return params;
+    }
+
+    /**
+     * Set datepicker based on provided relative range
+     * @param {String} range - e.g. 'last-month', 'yesterday'
+     * @returns {Boolean} whether a valid range was provided and was set
+     * @override
+     */
+
+  }, {
+    key: 'setSpecialRange',
+    value: function setSpecialRange(range) {
+      if (range === 'last-month') {
+        this.setupDateRangeSelector('monthly');
+        this.datepicker.setDate(this.config.maxMonth);
+        this.specialRange = {
+          range: range,
+          value: moment(this.config.maxMonth).format('YYYY/MM')
+        };
+      } else if (range === 'yesterday') {
+        this.setupDateRangeSelector('daily');
+        this.datepicker.setDate(this.config.maxDate);
+        this.specialRange = {
+          range: range,
+          value: moment(this.config.maxDate).format('YYYY-MM-DD')
+        };
+      } else {
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Set datepicker based on provided date or range
+     * @param {String} dateInput - either a range like 'last-month', 'yesterday' or date with format 'YYYY-MM-DD'
+     * @return {null}
+     */
+
+  }, {
+    key: 'setDate',
+    value: function setDate(dateInput) {
+      var date = void 0;
+
+      if (/\d{4}-\d{2}$/.test(dateInput)) {
+        // monthly
+        this.setupDateRangeSelector('monthly');
+        date = moment(dateInput + '-01').toDate();
+
+        // if over max, set to max
+        if (date > this.config.maxMonth) {
+          date = this.config.maxMonth;
+        }
+      } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        // daily
+        this.setupDateRangeSelector('daily');
+        date = moment(dateInput).toDate();
+
+        // if over max, set to max (Topviews maxDate is a Date object, not moment)
+        if (date > this.config.maxDate) {
+          date = this.config.maxDate;
+        }
+      } else {
+        // attempt to set as special range, or default range if range is invalid
+        return this.setSpecialRange(dateInput) || this.setSpecialRange(this.config.defaults.dateRange);
+      }
+
+      // if less than min, throw error (since this is a common request)
+      if (date < this.config.minDate.toDate()) {
+        // use super.dateFormat since this is for moment, not for our datepicker
+        this.toastError('\n        <strong>' + $.i18n('invalid-params') + '</strong>\n        ' + $.i18n('param-error-1', moment(this.config.minDate).format(_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this))) + '\n      ');
+        date = this.config.minDate.toDate();
+      }
+
+      return this.datepicker.setDate(date);
+    }
+
+    /**
+     * Parses the URL query string and sets all the inputs accordingly
+     * Should only be called on initial page load, until we decide to support pop states (probably never)
+     */
+
+  }, {
+    key: 'popParams',
+    value: function popParams() {
+      var _this7 = this;
+
+      this.setState('processing');
+
+      var params = this.validateParams(this.parseQueryString('excludes'));
+
+      // FIXME: remove once all affected wikis/links have been updated
+      if (params.range || params.start || params.end) {
+        this.fixLegacyDates(params);
+        this.toastWarn('\n        <strong>Topviews has been revamped!</strong>\n        Custom date ranges are\n        <a href=\'//meta.wikimedia.org/wiki/Special:Permalink/15931284#Topviews_revamped\'>no longer supported</a>.\n        Using defaults instead.\n      ');
+      }
+
+      this.setDate(params.date); // also performs validations
+
+      $(this.config.projectInput).val(params.project);
+      $(this.config.platformSelector).val(params.platform);
+
+      if (params.platform === 'all-access') {
+        $('.percent-mobile-wrapper').show();
+        $('.show-percent-mobile').prop('checked', !!params.mobileviews);
+        $('.output-table').toggleClass('show-mobile', !!params.mobileviews);
+      }
+
+      $('.mainspace-only-option').prop('checked', params.mainspace !== 'false');
+
+      this.excludes = (params.excludes || []).map(function (exclude) {
+        return decodeURIComponent(exclude.descore());
+      });
+
+      this.patchUsage();
+
+      this.params = location.search;
+
+      this.initData().done(function () {
+        _this7.setupSelect2();
+        _this7.showList();
+      }).always(function () {
+        _this7.setupListeners();
+      });
+    }
+
+    /**
+     * Fix legacy links to Topviews that used a defined date range.
+     * Instead, we'll determine how wide the range is, and if it's greater than 3 days
+     *   then use the month, otherwise use the first day of the range
+     * @param {Object} params - params as provided by this.parseQueryString
+     * @returns {Object} modified params with corrected dates
+     */
+
+  }, {
+    key: 'fixLegacyDates',
+    value: function fixLegacyDates(params) {
+      // all is well if we were given a date parameter (new version)
+      //   or if no date params were provided
+      if (params.date || !params.start && !params.end && !params.range) return params;
+
+      // use last-month if any range was provided
+      if (params.range) {
+        params.date = 'last-month';
+        return params;
+      }
+
+      // if invalid start/end use last-month
+      var dateRegex = /\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(params.start) && !dateRegex.test(params.end)) {
+        params.date = 'last-month';
+        return params;
+      }
+
+      var startDate = moment(params.start, 'YYYY-MM-DD'),
+          endDate = moment(params.end, 'YYYY-MM-DD'),
+          numDays = Math.abs(endDate.diff(startDate, 'days'));
+
+      if (numDays > 3) {
+        params.date = startDate.format('YYYY-MM');
+      } else {
+        params.date = params.start;
+      }
+
+      return params;
+    }
+
+    /**
+     * Replaces history state with new URL query string representing current user input
+     * Called whenever we go to update the chart
+     */
+
+  }, {
+    key: 'pushParams',
+    value: function pushParams() {
+      var excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?+]/g, encodeURIComponent);
+
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&excludes=' + excludes);
+      }
+
+      $('.permalink').prop('href', '?' + $.param(this.getPermaLink()) + '&excludes=' + excludes);
+    }
+
+    /**
+     * Removes chart, messages, and resets Select2 selections
+     * @param {Boolean} [clearSelector] - whether to clear the Select2 control
+     */
+
+  }, {
+    key: 'resetView',
+    value: function resetView() {
+      var clearSelector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      this.setState('reset');
+      this.clearSearch();
+      $('.topview-entries').html('');
+
+      if (clearSelector) {
+        this.resetSelect2();
+        this.excludes = [];
+      }
+    }
+
+    /**
+     * Helper to set a CSS class on the `main` node, styling the document
+     *   based on a 'state', along with related JS actions
+     * @param {String} state - class to be added;
+     *   should be one of this.config.formStates
+     * @param {function} [cb] - Optional function to be called after initial state has been set
+     */
+
+  }, {
+    key: 'setState',
+    value: function setState(state, cb) {
+      $('main').removeClass(this.config.formStates.join(' ')).addClass(state);
+
+      switch (state) {
+        case 'initial':
+        case 'reset':
+          this.stopSpinny();
+          this.autoExcludes = [];
+          this.offset = 0;
+          this.offsetEnd = 0;
+          this.max = null;
+          this.pageData = [];
+          this.pageNames = [];
+          this.mobileViews = {};
+          this.excludeAdded = false;
+          $('.message-container').html('');
+          break;
+        case 'processing':
+          this.startSpinny();
+          break;
+        case 'complete':
+          this.stopSpinny();
+          break;
+        case 'search':
+          break;
+      }
+
+      if (typeof cb === 'function') cb();
+    }
+
+    /**
+     * Search the topviews data for the given page title
+     * and restrict the view to the matches
+     * @return {null}
+     */
+
+  }, {
+    key: 'searchTopviews',
+    value: function searchTopviews() {
+      var _this8 = this;
+
+      var query = $('#topviews_search_field').val().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+      if (!query) return this.clearSearch();
+
+      this.setState('search');
+
+      var matchedData = [],
+          count = 0;
+
+      // add ranking to pageData and fetch matches
+      this.pageData.forEach(function (entry, index) {
+        if (!_this8.excludes.includes(entry.article) && !_this8.autoExcludes.includes(entry.article)) {
+          count++;
+          if (new RegExp(query, 'i').test(entry.article)) {
+            entry.rank = count;
+            entry.index = index;
+            matchedData.push(entry);
+          }
+        }
+      });
+
+      $('.topview-entries').html('');
+      $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+
+      matchedData.forEach(function (item) {
+        $('.topview-entries').append('<tr class=\'topview-entry\'>\n         <td class=\'topview-entry--rank-wrapper\'>\n           <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + item.index + '\n             title=\'' + $.i18n('topviews-remove-page') + '\' aria-hidden=\'true\'></span>\n           <span class=\'topview-entry--rank\'>' + item.rank + '</span>\n         </td>\n         <td>\n           <a class=\'topview-entry--label\' href="' + _this8.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         </td>\n         <td class=\'topview-entry--mobile\'></td>\n         <td>\n           <a class=\'topview-entry--views\' target=\'_blank\'\n              href=\'' + _this8.getPageviewsURL(item.article) + '\'>' + _this8.formatNumber(item.views) + '\n           </a>\n         </td></tr>');
+      });
+
+      this.addExcludeListeners();
+    }
+
+    /**
+     * Calls parent setupProjectInput and updates the view if validations passed
+     *   reverting to the old value if the new one is invalid
+     * @override
+     */
+
+  }, {
+    key: 'validateProject',
+    value: function validateProject() {
+      if (_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'validateProject', this).call(this)) {
+        this.resetView(true);
+        this.processInput();
+      }
+    }
+
+    /**
+     * Sets up the Select2 selector and adds listener to update chart
+     * @param {array} excludes - default page names to exclude
+     */
+
+  }, {
+    key: 'setupSelect2',
+    value: function setupSelect2() {
+      var _this9 = this;
+
+      var excludes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.excludes;
+
+      var select2Input = $(this.config.select2Input);
+
+      select2Input.select2({
+        data: [],
+        maximumSelectionLength: 50,
+        minimumInputLength: 0,
+        minimumResultsForSearch: Infinity,
+        placeholder: $.i18n('hover-to-exclude')
+      });
+
+      if (excludes.length) this.setSelect2Defaults(excludes);
+
+      select2Input.on('change', function (e) {
+        _this9.excludes = $(e.target).val() || [];
+        _this9.max = null;
+        _this9.clearSearch();
+
+        /** for topviews we don't want the user input functionality of Select2 */
+        $('.select2-search__field').prop('disabled', true);
+      });
+
+      select2Input.on('select2:unselect', function (e) {
+        var pageName = e.params.data.text;
+
+        if (!_this9.mobileViews[pageName]) {
+          _this9.setState('processing');
+          _this9.setSingleMobileViews(pageName).always(_this9.showList.bind(_this9));
+        } else {
+          _this9.showList();
+        }
+
+        if (!$(e.target).val()) $('.report-false-positive').hide();
+      });
+    }
+
+    /**
+     * Directly set pages in Select2 selector
+     * Currently is not able to remove underscore from page names
+     *
+     * @param {array} pages - page titles
+     * @returns {array} - untouched array of pages
+     */
+
+  }, {
+    key: 'setSelect2Defaults',
+    value: function setSelect2Defaults(pages) {
+      var _this10 = this;
+
+      pages = pages.map(function (page) {
+        var escapedText = $('<div>').text(page).html();
+        $('<option>' + escapedText + '</option>').appendTo(_this10.config.select2Input);
+        return page;
+      });
+      $(this.config.select2Input).select2('val', pages);
+
+      return pages;
+    }
+
+    /**
+     * sets up the datepicker based on given type
+     * @param {String} [type] - either 'monthly' or 'daily'
+     * @override
+     */
+
+  }, {
+    key: 'setupDateRangeSelector',
+    value: function setupDateRangeSelector() {
+      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'monthly';
+
+      $('#date-type-select').val(type);
+
+      var datepickerParams = type === 'monthly' ? {
+        format: 'MM yyyy',
+        viewMode: 'months',
+        minViewMode: 'months',
+        endDate: this.config.maxMonth
+      } : {
+        format: this.dateFormat,
+        viewMode: 'days',
+        endDate: this.config.maxDate
+      };
+
+      $(this.config.dateRangeSelector).datepicker('destroy');
+      $(this.config.dateRangeSelector).datepicker(Object.assign({
+        autoclose: true,
+        startDate: this.config.minDate.toDate()
+      }, datepickerParams));
+    }
+
+    /**
+     * General place to add page-wide listeners
+     */
+
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this11 = this;
+
+      _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
+
+      $(this.config.platformSelector).on('change', function (e) {
+        $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access');
+        $('.output-table').toggleClass('show-mobile', _this11.shouldShowMobile());
+        _this11.processInput();
+      });
+      $('#date-type-select').on('change', function (e) {
+        // also calls setupDateRangeSelector
+        _this11.setSpecialRange(_this11.isMonthly() ? 'last-month' : 'yesterday');
+      });
+      $('.show-more').on('click', function () {
+        _this11.offset += _this11.config.pageSize;
+        _this11.setState('processing');
+        _this11.setMobileViews(_this11.offsetEnd).always(_this11.showList.bind(_this11));
+      });
+      $(this.config.dateRangeSelector).on('change', function (e) {
+        /** clear out specialRange if it doesn't match our input */
+        if (_this11.specialRange && _this11.specialRange.value !== e.target.value) {
+          _this11.specialRange = null;
+        }
+        _this11.processInput();
+      });
+      $('.mainspace-only-option').on('click', this.processInput.bind(this));
+      $('.show-percent-mobile').on('click', function (e) {
+        $('.output-table').toggleClass('show-mobile', $(e.target).prop('checked'));
+        _this11.processInput(true);
+      });
+      $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
+      $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
+    }
+
+    /**
+     * Get date format to use based on settings
+     * @returns {string} date format to passed to parser
+     * @override
+     */
+
+  }, {
+    key: 'isMonthly',
+
+
+    /**
+     * Are we in 'monthly' mode? (If we aren't then we're in daily)
+     * @return {Boolean} yes or no
+     */
+    value: function isMonthly() {
+      return $('#date-type-select').val() === 'monthly';
+    }
+
+    /**
+     * Get the currently selected date for the purposes of pageviews API call
+     * @return {String} formatted date
+     */
+
+  }, {
+    key: 'getAPIDate',
+    value: function getAPIDate() {
+      var datepickerValue = this.datepicker.getDate();
+
+      if (this.isMonthly()) {
+        return moment(datepickerValue).format('YYYY/MM') + '/all-days';
+      } else {
+        return moment(datepickerValue).format('YYYY/MM/DD');
+      }
+    }
+
+    /**
+     * Get known false positives for currently selected project, date and platform
+     * @return {Deferred} Promise resolving with an array of page names
+     */
+
+  }, {
+    key: 'getFalsePositives',
+    value: function getFalsePositives() {
+      return $.ajax({
+        url: '/topviews/api.php',
+        data: {
+          project: this.project,
+          date: this.getParams(false).date,
+          platform: $(this.config.platformSelector).val()
+        },
+        timeout: 8000
+      });
+    }
+
+    /**
+     * Set this.mobileViews for a single page
+     * @param {String} page - page title
+     * @returns {Deferred} promise resolving with this.mobileViews
+     */
+
+  }, {
+    key: 'setSingleMobileViews',
+    value: function setSingleMobileViews(page) {
+      var _this12 = this,
+          _$;
+
+      var dfd = $.Deferred();
+
+      var startDate = void 0,
+          endDate = void 0;
+
+      // set start/end dates
+      var datepickerValue = this.datepicker.getDate();
+      if (this.isMonthly()) {
+        startDate = moment(datepickerValue).startOf('month');
+        endDate = moment(datepickerValue).endOf('month');
+      } else {
+        startDate = moment(datepickerValue);
+        endDate = moment(datepickerValue);
+      }
+
+      var promises = [];
+
+      ['mobile-web', 'mobile-app'].forEach(function (endpoint) {
+        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' + ('/' + _this12.project + '/' + endpoint + '/all-agents/' + page + '/' + (_this12.isMonthly() ? 'monthly' : 'daily')) + ('/' + startDate.format(_this12.config.timestampFormat) + '/' + endDate.format(_this12.config.timestampFormat));
+
+        // if we already have the data, just go straight to resolving via dummy Deferred
+        if (_this12.mobileViews[page]) {
+          var dummyDfd = $.Deferred();
+          promises.push(dummyDfd);
+          return dummyDfd.resolve();
+        }
+
+        var promise = $.ajax({ url: url, dataType: 'json' });
+
+        promises.push(promise);
+
+        promise.done(function (data) {
+          var views = data.items.reduce(function (a, b) {
+            return a + b.views;
+          }, 0),
+              pageTitle = data.items[0].article.descore();
+          _this12.mobileViews[pageTitle] = views + (_this12.mobileViews[pageTitle] || 0);
+        });
+      });
+
+      (_$ = $).whenAll.apply(_$, promises).always(function () {
+        return dfd.resolve(_this12.mobileViews);
+      });
+
+      return dfd;
+    }
+
+    /**
+     * Set this.mobileViews for requested pages
+     * @param {Integer} startIndex - start index of this.pageData
+     * @param {Integer} offset - number of entries to process following startIndex
+     * @returns {Deferred} promise resolving with this.mobileViews
+     */
+
+  }, {
+    key: 'setMobileViews',
+    value: function setMobileViews() {
+      var _this13 = this;
+
+      var startIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.config.pageSize;
+
+      var dfd = $.Deferred();
+
+      if (!this.shouldShowMobile()) {
+        return dfd.resolve({});
+      }
+
+      var index = startIndex,
+          counter = 0,
+          requestCount = offset,
+          startDate = void 0,
+          endDate = void 0;
+
+      // set start/end dates
+      var datepickerValue = this.datepicker.getDate();
+      if (this.isMonthly()) {
+        startDate = moment(datepickerValue).startOf('month');
+        endDate = moment(datepickerValue).endOf('month');
+      } else {
+        startDate = moment(datepickerValue);
+        endDate = moment(datepickerValue);
+      }
+
+      var makeRequest = function makeRequest(page) {
+        var _$2;
+
+        var promises = [];
+
+        ['mobile-web', 'mobile-app'].forEach(function (endpoint) {
+          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' + ('/' + _this13.project + '/' + endpoint + '/all-agents/' + page + '/' + (_this13.isMonthly() ? 'monthly' : 'daily')) + ('/' + startDate.format(_this13.config.timestampFormat) + '/' + endDate.format(_this13.config.timestampFormat));
+
+          // if we already have the data, just go straight to resolving via dummy Deferred
+          if (_this13.mobileViews[page]) {
+            var dummyDfd = $.Deferred();
+            promises.push(dummyDfd);
+            return dummyDfd.resolve();
+          }
+
+          var promise = $.ajax({ url: url, dataType: 'json' });
+
+          promises.push(promise);
+
+          promise.done(function (data) {
+            var views = data.items.reduce(function (a, b) {
+              return a + b.views;
+            }, 0),
+                pageTitle = data.items[0].article.descore();
+            _this13.mobileViews[pageTitle] = views + (_this13.mobileViews[pageTitle] || 0);
+          });
+        });
+
+        (_$2 = $).whenAll.apply(_$2, promises).always(function () {
+          if (--requestCount === 0) {
+            dfd.resolve(_this13.mobileViews);
+          }
+        });
+      };
+
+      var requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this);
+
+      while (counter < offset) {
+        // for (let index = startIndex; index <= endIndex; index++) {
+        var item = this.pageData[index];
+        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
+          index++;
+          continue;
+        }
+        requestFn(this.pageData[index].article);
+        counter++;
+        index++;
+      }
+
+      return dfd;
+    }
+
+    /**
+     * Fetch data from API
+     * @returns {Deferred} promise with data
+     */
+
+  }, {
+    key: 'initData',
+    value: function initData() {
+      var _this14 = this;
+
+      var dfd = $.Deferred();
+
+      this.setState('processing');
+
+      var access = $(this.config.platformSelector).val();
+
+      var showTopviews = function showTopviews() {
+        $.ajax({
+          url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + _this14.project + '/' + access + '/' + _this14.getAPIDate(),
+          dataType: 'json'
+        }).done(function (data) {
+          // store pageData from API, removing underscores from the page name
+          _this14.pageData = data.items[0].articles.map(function (page) {
+            page.article = page.article.descore();
+            return page;
+          });
+
+          /** build the pageNames array for Select2 */
+          _this14.pageNames = _this14.pageData.map(function (page) {
+            return page.article;
+          });
+
+          /** set up auto excludes now that we know what pages will be effected */
+          _this14.setupAutoExcludes();
+
+          if ($('.mainspace-only-option').is(':checked')) {
+            _this14.filterOutNamespace(_this14.pageNames).done(function (pageNames) {
+              _this14.pageNames = pageNames;
+              _this14.pageData = _this14.pageData.filter(function (page) {
+                return pageNames.includes(page.article);
+              });
+
+              if (access === 'all-access') {
+                return _this14.setMobileViews().then(function () {
+                  return dfd.resolve(_this14.pageData);
+                });
+              } else {
+                return dfd.resolve(_this14.pageData);
+              }
+            });
+          } else if (access === 'all-access') {
+            return _this14.setMobileViews().then(function () {
+              return dfd.resolve(_this14.pageData);
+            });
+          } else {
+            return dfd.resolve(_this14.pageData);
+          }
+        }).fail(function (errorData) {
+          _this14.resetView();
+          _this14.writeMessage($.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
+          return dfd.reject();
+        });
+      };
+
+      this.getFalsePositives().done(function (autoExcludes) {
+        _this14.autoExcludes = autoExcludes;
+      }).always(showTopviews);
+
+      return dfd;
+    }
+
+    /**
+     * Adds a message below the "Excluded pages" list, that has a link to show
+     *   the automatically excluded pages (as retrieved from /musikanimal/api/topviews/false_positives).
+     * Also reremoves any auto-excluded pages from this.excludes
+     * @returns {null} nothing
+     */
+
+  }, {
+    key: 'setupAutoExcludes',
+    value: function setupAutoExcludes() {
+      var _this15 = this;
+
+      // remove any that aren't actually in the results
+      this.autoExcludes = this.autoExcludes.filter(function (page) {
+        return _this15.pageNames.includes(page);
+      });
+
+      if (!this.autoExcludes.length) return $('.list-false-positives').hide();
+
+      var listFPLink = '<a href=\'#\' data-target=\'#list-false-positives-modal\' data-toggle=\'modal\'>\n        ' + $.i18n('known-false-positives-link', this.autoExcludes.length) + '\n      </a>';
+
+      $('.list-false-positives').html($.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length));
+
+      $('.list-false-positives').show();
+      $('#list-false-positives-modal').on('show.bs.modal', function () {
+        // list the false positives
+        $('.false-positive-list').html('');
+        _this15.autoExcludes.forEach(function (exclude) {
+          var rank = _this15.pageData.find(function (page) {
+            return page.article === exclude;
+          }).rank;
+          $('.false-positive-list').append('\n          <tr><td>' + _this15.getPageLink(exclude, _this15.project) + '</td><td>' + rank + '</td></tr>\n        ');
+        });
+      });
+
+      // remove autoExcludes from excludes given via URL param
+      this.excludes = this.excludes.filter(function (exclude) {
+        return _this15.autoExcludes.indexOf(exclude) === -1;
+      });
+    }
+
+    /**
+     * Get the pages that are not in the given namespace
+     * @param {array} pages - pages to filter
+     * @param {Number} [restrictedNamespace] - ID of the namespace to restrict to, defaults to 0 (mainspace)
+     * @return {Deferred} promise resolving with pages in given namespace
+     */
+
+  }, {
+    key: 'filterOutNamespace',
+    value: function filterOutNamespace(pages) {
+      var _this16 = this;
+
+      var restrictedNamespace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      var dfd = $.Deferred();
+
+      var doFiltering = function doFiltering(entries, unacceptableNamespaces) {
+        return entries.filter(function (entry) {
+          var ns = entry.split(':')[0];
+
+          // include main page as non-mainspace
+          var mainPage = _this16.getSiteInfo(_this16.project).general.mainpage;
+
+          // main page may include project namespace, so compare against main page name without namespace, too
+          if (restrictedNamespace === 0 && (entry === mainPage || entry === mainPage.split(':')[1])) {
+            return false;
+          }
+
+          // Verify there was a namespace. For instance, don't filter out a mainspace article
+          //  called 'Search', when we wanted to filter out Special:Search
+          if (!entry.includes(':')) return true;
+
+          return !unacceptableNamespaces.includes(ns);
+        });
+      };
+
+      this.fetchSiteInfo(this.project).done(function () {
+        var unacceptableNamespaces = [];
+
+        // for non-mainspace, count 'Wikipedia' and 'Special' since API seems to
+        //  include for instance both Wikipedia and Wikipédia in some projects
+        // FIXME: the 'Sp?cial' is an apparent bug, see phab:T145043
+        if (restrictedNamespace === 0) {
+          unacceptableNamespaces = ['Wikipedia', 'Special', 'Sp?cial'];
+        }
+
+        for (var ns in _this16.getSiteInfo(_this16.project).namespaces) {
+          unacceptableNamespaces.push(_this16.getSiteInfo(_this16.project).namespaces[ns]['*']);
+        }
+
+        // the actual filtering of the given pages
+        pages = doFiltering(pages, unacceptableNamespaces);
+
+        // remove excludes that would otherwise automatically be filtered out
+        _this16.excludes = doFiltering(_this16.excludes, unacceptableNamespaces);
+
+        dfd.resolve(pages);
+      }).fail(function () {
+        _this16.writeMessage('' + $.i18n('api-error', 'Siteinfo API'));
+        dfd.resolve(pages);
+      });
+
+      return dfd;
+    }
+  }, {
+    key: 'dateFormat',
+    get: function get() {
+      return _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this).toLowerCase();
+    }
+
+    /**
+     * Get instance of datepicker
+     * @return {Object} the datepicker instance
+     */
+
+  }, {
+    key: 'datepicker',
+    get: function get() {
+      return $(this.config.dateRangeSelector).data('datepicker');
+    }
+  }]);
+
+  return TopViews;
+}(Pv);
+
+$(document).ready(function () {
+  /** assume hash params are supposed to be query params */
+  if (document.location.hash && !document.location.search) {
+    return document.location.href = document.location.href.replace('#', '?');
+  } else if (document.location.hash) {
+    return document.location.href = document.location.href.replace(/\#.*/, '');
+  }
+
+  new TopViews();
+});
+
+},{"../shared/pv":3,"./config":6}]},{},[7]);
