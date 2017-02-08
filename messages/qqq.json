@@ -364,5 +364,7 @@
 	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}",
 	"topviews-remove-page": "Text shown when hovering over the X link that removes a page from the Topviews rankings.",
 	"show-mobile-percentages": "Label for a checkbox to show the percentage of mobile pageviews each page has in Topviews.",
-	"original-rank": "Label for the column listing the original rank a false positive page had.\n{{Identical|Original rank}}"
+	"rank": "Heading for the column showing the page rank in the Topviews application.\n{{Identical|Rank}}",
+	"original-rank": "Label for the column listing the original rank a false positive page had.\n{{Identical|Original rank}}",
+	"percent-mobile": "Label for the column showing the percentage of mobile pageviews a page had."
 }

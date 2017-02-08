@@ -356,5 +356,7 @@
 	"class": "Class",
 	"topviews-remove-page": "Remove this page from Topviews rankings",
 	"show-mobile-percentages": "Show mobile percentages",
-	"original-rank": "Original rank"
+	"rank": "Rank",
+	"original-rank": "Original rank",
+	"percent-mobile": "% Mobile"
 }

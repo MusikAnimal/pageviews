@@ -175,10 +175,10 @@
         <table class="table output-table">
           <thead>
             <tr class="topview-entry">
-              <th>Rank</th>
-              <th>Page</th>
-              <th class="topview-entry--mobile">% Mobile</th>
-              <th>Pageviews</th>
+              <th><?php echo $I18N->msg( 'rank' ); ?></th>
+              <th><?php echo $I18N->msg( 'page' ); ?></th>
+              <th class="topview-entry--mobile"><?php echo $I18N->msg( 'percent-mobile' ); ?></th>
+              <th><?php echo $I18N->msg( 'pageviews' ); ?></th>
             </tr>
           </thead>
           <tbody class="topview-entries"></tbody>

@@ -128,10 +128,10 @@
         %table.table.output-table
           %thead
             %tr.topview-entry
-              %th Rank
-              %th Page
-              %th.topview-entry--mobile % Mobile
-              %th Pageviews
+              %th= $I18N->msg( 'rank' )
+              %th= $I18N->msg( 'page' )
+              %th.topview-entry--mobile= $I18N->msg( 'percent-mobile' )
+              %th= $I18N->msg( 'pageviews' )
           %tbody.topview-entries
 
       %div.col-lg-12.text-center
