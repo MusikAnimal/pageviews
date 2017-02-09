@@ -165,6 +165,7 @@
 	"faq-topviews-false-positive-body1": "Dessa är <strong>falska positiver</strong> och är dessvärre oundvikliga. Dessa kan förekomma eftersom någon använde ett automatiserat program för att behandla sidan, exempelvis. Ett sätt att identifiera falska positiver är att jämföra datorvisningar med mobila visningar. Se först vilka agenter som är mest populära på ditt projekt för alla artiklar och använda det som en grund för jämförelse av sidor som du tror kan vara falska positiver. T.ex. mobila webbvisningar på engelskspråkiga Wikipedia bör vara jämförbara om inte högre än datorvisningar, så om mobila webbvisningar är mycket lågt kan det vara en falsk positiv.",
 	"faq-topviews-false-positive-body2": "Du kan också öppna någon sida i applikationen Sidvisningar för en ingående analys. Klicka bara på antalet visningar på höger sida.",
 	"faq-topviews-false-positive-body3": "Du kan <strong>rapportera falska positiver</strong> för att förbättra datan för $1. För att göra detta, exkludera först sidan från vyn genom att lägga musen på den och klicka på ✖ i början av raden. Klicka sedan på länken \"$2\" ovanför inmatningen \"$3\". Om tillräckligt många personer rapporterar en speciell sida som en falsk positiv kan de automatiskt exkluderas från vyn för alla användare.",
+	"faq-topviews-false-positive-body4": "Du kan enkelt jämföra sidvisningar för mobiler och datorer genom att klicka på alternativet \"$1\". Detta alternativ är endast tillgängligt om du ändrar $2 till \"$3\". Procentsatsen inkluderar sidvisningar från mobilappen och mobilwebbplatsen.",
 	"faq-source-title": "Vad är \"Datakällor\"?",
 	"faq-source-pageviews": "är det totala antalet sidbesök som projektet får",
 	"faq-source-unique-devices": "är antalet unika enheter som besöker webbplatsen.",
@@ -336,6 +337,9 @@
 	"report-false-positive": "Rapportera falsk positiv",
 	"report-false-positive-text": "Använd detta formulär för att välja vilka exkluderade sidor du vill rapportera som falsk positiva ($1)",
 	"report-false-positive-submitted": "Din rapport om falsk positiv har skickats in. Tack för att du förbättrar data på $1!",
+	"known-false-positives-link": "$1 {{PLURAL:$1|sida|sidor}}",
+	"known-false-positives-text": "$1 {{PLURAL:$2|exkluderades}} från Toppvisningar automatiskt.",
+	"list-false-positives-heading": "Kända falska positiver",
 	"new-article-warning": "En eller flera av de begärda sidorna skapades nyligen, så datan för sidvisningarna kanske inte ännu är tillgängliga ($1)",
 	"userviews-title": "Användarvisningsanalys",
 	"userviews-edit-count-warning": "$1 har gjort $2 redigeringar! Det kan ta en stund att hämta de skapade sidorna. Ha tålamod.",
@@ -347,5 +351,8 @@
 	"exclude-redirects": "Exkludera omdirigeringar",
 	"only-redirects": "Inkludera endast omdirigeringar",
 	"redirects-and-non-redirects": "Omdirigeringar och icke-omdirigeringar",
-	"class": "Klass"
+	"class": "Klass",
+	"topviews-remove-page": "Ta bort denna sida från Toppvisningsranken",
+	"show-mobile-percentages": "Visa mobilprocent",
+	"original-rank": "Ursprunglig rank"
 }

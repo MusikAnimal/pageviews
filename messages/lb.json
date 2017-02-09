@@ -252,5 +252,7 @@
 	"exclude-redirects": "Viruleedungen ausschléissen",
 	"redirects-and-non-redirects": "Viruleedungen an Net-Viruleedungen",
 	"class": "Klass",
-	"show-mobile-percentages": "Mobil Prozentsätz weisen"
+	"show-mobile-percentages": "Mobil Prozentsätz weisen",
+	"rank": "Klassement",
+	"percent-mobile": "% Mobil"
 }

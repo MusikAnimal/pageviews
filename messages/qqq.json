@@ -12,7 +12,8 @@
 			"Purodha",
 			"Amire80",
 			"Siebrand",
-			"Arthur2e5"
+			"Arthur2e5",
+			"ANDROBETA"
 		]
 	},
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
@@ -208,7 +209,7 @@
 	"url-structure-special-range-latest": "States that the value 'latest' will show the last 20 days of data",
 	"url-structure-special-range-latest-n": "Explains that you can use 'latest-N' and replace N with the number of days",
 	"url-structure-start-date": "Documentation for the 'start' parameter. $1 is the date format used",
-	"url-structure-start-month": "Documentation for the 'start' parameter when targeting a specific month instead of a day. $1 is the format used.",
+	"url-structure-start-month": "Documentation for the 'start' parameter when targeting a specific month instead of a day. $1 is the format used ('YYYY-MM' instead of 'YYYY-MM-DD').",
 	"url-structure-end-date": "Documentation for the 'end' parameter, stating it defaults to the previous day. $1 is the date format used.",
 	"url-structure-end-month": "Documentation for the 'end' parameter when targeting a specific month instead of a day. $1 is the format used.",
 	"url-structure-agent": "States the 'agent' parameter can have one of the values 'user' ($1), 'spider' ($2), 'bot' ($3), or 'all-agents' ($4). Each of these will be in a &lt;code> tag. All the words in the message can be translated.",
@@ -349,7 +350,7 @@
 	"known-false-positives-link": "This message is used as part of the 'known-false-positives-text' message. It may be identical to the 'num-pages' message. $1 is the number of pages that are excluded from the Topviews interface.\n{{Identical|Page}}",
 	"known-false-positives-text": "$1 is a link to show a modal listing the known false positives, with the message 'known-false-positives-link' as the text. $2 is the number of pages that will be listed.",
 	"list-false-positives-heading": "Known false positives",
-	"list-false-positives-text": "The following pages are known false positives and have been automatically excluded from Topviews ($1):",
+	"list-false-positives-text": "Message above the list of known false positives in Topviews. $1 is the message \"learn more\" with a link to the FAQ.",
 	"new-article-warning": "Warning that data of new pages may not be available yet. $1 is a link to the FAQ with the message 'learn-more' as the text.",
 	"userviews-title": "The title of the Userviews tool. This is shown as a header at the top of the page.",
 	"userviews-edit-count-warning": "Warning shown in the Userviews app when the requested user has a high edit count. $1 is a link to the user page and $2 is the number of edits.",
@@ -366,5 +367,5 @@
 	"show-mobile-percentages": "Label for a checkbox to show the percentage of mobile pageviews each page has in Topviews.",
 	"rank": "Heading for the column showing the page rank in the Topviews application.\n{{Identical|Rank}}",
 	"original-rank": "Label for the column listing the original rank a false positive page had.\n{{Identical|Original rank}}",
-	"percent-mobile": "Label for the column showing the percentage of mobile pageviews a page had."
+	"percent-mobile": "Label for the column showing the percentage of mobile pageviews a page had.\n{{Identical|Mobile}}"
 }

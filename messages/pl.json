@@ -287,5 +287,6 @@
 	"current-size": "Aktualny rozmiar",
 	"exclude-redirects": "Bez przekierowań",
 	"redirects-and-non-redirects": "Przekierowania i nie-przekierowania",
-	"class": "Klasa"
+	"class": "Klasa",
+	"rank": "Ranga"
 }

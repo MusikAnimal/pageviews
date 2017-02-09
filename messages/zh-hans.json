@@ -360,5 +360,7 @@
 	"class": "等级",
 	"topviews-remove-page": "从最多浏览排名中移除该页面",
 	"show-mobile-percentages": "显示移动版百分比",
-	"original-rank": "原始排名"
+	"rank": "排名",
+	"original-rank": "原始排名",
+	"percent-mobile": "%移动版"
 }

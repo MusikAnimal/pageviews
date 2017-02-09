@@ -356,5 +356,7 @@
 	"class": "Класа",
 	"topviews-remove-page": "Отстрани ја страницава од Најпосетените",
 	"show-mobile-percentages": "Покажи удели од мобилен",
-	"original-rank": "Изворно место"
+	"rank": "Место",
+	"original-rank": "Изворно место",
+	"percent-mobile": "% мобилни"
 }

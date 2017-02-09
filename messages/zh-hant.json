@@ -341,6 +341,7 @@
 	"report-false-positive-text": "使用此表單來選擇您要回報為誤報（$1）的所要排除頁面",
 	"report-false-positive-submitted": "您的誤報回報已提交。感謝改進$1資料！",
 	"known-false-positives-link": "$1 {{PLURAL:$1|個頁面|個頁面}}",
+	"known-false-positives-text": "$1 {{PLURAL:$2|已|已}}從最多瀏覽頁面排除.",
 	"list-false-positives-heading": "已知誤報",
 	"new-article-warning": "一個或更多的請求頁面為近期所創建，因此該頁面瀏覽資料可能尚無法使用（$1）",
 	"userviews-title": "用戶瀏覽分析",
@@ -354,5 +355,7 @@
 	"only-redirects": "僅包含重定向",
 	"redirects-and-non-redirects": "重定向與非重定向",
 	"class": "等級",
+	"topviews-remove-page": "從最多瀏覽頁面排名移除頁面",
+	"rank": "排名",
 	"original-rank": "原始排名"
 }

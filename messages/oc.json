@@ -45,6 +45,7 @@
 	"report-issue": "Senhalar un problèma",
 	"ok": "D'acòrdi",
 	"chart-types": "Tipes de grafics",
+	"daily-pageviews": "Paginas per nombre de vistas per jorn",
 	"line": "Linha",
 	"bar": "Barra",
 	"radar": "Radar",
@@ -78,6 +79,7 @@
 	"december": "Decembre",
 	"select2-no-results": "Cap de resultat pas trobat",
 	"fatal-error": "Error fatala",
+	"topviews-title": "Analisi generala",
 	"show-more": "Afichar mai",
 	"langviews-title": "Analisi de Langviews",
 	"source-project": "Projècte font",
@@ -108,7 +110,7 @@
 	"external-link": "Ligam extèrne",
 	"transclusions": "Inclusions",
 	"subpages": "Sospaginas",
-	"hashtag-credits": "Propulsat per $1",
+	"hashtag-credits": "Foncionant amb $1",
 	"num-projects": "$1 projèctes",
 	"num-transclusions": "$1 {{PLURAL:$1|inclusion|inclusions}}",
 	"num-subpages": "$1 {{PLURAL:$1|sospagina|sospaginas}}",
@@ -154,5 +156,6 @@
 	"admins": "Administrators",
 	"data-unavailable": "Donadas pas disponiblas",
 	"show-values": "Afichar las valors",
-	"learn-more": "Ne saber mai"
+	"learn-more": "Ne saber mai",
+	"original-rank": "Reng inicial"
 }

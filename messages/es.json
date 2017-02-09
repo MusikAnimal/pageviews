@@ -8,7 +8,8 @@
 			"Rubentl134",
 			"Fitoschido",
 			"Dgstranz",
-			"Fortega"
+			"Fortega",
+			"MusikAnimal"
 		]
 	},
 	"title": "Análisis de visitas",
@@ -241,6 +242,7 @@
 	"unique-editors": "Editores únicos",
 	"size": "Tamaño",
 	"protection": "Protección",
+	"watchers": "Vigilantes",
 	"none": "Ninguno",
 	"unknown": "Desconocido",
 	"help": "Ayuda",
