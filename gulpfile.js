@@ -33,6 +33,7 @@ const appDependencies = {
   'langviews': {
     css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
+      'vendor/javascripts/HackTimer.min.js',
       'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
@@ -64,6 +65,7 @@ const appDependencies = {
   'massviews': {
     css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
+      'vendor/javascripts/HackTimer.min.js',
       'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
@@ -72,6 +74,7 @@ const appDependencies = {
   'redirectviews': {
     css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
+      'vendor/javascripts/HackTimer.min.js',
       'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
@@ -80,6 +83,7 @@ const appDependencies = {
   'userviews': {
     css: ['vendor/stylesheets/daterangepicker.css'],
     js: [
+      'vendor/javascripts/HackTimer.min.js',
       'vendor/javascripts/daterangepicker.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
@@ -156,8 +160,7 @@ apps.forEach(app => {
     'vendor/javascripts/moment.min.js',
     'vendor/javascripts/bootstrap.min.js',
     'vendor/javascripts/toastr.min.js',
-    'vendor/javascripts/simpleStorage.js',
-    'vendor/javascripts/HackTimer.min.js'
+    'vendor/javascripts/simpleStorage.js'
   ];
   gulp.task(`scripts-${app}`, () => {
     runSequence(`js-browserify-${app}`, `js-concat-${app}`);

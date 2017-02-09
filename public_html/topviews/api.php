@@ -89,7 +89,8 @@ function get_false_positives() {
     $result = array_column( $stmt->get_result()->fetch_all( MYSQLI_BOTH ), 0 );
 
     // do the same for the blacklist
-    $blacklist_sql = "SELECT page FROM topviews_blacklist WHERE project = ? AND platform = ?";
+    $blacklist_sql = "SELECT page FROM topviews_blacklist WHERE " .
+      "(project = ? OR project IS NULL) AND (platform = ? OR platform IS NULL)";
     if ( $stmt = $client->prepare( $blacklist_sql ) ) {
       $stmt->bind_param( 'ss', $project, $platform );
       $stmt->execute();

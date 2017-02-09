@@ -26,7 +26,7 @@
    $I18N = new Intuition( 'pageviews' );
    $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
    $langs = getAvailableLangs();
-   $currentLang = in_array( $I18N->getLangName(), $langs ) ? $I18N->getLangName() : 'English';
+   $currentLang = in_array( $I18N->getLang(), array_keys( $langs ) ) ? $langs[$I18N->getLang()] : 'English';
    $client = new WhichBrowser\Parser(getallheaders());
    $defaultMsg = '(' . strtolower( $I18N->msg( 'default' ) ) . ')';
   

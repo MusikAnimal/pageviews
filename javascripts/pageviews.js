@@ -54,37 +54,30 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Query musikanimal API to get edit data about page within date range
+   * Query API to get edit data about page within date range
    * @param {Array} pages - page names
    * @returns {Deferred} Promise resolving with editing data
    */
   getEditData(pages) {
     const dfd = $.Deferred();
 
-    if (metaRoot) {
-      $.ajax({
-        url: '/pageviews/api.php',
-        data: {
-          pages: pages.join('|'),
-          project: this.project + '.org',
-          start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
-          end: this.daterangepicker.endDate.format('YYYY-MM-DD')
-        },
-        timeout: 8000
-      })
-      .done(data => dfd.resolve(data))
-      .fail(() => {
-        // stable flag will be used to handle lack of data, so just resolve with empty data
-        let data = {};
-        pages.forEach(page => data[page] = {});
-        dfd.resolve({ pages: data });
-      });
-    } else {
-      dfd.resolve({
-        num_edits: 0,
-        num_users: 0
-      });
-    }
+    $.ajax({
+      url: 'api.php',
+      data: {
+        pages: pages.join('|'),
+        project: this.project + '.org',
+        start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
+        end: this.daterangepicker.endDate.format('YYYY-MM-DD')
+      },
+      timeout: 8000
+    })
+    .done(data => dfd.resolve(data))
+    .fail(() => {
+      // stable flag will be used to handle lack of data, so just resolve with empty data
+      let data = {};
+      pages.forEach(page => data[page] = {});
+      dfd.resolve({ pages: data });
+    });
 
     return dfd;
   }
@@ -684,8 +677,14 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
       this.entityInfo = { entities: data };
 
+      const dataKeys = Object.keys(data);
+
+      if (!dataKeys.length) {
+        return dfd.resolve(this.entityInfo);
+      }
+
       // use Object.keys(data) to get normalized page names
-      this.getEditData(Object.keys(data)).done(editData => {
+      this.getEditData(dataKeys).done(editData => {
         for (let page in editData.pages) {
           let pageData = editData.pages[page];
 

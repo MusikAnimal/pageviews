@@ -67,9 +67,11 @@ class TopViews extends Pv {
   showList() {
     $('.topview-entries').html('');
 
+    const pageDataLength = this.pageData.length;
+
     let count = 0, index = 0;
 
-    while (count < this.config.pageSize + this.offset) {
+    while (count < (this.config.pageSize + this.offset) && index < pageDataLength) {
       let item = this.pageData[index++];
 
       if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) continue;
@@ -883,7 +885,7 @@ class TopViews extends Pv {
 
       ['mobile-web', 'mobile-app'].forEach(endpoint => {
         const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' +
-          `/${this.project}/${endpoint}/all-agents/${page}/${this.isMonthly() ? 'monthly' : 'daily'}` +
+          `/${this.project}/${endpoint}/all-agents/${encodeURIComponent(page)}/${this.isMonthly() ? 'monthly' : 'daily'}` +
           `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
 
         // if we already have the data, just go straight to resolving via dummy Deferred
@@ -911,9 +913,10 @@ class TopViews extends Pv {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this);
+    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
+      pageDataLength = this.pageData.length;
 
-    while (counter < offset) {
+    while (counter < offset && index < pageDataLength) {
     // for (let index = startIndex; index <= endIndex; index++) {
       const item = this.pageData[index];
       if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
