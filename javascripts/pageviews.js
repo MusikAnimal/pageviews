@@ -551,7 +551,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
           ${$(this.config.dateRangeSelector).val()}
         </span>
         &middot;
-        ${$.i18n('num-pageviews', this.formatNumber(page.sum))}
+        ${$.i18n('num-pageviews', this.formatNumber(page.sum), page.sum)}
         <span class='hidden-lg'>
           (${this.formatNumber(page.average)}/${$.i18n('day')})
         </span>
@@ -610,16 +610,17 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     });
 
     // add summations to show up as the bottom row in the table
-    const sum = datasets.reduce((a,b) => a + b.sum, 0);
+    const sum = datasets.reduce((a,b) => a + b.sum, 0),
+      numProtections = datasets.filter(page => page.protection !== 'none').length;
 
     const totals = {
-      label: $.i18n('num-pages', datasets.length),
+      label: $.i18n('num-pages', this.formatNumber(datasets.length), datasets.length),
       sum,
       average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
       num_edits: this.entityInfo.totals ? this.entityInfo.totals.num_edits : null,
       num_users: this.entityInfo.totals ? this.entityInfo.totals.num_users : null,
       length: datasets.reduce((a, b) => a + b.length, 0),
-      protection: `${datasets.filter(page => page.protection !== 'none').length} protections`,
+      protection: $.i18n('num-protections', this.formatNumber(numProtections), numProtections),
       watchers: datasets.reduce((a, b) => a + b.watchers || 0, 0)
     };
     $('.output-list').append(this.config.templates.tableRow(this, totals, true));

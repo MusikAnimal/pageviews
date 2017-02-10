@@ -16,3 +16,4 @@ vendor/mthaml
 reports/
 *.jar
 jsdocs/gen/
+false-positives

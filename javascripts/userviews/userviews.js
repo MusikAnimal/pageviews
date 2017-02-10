@@ -379,7 +379,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       $('.output-totals').html(
         `<th scope='row'>${$.i18n('totals')}</th>
-         <th>${$.i18n('num-pages', this.outputData.titles.length)}</th>
+         <th>${$.i18n('num-pages', this.formatNumber(this.outputData.titles.length), this.outputData.titles.length)}</th>
          <th>${$.i18n('num-days-span', this.outputData.datespan)}</th>
          <th>${this.formatNumber(this.outputData.size)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>

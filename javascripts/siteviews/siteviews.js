@@ -382,7 +382,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     // add summations to show up as the bottom row in the table
     const sum = datasets.reduce((a,b) => a + b.sum, 0);
     let totals = {
-      label: $.i18n('num-projects', datasets.length),
+      label: $.i18n('num-projects', this.formatNumber(datasets.length), datasets.length),
       sum,
       average: Math.round(sum / datasets.length),
     };
@@ -423,7 +423,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         ${$(this.config.dateRangeSelector).val()}
       </span>
       &middot;
-      ${$.i18n('num-pageviews', this.formatNumber(site.sum))}
+      ${$.i18n('num-pageviews', this.formatNumber(site.sum), site.sum)}
       <span class='hidden-lg'>
         (${this.formatNumber(site.average)}/${$.i18n('day')})
       </span>

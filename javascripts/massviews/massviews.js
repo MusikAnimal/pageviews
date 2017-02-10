@@ -199,9 +199,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       // update message for pages column
       if (['wikilinks', 'subpages', 'transclusions'].includes(source)) {
-        pageColumnMessage = $.i18n(`num-${source}`, sortedDatasets.length - (source === 'subpages' ? 1 : 0));
+        const num = sortedDatasets.length - (source === 'subpages' ? 1 : 0);
+        pageColumnMessage = $.i18n(`num-${source}`, this.formatNumber(num), num);
       } else {
-        pageColumnMessage = $.i18n('num-pages', sortedDatasets.length);
+        pageColumnMessage = $.i18n('num-pages', this.formatNumber(sortedDatasets.length), sortedDatasets.length);
       }
 
       $('.output-totals').html(
