@@ -111,4 +111,6 @@ if ( count( $api_pages ) > 1 ) {
   $output['totals']['num_users'] = (int) $output['totals']['num_users'];
 }
 
+$output['pages'] = (object) $output['pages'];
+
 echo json_encode( $output );

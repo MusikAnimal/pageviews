@@ -611,6 +611,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     // add summations to show up as the bottom row in the table
     const sum = datasets.reduce((a,b) => a + b.sum, 0);
+
     const totals = {
       label: $.i18n('num-pages', datasets.length),
       sum,
@@ -669,7 +670,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.getPageInfo(pages).done(data => {
       // throw errors for missing pages and remove them from the list to be processed
       for (let page in data) {
-        if (data[page].missing) {
+        if (data[page].missing && !data[page].known) {
           this.writeMessage(`${this.getPageLink(page)}: ${$.i18n('api-error-no-data')}`);
           delete data[page];
         }
@@ -685,8 +686,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
       // use Object.keys(data) to get normalized page names
       this.getEditData(dataKeys).done(editData => {
-        for (let page in editData.pages) {
-          let pageData = editData.pages[page];
+        dataKeys.forEach(page => {
+          let pageData = editData.pages[page] || {};
 
           // find the edit protection within API response, or use the already fetched one if present
           let protection = this.entityInfo.entities[page].protection || [];
@@ -694,8 +695,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
           pageData.protection = protection ? protection.level : $.i18n('none').toLowerCase();
 
-          Object.assign(this.entityInfo.entities[page], editData.pages[page]);
-        }
+          Object.assign(this.entityInfo.entities[page], pageData);
+        });
         this.entityInfo.totals = editData.totals;
         dfd.resolve(this.entityInfo);
       }).fail(() => {
