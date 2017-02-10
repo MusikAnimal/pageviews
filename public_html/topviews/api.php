@@ -98,6 +98,10 @@ function get_false_positives() {
       $result = array_merge( $result,  $blacklisted_pages );
     }
 
+    $result = array_map( function( $entry ) {
+      return utf8_encode( $entry );
+    }, $result );
+
     // return result
     echo json_encode( $result );
 
