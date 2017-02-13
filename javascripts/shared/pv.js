@@ -881,14 +881,6 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Get user agent, if supported
-   * @returns {string} user-agent
-   */
-  getUserAgent() {
-    return navigator.userAgent ? navigator.userAgent : 'Unknown';
-  }
-
-  /**
    * Set a value to localStorage, using a temporary storage if localStorage is not supported
    * @param {string} key - key for the value to set
    * @param {Mixed} value - value to store
@@ -1530,7 +1522,6 @@ class Pv extends PvConfig {
             `\nlanguage:  ${i18nLang}` +
             `\nchart:     ${this.chartType}` +
             `\nurl:       ${document.location.href}` +
-            `\nuserAgent: ${this.getUserAgent()}` +
             `\ntrace:     ${errors[0].stack}`
           ,
           title: `Pageviews Analysis error report: ${errors[0]}`
