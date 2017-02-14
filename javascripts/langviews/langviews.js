@@ -300,7 +300,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   getBadgeMarkup(badgeCode) {
     if (!this.config.badges[badgeCode]) return '';
     const badgeImage = this.config.badges[badgeCode].image,
-      badgeName = this.config.badges[badgeCode].name;
+      badgeName = $.i18n(this.config.badges[badgeCode].name);
     return `<img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
   }
 
