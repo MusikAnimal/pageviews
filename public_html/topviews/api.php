@@ -22,10 +22,11 @@ header('Content-type: application/json');
 function db_connect() {
   // connect to database
   $client = new mysqli( META_DB_HOST, META_DB_USER, META_DB_PASSWORD, META_DB_NAME, META_DB_PORT );
+  $client->set_charset( 'latin1' );
 
   // quit if something went wrong
   if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
+    printf( "Connect failed: %s\n", mysqli_connect_error() );
     exit();
   }
 
@@ -43,7 +44,7 @@ function post_false_positives() {
   $where_clause = "WHERE project = ? AND page = ? AND platform = ? AND date = ?";
 
   foreach ($pages as $page) {
-    $page = $client->real_escape_string( $page );
+    $page = urldecode( $page );
 
     // first check if there is already a record for this project/page/platform/date
     $exists_sql = "SELECT * FROM topviews_false_positives $where_clause";
@@ -97,10 +98,6 @@ function get_false_positives() {
       $blacklisted_pages = array_column( $stmt->get_result()->fetch_all( MYSQLI_BOTH ), 0 );
       $result = array_merge( $result,  $blacklisted_pages );
     }
-
-    $result = array_map( function( $entry ) {
-      return utf8_encode( $entry );
-    }, $result );
 
     // return result
     echo json_encode( $result );

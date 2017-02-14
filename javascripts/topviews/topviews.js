@@ -187,7 +187,7 @@ class TopViews extends Pv {
     });
     $('.submit-false-positive').off('click').on('click', () => {
       const excludes = $.map($('.false-positive-list input:checked'), el => {
-        return this.excludes[parseInt(el.dataset.index, 10)];
+        return encodeURIComponent(this.excludes[parseInt(el.dataset.index, 10)]);
       });
       if (!excludes.length) return;
 
