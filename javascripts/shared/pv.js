@@ -431,12 +431,18 @@ class Pv extends PvConfig {
    * Get full link to page history for given page and project
    * @param  {string} page - page to link to
    * @param  {string} content - what to put as the link text
+   * @param  {moment|string} [offset] - if provided, will link to page history from this date backward
+   * @param  {integer} [limit] - number of revisions to show, max 500
    * @return {string} HTML markup
    */
-  getHistoryLink(page, content) {
-    return `<a href="${this.getExpandedPageURL(page)}&action=history" target="_blank">
-        ${content}
-      </a>`;
+  getHistoryLink(page, content, offset, limit) {
+    let url = `${this.getExpandedPageURL(page)}&action=history`;
+
+    if (offset && limit) {
+      url += `&offset=${moment(offset).format('YYYYMMDD')}235959&limit=${limit > 500 ? 500 : limit}`;
+    }
+
+    return `<a href="${url}" target="_blank">${content}</a>`;
   }
 
   /**
@@ -787,6 +793,35 @@ class Pv extends PvConfig {
         dfd.reject(data);
       });
     }
+
+    return dfd;
+  }
+
+  /**
+   * Query API to get edit data about page within date range
+   * @param {Array} pages - page names
+   * @returns {Deferred} Promise resolving with editing data
+   */
+  getEditData(pages) {
+    const dfd = $.Deferred();
+
+    $.ajax({
+      url: 'api.php',
+      data: {
+        pages: pages.join('|'),
+        project: this.project + '.org',
+        start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
+        end: this.daterangepicker.endDate.format('YYYY-MM-DD')
+      },
+      timeout: 8000
+    })
+    .done(data => dfd.resolve(data))
+    .fail(() => {
+      // stable flag will be used to handle lack of data, so just resolve with empty data
+      let data = {};
+      pages.forEach(page => data[page] = {});
+      dfd.resolve({ pages: data });
+    });
 
     return dfd;
   }

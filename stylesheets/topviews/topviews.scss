@@ -161,7 +161,9 @@ $gray: #ccc;
   .output-table {
     display: table;
 
-    .topview-entry--mobile {
+    .topview-entry--mobile,
+    .topview-entry--edits,
+    .topview-entry--editors {
       display: none;
     }
   }

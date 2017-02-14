@@ -18,7 +18,14 @@ const templates = {
       if (multiEntity) {
         editsLink = scope.formatNumber(entity.num_edits);
       } else {
-        editsLink = scope.getHistoryLink(entity.label, scope.formatNumber(entity.num_edits));
+        const [, endDate] = scope.getDates();
+
+        editsLink = scope.getHistoryLink(
+          entity.label,
+          scope.formatNumber(entity.num_edits),
+          scope.isMonthly() ? endDate.endOf('month') : endDate,
+          entity.num_edits
+        );
       }
 
       // cache basic info message
@@ -105,9 +112,20 @@ const templates = {
       `;
     const numUsers = $.isNumeric(item.num_users) ? scope.formatNumber(item.num_users) : '?';
     let historyRow;
+
     if ($.isNumeric(item.num_edits)) {
-      historyRow = last ? scope.formatNumber(item.num_edits) :
-        scope.getHistoryLink(item.label, scope.formatNumber(item.num_edits));
+      const getHistoryLink = () => {
+        const [, endDate] = scope.getDates();
+
+        return scope.getHistoryLink(
+          item.label,
+          scope.formatNumber(item.num_edits),
+          scope.isMonthly() ? endDate.endOf('month') : endDate,
+          item.num_edits
+        );
+      };
+
+      historyRow = last ? scope.formatNumber(item.num_edits) : getHistoryLink();
     } else {
       historyRow = '?';
     }

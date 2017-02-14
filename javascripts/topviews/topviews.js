@@ -28,6 +28,7 @@ class TopViews extends Pv {
     this.pageData = [];
     this.pageNames = [];
     this.mobileViews = {};
+    this.editData = {};
     this.excludeAdded = false;
   }
 
@@ -86,23 +87,40 @@ class TopViews extends Pv {
         percentMobile = '< 0.1';
       }
 
-      const percentMobileText = this.shouldShowMobile() ? percentMobile + '%' : '';
+      const percentMobileText = this.shouldShowMobile() ? percentMobile + '%' : '',
+        editData = this.editData[item.article] || {},
+        editors = typeof editData.num_users === 'number' ? this.formatNumber(editData.num_users) : '?';
+
+      // create link to edit history or ? if no data is available
+      let edits = '?';
+      if (typeof editData.num_edits === 'number') {
+        const [, endDate] = this.getDates();
+        edits = this.getHistoryLink(
+          item.article,
+          this.formatNumber(editData.num_edits),
+          endDate,
+          editData.num_edits
+        );
+      }
 
       $('.topview-entries').append(
         `<tr class='topview-entry' id='topview-entry-${index}'>
-         <td class='topview-entry--rank-wrapper'>
-           <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
-             title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
-           <span class='topview-entry--rank'>${++count}</span>
-         </td>
-         <td>
-           <span class='topview-entry--background' style='top:${offsetTop}px; background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%); opacity: 0.6'></span>
-           <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
-         </td>
-         <td class='topview-entry--mobile'>${percentMobileText}</td>
-         <td>
-           <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}' target='_blank'>${this.formatNumber(item.views)}</a>
-         </td></tr>`
+           <td class='topview-entry--rank-wrapper'>
+             <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
+               title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
+             <span class='topview-entry--rank'>${++count}</span>
+           </td>
+           <td>
+             <span class='topview-entry--background' style='top:${offsetTop}px; background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%); opacity: 0.6'></span>
+             <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+           </td>
+           <td class='topview-entry--edits'>${edits}</td>
+           <td class='topview-entry--editors'>${editors}</td>
+           <td>
+             <a class='topview-entry--views' href='${this.getPageviewsURL(item.article)}' target='_blank'>${this.formatNumber(item.views)}</a>
+           </td>
+           <td class='topview-entry--mobile'>${percentMobileText}</td>
+         </tr>`
       );
     }
 
@@ -140,14 +158,19 @@ class TopViews extends Pv {
 
     if (triggerChange) {
       this.setState('processing');
+
       // get mobileViews for the new page that has come into view
-      const excludeOffset = this.excludes.length + this.autoExcludes.length - 1,
+      const excludeOffset = this.excludes.length + this.autoExcludes.length - 2,
         newPage = this.pageData[this.config.pageSize + this.offset + excludeOffset].article;
-      this.setSingleMobileViews(newPage).always(() => {
-        this.setState('complete');
-        $(this.config.select2Input).val(this.excludes).trigger('change');
-        this.showList();
-      });
+
+      this.setSingleEditData(newPage)
+        .always(() => this.setSingleMobileViews(newPage)
+          .always(() => {
+            this.setState('complete');
+            $(this.config.select2Input).val(this.excludes).trigger('change');
+            this.showList();
+          })
+        );
     }
     this.buildReportFalsePositiveForm();
   }
@@ -232,13 +255,19 @@ class TopViews extends Pv {
    * @override
    */
   exportCSV() {
-    let csvContent = `data:text/csv;charset=utf-8,Page,Views${this.shouldShowMobile() ? ',Mobile views' : ''}\n`;
+    let csvContent = `data:text/csv;charset=utf-8,Page,Edits,Editors,Views${this.shouldShowMobile() ? ',Mobile views' : ''}\n`;
 
     this.pageData.forEach(entry => {
+      if (this.excludes.includes(entry.article) || this.autoExcludes.includes(entry.article)) return;
+
       // Build an array of page titles for use in the CSV header
       const title = '"' + entry.article.replace(/"/g, '""') + '"';
 
-      csvContent += `${title},${entry.views}`;
+      const editData = this.editData[entry.article] || {},
+        edits = typeof editData.num_edits === 'number' ? editData.num_edits : '?',
+        editors = typeof editData.num_users === 'number' ? editData.num_users : '?';
+
+      csvContent += `${title},${edits},${editors},${entry.views}`;
       if (this.shouldShowMobile()) csvContent += `,${this.mobileViews[entry.article] || ''}`;
       csvContent += '\n';
     });
@@ -544,6 +573,7 @@ class TopViews extends Pv {
       this.pageData = [];
       this.pageNames = [];
       this.mobileViews = {};
+      this.editData = {};
       this.excludeAdded = false;
       $('.message-container').html('');
       break;
@@ -601,12 +631,14 @@ class TopViews extends Pv {
          <td>
            <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
          </td>
-         <td class='topview-entry--mobile'></td>
+         <td class='topview-entry--edits'></td>
+         <td class='topview-entry--editors'></td>
          <td>
            <a class='topview-entry--views' target='_blank'
               href='${this.getPageviewsURL(item.article)}'>${this.formatNumber(item.views)}
            </a>
-         </td></tr>`
+         </td>
+         <td class='topview-entry--mobile'></td></tr>`
       );
     });
 
@@ -729,7 +761,10 @@ class TopViews extends Pv {
     $('.show-more').on('click', () => {
       this.offset += this.config.pageSize;
       this.setState('processing');
-      this.setMobileViews(this.offsetEnd).always(this.showList.bind(this));
+      this.setEditData(this.offsetEnd)
+        .always(() => this.setMobileViews(this.offsetEnd)
+          .always(this.showList.bind(this))
+        );
     });
     $(this.config.dateRangeSelector).on('change', e => {
       /** clear out specialRange if it doesn't match our input */
@@ -803,17 +838,13 @@ class TopViews extends Pv {
   }
 
   /**
-   * Set this.mobileViews for a single page
-   * @param {String} page - page title
-   * @returns {Deferred} promise resolving with this.mobileViews
+   * Get currently selected start and end dates as moment objects
+   * @returns {Array} array containing the start and end date
    */
-  setSingleMobileViews(page) {
-    const dfd = $.Deferred();
-
+  getDates() {
+    const datepickerValue = this.datepicker.getDate();
     let startDate, endDate;
 
-    // set start/end dates
-    const datepickerValue = this.datepicker.getDate();
     if (this.isMonthly()) {
       startDate = moment(datepickerValue).startOf('month');
       endDate = moment(datepickerValue).endOf('month');
@@ -821,6 +852,109 @@ class TopViews extends Pv {
       startDate = moment(datepickerValue);
       endDate = moment(datepickerValue);
     }
+
+    return [startDate, endDate];
+  }
+
+  /**
+   * Set this.editData for a single page
+   * @param {String} page - page title
+   * @returns {Deferred} promise resolving with this.editData
+   */
+  setSingleEditData(page) {
+    const dfd = $.Deferred(),
+      [startDate, endDate] = this.getDates();
+
+    // if we already have the data, resolve with this.editData as-is
+    if (this.editData[page]) {
+      return dfd.resolve(this.editData);
+    }
+
+    const url = `/pageviews/api.php?project=${this.project}.org&start=${startDate.format('YYYY-MM-DD')}` +
+      `&end=${endDate.format('YYYY-MM-DD')}&pages=${encodeURIComponent(page)}`;
+
+    $.ajax({ url, dataType: 'json' }).done(data => {
+      Object.assign(this.editData, data.pages);
+    }).always(() => dfd.resolve(this.editData));
+
+    return dfd;
+  }
+
+  /**
+   * Set this.editData for requested pages, providing number of edits and edits in the period
+   * @param {Integer} startIndex - start index of this.pageData
+   * @param {Integer} offset - number of entries to process following startIndex
+   * @returns {Deferred} promise resolving with this.mobileViews
+   */
+  setEditData(startIndex = 0, offset = this.config.pageSize) {
+    const dfd = $.Deferred(),
+      [startDate, endDate] = this.getDates();
+
+    let index = startIndex,
+      counter = 0,
+      requestCount = offset;
+
+    const makeRequest = pages => {
+      const originalNumPages = pages.length;
+
+      // filter out pages we already have data for
+      pages = pages.filter(page => !this.editData[page])
+        .map(page => encodeURIComponent(page));
+
+      // if we already have the data, just go straight to resolving via dummy Deferred
+      if (!pages.length) {
+        requestCount -= originalNumPages;
+        if (requestCount <= 0) {
+          return dfd.resolve(this.editData);
+        }
+
+        return $.Deferred().resolve();
+      }
+
+      const url = `/pageviews/api.php?project=${this.project}.org&start=${startDate.format('YYYY-MM-DD')}` +
+        `&end=${endDate.format('YYYY-MM-DD')}&pages=${pages.join('|')}`;
+
+      $.ajax({ url, dataType: 'json' }).done(data => {
+        Object.assign(this.editData, data.pages);
+      }).always(() => {
+        requestCount -= pages.length;
+        if (requestCount <= 0) {
+          dfd.resolve(this.editData);
+        }
+      });
+    };
+
+    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
+      pageDataLength = this.pageData.length;
+
+    let queue = [];
+
+    while (counter < offset && index < pageDataLength) {
+      const item = this.pageData[index];
+      if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
+        index++;
+        continue;
+      }
+      queue.push(this.pageData[index].article);
+      if (queue.length === 10) {
+        requestFn(queue);
+        queue = [];
+      }
+      counter++;
+      index++;
+    }
+
+    return dfd;
+  }
+
+  /**
+   * Set this.mobileViews for a single page
+   * @param {String} page - page title
+   * @returns {Deferred} promise resolving with this.mobileViews
+   */
+  setSingleMobileViews(page) {
+    const dfd = $.Deferred(),
+      [startDate, endDate] = this.getDates();
 
     let promises = [];
 
@@ -865,20 +999,11 @@ class TopViews extends Pv {
       return dfd.resolve({});
     }
 
+    const [startDate, endDate] = this.getDates();
+
     let index = startIndex,
       counter = 0,
-      requestCount = offset,
-      startDate, endDate;
-
-    // set start/end dates
-    const datepickerValue = this.datepicker.getDate();
-    if (this.isMonthly()) {
-      startDate = moment(datepickerValue).startOf('month');
-      endDate = moment(datepickerValue).endOf('month');
-    } else {
-      startDate = moment(datepickerValue);
-      endDate = moment(datepickerValue);
-    }
+      requestCount = offset;
 
     const makeRequest = page => {
       let promises = [];
@@ -965,15 +1090,21 @@ class TopViews extends Pv {
             this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
 
             if (access === 'all-access') {
-              return this.setMobileViews().then(() => dfd.resolve(this.pageData));
+              return this.setEditData()
+                .always(() => this.setMobileViews()
+                  .always(() => dfd.resolve(this.pageData))
+                );
             } else {
-              return dfd.resolve(this.pageData);
+              return this.setEditData().always(() => dfd.resolve(this.pageData));
             }
           });
         } else if (access === 'all-access') {
-          return this.setMobileViews().then(() => dfd.resolve(this.pageData));
+          return this.setEditData()
+            .always(() => this.setMobileViews()
+              .always(() => dfd.resolve(this.pageData))
+            );
         } else {
-          return dfd.resolve(this.pageData);
+          return this.setEditData().always(() => dfd.resolve(this.pageData));
         }
       }).fail(errorData => {
         this.resetView();

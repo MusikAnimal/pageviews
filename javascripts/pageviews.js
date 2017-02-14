@@ -54,35 +54,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Query API to get edit data about page within date range
-   * @param {Array} pages - page names
-   * @returns {Deferred} Promise resolving with editing data
-   */
-  getEditData(pages) {
-    const dfd = $.Deferred();
-
-    $.ajax({
-      url: 'api.php',
-      data: {
-        pages: pages.join('|'),
-        project: this.project + '.org',
-        start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
-        end: this.daterangepicker.endDate.format('YYYY-MM-DD')
-      },
-      timeout: 8000
-    })
-    .done(data => dfd.resolve(data))
-    .fail(() => {
-      // stable flag will be used to handle lack of data, so just resolve with empty data
-      let data = {};
-      pages.forEach(page => data[page] = {});
-      dfd.resolve({ pages: data });
-    });
-
-    return dfd;
-  }
-
-  /**
    * Link to /langviews for given page and chosen daterange
    * @param {String} page - page title
    * @returns {String} URL
@@ -276,6 +247,31 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
+   * Get currently selected start and end dates as moment objects
+   * @param {Boolean} [format] - if true, will return YYYY-MM for months, YYYY-MM-DD for dates
+   * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
+   */
+  getDates(format = false) {
+    let startDate, endDate, dateFormat = 'YYYY-MM-DD';
+
+    if (this.isMonthly()) {
+      startDate = moment(this.monthStartDatepicker.getDate());
+      endDate = moment(this.monthEndDatepicker.getDate());
+      dateFormat = 'YYYY-MM';
+    } else {
+      startDate = this.daterangepicker.startDate;
+      endDate = this.daterangepicker.endDate;
+    }
+
+    if (format) {
+      startDate = startDate.format(dateFormat);
+      endDate = endDate.format(dateFormat);
+    }
+
+    return [startDate, endDate];
+  }
+
+  /**
    * Get all user-inputted parameters except the pages
    * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
    * @return {Object} project, platform, agent, etc.
@@ -294,16 +290,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
      */
     if (this.specialRange && specialRange) {
       params.range = this.specialRange.range;
-    } else if (this.isMonthly()) {
-      params.start = moment(
-        this.monthStartDatepicker.getDate()
-      ).format('YYYY-MM');
-      params.end = moment(
-        this.monthEndDatepicker.getDate()
-      ).format('YYYY-MM');
     } else {
-      params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-      params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      [params.start, params.end] = this.getDates(true);
     }
 
     /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */

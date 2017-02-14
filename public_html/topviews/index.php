@@ -177,8 +177,10 @@
             <tr class="topview-entry">
               <th><?php echo $I18N->msg( 'rank' ); ?></th>
               <th><?php echo $I18N->msg( 'page' ); ?></th>
-              <th class="topview-entry--mobile"><?php echo $I18N->msg( 'percent-mobile' ); ?></th>
+              <th class="topview-entry--edits"><?php echo $I18N->msg( 'edits' ); ?></th>
+              <th class="topview-entry--editors"><?php echo $I18N->msg( 'editors' ); ?></th>
               <th><?php echo $I18N->msg( 'pageviews' ); ?></th>
+              <th class="topview-entry--mobile"><?php echo $I18N->msg( 'percent-mobile' ); ?></th>
             </tr>
           </thead>
           <tbody class="topview-entries"></tbody>

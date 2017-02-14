@@ -142,7 +142,7 @@
 				source = 'i18n/' + $.i18n().locale + '.json';
 				locale = $.i18n().locale;
 			}
-			if ( typeof source === 'string'	&&
+			if ( typeof source === 'string' &&
 				source.split( '.' ).pop() !== 'json'
 			) {
 				// Load specified locale then check for fallbacks when directory is specified in load()
@@ -234,10 +234,23 @@
 		String.locale = i18n.locale;
 		return this.each( function () {
 			var $this = $( this ),
-				messageKey = $this.data( 'i18n' );
+				messageKey = $this.data( 'i18n' ),
+				lBracket, rBracket, type, key;
 
 			if ( messageKey ) {
-				$this.text( i18n.parse( messageKey ) );
+				lBracket = messageKey.indexOf( '[' );
+				rBracket = messageKey.indexOf( ']' );
+				if ( lBracket !== -1 && rBracket !== -1 && lBracket < rBracket ) {
+					type = messageKey.slice( lBracket + 1, rBracket );
+					key = messageKey.slice( rBracket + 1 );
+					if ( type === 'html' ) {
+						$this.html( i18n.parse( key ) );
+					} else {
+						$this.attr( type, i18n.parse( key ) );
+					}
+				} else {
+					$this.text( i18n.parse( messageKey ) );
+				}
 			} else {
 				$this.find( '[data-i18n]' ).i18n();
 			}
