@@ -13,7 +13,8 @@
 			"Amire80",
 			"Siebrand",
 			"Arthur2e5",
-			"ANDROBETA"
+			"ANDROBETA",
+			"Srdjan m"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -66,7 +67,7 @@
 	"data-unavailable": "Brief message indicating data is temporarily unavailable.",
 	"date": "Header for the part of the interface that lets the user select a date in the Topviews app. This may have the same translation as the 'dates' message, except singular.\n{{Identical|Date}}",
 	"date-created": "Indicates the date a page was created.\n{{Identical|Date created}}",
-	"date-notice": "Notice informing the user that the tool does not have data older than October 2015. $1 is the name of the tool. $2 is a link to another website.",
+	"date-notice": "Notice informing the user that the tool does not have older data. $1 is the name of the tool. $2 is a link to another website.",
 	"date-type": "Header for the part of the interface that lets the user select which date type they want to view statistics for.",
 	"dates": "Header for the part of the interface that lets the user select a range of dates\n{{Identical|Date}}",
 	"day": "Used in the context of number of pageviews per day\n{{Identical|Day}}",
@@ -137,7 +138,6 @@
 	"fatal-error": "Wording saying an unrecoverable error occurred\n{{Identical|Fatal error}}",
 	"featured-article": "The name for the 'featured' quality assessment of a page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17437796",
 	"featured-list": "The name for the 'featured' quality assessment of a list article. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17506997",
-	"featured-portal": "The name for the 'featured' quality assessment of a portal page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17580674",
 	"february": "{{doc-months|2}}\n{{Identical|February}}",
 	"fetching-data": "Text shown below the progress bar in some apps to indicate initial data is being fetched. $1 is the name of the API that is being used.",
 	"format-numbers": "Label for option to format numerical data according to the user's language, for example, '1,234' instead of '1234'",

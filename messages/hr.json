@@ -4,7 +4,8 @@
 			"MaGa",
 			"Macofe",
 			"Milicevic01",
-			"Ivi104"
+			"Ivi104",
+			"Srdjan m"
 		]
 	},
 	"active-users": "Aktivni suradnici",
@@ -50,7 +51,7 @@
 	"daily-pageviews": "Stranice po dnevnim pregledima",
 	"data-unavailable": "Podatak nedostupan",
 	"date-created": "Datum stvaranja",
-	"date-notice": "$1 sadrži podatke od $3. Za starije podatke pokušajte $2.",
+	"date-notice": "$1 sadrži podatke od srpnja 2015. Za starije podatke pokušajte $2.",
 	"date-type": "Vrsta prikaza prema vremenu",
 	"dates": "Datumi",
 	"day": "danu",
@@ -72,7 +73,7 @@
 	"faq-bug-report-title": "Imam prijedlog ili pogrješku za prijaviti",
 	"faq-chart-type-title": "Kako mogu promijeniti vrstu grafikona?",
 	"faq-multi-lang-title": "Želim vidjeti podatke za stranicu na svim jezicima",
-	"faq-old-data-title": "Zašto se ne mogu vidjeti podatci prije $1?",
+	"faq-old-data-title": "Zašto se ne mogu vidjeti podatci prije srpnja 2015.?",
 	"faq-return-to": "Povratak na $1",
 	"faq-todays-date-title": "Zašto se ne mogu vidjeti podatci za današnji dan?",
 	"faq-top-viewed-title": "Želim vidjeti najposjećenije stranice u zadanom vremenskom opsegu",

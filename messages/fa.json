@@ -9,7 +9,8 @@
 			"Alirn",
 			"Huji",
 			"Arash.pt",
-			"Ebraminio"
+			"Ebraminio",
+			"Dejavu"
 		]
 	},
 	"active-users": "کاربران فعال",
@@ -43,7 +44,7 @@
 	"chart": "نمودار",
 	"chart-preferences": "تنظیمات نمودار:",
 	"chart-types": "انواع نمودار",
-	"clear": "پاک کردن",
+	"clear": "پاک‌سازی",
 	"csv": "مقادیر جداشده با ویرگول",
 	"custom-range": "بازهٔ دلخواه",
 	"daily": "روزانه",
