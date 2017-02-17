@@ -19,7 +19,7 @@ const config = {
     excludes: []
   },
   formStates: ['processing', 'complete', 'search', 'reset'],
-  maxDate: moment(moment().utc().subtract(1, 'day').startOf('day').toDate()).startOf('day').toDate(),
+  maxDate: moment().subtract(1, 'day').startOf('day').utc().toDate(),
   pageSize: 100,
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
