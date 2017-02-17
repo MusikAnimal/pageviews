@@ -1148,26 +1148,24 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Simple metric to see how many use it (pageviews of the pageview, a meta-pageview, if you will :)
-   * @returns {Deferred|null} Null or a promise resolving with autoExcludes for the Topviews app
+   * Simple metric to see how many use it (pageviews of the pageviews app, a meta-pageview, if you will :)
    */
   patchUsage() {
-    if (location.pathname.includes('-test')) {
-      $.ajax({
-        url: `//${metaRoot}/usage/${this.app}-test/${this.project || i18nLang}`,
-        method: 'POST'
-      });
-    } else if (metaRoot) {
-      return $.ajax({
-        url: '/pageviews/meta/api.php',
-        data: {
-          app: this.app,
-          project: this.project || i18nLang
-        },
-        method: 'POST',
-        timeout: 8000
-      });
-    }
+    if (this.getFromLocalStorage('pageviews-no-usage') || this.debug) return;
+
+    const langApps = ['siteviews', 'massviews'];
+    let project = this.project || 'unknown';
+
+    if (langApps.includes(this.project)) project = i18nLang;
+
+    $.ajax({
+      url: '/pageviews/meta/api.php',
+      data: {
+        app: this.app + (location.pathname.includes('-test') ? '-test' : ''),
+        project
+      },
+      method: 'POST'
+    });
   }
 
   /**

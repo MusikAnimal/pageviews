@@ -49,6 +49,6 @@ if ( $res ) {
   $client->query( $update_sql );
 } else {
   // create new record
-  $create_sql = "INSERT INTO " . $app . "_timeline VALUES(NULL, $date, 1)";
+  $create_sql = "INSERT INTO " . $app . "_timeline VALUES(NULL, '$date', 1)";
   $client->query( $create_sql );
 }
