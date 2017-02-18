@@ -313,7 +313,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       );
     }
 
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&pages=${escapedPages}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&pages=${escapedPages.replace('|', escape)}`);
   }
 
   /**

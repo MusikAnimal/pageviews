@@ -1,11 +1,11 @@
 <div class="col-lg-12 data-links invisible">
-  <span class="chart-buttons">
+  <div class="chart-buttons">
     <button class="btn btn-default btn-sm btn-chart-type chart-specific js-test-change-chart" data-target="#chart-type-modal" data-toggle="modal"><span class="glyphicon glyphicon-th"></span>
     <?php echo $I18N->msg( 'change-chart' ); ?></button>
     <a class="btn btn-default btn-sm permalink" href=""><span class="glyphicon glyphicon-link"></span>
     <?php echo $I18N->msg( 'permalink' ); ?></a>
     <input class="permalink-copy">
-    <span class="btn-group dropdown download-btn-group">
+    <div class="btn-group dropdown download-btn-group">
       <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="glyphicon glyphicon-download-alt"></span>
         <?php echo $I18N->msg( 'download-label' ); ?>
@@ -35,8 +35,8 @@
           </a>
         </li>
       </ul>
-    </span>
-  </span>
+    </div>
+  </div>
   <span class="chart-toggles">
     <span class="pull-right chart-specific">
       <label class="logarithmic-scale">

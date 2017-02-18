@@ -64,7 +64,7 @@
         </div>
         <div class="row aqs-row">
           <div class="col-lg-12">
-            <label for="article-input">
+            <label>
               <?php echo $I18N->msg( 'excluded-pages' ); ?>
             </label>
             <span class="report-false-positive">
@@ -79,8 +79,7 @@
             <span class="pull-right percent-mobile-wrapper">
               <label>
                 <input class="show-percent-mobile" type="checkbox">
-                  <?php echo $I18N->msg( 'show-mobile-percentages' ); ?>
-                </input>
+                <?php echo $I18N->msg( 'show-mobile-percentages' ); ?>
               </label>
             </span>
             <select class="aqs-select2-selector col-lg-12" multiple="multiple"></select>
@@ -89,8 +88,8 @@
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <button class="close" arialabel="Close" data-dismiss="modal" type="button">
-                      <span ariahidden="true">&times;</span>
+                    <button class="close" aria-label="Close" data-dismiss="modal" type="button">
+                      <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title">
                       <?php echo $I18N->msg( 'report-false-positive' ); ?>
@@ -119,8 +118,8 @@
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <button class="close" arialabel="Close" data-dismiss="modal" type="button">
-                      <span ariahidden="true">&times;</span>
+                    <button class="close" aria-label="Close" data-dismiss="modal" type="button">
+                      <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title">
                       <?php echo $I18N->msg( 'list-false-positives-heading' ); ?>
@@ -133,8 +132,10 @@
                     </p>
                     <table class="table table-bordered">
                       <thead>
-                        <th><?php echo $I18N->msg( 'page' ); ?></th>
-                        <th><?php echo $I18N->msg( 'original-rank' ); ?></th>
+                        <tr>
+                          <th><?php echo $I18N->msg( 'page' ); ?></th>
+                          <th><?php echo $I18N->msg( 'original-rank' ); ?></th>
+                        </tr>
                       </thead>
                       <tbody class="false-positive-list"></tbody>
                     </table>
@@ -151,7 +152,7 @@
         </div>
         <!-- FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line -->
         <?php $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'; ?>
-        <span class="row search-topviews <?php echo $cols; ?>">
+        <div class="row search-topviews <?php echo $cols; ?>">
           <div class="input-group">
             <label class="input-group-addon" for="topviews_search_field">
               <?php echo $I18N->msg( 'search' ); ?>
@@ -159,10 +160,10 @@
             <span class="glyphicon glyphicon-search topviews-search-icon"></span>
             <input class="form-control" id="topviews_search_field">
           </div>
-        </span>
-        <span class="pull-right">
+        </div>
+        <div class="pull-right">
           <?php include "../_data_links.php"; ?>
-        </span>
+        </div>
         <div class="col-lg-12 data-notice">
           <small class="text-muted">
             <?php echo $I18N->msg( 'topviews-false-positive' ); ?>

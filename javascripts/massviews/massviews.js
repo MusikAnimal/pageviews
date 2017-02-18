@@ -598,7 +598,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.clearMessages();
       this.assignDefaults();
       this.destroyChart();
-      $('output').removeClass('list-mode').removeClass('chart-mode');
+      $('.output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
       $(this.config.sourceInput).val('').focus();
@@ -671,7 +671,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.getPageViewsData(pileData.pages, project).done(pageViewsData => {
         const label = `Page Pile #${pileData.id}`;
 
-        $('.output-title').text(label).prop('href', this.getPileURL(pileData.id));
+        // $('.output-title').text(label).prop('href', this.getPileURL(pileData.id));
         $('.output-params').html(
           `
           ${$(this.config.dateRangeSelector).val()}

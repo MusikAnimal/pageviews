@@ -33,7 +33,7 @@ main {
       opacity: 0;
     }
 
-    output {
+    .output {
       @include prefix(transform, translateY(0%));
       opacity: 1;
     }
@@ -54,7 +54,7 @@ main {
   }
 }
 
-output {
+.output {
   @include prefix(transform, translateY(500px));
   @include prefix(transition, all 500ms ease);
   margin-bottom: 10px;

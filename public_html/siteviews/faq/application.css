@@ -569,7 +569,7 @@ footer {
 .loading .data-links {
   visibility: hidden; }
 
-.loading output {
+.loading .output {
   display: none; }
 
 .loading .summary-column {
@@ -714,7 +714,7 @@ footer {
   .sort-link:hover .glyphicon-sort {
     visibility: visible; }
 
-output {
+.output {
   clear: both;
   overflow-x: auto; }
 

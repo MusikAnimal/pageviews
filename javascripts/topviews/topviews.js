@@ -324,7 +324,8 @@ class TopViews extends Pv {
     const platform = $(this.config.platformSelector).val(),
       project = $(this.config.projectInput).val();
 
-    return `/pageviews?start=${startDate}&end=${endDate}&project=${project}&platform=${platform}&pages=${article}`;
+    return `/pageviews?start=${startDate}&end=${endDate}&project=${project}` +
+      `&platform=${platform}&pages=${encodeURIComponent(article)}`;
   }
 
   /**
@@ -533,7 +534,7 @@ class TopViews extends Pv {
       window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
     }
 
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&excludes=${excludes}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&excludes=${excludes.replace('|', escape)}`);
   }
 
   /**

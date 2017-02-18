@@ -5,20 +5,20 @@
 
 %div.elapsed-timer.text-center
 
-%output.clearfix
+%div.output.clearfix
   %header.output-header.clearfix
     %strong.another-query
       %span.glyphicon.glyphicon-chevron-left
       = $I18N->msg( 'another-query' )
     %h2.tm
-      %a.output-title(target="_blank")
+      %span.output-title
       %small.output-params
 
       %span.btn-group.view-options.pull-right
-        %button.active.btn.btn-default.view-btn.view-btn--list(type="button" href="#" data-value="list")
+        %button.active.btn.btn-default.view-btn.view-btn--list(type="button" data-value="list")
           %span.glyphicon.glyphicon-list.view-options--list
           = $I18N->msg( 'list' )
-        %button.btn.btn-default.view-btn.view-btn--chart(type="button" href="#" data-value="chart")
+        %button.btn.btn-default.view-btn.view-btn--chart(type="button" data-value="chart")
           %span.glyphicon.glyphicon-chart
           = $I18N->msg( 'chart' )
 

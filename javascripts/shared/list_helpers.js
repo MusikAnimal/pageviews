@@ -103,8 +103,8 @@ const ListHelpers = superclass => class extends superclass {
       endDate.add(3, 'days');
     }
 
-    return `/pageviews?start=${startDate.format('YYYY-MM-DD')}` +
-      `&end=${endDate.format('YYYY-MM-DD')}&project=${project}&platform=${platform}&pages=${page}`;
+    return `/pageviews?start=${startDate.format('YYYY-MM-DD')}&end=${endDate.format('YYYY-MM-DD')}` +
+      `&project=${project}&platform=${platform}&pages=${encodeURIComponent(page)}`;
   }
 
   /**
@@ -187,7 +187,7 @@ const ListHelpers = superclass => class extends superclass {
   toggleView(view) {
     $('.view-btn').removeClass('active');
     $(`.view-btn--${view}`).addClass('active');
-    $('output').removeClass('list-mode')
+    $('.output').removeClass('list-mode')
       .removeClass('chart-mode')
       .addClass(`${view}-mode`);
 

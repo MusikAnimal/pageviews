@@ -1186,8 +1186,7 @@ class Pv extends PvConfig {
 
     /** FIXME: report this bug: some languages don't parse PLURAL correctly ('he' for example) with the English fallback message */
     try {
-      $('.elapsed-time').attr('datetime', endTime.format())
-        .text($.i18n('elapsed-time', elapsedTime / 1000));
+      $('.elapsed-time').text($.i18n('elapsed-time', elapsedTime / 1000));
     } catch (e) {
       // intentionall nothing, everything will still show
     }

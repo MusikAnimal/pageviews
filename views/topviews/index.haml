@@ -49,7 +49,7 @@
 
         %div.row.aqs-row
           %div.col-lg-12
-            %label(for="article-input")
+            %label
               = $I18N->msg( 'excluded-pages' )
             %span.report-false-positive
               (<a href='#' data-target="#report-false-positive-modal" data-toggle="modal">#{strtolower( $I18N->msg( 'report-false-positive' ) )}</a>)
@@ -60,7 +60,7 @@
             %span.pull-right.percent-mobile-wrapper
               %label
                 %input.show-percent-mobile(type="checkbox")
-                  = $I18N->msg( 'show-mobile-percentages' )
+                = $I18N->msg( 'show-mobile-percentages' )
             %select.aqs-select2-selector.col-lg-12(multiple="multiple")
 
             /* Report false positive modal */
@@ -68,8 +68,8 @@
               %div.modal-dialog(role="document")
                 %div.modal-content
                   %div.modal-header
-                    %button.close(arialabel="Close" data-dismiss="modal" type="button")
-                      %span(ariahidden="true") &times;
+                    %button.close(aria-label="Close" data-dismiss="modal" type="button")
+                      %span(aria-hidden="true") &times;
                     %h4.modal-title
                       = $I18N->msg( 'report-false-positive' )
                   %div.modal-body
@@ -88,8 +88,8 @@
               %div.modal-dialog(role="document")
                 %div.modal-content
                   %div.modal-header
-                    %button.close(arialabel="Close" data-dismiss="modal" type="button")
-                      %span(ariahidden="true") &times;
+                    %button.close(aria-label="Close" data-dismiss="modal" type="button")
+                      %span(aria-hidden="true") &times;
                     %h4.modal-title
                       = $I18N->msg( 'list-false-positives-heading' )
                   %div.modal-body
@@ -98,8 +98,9 @@
                       = $I18N->msg( 'list-false-positives-text', [ 'variables' => [ $learnMoreLink ] ] )
                     %table.table.table-bordered
                       %thead
-                        %th= $I18N->msg( 'page' )
-                        %th= $I18N->msg( 'original-rank' )
+                        %tr
+                          %th= $I18N->msg( 'page' )
+                          %th= $I18N->msg( 'original-rank' )
                       %tbody.false-positive-list
                   %div.modal-footer
                     %button.btn.btn-primary(data-dismiss="modal" type="button")
@@ -107,14 +108,14 @@
 
         / FIXME: use flexbox and not hacky per-project workaround to make input and data links stay on the same line
         - $cols = $I18N->getLang() === 'en' || $I18N->getLang() === 'de' ? 'col-lg-6' : 'col-lg-5'
-        %span(class="row search-topviews #{$cols}")
+        %div(class="row search-topviews #{$cols}")
           %div.input-group
             %label.input-group-addon(for="topviews_search_field")
               = $I18N->msg( 'search' )
             %span.glyphicon.glyphicon-search.topviews-search-icon
             %input.form-control#topviews_search_field
 
-        %span.pull-right
+        %div.pull-right
           - include "../_data_links.php"
 
         %div.col-lg-12.data-notice

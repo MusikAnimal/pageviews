@@ -80,8 +80,7 @@
             <div class="checkbox pull-right category-subject-toggle">
               <label>
                 <input class="category-subject-toggle--input" type="checkbox">
-                  <?php echo $I18N->msg( 'category-subject-toggle' ); ?>
-                </input>
+                <?php echo $I18N->msg( 'category-subject-toggle' ); ?>
                 <a class="help-link" href="/massviews/faq#category_subject_toggle">
                   <span class="glyphicon glyphicon-question-sign"></span>
                 </a>
@@ -89,7 +88,7 @@
             </div>
             <div class="input-group clearfix">
               <div class="input-group-btn">
-                <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false">
+                <button class="btn btn-default dropdown-toggle" id="source_button" type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <?php echo $I18N->msg( 'category' ); ?>
                   <span class="caret"></span>
                 </button>
@@ -136,7 +135,7 @@
                   </li>
                 </ul>
               </div>
-              <input class="form-control input-control source-input" id="source_input" min="0" required="required">
+              <input class="form-control input-control source-input" id="source_input" required="required">
               <input class="form-control input-control project-input col-lg-6" required="required" placeholder="en.wikipedia.org" disabled="disabled">
               <span class="input-group-btn">
                 <button class="btn btn-primary pull-right btn-submit">

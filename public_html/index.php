@@ -25,7 +25,7 @@
           <label for="range-input">
             <?php echo $I18N->msg( 'dates' ); ?>
           </label>
-          <span class="btn-group dropdown latest-group">
+          <div class="btn-group dropdown latest-group">
             <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="latest-text">
                 <?php echo $I18N->msg( 'latest' ); ?>
@@ -39,7 +39,7 @@
                 </li>
               <?php } ?>
             </ul>
-          </span>
+          </div>
           <input class="form-control aqs-date-range-selector" id="range-input">
         </div>
         <div class="month-selector input-daterange clearfix">
@@ -144,7 +144,7 @@
         <div class="chart-legend col-lg-12 clearfix"></div>
       </div>
     </aside>
-    <output class="col-lg-10 col-lg-offset-1">
+    <div class="output col-lg-10 col-lg-offset-1">
       <h4 class="single-page-stats text-center"></h4>
       <h5 class="single-page-ranking text-center"></h5>
       <div class="single-page-legend hidden-lg col-md-4 col-md-offset-4 tm"></div>
@@ -184,7 +184,7 @@
         </thead>
         <tbody class="output-list"></tbody>
       </table>
-    </output>
+    </div>
     <?php include '_footer.php'; ?>
     <?php include '_modals.php'; ?>
   </body>

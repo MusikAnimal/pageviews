@@ -62,12 +62,12 @@
             %div.checkbox.pull-right.category-subject-toggle
               %label
                 %input.category-subject-toggle--input(type="checkbox")
-                  = $I18N->msg( 'category-subject-toggle' )
+                = $I18N->msg( 'category-subject-toggle' )
                 %a.help-link(href="/massviews/faq#category_subject_toggle")
                   %span.glyphicon.glyphicon-question-sign
             %div.input-group.clearfix
               %div.input-group-btn
-                %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expand="false")
+                %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
                   = $I18N->msg( 'category' )
                   %span.caret
                 %ul.dropdown-menu
@@ -95,7 +95,7 @@
                   %li
                     %a.source-option(href="#" data-value="quarry")
                       Quarry
-              %input.form-control.input-control.source-input#source_input(min="0" required="required")
+              %input.form-control.input-control.source-input#source_input(required="required")
               %input.form-control.input-control.project-input.col-lg-6(required="required" placeholder="en.wikipedia.org" disabled="disabled")
               %span.input-group-btn
                 %button.btn.btn-primary.pull-right.btn-submit

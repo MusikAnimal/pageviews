@@ -55,7 +55,7 @@
         <canvas class="aqs-chart"></canvas>
       </div>
       <div class="message-container col-lg-12"></div>
-      <output class="col-lg-10 col-lg-offset-1">
+      <div class="output col-lg-10 col-lg-offset-1">
         <h4 class="single-page-stats text-center"></h4>
         <div class="single-page-legend hidden-lg col-md-4 col-md-offset-4 tm"></div>
         <table class="table table-hover table-view">
@@ -84,14 +84,14 @@
           </thead>
           <tbody class="output-list"></tbody>
         </table>
-      </output>
+      </div>
     </main>
     <div class="modal fade" id="project-list-modal" role="dialog" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button class="close" arialabel="Close" data-dismiss="modal" type="button">
-              <span ariahidden="true">&times;</span>
+              <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="modal-title"></h4>
           </div>

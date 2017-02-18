@@ -1,5 +1,5 @@
 %div.col-lg-12.data-links.invisible
-  %span.chart-buttons
+  %div.chart-buttons
     %button.btn.btn-default.btn-sm.btn-chart-type.chart-specific.js-test-change-chart(data-target="#chart-type-modal" data-toggle="modal")<
       %span.glyphicon.glyphicon-th
       = $I18N->msg( 'change-chart' )
@@ -7,7 +7,7 @@
       %span.glyphicon.glyphicon-link
       = $I18N->msg( 'permalink' )
     %input.permalink-copy
-    %span.btn-group.dropdown.download-btn-group
+    %div.btn-group.dropdown.download-btn-group
       %button.btn.btn-default.btn-sm.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
         %span.glyphicon.glyphicon-download-alt
         = $I18N->msg( 'download-label' )

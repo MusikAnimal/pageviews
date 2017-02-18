@@ -570,7 +570,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.clearMessages();
       this.assignDefaults();
       this.destroyChart();
-      $('output').removeClass('list-mode').removeClass('chart-mode');
+      $('.output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
       $(this.config.sourceInput).val('').focus();

@@ -5,21 +5,21 @@
   <div class="progress-counter"></div>
 </div>
 <div class="elapsed-timer text-center"></div>
-<output class="clearfix">
+<div class="output clearfix">
   <header class="output-header clearfix">
     <strong class="another-query">
       <span class="glyphicon glyphicon-chevron-left"></span>
       <?php echo $I18N->msg( 'another-query' ); ?>
     </strong>
     <h2 class="tm">
-      <a class="output-title" target="_blank"></a>
+      <span class="output-title"></span>
       <small class="output-params"></small>
       <span class="btn-group view-options pull-right">
-        <button class="active btn btn-default view-btn view-btn--list" type="button" href="#" data-value="list">
+        <button class="active btn btn-default view-btn view-btn--list" type="button" data-value="list">
           <span class="glyphicon glyphicon-list view-options--list"></span>
           <?php echo $I18N->msg( 'list' ); ?>
         </button>
-        <button class="btn btn-default view-btn view-btn--chart" type="button" href="#" data-value="chart">
+        <button class="btn btn-default view-btn view-btn--chart" type="button" data-value="chart">
           <span class="glyphicon glyphicon-chart"></span>
           <?php echo $I18N->msg( 'chart' ); ?>
         </button>
@@ -58,5 +58,5 @@
     <span id="chart-legend" class="chart-view pull-left"></span>
     <span class="elapsed-time pull-right"></span>
   </div>
-</output>
+</div>
 <div class="message-container col-lg-12"></div>

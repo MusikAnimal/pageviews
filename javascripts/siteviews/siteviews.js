@@ -176,7 +176,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       );
     }
 
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&sites=${sites.join('|')}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&sites=${sites.join('%7C')}`);
   }
 
   /**

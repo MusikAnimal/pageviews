@@ -181,6 +181,10 @@ body.initial {
   position: relative;
 }
 
+.chart-buttons {
+  display: inline-block;
+}
+
 @media (max-width: $screen-sm) {
   .chart-buttons {
     float: left;

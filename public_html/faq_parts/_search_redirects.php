@@ -1,4 +1,4 @@
-<li class="list-group-item" id="redirects">
+<li class="list-group-item" id="search_redirects">
   <p>
     <strong><?php echo $I18N->msg( 'faq-search-redirects-title' ); ?></strong>
   </p>
