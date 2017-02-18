@@ -537,8 +537,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     );
     this.validateDateRange(params);
 
-    this.patchUsage();
-
     this.updateSourceInput($(`.source-option[data-value=${params.source}]`)[0]);
 
     // fill in value for the target
@@ -1272,6 +1270,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {null}
    */
   processInput() {
+    this.patchUsage();
+
     this.setState('processing');
 
     const readyForRendering = () => {

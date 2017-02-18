@@ -519,8 +519,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     $(this.config.projectInput).val(params.project);
     this.validateDateRange(params);
 
-    this.patchUsage();
-
     // If there are invalid params, remove page from params so we don't process the defaults.
     // FIXME: we're checking for site messages because super.validateParams doesn't return a boolean
     //   or any indication the validations failed. This is hacky but necessary.
@@ -601,6 +599,8 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {null}
    */
   processInput() {
+    this.patchUsage();
+
     const page = $(this.config.sourceInput).val();
 
     this.setState('processing');

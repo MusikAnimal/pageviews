@@ -64,8 +64,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('sites')
     );
 
-    this.patchUsage();
-
     $(this.config.dataSourceSelector).val(params.source);
     this.setupDataSourceSelector();
     $(this.config.platformSelector).val(params.platform);
@@ -305,6 +303,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    */
   processInput(force, removedSite) {
     this.pushParams();
+    this.patchUsage();
 
     /** prevent duplicate querying due to conflicting listeners */
     if (!force && location.search === this.params && this.prevChartType === this.chartType) {

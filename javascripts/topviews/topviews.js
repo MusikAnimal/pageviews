@@ -48,6 +48,7 @@ class TopViews extends Pv {
    */
   processInput(force) {
     this.pushParams();
+    this.patchUsage();
 
     /** prevent redundant querying */
     if (location.search === this.params && !force) {
@@ -472,8 +473,6 @@ class TopViews extends Pv {
     $('.mainspace-only-option').prop('checked', params.mainspace !== 'false');
 
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
-
-    this.patchUsage();
 
     this.params = location.search;
 

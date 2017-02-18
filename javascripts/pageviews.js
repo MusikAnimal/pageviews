@@ -119,7 +119,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $('.sort-link--badges').hide();
     }
 
-    this.patchUsage();
     this.validateDateRange(params);
 
     this.resetSelect2();
@@ -448,6 +447,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   processInput(force, removedPage) {
     this.pushParams();
+    this.patchUsage();
 
     /** prevent duplicate querying due to conflicting listeners */
     if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
