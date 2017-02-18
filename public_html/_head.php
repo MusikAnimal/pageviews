@@ -50,7 +50,6 @@
 //<![CDATA[
    i18nLang = "<?php echo $I18N->getLang(); ?>";
    i18nRtl = "<?php echo $rtl; ?>";
-   metaRoot = "<?php echo METAROOT; ?>";
   
 //]]>
 </script>

@@ -8,7 +8,7 @@ if ( file_exists( __DIR__ . '/../config.php' ) ) {
   require_once __DIR__ . '/../../config.php';
 }
 
-if ( $_SERVER['REQUEST_METHOD'] !== 'POST' || !isset( $_POST['project'] ) || !isset( $_POST['app'] ) ) {
+if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ( !isset( $_POST['project'] ) || !isset( $_POST['app'] ) ) ) {
   exit();
 }
 
@@ -18,6 +18,33 @@ $client = new mysqli( META_DB_HOST, META_DB_USER, META_DB_PASSWORD, META_DB_NAME
 // quit if something went wrong
 if (mysqli_connect_errno()) {
   printf("Connect failed: %s\n", mysqli_connect_error());
+  exit();
+}
+
+// when fetching usage for an app
+if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
+  if ( !isset( $_GET['app'] ) ) return exit();
+
+  $app = $_GET['app'];
+
+  if ( isset( $_GET['start'] ) && isset( $_GET['end'] ) ) {
+    $start = $_GET['start'];
+    $end = $_GET['end'];
+
+    $sql = "SELECT date, count FROM " . $app . "_timeline WHERE date >= '$start' AND date <= '$end'";
+    $res = $client->query( $sql )->fetch_all( MYSQLI_ASSOC );
+  } else {
+    $sql = "SELECT project, count FROM " . $app . '_projects';
+    $res = $client->query( $sql )->fetch_all( MYSQLI_ASSOC );
+  }
+
+  $res = array_map( function( $r ) {
+    $r['count'] = ( int ) $r['count'];
+    return ( object ) $r;
+  }, $res );
+
+  echo json_encode($res);
+
   exit();
 }
 
