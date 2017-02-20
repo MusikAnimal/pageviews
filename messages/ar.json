@@ -9,7 +9,8 @@
 			"Moud hosny",
 			"ديفيد",
 			"ASHmed",
-			"Aboulouei1"
+			"Aboulouei1",
+			"Meno25"
 		]
 	},
 	"agent": "وكيل",
@@ -112,7 +113,7 @@
 	"last-week": "الأسبوع الماضي",
 	"latest-days": "آخر $1 يوم",
 	"line": "خط",
-	"list-false-positives-heading": "ايجابيات خاطئة معروفة\n\nايجابيات كاذبة معروفة",
+	"list-false-positives-heading": "ايجابيات خاطئة معروفة",
 	"list-values": "واحد من: $1",
 	"loading-cache": "تحميل من ذاكرة التخزين المؤقت...",
 	"localization": "الترجمة",
