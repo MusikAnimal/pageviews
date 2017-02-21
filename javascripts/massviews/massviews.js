@@ -400,8 +400,17 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       datesWithoutData = [];
 
     datasets.forEach((dataset, index) => {
-      const data = dataset.items.map(item => item.views),
-        sum = data.reduce((a, b) => a + b);
+      /**
+       * Ensure we have data for each day, using null as the view count when data is actually not available yet
+       * See fillInZeros() comments for more info.
+       */
+      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
+      incompleteDates.forEach(date => {
+        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
+      });
+
+      const data = viewsSet.map(item => item.views),
+        sum = data.reduce((a, b) => (a || 0) + (b || 0));
 
       this.outputData.listData.push({
         data,
@@ -410,15 +419,6 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         sum,
         average: sum / length,
         index
-      });
-
-      /**
-       * Ensure we have data for each day, using null as the view count when data is actually not available yet
-       * See fillInZeros() comments for more info.
-       */
-      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
-      incompleteDates.forEach(date => {
-        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
       });
 
       totalViewsSet = totalViewsSet.map((num, i) => num + viewsSet[i].views);

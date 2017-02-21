@@ -147,11 +147,21 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       sectionCount = 0;
 
     datasets.forEach((dataset, index) => {
-      const data = dataset.items.map(item => item.views),
-        sum = data.reduce((a, b) => a + b);
 
       totalTitles.push(dataset.title);
       if (dataset.section) sectionCount++;
+
+      /**
+       * Ensure we have data for each day, using null as the view count when data is actually not available yet
+       * See fillInZeros() comments for more info.
+       */
+      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
+      incompleteDates.forEach(date => {
+        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
+      });
+
+      const data = viewsSet.map(item => item.views),
+        sum = data.reduce((a, b) => a + b);
 
       this.outputData.listData.push({
         data,
@@ -161,15 +171,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         sum,
         average: sum / length,
         index
-      });
-
-      /**
-       * Ensure we have data for each day, using null as the view count when data is actually not available yet
-       * See fillInZeros() comments for more info.
-       */
-      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
-      incompleteDates.forEach(date => {
-        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
       });
 
       totalViewsSet = totalViewsSet.map((num, i) => num + viewsSet[i].views);
@@ -668,9 +669,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       ].concat(page.data).join(',') + '\n';
     });
 
-    // Output the CSV file to the browser
-    const encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    this.downloadData(csvContent, 'csv');
   }
 }
 

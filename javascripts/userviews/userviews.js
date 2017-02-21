@@ -181,9 +181,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       oldest, newest; // moment object for the dates of the oldest and newest pages
 
     datasets.forEach((dataset, index) => {
-      const data = dataset.items.map(item => item.views),
-        sum = data.reduce((a, b) => a + b);
-
       // dataset.badges.forEach(badge => {
       //   if (totalBadges[badge] === undefined) {
       //     totalBadges[badge] = 1;
@@ -203,6 +200,18 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         newest = dateCreated;
       }
 
+      /**
+       * Ensure we have data for each day, using null as the view count when data is actually not available yet
+       * See fillInZeros() comments for more info.
+       */
+      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
+      incompleteDates.forEach(date => {
+        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
+      });
+
+      const data = viewsSet.map(item => item.views),
+        sum = data.reduce((a, b) => a + b);
+
       this.outputData.listData.push({
         data,
         // badges: dataset.badges,
@@ -214,15 +223,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         sum,
         average: sum / length,
         index
-      });
-
-      /**
-       * Ensure we have data for each day, using null as the view count when data is actually not available yet
-       * See fillInZeros() comments for more info.
-       */
-      const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);
-      incompleteDates.forEach(date => {
-        if (!datesWithoutData.includes(date)) datesWithoutData.push(date);
       });
 
       totalViewsSet = totalViewsSet.map((num, i) => num + viewsSet[i].views);
@@ -475,6 +475,8 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       data: params
     })
     .done(data => {
+      if (!Array.isArray(data)) return dfd.reject();
+
       const pages = data.map(page => {
         const ns = this.siteInfo[this.project].namespaces[page.namespace]['*'],
           title = ns === '' ? page.title : `${ns}:${page.title}`;
@@ -837,17 +839,16 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @override
    */
   exportCSV() {
-    let csvContent = `data:text/csv;charset=utf-8,Language,Title,Badges,${this.getDateHeadings(false).join(',')}\n`;
+    let csvContent = `data:text/csv;charset=utf-8,Title,${this.getDateHeadings(false).join(',')}\n`;
 
     // Add the rows to the CSV
     this.outputData.listData.forEach(page => {
-      const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"',
-        badges = '"' + page.badges.map(badge => this.config.badges[badge].name.replace(/"/g, '""')) + '"';
+      const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
+        // badges = '"' + page.badges.map(badge => this.config.badges[badge].name.replace(/"/g, '""')) + '"';
 
       csvContent += [
-        page.lang,
         pageName,
-        badges
+        // badges
       ].concat(page.data).join(',') + '\n';
     });
 
