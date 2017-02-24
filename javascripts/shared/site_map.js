@@ -229,6 +229,7 @@ const siteMap = {
   'fiwikiquote': 'fi.wikiquote.org',
   'fiwikisource': 'fi.wikisource.org',
   'fiwikiversity': 'fi.wikiversity.org',
+  'fiwikivoyage': 'fi.wikivoyage.org',
   'fiu_vrowiki': 'fiu-vro.wikipedia.org',
   'fjwiki': 'fj.wikipedia.org',
   'fjwiktionary': 'fj.wiktionary.org',
