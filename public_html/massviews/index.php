@@ -133,6 +133,11 @@
                       Quarry
                     </a>
                   </li>
+                  <li>
+                    <a class="source-option" href="#" data-value="glamorous">
+                      GLAMorous
+                    </a>
+                  </li>
                 </ul>
               </div>
               <input class="form-control input-control source-input" id="source_input" required="required">
@@ -149,6 +154,8 @@
       </form>
       <?php
         $columns = array(
+          'source' => 'source',
+          'project' => 'project',
           'title' => 'page-title',
           'views' => 'pageviews'
         );

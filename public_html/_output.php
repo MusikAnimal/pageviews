@@ -34,7 +34,7 @@
           <span>#</span>
         </th>
         <?php foreach( $columns as $column => $translation ) { ?>
-          <th>
+          <th class="th-<?php echo $column; ?>">
             <span class="sort-link sort-link--<?php echo $column; ?>" data-type="<?php echo $column; ?>">
               <?php echo $I18N->msg( $translation ); ?>
               <span class="glyphicon glyphicon-sort"></span>

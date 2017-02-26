@@ -30,7 +30,7 @@
         %th
           %span #
         - foreach( $columns as $column => $translation )
-          %th
+          %th(class="th-#{$column}")
             %span(class="sort-link sort-link--#{$column}" data-type="#{$column}")
               = $I18N->msg( $translation )
               %span.glyphicon.glyphicon-sort

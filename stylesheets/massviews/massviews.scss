@@ -42,3 +42,17 @@
     top: 2px;
   }
 }
+
+.glamorous-cols,
+.th-source,
+.th-project {
+  display: none;
+}
+
+.data-source-glamorous {
+  .glamorous-cols,
+  .th-source,
+  .th-project {
+    display: table-cell;
+  }
+}

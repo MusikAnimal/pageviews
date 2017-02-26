@@ -80,6 +80,13 @@ const config = {
         `<a target='_blank' href='https://www.mediawiki.org/wiki/Help:Links#External_links'>${$.i18n('external-link').toLowerCase()}</a>`
       ],
       type: 'string'
+    },
+    'glamorous': {
+      placeholder: 'Wikimedia Israel - Channel 2 videos',
+      descriptionParams: () => [
+        "<a target='_blank' href='https://tools.wmflabs.org/glamtools/glamorous.php'>GLAMorous</a>"
+      ],
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -90,8 +97,8 @@ const config = {
   validateParams: ['source', 'subjectpage', 'platform', 'agent', 'direction', 'sort', 'view'],
   validParams: {
     direction: ['-1', '1'],
-    sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link'],
+    sort: ['title', 'views', 'original', 'project', 'source'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link', 'glamorous'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

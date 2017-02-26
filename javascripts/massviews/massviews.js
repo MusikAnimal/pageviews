@@ -115,6 +115,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.project-input').prop('disabled', true);
     }
 
+    this.source = source;
+
     $(this.config.sourceInput).focus();
   }
 
@@ -205,8 +207,17 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         pageColumnMessage = $.i18n('num-pages', this.formatNumber(sortedDatasets.length), sortedDatasets.length);
       }
 
+      let glamorousCols = '';
+      if (this.source === 'glamorous') {
+        glamorousCols = `
+          <th>${this.formatNumber(this.outputData.totalSources)} sources</th>
+          <th>${$.i18n('num-projects', this.formatNumber(this.outputData.totalProjects))}</th>
+        `;
+      }
+
       $('.output-totals').html(
         `<th scope='row'>${$.i18n('totals')}</th>
+        ${glamorousCols}
          <th>${$.i18n(pageColumnMessage, sortedDatasets.length)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
          <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
@@ -214,15 +225,30 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('#output_list').html('');
 
       sortedDatasets.forEach((item, index) => {
+        glamorousCols = "<td class='glamorous-cols'></td><td class='glamorous-cols'></td>";
+        if (this.source === 'glamorous') {
+          const pageLink = `<a href='https://commons.wikimedia.org/wiki/${item.globalPage}' target='_blank'>
+            ${item.globalPage.replace(/^File:/, '')}
+          </a>`;
+
+          glamorousCols = `
+            <td class='glamorous-cols'>${pageLink}</td>
+            <td class='glamorous-cols'>${this.getSiteLink(item.project.replace(/\.org$/, ''))}</td>
+          `;
+        }
+
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
+           ${glamorousCols}
            <td>${this.getPageLink(item.label, item.project)}</td>
            <td><a target="_blank" href='${this.getPageviewsURL(item.project, item.label)}'>${this.formatNumber(item.sum)}</a></td>
            <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
            </tr>`
         );
       });
+
+      $('.list-view').addClass(`data-source-${this.source}`);
     });
   }
 
@@ -240,6 +266,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return item.label;
     case 'views':
       return Number(item.sum);
+    case 'project':
+      return item.project;
+    case 'source':
+      return item.globalPage;
     }
   }
 
@@ -249,9 +279,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @param  {Array} pages - list of page names or full URLs to pages
    * @param  {String} [project] - project such as en.wikipedia.org
    *   If null pages is assumed to be an array of page URLs
+   * @param  {Boolean} [showProgress] - whether or not to update the progress bar during iterations
    * @return {Deferred} - Promise resolving with data ready to be rendered to view
    */
-  getPageViewsData(pages, project) {
+  getPageViewsData(pages, project, showProgress = true) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
 
@@ -311,7 +342,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         // unless it was a 404, don't cache this series of requests
         if (errorData.status !== 404) hadFailure = true;
       }).always(() => {
-        this.updateProgressBar(++count, totalRequestCount);
+        count += 1;
+
+        if (showProgress) this.updateProgressBar(count, totalRequestCount);
 
         if (count === totalRequestCount) {
           if (failedPages.length) {
@@ -343,9 +376,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @param  {string} label - label for the dataset (e.g. category:blah, page pile 24, etc)
    * @param  {string} link - HTML anchor tag for the label
    * @param  {array} datasets - array of datasets for each article, as returned by the Pageviews API
+   * @param  {boolean} [showDatesWithoutData] - whether to write error message when data is missing for some dates
    * @return {object} mother data set, also stored in this.outputData
    */
-  buildMotherDataset(label, link, datasets) {
+  buildMotherDataset(label, link, datasets, showDatesWithoutData) {
     /**
      * `datasets` structure:
      *
@@ -438,7 +472,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       average: grandSum / length
     });
 
-    if (datesWithoutData.length) {
+    if (showDatesWithoutData && datesWithoutData.length) {
       const dateList = datesWithoutData.map(date => moment(date).format(this.dateFormat));
       this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
     }
@@ -694,6 +728,191 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         this.writeMessage($.i18n('api-error-unknown', 'Page Pile'));
       }
     });
+  }
+
+  /**
+   * Process the input as a Commons category, using the GLAMorous XML API
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the GLAMorous result and the pageviews data
+   */
+  processGlamorous() {
+    const category = $(this.config.sourceInput).val();
+
+    let requestData = {
+      list: 'categorymembers',
+      cmlimit: 500,
+      cmtitle: `Category:${category}`,
+      prop: 'categoryinfo',
+      titles: `Category:${category}`
+    };
+
+    const categoryLink = this.getPageLink(`Category:${category}`, 'commons.wikimedia.org');
+
+    $('.progress-counter').text($.i18n('fetching-data', 'Category API'));
+    this.massApi(requestData, 'commons.wikimedia.org', 'cmcontinue', 'categorymembers').done(data => {
+      if (data.error) {
+        return this.apiErrorReset('Category API', data.error.info);
+      }
+
+      const pageObj = data.pages[0];
+
+      if (pageObj.missing) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const size = pageObj.categoryinfo.size;
+      let pages = data.categorymembers;
+
+      if (!pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', categoryLink));
+        });
+      }
+
+      if (size > this.config.apiLimit) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set', categoryLink, this.formatNumber(size), this.config.apiLimit)
+        );
+
+        pages = pages.slice(0, this.config.apiLimit);
+      }
+
+      const pageNames = pages.map(page => page.title);
+
+      $('.progress-counter').text($.i18n('fetching-data', 'Globalusage API'));
+      this.getGlobalUsage(pageNames).done(globalData => {
+        let promises = {}, totalRequestCount = 0;
+
+        // build sequence of getPageViewsData promises
+        for (const globalPage in globalData) {
+          for (const wiki in globalData[globalPage]) {
+            const titles = globalData[globalPage][wiki];
+            totalRequestCount += titles.length;
+
+            promises[globalPage] = promises[globalPage] || [];
+            promises[globalPage].push([titles, wiki]);
+          }
+        }
+
+        let globalPageViewsData = {}, progressCount = 0;
+
+        const buildDataset = () => {
+          $('.progress-bar').css('width', '100%');
+          $('.progress-counter').text($.i18n('building-dataset'));
+
+          let motherDataset;
+
+          setTimeout(() => {
+            for (let globalPage in globalPageViewsData) {
+              const datasets = globalPageViewsData[globalPage];
+              const childDataset = this.buildMotherDataset(`Category:${category}`, categoryLink, datasets);
+
+              childDataset.listData = childDataset.listData.map(entry => {
+                entry.globalPage = globalPage;
+                return entry;
+              });
+
+              if (motherDataset) {
+                motherDataset.listData = motherDataset.listData.concat(childDataset.listData);
+                motherDataset.sum += childDataset.sum;
+                motherDataset.datesWithoutData = motherDataset.datesWithoutData.concat(
+                  childDataset.datesWithoutData
+                ).unique();
+
+                const totalViewsSet = motherDataset.datasets[0];
+                totalViewsSet.data = childDataset.datasets[0].data.map((num, i) => {
+                  return num + totalViewsSet.data[i];
+                });
+                totalViewsSet.sum = totalViewsSet.data.reduce((a, b) => (a || 0) + (b || 0));
+                totalViewsSet.average = totalViewsSet.sum / totalViewsSet.data.length;
+                motherDataset.average = totalViewsSet.average;
+                motherDataset.datasets[0] = totalViewsSet;
+              } else {
+                motherDataset = childDataset;
+              }
+            }
+
+            motherDataset.totalSources = Object.keys(globalPageViewsData).length;
+            motherDataset.totalProjects = motherDataset.listData.map(entry => entry.project).unique().length;
+
+            if (motherDataset.datesWithoutData.length) {
+              const dateList = motherDataset.datesWithoutData.map(date => moment(date).format(this.dateFormat));
+              this.writeMessage($.i18n('api-incomplete-data', dateList.sort().join(' &middot; '), dateList.length));
+            }
+
+            this.outputData = motherDataset;
+
+            $('.output-title').html(this.outputData.link);
+            $('.output-params').html($(this.config.dateRangeSelector).val());
+            this.setInitialChartType();
+            this.renderData();
+          }, 250);
+
+        };
+
+        this.updateProgressBar(0, totalRequestCount);
+
+        for (let globalPage in promises) {
+          const makeRequest = (titles, project) => {
+            this.getPageViewsData(titles, project, false).done(pageViewsData => {
+              globalPageViewsData[globalPage] = (globalPageViewsData[globalPage] || []).concat(pageViewsData);
+              progressCount += titles.length;
+              this.updateProgressBar(progressCount, totalRequestCount);
+
+              if (progressCount === totalRequestCount) buildDataset();
+            });
+          };
+          const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
+
+          promises[globalPage].forEach(params => {
+            requestFn(...params);
+          });
+        }
+      });
+    });
+  }
+
+  /**
+   * Get global usage of given Commons pages
+   * @param  {Array} pages - page titles (most likely files)
+   * @return {Deferred} Promise resolving with global usage data
+   */
+  getGlobalUsage(pages) {
+    const dfd = $.Deferred();
+
+    let requestData = {
+      gulimit: 500,
+      prop: 'globalusage',
+      titles: pages.join('|')
+    };
+
+    $('.progress-counter').text($.i18n('fetching-data', 'Globalusage API'));
+
+    let globalUsage = {};
+
+    this.massApi(requestData, 'commons.wikimedia.org', 'gucontinue', 'pages').done(data => {
+      data.pages.forEach(page => {
+        if (page.globalusage) {
+          globalUsage[page.title] = globalUsage[page.title] || {};
+
+          page.globalusage.forEach(globalPage => {
+            if (globalPage.title.includes(':')) return;
+
+            globalUsage[page.title][globalPage.wiki] = globalUsage[page.title][globalPage.wiki] || [];
+
+            if (!globalUsage[page.title][globalPage.wiki].includes(globalPage.title)) {
+              globalUsage[page.title][globalPage.wiki].push(globalPage.title);
+            }
+          });
+        }
+      });
+
+      return dfd.resolve(globalUsage);
+    });
+
+    return dfd;
   }
 
   /**
@@ -1311,6 +1530,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return this.processHashtag(cb);
     case 'external-link':
       return this.processExternalLink(cb);
+    case 'glamorous':
+      return this.processGlamorous();
     }
 
     // validate wiki URL
@@ -1357,13 +1578,26 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @override
    */
   exportCSV() {
-    let csvContent = `data:text/csv;charset=utf-8,Title,${this.getDateHeadings(false).join(',')}\n`;
+    let glamorousCols = '';
+    if (this.source === 'glamorous') {
+      glamorousCols = ',Source,Project';
+    }
+
+    let csvContent = `data:text/csv;charset=utf-8${glamorousCols},Title,${this.getDateHeadings(false).join(',')}\n`;
 
     // Add the rows to the CSV
     this.outputData.listData.forEach(page => {
       const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
 
-      csvContent += [pageName].concat(page.data).join(',') + '\n';
+      glamorousCols = [];
+      if (this.source === 'glamorous') {
+        glamorousCols = [
+          '"' + page.globalPage.descore().replace(/"/g, '""') + '"',
+          '"' + page.project + '"'
+        ];
+      }
+
+      csvContent += glamorousCols.concat(pageName, page.data).join(',') + '\n';
     });
 
     this.downloadData(csvContent, 'csv');

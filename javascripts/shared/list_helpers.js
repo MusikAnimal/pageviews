@@ -280,7 +280,7 @@ const ListHelpers = superclass => class extends superclass {
     $('.progress-bar').css('width', `${percentage.toFixed(2)}%`);
 
     if (value === total) {
-      $('.progress-counter').text('Building dataset...');
+      $('.progress-counter').text($.i18n('building-dataset'));
     } else {
       $('.progress-counter').text(
         $.i18n('processing-page', value, total)
