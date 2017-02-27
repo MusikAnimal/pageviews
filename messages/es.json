@@ -103,7 +103,7 @@
 	"faq-source-title": "¿Qué son las \"fuentes de datos\"?",
 	"faq-todays-date-title": "¿Por qué no puedo ver los datos de la fecha de hoy?",
 	"faq-topviews-false-positive-body2": "Se puede abrir cualquier página en la aplicación Pageviews pulsando el contador de vistas del lado derecho.",
-	"faq-topviews-false-positive-body3": "Puedes <strong>notificar un falso positivo</strong> para mejorar los datos de $1. Para ello, primero oculta la página pasando el ratón por encima y pulsando el icono ✖ al principio de la línea; después pulsa el enlace «$2» encima del campo «$3». Si una página es marcada como falso positivo por un número suficiente de personas, podrá ocultarse automáticamente.",
+	"faq-topviews-false-positive-body3": "Puedes <strong>notificar un falso positivo</strong> para mejorar los datos de $1. Para ello, primero oculta la página pasando el ratón por encima y pulsando el icono ✖ al principio de la línea; después pulsa el enlace «$2» encima del campo «$3» para abrir el formulario. Todas la páginas que envíes se marcarán para su revisión y podrán ocultarse automáticamente para todos los usuarios.",
 	"faq-try-tool": "Puedes encontrar esto en $1.",
 	"fatal-error": "Error grave",
 	"featured-article": "Artículo destacado",

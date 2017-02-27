@@ -7,7 +7,8 @@
 			"Matteocng",
 			"Einreiher",
 			"Dvorapa",
-			"Anto"
+			"Anto",
+			"Redredsonia"
 		]
 	},
 	"active-users": "Utenti attivi",
@@ -106,6 +107,7 @@
 	"faq-topviews-false-positive-body2": "Puoi anche aprire qualsiasi pagina nell'applicazione Pageviews per ulteriori analisi. Basta cliccare nel numero di visualizzazioni sul lato destro.",
 	"faq-try-tool": "Puoi trovarlo su $1.",
 	"fatal-error": "Errore fatale",
+	"featured-article": "Voce in vetrina",
 	"february": "febbraio",
 	"fetching-data": "Recupero dati da $1",
 	"format-numbers": "Formato dati numerici",
@@ -299,6 +301,7 @@
 	"url-structure-view": "$1 per visualizzare i dati in un elenco, o $2 per visualizzare i dati in un grafico",
 	"user": "Utente",
 	"users": "Utenti",
+	"validated-page": "Convalidato",
 	"view-source": "Visualizza sorgente",
 	"views": "Visualizzazioni",
 	"watchers": "Osservatori",
