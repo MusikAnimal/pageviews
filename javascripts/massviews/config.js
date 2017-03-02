@@ -81,11 +81,9 @@ const config = {
       ],
       type: 'string'
     },
-    'glamorous': {
+    'commons-cat': {
       placeholder: 'Wikimedia Israel - Channel 2 videos',
-      descriptionParams: () => [
-        "<a target='_blank' href='https://tools.wmflabs.org/glamtools/glamorous.php'>GLAMorous</a>"
-      ],
+      descriptionParams: () => [],
       type: 'string'
     }
   },
@@ -98,7 +96,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original', 'project', 'source'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link', 'glamorous'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link', 'commons-cat'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

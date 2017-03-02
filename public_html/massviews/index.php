@@ -134,8 +134,8 @@
                     </a>
                   </li>
                   <li>
-                    <a class="source-option" href="#" data-value="glamorous">
-                      GLAMorous
+                    <a class="source-option" href="#" data-value="commons-cat">
+                      <?php echo $I18N->msg( 'commons-category' ); ?>
                     </a>
                   </li>
                 </ul>

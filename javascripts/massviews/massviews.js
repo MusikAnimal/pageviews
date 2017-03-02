@@ -735,7 +735,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @param {Function} cb - called after processing is complete,
    *   given the label and link for the GLAMorous result and the pageviews data
    */
-  processGlamorous() {
+  processCommonsCat() {
     const category = $(this.config.sourceInput).val();
 
     let requestData = {
@@ -1530,8 +1530,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return this.processHashtag(cb);
     case 'external-link':
       return this.processExternalLink(cb);
-    case 'glamorous':
-      return this.processGlamorous();
+    case 'commons-cat':
+      return this.processCommonsCat();
     }
 
     // validate wiki URL
