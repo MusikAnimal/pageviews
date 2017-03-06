@@ -104,6 +104,7 @@
 	"no-autocompletion": "Cap finalització automàtica",
 	"november": "novembre",
 	"num-languages": "$1 llengües",
+	"num-sections": "$1 {{PLURAL:$2|secció|seccions}}",
 	"october": "octubre",
 	"ok": "D’acord",
 	"page": "Pàgina",

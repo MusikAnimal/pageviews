@@ -4,7 +4,8 @@
 			"Banjo",
 			"Elisardojm",
 			"Toliño",
-			"Macofe"
+			"Macofe",
+			"Fitoschido"
 		]
 	},
 	"agent": "Axente",
@@ -112,7 +113,7 @@
 	"num-pages": "$1 {{PLURAL:$1|páxina|páxinas}}",
 	"num-pageviews": "$1 visualizacións de páxina",
 	"num-redirects": "$1 redireccións",
-	"num-sections": "$1 seccións",
+	"num-sections": "$1 {{PLURAL:$2|sección|seccións}}",
 	"october": "outubro",
 	"ok": "Aceptar",
 	"page": "Páxina",

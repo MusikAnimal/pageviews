@@ -7,7 +7,8 @@
 			"Anderson Costa",
 			"!Silent",
 			"Moretti",
-			"Warley Felipe C."
+			"Warley Felipe C.",
+			"Fitoschido"
 		]
 	},
 	"active-users": "Usuários ativos",
@@ -194,7 +195,7 @@
 	"num-projects-info": "Exibir até $1 projetos.",
 	"num-protections": "$1 proteções",
 	"num-redirects": "$1 redirecionamentos",
-	"num-sections": "$1 seções",
+	"num-sections": "$1 {{PLURAL:$2|seção|seções}}",
 	"num-subpages": "$1 {{PLURAL:$1|subpágina|subpáginas}}",
 	"num-transclusions": "$1 {{PLURAL:$1|transclusão|transclusões}}",
 	"num-wikilinks": "$1 {{PLURAL:$1|ligação interna|ligações internas}}",

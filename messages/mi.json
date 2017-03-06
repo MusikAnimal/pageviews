@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Kiwi128",
-			"Macofe"
+			"Macofe",
+			"Fitoschido"
 		]
 	},
 	"active-users": "Ngā tāngata e mahi ana",
@@ -195,7 +196,7 @@
 	"num-projects-info": "Paopaotia ngā whakakaupapa kia $1, kia iti iho i $1 rānei",
 	"num-protections": "{{PLURAL:$1|kotahi te|$1 ngā}} wā parahau",
 	"num-redirects": "$1 {{PLURAL:$1|whakaneketanga|ngā whakaneketanga}} ki wāhi kē",
-	"num-sections": "$1 {{PLURAL:$1|upoko|ngā upoko}}",
+	"num-sections": "$1 {{PLURAL:$2|upoko|ngā upoko}}",
 	"num-subpages": "$1 {{PLURAL:$1|whārangi|ngā whārangi}} kei raro",
 	"num-transclusions": "$1 {{PLURAL:$1|whakamahitanga|ngā whakamahitanga}} kei roto",
 	"num-wikilinks": "$1 {{PLURAL:$1|hononga|ngā hononga}}",

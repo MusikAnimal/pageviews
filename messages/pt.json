@@ -8,7 +8,8 @@
 			"Joalpe",
 			"He7d3r",
 			"Mansil",
-			"Hamilton Abreu"
+			"Hamilton Abreu",
+			"Fitoschido"
 		]
 	},
 	"agent": "Agente",
@@ -138,7 +139,7 @@
 	"num-pages": "$1 {{PLURAL:$1|página|páginas}}",
 	"num-pageviews": "$1 visualizações de página",
 	"num-redirects": "$1 redirecionamentos",
-	"num-sections": "$1 secções",
+	"num-sections": "$1 {{PLURAL:$2|secção|secções}}",
 	"num-subpages": "$1 {{PLURAL:$1|subpágina|subpáginas}}",
 	"num-transclusions": "$1 {{PLURAL:$1|transclusão|transclusões}}",
 	"num-wikilinks": "$1 {{PLURAL:$1|ligação interna|ligações internas}}",

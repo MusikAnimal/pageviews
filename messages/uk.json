@@ -4,7 +4,8 @@
 			"Green Zero",
 			"Piramidion",
 			"Visem",
-			"Macofe"
+			"Macofe",
+			"Fitoschido"
 		]
 	},
 	"active-users": "Активні користувачі",
@@ -202,7 +203,7 @@
 	"num-projects-info": "Введіть до $1 проектів",
 	"num-protections": "{{PLURAL:$1|$1 захист|$1 захисти|$1 захистів}}",
 	"num-redirects": "$1 {{PLURAL:$1|перенаправлення|перенаправлення|перенаправлень}}",
-	"num-sections": "$1 {{PLURAL:$1|розділ|розділи|розділів}}",
+	"num-sections": "$1 {{PLURAL:$2|розділ|розділи|розділів}}",
 	"num-subpages": "$1 {{PLURAL:$1|підсторінка|підсторінки|підсторінок}}",
 	"num-transclusions": "$1 {{PLURAL:$1|включення|включення|включень}}",
 	"num-wikilinks": "$1 {{PLURAL:$1|вікіпосилання|вікіпосилання|вікіпосилань}}",
