@@ -160,9 +160,8 @@ class TopViews extends Pv {
     if (triggerChange) {
       this.setState('processing');
 
-      // get mobileViews for the new page that has come into view
-      const excludeOffset = this.excludes.length + this.autoExcludes.length - 2,
-        newPage = this.pageData[this.config.pageSize + this.offset + excludeOffset].article;
+      // get edit data and mobile views for the new page that has come into view
+      const newPage = this.pageData[this.offsetEnd].article;
 
       this.setSingleEditData(newPage)
         .always(() => this.setSingleMobileViews(newPage)
@@ -576,6 +575,7 @@ class TopViews extends Pv {
       this.editData = {};
       this.excludeAdded = false;
       $('.message-container').html('');
+      $('.show-more').removeClass('hidden');
       break;
     case 'processing':
       this.startSpinny();
@@ -761,7 +761,17 @@ class TopViews extends Pv {
     $('.show-more').on('click', () => {
       this.offset += this.config.pageSize;
       this.setState('processing');
-      this.setEditData(this.offsetEnd)
+
+      let editDataOffset = this.config.pageSize;
+
+      // if we're on the last page, instruct setEditData to only process
+      //  the remaining pages (which might be less than this.config.pageSize)
+      if (this.pageData.length - this.offsetEnd < this.config.pageSize) {
+        editDataOffset = this.pageData.length - this.offsetEnd;
+        $('.show-more').addClass('hidden');
+      }
+
+      this.setEditData(this.offsetEnd, editDataOffset)
         .always(() => this.setMobileViews(this.offsetEnd)
           .always(this.showList.bind(this))
         );
@@ -917,7 +927,7 @@ class TopViews extends Pv {
       $.ajax({ url, dataType: 'json' }).done(data => {
         Object.assign(this.editData, data.pages);
       }).always(() => {
-        requestCount -= pages.length;
+        requestCount -= originalNumPages;
         if (requestCount <= 0) {
           dfd.resolve(this.editData);
         }
@@ -936,7 +946,7 @@ class TopViews extends Pv {
         continue;
       }
       queue.push(this.pageData[index].article);
-      if (queue.length === 10) {
+      if (queue.length === 10 || index + 1 === pageDataLength) {
         requestFn(queue);
         queue = [];
       }
@@ -953,8 +963,13 @@ class TopViews extends Pv {
    * @returns {Deferred} promise resolving with this.mobileViews
    */
   setSingleMobileViews(page) {
-    const dfd = $.Deferred(),
-      [startDate, endDate] = this.getDates();
+    const dfd = $.Deferred();
+
+    if (!this.shouldShowMobile()) {
+      return dfd.resolve({});
+    }
+
+    const [startDate, endDate] = this.getDates();
 
     let promises = [];
 
