@@ -89,7 +89,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @param  {Object} node - HTML element of the selected source
    */
   updateSourceInput(node) {
-    const source = node.dataset.value;
+    const source = this.source = node.dataset.value;
 
     $('#source_button').data('value', source).html(`${node.textContent} <span class='caret'></span>`);
 

@@ -31,18 +31,19 @@
     <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
     <?php $Kaldari = "<a href='https://en.wikipedia.org/wiki/User:Kaldari'>Kaldari</a>"; ?>
     <?php $MarcelRuizForns = "<a href='https://en.wikipedia.org/wiki/User:Mforns_(WMF)'>Marcel Ruiz Forns</a>"; ?>
-    <?php echo $I18N->msg( 'credits', array( 'variables' => array( $MusikAnimal, $Kaldari, $MarcelRuizForns ), 'parsemag' => true ) );; ?>
+    <?php echo $I18N->msg( 'credits', [ 'variables' => [ $MusikAnimal, $Kaldari, $MarcelRuizForns ], 'parsemag' => true ] );; ?>
   </span>
   <div>
     <span class="nowrap">
       <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
       <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs'>" . $I18N->msg( 'tool-labs' ) . "</a>"; ?>
-      <?php echo $I18N->msg( 'hosted', array( 'variables' => array( $heart, $host ), 'parsemag' => true ) );; ?>
+      <?php echo $I18N->msg( 'hosted', [ 'variables' => [ $heart, $host ], 'parsemag' => true ] );; ?>
     </span>
     <span class="nowrap">
       <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
+      <?php $jqueryI18n = "<a href='https://github.com/wikimedia/jquery.i18n'>jQuery.i18n</a>"; ?>
       <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
-      <?php echo $I18N->msg( 'translation-credits', array( 'variables' => array( $translateWiki, $intuition ), 'parsemag' => true ) ); ?>
+      <?php echo $I18N->msg( 'translation-credits', [ 'variables' => [ $translateWiki, $jqueryI18n, $intuition ], 'parsemag' => true ] ); ?>
     </span>
   </div>
   <div>

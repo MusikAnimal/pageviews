@@ -1158,12 +1158,18 @@ class Pv extends PvConfig {
 
     if (langApps.includes(this.project)) project = i18nLang;
 
+    let data =  {
+      app: this.app + (location.pathname.includes('-test') ? '-test' : ''),
+      project
+    };
+
+    if (this.app === 'massviews') {
+      data.source = this.source;
+    }
+
     $.ajax({
       url: '/pageviews/meta/api.php',
-      data: {
-        app: this.app + (location.pathname.includes('-test') ? '-test' : ''),
-        project
-      },
+      data,
       method: 'POST'
     });
   }
