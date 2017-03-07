@@ -80,6 +80,13 @@ const config = {
         `<a target='_blank' href='https://www.mediawiki.org/wiki/Help:Links#External_links'>${$.i18n('external-link').toLowerCase()}</a>`
       ],
       type: 'string'
+    },
+    'search': {
+      placeholder: 'insource:"UNESCO Science Report"',
+      descriptionParams: () => [
+        "<a target='_blank' href='https://www.mediawiki.org/wiki/Help:CirrusSearch'>CirrusSearch</a>"
+      ],
+      type: 'string'
     }
   },
   platformSelector: '#platform_select',
@@ -91,7 +98,7 @@ const config = {
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
-    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link'],
+    source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link', 'search'],
     view: ['list', 'chart'],
     subjectpage: ['0', '1']
   }

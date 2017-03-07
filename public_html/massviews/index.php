@@ -133,6 +133,11 @@
                       Quarry
                     </a>
                   </li>
+                  <li>
+                    <a class="source-option" href="#" data-value="search">
+                      <?php echo $I18N->msg( 'search' ); ?>
+                    </a>
+                  </li>
                 </ul>
               </div>
               <input class="form-control input-control source-input" id="source_input" required="required">

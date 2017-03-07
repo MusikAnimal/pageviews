@@ -86,6 +86,12 @@
                 <?php echo $I18N->msg( 'massviews-quarry-description', [ 'variables' => [ "<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>" ] ] ) . '.'; ?>
                 <?php echo $I18N->msg( 'faq-massviews-sources-quarry', [ 'variables' => [ 'Quarry', 'page_title' ] ] ); ?>
               </li>
+              <li>
+                <i><?php echo $I18N->msg( 'search' ); ?></i>
+                &mdash;
+                <?php echo $I18N->msg( 'massviews-search-description', [ 'variables' => [ "<a target='_blank' href='https://www.mediawiki.org/wiki/Help:CirrusSearch'>CirrusSearch</a>" ] ] ) . '.'; ?>
+                <?php echo $I18N->msg( 'faq-massviews-sources-search', [ 'variables' => [ "<a target='_blank' href='https://en.wikipedia.org/w/index.php?search=insource%3A\"UNESCO+Science+Report\"&title=Special:Search'>insource:\"UNESCO Science Report\"</a>" ] ] ); ?>
+              </li>
             </ul>
           </li>
           <li class="list-group-item" id="category_subject_toggle">

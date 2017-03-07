@@ -107,7 +107,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.category-subject-toggle').hide();
     }
 
-    if (source === 'quarry' || source === 'external-link') {
+    if (['quarry', 'external-link', 'search'].includes(source)) {
       $('.massviews-source-input').addClass('project-enabled');
       $('.project-input').prop('disabled', false);
     } else {
@@ -154,7 +154,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (params.source === 'category') {
       params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
-    } else if (params.source === 'quarry' || params.source === 'external-link') {
+    } else if (['quarry', 'external-link', 'search'].includes(params.source)) {
       params.project = $('.project-input').val();
     }
 
@@ -568,7 +568,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this[key] = params[key];
     });
 
-    if ((params.source === 'quarry' || params.source === 'external-link') && params.project) {
+    if (['quarry', 'external-link', 'search'].includes(params.source) && params.project) {
       $('.project-input').val(params.project);
     }
 
@@ -1221,6 +1221,74 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
+   * Process the input as a search query, getting the pageviews of results from list=search
+   * @param {Function} cb - called after processing is complete,
+   *   given the label and link for the search query at Special:Search and the pageviews data
+   */
+  processSearch(cb) {
+    const project = $('.project-input').val();
+    if (!this.validateProject(project)) return;
+
+    let srsearch = $(this.config.sourceInput).val();
+
+    let requestData = {
+      list: 'search',
+      srlimit: 500,
+      srnamespace: 0,
+      srinfo: '',
+      srprop: '',
+      srsearch
+    };
+
+    const linkText = srsearch.length > 50 ? srsearch.slice(0, 35) + '…' : srsearch,
+      linkSearchLink = `<a target='_blank' href='https://${project}/w/index.php?title=Special:Search&search=${srsearch}'>${linkText}</a>`;
+
+    $('.progress-counter').text($.i18n('fetching-data', 'Search API'));
+    this.massApi(requestData, project, 'sroffset', 'search').done(data => {
+      if (data.error) {
+        return this.apiErrorReset('Search API', data.error.info);
+      }
+
+      // this happens if there are no results
+      if (!data.search.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('api-error-no-data'));
+        });
+      }
+
+      const pages = data.search.map(page => page.title).unique();
+
+      if (!pages.length) {
+        return this.setState('initial', () => {
+          this.writeMessage($.i18n('massviews-empty-set', linkSearchLink));
+        });
+      }
+
+      // there were more pages that could not be processed as we hit the limit
+      if (data.continue) {
+        this.writeMessage(
+          $.i18n('massviews-oversized-set-unknown', linkSearchLink, this.config.apiLimit)
+        );
+      }
+
+      this.getPageViewsData(pages, project).done(pageViewsData => {
+        cb(linkText, linkSearchLink, pageViewsData);
+      });
+    }).fail(data => {
+      this.setState('initial');
+
+      /** structured error comes back as a string, otherwise we don't know what happened */
+      if (data && typeof data.error === 'string') {
+        this.writeMessage(
+          $.i18n('api-error', linkSearchLink + ': ' + data.error)
+        );
+      } else {
+        this.writeMessage($.i18n('api-error-unknown', linkSearchLink));
+      }
+    });
+  }
+
+  /**
    * Validate given project and throw an error if invalid
    * @param  {String} project - tha project
    * @return {Boolean} true or false
@@ -1311,6 +1379,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       return this.processHashtag(cb);
     case 'external-link':
       return this.processExternalLink(cb);
+    case 'search':
+      return this.processSearch(cb);
     }
 
     // validate wiki URL

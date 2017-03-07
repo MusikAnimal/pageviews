@@ -73,6 +73,11 @@
                 &mdash;
                 = $I18N->msg( 'massviews-quarry-description', [ 'variables' => [ "<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>" ] ] ) . '.'
                 = $I18N->msg( 'faq-massviews-sources-quarry', [ 'variables' => [ 'Quarry', 'page_title' ] ] )
+              %li
+                %i= $I18N->msg( 'search' )
+                &mdash;
+                = $I18N->msg( 'massviews-search-description', [ 'variables' => [ "<a target='_blank' href='https://www.mediawiki.org/wiki/Help:CirrusSearch'>CirrusSearch</a>" ] ] ) . '.'
+                = $I18N->msg( 'faq-massviews-sources-search', [ 'variables' => [ "<a target='_blank' href='https://en.wikipedia.org/w/index.php?search=insource%3A\"UNESCO+Science+Report\"&title=Special:Search'>insource:\"UNESCO Science Report\"</a>" ] ] )
           %li.list-group-item(id="category_subject_toggle")
             %p
               %strong= $I18N->msg( 'faq-massviews-subject-page-title', [ 'variables' => [ $I18N->msg( 'category-subject-toggle' ) ] ] )
