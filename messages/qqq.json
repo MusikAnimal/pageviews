@@ -14,7 +14,8 @@
 			"Siebrand",
 			"Arthur2e5",
 			"ANDROBETA",
-			"Srdjan m"
+			"Srdjan m",
+			"Nemo bis"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -315,7 +316,7 @@
 	"total-pageviews": "Label for chart options that show total pageviews for each article",
 	"totals": "Label for the total number of pageviews\n{{Identical|Total}}",
 	"transclusions": "Label for the 'Transclusions' input field on the Massviews tool. See the wikidata item for 'transclusion' for possible translations: https://www.wikidata.org/wiki/Q1207412\n{{Identical|Transclusion}}",
-	"translation-credits": "Footer message crediting translation tools translatewiki ($1) and Intution ($2)",
+	"translation-credits": "Footer message crediting translation tools translatewiki.net ($1) and Intuition ($2)",
 	"tu": "Abbreviation for Tuesday, a day of the week.",
 	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
 	"unique-editors": "Label for the value showing the number of unique editors that contributed to the pages during the timeframe.",
