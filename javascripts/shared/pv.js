@@ -1505,7 +1505,7 @@ class Pv extends PvConfig {
     $('.daterangepicker .ranges li').on('click', e => {
       if (e.target.innerText === $.i18n('custom-range')) {
         this.specialRange = null;
-        return app.daterangepicker.clickApply();
+        return this.daterangepicker.clickApply();
       }
 
       const container = this.daterangepicker.container,
