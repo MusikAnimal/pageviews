@@ -904,6 +904,13 @@ class TopViews extends Pv {
       counter = 0,
       requestCount = offset;
 
+    // Set total page length to as the requestCount if it is less than the offset
+    // Also hide the 'show more' link
+    if (this.pageData.length < offset) {
+      $('.show-more').addClass('hidden');
+      requestCount = this.pageData.length;
+    }
+
     const makeRequest = pages => {
       const originalNumPages = pages.length;
 
