@@ -147,7 +147,7 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 				source = 'i18n/' + $.i18n().locale + '.json';
 				locale = $.i18n().locale;
 			}
-			if ( typeof source === 'string'	&&
+			if ( typeof source === 'string' &&
 				source.split( '.' ).pop() !== 'json'
 			) {
 				// Load specified locale then check for fallbacks when directory is specified in load()
@@ -239,10 +239,23 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 		String.locale = i18n.locale;
 		return this.each( function () {
 			var $this = $( this ),
-				messageKey = $this.data( 'i18n' );
+				messageKey = $this.data( 'i18n' ),
+				lBracket, rBracket, type, key;
 
 			if ( messageKey ) {
-				$this.text( i18n.parse( messageKey ) );
+				lBracket = messageKey.indexOf( '[' );
+				rBracket = messageKey.indexOf( ']' );
+				if ( lBracket !== -1 && rBracket !== -1 && lBracket < rBracket ) {
+					type = messageKey.slice( lBracket + 1, rBracket );
+					key = messageKey.slice( rBracket + 1 );
+					if ( type === 'html' ) {
+						$this.html( i18n.parse( key ) );
+					} else {
+						$this.attr( type, i18n.parse( key ) );
+					}
+				} else {
+					$this.text( i18n.parse( messageKey ) );
+				}
 			} else {
 				$this.find( '[data-i18n]' ).i18n();
 			}
@@ -421,6 +434,193 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 /*!
  * jQuery Internationalization library
  *
+ * Copyright (C) 2012 Santhosh Thottingal
+ *
+ * jquery.i18n is dual licensed GPLv2 or later and MIT. You don't have to do anything special to
+ * choose one license or the other and you don't have to notify anyone which license you are using.
+ * You are free to use UniversalLanguageSelector in commercial projects as long as the copyright
+ * header is left intact. See files GPL-LICENSE and MIT-LICENSE for details.
+ *
+ * @licence GNU General Public Licence 2.0 or later
+ * @licence MIT License
+ */
+( function ( $, undefined ) {
+	'use strict';
+
+	$.i18n = $.i18n || {};
+	$.extend( $.i18n.fallbacks, {
+		ab: [ 'ru' ],
+		ace: [ 'id' ],
+		aln: [ 'sq' ],
+		// Not so standard - als is supposed to be Tosk Albanian,
+		// but in Wikipedia it's used for a Germanic language.
+		als: [ 'gsw', 'de' ],
+		an: [ 'es' ],
+		anp: [ 'hi' ],
+		arn: [ 'es' ],
+		arz: [ 'ar' ],
+		av: [ 'ru' ],
+		ay: [ 'es' ],
+		ba: [ 'ru' ],
+		bar: [ 'de' ],
+		'bat-smg': [ 'sgs', 'lt' ],
+		bcc: [ 'fa' ],
+		'be-x-old': [ 'be-tarask' ],
+		bh: [ 'bho' ],
+		bjn: [ 'id' ],
+		bm: [ 'fr' ],
+		bpy: [ 'bn' ],
+		bqi: [ 'fa' ],
+		bug: [ 'id' ],
+		'cbk-zam': [ 'es' ],
+		ce: [ 'ru' ],
+		crh: [ 'crh-latn' ],
+		'crh-cyrl': [ 'ru' ],
+		csb: [ 'pl' ],
+		cv: [ 'ru' ],
+		'de-at': [ 'de' ],
+		'de-ch': [ 'de' ],
+		'de-formal': [ 'de' ],
+		dsb: [ 'de' ],
+		dtp: [ 'ms' ],
+		egl: [ 'it' ],
+		eml: [ 'it' ],
+		ff: [ 'fr' ],
+		fit: [ 'fi' ],
+		'fiu-vro': [ 'vro', 'et' ],
+		frc: [ 'fr' ],
+		frp: [ 'fr' ],
+		frr: [ 'de' ],
+		fur: [ 'it' ],
+		gag: [ 'tr' ],
+		gan: [ 'gan-hant', 'zh-hant', 'zh-hans' ],
+		'gan-hans': [ 'zh-hans' ],
+		'gan-hant': [ 'zh-hant', 'zh-hans' ],
+		gl: [ 'pt' ],
+		glk: [ 'fa' ],
+		gn: [ 'es' ],
+		gsw: [ 'de' ],
+		hif: [ 'hif-latn' ],
+		hsb: [ 'de' ],
+		ht: [ 'fr' ],
+		ii: [ 'zh-cn', 'zh-hans' ],
+		inh: [ 'ru' ],
+		iu: [ 'ike-cans' ],
+		jut: [ 'da' ],
+		jv: [ 'id' ],
+		kaa: [ 'kk-latn', 'kk-cyrl' ],
+		kbd: [ 'kbd-cyrl' ],
+		khw: [ 'ur' ],
+		kiu: [ 'tr' ],
+		kk: [ 'kk-cyrl' ],
+		'kk-arab': [ 'kk-cyrl' ],
+		'kk-latn': [ 'kk-cyrl' ],
+		'kk-cn': [ 'kk-arab', 'kk-cyrl' ],
+		'kk-kz': [ 'kk-cyrl' ],
+		'kk-tr': [ 'kk-latn', 'kk-cyrl' ],
+		kl: [ 'da' ],
+		'ko-kp': [ 'ko' ],
+		koi: [ 'ru' ],
+		krc: [ 'ru' ],
+		ks: [ 'ks-arab' ],
+		ksh: [ 'de' ],
+		ku: [ 'ku-latn' ],
+		'ku-arab': [ 'ckb' ],
+		kv: [ 'ru' ],
+		lad: [ 'es' ],
+		lb: [ 'de' ],
+		lbe: [ 'ru' ],
+		lez: [ 'ru' ],
+		li: [ 'nl' ],
+		lij: [ 'it' ],
+		liv: [ 'et' ],
+		lmo: [ 'it' ],
+		ln: [ 'fr' ],
+		ltg: [ 'lv' ],
+		lzz: [ 'tr' ],
+		mai: [ 'hi' ],
+		'map-bms': [ 'jv', 'id' ],
+		mg: [ 'fr' ],
+		mhr: [ 'ru' ],
+		min: [ 'id' ],
+		mo: [ 'ro' ],
+		mrj: [ 'ru' ],
+		mwl: [ 'pt' ],
+		myv: [ 'ru' ],
+		mzn: [ 'fa' ],
+		nah: [ 'es' ],
+		nap: [ 'it' ],
+		nds: [ 'de' ],
+		'nds-nl': [ 'nl' ],
+		'nl-informal': [ 'nl' ],
+		no: [ 'nb' ],
+		os: [ 'ru' ],
+		pcd: [ 'fr' ],
+		pdc: [ 'de' ],
+		pdt: [ 'de' ],
+		pfl: [ 'de' ],
+		pms: [ 'it' ],
+		pt: [ 'pt-br' ],
+		'pt-br': [ 'pt' ],
+		qu: [ 'es' ],
+		qug: [ 'qu', 'es' ],
+		rgn: [ 'it' ],
+		rmy: [ 'ro' ],
+		'roa-rup': [ 'rup' ],
+		rue: [ 'uk', 'ru' ],
+		ruq: [ 'ruq-latn', 'ro' ],
+		'ruq-cyrl': [ 'mk' ],
+		'ruq-latn': [ 'ro' ],
+		sa: [ 'hi' ],
+		sah: [ 'ru' ],
+		scn: [ 'it' ],
+		sg: [ 'fr' ],
+		sgs: [ 'lt' ],
+		sli: [ 'de' ],
+		sr: [ 'sr-ec' ],
+		srn: [ 'nl' ],
+		stq: [ 'de' ],
+		su: [ 'id' ],
+		szl: [ 'pl' ],
+		tcy: [ 'kn' ],
+		tg: [ 'tg-cyrl' ],
+		tt: [ 'tt-cyrl', 'ru' ],
+		'tt-cyrl': [ 'ru' ],
+		ty: [ 'fr' ],
+		udm: [ 'ru' ],
+		ug: [ 'ug-arab' ],
+		uk: [ 'ru' ],
+		vec: [ 'it' ],
+		vep: [ 'et' ],
+		vls: [ 'nl' ],
+		vmf: [ 'de' ],
+		vot: [ 'fi' ],
+		vro: [ 'et' ],
+		wa: [ 'fr' ],
+		wo: [ 'fr' ],
+		wuu: [ 'zh-hans' ],
+		xal: [ 'ru' ],
+		xmf: [ 'ka' ],
+		yi: [ 'he' ],
+		za: [ 'zh-hans' ],
+		zea: [ 'nl' ],
+		zh: [ 'zh-hans' ],
+		'zh-classical': [ 'lzh' ],
+		'zh-cn': [ 'zh-hans' ],
+		'zh-hant': [ 'zh-hans' ],
+		'zh-hk': [ 'zh-hant', 'zh-hans' ],
+		'zh-min-nan': [ 'nan' ],
+		'zh-mo': [ 'zh-hk', 'zh-hant', 'zh-hans' ],
+		'zh-my': [ 'zh-sg', 'zh-hans' ],
+		'zh-sg': [ 'zh-hans' ],
+		'zh-tw': [ 'zh-hant', 'zh-hans' ],
+		'zh-yue': [ 'yue' ]
+	} );
+}( jQuery ) );
+
+/*!
+ * jQuery Internationalization library
+ *
  * Copyright (C) 2011-2013 Santhosh Thottingal, Neil Kandalgaonkar
  *
  * jquery.i18n is dual licensed GPLv2 or later and MIT. You don't have to do
@@ -543,7 +743,7 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 				return function () {
 					var result = null;
 
-					if ( message.substr( pos, len ) === s ) {
+					if ( message.slice( pos, pos + len ) === s ) {
 						result = s;
 						pos += len;
 					}
@@ -554,7 +754,7 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 
 			function makeRegexParser( regex ) {
 				return function () {
-					var matches = message.substr( pos ).match( regex );
+					var matches = message.slice( pos ).match( regex );
 
 					if ( matches === null ) {
 						return null;
@@ -901,265 +1101,626 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 ( function ( $ ) {
 	'use strict';
 
+	// jscs:disable
 	var language = {
 		// CLDR plural rules generated using
 		// libs/CLDRPluralRuleParser/tools/PluralXML2JSON.html
-		pluralRules: {
-			ak: {
-				one: 'n = 0..1'
-			},
-			am: {
-				one: 'i = 0 or n = 1'
-			},
-			ar: {
-				zero: 'n = 0',
-				one: 'n = 1',
-				two: 'n = 2',
-				few: 'n % 100 = 3..10',
-				many: 'n % 100 = 11..99'
-			},
-			be: {
-				one: 'n % 10 = 1 and n % 100 != 11',
-				few: 'n % 10 = 2..4 and n % 100 != 12..14',
-				many: 'n % 10 = 0 or n % 10 = 5..9 or n % 100 = 11..14'
-			},
-			bh: {
-				one: 'n = 0..1'
-			},
-			bn: {
-				one: 'i = 0 or n = 1'
-			},
-			br: {
-				one: 'n % 10 = 1 and n % 100 != 11,71,91',
-				two: 'n % 10 = 2 and n % 100 != 12,72,92',
-				few: 'n % 10 = 3..4,9 and n % 100 != 10..19,70..79,90..99',
-				many: 'n != 0 and n % 1000000 = 0'
-			},
-			bs: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
-			},
-			cs: {
-				one: 'i = 1 and v = 0',
-				few: 'i = 2..4 and v = 0',
-				many: 'v != 0'
-			},
-			cy: {
-				zero: 'n = 0',
-				one: 'n = 1',
-				two: 'n = 2',
-				few: 'n = 3',
-				many: 'n = 6'
-			},
-			da: {
-				one: 'n = 1 or t != 0 and i = 0,1'
-			},
-			fa: {
-				one: 'i = 0 or n = 1'
+		'pluralRules': {
+			'af': {
+				'one': 'n = 1'
 			},
-			ff: {
-				one: 'i = 0,1'
+			'ak': {
+				'one': 'n = 0..1'
 			},
-			fil: {
-				one: 'i = 0..1 and v = 0'
-			},
-			fr: {
-				one: 'i = 0,1'
-			},
-			ga: {
-				one: 'n = 1',
-				two: 'n = 2',
-				few: 'n = 3..6',
-				many: 'n = 7..10'
+			'am': {
+				'one': 'i = 0 or n = 1'
 			},
-			gd: {
-				one: 'n = 1,11',
-				two: 'n = 2,12',
-				few: 'n = 3..10,13..19'
+			'ar': {
+				'zero': 'n = 0',
+				'one': 'n = 1',
+				'two': 'n = 2',
+				'few': 'n % 100 = 3..10',
+				'many': 'n % 100 = 11..99'
 			},
-			gu: {
-				one: 'i = 0 or n = 1'
+			'ars': {
+				'zero': 'n = 0',
+				'one': 'n = 1',
+				'two': 'n = 2',
+				'few': 'n % 100 = 3..10',
+				'many': 'n % 100 = 11..99'
 			},
-			guw: {
-				one: 'n = 0..1'
+			'as': {
+				'one': 'i = 0 or n = 1'
 			},
-			gv: {
-				one: 'n % 10 = 1',
-				two: 'n % 10 = 2',
-				few: 'n % 100 = 0,20,40,60'
+			'asa': {
+				'one': 'n = 1'
 			},
-			he: {
-				one: 'i = 1 and v = 0',
-				two: 'i = 2 and v = 0',
-				many: 'v = 0 and n != 0..10 and n % 10 = 0'
+			'ast': {
+				'one': 'i = 1 and v = 0'
 			},
-			hi: {
-				one: 'i = 0 or n = 1'
+			'az': {
+				'one': 'n = 1'
 			},
-			hr: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			'be': {
+				'one': 'n % 10 = 1 and n % 100 != 11',
+				'few': 'n % 10 = 2..4 and n % 100 != 12..14',
+				'many': 'n % 10 = 0 or n % 10 = 5..9 or n % 100 = 11..14'
 			},
-			hy: {
-				one: 'i = 0,1'
+			'bem': {
+				'one': 'n = 1'
 			},
-			is: {
-				one: 't = 0 and i % 10 = 1 and i % 100 != 11 or t != 0'
+			'bez': {
+				'one': 'n = 1'
 			},
-			iu: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'bg': {
+				'one': 'n = 1'
 			},
-			iw: {
-				one: 'i = 1 and v = 0',
-				two: 'i = 2 and v = 0',
-				many: 'v = 0 and n != 0..10 and n % 10 = 0'
+			'bh': {
+				'one': 'n = 0..1'
 			},
-			kab: {
-				one: 'i = 0,1'
+			'bm': {},
+			'bn': {
+				'one': 'i = 0 or n = 1'
 			},
-			kn: {
-				one: 'i = 0 or n = 1'
+			'bo': {},
+			'br': {
+				'one': 'n % 10 = 1 and n % 100 != 11,71,91',
+				'two': 'n % 10 = 2 and n % 100 != 12,72,92',
+				'few': 'n % 10 = 3..4,9 and n % 100 != 10..19,70..79,90..99',
+				'many': 'n != 0 and n % 1000000 = 0'
 			},
-			kw: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'brx': {
+				'one': 'n = 1'
 			},
-			lag: {
-				zero: 'n = 0',
-				one: 'i = 0,1 and n != 0'
+			'bs': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
 			},
-			ln: {
-				one: 'n = 0..1'
+			'ca': {
+				'one': 'i = 1 and v = 0'
 			},
-			lt: {
-				one: 'n % 10 = 1 and n % 100 != 11..19',
-				few: 'n % 10 = 2..9 and n % 100 != 11..19',
-				many: 'f != 0'
+			'ce': {
+				'one': 'n = 1'
 			},
-			lv: {
-				zero: 'n % 10 = 0 or n % 100 = 11..19 or v = 2 and f % 100 = 11..19',
-				one: 'n % 10 = 1 and n % 100 != 11 or v = 2 and f % 10 = 1 and f % 100 != 11 or v != 2 and f % 10 = 1'
+			'cgg': {
+				'one': 'n = 1'
 			},
-			mg: {
-				one: 'n = 0..1'
+			'chr': {
+				'one': 'n = 1'
 			},
-			mk: {
-				one: 'v = 0 and i % 10 = 1 or f % 10 = 1'
+			'ckb': {
+				'one': 'n = 1'
 			},
-			mo: {
-				one: 'i = 1 and v = 0',
-				few: 'v != 0 or n = 0 or n != 1 and n % 100 = 1..19'
+			'cs': {
+				'one': 'i = 1 and v = 0',
+				'few': 'i = 2..4 and v = 0',
+				'many': 'v != 0'
 			},
-			mr: {
-				one: 'i = 0 or n = 1'
+			'cy': {
+				'zero': 'n = 0',
+				'one': 'n = 1',
+				'two': 'n = 2',
+				'few': 'n = 3',
+				'many': 'n = 6'
 			},
-			mt: {
-				one: 'n = 1',
-				few: 'n = 0 or n % 100 = 2..10',
-				many: 'n % 100 = 11..19'
+			'da': {
+				'one': 'n = 1 or t != 0 and i = 0,1'
 			},
-			naq: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'de': {
+				'one': 'i = 1 and v = 0'
 			},
-			nso: {
-				one: 'n = 0..1'
+			'dsb': {
+				'one': 'v = 0 and i % 100 = 1 or f % 100 = 1',
+				'two': 'v = 0 and i % 100 = 2 or f % 100 = 2',
+				'few': 'v = 0 and i % 100 = 3..4 or f % 100 = 3..4'
 			},
-			pa: {
-				one: 'n = 0..1'
+			'dv': {
+				'one': 'n = 1'
 			},
-			pl: {
-				one: 'i = 1 and v = 0',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14',
-				many: 'v = 0 and i != 1 and i % 10 = 0..1 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 12..14'
+			'dz': {},
+			'ee': {
+				'one': 'n = 1'
 			},
-			pt: {
-				one: 'i = 1 and v = 0 or i = 0 and t = 1'
+			'el': {
+				'one': 'n = 1'
 			},
-			// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-			pt_PT: {
-				one: 'n = 1 and v = 0'
+			'en': {
+				'one': 'i = 1 and v = 0'
 			},
-			// jscs:enable requireCamelCaseOrUpperCaseIdentifiers
-			ro: {
-				one: 'i = 1 and v = 0',
-				few: 'v != 0 or n = 0 or n != 1 and n % 100 = 1..19'
+			'eo': {
+				'one': 'n = 1'
 			},
-			ru: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11',
-				many: 'v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14'
+			'es': {
+				'one': 'n = 1'
 			},
-			se: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'et': {
+				'one': 'i = 1 and v = 0'
 			},
-			sh: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			'eu': {
+				'one': 'n = 1'
 			},
-			shi: {
-				one: 'i = 0 or n = 1',
-				few: 'n = 2..10'
+			'fa': {
+				'one': 'i = 0 or n = 1'
 			},
-			si: {
-				one: 'n = 0,1 or i = 0 and f = 1'
+			'ff': {
+				'one': 'i = 0,1'
 			},
-			sk: {
-				one: 'i = 1 and v = 0',
-				few: 'i = 2..4 and v = 0',
-				many: 'v != 0'
+			'fi': {
+				'one': 'i = 1 and v = 0'
 			},
-			sl: {
-				one: 'v = 0 and i % 100 = 1',
-				two: 'v = 0 and i % 100 = 2',
-				few: 'v = 0 and i % 100 = 3..4 or v != 0'
+			'fil': {
+				'one': 'v = 0 and i = 1,2,3 or v = 0 and i % 10 != 4,6,9 or v != 0 and f % 10 != 4,6,9'
 			},
-			sma: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'fo': {
+				'one': 'n = 1'
 			},
-			smi: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'fr': {
+				'one': 'i = 0,1'
 			},
-			smj: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'fur': {
+				'one': 'n = 1'
 			},
-			smn: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'fy': {
+				'one': 'i = 1 and v = 0'
 			},
-			sms: {
-				one: 'n = 1',
-				two: 'n = 2'
+			'ga': {
+				'one': 'n = 1',
+				'two': 'n = 2',
+				'few': 'n = 3..6',
+				'many': 'n = 7..10'
 			},
-			sr: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			'gd': {
+				'one': 'n = 1,11',
+				'two': 'n = 2,12',
+				'few': 'n = 3..10,13..19'
 			},
-			ti: {
-				one: 'n = 0..1'
+			'gl': {
+				'one': 'i = 1 and v = 0'
 			},
-			tl: {
-				one: 'i = 0..1 and v = 0'
+			'gsw': {
+				'one': 'n = 1'
 			},
-			tzm: {
-				one: 'n = 0..1 or n = 11..99'
+			'gu': {
+				'one': 'i = 0 or n = 1'
 			},
-			uk: {
-				one: 'v = 0 and i % 10 = 1 and i % 100 != 11',
-				few: 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14',
-				many: 'v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14'
+			'guw': {
+				'one': 'n = 0..1'
 			},
-			wa: {
-				one: 'n = 0..1'
+			'gv': {
+				'one': 'v = 0 and i % 10 = 1',
+				'two': 'v = 0 and i % 10 = 2',
+				'few': 'v = 0 and i % 100 = 0,20,40,60,80',
+				'many': 'v != 0'
 			},
-			zu: {
-				one: 'i = 0 or n = 1'
+			'ha': {
+				'one': 'n = 1'
+			},
+			'haw': {
+				'one': 'n = 1'
+			},
+			'he': {
+				'one': 'i = 1 and v = 0',
+				'two': 'i = 2 and v = 0',
+				'many': 'v = 0 and n != 0..10 and n % 10 = 0'
+			},
+			'hi': {
+				'one': 'i = 0 or n = 1'
+			},
+			'hr': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			},
+			'hsb': {
+				'one': 'v = 0 and i % 100 = 1 or f % 100 = 1',
+				'two': 'v = 0 and i % 100 = 2 or f % 100 = 2',
+				'few': 'v = 0 and i % 100 = 3..4 or f % 100 = 3..4'
+			},
+			'hu': {
+				'one': 'n = 1'
+			},
+			'hy': {
+				'one': 'i = 0,1'
+			},
+			'id': {},
+			'ig': {},
+			'ii': {},
+			'in': {},
+			'is': {
+				'one': 't = 0 and i % 10 = 1 and i % 100 != 11 or t != 0'
+			},
+			'it': {
+				'one': 'i = 1 and v = 0'
+			},
+			'iu': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'iw': {
+				'one': 'i = 1 and v = 0',
+				'two': 'i = 2 and v = 0',
+				'many': 'v = 0 and n != 0..10 and n % 10 = 0'
+			},
+			'ja': {},
+			'jbo': {},
+			'jgo': {
+				'one': 'n = 1'
+			},
+			'ji': {
+				'one': 'i = 1 and v = 0'
+			},
+			'jmc': {
+				'one': 'n = 1'
+			},
+			'jv': {},
+			'jw': {},
+			'ka': {
+				'one': 'n = 1'
+			},
+			'kab': {
+				'one': 'i = 0,1'
+			},
+			'kaj': {
+				'one': 'n = 1'
+			},
+			'kcg': {
+				'one': 'n = 1'
+			},
+			'kde': {},
+			'kea': {},
+			'kk': {
+				'one': 'n = 1'
+			},
+			'kkj': {
+				'one': 'n = 1'
+			},
+			'kl': {
+				'one': 'n = 1'
+			},
+			'km': {},
+			'kn': {
+				'one': 'i = 0 or n = 1'
+			},
+			'ko': {},
+			'ks': {
+				'one': 'n = 1'
+			},
+			'ksb': {
+				'one': 'n = 1'
+			},
+			'ksh': {
+				'zero': 'n = 0',
+				'one': 'n = 1'
+			},
+			'ku': {
+				'one': 'n = 1'
+			},
+			'kw': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'ky': {
+				'one': 'n = 1'
+			},
+			'lag': {
+				'zero': 'n = 0',
+				'one': 'i = 0,1 and n != 0'
+			},
+			'lb': {
+				'one': 'n = 1'
+			},
+			'lg': {
+				'one': 'n = 1'
+			},
+			'lkt': {},
+			'ln': {
+				'one': 'n = 0..1'
+			},
+			'lo': {},
+			'lt': {
+				'one': 'n % 10 = 1 and n % 100 != 11..19',
+				'few': 'n % 10 = 2..9 and n % 100 != 11..19',
+				'many': 'f != 0'
+			},
+			'lv': {
+				'zero': 'n % 10 = 0 or n % 100 = 11..19 or v = 2 and f % 100 = 11..19',
+				'one': 'n % 10 = 1 and n % 100 != 11 or v = 2 and f % 10 = 1 and f % 100 != 11 or v != 2 and f % 10 = 1'
+			},
+			'mas': {
+				'one': 'n = 1'
+			},
+			'mg': {
+				'one': 'n = 0..1'
+			},
+			'mgo': {
+				'one': 'n = 1'
+			},
+			'mk': {
+				'one': 'v = 0 and i % 10 = 1 or f % 10 = 1'
+			},
+			'ml': {
+				'one': 'n = 1'
+			},
+			'mn': {
+				'one': 'n = 1'
+			},
+			'mo': {
+				'one': 'i = 1 and v = 0',
+				'few': 'v != 0 or n = 0 or n != 1 and n % 100 = 1..19'
+			},
+			'mr': {
+				'one': 'i = 0 or n = 1'
+			},
+			'ms': {},
+			'mt': {
+				'one': 'n = 1',
+				'few': 'n = 0 or n % 100 = 2..10',
+				'many': 'n % 100 = 11..19'
+			},
+			'my': {},
+			'nah': {
+				'one': 'n = 1'
+			},
+			'naq': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'nb': {
+				'one': 'n = 1'
+			},
+			'nd': {
+				'one': 'n = 1'
+			},
+			'ne': {
+				'one': 'n = 1'
+			},
+			'nl': {
+				'one': 'i = 1 and v = 0'
+			},
+			'nn': {
+				'one': 'n = 1'
+			},
+			'nnh': {
+				'one': 'n = 1'
+			},
+			'no': {
+				'one': 'n = 1'
+			},
+			'nqo': {},
+			'nr': {
+				'one': 'n = 1'
+			},
+			'nso': {
+				'one': 'n = 0..1'
+			},
+			'ny': {
+				'one': 'n = 1'
+			},
+			'nyn': {
+				'one': 'n = 1'
+			},
+			'om': {
+				'one': 'n = 1'
+			},
+			'or': {
+				'one': 'n = 1'
+			},
+			'os': {
+				'one': 'n = 1'
+			},
+			'pa': {
+				'one': 'n = 0..1'
+			},
+			'pap': {
+				'one': 'n = 1'
+			},
+			'pl': {
+				'one': 'i = 1 and v = 0',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14',
+				'many': 'v = 0 and i != 1 and i % 10 = 0..1 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 12..14'
+			},
+			'prg': {
+				'zero': 'n % 10 = 0 or n % 100 = 11..19 or v = 2 and f % 100 = 11..19',
+				'one': 'n % 10 = 1 and n % 100 != 11 or v = 2 and f % 10 = 1 and f % 100 != 11 or v != 2 and f % 10 = 1'
+			},
+			'ps': {
+				'one': 'n = 1'
+			},
+			'pt': {
+				'one': 'n = 0..2 and n != 2'
+			},
+			'pt-PT': {
+				'one': 'n = 1 and v = 0'
+			},
+			'rm': {
+				'one': 'n = 1'
+			},
+			'ro': {
+				'one': 'i = 1 and v = 0',
+				'few': 'v != 0 or n = 0 or n != 1 and n % 100 = 1..19'
+			},
+			'rof': {
+				'one': 'n = 1'
+			},
+			'root': {},
+			'ru': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14',
+				'many': 'v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14'
+			},
+			'rwk': {
+				'one': 'n = 1'
+			},
+			'sah': {},
+			'saq': {
+				'one': 'n = 1'
+			},
+			'sdh': {
+				'one': 'n = 1'
+			},
+			'se': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'seh': {
+				'one': 'n = 1'
+			},
+			'ses': {},
+			'sg': {},
+			'sh': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			},
+			'shi': {
+				'one': 'i = 0 or n = 1',
+				'few': 'n = 2..10'
+			},
+			'si': {
+				'one': 'n = 0,1 or i = 0 and f = 1'
+			},
+			'sk': {
+				'one': 'i = 1 and v = 0',
+				'few': 'i = 2..4 and v = 0',
+				'many': 'v != 0'
+			},
+			'sl': {
+				'one': 'v = 0 and i % 100 = 1',
+				'two': 'v = 0 and i % 100 = 2',
+				'few': 'v = 0 and i % 100 = 3..4 or v != 0'
+			},
+			'sma': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'smi': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'smj': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'smn': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'sms': {
+				'one': 'n = 1',
+				'two': 'n = 2'
+			},
+			'sn': {
+				'one': 'n = 1'
+			},
+			'so': {
+				'one': 'n = 1'
+			},
+			'sq': {
+				'one': 'n = 1'
+			},
+			'sr': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11 or f % 10 = 1 and f % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14 or f % 10 = 2..4 and f % 100 != 12..14'
+			},
+			'ss': {
+				'one': 'n = 1'
+			},
+			'ssy': {
+				'one': 'n = 1'
+			},
+			'st': {
+				'one': 'n = 1'
+			},
+			'sv': {
+				'one': 'i = 1 and v = 0'
+			},
+			'sw': {
+				'one': 'i = 1 and v = 0'
+			},
+			'syr': {
+				'one': 'n = 1'
+			},
+			'ta': {
+				'one': 'n = 1'
+			},
+			'te': {
+				'one': 'n = 1'
+			},
+			'teo': {
+				'one': 'n = 1'
+			},
+			'th': {},
+			'ti': {
+				'one': 'n = 0..1'
+			},
+			'tig': {
+				'one': 'n = 1'
+			},
+			'tk': {
+				'one': 'n = 1'
+			},
+			'tl': {
+				'one': 'v = 0 and i = 1,2,3 or v = 0 and i % 10 != 4,6,9 or v != 0 and f % 10 != 4,6,9'
+			},
+			'tn': {
+				'one': 'n = 1'
+			},
+			'to': {},
+			'tr': {
+				'one': 'n = 1'
+			},
+			'ts': {
+				'one': 'n = 1'
+			},
+			'tzm': {
+				'one': 'n = 0..1 or n = 11..99'
+			},
+			'ug': {
+				'one': 'n = 1'
+			},
+			'uk': {
+				'one': 'v = 0 and i % 10 = 1 and i % 100 != 11',
+				'few': 'v = 0 and i % 10 = 2..4 and i % 100 != 12..14',
+				'many': 'v = 0 and i % 10 = 0 or v = 0 and i % 10 = 5..9 or v = 0 and i % 100 = 11..14'
+			},
+			'ur': {
+				'one': 'i = 1 and v = 0'
+			},
+			'uz': {
+				'one': 'n = 1'
+			},
+			've': {
+				'one': 'n = 1'
+			},
+			'vi': {},
+			'vo': {
+				'one': 'n = 1'
+			},
+			'vun': {
+				'one': 'n = 1'
+			},
+			'wa': {
+				'one': 'n = 0..1'
+			},
+			'wae': {
+				'one': 'n = 1'
+			},
+			'wo': {},
+			'xh': {
+				'one': 'n = 1'
+			},
+			'xog': {
+				'one': 'n = 1'
+			},
+			'yi': {
+				'one': 'i = 1 and v = 0'
+			},
+			'yo': {},
+			'yue': {},
+			'zh': {},
+			'zu': {
+				'one': 'i = 0 or n = 1'
 			}
 		},
+		// jscs:enable
 
 		/**
 		 * Plural form transformations, needed for some languages.
@@ -1186,9 +1747,9 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 			for ( index = 0; index < forms.length; index++ ) {
 				form = forms[ index ];
 				if ( explicitPluralPattern.test( form ) ) {
-					formCount = parseInt( form.substring( 0, form.indexOf( '=' ) ), 10 );
+					formCount = parseInt( form.slice( 0, form.indexOf( '=' ) ), 10 );
 					if ( formCount === count ) {
-						return ( form.substr( form.indexOf( '=' ) + 1 ) );
+						return ( form.slice( form.indexOf( '=' ) + 1 ) );
 					}
 					forms[ index ] = undefined;
 				}
@@ -1227,12 +1788,8 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 
 			for ( i = 0; i < pluralForms.length; i++ ) {
 				if ( pluralRules[ pluralForms[ i ] ] ) {
-					if ( typeof pluralRuleParser === 'undefined' ) {
+					if ( pluralRuleParser( pluralRules[ pluralForms[ i ] ], number ) ) {
 						return pluralFormIndex;
-					} else {
-						if ( pluralRuleParser( pluralRules[ pluralForms[ i ] ], number ) ) {
-							return pluralFormIndex;
-						}
 					}
 
 					pluralFormIndex++;
@@ -1373,6 +1930,1185 @@ void 0===c?d&&"get"in d&&null!==(e=d.get(a,b))?e:(e=n.find.attr(a,b),null==e?voi
 	$.extend( $.i18n.languages, {
 		'default': language
 	} );
+}( jQuery ) );
+
+/**
+ * cldrpluralparser.js
+ * A parser engine for CLDR plural rules.
+ *
+ * Copyright 2012-2014 Santhosh Thottingal and other contributors
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ * @version 0.1.0
+ * @source https://github.com/santhoshtr/CLDRPluralRuleParser
+ * @author Santhosh Thottingal <santhosh.thottingal@gmail.com>
+ * @author Timo Tijhof
+ * @author Amir Aharoni
+ */
+
+/**
+ * Evaluates a plural rule in CLDR syntax for a number
+ * @param {string} rule
+ * @param {integer} number
+ * @return {boolean} true if evaluation passed, false if evaluation failed.
+ */
+
+// UMD returnExports https://github.com/umdjs/umd/blob/master/returnExports.js
+(function(root, factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD. Register as an anonymous module.
+		define(factory);
+	} else if (typeof exports === 'object') {
+		// Node. Does not work with strict CommonJS, but
+		// only CommonJS-like environments that support module.exports,
+		// like Node.
+		module.exports = factory();
+	} else {
+		// Browser globals (root is window)
+		root.pluralRuleParser = factory();
+	}
+}(this, function() {
+
+function pluralRuleParser(rule, number) {
+	'use strict';
+
+	/*
+	Syntax: see http://unicode.org/reports/tr35/#Language_Plural_Rules
+	-----------------------------------------------------------------
+	condition     = and_condition ('or' and_condition)*
+		('@integer' samples)?
+		('@decimal' samples)?
+	and_condition = relation ('and' relation)*
+	relation      = is_relation | in_relation | within_relation
+	is_relation   = expr 'is' ('not')? value
+	in_relation   = expr (('not')? 'in' | '=' | '!=') range_list
+	within_relation = expr ('not')? 'within' range_list
+	expr          = operand (('mod' | '%') value)?
+	operand       = 'n' | 'i' | 'f' | 't' | 'v' | 'w'
+	range_list    = (range | value) (',' range_list)*
+	value         = digit+
+	digit         = 0|1|2|3|4|5|6|7|8|9
+	range         = value'..'value
+	samples       = sampleRange (',' sampleRange)* (',' ('…'|'...'))?
+	sampleRange   = decimalValue '~' decimalValue
+	decimalValue  = value ('.' value)?
+	*/
+
+	// We don't evaluate the samples section of the rule. Ignore it.
+	rule = rule.split('@')[0].replace(/^\s*/, '').replace(/\s*$/, '');
+
+	if (!rule.length) {
+		// Empty rule or 'other' rule.
+		return true;
+	}
+
+	// Indicates the current position in the rule as we parse through it.
+	// Shared among all parsing functions below.
+	var pos = 0,
+		operand,
+		expression,
+		relation,
+		result,
+		whitespace = makeRegexParser(/^\s+/),
+		value = makeRegexParser(/^\d+/),
+		_n_ = makeStringParser('n'),
+		_i_ = makeStringParser('i'),
+		_f_ = makeStringParser('f'),
+		_t_ = makeStringParser('t'),
+		_v_ = makeStringParser('v'),
+		_w_ = makeStringParser('w'),
+		_is_ = makeStringParser('is'),
+		_isnot_ = makeStringParser('is not'),
+		_isnot_sign_ = makeStringParser('!='),
+		_equal_ = makeStringParser('='),
+		_mod_ = makeStringParser('mod'),
+		_percent_ = makeStringParser('%'),
+		_not_ = makeStringParser('not'),
+		_in_ = makeStringParser('in'),
+		_within_ = makeStringParser('within'),
+		_range_ = makeStringParser('..'),
+		_comma_ = makeStringParser(','),
+		_or_ = makeStringParser('or'),
+		_and_ = makeStringParser('and');
+
+	function debug() {
+		// console.log.apply(console, arguments);
+	}
+
+	debug('pluralRuleParser', rule, number);
+
+	// Try parsers until one works, if none work return null
+	function choice(parserSyntax) {
+		return function() {
+			var i, result;
+
+			for (i = 0; i < parserSyntax.length; i++) {
+				result = parserSyntax[i]();
+
+				if (result !== null) {
+					return result;
+				}
+			}
+
+			return null;
+		};
+	}
+
+	// Try several parserSyntax-es in a row.
+	// All must succeed; otherwise, return null.
+	// This is the only eager one.
+	function sequence(parserSyntax) {
+		var i, parserRes,
+			originalPos = pos,
+			result = [];
+
+		for (i = 0; i < parserSyntax.length; i++) {
+			parserRes = parserSyntax[i]();
+
+			if (parserRes === null) {
+				pos = originalPos;
+
+				return null;
+			}
+
+			result.push(parserRes);
+		}
+
+		return result;
+	}
+
+	// Run the same parser over and over until it fails.
+	// Must succeed a minimum of n times; otherwise, return null.
+	function nOrMore(n, p) {
+		return function() {
+			var originalPos = pos,
+				result = [],
+				parsed = p();
+
+			while (parsed !== null) {
+				result.push(parsed);
+				parsed = p();
+			}
+
+			if (result.length < n) {
+				pos = originalPos;
+
+				return null;
+			}
+
+			return result;
+		};
+	}
+
+	// Helpers - just make parserSyntax out of simpler JS builtin types
+	function makeStringParser(s) {
+		var len = s.length;
+
+		return function() {
+			var result = null;
+
+			if (rule.substr(pos, len) === s) {
+				result = s;
+				pos += len;
+			}
+
+			return result;
+		};
+	}
+
+	function makeRegexParser(regex) {
+		return function() {
+			var matches = rule.substr(pos).match(regex);
+
+			if (matches === null) {
+				return null;
+			}
+
+			pos += matches[0].length;
+
+			return matches[0];
+		};
+	}
+
+	/**
+	 * Integer digits of n.
+	 */
+	function i() {
+		var result = _i_();
+
+		if (result === null) {
+			debug(' -- failed i', parseInt(number, 10));
+
+			return result;
+		}
+
+		result = parseInt(number, 10);
+		debug(' -- passed i ', result);
+
+		return result;
+	}
+
+	/**
+	 * Absolute value of the source number (integer and decimals).
+	 */
+	function n() {
+		var result = _n_();
+
+		if (result === null) {
+			debug(' -- failed n ', number);
+
+			return result;
+		}
+
+		result = parseFloat(number, 10);
+		debug(' -- passed n ', result);
+
+		return result;
+	}
+
+	/**
+	 * Visible fractional digits in n, with trailing zeros.
+	 */
+	function f() {
+		var result = _f_();
+
+		if (result === null) {
+			debug(' -- failed f ', number);
+
+			return result;
+		}
+
+		result = (number + '.').split('.')[1] || 0;
+		debug(' -- passed f ', result);
+
+		return result;
+	}
+
+	/**
+	 * Visible fractional digits in n, without trailing zeros.
+	 */
+	function t() {
+		var result = _t_();
+
+		if (result === null) {
+			debug(' -- failed t ', number);
+
+			return result;
+		}
+
+		result = (number + '.').split('.')[1].replace(/0$/, '') || 0;
+		debug(' -- passed t ', result);
+
+		return result;
+	}
+
+	/**
+	 * Number of visible fraction digits in n, with trailing zeros.
+	 */
+	function v() {
+		var result = _v_();
+
+		if (result === null) {
+			debug(' -- failed v ', number);
+
+			return result;
+		}
+
+		result = (number + '.').split('.')[1].length || 0;
+		debug(' -- passed v ', result);
+
+		return result;
+	}
+
+	/**
+	 * Number of visible fraction digits in n, without trailing zeros.
+	 */
+	function w() {
+		var result = _w_();
+
+		if (result === null) {
+			debug(' -- failed w ', number);
+
+			return result;
+		}
+
+		result = (number + '.').split('.')[1].replace(/0$/, '').length || 0;
+		debug(' -- passed w ', result);
+
+		return result;
+	}
+
+	// operand       = 'n' | 'i' | 'f' | 't' | 'v' | 'w'
+	operand = choice([n, i, f, t, v, w]);
+
+	// expr          = operand (('mod' | '%') value)?
+	expression = choice([mod, operand]);
+
+	function mod() {
+		var result = sequence(
+			[operand, whitespace, choice([_mod_, _percent_]), whitespace, value]
+		);
+
+		if (result === null) {
+			debug(' -- failed mod');
+
+			return null;
+		}
+
+		debug(' -- passed ' + parseInt(result[0], 10) + ' ' + result[2] + ' ' + parseInt(result[4], 10));
+
+		return parseInt(result[0], 10) % parseInt(result[4], 10);
+	}
+
+	function not() {
+		var result = sequence([whitespace, _not_]);
+
+		if (result === null) {
+			debug(' -- failed not');
+
+			return null;
+		}
+
+		return result[1];
+	}
+
+	// is_relation   = expr 'is' ('not')? value
+	function is() {
+		var result = sequence([expression, whitespace, choice([_is_]), whitespace, value]);
+
+		if (result !== null) {
+			debug(' -- passed is : ' + result[0] + ' == ' + parseInt(result[4], 10));
+
+			return result[0] === parseInt(result[4], 10);
+		}
+
+		debug(' -- failed is');
+
+		return null;
+	}
+
+	// is_relation   = expr 'is' ('not')? value
+	function isnot() {
+		var result = sequence(
+			[expression, whitespace, choice([_isnot_, _isnot_sign_]), whitespace, value]
+		);
+
+		if (result !== null) {
+			debug(' -- passed isnot: ' + result[0] + ' != ' + parseInt(result[4], 10));
+
+			return result[0] !== parseInt(result[4], 10);
+		}
+
+		debug(' -- failed isnot');
+
+		return null;
+	}
+
+	function not_in() {
+		var i, range_list,
+			result = sequence([expression, whitespace, _isnot_sign_, whitespace, rangeList]);
+
+		if (result !== null) {
+			debug(' -- passed not_in: ' + result[0] + ' != ' + result[4]);
+			range_list = result[4];
+
+			for (i = 0; i < range_list.length; i++) {
+				if (parseInt(range_list[i], 10) === parseInt(result[0], 10)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		debug(' -- failed not_in');
+
+		return null;
+	}
+
+	// range_list    = (range | value) (',' range_list)*
+	function rangeList() {
+		var result = sequence([choice([range, value]), nOrMore(0, rangeTail)]),
+			resultList = [];
+
+		if (result !== null) {
+			resultList = resultList.concat(result[0]);
+
+			if (result[1][0]) {
+				resultList = resultList.concat(result[1][0]);
+			}
+
+			return resultList;
+		}
+
+		debug(' -- failed rangeList');
+
+		return null;
+	}
+
+	function rangeTail() {
+		// ',' range_list
+		var result = sequence([_comma_, rangeList]);
+
+		if (result !== null) {
+			return result[1];
+		}
+
+		debug(' -- failed rangeTail');
+
+		return null;
+	}
+
+	// range         = value'..'value
+	function range() {
+		var i, array, left, right,
+			result = sequence([value, _range_, value]);
+
+		if (result !== null) {
+			debug(' -- passed range');
+
+			array = [];
+			left = parseInt(result[0], 10);
+			right = parseInt(result[2], 10);
+
+			for (i = left; i <= right; i++) {
+				array.push(i);
+			}
+
+			return array;
+		}
+
+		debug(' -- failed range');
+
+		return null;
+	}
+
+	function _in() {
+		var result, range_list, i;
+
+		// in_relation   = expr ('not')? 'in' range_list
+		result = sequence(
+			[expression, nOrMore(0, not), whitespace, choice([_in_, _equal_]), whitespace, rangeList]
+		);
+
+		if (result !== null) {
+			debug(' -- passed _in:' + result);
+
+			range_list = result[5];
+
+			for (i = 0; i < range_list.length; i++) {
+				if (parseInt(range_list[i], 10) === parseInt(result[0], 10)) {
+					return (result[1][0] !== 'not');
+				}
+			}
+
+			return (result[1][0] === 'not');
+		}
+
+		debug(' -- failed _in ');
+
+		return null;
+	}
+
+	/**
+	 * The difference between "in" and "within" is that
+	 * "in" only includes integers in the specified range,
+	 * while "within" includes all values.
+	 */
+	function within() {
+		var range_list, result;
+
+		// within_relation = expr ('not')? 'within' range_list
+		result = sequence(
+			[expression, nOrMore(0, not), whitespace, _within_, whitespace, rangeList]
+		);
+
+		if (result !== null) {
+			debug(' -- passed within');
+
+			range_list = result[5];
+
+			if ((result[0] >= parseInt(range_list[0], 10)) &&
+				(result[0] < parseInt(range_list[range_list.length - 1], 10))) {
+
+				return (result[1][0] !== 'not');
+			}
+
+			return (result[1][0] === 'not');
+		}
+
+		debug(' -- failed within ');
+
+		return null;
+	}
+
+	// relation      = is_relation | in_relation | within_relation
+	relation = choice([is, not_in, isnot, _in, within]);
+
+	// and_condition = relation ('and' relation)*
+	function and() {
+		var i,
+			result = sequence([relation, nOrMore(0, andTail)]);
+
+		if (result) {
+			if (!result[0]) {
+				return false;
+			}
+
+			for (i = 0; i < result[1].length; i++) {
+				if (!result[1][i]) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		debug(' -- failed and');
+
+		return null;
+	}
+
+	// ('and' relation)*
+	function andTail() {
+		var result = sequence([whitespace, _and_, whitespace, relation]);
+
+		if (result !== null) {
+			debug(' -- passed andTail' + result);
+
+			return result[3];
+		}
+
+		debug(' -- failed andTail');
+
+		return null;
+
+	}
+	//  ('or' and_condition)*
+	function orTail() {
+		var result = sequence([whitespace, _or_, whitespace, and]);
+
+		if (result !== null) {
+			debug(' -- passed orTail: ' + result[3]);
+
+			return result[3];
+		}
+
+		debug(' -- failed orTail');
+
+		return null;
+	}
+
+	// condition     = and_condition ('or' and_condition)*
+	function condition() {
+		var i,
+			result = sequence([and, nOrMore(0, orTail)]);
+
+		if (result) {
+			for (i = 0; i < result[1].length; i++) {
+				if (result[1][i]) {
+					return true;
+				}
+			}
+
+			return result[0];
+		}
+
+		return false;
+	}
+
+	result = condition();
+
+	/**
+	 * For success, the pos must have gotten to the end of the rule
+	 * and returned a non-null.
+	 * n.b. This is part of language infrastructure,
+	 * so we do not throw an internationalizable message.
+	 */
+	if (result === null) {
+		throw new Error('Parse error at position ' + pos.toString() + ' for rule: ' + rule);
+	}
+
+	if (pos !== rule.length) {
+		debug('Warning: Rule not parsed completely. Parser stopped at ' + rule.substr(0, pos) + ' for rule: ' + rule);
+	}
+
+	return result;
+}
+
+return pluralRuleParser;
+
+}));
+
+/**
+ * Bosnian (bosanski) language functions
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.bs = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'instrumental': // instrumental
+				word = 's ' + word;
+				break;
+			case 'lokativ': // locative
+				word = 'o ' + word;
+				break;
+			}
+
+			return word;
+		}
+	} );
+
+}( jQuery ) );
+
+/**
+ * Lower Sorbian (Dolnoserbski) language functions
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.dsb = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+				case 'instrumental': // instrumental
+					word = 'z ' + word;
+					break;
+				case 'lokatiw': // lokatiw
+					word = 'wo ' + word;
+					break;
+			}
+
+			return word;
+		}
+	} );
+
+}( jQuery ) );
+
+/**
+ * Finnish (Suomi) language functions
+ *
+ * @author Santhosh Thottingal
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.fi = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			// vowel harmony flag
+			var aou = word.match( /[aou][^äöy]*$/i ),
+				origWord = word;
+			if ( word.match( /wiki$/i ) ) {
+				aou = false;
+			}
+
+			// append i after final consonant
+			if ( word.match( /[bcdfghjklmnpqrstvwxz]$/i ) ) {
+				word += 'i';
+			}
+
+			switch ( form ) {
+			case 'genitive':
+				word += 'n';
+				break;
+			case 'elative':
+				word += ( aou ? 'sta' : 'stä' );
+				break;
+			case 'partitive':
+				word += ( aou ? 'a' : 'ä' );
+				break;
+			case 'illative':
+				// Double the last letter and add 'n'
+				word += word.slice( -1 ) + 'n';
+				break;
+			case 'inessive':
+				word += ( aou ? 'ssa' : 'ssä' );
+				break;
+			default:
+				word = origWord;
+				break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Irish (Gaeilge) language functions
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.ga = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			if ( form === 'ainmlae' ) {
+				switch ( word ) {
+				case 'an Domhnach':
+					word = 'Dé Domhnaigh';
+					break;
+				case 'an Luan':
+					word = 'Dé Luain';
+					break;
+				case 'an Mháirt':
+					word = 'Dé Mháirt';
+					break;
+				case 'an Chéadaoin':
+					word = 'Dé Chéadaoin';
+					break;
+				case 'an Déardaoin':
+					word = 'Déardaoin';
+					break;
+				case 'an Aoine':
+					word = 'Dé hAoine';
+					break;
+				case 'an Satharn':
+					word = 'Dé Sathairn';
+					break;
+				}
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Hebrew (עברית) language functions
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.he = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'prefixed':
+			case 'תחילית': // the same word in Hebrew
+				// Duplicate prefixed "Waw", but only if it's not already double
+				if ( word.slice( 0, 1 ) === 'ו' && word.slice( 0, 2 ) !== 'וו' ) {
+					word = 'ו' + word;
+				}
+
+				// Remove the "He" if prefixed
+				if ( word.slice( 0, 1 ) === 'ה' ) {
+					word = word.slice( 1 );
+				}
+
+				// Add a hyphen (maqaf) before numbers and non-Hebrew letters
+				if ( word.slice( 0, 1 ) < 'א' || word.slice( 0, 1 ) > 'ת' ) {
+					word = '־' + word;
+				}
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Upper Sorbian (Hornjoserbsce) language functions
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.hsb = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'instrumental': // instrumental
+				word = 'z ' + word;
+				break;
+			case 'lokatiw': // lokatiw
+				word = 'wo ' + word;
+				break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Hungarian language functions
+ *
+ * @author Santhosh Thottingal
+ */
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.hu = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'rol':
+				word += 'ról';
+				break;
+			case 'ba':
+				word += 'ba';
+				break;
+			case 'k':
+				word += 'k';
+				break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Armenian (Հայերեն) language functions
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.hy = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			if ( form === 'genitive' ) { // սեռական հոլով
+				if ( word.slice( -1 ) === 'ա' ) {
+					word = word.slice( 0, -1 ) + 'այի';
+				} else if ( word.slice( -1 ) === 'ո' ) {
+					word = word.slice( 0, -1 ) + 'ոյի';
+				} else if ( word.slice( -4 ) === 'գիրք' ) {
+					word = word.slice( 0, -4 ) + 'գրքի';
+				} else {
+					word = word + 'ի';
+				}
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Latin (lingua Latina) language functions
+ *
+ * @author Santhosh Thottingal
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.la = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'genitive':
+				// only a few declensions, and even for those mostly the singular only
+				word = word.replace( /u[ms]$/i, 'i' ); // 2nd declension singular
+				word = word.replace( /ommunia$/i, 'ommunium' ); // 3rd declension neuter plural (partly)
+				word = word.replace( /a$/i, 'ae' ); // 1st declension singular
+				word = word.replace( /libri$/i, 'librorum' ); // 2nd declension plural (partly)
+				word = word.replace( /nuntii$/i, 'nuntiorum' ); // 2nd declension plural (partly)
+				word = word.replace( /tio$/i, 'tionis' ); // 3rd declension singular (partly)
+				word = word.replace( /ns$/i, 'ntis' );
+				word = word.replace( /as$/i, 'atis' );
+				word = word.replace( /es$/i, 'ei' ); // 5th declension singular
+				break;
+			case 'accusative':
+				// only a few declensions, and even for those mostly the singular only
+				word = word.replace( /u[ms]$/i, 'um' ); // 2nd declension singular
+				word = word.replace( /ommunia$/i, 'am' ); // 3rd declension neuter plural (partly)
+				word = word.replace( /a$/i, 'ommunia' ); // 1st declension singular
+				word = word.replace( /libri$/i, 'libros' ); // 2nd declension plural (partly)
+				word = word.replace( /nuntii$/i, 'nuntios' );// 2nd declension plural (partly)
+				word = word.replace( /tio$/i, 'tionem' ); // 3rd declension singular (partly)
+				word = word.replace( /ns$/i, 'ntem' );
+				word = word.replace( /as$/i, 'atem' );
+				word = word.replace( /es$/i, 'em' ); // 5th declension singular
+				break;
+			case 'ablative':
+				// only a few declensions, and even for those mostly the singular only
+				word = word.replace( /u[ms]$/i, 'o' ); // 2nd declension singular
+				word = word.replace( /ommunia$/i, 'ommunibus' ); // 3rd declension neuter plural (partly)
+				word = word.replace( /a$/i, 'a' ); // 1st declension singular
+				word = word.replace( /libri$/i, 'libris' ); // 2nd declension plural (partly)
+				word = word.replace( /nuntii$/i, 'nuntiis' ); // 2nd declension plural (partly)
+				word = word.replace( /tio$/i, 'tione' ); // 3rd declension singular (partly)
+				word = word.replace( /ns$/i, 'nte' );
+				word = word.replace( /as$/i, 'ate' );
+				word = word.replace( /es$/i, 'e' ); // 5th declension singular
+				break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Malayalam language functions
+ *
+ * @author Santhosh Thottingal
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.ml = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			form = form.toLowerCase();
+			switch ( form ) {
+				case 'ഉദ്ദേശിക':
+				case 'dative':
+					if ( word.slice( -1 ) === 'ു' ||
+						word.slice( -1 ) === 'ൂ' ||
+						word.slice( -1 ) === 'ൗ' ||
+						word.slice( -1 ) === 'ൌ'
+					) {
+						word += 'വിന്';
+					} else if ( word.slice( -1 ) === 'ം' ) {
+						word = word.slice( 0, -1 ) + 'ത്തിന്';
+					} else if ( word.slice( -1 ) === 'ൻ' ) {
+						// Atomic chillu n. അവൻ -> അവന്
+						word = word.slice( 0, -1 ) + 'ന്';
+					} else if ( word.slice( -3 ) === 'ന്\u200d' ) {
+						// chillu n. അവൻ -> അവന്
+						word = word.slice( 0, -1 );
+					} else if ( word.slice( -1 ) === 'ൾ' || word.slice( -3 ) === 'ള്\u200d' ) {
+						word += 'ക്ക്';
+					} else if ( word.slice( -1 ) === 'ർ' || word.slice( -3 ) === 'ര്\u200d' ) {
+						word += 'ക്ക്';
+					} else if ( word.slice( -1 ) === 'ൽ' ) {
+						// Atomic chillu ൽ , ഫയൽ -> ഫയലിന്
+						word = word.slice( 0, -1 ) + 'ലിന്';
+					} else if ( word.slice( -3 ) === 'ല്\u200d' ) {
+						// chillu ല്\u200d , ഫയല്\u200d -> ഫയലിന്
+						word = word.slice( 0, -2 ) + 'ിന്';
+					} else if ( word.slice( -2 ) === 'ു്' ) {
+						word = word.slice( 0, -2 ) + 'ിന്';
+					} else if ( word.slice( -1 ) === '്' ) {
+						word = word.slice( 0, -1 ) + 'ിന്';
+					} else {
+						// കാവ്യ -> കാവ്യയ്ക്ക്, ഹരി -> ഹരിയ്ക്ക്, മല -> മലയ്ക്ക്
+						word += 'യ്ക്ക്';
+					}
+
+					break;
+				case 'സംബന്ധിക':
+				case 'genitive':
+					if ( word.slice( -1 ) === 'ം' ) {
+						word = word.slice( 0, -1 ) + 'ത്തിന്റെ';
+					} else if ( word.slice( -2 ) === 'ു്' ) {
+						word = word.slice( 0, -2 ) + 'ിന്റെ';
+					} else if ( word.slice( -1 ) === '്' ) {
+						word = word.slice( 0, -1 ) + 'ിന്റെ';
+					} else if (  word.slice( -1 ) === 'ു' ||
+						word.slice( -1 ) === 'ൂ' ||
+						word.slice( -1 ) === 'ൗ' ||
+						word.slice( -1 ) === 'ൌ'
+					) {
+						word += 'വിന്റെ';
+					} else if ( word.slice( -1 ) === 'ൻ' ) {
+						// Atomic chillu n. അവൻ -> അവന്റെ
+						word = word.slice( 0, -1 ) + 'ന്റെ';
+					} else if ( word.slice( -3 ) === 'ന്\u200d' ) {
+						// chillu n. അവൻ -> അവന്റെ
+						word = word.slice( 0, -1 ) + 'റെ';
+					} else if ( word.slice( -3 ) === 'ള്\u200d' ) {
+						// chillu n. അവൾ -> അവളുടെ
+						word = word.slice( 0, -2 ) + 'ുടെ';
+					} else if ( word.slice( -1 ) === 'ൾ' ) {
+						// Atomic chillu n. അവള്\u200d -> അവളുടെ
+						word = word.slice( 0, -1 ) + 'ളുടെ';
+					} else if ( word.slice( -1 ) === 'ൽ' ) {
+						// Atomic l. മുയല്\u200d -> മുയലിന്റെ
+						word = word.slice( 0, -1 ) + 'ലിന്റെ';
+					} else if ( word.slice( -3 ) === 'ല്\u200d' ) {
+						// chillu l. മുയല്\u200d -> അവളുടെ
+						word = word.slice( 0, -2 ) + 'ിന്റെ';
+					} else if ( word.slice( -3 ) === 'ര്\u200d' ) {
+						// chillu r. അവര്\u200d -> അവരുടെ
+						word = word.slice( 0, -2 ) + 'ുടെ';
+					} else if ( word.slice( -1 ) === 'ർ' ) {
+						// Atomic chillu r. അവർ -> അവരുടെ
+						word = word.slice( 0, -1 ) + 'രുടെ';
+					} else {
+						word += 'യുടെ';
+					}
+
+					break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Ossetian (Ирон) language functions
+ *
+ * @author Santhosh Thottingal
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.os = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			var endAllative, jot, hyphen, ending;
+
+			// Ending for allative case
+			endAllative = 'мæ';
+			// Variable for 'j' beetwen vowels
+			jot = '';
+			// Variable for "-" for not Ossetic words
+			hyphen = '';
+			// Variable for ending
+			ending = '';
+
+			if ( word.match( /тæ$/i ) ) {
+				// Checking if the $word is in plural form
+				word = word.slice( 0, -1 );
+				endAllative = 'æм';
+			} else if ( word.match( /[аæеёиоыэюя]$/i ) ) {
+				// Works if word is in singular form.
+				// Checking if word ends on one of the vowels: е, ё, и, о, ы, э, ю,
+				// я.
+				jot = 'й';
+			} else if ( word.match( /у$/i ) ) {
+				// Checking if word ends on 'у'. 'У' can be either consonant 'W' or
+				// vowel 'U' in cyrillic Ossetic.
+				// Examples: {{grammar:genitive|аунеу}} = аунеуы,
+				// {{grammar:genitive|лæппу}} = лæппуйы.
+				if ( !word.slice( -2, -1 )
+						.match( /[аæеёиоыэюя]$/i ) ) {
+					jot = 'й';
+				}
+			} else if ( !word.match( /[бвгджзйклмнопрстфхцчшщьъ]$/i ) ) {
+				hyphen = '-';
+			}
+
+			switch ( form ) {
+			case 'genitive':
+				ending = hyphen + jot + 'ы';
+				break;
+			case 'dative':
+				ending = hyphen + jot + 'æн';
+				break;
+			case 'allative':
+				ending = hyphen + endAllative;
+				break;
+			case 'ablative':
+				if ( jot === 'й' ) {
+					ending = hyphen + jot + 'æ';
+				} else {
+					ending = hyphen + jot + 'æй';
+				}
+				break;
+			case 'superessive':
+				ending = hyphen + jot + 'ыл';
+				break;
+			case 'equative':
+				ending = hyphen + jot + 'ау';
+				break;
+			case 'comitative':
+				ending = hyphen + 'имæ';
+				break;
+			}
+
+			return word + ending;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Russian (Русский) language functions
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.ru = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			if ( form === 'genitive' ) { // родительный падеж
+				if ( word.slice( -1 ) === 'ь' ) {
+					word = word.slice( 0, -1 ) + 'я';
+				} else if ( word.slice( -2 ) === 'ия' ) {
+					word = word.slice( 0, -2 ) + 'ии';
+				} else if ( word.slice( -2 ) === 'ка' ) {
+					word = word.slice( 0, -2 ) + 'ки';
+				} else if ( word.slice( -2 ) === 'ти' ) {
+					word = word.slice( 0, -2 ) + 'тей';
+				} else if ( word.slice( -2 ) === 'ды' ) {
+					word = word.slice( 0, -2 ) + 'дов';
+				} else if ( word.slice( -3 ) === 'ник' ) {
+					word = word.slice( 0, -3 ) + 'ника';
+				}
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Slovenian (Slovenščina) language functions
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.sl = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+				// locative
+				case 'mestnik':
+					word = 'o ' + word;
+
+					break;
+				// instrumental
+				case 'orodnik':
+					word = 'z ' + word;
+
+					break;
+			}
+
+			return word;
+		}
+	} );
+}( jQuery ) );
+
+/**
+ * Ukrainian (Українська) language functions
+ */
+
+( function ( $ ) {
+	'use strict';
+
+	$.i18n.languages.uk = $.extend( {}, $.i18n.languages[ 'default' ], {
+		convertGrammar: function ( word, form ) {
+			switch ( form ) {
+			case 'genitive': // родовий відмінок
+				if ( word.slice( -1 ) === 'ь' ) {
+					word = word.slice( 0, -1 ) + 'я';
+				} else if ( word.slice( -2 ) === 'ія' ) {
+					word = word.slice( 0, -2 ) + 'ії';
+				} else if ( word.slice( -2 ) === 'ка' ) {
+					word = word.slice( 0, -2 ) + 'ки';
+				} else if ( word.slice( -2 ) === 'ти' ) {
+					word = word.slice( 0, -2 ) + 'тей';
+				} else if ( word.slice( -2 ) === 'ды' ) {
+					word = word.slice( 0, -2 ) + 'дов';
+				} else if ( word.slice( -3 ) === 'ник' ) {
+					word = word.slice( 0, -3 ) + 'ника';
+				}
+
+				break;
+			case 'accusative': // знахідний відмінок
+				if ( word.slice( -2 ) === 'ія' ) {
+					word = word.slice( 0, -2 ) + 'ію';
+				}
+
+				break;
+			}
+
+			return word;
+		}
+	} );
+
 }( jQuery ) );
 
 //! moment.js
