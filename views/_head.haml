@@ -12,7 +12,7 @@
       $messageFiles
     ) ) );
 
-    $availableLanguages = array();
+    $availableLanguages = [];
     foreach ( $languages as $lang ) {
       $availableLanguages[$lang] = ucfirst( $I18N->getLangName( $lang ) );
     }
@@ -39,7 +39,7 @@
   }
 
   // Adds a .rtl class to the <body> if a right-to-left language
-  if ( in_array( $I18N->getLang(), array( 'ar', 'he', 'fa', 'ps', 'ur' ) ) ) {
+  if ( in_array( $I18N->getLang(), [ 'ar', 'he', 'fa', 'ps', 'ur' ] ) ) {
     $rtl = 'rtl';
   } else {
     $rtl = '';

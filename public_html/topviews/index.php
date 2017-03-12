@@ -62,8 +62,8 @@
             </select>
           </div>
         </div>
-        <div class="row aqs-row">
-          <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-12 topviews-toggles">
             <label>
               <?php echo $I18N->msg( 'excluded-pages' ); ?>
             </label>
@@ -164,7 +164,7 @@
         <div class="pull-right">
           <?php include "../_data_links.php"; ?>
         </div>
-        <div class="col-lg-12 data-notice">
+        <div class="data-notice">
           <small class="text-muted">
             <?php echo $I18N->msg( 'topviews-false-positive' ); ?>
             <span class="list-false-positives"></span>

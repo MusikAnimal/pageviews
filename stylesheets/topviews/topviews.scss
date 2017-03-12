@@ -1,14 +1,17 @@
+@import '../bootstrap';
 @import '../shared';
 @import '../mixins';
 
 $gray: #ccc;
 
 .chart-container {
+  overflow-x: scroll;
   padding: 0;
 }
 
 .output-table {
   display: none;
+  white-space: nowrap;
 
   &.show-mobile .topview-entry--mobile {
     display: table-cell;
@@ -21,11 +24,6 @@ $gray: #ccc;
 
 .percent-mobile-wrapper {
   display: none;
-}
-
-.download-btn-group .dropdown-menu {
-  left: auto;
-  right: 0;
 }
 
 .topview-entry {
@@ -82,6 +80,25 @@ $gray: #ccc;
   }
 }
 
+.rtl {
+  .topview-entry--background {
+    left: inherit;
+    right: 0;
+  }
+
+  // scss-lint:disable ImportantRule
+  .download-btn-group .dropdown-menu {
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  // scss-lint:disable QualifyingElement
+  .topviews-toggles input[type=checkbox] {
+    margin-left: auto;
+    margin-right: 15px;
+  }
+}
+
 .topview-entry--leader {
   background: url('/pageviews/images/dot.gif') repeat-x bottom;
   height: 16px;
@@ -116,7 +133,14 @@ $gray: #ccc;
   display: none;
 }
 
+.data-notice {
+  clear: both;
+  padding: 0 15px;
+}
+
 .search-topviews {
+  margin-top: 15px;
+
   .glyphicon {
     @include center('vertical');
     right: 10px;
@@ -205,4 +229,15 @@ $gray: #ccc;
 
 .mainspace-only-option[type=checkbox] {
   margin-left: 10px;
+}
+
+@media (max-width: $screen-lg) {
+  .data-notice {
+    clear: left;
+    padding-top: 15px;
+  }
+
+  .rtl .data-notice {
+    clear: right;
+  }
 }

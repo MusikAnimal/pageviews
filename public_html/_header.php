@@ -71,8 +71,11 @@
   </div>
   <div class="navbar-collapse collapse interapp-navigation">
     <a class="home-link pull-left" href="<?php echo '/pageviews'; ?>"></a>
-    <ul class="interapp-links nav navbar-nav navbar-left">
+    <ol class="interapp-links nav navbar-nav navbar-left">
       <?php $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews' ]; ?>
+      <?php if ( $rtl === 'rtl' ) { ?>
+        <?php $apps = array_reverse( $apps ); ?>
+      <?php } ?>
       <?php foreach( $apps as $app ) { ?>
         <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
         <?php if ( $app === $currentApp ) { ?>
@@ -89,7 +92,7 @@
           </li>
         <?php } ?>
       <?php } ?>
-    </ul>
+    </ol>
   </div>
 </nav>
 <?php if ( $isAppPage ) { ?>

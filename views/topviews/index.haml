@@ -47,8 +47,8 @@
               %option(value="mobile-web")
                 = $I18N->msg( 'mobile-web' )
 
-        %div.row.aqs-row
-          %div.col-lg-12
+        %div.row
+          %div.col-lg-12.topviews-toggles
             %label
               = $I18N->msg( 'excluded-pages' )
             %span.report-false-positive
@@ -118,7 +118,7 @@
         %div.pull-right
           - include "../_data_links.php"
 
-        %div.col-lg-12.data-notice
+        %div.data-notice
           %small.text-muted
             = $I18N->msg( 'topviews-false-positive' )
             %span.list-false-positives

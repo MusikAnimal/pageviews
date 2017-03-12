@@ -6,6 +6,11 @@
 
 @import 'mixins';
 
+.interapp-links {
+  float: right !important;
+  padding: 0;
+}
+
 .date-latest,
 .pull-right {
   float: left !important;
@@ -25,15 +30,15 @@
   margin-right: 10px;
 }
 
+.dropdown-menu-right {
+  left: 0;
+  right: auto;
+  text-align: right;
+}
+
 .lang-group {
   margin-left: 5px;
   right: initial;
-
-  .dropdown-menu {
-    left: 0;
-    right: auto;
-    text-align: right;
-  }
 }
 
 .table {
@@ -59,6 +64,10 @@ input[type=checkbox] {
   margin-right: -20px;
 }
 
+.chart-toggles input[type=checkbox] {
+  margin: 0;
+}
+
 .modal-footer {
   text-align: left;
 }
@@ -68,10 +77,14 @@ input[type=checkbox] {
 }
 
 .select2-selection__choice {
+  direction: rtl;
   float: right !important;
+  margin-left: 5px;
+  margin-right: 0 !important;
 }
 
-.select2-results__options {
+.select2-results__options,
+.select2-search__field {
   direction: rtl;
 }
 
@@ -79,8 +92,29 @@ input[type=checkbox] {
   text-align: right;
 }
 
+.select2-selection__choice__remove {
+  margin-left: 2px;
+  margin-right: 0 !important;
+}
+
 .daterangepicker .ranges {
   text-align: right;
+}
+
+.daterangepicker_input {
+  input {
+    padding-left: 0;
+    padding-right: 28px;
+  }
+
+  i {
+    left: initial;
+    right: 8px;
+  }
+}
+
+.calendar.left .fa-calendar {
+  right: 20px;
 }
 
 .daterange-notice {
@@ -172,10 +206,10 @@ input[type=checkbox] {
   }
 }
 
-.logarithmic-scale,
-.begin-at-zero {
-  margin: 0 30px 0 0;
-}
+// .logarithmic-scale,
+// .begin-at-zero {
+//   margin: 0 30px 0 0;
+// }
 
 .search-topviews {
   float: right;
@@ -230,4 +264,14 @@ input[type=checkbox] {
 
 .url-structure-example {
   text-align: right;
+}
+
+@media (max-width: $screen-sm) {
+  .chart-buttons {
+    float: right;
+  }
+
+  .chart-toggles {
+    float: right;
+  }
 }

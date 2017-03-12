@@ -104,7 +104,7 @@ const ListHelpers = superclass => class extends superclass {
     }
 
     return `/pageviews?start=${startDate.format('YYYY-MM-DD')}&end=${endDate.format('YYYY-MM-DD')}` +
-      `&project=${project}&platform=${platform}&pages=${encodeURIComponent(page)}`;
+      `&project=${project}&platform=${platform}&pages=${encodeURIComponent(page.score()).replace("'", escape)}`;
   }
 
   /**

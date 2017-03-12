@@ -320,7 +320,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
          <th>${$.i18n('unique-titles', this.outputData.titles.length)}</th>
          <th>${totalBadgesMarkup}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
-         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
+         <th>${this.formatNumber(Math.round(this.outputData.average))}</th>`
       );
       $('#output_list').html('');
 
@@ -334,10 +334,10 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           `<tr>
            <th scope='row'>${index + 1}</th>
            <td>${item.lang}</td>
-           <td><a href="${item.url}" target="_blank">${item.label}</a></td>
+           <td>${this.getPageLink(item.label, `${item.lang}.${this.baseProject}.org`)}</td>
            <td>${badgeMarkup}</td>
            <td><a target='_blank' href='${this.getPageviewsURL(`${item.lang}.${this.baseProject}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>
-           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           <td>${this.formatNumber(Math.round(item.average))}</td>
            </tr>`
         );
       });

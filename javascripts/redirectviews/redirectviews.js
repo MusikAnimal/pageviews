@@ -306,7 +306,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
          <th>${$.i18n('num-redirects', this.formatNumber(numRedirects), numRedirects)}</th>
          <th>${$.i18n('num-sections', this.formatNumber(this.outputData.sectionCount), this.outputData.sectionCount)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
-         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
+         <th>${this.formatNumber(Math.round(this.outputData.average))}</th>`
       );
       $('#output_list').html('');
 
@@ -316,17 +316,19 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         let sectionMarkup = '';
 
         if (item.section) {
-          const sectionUrl = `${this.getPageURL(this.outputData.source)}#${encodeURIComponent(item.section.score())}`;
-          sectionMarkup = `<a href="${sectionUrl}" target="_blank">#${item.section}</a>`;
+          sectionMarkup = this.getPageLink(this.outputData.source, this.project, '#' + item.section, item.section);
         }
 
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td><a href="${item.url}" target="_blank">${item.label}</a> ${isSource ? '(' + $.i18n('target') + ')' : ''}</td>
+           <td>
+             ${this.getPageLink(item.label, `${this.project}.org`)}
+             ${isSource ? '(' + $.i18n('target') + ')' : ''}
+           </td>
            <td>${sectionMarkup}</a></td>
            <td><a target='_blank' href='${this.getPageviewsURL(`${this.project}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>
-           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           <td>${this.formatNumber(Math.round(item.average))}</td>
            </tr>`
         );
       });

@@ -266,6 +266,7 @@ footer {
 }
 
 .data-links {
+  margin-top: 15px;
   padding: 0 0 15px;
 
   .btn {
@@ -474,4 +475,26 @@ footer {
   height: 20px;
   vertical-align: -5px;
   width: 20px;
+}
+
+.chart-toggles label {
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 0 10px;
+}
+
+.chart-buttons {
+  display: inline-block;
+}
+
+@media (max-width: $screen-sm) {
+  .chart-buttons {
+    float: left;
+  }
+
+  .chart-toggles {
+    clear: both;
+    float: left;
+    margin-top: 6px;
+  }
 }

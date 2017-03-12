@@ -43,7 +43,7 @@
         <?php } ?>
         <th>
           <span>
-            <?php echo $I18N->msg( 'average' ); ?>
+            <?php echo $I18N->msg( 'daily-average' ); ?>
           </span>
         </th>
       </tr>

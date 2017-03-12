@@ -371,6 +371,9 @@ select {
     right: 0;
     top: 100px;
     width: 60px; }
+  .rtl .interapp-links {
+    float: right !important;
+    padding: 0; }
   .rtl .date-latest,
   .rtl .pull-right {
     float: left !important; }
@@ -382,13 +385,13 @@ select {
   .rtl .num-entities-info {
     margin-left: 0;
     margin-right: 10px; }
+  .rtl .dropdown-menu-right {
+    left: 0;
+    right: auto;
+    text-align: right; }
   .rtl .lang-group {
     margin-left: 5px;
     right: initial; }
-    .rtl .lang-group .dropdown-menu {
-      left: 0;
-      right: auto;
-      text-align: right; }
   .rtl .table td,
   .rtl .table th {
     text-align: right; }
@@ -402,18 +405,35 @@ select {
   .rtl input[type=checkbox] {
     margin-left: auto;
     margin-right: -20px; }
+  .rtl .chart-toggles input[type=checkbox] {
+    margin: 0; }
   .rtl .modal-footer {
     text-align: left; }
   .rtl .select2-container .select2-search--inline {
     float: right; }
   .rtl .select2-selection__choice {
-    float: right !important; }
-  .rtl .select2-results__options {
+    direction: rtl;
+    float: right !important;
+    margin-left: 5px;
+    margin-right: 0 !important; }
+  .rtl .select2-results__options,
+  .rtl .select2-search__field {
     direction: rtl; }
   .rtl .select2-results__option {
     text-align: right; }
+  .rtl .select2-selection__choice__remove {
+    margin-left: 2px;
+    margin-right: 0 !important; }
   .rtl .daterangepicker .ranges {
     text-align: right; }
+  .rtl .daterangepicker_input input {
+    padding-left: 0;
+    padding-right: 28px; }
+  .rtl .daterangepicker_input i {
+    left: initial;
+    right: 8px; }
+  .rtl .calendar.left .fa-calendar {
+    right: 20px; }
   .rtl .daterange-notice {
     text-align: right; }
   .rtl .input-mini {
@@ -460,9 +480,6 @@ select {
     margin-left: 10px; }
   .rtl.langviews #source_input, .rtl.redirectviews #source_input, .rtl.userviews #source_input {
     border-radius: 0 3px 3px 0; }
-  .rtl .logarithmic-scale,
-  .rtl .begin-at-zero {
-    margin: 0 30px 0 0; }
   .rtl .search-topviews {
     float: right; }
     .rtl .search-topviews .input-group-addon {
@@ -490,6 +507,11 @@ select {
     margin-right: 180px !important; }
   .rtl .url-structure-example {
     text-align: right; }
+  @media (max-width: 768px) {
+    .rtl .chart-buttons {
+      float: right; }
+    .rtl .chart-toggles {
+      float: right; } }
 
 .aqs-row {
   padding-bottom: 10px; }
@@ -594,6 +616,7 @@ footer {
   margin-bottom: 10px; }
 
 .data-links {
+  margin-top: 15px;
   padding: 0 0 15px; }
   .data-links .btn {
     margin-left: 10px; }
@@ -745,6 +768,22 @@ footer {
   height: 20px;
   vertical-align: -5px;
   width: 20px; }
+
+.chart-toggles label {
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 0 10px; }
+
+.chart-buttons {
+  display: inline-block; }
+
+@media (max-width: 768px) {
+  .chart-buttons {
+    float: left; }
+  .chart-toggles {
+    clear: both;
+    float: left;
+    margin-top: 6px; } }
 
 .special-ranges {
   padding: 5px 20px 0; }

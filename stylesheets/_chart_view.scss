@@ -1,10 +1,11 @@
 @import 'mixins';
 
-body.initial {
+body.initial { // scss-lint:disable QualifyingElement
   .data-links {
     visibility: hidden;
   }
 
+  // scss-lint:disable ImportantRule
   .output-list,
   .table-view,
   .summary-column,
@@ -51,10 +52,6 @@ body.initial {
 .remove-page {
   color: $link;
   cursor: pointer;
-}
-
-.data-links {
-  margin-top: 15px;
 }
 
 .table-view {
@@ -159,14 +156,6 @@ body.initial {
   padding: 5px 10px;
 }
 
-.logarithmic-scale,
-.begin-at-zero,
-.show-labels {
-  height: 30px;
-  line-height: 30px;
-  margin: 0 0 0 10px;
-}
-
 .latest-group {
   position: absolute;
   right: 0;
@@ -179,22 +168,6 @@ body.initial {
 
 .date-selector {
   position: relative;
-}
-
-.chart-buttons {
-  display: inline-block;
-}
-
-@media (max-width: $screen-sm) {
-  .chart-buttons {
-    float: left;
-  }
-
-  .chart-toggles {
-    clear: both;
-    float: left;
-    margin-top: 6px;
-  }
 }
 
 .num-entities-info {

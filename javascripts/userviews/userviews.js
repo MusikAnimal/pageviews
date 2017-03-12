@@ -402,7 +402,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
            <td>${datestamp}</td>
            <td>${this.formatNumber(item.size)}</td>
            <td><a target='_blank' href='${this.getPageviewsURL(`${this.project}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>
-           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           <td>${this.formatNumber(Math.round(item.average))}</td>
            </tr>`
         );
       });

@@ -233,6 +233,7 @@ class PvConfig {
         platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
         project: siteDomains
       },
+      rtlLangs: ['ar', 'he', 'fa', 'ps', 'ur'],
       pageAssessmentProjects: ['en.wikipedia', 'en.wikivoyage'],
       pageAssessmentBadges: {
         'en.wikipedia': {

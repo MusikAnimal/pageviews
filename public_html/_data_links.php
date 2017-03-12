@@ -37,20 +37,20 @@
       </ul>
     </div>
   </div>
-  <span class="chart-toggles">
-    <span class="pull-right chart-specific">
+  <span class="chart-toggles chart-specific">
+    <span class="pull-right">
       <label class="logarithmic-scale">
         <input class="logarithmic-scale-option" type="checkbox">
         <?php echo $I18N->msg( 'logarithmic-scale' ); ?>
       </label>
     </span>
-    <span class="pull-right chart-specific">
+    <span class="pull-right">
       <label class="begin-at-zero">
         <input class="begin-at-zero-option" type="checkbox">
         <?php echo $I18N->msg( 'begin-at-zero' ); ?>
       </label>
     </span>
-    <span class="pull-right chart-specific">
+    <span class="pull-right">
       <label class="show-labels">
         <input class="show-labels-option" type="checkbox">
         <?php echo $I18N->msg( 'show-values' ); ?>

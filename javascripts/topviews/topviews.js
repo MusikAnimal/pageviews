@@ -113,7 +113,7 @@ class TopViews extends Pv {
            </td>
            <td>
              <span class='topview-entry--background' style='top:${offsetTop}px; background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%); opacity: 0.6'></span>
-             <a class='topview-entry--label' href="${this.getPageURL(item.article)}" target="_blank">${item.article}</a>
+             <div class='topview-entry--label'>${this.getPageLink(item.article, this.project)}</div>
            </td>
            <td class='topview-entry--edits'>${edits}</td>
            <td class='topview-entry--editors'>${editors}</td>
@@ -324,7 +324,7 @@ class TopViews extends Pv {
       project = $(this.config.projectInput).val();
 
     return `/pageviews?start=${startDate}&end=${endDate}&project=${project}` +
-      `&platform=${platform}&pages=${encodeURIComponent(article)}`;
+      `&platform=${platform}&pages=${encodeURIComponent(article.score()).replace("'", escape)}`;
   }
 
   /**

@@ -459,10 +459,20 @@ class Pv extends PvConfig {
    * Get a full link for the given page and project
    * @param  {string} page - page to link to
    * @param  {string} [project] - project link, defaults to `this.project`
+   * @param  {string} [text] - Link text, defaults to page title
+   * @param  {string} [section] - Link to a specific section on the page
    * @return {string} HTML markup
    */
-  getPageLink(page, project) {
-    return `<a target="_blank" href="${this.getPageURL(page, project)}">${page.descore().escape()}</a>`;
+  getPageLink(page, project, text, section) {
+    let attrs = `target="_blank" href="${this.getPageURL(page, project)}${section ? '#' + section.score() : ''}"`;
+
+    if (this.isMultilangProject(project)) {
+      const projectLang = this.getProjectLang(project);
+
+      attrs += ` lang=${projectLang} dir="${this.config.rtlLangs.includes(projectLang) ? 'rtl' : 'ltr'}"`;
+    }
+
+    return `<a target="_blank" ${attrs}>${text || page.descore().escape()}</a>`;
   }
 
   /**
@@ -488,12 +498,22 @@ class Pv extends PvConfig {
   /**
    * Get the project name (without the .org)
    *
-   * @returns {boolean} lang.projectname
+   * @returns {string} lang.projectname
    */
   get project() {
     const project = $(this.config.projectInput).val();
     /** Get the first 2 characters from the project code to get the language */
     return project ? project.toLowerCase().replace(/.org$/, '') : null;
+  }
+
+  /**
+   * Split project by . and get first result.
+   * Used to apply dir='rtl' on links to wikis that are RTL
+   * @param {string} [project] Project, defaults to this.project
+   * @returns {string} lang
+   */
+  getProjectLang(project) {
+    return (project || this.project).split('.')[0];
   }
 
   /**
@@ -958,10 +978,11 @@ class Pv extends PvConfig {
 
   /**
    * Test if the current project is a multilingual project
+   * @param {String} [project] Project, defaults to this.project
    * @returns {Boolean} is multilingual or not
    */
-  isMultilangProject() {
-    return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(this.project);
+  isMultilangProject(project = this.project) {
+    return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(project);
   }
 
   /**
