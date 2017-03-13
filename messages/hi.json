@@ -6,7 +6,8 @@
 			"Macofe",
 			"NehalDaveND",
 			"Ziyaurr",
-			"Susant purohit"
+			"Susant purohit",
+			"Matma Rex"
 		]
 	},
 	"agent": "एजेंट",
@@ -113,6 +114,7 @@
 	"projects": "परियोजना",
 	"projects-placeholder": "परियोजना का नाम लिखें...",
 	"radar": "रे",
+	"rank": "श्रेणी",
 	"redirects-and-non-redirects": "अनुप्रेषित और अनानुप्रेषित",
 	"redirectviews": "Redirect Views",
 	"report-issue": "समस्या बताओ",

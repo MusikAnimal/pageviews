@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Harald",
-			"Tarjeimo"
+			"Tarjeimo",
+			"Jon Harald Søby"
 		]
 	},
 	"agent": "agent",
@@ -28,7 +29,7 @@
 	"category": "Kategoriadresse",
 	"change-chart": "Forandre type graf",
 	"chart-types": "Graftyper",
-	"credits": "Lavet av $1, $2, og $3.",
+	"credits": "Laget av $1, $2, og $3.",
 	"csv": "CSV",
 	"custom-range": "Tilpasset tidsperiode",
 	"daily-pageviews": "Daglige sidevisninger",

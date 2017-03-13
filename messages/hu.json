@@ -5,7 +5,8 @@
 			"Fauvirt",
 			"Máté",
 			"Tacsipacsi",
-			"R-Joe"
+			"R-Joe",
+			"BanKris"
 		]
 	},
 	"agent": "Ügynök",
@@ -137,6 +138,7 @@
 	"tool-labs": "Tool Labs",
 	"total-pageviews": "Lapok az összes megtekintés száma alapján",
 	"totals": "Összesen",
+	"translation-credits": "A fordítást a $1, az $2 és a $3 teszi lehetővé.",
 	"tu": "Ke",
 	"unique-titles": "$1 egyedi cím",
 	"unsupported-browser-error": "$1 és régebbi verziók nem támogatottak. Kérjük, <a href='http://browsehappy.com/'>frissítsd a böngésződet</a></strong>.",
