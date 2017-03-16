@@ -209,7 +209,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         `<th scope='row'>${$.i18n('totals')}</th>
          <th>${$.i18n(pageColumnMessage, sortedDatasets.length)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
-         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
+         <th>${this.formatNumber(Math.round(this.outputData.average))}</th>`
       );
       $('#output_list').html('');
 

@@ -8,6 +8,9 @@ if ( file_exists( __DIR__ . '/../config.php' ) ) {
   require_once __DIR__ . '/../../config.php';
 }
 
+// set header as JSON
+header('Content-type: application/json');
+
 if ( $_SERVER['REQUEST_METHOD'] === 'GET' && isset( $_GET['project'] ) || isset( $_GET['date'] ) || isset( $_GET['platform'] ) ) {
   get_false_positives();
 } elseif ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['project'] ) && isset( $_POST['pages'] ) || isset( $_POST['date'] ) || isset( $_POST['platform'] ) ) {
@@ -15,9 +18,6 @@ if ( $_SERVER['REQUEST_METHOD'] === 'GET' && isset( $_GET['project'] ) || isset(
 } else {
   exit();
 }
-
-// set header as JSON
-header('Content-type: application/json');
 
 function db_connect() {
   // connect to database
