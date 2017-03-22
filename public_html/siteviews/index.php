@@ -42,20 +42,28 @@
           </div>
           <input class="form-control aqs-date-range-selector" id="range-input">
         </div>
-        <!-- %div.month-selector.input-daterange.clearfix -->
-        <!-- %label(for="month-start") -->
-        <!-- = $I18N->msg( 'dates' ) -->
-        <!-- %div -->
-        <!-- %input.form-control.input-control.month-selector-start.pull-left#month-start -->
-        <!-- %input.form-control.input-control.month-selector-end.pull-left#month-end -->
-        <!-- %div -->
-        <!-- %label(for="date-type-select") -->
-        <!-- = $I18N->msg( 'date-type' ) -->
-        <!-- %select.form-control#date-type-select -->
-        <!-- %option(value="daily") -->
-        <!-- = $I18N->msg( 'daily' ) -->
-        <!-- %option(value="monthly") -->
-        <!-- = $I18N->msg( 'monthly' ) -->
+        <div class="month-selector input-daterange clearfix">
+          <label for="month-start">
+            <?php echo $I18N->msg( 'dates' ); ?>
+          </label>
+          <div>
+            <input class="form-control input-control month-selector-start pull-left" id="month-start">
+            <input class="form-control input-control month-selector-end pull-left" id="month-end">
+          </div>
+        </div>
+        <div>
+          <label for="date-type-select">
+            <?php echo $I18N->msg( 'date-type' ); ?>
+          </label>
+          <select class="form-control" id="date-type-select">
+            <option value="daily">
+              <?php echo $I18N->msg( 'daily' ); ?>
+            </option>
+            <option value="monthly">
+              <?php echo $I18N->msg( 'monthly' ); ?>
+            </option>
+          </select>
+        </div>
         <div>
           <label for="data-source-select">
             <?php echo $I18N->msg( 'metric' ); ?>

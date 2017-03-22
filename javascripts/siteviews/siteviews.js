@@ -383,7 +383,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     let totals = {
       label: $.i18n('num-projects', this.formatNumber(datasets.length), datasets.length),
       sum,
-      average: Math.round(sum / datasets.length),
+      average: Math.round(sum / this.numDaysInRange()),
     };
     ['pages', 'articles', 'edits', 'images', 'users', 'activeusers', 'admins'].forEach(type => {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
