@@ -13,14 +13,31 @@
 const templates = {
   chartLegend(scope) {
     const dataList = (entity, multiEntity = false) => {
-      // let editsLink;
-
       let infoHash = {
         [$.i18n('pageviews')]: {
           [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
           [$.i18n('daily-average')]: scope.formatNumber(entity.average)
-        },
-        [$.i18n('statistics')]: {
+        }
+      };
+
+      if (scope.isAllProjects()) {
+        const projects = ['wikipedia', 'wiktionary', 'wikiquote', 'wikibooks', 'wikisource',
+                          'wikinews', 'wikiversity', 'wikispecies', 'wikivoyage'];
+        let projectCounts = {};
+
+        scope.siteDomains.forEach(domain => {
+          const project = projects.filter(project => domain.includes(project));
+          if (project[0]) {
+            const projectTrans = $.i18n(project[0]).upcase();
+            projectCounts[projectTrans] = projectCounts[projectTrans] ? projectCounts[projectTrans] + 1 : 1;
+          } else {
+            projectCounts[$.i18n('other')] = projectCounts[$.i18n('other')] ? projectCounts[$.i18n('other')] + 1 : 1;
+          }
+        });
+
+        infoHash[$.i18n('num-projects', scope.siteDomains.length)] = projectCounts;
+      } else {
+        infoHash[$.i18n('statistics')] = {
           [$.i18n('pages')]: scope.formatNumber(entity.pages),
           [$.i18n('articles')]: scope.formatNumber(entity.articles),
           [$.i18n('edits')]: scope.formatNumber(entity.edits),
@@ -28,8 +45,8 @@ const templates = {
           [$.i18n('users')]: scope.formatNumber(entity.users),
           [$.i18n('active-users')]: scope.formatNumber(entity.activeusers),
           [$.i18n('admins')]: scope.formatNumber(entity.admins)
-        }
-      };
+        };
+      }
 
       let markup = '';
 
@@ -53,7 +70,7 @@ const templates = {
         markup += '</div></div>';
       }
 
-      if (!multiEntity) {
+      if (!multiEntity && !scope.isAllProjects()) {
         markup += `
           <div class="linear-legend--links">
             <a href="${scope.getTopviewsMonthURL(entity.label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>

@@ -93,7 +93,7 @@ hr {
   float: right;
 }
 
-input,
+input:not([type=radio]),
 select {
   // scss-lint:disable ImportantRule
   background: $form-control-bg !important;

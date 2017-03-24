@@ -31,6 +31,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.monthStart = this.config.initialMonthStart;
     this.monthEnd = this.config.maxMonth;
 
+    // used in siteviews/templates.js
+    this.siteDomains = siteDomains;
+
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
      * caused by race conditions between consecutive ajax calls. They are actually
@@ -57,8 +60,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
   popParams() {
-    /** show loading indicator and add error handling for timeouts */
-    setTimeout(this.startSpinny.bind(this)); // use setTimeout to force rendering threads to catch up
+    this.startSpinny();
 
     let params = this.validateParams(
       this.parseQueryString('sites')
@@ -67,6 +69,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $(this.config.dataSourceSelector).val(params.source);
     this.setupDataSourceSelector();
     $(this.config.platformSelector).val(params.platform);
+    $('#all-projects').prop('checked', params.sites[0] === 'all-projects');
 
     if (params.source === 'pageviews') {
       $(this.config.agentSelector).val(params.agent);
@@ -84,7 +87,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     }
 
     this.setInitialChartType(params.sites.length);
-    this.setSelect2Defaults(params.sites);
+
+    if (this.isAllProjects()) {
+      $('.site-selector').addClass('disabled');
+    } else {
+      this.setSelect2Defaults(params.sites);
+    }
   }
 
   /**
@@ -94,6 +102,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    */
   getSiteStats(sites) {
     let dfd = $.Deferred(), requestCount = 0;
+
+    // no stats for all sites (other than the pageviews), so just resolve
+    if (this.isAllProjects()) return dfd.resolve();
 
     const alwaysCallback = () => {
       requestCount++;
@@ -121,6 +132,14 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     });
 
     return dfd;
+  }
+
+  /**
+   * Are we querying for specific projects or all projects?
+   * @returns {Boolean} yes or no
+   */
+  isAllProjects() {
+    return $('.all-projects-radio:checked').val() === '1';
   }
 
   /**
@@ -168,7 +187,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const sites = $(this.config.select2Input).select2('val') || [];
+    const sites = this.isAllProjects()
+      ? ['all-projects']
+      : ($(this.config.select2Input).select2('val') || []);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -283,6 +304,16 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         this.processInput();
       }
     });
+    $('.all-projects-radio').on('change', e => {
+      $('.site-selector').toggleClass('disabled', e.target.value === '1');
+
+      if (e.target.value === '0' && !$(config.select2Input).select2('val')) {
+        this.resetView();
+        return this.setSelect2Defaults(config.defaults.projects);
+      }
+
+      this.processInput();
+    });
     $('.sort-link').on('click', e => {
       const sortType = $(e.currentTarget).data('type');
       this.direction = this.sort === sortType ? -this.direction : 1;
@@ -293,6 +324,20 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       this.resetView(true);
       this.focusSelect2();
     });
+  }
+
+  /**
+   * Removes chart, messages, and resets site selections
+   * @param {boolean} [select2] whether or not to clear the Select2 input
+   * @param {boolean} [clearMessages] whether or not to clear any exisitng errors from view
+   * @override
+   */
+  resetView(select2 = false, clearMessages = true) {
+    super.resetView(select2, clearMessages);
+    $('.output-list').html('');
+    $('.single-site-ranking').html('');
+    $('.single-site-stats').html('');
+    $('.single-site-legend').html('');
   }
 
   /**
@@ -312,7 +357,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     this.params = location.search;
 
-    const sites = $(config.select2Input).select2('val') || [];
+    const sites = this.isAllProjects()
+      ? ['all-projects']
+      : ($(config.select2Input).select2('val') || []);
 
     if (!sites.length) {
       return this.resetView();
@@ -350,8 +397,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     if (this.outputData.length === 1) {
       return this.showSinglePageLegend();
     } else {
-      $('.single-page-stats').html('');
-      $('.single-page-ranking').html('');
+      $('.single-site-stats').html('');
+      $('.single-site-ranking').html('');
     }
 
     $('.output-list').html('');
@@ -406,6 +453,17 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       return item.label;
     }
     return Number(item[type]);
+  }
+
+  /**
+   * Get link to site, or message if querying for all sites
+   * @override
+   */
+  getSiteLink(site) {
+    if (this.isAllProjects()) {
+      return `<a target='_blank' href='https://www.wikimedia.org/'>${$.i18n('all-of-wikimedia')}</a>`;
+    }
+    return super.getSiteLink(site);
   }
 
   /**

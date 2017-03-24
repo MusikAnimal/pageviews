@@ -79,10 +79,19 @@
               = $I18N->msg( 'user' )
             %option(value="spider")
               = $I18N->msg( 'spider' )
+        %div
+          %label Query for:
+          %div.radio
+            %label
+              %input.all-projects-radio(type="radio" name="all-projects" value="0" checked="checked") Individual projects
+          %div.radio
+            %label
+              %input.all-projects-radio#all-projects(type="radio" name="all-projects" value="1")
+                = $I18N->msg( 'all-projects' )
 
     %main.col-lg-8.col-md-10
       / Site selector
-      %div
+      %div.site-selector
         %label(for="site-input")
           = $I18N->msg( 'projects' )
           %small.text-muted.num-entities-info

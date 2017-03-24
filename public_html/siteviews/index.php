@@ -118,11 +118,26 @@
             </option>
           </select>
         </div>
+        <div>
+          <label>Query for:</label>
+          <div class="radio">
+            <label>
+              <input class="all-projects-radio" type="radio" name="all-projects" value="0" checked="checked">Individual projects</input>
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input class="all-projects-radio" id="all-projects" type="radio" name="all-projects" value="1">
+                <?php echo $I18N->msg( 'all-projects' ); ?>
+              </input>
+            </label>
+          </div>
+        </div>
       </div>
     </aside>
     <main class="col-lg-8 col-md-10">
       <!-- Site selector -->
-      <div>
+      <div class="site-selector">
         <label for="site-input">
           <?php echo $I18N->msg( 'projects' ); ?>
           <small class="text-muted num-entities-info">

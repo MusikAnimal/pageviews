@@ -336,7 +336,7 @@ hr {
 .date-latest {
   float: right; }
 
-input,
+input:not([type=radio]),
 select {
   background: rgba(255, 255, 255, 0.7) !important; }
 
