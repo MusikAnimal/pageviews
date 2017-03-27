@@ -69,7 +69,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $(this.config.dataSourceSelector).val(params.source);
     this.setupDataSourceSelector();
     $(this.config.platformSelector).val(params.platform);
-    $('#all-projects').prop('checked', params.sites[0] === 'all-projects');
 
     if (params.source === 'pageviews') {
       $(this.config.agentSelector).val(params.agent);
@@ -85,6 +84,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     } else if (params.sites.length > 10) {
       params.sites = params.sites.slice(0, 10); // max 10 sites
     }
+
+    $('#all-projects').prop('checked', params.sites[0] === 'all-projects');
 
     this.setInitialChartType(params.sites.length);
 
