@@ -9,7 +9,8 @@
 			"Fitoschido",
 			"Dgstranz",
 			"Fortega",
-			"MusikAnimal"
+			"MusikAnimal",
+			"Julián L"
 		]
 	},
 	"active-users": "Usuarios activos",
@@ -17,6 +18,8 @@
 	"agent": "Agente",
 	"all": "Todas",
 	"all-languages": "Todos los idiomas",
+	"all-of-wikimedia": "Todo de Wikimedia",
+	"all-projects": "Todos los proyectos",
 	"all-time": "Todo el tiempo",
 	"another-query": "Hacer otra consulta",
 	"api-error": "Error al consultar a $1.",
@@ -184,6 +187,7 @@
 	"ok": "De acuerdo",
 	"only-redirects": "Incluir solo redirecciones",
 	"options": "Opciones",
+	"other": "Otro",
 	"page": "Página",
 	"page-title": "Título de página",
 	"pages": "Páginas",
@@ -286,5 +290,11 @@
 	"views": "Visualizaciones",
 	"watchers": "Vigilantes",
 	"we": "X",
-	"wikilinks": "Enlaces wikis"
+	"wikibooks": "Wikilibros",
+	"wikilinks": "Enlaces wikis",
+	"wikinews": "Wikinoticias",
+	"wikiquote": "Wikiquote",
+	"wikisource": "Wikisource",
+	"wikivoyage": "Wikiviajes",
+	"wiktionary": "Wikcionario"
 }

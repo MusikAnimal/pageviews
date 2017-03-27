@@ -14,6 +14,8 @@
 	"agent": "প্রতিনিধি",
 	"all": "সব",
 	"all-languages": "সকল ভাষা",
+	"all-of-wikimedia": "সকল উইকিপিডিয়ায়",
+	"all-projects": "সকল প্রকল্প",
 	"all-time": "সব সময়",
 	"another-query": "আরেকটি প্রশ্ন করুন",
 	"api-error": "কুয়েরি ত্রুটি $1",
@@ -197,6 +199,7 @@
 	"only-redirects": "শুধুমাত্র পুনঃনির্দেশ অন্তর্ভুক্ত করে",
 	"options": "বিকল্প",
 	"original-rank": "মূল অবস্থান",
+	"other": "অন্য",
 	"page": "পাতা",
 	"page-title": "পাতার শিরোনাম",
 	"pages": "পাতাসমূহ",
@@ -308,5 +311,13 @@
 	"views": "দর্শন",
 	"watchers": "নজরকারী",
 	"we": "বুধ",
-	"wikilinks": "উইকিসংযোগসমূহ"
+	"wikibooks": "উইকিবই",
+	"wikilinks": "উইকিসংযোগসমূহ",
+	"wikinews": "উইকিসংবাদ",
+	"wikipedia": "উইকিপিডিয়া",
+	"wikiquote": "উইকিউক্তি",
+	"wikisource": "উইকিসংকলন",
+	"wikiversity": "উইকিবিশ্ববিদ্যালয়",
+	"wikivoyage": "উইকিভ্রমণ",
+	"wiktionary": "উইকিঅভিধান"
 }

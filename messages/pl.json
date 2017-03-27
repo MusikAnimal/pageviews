@@ -13,6 +13,7 @@
 	"agent": "Agent",
 	"all": "Wszystkie",
 	"all-languages": "Wszystkie języki",
+	"all-projects": "Wszystkie projekty",
 	"all-time": "Całość",
 	"another-query": "Wykonaj inne zapytanie",
 	"api-error": "Błąd odpytywania $1",
@@ -200,6 +201,7 @@
 	"october": "Październik",
 	"ok": "OK",
 	"options": "Opcje",
+	"other": "Inne",
 	"page": "Strona",
 	"page-title": "Tytuł strony",
 	"pages": "Strony",
@@ -292,5 +294,13 @@
 	"views": "Odsłony",
 	"watchers": "Obserwujący",
 	"we": "śr.",
-	"wikilinks": "Wikilinki"
+	"wikibooks": "Wikibooks",
+	"wikilinks": "Wikilinki",
+	"wikinews": "Wikinews",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikicytaty",
+	"wikisource": "Wikiźródła",
+	"wikiversity": "Wikiwersytet",
+	"wikivoyage": "Wikipodróże",
+	"wiktionary": "Wikisłownik"
 }

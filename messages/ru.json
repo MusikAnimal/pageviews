@@ -19,6 +19,7 @@
 	"agent": "Агент",
 	"all": "Все",
 	"all-languages": "Все языки",
+	"all-projects": "Все проекты",
 	"all-time": "За всё время",
 	"api-error": "Произошла ошибка во время обработки $1",
 	"api-error-no-data": "Данные не найдены.",
@@ -179,6 +180,7 @@
 	"ok": "ОК",
 	"options": "Настройки",
 	"original-rank": "Первоначальный ранг",
+	"other": "Другое",
 	"page": "Страница",
 	"page-title": "Заголовок страницы",
 	"pages": "Страницы",
@@ -197,6 +199,7 @@
 	"projects-placeholder": "Введите названия проектов...",
 	"proofread-page": "Вычитка",
 	"protection": "Защита",
+	"query-for": "Запрос:",
 	"radar": "Радар",
 	"rank": "Ранг",
 	"recommended-article": "Рекомендуемая статья",
@@ -255,5 +258,13 @@
 	"views": "Просмотры",
 	"watchers": "Наблюдатели",
 	"we": "Ср",
-	"wikilinks": "Викиссылки"
+	"wikibooks": "Викиучебник",
+	"wikilinks": "Викиссылки",
+	"wikinews": "Викиновости",
+	"wikipedia": "Википедия",
+	"wikiquote": "Викицитатник",
+	"wikisource": "Викитека",
+	"wikiversity": "Викиверситет",
+	"wikivoyage": "Викигид",
+	"wiktionary": "Викисловарь"
 }

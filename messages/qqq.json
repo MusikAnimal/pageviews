@@ -383,7 +383,7 @@
 	"views": "Label for the value showing the number of views that viewed to the pages during the timeframe.\n{{Identical|View}}",
 	"watchers": "Label for the value showing the number of watchers (i.e. users who added the page to watchlist) a page has. Should use a word that is related to {{msg-mw|watchlist}}.\n{{Identical|Watcher}}",
 	"we": "Abbreviation for Wednesday, a day of the week.",
-	"wikibooks": "{{Optional}}\nName for the Wikibooks project.",
+	"wikibooks": "{{Optional}}\nName for the Wikibooks project.\n{{Identical|Wikibooks}}",
 	"wikilinks": "Label for the 'Wikilinks' input field on the Massviews tool. Wikilinks are links on a page that link to other pages.\n{{Identical|Wikilink}}",
 	"wikinews": "{{Optional}}\nName for the Wikinews project.\n{{Identical|Wikinews}}",
 	"wikipedia": "{{Optional}}\nName for the Wikipedia project.\n{{Identical|Wikipedia}}",

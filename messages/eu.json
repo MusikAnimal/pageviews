@@ -11,6 +11,7 @@
 	"agent": "Agentea",
 	"all": "Guztiak",
 	"all-languages": "Hizkuntza guztiak",
+	"all-of-wikimedia": "Wikimediako guztiak",
 	"all-time": "Denbora guztia",
 	"another-query": "Egin beste bilaketa bat",
 	"api-error": "Akatsa $1 bilatzean.",
@@ -187,7 +188,7 @@
 	"topviews-title": "Ikusienen Analasia",
 	"total-pageviews": "Orrialdeak ikusle kopuru totalaren arabera",
 	"totals": "Guztira",
-	"translation-credits": "$1-ek eta $2-ek sustatutako itzulpenak.",
+	"translation-credits": "$1-ek, $2-ek eta $3-ek sustatutako itzulpenak.",
 	"tu": "Ar",
 	"unique-devices": "Gailu bakarrak",
 	"unique-editors": "Editore bakarrak",
@@ -207,5 +208,13 @@
 	"views": "Ikustaldiak",
 	"watchers": "Behatzaileak",
 	"we": "Az",
-	"wikilinks": "Wikiloturak"
+	"wikibooks": "Wikiliburuak",
+	"wikilinks": "Wikiloturak",
+	"wikinews": "Wikialbisteak",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikiesanak",
+	"wikisource": "Wikiturriak",
+	"wikiversity": "Wikibertsitatea",
+	"wikivoyage": "Wikibidaiak",
+	"wiktionary": "Wikiztegia"
 }
