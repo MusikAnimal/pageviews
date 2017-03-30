@@ -15,6 +15,8 @@
 	"agent": "Agent",
 	"all": "Alla",
 	"all-languages": "Alla språk",
+	"all-of-wikimedia": "Hela Wikimedia",
+	"all-projects": "Alla projekt",
 	"all-time": "Hela tiden",
 	"another-query": "Gör en till förfrågan",
 	"api-error": "Fel uppstod när $1 anropades",
@@ -369,5 +371,13 @@
 	"views": "Visningar",
 	"watchers": "Bevakare",
 	"we": "On",
-	"wikilinks": "Wikilänkar"
+	"wikibooks": "Wikibooks",
+	"wikilinks": "Wikilänkar",
+	"wikinews": "Wikinews",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikiquote",
+	"wikisource": "Wikisource",
+	"wikiversity": "Wikiversity",
+	"wikivoyage": "Wikivoyage",
+	"wiktionary": "Wiktionary"
 }

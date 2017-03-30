@@ -70,6 +70,7 @@
 	"edits": "Muokkauksia",
 	"elapsed-time": "Tiedot haettu $1 {{PLURAL:$1|sekunnissa|sekunnissa}}",
 	"error-timed-out": "Operaatio aikakatkaistiin.",
+	"exclude-redirects": "Älä ota mukaan ohjaussivuja",
 	"excluded-pages": "Näkymät ulkopuolelle jätetyt sivut",
 	"external-link": "Ulkoinen linkki",
 	"faq": "UKK",

@@ -16,6 +16,7 @@
 	"agent": "Agente",
 	"all": "Tutto",
 	"all-languages": "Tutte le lingue",
+	"all-projects": "Tutti i progetti",
 	"all-time": "Intero periodo",
 	"another-query": "Fai un'altra interrogazione",
 	"api-error": "Errore query $1",
@@ -194,6 +195,7 @@
 	"ok": "OK",
 	"only-redirects": "Includi solo i reindirizzamenti",
 	"options": "Opzioni",
+	"other": "Altro",
 	"page": "Pagina",
 	"page-title": "Titolo della pagina",
 	"pages": "Pagine",
@@ -306,5 +308,13 @@
 	"views": "Visualizzazioni",
 	"watchers": "Osservatori",
 	"we": "Me",
-	"wikilinks": "Collegamenti wiki"
+	"wikibooks": "Wikibooks",
+	"wikilinks": "Collegamenti wiki",
+	"wikinews": "Wikinotizie",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikiquote",
+	"wikisource": "Wikisource",
+	"wikiversity": "Wikiversità",
+	"wikivoyage": "Wikivoyage",
+	"wiktionary": "Wikizionario"
 }
