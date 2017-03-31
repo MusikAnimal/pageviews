@@ -26,7 +26,7 @@ class PvConfig {
       }
     };
 
-    const maxDate = moment().subtract(1, 'days').startOf('day'),
+    const maxDate = moment().subtract(1, 'day').startOf('day'),
       maxMonth = moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
 
     this.config = {
