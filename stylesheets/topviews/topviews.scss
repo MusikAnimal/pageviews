@@ -99,10 +99,10 @@ $gray: #ccc;
   }
 }
 
-.topview-entry--leader {
-  background: url('/pageviews/images/dot.gif') repeat-x bottom;
-  height: 16px;
-  width: 100%;
+.topview-entry--label-wrapper {
+  max-width: 675px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // prevent Select2 from opening/closing

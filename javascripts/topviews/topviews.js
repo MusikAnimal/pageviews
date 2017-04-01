@@ -111,7 +111,7 @@ class TopViews extends Pv {
                title='${$.i18n('topviews-remove-page')}' aria-hidden='true'></span>
              <span class='topview-entry--rank'>${++count}</span>
            </td>
-           <td>
+           <td class='topview-entry--label-wrapper'>
              <span class='topview-entry--background' style='top:${offsetTop}px; background:linear-gradient(${direction}, #EEE ${width}%, transparent ${width}%); opacity: 0.6'></span>
              <div class='topview-entry--label'>${this.getPageLink(item.article, this.project)}</div>
            </td>
