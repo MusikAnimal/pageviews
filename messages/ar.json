@@ -16,6 +16,8 @@
 	"agent": "وكيل",
 	"all": "الكل",
 	"all-languages": "جميع اللغات",
+	"all-of-wikimedia": "كل مشاريع ويكيميديا",
+	"all-projects": "كل المشاريع",
 	"another-query": "قم باستعلام آخر",
 	"api-error": "خطأ الاستعلام $1",
 	"api-error-no-data": "لاتوجد بيانات.",
@@ -240,5 +242,12 @@
 	"url-structure-view": "$1 لعرض البيانات على شكل قائمة، أو $2 لعرض البيانات على شكل رسم بياني",
 	"user": "مستخدم",
 	"view-source": "اعرض المصدر",
-	"we": "أر"
+	"we": "أر",
+	"wikibooks": "ويكي الكتب",
+	"wikipedia": "ويكيبيديا",
+	"wikiquote": "ويكي الاقتباس",
+	"wikisource": "ويكي مصدر",
+	"wikiversity": "ويكي الجامعة",
+	"wikivoyage": "ويكي الرحلات",
+	"wiktionary": "ويكاموس"
 }

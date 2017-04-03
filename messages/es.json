@@ -18,7 +18,7 @@
 	"agent": "Agente",
 	"all": "Todas",
 	"all-languages": "Todos los idiomas",
-	"all-of-wikimedia": "Todo de Wikimedia",
+	"all-of-wikimedia": "Todo Wikimedia",
 	"all-projects": "Todos los proyectos",
 	"all-time": "Todo el tiempo",
 	"another-query": "Hacer otra consulta",
@@ -207,6 +207,7 @@
 	"projects-placeholder": "Escribe nombres de proyectos...",
 	"proofread-page": "Corregir",
 	"protection": "Protección",
+	"query-for": "Consultar por:",
 	"radar": "Radial",
 	"rank": "Clasificación",
 	"recommended-article": "Artículo recomendable",
@@ -293,8 +294,10 @@
 	"wikibooks": "Wikilibros",
 	"wikilinks": "Enlaces wikis",
 	"wikinews": "Wikinoticias",
+	"wikipedia": "Wikipedia",
 	"wikiquote": "Wikiquote",
 	"wikisource": "Wikisource",
+	"wikiversity": "Wikiversidad",
 	"wikivoyage": "Wikiviajes",
 	"wiktionary": "Wikcionario"
 }

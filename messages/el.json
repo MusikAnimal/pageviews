@@ -6,12 +6,14 @@
 			"Macofe",
 			"Stam.nikos",
 			"Ανώνυμος Βικιπαιδιστής",
-			"SucreRouge"
+			"SucreRouge",
+			"GR"
 		]
 	},
 	"agent": "Τύπος χρήστη",
 	"all": "Όλα",
 	"all-languages": "Όλες οι γλώσσες",
+	"all-projects": "Όλα τα Εγχειρήματα",
 	"another-query": "Κάντε ένα άλλο ερώτημα",
 	"api-error": "Σφάλμα κατά την εκτέλεση του $1",
 	"api-error-no-data": "Δεν βρέθηκαν δεδομένα.",
@@ -89,6 +91,7 @@
 	"num-languages": "$1 γλώσσες",
 	"october": "Οκτώβριος",
 	"ok": "Εντάξει",
+	"other": "Άλλος",
 	"page": "Σελίδα",
 	"page-title": "Τίτλος σελίδας",
 	"pages": "Σελίδες",
@@ -147,5 +150,12 @@
 	"url-structure-projects": "Έγκυρο $1 χωρισμένο με χαρακτήρες <code>|</code>.\nΓια παράδειγμα $2",
 	"user": "Χρήστης",
 	"view-source": "Προβολή κώδικα",
-	"we": "Τε"
+	"we": "Τε",
+	"wikibooks": "Βικιβιβλία",
+	"wikinews": "Βικινέα",
+	"wikipedia": "Βικιπαίδεια",
+	"wikisource": "Βικιπηγή",
+	"wikiversity": "Βικιεπιστήμιο",
+	"wikivoyage": "Βικιταξίδια",
+	"wiktionary": "Βικιλεξικό"
 }
