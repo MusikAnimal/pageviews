@@ -253,7 +253,7 @@ const ChartHelpers = superclass => class extends superclass {
   buildChartData(datasets, labels) {
     let viewKey;
     const dateFormat = this.isMonthly() ? 'YYYY-MM' : 'YYYY-MM-DD',
-      daysInRange = this.numDaysInRange();
+      dateHeadings = this.getDateHeadings(false); // false to be unlocalized
 
     // key to use in dataseries varies based on app
     if (this.isPageviews()) {
@@ -266,7 +266,6 @@ const ChartHelpers = superclass => class extends superclass {
 
     return datasets.map((dataset, index) => {
       /** Build the article's dataset. */
-      const dateHeadings = this.getDateHeadings(false); // false to be unlocalized
       let values = new Array(dateHeadings.length),
         sum = 0, min, max = 0;
 
@@ -288,7 +287,7 @@ const ChartHelpers = superclass => class extends superclass {
         if (min === undefined || value < min) min = value;
       });
 
-      const average = Math.round(sum / daysInRange),
+      const average = Math.round(sum / dateHeadings.length),
         label = labels[index].descore();
 
       const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[label] : {};

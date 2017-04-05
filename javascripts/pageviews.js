@@ -521,9 +521,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       const entry = data.items[0].articles.find(tv => tv.article === page.label.score());
       if (entry) {
         const monthName = this.daterangepicker.locale.monthNames[topviewsMonth.month()];
-        const topviewsLink = `
-          <a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>most-viewed pages</a>
-        `;
+        const topviewsLink = `<a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>` +
+            $.i18n('most-viewed-pages').toLowerCase() + '</a>';
 
         $('.single-page-ranking').html(
           $.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
