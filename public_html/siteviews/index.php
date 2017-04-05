@@ -118,7 +118,7 @@
             </option>
           </select>
         </div>
-        <div>
+        <div class="all-projects-selector">
           <label>Query for:</label>
           <div class="radio">
             <label>
@@ -191,7 +191,9 @@
             <?php foreach( $columns as $column => $translation ) { ?>
               <th class="table-view--<?php echo $column; ?>">
                 <span class="sort-link sort-link--<?php echo $column; ?>" data-type="<?php echo $column; ?>">
-                  <?php echo $I18N->msg( $translation ); ?>
+                  <span class="col-heading">
+                    <?php echo $I18N->msg( $translation ); ?>
+                  </span>
                   <span class="glyphicon glyphicon-sort"></span>
                 </span>
               </th>

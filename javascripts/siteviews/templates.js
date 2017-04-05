@@ -12,10 +12,12 @@
  */
 const templates = {
   chartLegend(scope) {
+    const pageviewsMsg = $.i18n(scope.isUniqueDevices() ? 'unique-devices' : 'pageviews');
+
     const dataList = (entity, multiEntity = false) => {
       let infoHash = {
-        [$.i18n('pageviews')]: {
-          [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
+        [pageviewsMsg]: {
+          [pageviewsMsg]: scope.formatNumber(entity.sum),
           [$.i18n('daily-average')]: scope.formatNumber(entity.average)
         }
       };
@@ -105,6 +107,10 @@ const templates = {
     const linksRow = last ? '' : `
         <a href="${scope.getTopviewsMonthURL(item.label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
       `;
+
+    $('.sort-link--sum .col-heading').text(
+      $.i18n(scope.isUniqueDevices() ? 'devices' : 'views')
+    );
 
     return `
       <tr>

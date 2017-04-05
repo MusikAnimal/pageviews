@@ -50,7 +50,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setupDateRangeSelector();
     this.setupSelect2();
     this.setupSelect2Colors();
-    this.setupDataSourceSelector();
     this.popParams();
     this.setupListeners();
   }
@@ -79,7 +78,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.validateDateRange(params);
     this.resetSelect2();
 
-    if (!params.sites || (params.sites.length === 1 && !params.sites[0])) {
+    if (!params.sites || !params.sites.length || (params.sites.length === 1 && !params.sites[0])) {
       params.sites = this.config.defaults.projects;
     } else if (params.sites.length > 10) {
       params.sites = params.sites.slice(0, 10); // max 10 sites
@@ -91,6 +90,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     if (this.isAllProjects()) {
       $('.site-selector').addClass('disabled');
+      this.processInput();
     } else {
       this.setSelect2Defaults(params.sites);
     }
@@ -140,7 +140,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * @returns {Boolean} yes or no
    */
   isAllProjects() {
-    return $('.all-projects-radio:checked').val() === '1';
+    return $('.all-projects-radio:checked').val() === '1' && this.isPageviews();
   }
 
   /**
@@ -256,10 +256,14 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         wasMobileValue = value.includes('mobile');
 
       if (this.isPageviews()) {
+        $('.site-selector').toggleClass('disabled', $('.all-projects-radio').is(':checked'));
+        $('.all-projects-selector').show();
         $('.platform-select--mobile-web, .platform-select--mobile-app').show();
         $('.platform-select--mobile').hide();
         $(this.config.agentSelector).prop('disabled', false);
       } else {
+        $('.site-selector').removeClass('disabled');
+        $('.all-projects-selector').hide();
         $('.platform-select--mobile-web, .platform-select--mobile-app').hide();
         $('.platform-select--mobile').show();
         $(this.config.agentSelector).val('user').prop('disabled', true);
@@ -339,6 +343,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $('.single-site-ranking').html('');
     $('.single-site-stats').html('');
     $('.single-site-legend').html('');
+    $('.site-selector').removeClass('disabled');
   }
 
   /**
@@ -418,9 +423,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       }
     });
 
-    $('.sort-link span').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
     const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
+    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
       $('.output-list').append(this.config.templates.tableRow(this, item));
@@ -471,7 +476,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Show info below the chart when there is only one site being queried
    */
   showSinglePageLegend() {
-    const site = this.outputData[0];
+    const site = this.outputData[0],
+      pageviewsMsg = this.isUniqueDevices() ? 'num-unique-devices' : 'num-pageviews';
 
     $('.table-view').hide();
     $('.single-site-stats').html(`
@@ -481,7 +487,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         ${$(this.config.dateRangeSelector).val()}
       </span>
       &middot;
-      ${$.i18n('num-pageviews', this.formatNumber(site.sum), site.sum)}
+      ${$.i18n(pageviewsMsg, this.formatNumber(site.sum), site.sum)}
       <span class='hidden-lg'>
         (${this.formatNumber(site.average)}/${$.i18n('day')})
       </span>

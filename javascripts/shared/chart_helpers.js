@@ -534,7 +534,7 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Are we trying to show data on pageviews (as opposed to unique devices)?
+   * Are we trying to show data on unique devices (as opposed to pageviews)?
    * @return {Boolean} true or false
    */
   isUniqueDevices() {
