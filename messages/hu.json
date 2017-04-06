@@ -12,6 +12,7 @@
 	"agent": "Ügynök",
 	"all": "Összes",
 	"all-languages": "Minden nyelv",
+	"all-projects": "Minden projekt",
 	"another-query": "Új lekérdezés",
 	"api-error-no-data": "Nem található adat.",
 	"api-error-timeout": "API-hiba miatt a következő lapokat nem lehetett feldolgozni:\n$1\nVárj egy pár percet, mielőtt újrapróbálkozol.",
@@ -103,6 +104,7 @@
 	"num-languages": "$1 nyelv",
 	"october": "Október",
 	"ok": "OK",
+	"other": "Egyéb",
 	"page": "Lap",
 	"page-title": "Lapcím",
 	"pages": "Lapok",
@@ -149,5 +151,12 @@
 	"url-structure-siteviews-platform": "Ha a $1 a $2",
 	"user": "Felhasználó",
 	"view-source": "Forráskód megtekintése",
-	"we": "Sze"
+	"we": "Sze",
+	"wikibooks": "Wikikönyvek",
+	"wikinews": "Wikihírek",
+	"wikipedia": "Wikipédia",
+	"wikiquote": "Wikidézet",
+	"wikisource": "Wikiforrás",
+	"wikiversity": "Wikiegyetem",
+	"wiktionary": "Wikiszótár"
 }
