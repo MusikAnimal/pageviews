@@ -11,7 +11,8 @@
 			"Irus",
 			"Kareyac",
 			"INS Pirat",
-			"Redredsonia"
+			"Redredsonia",
+			"Alexey zakharenkov"
 		]
 	},
 	"active-users": "Активные участники",
@@ -63,6 +64,7 @@
 	"december": "Декабрь",
 	"default": "По умолчанию",
 	"desktop": "Десктоп",
+	"devices": "Устройств",
 	"disclaimer": "Отказ от ответственности",
 	"documentation": "Документация",
 	"doughnut": "Пончик",
@@ -220,6 +222,7 @@
 	"settings-notice": "Ваши настройки будут сохранены для того же браузера и компьютера.",
 	"show-more": "Показать больше",
 	"show-values": "Показать значения",
+	"siteviews-description": "Сравнение нескольких проектов по общему количеству просмотров страниц или уникальных устройств",
 	"size": "Размер",
 	"source": "Источник",
 	"source-project": "Исходный проект",

@@ -77,7 +77,7 @@
 	"december": "{{doc-months|12}}\n{{Identical|December}}",
 	"default": "Default\n{{Identical|Default}}",
 	"desktop": "Label for option to view statistics for desktop pageviews only\n{{Identical|Desktop}}",
-	"devices": "shortened message for 'Unique devices', used as the heading for the column showing the number of unique devices for each project in the Siteviews app.\n{{Identical|Devices}}",
+	"devices": "shortened message for 'Unique devices', used as the heading for the column showing the number of unique devices for each project in the Siteviews app.\n{{Identical|Device}}",
 	"disclaimer": "Link to disclaimer.\n{{Identical|Disclaimer}}",
 	"documentation": "The word documentation. This is used as the text for a link to a documentation page.\n{{Identical|Documentation}}",
 	"doughnut": "Label for doughnut chart option (https://en.wikipedia.org/wiki/Pie_chart#Doughnut_chart)",
