@@ -8,7 +8,8 @@
 			"Ykhwong",
 			"Jonghaya",
 			"Jerrykim306",
-			"SeoJeongHo"
+			"SeoJeongHo",
+			"Ellif"
 		]
 	},
 	"active-users": "활동적인 사용자",
@@ -164,7 +165,7 @@
 	"num-sections": "$1개의 {{PLURAL:$2|문단}}",
 	"num-subpages": "$1개의 {{PLURAL:$2|하위 문서}}",
 	"num-transclusions": "$1개의 {{PLURAL:$2|끼워넣기}}",
-	"num-unique-devices": "$1개의 {{PLURAL:$2|고유 장치}}",
+	"num-unique-devices": "{{PLURAL:$2|한 개|$1개}}의 고유 장치",
 	"num-wikilinks": "$1개의 {{PLURAL:$2|위키링크}}",
 	"october": "10월",
 	"ok": "확인",
