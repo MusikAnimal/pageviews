@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"McDutchie",
-			"Macofe"
+			"Macofe",
+			"Fitoschido"
 		]
 	},
 	"agent": "Agente",
@@ -98,7 +99,7 @@
 	"num-projects": "$1 {{PLURAL:$1|projecto|projectos}}",
 	"num-protections": "$1 {{PLURAL:$1|protection|protectiones}}",
 	"num-redirects": "$1 {{PLURAL:$1|redirection|redirectiones}}",
-	"num-sections": "$1 {{PLURAL:$1|section|sectiones}}",
+	"num-sections": "$1 {{PLURAL:$2|section|sectiones}}",
 	"october": "octobre",
 	"ok": "OK",
 	"page": "Pagina",

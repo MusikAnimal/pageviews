@@ -13,6 +13,7 @@
 	"agent": "Agent",
 	"all": "Alle",
 	"all-languages": "Alle talen",
+	"all-projects": "Alle projecten",
 	"all-time": "Altijd",
 	"another-query": "Andere zoekopdracht",
 	"api-error": "Fout bij het opvragen van $1",
@@ -157,6 +158,7 @@
 	"ok": "OK",
 	"only-redirects": "Alleen doorverwijzingen meenemen",
 	"options": "Opties",
+	"other": "Overige",
 	"page": "Pagina",
 	"page-title": "Paginanaam",
 	"pages": "Pagina's",
@@ -253,5 +255,13 @@
 	"views": "Weergaven",
 	"watchers": "Volgers",
 	"we": "wo",
-	"wikilinks": "Wikikoppelingen"
+	"wikibooks": "Wikibooks",
+	"wikilinks": "Wikikoppelingen",
+	"wikinews": "Wikinews",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikiquote",
+	"wikisource": "Wikisource",
+	"wikiversity": "Wikiversity",
+	"wikivoyage": "Wikivoyage",
+	"wiktionary": "WikiWoordenboek"
 }
