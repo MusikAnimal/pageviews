@@ -242,7 +242,7 @@
 	"url-structure-end-date": "Btişi tarihi formatı $1 şeklindedir ve varsayılan olarak önceki günü gösterir",
 	"url-structure-example": "Wikinizdeki maddeler için en son verilerdeki varsayılan tercihleri kullanın:\n$1\nGeçerli olan $3 matriksini $2 ile değiştirin. $4 bağlantısı yerleştirildiğinde çözülecektir.",
 	"url-structure-example-siteviews": "Wikinizdeki tüm maddelerin en son toplam sayfa görüntüleme verilerinde, varsayılan olarak kullanılan:\n$1",
-	"url-structure-excludes": "Gözükmeyen sayfa isimlerini ayırarak gösterilmemesi için <code>|</code> karakteri kullanın. Böylece ilgisiz sayfaların hatalı sonuçlarını almayacaksanız. Örneğin <code>Ana_Sayfa|Özel:Ara</code> gibi",
+	"url-structure-excludes": "Gözükmeyen sayfa isimlerini ayırarak gösterilmemesi için <code>|</code> karakteri kullanın. Böylece ilgisiz sayfaların hatalı sonuçlarını almayacaksanız. Örneğin <code>Anasayfa|Özel:Ara</code> gibi",
 	"url-structure-massviews-example": "Sayfa kütüğü için örnek URL: $1\nKategori için örnek URL: $2\nWikideki bir kategori sayfasının sihirli kelime ile görüntülenmesi örneği: $3",
 	"url-structure-massviews-project": "Sorgo sonuçlarında, sayfalar için $1 geçerlidir.",
 	"url-structure-massviews-target": "Sayfa Kütüğü Kimliği ya da kategorinin tam URL adresi. Eğer URL adresinde bir <code>?</code> işareti varsa, bu <strong>kodlanmış olmalıdır.</strong>",

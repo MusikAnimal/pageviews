@@ -3,7 +3,8 @@
 		"authors": [
 			"Сербијана",
 			"Milicevic01",
-			"Srdjan m"
+			"Srdjan m",
+			"Obsuser"
 		]
 	},
 	"active-users": "Активни корисници",
@@ -11,6 +12,8 @@
 	"agent": "Агент",
 	"all": "Све",
 	"all-languages": "Сви језици",
+	"all-of-wikimedia": "Све од Викимедије",
+	"all-projects": "Сви пројекти",
 	"all-time": "Све",
 	"api-error-no-data": "Нема података.",
 	"apply": "Примјени",
@@ -49,6 +52,7 @@
 	"december": "Децембар",
 	"default": "Подразумевано",
 	"desktop": "Десктоп",
+	"devices": "Уређаји",
 	"disclaimer": "Одрицање одговорности",
 	"documentation": "Документација",
 	"doughnut": "Крофна",
@@ -106,9 +110,11 @@
 	"num-projects-info": "Можете унети до $1 пројеката",
 	"num-redirects": "Преусмерења: $1",
 	"num-sections": "Одељака: $1",
+	"num-unique-devices": "$1 {{PLURAL:$2|јединствен уређај|јединствена уређаја|јединствених уређаја}}",
 	"october": "Октобар",
 	"ok": "У реду",
 	"options": "Опције",
+	"other": "Друго",
 	"page": "Страница",
 	"page-title": "Име странице",
 	"pages": "Странице",
@@ -121,6 +127,7 @@
 	"print": "Штампај",
 	"project": "Пројекат",
 	"protection": "Заштита",
+	"query-for": "Упит за:",
 	"radar": "Радар",
 	"redirects": "Преусмерења",
 	"remember-chart-option": "Упамти подешавање графикона",
@@ -140,6 +147,7 @@
 	"settings-notice": "Ваша подешавања ће бити упамћена на овом прегледачу и овом рачунару.",
 	"show-more": "Прикажи више",
 	"show-values": "Прикажи вредности",
+	"siteviews-description": "Успоредба укупног броја прегледа или јединствених уређаја на више различитих пројеката",
 	"size": "Величина",
 	"source-project": "Изворни пројекат",
 	"spider": "Паук",
@@ -163,5 +171,13 @@
 	"view-source": "Погледај извор",
 	"views": "Прегледа",
 	"watchers": "Надгледача",
-	"we": "Сре"
+	"we": "Сре",
+	"wikibooks": "Викикњиге",
+	"wikinews": "Викивести",
+	"wikipedia": "Википедија",
+	"wikiquote": "Викицитат",
+	"wikisource": "Викизворник",
+	"wikiversity": "Викиверзитет",
+	"wikivoyage": "Википутовања",
+	"wiktionary": "Викиречник"
 }
