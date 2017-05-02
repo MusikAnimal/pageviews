@@ -9,6 +9,7 @@
 	"agent": "Agent",
 	"all": "Sve",
 	"all-languages": "Svi jezici",
+	"all-projects": "Svi projekti",
 	"all-time": "Svo vrijeme",
 	"another-query": "Novi upit",
 	"api-error": "Greška pri upitu $1",
@@ -60,6 +61,7 @@
 	"december": "Decembar",
 	"default": "Predodređeno",
 	"desktop": "Stoni računar",
+	"devices": "Uređaji",
 	"disclaimer": "Odricanje",
 	"documentation": "Dokumentacija",
 	"doughnut": "Prstenasti",
@@ -362,5 +364,10 @@
 	"views": "Pregleda",
 	"watchers": "Pratilaca",
 	"we": "Sri",
-	"wikilinks": "Wikilinkovi"
+	"wikibooks": "Wikiknjige",
+	"wikilinks": "Wikilinkovi",
+	"wikinews": "Wikivijesti",
+	"wikipedia": "Wikipedia",
+	"wikiquote": "Wikicitat",
+	"wiktionary": "Wikirječnik"
 }
