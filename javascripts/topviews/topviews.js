@@ -374,17 +374,17 @@ class TopViews extends Pv {
   setSpecialRange(range) {
     if (range === 'last-month') {
       this.setupDateRangeSelector('monthly');
-      this.datepicker.setDate(this.config.maxMonth);
+      this.datepicker.setDate(this.maxMonth);
       this.specialRange = {
         range,
-        value: moment(this.config.maxMonth).format('YYYY/MM')
+        value: moment(this.maxMonth).format('YYYY/MM')
       };
     } else if (range === 'yesterday') {
       this.setupDateRangeSelector('daily');
-      this.datepicker.setDate(this.config.maxDate);
+      this.datepicker.setDate(this.maxDate);
       this.specialRange = {
         range,
-        value: moment(this.config.maxDate).format('YYYY-MM-DD')
+        value: moment(this.maxDate).format('YYYY-MM-DD')
       };
     } else {
       return false;
@@ -407,8 +407,8 @@ class TopViews extends Pv {
       date = moment(`${dateInput}-01`).toDate();
 
       // if over max, set to max
-      if (date > this.config.maxMonth) {
-        date = this.config.maxMonth;
+      if (date > this.maxMonth) {
+        date = this.maxMonth;
       }
     } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
       // daily
@@ -416,8 +416,8 @@ class TopViews extends Pv {
       date = moment(dateInput).toDate();
 
       // if over max, set to max (Topviews maxDate is a Date object, not moment)
-      if (date > this.config.maxDate) {
-        date = this.config.maxDate;
+      if (date > this.maxDate) {
+        date = this.maxDate;
       }
     } else {
       // attempt to set as special range, or default range if range is invalid
@@ -425,13 +425,13 @@ class TopViews extends Pv {
     }
 
     // if less than min, throw error (since this is a common request)
-    if (date < this.config.minDate.toDate()) {
+    if (date < this.minDate.toDate()) {
       // use super.dateFormat since this is for moment, not for our datepicker
       this.toastError(`
         <strong>${$.i18n('invalid-params')}</strong>
-        ${$.i18n('param-error-1', moment(this.config.minDate).format(super.dateFormat))}
+        ${$.i18n('param-error-1', moment(this.minDate).format(super.dateFormat))}
       `);
-      date = this.config.minDate.toDate();
+      date = this.minDate.toDate();
     }
 
     return this.datepicker.setDate(date);
@@ -727,18 +727,18 @@ class TopViews extends Pv {
       format: 'MM yyyy',
       viewMode: 'months',
       minViewMode: 'months',
-      endDate: this.config.maxMonth
+      endDate: this.maxMonth
     } : {
       format: this.dateFormat,
       viewMode: 'days',
-      endDate: this.config.maxDate
+      endDate: this.maxDate
     };
 
     $(this.config.dateRangeSelector).datepicker('destroy');
     $(this.config.dateRangeSelector).datepicker(
       Object.assign({
         autoclose: true,
-        startDate: this.config.minDate.toDate()
+        startDate: this.minDate.toDate()
       }, datepickerParams)
     );
   }

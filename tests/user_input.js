@@ -1,6 +1,5 @@
 const moment = require('moment');
 const _ = require('underscore');
-const expect = require('chai').expect;
 
 module.exports = {
   'Typing in a page and selecting autocomplete result shows data for that article': client => {

@@ -233,7 +233,7 @@ const ChartHelpers = superclass => class extends superclass {
       if (alreadyThere[date.format('YYYYMMDD')]) {
         data.items.push(alreadyThere[date.format('YYYYMMDD')]);
       } else {
-        const edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+        const edgeCase = date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'days'));
         data.items.push({
           timestamp: date.format(this.config.timestampFormat),
           [this.isPageviews() ? 'views' : 'devices']: edgeCase ? null : 0
@@ -258,7 +258,7 @@ const ChartHelpers = superclass => class extends superclass {
     // key to use in dataseries varies based on app
     if (this.isPageviews()) {
       viewKey = 'views';
-    } else if (this.app === 'metaviews') {
+    } else if (this.app === 'metaviews' || this.isPagecounts()) {
       viewKey = 'count';
     } else {
       viewKey = 'devices';
@@ -329,7 +329,7 @@ const ChartHelpers = superclass => class extends superclass {
       for (let date = moment(startDate); date <= endDate; date.add(1, dateType)) {
         if (!dataset.data[counter]) {
           const edgeCase = !this.isMonthly() && (
-            date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'day'))
+            date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'day'))
           );
           const zeroValue = this.isLogarithmic() ? null : 0;
           dataset.data[counter] = edgeCase ? null : zeroValue;
@@ -361,14 +361,19 @@ const ChartHelpers = superclass => class extends superclass {
     }
 
     if (this.app === 'siteviews') {
-      return this.isPageviews() ? (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${granularity}` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      ) : (
-        `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/${$(this.config.platformSelector).val()}` +
-        `/${granularity}/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
+      if (this.isPageviews()) {
+        return `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
+          `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${granularity}` +
+          `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
+      } else if (this.isUniqueDevices()) {
+        return `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/` +
+          `${$(this.config.platformSelector).val()}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
+          `/${endDate.format(this.config.timestampFormat)}`;
+      } else {
+        return `https://wikimedia.org/api/rest_v1/metrics/legacy/pagecounts/aggregate/${uriEncodedEntityName}/` +
+          `${$(this.config.platformSelector).val()}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
+          `/${endDate.format(this.config.timestampFormat)}`;
+      }
     } else {
       return (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
@@ -457,7 +462,7 @@ const ChartHelpers = superclass => class extends superclass {
               dataType: 'jsonp'
             }).then(data => {
               const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
-              if (dateCreated && moment(dateCreated).isAfter(this.config.maxDate)) {
+              if (dateCreated && moment(dateCreated).isAfter(this.maxDate)) {
                 const faqLink = `<a href='/pageviews/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
                 this.toastWarn($.i18n('new-article-warning', faqLink));
               }
@@ -465,8 +470,16 @@ const ChartHelpers = superclass => class extends superclass {
           }
 
           let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
+
+          // user-friendly error messages
+          let endpoint = 'pageviews';
+          if (this.isUniqueDevices()) {
+            endpoint = 'unique-devices';
+          } else {
+            endpoint = 'pagecounts';
+          }
           xhrData.errors.push(
-            `${link}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+            `${link}: ${$.i18n('api-error', `${endpoint.upcase} API`)} - ${errorData.responseJSON.title}`
           );
         }
       }).always(() => {
@@ -526,7 +539,7 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Are we trying to show data on pageviews (as opposed to unique devices)?
+   * Are we trying to show data on pageviews (as opposed to unique devices or pagecounts)?
    * @return {Boolean} true or false
    */
   isPageviews() {
@@ -534,11 +547,19 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Are we trying to show data on unique devices (as opposed to pageviews)?
+   * Are we trying to show data on unique devices (as opposed to pageviews or pagecounts)?
    * @return {Boolean} true or false
    */
   isUniqueDevices() {
-    return !this.isPageviews();
+    return $(this.config.dataSourceSelector).val() === 'unique-devices';
+  }
+
+  /**
+   * Are we trying to show data on pagecounts (as opposed to pageviews or unique devices)?
+   * @return {Boolean} true or false
+   */
+  isPagecounts() {
+    return $(this.config.dataSourceSelector).val() === 'pagecounts';
   }
 
   /**
@@ -677,17 +698,17 @@ const ChartHelpers = superclass => class extends superclass {
       format: 'M yyyy',
       viewMode: 'months',
       minViewMode: 'months',
-      startDate: this.config.minDate.toDate(),
-      endDate: this.config.maxMonth,
+      startDate: this.minDate.toDate(),
+      endDate: this.maxMonth,
       disableTouchKeyboard: true
     });
 
-    start = start || this.config.initialMonthStart;
-    end = end || this.config.maxMonth;
+    start = start || this.initialMonthStart;
+    end = end || this.maxMonth;
 
     const validateDates = (start, end) => {
-      if (start < this.config.minDate.toDate()) start = this.config.minDate;
-      if (end > this.config.maxMonth) end = this.config.maxMonth;
+      if (start < this.minDate.toDate()) start = this.minDate;
+      if (end > this.maxMonth) end = this.maxMonth;
       if (end < start || start > end) {
         start = end;
       }

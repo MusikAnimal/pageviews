@@ -75,6 +75,9 @@
             <option value="unique-devices">
               <?php echo $I18N->msg( 'unique-devices' ); ?>
             </option>
+            <option value="pagecounts">
+              <?php echo $I18N->msg( 'pagecounts-legacy' ); ?>
+            </option>
           </select>
         </div>
         <div>

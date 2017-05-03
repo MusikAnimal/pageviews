@@ -28,8 +28,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     // Keep track of last valid start/end of month (when date type is set to month)
     // This is because the bootstrap datepicker library does not handle this natively
-    this.monthStart = this.config.initialMonthStart;
-    this.monthEnd = this.config.maxMonth;
+    this.monthStart = this.initialMonthStart;
+    this.monthEnd = this.maxMonth;
 
     // used in siteviews/templates.js
     this.siteDomains = siteDomains;
@@ -47,7 +47,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Called in `pv.js` after translations have loaded
    */
   initialize() {
-    this.setupDateRangeSelector();
     this.setupSelect2();
     this.setupSelect2Colors();
     this.popParams();
@@ -75,6 +74,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       $(this.config.dataSourceSelector).trigger('change');
     }
 
+    this.setupDateRangeSelector();
     this.validateDateRange(params);
     this.resetSelect2();
 
@@ -237,7 +237,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Set options for the Platform dropdown based on whether we're showing pageviews or unique devices
+   * Set options for the Platform dropdown based on whether we're showing
+   *   pageviews vs unique devices or pagecounts
    */
   setPlatformOptionValues() {
     $(this.config.platformSelector).find('option').each((index, el) => {
@@ -252,16 +253,17 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setPlatformOptionValues();
 
     $(this.config.dataSourceSelector).on('change', e => {
-      const value = $(this.config.platformSelector).val() || '',
-        wasMobileValue = value.includes('mobile');
+      const platform = $(this.config.platformSelector).val() || '',
+        wasMobileValue = platform.includes('mobile'),
+        wasPagecounts = this.params ? this.params.includes('pagecounts') : false;
 
       if (this.isPageviews()) {
-        $('.site-selector').toggleClass('disabled', $('.all-projects-radio').is(':checked'));
+        $('.site-selector').toggleClass('disabled', $('#all-projects').is(':checked'));
         $('.all-projects-selector').show();
         $('.platform-select--mobile-web, .platform-select--mobile-app').show();
         $('.platform-select--mobile').hide();
         $(this.config.agentSelector).prop('disabled', false);
-      } else {
+      } else { // applies to unique devices and pagecounts
         $('.site-selector').removeClass('disabled');
         $('.all-projects-selector').hide();
         $('.platform-select--mobile-web, .platform-select--mobile-app').hide();
@@ -273,13 +275,19 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
       // If we're going from a mobile value select a corresponding mobile value for the new data source.
       // Desktop and all-access share the same options so we don't need to add logic for those options.
-      if (wasMobileValue && this.isUniqueDevices()) {
+      if (wasMobileValue && !this.isPageviews()) {
         $(this.config.platformSelector).val('mobile-site'); // chart will automatically re-render
       } else if (wasMobileValue && this.isPageviews()) {
         $(this.config.platformSelector).val('mobile-web');
       }
 
-      this.processInput();
+      // re-init date selectors with new date range constraints, which will in turn call processInput()
+      if (this.isPagecounts() || wasPagecounts) {
+        this.setupDateRangeSelector();
+        this.setupMonthSelector();
+      } else {
+        this.processInput();
+      }
     });
   }
 
@@ -504,7 +512,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * @override
    */
   validateParams(params) {
-    if (params.source === 'unique-devices') {
+    if (['unique-devices', 'pagecounts'].includes(params.source)) {
       this.config.validParams.platform = ['all-sites', 'desktop-site', 'mobile-site'];
       this.config.defaults.platform = 'all-sites';
       params.agent = 'user';

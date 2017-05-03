@@ -29,6 +29,9 @@ class PvConfig {
     const maxDate = moment().subtract(1, 'day').startOf('day'),
       maxMonth = moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
 
+    const maxDatePagecounts = moment('2016-08-05').endOf('day'),
+      maxMonthPagecounts = moment('2016-07-01').toDate();
+
     this.config = {
       apiLimit: 20000,
       apiThrottle: 10,
@@ -212,10 +215,12 @@ class PvConfig {
         legendCallback: chart => this.config.chartLegend(chart.data.datasets, self)
       },
       daysAgo: 20,
-      initialMonthStart: moment(maxMonth).subtract(11, 'months').toDate(),
       minDate: moment('2015-07-01').startOf('day'),
+      minDatePagecounts: moment('2007-12-09').startOf('day'),
       maxDate,
       maxMonth,
+      maxDatePagecounts,
+      maxMonthPagecounts,
       specialRanges: {
         'last-week': [moment().subtract(1, 'week').startOf('isoweek'), moment().subtract(1, 'week').endOf('isoweek')],
         'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],
@@ -224,7 +229,8 @@ class PvConfig {
         'last-year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
         'all-time': [moment('2015-07-01').startOf('day'), maxDate],
         latest(offset = self.config.daysAgo) {
-          return [moment().subtract(offset, 'days').startOf('day'), self.config.maxDate];
+          const target = self.isPagecounts() ? maxDatePagecounts : maxDate;
+          return [moment(target).subtract(offset, 'days').startOf('day'), target];
         }
       },
       timestampFormat: 'YYYYMMDD00',

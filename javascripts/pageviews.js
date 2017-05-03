@@ -29,8 +29,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     // Keep track of last valid start/end of month (when date type is set to month)
     // This is because the bootstrap datepicker library does not handle this natively
-    this.monthStart = this.config.initialMonthStart;
-    this.monthEnd = this.config.maxMonth;
+    this.monthStart = this.initialMonthStart;
+    this.monthEnd = this.maxMonth;
 
     /**
      * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
