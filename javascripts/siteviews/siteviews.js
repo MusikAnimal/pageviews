@@ -484,8 +484,14 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Show info below the chart when there is only one site being queried
    */
   showSinglePageLegend() {
-    const site = this.outputData[0],
-      pageviewsMsg = this.isUniqueDevices() ? 'num-unique-devices' : 'num-pageviews';
+    const site = this.outputData[0];
+    let pageviewsMsg = 'num-pageviews';
+
+    if (this.isUniqueDevices()) {
+      pageviewsMsg = 'num-unique-devices';
+    } else if (this.isPagecounts()) {
+      pageviewsMsg = 'num-pagecounts';
+    }
 
     $('.table-view').hide();
     $('.single-site-stats').html(`
