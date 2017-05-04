@@ -55,7 +55,7 @@
               </p>
               <p>
                 <i>
-                  <?php echo $I18N->msg( 'url-structure-siteviews-platform', [ 'variables' => [ 'source', '<code>unique-devices</code>' ] ] ) . ':'; ?>
+                  <?php echo $I18N->msg( 'url-structure-siteviews-platform-no-pageviews', [ 'variables' => [ 'source', '<code>unique-devices</code>', '<code>pagecounts</code>' ] ] ) . ':'; ?>
                 </i>
                 <br>
                 <?php $values = [ '<code>all-sites</code> ' . $defaultMsg, '<code>desktop-site</code>', '<code>mobile-site</code>' ]; ?>
@@ -66,7 +66,7 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-siteviews-agent', [ 'variables' => [ '<code>source</code>', '<code>pageviews</code>' ] ] ); ?>
               <br>
-              <?php echo $I18N->msg( 'url-structure-agent', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>bot</code>', '<code>all-agents</code>' ], 'parsemag' => true ] ); ?>
+              <?php echo $I18N->msg( 'url-structure-agent-no-bots', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>all-agents</code>' ], 'parsemag' => true ] ); ?>
             </dd>
             <?php include "../../url_parts/_autolog.php"; ?>
           </dl>

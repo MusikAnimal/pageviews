@@ -44,7 +44,12 @@
             </ul>
           </li>
           <?php include "../../faq_parts/_counts.php"; ?>
-          <?php include "../../faq_parts/_agents.php"; ?>
+          <li class="list-group-item" id="agent">
+            <dt>agent</dt>
+            <dd>
+              <?php echo $I18N->msg( 'url-structure-agent-no-bots', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>all-agents</code>' ), 'parsemag' => true ) ); ?>
+            </dd>
+          </li>
           <?php include "../../faq_parts/_date_dot.php"; ?>
           <?php include "../../faq_parts/_chart_type.php"; ?>
           <li class="list-group-item">

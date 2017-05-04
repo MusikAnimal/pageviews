@@ -539,30 +539,6 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Are we trying to show data on pageviews (as opposed to unique devices or pagecounts)?
-   * @return {Boolean} true or false
-   */
-  isPageviews() {
-    return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
-  }
-
-  /**
-   * Are we trying to show data on unique devices (as opposed to pageviews or pagecounts)?
-   * @return {Boolean} true or false
-   */
-  isUniqueDevices() {
-    return $(this.config.dataSourceSelector).val() === 'unique-devices';
-  }
-
-  /**
-   * Are we trying to show data on pagecounts (as opposed to pageviews or unique devices)?
-   * @return {Boolean} true or false
-   */
-  isPagecounts() {
-    return $(this.config.dataSourceSelector).val() === 'pagecounts';
-  }
-
-  /**
    * Print the chart!
    */
   printChart() {

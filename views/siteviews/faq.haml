@@ -34,7 +34,10 @@
                 %i= $I18N->msg( 'pagecounts-legacy' )
                 = $I18N->msg( 'faq-source-pagecounts' )
           - include "../../faq_parts/_counts.php"
-          - include "../../faq_parts/_agents.php"
+          %li.list-group-item(id="agent")
+            %dt agent
+            %dd
+              = $I18N->msg( 'url-structure-agent-no-bots', array( 'variables' => array( '<code>user</code>', '<code>spider</code>', '<code>all-agents</code>' ), 'parsemag' => true ) )
           - include "../../faq_parts/_date_dot.php"
           - include "../../faq_parts/_chart_type.php"
           %li.list-group-item
