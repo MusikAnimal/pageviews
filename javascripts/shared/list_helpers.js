@@ -64,7 +64,7 @@ const ListHelpers = superclass => class extends superclass {
       if (alreadyThere[date]) {
         data.push(alreadyThere[date]);
       } else {
-        let edgeCase = date.isSame(this.config.maxDate) || date.isSame(moment(this.config.maxDate).subtract(1, 'days'));
+        let edgeCase = date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'days'));
         data.push({
           timestamp: date.format(this.config.timestampFormat),
           views: edgeCase ? null : 0

@@ -204,6 +204,38 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Minimum allowed date based on metric type
+   * @return {moment}
+   */
+  get minDate() {
+    return this.isPagecounts() ? this.config.minDatePagecounts : this.config.minDate;
+  }
+
+  /**
+   * Maximum allowed date based on metric type
+   * @return {moment}
+   */
+  get maxDate() {
+    return this.isPagecounts() ? this.config.maxDatePagecounts : this.config.maxDate;
+  }
+
+  /**
+   * Maximum allowed month based on metric type
+   * @return {Date}
+   */
+  get maxMonth() {
+    return this.isPagecounts() ? this.config.maxMonthPagecounts : this.config.maxMonth;
+  }
+
+  /**
+   * Get the initial month to show (when they switch from daily to monthly view)
+   * @return {Date}
+   */
+  get initialMonthStart() {
+    return moment(this.maxMonth).subtract(11, 'months').toDate();
+  }
+
+  /**
    * Validate the date range of given params
    *   and throw errors as necessary and/or set defaults
    * @param {Object} params - as returned by this.parseQueryString()
@@ -247,10 +279,10 @@ class Pv extends PvConfig {
       }
 
       // check if they are outside the valid range or if in the wrong order
-      if (startDate < this.config.minDate || endDate < this.config.minDate) {
+      if (startDate < this.minDate || endDate < this.minDate) {
         this.toastError(`
           <strong>${$.i18n('invalid-params')}</strong>
-          ${$.i18n('param-error-1', moment(this.config.minDate).format(this.dateFormat))}
+          ${$.i18n('param-error-1', moment(this.minDate).format(this.dateFormat))}
         `);
         return false;
       } else if (startDate > endDate) {
@@ -1459,18 +1491,27 @@ class Pv extends PvConfig {
    * sets up the daterange selector and adds listeners
    */
   setupDateRangeSelector() {
-    const dateRangeSelector = $(this.config.dateRangeSelector);
-
     /**
      * Transform this.config.specialRanges to have i18n as keys
      * This is what is shown as the special ranges (Last month, etc.) in the datepicker menu
      * @type {Object}
      */
-    let ranges = {};
-    Object.keys(this.config.specialRanges).forEach(key => {
-      if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
-      ranges[$.i18n(key)] = this.config.specialRanges[key];
-    });
+    let ranges = {}, startDate;
+
+    if (this.isPagecounts()) {
+      // pagecounts only gets one special range, all-time. The others don't apply
+      //  because this is legacy data only avaialbe through August 2016
+      ranges = {
+        [$.i18n('all-time')]: [this.config.minDatePagecounts, this.config.maxDatePagecounts]
+      };
+      startDate = moment(this.config.maxDatePagecounts).subtract(this.config.daysAgo, 'days');
+    } else {
+      Object.keys(this.config.specialRanges).forEach(key => {
+        if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
+        ranges[$.i18n(key)] = this.config.specialRanges[key];
+      });
+      startDate = moment().subtract(this.config.daysAgo, 'days');
+    }
 
     let datepickerOptions = {
       locale: {
@@ -1502,28 +1543,45 @@ class Pv extends PvConfig {
           $.i18n('december')
         ]
       },
-      startDate: moment().subtract(this.config.daysAgo, 'days'),
-      minDate: this.config.minDate,
-      maxDate: this.config.maxDate,
-      ranges: ranges
+      startDate,
+      minDate: this.minDate,
+      maxDate: this.maxDate,
+      ranges
     };
 
     if (this.config.dateLimit) datepickerOptions.dateLimit = { days: this.config.dateLimit };
 
-    dateRangeSelector.daterangepicker(datepickerOptions);
+    if (this.daterangepicker) {
+      $(this.config.dateRangeSelector).data('daterangepicker').remove();
+      const $datepicker = $(this.config.dateRangeSelector).remove();
+      $('.date-selector').append($datepicker);
+    }
+
+    $(this.config.dateRangeSelector).daterangepicker(datepickerOptions);
 
     /** so people know why they can't query data older than July 2015 */
-    $('.daterangepicker').append(
-      $('<div>')
-        .addClass('daterange-notice')
-        .html($.i18n('date-notice', document.title,
-          "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",
-          `${$.i18n('july')} 2015`
-        ))
-    );
+    if (this.app === 'siteviews' && !this.isPagecounts()) {
+      // $('.daterangepicker').append(
+      //   $('<div>')
+      //     .addClass('daterange-notice')
+      //     .html($.i18n('date-notice', document.title,
+      //       "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",
+      //       `${$.i18n('july')} 2015`
+      //     ))
+      // );
+    } else {
+      $('.daterangepicker').append(
+        $('<div>')
+          .addClass('daterange-notice')
+          .html($.i18n('date-notice', document.title,
+            "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",
+            `${$.i18n('july')} 2015`
+          ))
+      );
+    }
 
     /** The special date range options (buttons the right side of the daterange picker) */
-    $('.daterangepicker .ranges li').on('click', e => {
+    $('.daterangepicker .ranges li').off('click').on('click', e => {
       if (e.target.innerText === $.i18n('custom-range')) {
         this.specialRange = null;
         return this.daterangepicker.clickApply();
@@ -1543,7 +1601,7 @@ class Pv extends PvConfig {
       };
     });
 
-    $(this.config.dateRangeSelector).on('apply.daterangepicker', (e, action) => {
+    $(this.config.dateRangeSelector).off('apply.daterangepicker').on('apply.daterangepicker', (e, action) => {
       if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */

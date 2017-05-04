@@ -1,6 +1,5 @@
 const moment = require('moment');
 const _ = require('underscore');
-const expect = require('chai').expect;
 
 module.exports = {
   'Changing chart type updates the view and sets localStorage': client => {
