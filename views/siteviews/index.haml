@@ -48,6 +48,8 @@
         %div
           %label(for="data-source-select")
             = $I18N->msg( 'metric' )
+            %a.help-link(href="/siteviews/faq#metric")
+              %span.glyphicon.glyphicon-question-sign
           %select.form-control#data-source-select
             %option(value="pageviews")
               = $I18N->msg( 'pageviews' )

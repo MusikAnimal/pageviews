@@ -20,7 +20,7 @@
         %ul.list-group
           - include "../../faq_parts/_old_data.php"
           - include "../../faq_parts/_todays_data.php"
-          %li.list-group-item
+          %li.list-group-item(id="metric")
             %p
               %strong= $I18N->msg( 'faq-source-title' )
             %ul.faq-ul
@@ -30,6 +30,9 @@
               %li
                 %i= $I18N->msg( 'unique-devices' )
                 = $I18N->msg( 'faq-source-unique-devices' )
+              %li
+                %i= $I18N->msg( 'pagecounts-legacy' )
+                = $I18N->msg( 'faq-source-pagecounts' )
           - include "../../faq_parts/_counts.php"
           - include "../../faq_parts/_agents.php"
           - include "../../faq_parts/_date_dot.php"

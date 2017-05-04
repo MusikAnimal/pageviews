@@ -67,6 +67,9 @@
         <div>
           <label for="data-source-select">
             <?php echo $I18N->msg( 'metric' ); ?>
+            <a class="help-link" href="/siteviews/faq#metric">
+              <span class="glyphicon glyphicon-question-sign"></span>
+            </a>
           </label>
           <select class="form-control" id="data-source-select">
             <option value="pageviews">
