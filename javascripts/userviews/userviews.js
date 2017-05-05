@@ -219,6 +219,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         label: dataset.title,
         datestamp: dateCreated.format('YYYY-MM-DD'), // what shows up in exported data
         size: dataset.length,
+        redirect: dataset.redirect,
         url: dataset.url,
         sum,
         average: sum / length,
@@ -394,11 +395,12 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         // }
 
         const datestamp = moment(item.datestamp).format(this.dateFormat);
+        const redirect = item.redirect ? `<span class='text-muted'>(${$.i18n('redirect').toLowerCase()})</span>` : '';
 
         $('#output_list').append(
           `<tr>
            <th scope='row'>${index + 1}</th>
-           <td>${this.getPageLink(item.label, this.project)}</td>
+           <td>${this.getPageLink(item.label, this.project)} ${redirect}</td>
            <td>${datestamp}</td>
            <td>${this.formatNumber(item.size)}</td>
            <td><a target='_blank' href='${this.getPageviewsURL(`${this.project}.org`, item.label)}'>${this.formatNumber(item.sum)}</a></td>

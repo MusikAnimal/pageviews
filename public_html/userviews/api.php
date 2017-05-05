@@ -14,7 +14,6 @@ if ( !isset( $_GET['username'] ) || !isset( $_GET['project'] ) ) {
 
 $username = $_GET['username'];
 $project = $_GET['project'];
-$redirects = isset( $_GET['redirects'] ) ? $_GET['redirects'] : null;
 
 // get database name given the project
 $site_map = (array) json_decode( file_get_contents( ROOTDIR . '/site_map.json' ) );
@@ -41,10 +40,10 @@ if ( isset( $_GET['namespace'] ) ) {
   $sql .= " AND page_namespace = " . $_GET['namespace'];
 }
 if ( isset( $_GET['redirects'] ) ) {
-  if ( $_GET['redirects'] === 1 ) {
-    $sql .= " AND page_is_redirect = 1";
-  } elseif ( $_GET['redirects'] !== 2 ) {
+  if ( $_GET['redirects'] === '0' ) {
     $sql .= " AND page_is_redirect = 0";
+  } elseif ( $_GET['redirects'] !== '2' ) {
+    $sql .= " AND page_is_redirect = 1";
   }
 }
 $sql .= " LIMIT 20000";
