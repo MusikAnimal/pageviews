@@ -8,7 +8,8 @@
 			"Kkairri",
 			"Omotecho",
 			"組曲師",
-			"連綿"
+			"連綿",
+			"ネイ"
 		]
 	},
 	"active-users": "活動中の利用者",
@@ -35,6 +36,7 @@
 	"average": "平均",
 	"badges": "バッジ",
 	"bar": "バー",
+	"basic-information": "基本情報",
 	"bot": "ボット",
 	"building-dataset": "データセットを構築中です...",
 	"cancel": "キャンセル",

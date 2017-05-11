@@ -10,7 +10,8 @@
 			"ديفيد",
 			"ASHmed",
 			"Aboulouei1",
-			"Meno25"
+			"Meno25",
+			"يونس"
 		]
 	},
 	"active-users": "المستخدمون النشطون",
@@ -197,6 +198,7 @@
 	"projects-placeholder": "أدخل أسماء المشاريع...",
 	"radar": "رادار",
 	"rank": "مرتبة",
+	"redirect": "تحويلة",
 	"redirectviews": "مشاهدة التحويلات",
 	"redirectviews-description": "عدد مرات مشاهدة جميع التحويلات إلى صفحة",
 	"redirectviews-title": "مشاهدة التحويلات",
