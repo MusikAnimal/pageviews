@@ -94,13 +94,14 @@ const config = {
   sourceInput: '#source_input',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
-  validateParams: ['source', 'subjectpage', 'platform', 'agent', 'direction', 'sort', 'view'],
+  validateParams: ['source', 'subjectpage', 'subcategories', 'platform', 'agent', 'direction', 'sort', 'view'],
   validParams: {
     direction: ['-1', '1'],
     sort: ['title', 'views', 'original'],
     source: ['pagepile', 'wikilinks', 'category', 'subpages', 'transclusions', 'quarry', 'hashtag', 'external-link', 'search'],
     view: ['list', 'chart'],
-    subjectpage: ['0', '1']
+    subjectpage: ['0', '1'],
+    subcategories: ['0', '1']
   }
 };
 

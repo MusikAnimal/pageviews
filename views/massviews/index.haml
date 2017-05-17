@@ -59,12 +59,17 @@
               = $I18N->msg( 'source' )
               %a.help-link(href="/massviews/faq#sources")
                 %span.glyphicon.glyphicon-question-sign
-            %div.checkbox.pull-right.category-subject-toggle
-              %label
-                %input.category-subject-toggle--input(type="checkbox")
-                = $I18N->msg( 'category-subject-toggle' )
-                %a.help-link(href="/massviews/faq#category_subject_toggle")
-                  %span.glyphicon.glyphicon-question-sign
+            %div.category-options
+              %div.checkbox.pull-right.category-subject-toggle
+                %label
+                  %input.category-subject-toggle--input(type="checkbox")
+                  = $I18N->msg( 'category-subject-toggle' )
+                  %a.help-link(href="/massviews/faq#category_subject_toggle")
+                    %span.glyphicon.glyphicon-question-sign
+              %div.checkbox.pull-right.subcategories-toggle
+                %label
+                  %input.subcategories-toggle--input(type="checkbox")
+                  = $I18N->msg( 'include-subcategories' )
             %div.input-group.clearfix
               %div.input-group-btn
                 %button.btn.btn-default.dropdown-toggle#source_button(type="button" data-value="category" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")

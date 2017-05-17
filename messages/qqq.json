@@ -160,6 +160,7 @@
 	"hover-to-exclude": "Placeholder in the input of the Topviews application, instructing to hover over entries and click on the X to exclude them from view",
 	"images": "The word 'images'.\n{{Identical|Image}}",
 	"info": "A link to the wiki page information page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|Info}}",
+	"include-categories": "Option shown on Massviews when the 'Category URL' source is selected. This option tells the tool to include all nested categories within the given category.",
 	"invalid-category-url": "Error message saying the user inputted wiki URL is not a valid category (as in the Category namespace).",
 	"invalid-lang-project": "Error message saying the given value is not a valid WMF multilingual project. $1 is the name of the project.",
 	"invalid-page-url": "Error message saying the user inputted wiki URL is not a valid page.",

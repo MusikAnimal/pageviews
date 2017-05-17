@@ -102,9 +102,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     );
 
     if (source === 'category') {
-      $('.category-subject-toggle').show();
+      $('.category-options').show();
     } else {
-      $('.category-subject-toggle').hide();
+      $('.category-options').hide();
     }
 
     if (['quarry', 'external-link', 'search'].includes(source)) {
@@ -154,6 +154,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     if (params.source === 'category') {
       params.subjectpage = $('.category-subject-toggle--input').is(':checked') ? '1' : '0';
+      params.subcategories = $('.subcategories-toggle--input').is(':checked') ? '1' : '0';
     } else if (['quarry', 'external-link', 'search'].includes(params.source)) {
       params.project = $('.project-input').val();
     }
@@ -576,6 +577,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.category-subject-toggle--input').prop('checked', true);
     }
 
+    if (params.subcategories === '1') {
+      $('.subcategories-toggle--input').prop('checked', true);
+    }
+
     /** start up processing if necessary params are present */
     if (params.target) {
       this.processInput();
@@ -704,66 +709,41 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    *   given the label and link for the category and the pageviews data
    */
   processCategory(project, category, cb) {
-    let requestData = {
-      list: 'categorymembers',
-      cmlimit: 500,
-      cmtitle: category,
-      prop: 'categoryinfo',
-      titles: category
-    };
-
     const categoryLink = this.getPageLink(category, project);
 
     $('.progress-counter').text($.i18n('fetching-data', 'Category API'));
-    this.massApi(requestData, project, 'cmcontinue', 'categorymembers').done(data => {
-      if (data.error) {
-        return this.apiErrorReset('Category API', data.error.info);
-      }
 
-      const pageObj = data.pages[0];
+    let url = `/massviews/api.php?project=${project}&category=${category.replace(/^.*?:/, '')}`
+      + `&limit=${this.config.apiLimit}`;
 
-      if (pageObj.missing) {
+    if ($('.subcategories-toggle--input').is(':checked')) {
+      url += '&recursive=1';
+    }
+
+    $.getJSON(url).done(pages => {
+      if (!pages.length) {
         return this.setState('initial', () => {
           this.writeMessage($.i18n('api-error-no-data'));
         });
       }
 
-      const size = pageObj.categoryinfo.size,
-        // siteInfo is only populated if they've opted to see subject pages instead of talk pages
-        // Otherwise namespaces are not needed by this.mapCategoryPageNames
-        namespaces = this.getSiteInfo(project) ? this.getSiteInfo(project).namespaces : undefined;
-      let pages = data.categorymembers;
-
-      if (!pages.length) {
-        return this.setState('initial', () => {
-          this.writeMessage($.i18n('massviews-empty-set', categoryLink));
-        });
-      }
-
-      if (size > this.config.apiLimit) {
+      if (pages.length >= this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', categoryLink, this.formatNumber(size), this.config.apiLimit)
+          $.i18n('massviews-oversized-set-unknown', categoryLink, this.config.apiLimit)
         );
 
         pages = pages.slice(0, this.config.apiLimit);
       }
 
-      const pageNames = this.mapCategoryPageNames(pages, namespaces);
+      const useSubjectPage = $('.category-subject-toggle--input').is(':checked');
+      const pageTitles = this.mapCategoryPageNames(pages, this.getSiteInfo(project).namespaces, useSubjectPage);
 
-      this.getPageViewsData(pageNames, project).done(pageViewsData => {
+      this.getPageViewsData(pageTitles, project).done(pageViewsData => {
         cb(category, categoryLink, pageViewsData);
       });
     }).fail(data => {
       this.setState('initial');
-
-      /** structured error comes back as a string, otherwise we don't know what happened */
-      if (data && typeof data.error === 'string') {
-        this.writeMessage(
-          $.i18n('api-error', categoryLink + ': ' + data.error)
-        );
-      } else {
-        this.writeMessage($.i18n('api-error-unknown', categoryLink));
-      }
+      this.writeMessage($.i18n('api-error-unknown', categoryLink));
     });
   }
 
@@ -1311,22 +1291,28 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Get subject pages of given talk pages in given namespace
+   * Get full page titles given array of objects with page title and namespace number
+   * You can optionally return the subject pages of any given talk pages
    * @param  {Array} pages - page names
    * @param  {Object} namespaces - as returned by the siteInfo
+   * @param  {Boolean} useSubjectPage - whether to convert any talk pages
+   *                              to their corresponding subject page
    * @return {Array} - mapped page names
    */
-  mapCategoryPageNames(pages, namespaces) {
+  mapCategoryPageNames(pages, namespaces, useSubjectPage) {
     let pageNames = [];
 
     pages.forEach(page => {
-      if (namespaces && page.ns % 2 === 1) {
-        const namespace = namespaces[page.ns].canonical;
-        const subjectNamespace = namespaces[page.ns - 1].canonical || '';
-        pageNames.push(page.title.replace(namespace, subjectNamespace).replace(/^\:/, ''));
+      const ns = parseInt(page.ns, 10);
+      let namespace;
+
+      if (ns % 2 === 1 && useSubjectPage) {
+        namespace = namespaces[ns - 1]['*'] || '';
       } else {
-        pageNames.push(page.title);
+        namespace = namespaces[page.ns]['*'];
       }
+
+      pageNames.push(`${namespace}${namespace === '' ? '' : ':'}${page.title}`);
     });
 
     return pageNames;
@@ -1399,14 +1385,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     switch (source) {
     case 'category':
-      // fetch siteinfo to get namespaces if they've opted to use subject page instead of talk
-      if ($('.category-subject-toggle--input').is(':checked')) {
-        this.fetchSiteInfo(project).then(() => {
-          this.processCategory(project, target, cb);
-        });
-      } else {
+      // namespaces needed as internal Category API fetches from the replicas
+      this.fetchSiteInfo(project).then(() => {
         this.processCategory(project, target, cb);
-      }
+      });
       break;
     case 'subpages':
       // fetch namespaces first

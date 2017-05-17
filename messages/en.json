@@ -147,6 +147,7 @@
 	"hover-to-exclude": "To exclude pages from view, hover over their names and click the ✖",
 	"images": "Images",
 	"info": "Info",
+	"include-subcategories": "Include all subcategories",
 	"invalid-category-url": "Invalid category! Please enter the full wiki URL of the category.",
 	"invalid-lang-project": "$1 is either invalid or not a multilingual project",
 	"invalid-page-url": "Invalid page! Please enter the full wiki URL of the page.",

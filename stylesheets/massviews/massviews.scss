@@ -11,8 +11,17 @@
   display: none;
 }
 
-.category-subject-toggle {
+.category-options {
+  display: inline;
+}
+
+.checkbox.category-subject-toggle,
+.checkbox.subcategories-toggle {
   margin: 0;
+
+  &.subcategories-toggle {
+    margin-right: 15px;
+  }
 }
 
 .massviews-source-input {

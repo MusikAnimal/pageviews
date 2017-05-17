@@ -77,14 +77,22 @@
                 <span class="glyphicon glyphicon-question-sign"></span>
               </a>
             </label>
-            <div class="checkbox pull-right category-subject-toggle">
-              <label>
-                <input class="category-subject-toggle--input" type="checkbox">
-                <?php echo $I18N->msg( 'category-subject-toggle' ); ?>
-                <a class="help-link" href="/massviews/faq#category_subject_toggle">
-                  <span class="glyphicon glyphicon-question-sign"></span>
-                </a>
-              </label>
+            <div class="category-options">
+              <div class="checkbox pull-right category-subject-toggle">
+                <label>
+                  <input class="category-subject-toggle--input" type="checkbox">
+                  <?php echo $I18N->msg( 'category-subject-toggle' ); ?>
+                  <a class="help-link" href="/massviews/faq#category_subject_toggle">
+                    <span class="glyphicon glyphicon-question-sign"></span>
+                  </a>
+                </label>
+              </div>
+              <div class="checkbox pull-right subcategories-toggle">
+                <label>
+                  <input class="subcategories-toggle--input" type="checkbox">
+                  <?php echo $I18N->msg( 'include-subcategories' ); ?>
+                </label>
+              </div>
             </div>
             <div class="input-group clearfix">
               <div class="input-group-btn">
