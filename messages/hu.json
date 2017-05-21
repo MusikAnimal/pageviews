@@ -6,7 +6,8 @@
 			"Máté",
 			"Tacsipacsi",
 			"R-Joe",
-			"BanKris"
+			"BanKris",
+			"Urbalazs"
 		]
 	},
 	"agent": "Ügynök",
@@ -117,6 +118,7 @@
 	"project": "Projekt",
 	"projects": "Projektek",
 	"radar": "Sugár",
+	"redirect": "Átirányítás",
 	"report-issue": "Hibabejelentés",
 	"sa": "Szo",
 	"save": "Mentés",
@@ -149,6 +151,7 @@
 	"url-structure-parameters-order": "Bármilyen sorrendben használhatók",
 	"url-structure-project": "$1 vagy más érvényes $2",
 	"url-structure-siteviews-platform": "Ha a $1 a $2",
+	"url-structure-siteviews-platform-no-pageviews": "Amikor $1 értéke $2 vagy $3",
 	"user": "Felhasználó",
 	"view-source": "Forráskód megtekintése",
 	"we": "Sze",
