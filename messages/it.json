@@ -123,6 +123,7 @@
 	"hover-to-exclude": "Per escludere pagine dalla vista, passa il mouse sopra il loro nome e clicca sulla ✖",
 	"images": "Immagini",
 	"info": "Informazioni",
+	"include-subcategories": "Includi tutte le sottocategorie",
 	"invalid-category-url": "Categoria non valida! Inserisci l'URL wiki completo della categoria.",
 	"invalid-lang-project": "$1 non è valido o non è un progetto multilingue",
 	"invalid-page-url": "Pagina non valida! Inserisci l'URL wiki completo della pagina.",

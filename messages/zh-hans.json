@@ -151,6 +151,7 @@
 	"hover-to-exclude": "要从视图中排除页面，在名称上悬停并点击✖",
 	"images": "图片",
 	"info": "信息",
+	"include-subcategories": "包含所有子分类",
 	"invalid-category-url": "无效分类！请输入分类的完整wiki URL。",
 	"invalid-lang-project": "$1无效或不是一个多语言项目",
 	"invalid-page-url": "无效页面！请输入页面的完整wiki URL。",

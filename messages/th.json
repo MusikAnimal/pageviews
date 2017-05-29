@@ -4,7 +4,8 @@
 			"Pon44695",
 			"Macofe",
 			"Bluegram",
-			"Slentee"
+			"Slentee",
+			"Ans"
 		]
 	},
 	"active-users": "ผู้ใช้ที่ยังมีความเคลื่อนไหว",
@@ -267,5 +268,12 @@
 	"views": "ดู",
 	"watchers": "ผู้เฝ้าดู",
 	"we": "พ.",
-	"wikilinks": "วิกิลิงก์"
+	"wikibooks": "วิกิตำรา",
+	"wikilinks": "วิกิลิงก์",
+	"wikinews": "วิกิข่าว",
+	"wikipedia": "วิกิพีเดีย",
+	"wikiquote": "วิกิคำคม",
+	"wikiversity": "วิกิวิทยาลัย",
+	"wikivoyage": "วิกิท่องเที่ยว",
+	"wiktionary": "วิกิพจนานุกรม"
 }

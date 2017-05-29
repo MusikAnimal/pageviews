@@ -115,6 +115,7 @@
 	"hosted": "$2의 $1(으)로 호스팅됨.",
 	"images": "그림",
 	"info": "정보",
+	"include-subcategories": "모든 하위 분류 포함",
 	"invalid-params": "매개변수가 올바르지 않습니다!",
 	"invalid-project": "$1은(는) <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>유효한 프로젝트</a>가 아니거나 현재 지원하지 않습니다.",
 	"january": "1월",
