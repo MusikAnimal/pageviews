@@ -319,7 +319,11 @@ const ChartHelpers = superclass => class extends superclass {
     // don't try to plot zeros on a logarithmic chart
     const startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate),
-      dateType = this.isMonthly() ? 'month' : 'day';
+      dateType = this.isMonthly() ? 'month' : 'day',
+      // This is used to make sure Select2 colours match those in the chart and legend,
+      //   though in some cases (all-projects in Siteviews) the Select2 control may be empty
+      //   so we instead use an empty array
+      select2Values = ($(this.config.select2Input).select2('val') || []).map(title => title.descore());
 
     return outputData.map((dataset, index) => {
       // Use zero instead of null for some data due to Gotcha in Pageviews API:
@@ -337,7 +341,13 @@ const ChartHelpers = superclass => class extends superclass {
         counter++;
       }
 
-      const color = this.config.colors[index % 10];
+      // Make sure Select2 colours match those in the chart and legend
+      const select2Index = select2Values.indexOf(dataset.label);
+      // In some cases (when all-projects is selected in Siteviews)
+      //   the dataset name may not be in Select2, so just go off of the iteration index
+      const colorIndex = (select2Index === -1 ? index : select2Index) % 10;
+      const color = this.config.colors[colorIndex];
+
       return Object.assign(dataset, {
         color
       }, this.config.chartConfig[this.chartType].dataset(color));
@@ -475,11 +485,11 @@ const ChartHelpers = superclass => class extends superclass {
           let endpoint = 'pageviews';
           if (this.isUniqueDevices()) {
             endpoint = 'unique-devices';
-          } else {
+          } else if (this.isPagecounts()) {
             endpoint = 'pagecounts';
           }
           xhrData.errors.push(
-            `${link}: ${$.i18n('api-error', `${endpoint.upcase} API`)} - ${errorData.responseJSON.title}`
+            `${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorData.responseJSON.title}`
           );
         }
       }).always(() => {

@@ -30,9 +30,13 @@ module.exports = {
     client.setValue('#data-source-select', 'unique-devices');
     client.execute('$(\'#data-source-select\').trigger(\'change\')');
 
+    client.pause(3000);
+
     // Safari fix
     client.click('#data-source-select');
     client.click('#data-source-select option:nth-child(2)');
+
+    client.pause(50000);
 
     // platform should now be 'mobile-site' and agent should be 'user'
     client.expect.element('#platform-select').value.to.equal('mobile-site');
