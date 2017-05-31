@@ -106,7 +106,9 @@ module.exports = {
     client.pause(1000);
     client.setValue('#agent-select', 'spider');
     client.execute('$(\'#agent-select\').trigger(\'change\')');
-    // and again for Safari
+    // and twice again for Safari
+    client.click('#agent-select');
+    client.click('#agent-select option:nth-child(3)');
     client.click('#agent-select');
     client.click('#agent-select option:nth-child(3)');
     client.waitForElementVisible('.output', 5000);
