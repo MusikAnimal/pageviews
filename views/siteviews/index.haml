@@ -84,10 +84,12 @@
             %option(value="spider")
               = $I18N->msg( 'spider' )
         %div.all-projects-selector
-          %label Query for:
+          %label
+            = $I18N->msg( 'query-for' )
           %div.radio
             %label
-              %input.all-projects-radio(type="radio" name="all-projects" value="0" checked="checked") Individual projects
+              %input.all-projects-radio(type="radio" name="all-projects" value="0" checked="checked")
+                = $I18N->msg( 'individual-projects' )
           %div.radio
             %label
               %input.all-projects-radio#all-projects(type="radio" name="all-projects" value="1")

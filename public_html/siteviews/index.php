@@ -125,10 +125,14 @@
           </select>
         </div>
         <div class="all-projects-selector">
-          <label>Query for:</label>
+          <label>
+            <?php echo $I18N->msg( 'query-for' ); ?>
+          </label>
           <div class="radio">
             <label>
-              <input class="all-projects-radio" type="radio" name="all-projects" value="0" checked="checked">Individual projects</input>
+              <input class="all-projects-radio" type="radio" name="all-projects" value="0" checked="checked">
+                <?php echo $I18N->msg( 'individual-projects' ); ?>
+              </input>
             </label>
           </div>
           <div class="radio">
