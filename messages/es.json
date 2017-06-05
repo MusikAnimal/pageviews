@@ -10,7 +10,8 @@
 			"Dgstranz",
 			"Fortega",
 			"MusikAnimal",
-			"Julián L"
+			"Julián L",
+			"Javiersanp"
 		]
 	},
 	"active-users": "Usuarios activos",
@@ -124,6 +125,7 @@
 	"hosted": "Alojado con $1 en $2.",
 	"hover-to-exclude": "Para excluir páginas de la vista, pasa sobre su nombre y haz clic en ✖",
 	"images": "Imágenes",
+	"individual-projects": "Proyectos individuales",
 	"info": "Información",
 	"include-subcategories": "Incluir todas las subcategorías",
 	"invalid-category-url": "Categoría no válida. Escribe el URL wiki completo de la categoría.",
