@@ -89,7 +89,7 @@
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
 	"faq-chart-type-title": "¿Cómo puedo cambiar el tipo de gráfico?",
 	"faq-data-dumps": "¿Puedo descargar el conjunto de datos de todas las vistas de todas las páginas?",
-	"faq-data-dumps-body": "Sí. Se pueden descargar en $1 los volcados de datos completos de todos los sitios de Wikimedia soportados.",
+	"faq-data-dumps-body": "Sí. Se pueden descargar en $1 los volcados de datos completos de todos los sitios de Wikimedia compatibles.",
 	"faq-date-dot": "¿Qué son los puntos junto a las etiquetas de fecha?",
 	"faq-date-dot-body": "Indica el primer día de la semana. El número de visitas suele ser pequeño durante los fines de semana; este indicador puede ser útil para el ciclo semanal.",
 	"faq-massviews-sources-category": "Introduce la URL completa de una página de categoría, por ejemplo, $1.",

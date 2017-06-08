@@ -162,5 +162,13 @@
 	"url-structure-topviews-example": "Per mostrar la llista per defecte de les pàgines més vistes del vostre wiki, useu:\n$1\nsubstitució de $2, amb una validesa de 3$més. També podeu utilitzar $4 per excloure determinades pàgines de vista, com ara la Portada.",
 	"user": "Usuari",
 	"view-source": "Mostra el codi",
-	"we": "dc"
+	"we": "dc",
+	"wikibooks": "Viquillibres",
+	"wikinews": "Viquinotícies",
+	"wikipedia": "Viquipèdia",
+	"wikiquote": "Viquidites",
+	"wikisource": "Viquitexts",
+	"wikiversity": "Viquiversitat",
+	"wikivoyage": "Viquiviatges",
+	"wiktionary": "Viccionari"
 }
