@@ -153,6 +153,7 @@
 	"line": "Линейная",
 	"links": "Ссылки",
 	"list": "Список",
+	"list-false-positives-heading": "Известные ложные срабатывания",
 	"list-values": "Один из: $1",
 	"loading-cache": "Загрузка из кэша…",
 	"localization": "Локализация:",
