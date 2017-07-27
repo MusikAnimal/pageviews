@@ -369,7 +369,7 @@
 	"url-structure-topviews-example": "想顯示出維基上最多瀏覽頁面的預設清單內容，請使用：\n$1\n將$2替換成有效的$3。您也可使用$4把指定的頁面項目從畫面上排除，例如已知的誤報。",
 	"url-structure-topviews-mainspace": "設定為<code>false</code>來顯示所有頁面；且不只僅包含主空間頁面。",
 	"url-structure-topviews-mobileviews": "設定為<code>true</code>來強制設定「$1」選項。此選項僅在$2設定為$3時才有效。",
-	"url-structure-user": "呈現的用戶名稱。",
+	"url-structure-user": "呈現的使用者名稱。",
 	"url-structure-userviews-example": "要以預設選項來獲得由您所創建條目的最新資料，在您的用戶空間的任何位置放置如下的連結：$1",
 	"url-structure-userviews-namespace": "命名空間號碼，預設為$1。使用$2用於全部命名空間。",
 	"url-structure-userviews-onwiki-link": "要連結在wiki上用戶空間頁面的擁有者，請使用$1",
