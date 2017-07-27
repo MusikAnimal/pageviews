@@ -489,7 +489,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       this.outputData = this.outputData.map(entity => {
         return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
       });
-      this.updateChart();
+      // But make sure we have editing totals first. We have to re-query to ensure an
+      //   accurate number of "unique" editors.
+      delete this.entityInfo.entities[removedPage];
+      this.getEditData(Object.keys(this.entityInfo.entities)).done(editData => {
+        Object.assign(this.entityInfo.totals, editData.totals);
+        this.updateChart();
+      });
     } else if (this.initialQuery) {
       // We've already gotten data about the intial set of pages
       // This is because we need any page names given to be normalized when the app first loads

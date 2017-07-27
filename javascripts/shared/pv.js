@@ -1653,29 +1653,31 @@ class Pv extends PvConfig {
     if (this.debug) {
       throw errors[0];
     } else if (errors && errors[0] && errors[0].stack) {
-      $.ajax({
-        method: 'POST',
-        url: '//tools.wmflabs.org/musikanimal/paste',
-        data: {
-          content: '' +
-            `\ndate:      ${moment().utc().format()}` +
-            `\ntool:      ${this.app}` +
-            `\nlanguage:  ${i18nLang}` +
-            `\nchart:     ${this.chartType}` +
-            `\nurl:       ${document.location.href}` +
-            `\ntrace:     ${errors[0].stack}`
-          ,
-          title: `Pageviews Analysis error report: ${errors[0]}`
-        }
-      }).done(data => {
-        if (data && data.result && data.result.objectName) {
-          throwToastError(data.result.objectName);
-        } else {
-          throwToastError();
-        }
-      }).fail(() => {
-        throwToastError();
-      });
+      // Disabling automatic phab pastings for now...
+      throwToastError();
+      // $.ajax({
+      //   method: 'POST',
+      //   url: '//tools.wmflabs.org/musikanimal/paste',
+      //   data: {
+      //     content: '' +
+      //       `\ndate:      ${moment().utc().format()}` +
+      //       `\ntool:      ${this.app}` +
+      //       `\nlanguage:  ${i18nLang}` +
+      //       `\nchart:     ${this.chartType}` +
+      //       `\nurl:       ${document.location.href}` +
+      //       `\ntrace:     ${errors[0].stack}`
+      //     ,
+      //     title: `Pageviews Analysis error report: ${errors[0]}`
+      //   }
+      // }).done(data => {
+      //   if (data && data.result && data.result.objectName) {
+      //     throwToastError(data.result.objectName);
+      //   } else {
+      //     throwToastError();
+      //   }
+      // }).fail(() => {
+      //   throwToastError();
+      // });
     }
   }
 
