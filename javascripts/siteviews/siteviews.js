@@ -503,7 +503,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       &middot;
       ${$.i18n(pageviewsMsg, this.formatNumber(site.sum), site.sum)}
       <span class='hidden-lg'>
-        (${this.formatNumber(site.average)}/${$.i18n('day')})
+        (${this.formatNumber(site.average)}/${$.i18n(this.isMonthly() ? 'month' : 'day')})
       </span>
     `);
     $('.single-site-legend').html(
