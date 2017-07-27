@@ -65,17 +65,29 @@ $limit = isset( $_GET['limit'] ) ? (int) $_GET['limit'] : 20000;
 echo json_encode( getCategoryMembers($client, $db, $categories, $limit) );
 
 function recurseCategory( $client, $db, $searchCats, $allCats = [], $count = 0 ) {
-  $searchCatStr = implode( ',', array_map( function( $searchCat ) {
-    return "'$searchCat'";
-  }, $searchCats));
+  if ( empty( $searchCats ) ) {
+    return $allCats;
+  }
+
+  $params = implode( ',', array_fill( 0, count( $searchCats ), '?') );
 
   $sql = "SELECT page_title
           FROM $db.categorylinks
           JOIN $db.page ON page_id = cl_from
-          WHERE cl_to IN ( $searchCatStr )
+          WHERE cl_to IN ( $params )
           AND cl_type = 'subcat'";
 
-  $res = $client->query( $sql );
+  $stmt = $client->prepare( $sql );
+  $bindParams = [];
+  foreach ($searchCats as $key => $value) {
+    $bindParams[] = &$searchCats[$key];
+  }
+
+  array_unshift( $bindParams, str_repeat( 's', count( $searchCats ) ) );
+  call_user_func_array( [$stmt, 'bind_param'], $bindParams );
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $stmt->close();
 
   if ( !$res ) {
     return $allCats;
@@ -103,14 +115,26 @@ function getCategoryMembers( $client, $db, $categories, $limit ) {
     return "'$category'";
   }, $categories));
 
+  $params = implode( ',', array_fill( 0, count( $categories ), '?') );
+
   $sql = "SELECT page_title AS title, page_namespace AS ns
           FROM $db.categorylinks
           JOIN $db.page ON page_id = cl_from
-          WHERE cl_to IN ( $categoriesStr )
+          WHERE cl_to IN ( $params )
           AND cl_type IN ('page', 'file')
           LIMIT $limit";
 
-  $res = $client->query( $sql );
+  $stmt = $client->prepare( $sql );
+  $bindParams = [];
+  foreach ($categories as $key => $value) {
+    $bindParams[] = &$categories[$key];
+  }
+
+  array_unshift( $bindParams, str_repeat( 's', count( $categories ) ) );
+  call_user_func_array( [$stmt, 'bind_param'], $bindParams );
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $stmt->close();
 
   if ( !$res ) {
     return [];
