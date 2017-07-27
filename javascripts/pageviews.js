@@ -546,7 +546,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         &middot;
         ${$.i18n('num-pageviews', this.formatNumber(page.sum), page.sum)}
         <span class='hidden-lg'>
-          (${this.formatNumber(page.average)}/${$.i18n('day')})
+          (${this.formatNumber(page.average)}/${$.i18n(this.isMonthly() ? 'month' : 'day')})
         </span>
       `);
       $('.single-page-legend').html(
