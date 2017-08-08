@@ -533,7 +533,10 @@ class Pv extends PvConfig {
    * @returns {string} lang.projectname
    */
   get project() {
-    const project = $(this.config.projectInput).val();
+    const project = this.app === 'mediaviews' ?
+      'commons.wikimedia.org' :
+      $(this.config.projectInput).val();
+
     /** Get the first 2 characters from the project code to get the language */
     return project ? project.toLowerCase().replace(/.org$/, '') : null;
   }
@@ -1315,8 +1318,9 @@ class Pv extends PvConfig {
   /**
    * Removes all Select2 related stuff then adds it back
    * Also might result in the chart being re-rendered
+   * @param {boolean} [setup] Whether to re-setup the selector.
    */
-  resetSelect2() {
+  resetSelect2(setup = true) {
     const select2Input = $(this.config.select2Input);
     if (select2Input.data('select2')) {
       select2Input.off('change');
@@ -1324,7 +1328,9 @@ class Pv extends PvConfig {
       select2Input.select2('data', null);
       select2Input.select2('destroy');
     }
-    this.setupSelect2();
+    if (setup) {
+      this.setupSelect2();
+    }
   }
 
   /**
@@ -1584,7 +1590,7 @@ class Pv extends PvConfig {
     $(this.config.dateRangeSelector).daterangepicker(datepickerOptions);
 
     /** so people know why they can't query data older than July 2015 */
-    if (!this.isPagecounts()) {
+    if (!this.isPagecounts() && this.app !== 'mediaviews') {
       $('.daterangepicker').append(
         $('<div>')
           .addClass('daterange-notice')

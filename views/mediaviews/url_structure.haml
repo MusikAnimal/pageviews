@@ -1,0 +1,42 @@
+!!!
+%html
+  %head
+    - include '../../_head.php'
+    %title
+      = $I18N->msg( 'mediaviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
+  %body(class="#{$rtl}")
+    - $currentApp = 'mediaviews'
+    - include '../../_header.php'
+
+    %div.container
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'mediaviews-title' )
+          %small.app-description
+            = $I18N->msg( 'url-structure' )
+
+      %main.col-lg-10.col-lg-offset-1
+        %div
+          - $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/mediaviews?files={{PAGENAMEE}}</pre>"
+          - $fullpageNamee = "<code>{{PAGENAMEE}}</code>"
+          = $I18N->msg( 'url-structure-mediaviews-example', [ 'variables' => [ $mediaviewsLink, $fullpageNamee ], 'parsemag' => true ] )
+
+        %div
+          %h3
+            = $I18N->msg( 'url-structure-parameters' )
+            %small= $I18N->msg( 'url-structure-parameters-order' )
+          %hr
+          %dl.dl-horizontal
+            %dt files
+            %dd
+              = $I18N->msg( 'url-structure-files', [ 'variables' => [ '<code>Lion_cubs_(Panthera_leo).webm|VJSC_1425D-q1.ogv</code>' ], 'parsemag' => true ] )
+            - $defaultRange = 'latest'
+            - include "../../url_parts/_date_ranges.php"
+            - include "../../url_parts/_autolog.php"
+
+        %div.col-lg-12.text-center.tm
+          %a(href="/mediaviews")
+            = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'mediaviews-title' ) ], 'parsemag' => true ] )
+
+      -include "../../_footer.php";

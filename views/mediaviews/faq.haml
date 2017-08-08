@@ -1,0 +1,31 @@
+!!!
+%html
+  %head
+    - include '../../_head.php'
+    %title
+      = $I18N->msg( 'mediaviews-title' ) . ' - ' . $I18N->msg( 'faq' )
+  %body(class="#{$rtl}")
+    - $currentApp = 'mediaviews'
+    - include '../../_header.php'
+
+    %div.container
+      %header.col-lg-12.text-center
+        %h4
+          %strong
+            = $I18N->msg( 'mediaviews-title' )
+          %small.app-description
+            = $I18N->msg( 'faq' )
+
+      %main.col-lg-10.col-lg-offset-1
+        %ul.list-group
+          - include "../../faq_parts/_todays_data.php"
+          - include "../../faq_parts/_counts.php"
+          - include "../../faq_parts/_date_dot.php"
+          - include "../../faq_parts/_chart_type.php"
+          - include "../../faq_parts/_feedback.php"
+
+        %div.col-lg-12.text-center.tm
+          %a(href="/mediaviews")
+            = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'mediaviews-title' ) ), 'parsemag' => true ) )
+
+      - include "../../_footer.php"

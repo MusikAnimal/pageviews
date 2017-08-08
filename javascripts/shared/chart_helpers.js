@@ -248,17 +248,21 @@ const ChartHelpers = superclass => class extends superclass {
    * Get data formatted for Chart.js and the legend templates
    * @param {Array} datasets - as retrieved by getPageViewsData
    * @param {Array} labels - corresponding labels for the datasets
+   * @param {String} [forceViewKey] - use this view key instead of going off of
+   *   which app we are running or which options are set.
    * @returns {object} - ready for chart rendering
    */
-  buildChartData(datasets, labels) {
+  buildChartData(datasets, labels, forceViewKey) {
     let viewKey;
     const dateFormat = this.isMonthly() ? 'YYYY-MM' : 'YYYY-MM-DD',
       dateHeadings = this.getDateHeadings(false); // false to be unlocalized
 
     // key to use in dataseries varies based on app
-    if (this.isPageviews()) {
+    if (forceViewKey) {
+      viewKey = forceViewKey;
+    } else if (this.isPageviews()) {
       viewKey = 'views';
-    } else if (this.app === 'metaviews' || this.isPagecounts()) {
+    } else if (['metaviews', 'mediaviews'].includes(this.app) || this.isPagecounts()) {
       viewKey = 'count';
     } else {
       viewKey = 'devices';
@@ -277,6 +281,8 @@ const ChartHelpers = superclass => class extends superclass {
 
         if (this.app === 'metaviews') {
           date = elem.date;
+        } else if (this.app === 'mediaviews') {
+          date = moment(elem.date, this.config.mpcDateFormat).format(dateFormat);
         } else {
           date = moment(elem.timestamp, this.config.timestampFormat).format(dateFormat);
         }
@@ -370,24 +376,28 @@ const ChartHelpers = superclass => class extends superclass {
       endDate = endDate.endOf('month');
     }
 
+    // Use defaults if options aren't set
+    const platform = $(this.config.platformSelector).val() || this.config.defaults.platform,
+      agent = $(this.config.agentSelector).val() || this.config.defaults.agent;
+
     if (this.app === 'siteviews') {
       if (this.isPageviews()) {
         return `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
-          `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${granularity}` +
+          `/${platform}/${agent}/${granularity}` +
           `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
       } else if (this.isUniqueDevices()) {
         return `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/` +
-          `${$(this.config.platformSelector).val()}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
+          `${platform}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
           `/${endDate.format(this.config.timestampFormat)}`;
       } else {
         return `https://wikimedia.org/api/rest_v1/metrics/legacy/pagecounts/aggregate/${uriEncodedEntityName}/` +
-          `${$(this.config.platformSelector).val()}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
+          `${platform}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
           `/${endDate.format(this.config.timestampFormat)}`;
       }
     } else {
       return (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedEntityName}/${granularity}` +
+        `/${platform}/${agent}/${uriEncodedEntityName}/${granularity}` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
     }
@@ -809,7 +819,7 @@ const ChartHelpers = superclass => class extends superclass {
           options.scale.ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
         } else {
           options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
-          options.zoom = ['pageviews', 'siteviews'].includes(this.app) && this.numDaysInRange() > 1 && !this.isMonthly();
+          options.zoom = ['pageviews', 'siteviews', 'mediaviews'].includes(this.app) && this.numDaysInRange() > 1 && !this.isMonthly();
         }
 
         // Show labels if option is checked (for linear charts only)
@@ -853,7 +863,9 @@ const ChartHelpers = superclass => class extends superclass {
     $('.chart-legend').html(this.chartObj.generateLegend());
     $('.data-links').removeClass('invisible');
 
-    if (['metaviews', 'pageviews', 'siteviews'].includes(this.app)) this.updateTable();
+    if (['metaviews', 'pageviews', 'siteviews', 'mediaviews'].includes(this.app)) {
+      this.updateTable();
+    }
   }
 
   /**

@@ -89,6 +89,20 @@ const appDependencies = {
       'vendor/javascripts/Chart.min.js'
     ]
   },
+  'mediaviews': {
+    css: [
+      'vendor/stylesheets/select2.min.css',
+      'vendor/stylesheets/daterangepicker.css',
+      'vendor/stylesheets/bootstrap-datepicker.min.css'
+    ],
+    js: [
+      'vendor/javascripts/select2.min.js',
+      'vendor/javascripts/daterangepicker.js',
+      'vendor/javascripts/bootstrap-datepicker.min.js',
+      'vendor/javascripts/bootstrap-typeahead.js',
+      'vendor/javascripts/Chart.min.js'
+    ]
+  },
   'meta': {
     css: [
       'vendor/stylesheets/select2.min.css',
