@@ -6,7 +6,8 @@
 			"1917 Ekim Devrimi",
 			"MrSchipunov",
 			"Vito Genovese",
-			"Bulgu"
+			"Bulgu",
+			"Rapsar"
 		]
 	},
 	"active-users": "Aktif kullanıcılar",
@@ -287,5 +288,6 @@
 	"views": "Görünümler",
 	"watchers": "İzleyenler",
 	"we": "Çr",
-	"wikilinks": "Wiki bağlantıları"
+	"wikilinks": "Wiki bağlantıları",
+	"wiktionary": "Vikisözlük"
 }

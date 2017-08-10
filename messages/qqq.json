@@ -255,7 +255,7 @@
 	"pagecounts": "The word 'pagecounts'. Used as the label to show the number of pagecounts a page received. This is a different metric than 'pageviews'.\n{{Identical|Pagecounts}}",
 	"pagecounts-legacy": "Label in the option to show legacy pagecounts data, as opposed to pageviews or unique devices.",
 	"pages": "Header for the part of the interface that lets the user enter which pages they want to view statistics for\n{{Identical|Page}}",
-	"pageviews": "The word 'pageviews'. Used as the link for the Pageviews application in the header, and as the label of the column for the view counts in Langviews\n{{Identical|Pageviews}}",
+	"pageviews": "The word 'pageviews'. Used as the link for the Pageviews application in the header, and as the label of the column for the view counts in Langviews\n{{Identical|Pageview}}",
 	"pageviews-description": "Brief description of the Pageviews tool. Shown directly under the header.",
 	"param-error-1": "Error message for when older data is requested that is not available.",
 	"param-error-2": "Error message for when the given start date is after the end date.",
