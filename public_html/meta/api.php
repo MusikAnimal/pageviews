@@ -31,8 +31,11 @@ if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
     $start = $_GET['start'];
     $end = $_GET['end'];
 
-    $sql = "SELECT date, count FROM " . $app . "_timeline WHERE date >= '$start' AND date <= '$end'";
-    $res = $client->query( $sql )->fetch_all( MYSQLI_ASSOC );
+    $sql = "SELECT date, count FROM " . $app . "_timeline WHERE date >= ? AND date <= ?";
+    $stmt = $client->prepare( $sql );
+    $stmt->bind_param( 'ss', $start, $end );
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_all( MYSQLI_ASSOC );
   } else {
     $sql = "SELECT project, count FROM " . $app . '_projects';
     $res = $client->query( $sql )->fetch_all( MYSQLI_ASSOC );
@@ -48,33 +51,45 @@ if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
   exit();
 }
 
-// first check if there is already a record for this project/page/platform/date
+// first check if there is already a record for this project
 $app = $_POST['app'];
 $project = $_POST['project'];
-$exists_sql = "SELECT * FROM " . $app . "_projects WHERE project = '$project'";
-$res = (bool) $client->query( $exists_sql )->fetch_assoc();
+$exists_sql = "SELECT 1 FROM " . $app . "_projects WHERE project = ?";
+$stmt = $client->prepare( $exists_sql );
+$stmt->bind_param( 's', $project );
+$stmt->execute();
+$exists = (bool) ( $stmt->get_result()->fetch_assoc() );
 
-if ( $res ) {
+if ( $exists ) {
   // record exists, so increment counter
-  $update_sql = "UPDATE " . $app . "_projects SET count = count + 1 WHERE project = '$project'";
-  $client->query( $update_sql );
+  $update_sql = "UPDATE " . $app . "_projects SET count = count + 1 WHERE project = ?";
+  $stmt = $client->prepare( $update_sql );
+  $stmt->bind_param( 's', $project );
+  $stmt->execute();
 } else {
   // create new record
-  $create_sql = "INSERT INTO " . $app . "_projects VALUES(NULL, ?, ?, 0, 0, ?, ?)";
-  $client->query( $create_sql );
+  $create_sql = "INSERT INTO " . $app . "_projects VALUES(NULL, ?, 0)";
+  $stmt = $client->prepare( $create_sql );
+  $stmt->bind_param( 's', $project );
+  $stmt->execute();
 }
 
 // track massviews sources
 if ( $app === 'massviews' ) {
   // first check if there is already a record for this project/page/platform/date
   $source = $_POST['source'];
-  $exists_sql = "SELECT * FROM massviews_sources WHERE source = '$source'";
-  $res = (bool) $client->query( $exists_sql )->fetch_assoc();
+  $exists_sql = "SELECT 1 FROM massviews_sources WHERE source = ?";
+  $stmt = $client->prepare( $exists_sql );
+  $stmt->bind_param( 's', $source );
+  $stmt->execute();
+  $exists = (bool) ( $stmt->get_result()->fetch_assoc() );
 
-  if ( $res ) {
+  if ( $exists ) {
     // record exists, so increment counter
-    $update_sql = "UPDATE massviews_sources SET count = count + 1 WHERE source = '$source'";
-    $client->query( $update_sql );
+    $update_sql = "UPDATE massviews_sources SET count = count + 1 WHERE source = ?";
+    $stmt = $client->prepare( $exists_sql );
+    $stmt->bind_param( 's', $source );
+    $stmt->execute();
   } else {
     // create new record
     $create_sql = "INSERT INTO massviews_sources VALUES(NULL, ?, 0)";
@@ -84,13 +99,13 @@ if ( $app === 'massviews' ) {
   }
 }
 
-// do the same for the timeline table
+// do the same for the timeline table.
 $date = (new DateTime())->format('Y-m-d');
 
-$exists_sql = "SELECT * FROM " . $app . "_timeline WHERE date = '$date'";
-$res = (bool) $client->query( $exists_sql )->fetch_assoc();
+$exists_sql = "SELECT 1 FROM " . $app . "_timeline WHERE date = '$date'";
+$exists = (bool) ( $client->query( $exists_sql )->fetch_assoc() );
 
-if ( $res ) {
+if ( $exists ) {
   // record exists, so increment counter
   $update_sql = "UPDATE " . $app . "_timeline SET count = count + 1 WHERE date = '$date'";
   $client->query( $update_sql );

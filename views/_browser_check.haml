@@ -1,7 +1,8 @@
 / browser detection to display simple notice
-- $browser = $client->browser->name
-- $maxVersion = $browser == 'Internet Explorer' ? 10 : 7
-- if ( $client->isBrowser( 'Internet Explorer', '<=', $maxVersion ) || $client->isBrowser( 'Safari', '<=', $maxVersion ) )
-  %div.alert.alert-danger
-    - $browserVersion = $browser . ' ' . $maxVersion
-    = $I18N->msg( 'unsupported-browser-error', array( 'variables' => array( $browserVersion ) ) )
+- if ( isset( $client->browser->name ) )
+  - $browser = $client->browser->name
+  - $maxVersion = $browser == 'Internet Explorer' ? 10 : 7
+  - if ( $client->isBrowser( 'Internet Explorer', '<=', $maxVersion ) || $client->isBrowser( 'Safari', '<=', $maxVersion ) )
+    %div.alert.alert-danger
+      - $browserVersion = $browser . ' ' . $maxVersion
+      = $I18N->msg( 'unsupported-browser-error', array( 'variables' => array( $browserVersion ) ) )
