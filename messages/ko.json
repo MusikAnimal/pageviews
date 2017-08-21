@@ -82,7 +82,7 @@
 	"error-timed-out": "동작 시간이 초과했습니다.",
 	"exclude-redirects": "넘겨주기 제외",
 	"excluded-pages": "제외할 문서",
-	"external-link": "바깥 고리",
+	"external-link": "외부 링크",
 	"faq": "자주 묻는 질문",
 	"faq-bug-report-body": "위키 사용 시 의견을 주고 싶으시다면, 메타의 <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>피드백 포럼</a>을 이용하십시오. <a href='https://phabricator.wikimedia.org/project/profile/2045/'>파브리케이터</a>에 문제를 보고할 수도 있습니다.",
 	"faq-bug-report-title": "기능 요청이나 보고할 버그가 있습니다.",
