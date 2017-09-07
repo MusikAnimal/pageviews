@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Gwenn-Ael",
-			"Fulup"
+			"Fulup",
+			"VIGNERON"
 		]
 	},
 	"active-users": "Implijerien oberiant",
@@ -43,7 +44,7 @@
 	"daily-average": "Keidenn dre zeiz",
 	"daily-pageviews": "Pajennoù dre niver a weloù dre zeiz",
 	"date": "Deiziad",
-	"date-notice": "Pourchas a ra $1 roadennoù adalek $3. Evit ar roadennoù koshoc'h, klask gant $2.",
+	"date-notice": "Pourchas a ra $1 roadennoù adalek Gouere 2015. Evit ar roadennoù koshoc'h, klask gant $2.",
 	"date-type": "Seurt roadennnoù",
 	"dates": "Deiziadoù",
 	"day": "deiz",
@@ -66,7 +67,7 @@
 	"faq-massviews-sources-pagepile": "Ebarzhit anaouder niverel un hollad pajennoù krouet gant $1.",
 	"faq-massviews-sources-subpages": "Ebarzhit URL klok ur bajenn, da skouer $1",
 	"faq-massviews-sources-template": "Ebarzhit URL klok ur bajenn skouer, da skouer $1",
-	"faq-massviews-sources-wikilinks": "Ebarzhit URL klok ur bajenn, da skouer $",
+	"faq-massviews-sources-wikilinks": "Ebarzhit URL klok ur bajenn, da skouer $1.",
 	"faq-massviews-subject-page-title": "Petra eo an dibarzh « $1 » ?",
 	"faq-old-data-title": "Perak ne c'hallan ket diswel ar roadennoù a-raok $1 ?",
 	"faq-redirects-title": "Penaos e vez kontet an adkasadennoù ?",
@@ -121,7 +122,7 @@
 	"none": "Hini ebet",
 	"note": "Notenn",
 	"november": "Du",
-	"num-languages": "$1 yezh",
+	"num-languages": "$1 {{PLURAL:$2|yezh}}",
 	"num-pages": "$1 {{PLURAL:$1|bajenn|pajenn}}",
 	"num-pageviews": "$1 pajenn bet gwelet",
 	"num-projects": "$1 raktres",
