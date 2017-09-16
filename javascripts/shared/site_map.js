@@ -292,6 +292,7 @@ const siteMap = {
   'hiwiktionary': 'hi.wiktionary.org',
   'hiwikibooks': 'hi.wikibooks.org',
   'hiwikiquote': 'hi.wikiquote.org',
+  'hiwikiversity': 'hi.wikiversity.org',
   'hifwiki': 'hif.wikipedia.org',
   'howiki': 'ho.wikipedia.org',
   'hrwiki': 'hr.wikipedia.org',
