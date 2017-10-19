@@ -86,6 +86,7 @@
 	"list": "Liste",
 	"localization": "Lokalizasyon:",
 	"localize-dates": "Formatê tarixi beca (lokalize) ke",
+	"main": "Ser",
 	"march": "Adar",
 	"massviews": "Asayışê  massi",
 	"may": "Gulane",
@@ -95,7 +96,9 @@
 	"mobile-app": "Mobile app",
 	"mobile-web": "Mobile web",
 	"monthly": "Aşmane",
+	"namespace": "Heruna namey",
 	"no-autocompletion": "Temamkerdışo otomatik çıniyo",
+	"none": "Çıniyo",
 	"note": "Not",
 	"november": "Tışrino Peyên",
 	"num-languages": "$1 zıwani",
@@ -168,5 +171,13 @@
 	"views": "Asayışi",
 	"watchers": "Temaşeri",
 	"we": "Çr",
-	"wikilinks": "Wikilinki"
+	"wikibooks": "Wikikıtabi",
+	"wikilinks": "Wikilinki",
+	"wikinews": "Wikixeberi",
+	"wikipedia": "Wikipediya",
+	"wikiquote": "Wikivate",
+	"wikisource": "Wikiçıme",
+	"wikiversity": "Wikiversite",
+	"wikivoyage": "Wikigeyrayış",
+	"wiktionary": "Qısebend"
 }
