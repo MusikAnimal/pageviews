@@ -321,7 +321,6 @@
 	"translation-credits": "Translations powered by $1, $2 and $3.",
 	"tu": "Tu",
 	"unique-devices": "Unique devices",
-	"unique-editors": "Unique editors",
 	"unique-titles": "$1 unique {{PLURAL:$1|title|titles}}",
 	"unknown": "Unknown",
 	"unsupported-browser-error": "$1 and below is not supported. Please <a href='http://browsehappy.com/'>upgrade your browser</a></strong>.",

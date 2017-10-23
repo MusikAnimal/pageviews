@@ -155,7 +155,7 @@
           'views' => 'views',
           'average' => 'daily-average',
           'edits' => 'edits',
-          'editors' => 'unique-editors',
+          'editors' => 'editors',
           'size' => 'size',
           'protection' => 'protection',
           'watchers' => 'watchers'

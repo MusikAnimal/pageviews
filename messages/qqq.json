@@ -333,7 +333,6 @@
 	"translation-credits": "Footer message crediting translation tools translatewiki.net ($1) and Intuition ($2)",
 	"tu": "Abbreviation for Tuesday, a day of the week.",
 	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
-	"unique-editors": "Label for the value showing the number of unique editors that contributed to the pages during the timeframe.",
 	"unique-titles": "Indicates the number of unique titles a Langviews query returned. $1 is the actual number.",
 	"unknown": "The word 'unknown', used for general purpose.\n{{Identical|Unknown}}",
 	"unsupported-browser-error": "Message saying the user's browser is not supported. $1 is the browser version.",
