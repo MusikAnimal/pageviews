@@ -384,7 +384,10 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         });
       }).fail(errorData => {
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend',
+        const errorMessage = errorData.responseJSON && errorData.responseJSON.title
+          ? errorData.responseJSON.title
+          : $.i18n('unknown');
+        const cassandraError = errorMessage === 'Error in Cassandra table storage backend',
           failedPageLink = this.getPageLink(page.title, `${this.project}.org`);
 
         if (cassandraError) {
@@ -404,12 +407,12 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           failedPages.push(failedPageLink);
         } else {
           this.writeMessage(
-            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
           );
         }
 
         // unless it was a 404, don't cache this series of requests
-        if (errorData.status !== 404) hadFailure = true;
+        if (errorData.status !== 404) this.hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 

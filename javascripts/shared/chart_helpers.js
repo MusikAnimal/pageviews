@@ -440,7 +440,10 @@ const ChartHelpers = superclass => class extends superclass {
         }
       }).fail(errorData => {
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-        const cassandraError = errorData.responseJSON.title === 'Error in Cassandra table storage backend';
+        const errorMessage = errorData.responseJSON && errorData.responseJSON.title
+          ? errorData.responseJSON.title
+          : $.i18n('unknown');
+        const cassandraError = errorMessage === 'Error in Cassandra table storage backend';
 
         if (cassandraError) {
           if (failureRetries[entity]) {
@@ -489,7 +492,7 @@ const ChartHelpers = superclass => class extends superclass {
             endpoint = 'pagecounts';
           }
           xhrData.errors.push(
-            `${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorData.responseJSON.title}`
+            `${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
           );
         }
       }).always(() => {

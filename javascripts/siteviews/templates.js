@@ -30,7 +30,7 @@ const templates = {
 
       if (scope.isAllProjects()) {
         const projects = ['wikipedia', 'wiktionary', 'wikiquote', 'wikibooks', 'wikisource',
-                          'wikinews', 'wikiversity', 'wikispecies', 'wikivoyage'];
+          'wikinews', 'wikiversity', 'wikispecies', 'wikivoyage'];
         let projectCounts = {};
 
         scope.siteDomains.forEach(domain => {
