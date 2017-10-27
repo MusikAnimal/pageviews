@@ -234,7 +234,6 @@
 	"translation-credits": "$1、$2と$3によるトランスクルージョン",
 	"tu": "火",
 	"unique-devices": "固有のデバイス単位",
-	"unique-editors": "ユニークな編集者数",
 	"unique-titles": "$1 unique {{PLURAL:$1|タイトル|タイトル}}",
 	"unknown": "不明",
 	"unsupported-browser-error": "$1以下はサポートされませんでした。<a href='http://browsehappy.com/'>ブラウザをアップデート</a>してください</strong>.",

@@ -325,7 +325,6 @@
 	"translation-credits": "翻译采用$1、$2和$3。",
 	"tu": "二",
 	"unique-devices": "单一设备",
-	"unique-editors": "唯一编辑者",
 	"unique-titles": "$1个单一{{PLURAL:$1|标题}}",
 	"unknown": "未知",
 	"unsupported-browser-error": "$1及更低版本不受支持。请<a href='http://browsehappy.com/'>升级您的浏览器</a></strong>。",
