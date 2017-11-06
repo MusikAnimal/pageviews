@@ -423,7 +423,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           failedPages.push(failedPageLink);
         } else {
           this.writeMessage(
-            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`
+            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
           );
         }
 
