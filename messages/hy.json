@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Kareyac",
-			"Դավիթ Սարոյան"
+			"Դավիթ Սարոյան",
+			"Aram1985"
 		]
 	},
 	"active-users": "Ակտիվ մասնակիցներ",
@@ -66,6 +67,9 @@
 	"excluded-pages": "Բացառված էջեր",
 	"external-link": "Արտաքին հղում",
 	"faq": "ՀՏՀ",
+	"faq-massviews-sources-wikilinks": "Մուտքագրեք ցանկացած էջի հղում, օրինակ՝ $1։",
+	"faq-massviews-subject-page-title": "Ի՞նչ է իրենից ներկայացնում $1 կարգավորումը։",
+	"faq-return-to": "Վերադարձ դեպի $1",
 	"featured-article": "Ընտրյալ հոդված",
 	"featured-list": "Ընտրյալ ցանկ",
 	"february": "Փետրվար",
@@ -202,6 +206,7 @@
 	"user": "Մասնակից",
 	"users": "Մասնակիցներ",
 	"userviews": "Մասնակցադիտումներ",
+	"userviews-description": "Մասնակցի ստեղծած բոլորի էջերի Էջադիտումները",
 	"userviews-title": "Մասնակցադիտումների վերլուծություն",
 	"validated-page": "Հաստատված",
 	"view-source": "Դիտել ելատեքստը",
