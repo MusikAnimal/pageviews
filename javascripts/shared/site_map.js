@@ -295,6 +295,7 @@ const siteMap = {
   'hiwikiversity': 'hi.wikiversity.org',
   'hiwikivoyage': 'hi.wikivoyage.org',
   'hifwiki': 'hif.wikipedia.org',
+  'hifwiktionary': 'hif.wiktionary.org',
   'howiki': 'ho.wikipedia.org',
   'hrwiki': 'hr.wikipedia.org',
   'hrwiktionary': 'hr.wiktionary.org',
