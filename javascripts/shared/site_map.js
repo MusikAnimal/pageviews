@@ -52,6 +52,7 @@ const siteMap = {
   'astwiktionary': 'ast.wiktionary.org',
   'astwikibooks': 'ast.wikibooks.org',
   'astwikiquote': 'ast.wikiquote.org',
+  'atjwiki': 'atj.wikipedia.org',
   'avwiki': 'av.wikipedia.org',
   'avwiktionary': 'av.wiktionary.org',
   'aywiki': 'ay.wikipedia.org',
