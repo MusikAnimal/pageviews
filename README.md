@@ -18,15 +18,11 @@ This guide mostly assumes you're using OSX or Linux. The setup process may diffe
 
 1. [Node](https://nodejs.org/en/)
 
-1. [PHP](http://php.net/) 5.6
-
-  PHP is for rendering partials in the views and for the [Intuition](https://github.com/Krinkle/intuition) i18n framework. There otherwise is no backend logic.
+1. [PHP](http://php.net/) 5.6 – PHP is for rendering partials in the views and for the [Intuition](https://github.com/Krinkle/intuition) i18n framework. There otherwise is no backend logic.
 
 1. [Composer](https://getcomposer.org/)
 
-1. [ESLint](http://eslint.org/) and a SCSS linter*
-
-  *The linters are not necessary, but preferred so your code maintains a consistent style.
+1. [ESLint](http://eslint.org/) and [SCSS-lint](https://github.com/brigade/scss-lint) – The linters are not necessary, but preferred so your code maintains a consistent style.
 
 ## Setup
 
