@@ -76,7 +76,7 @@
 	"faq": "PMF",
 	"faq-agents-bot": "inclou altres programes automatitzats que poden recuperar pàgines per a altres propòsits.",
 	"faq-agents-spider": "inclou motors de cerca \"<a href=\"https://en.wikipedia.org/wiki/Web_crawler\">robots web</a>\" com Google que llegeixen les pàgines amb la finalitat de millorar els resultats de la cerca. Les pàgines poden rebre vistes significatives de robots web, i és per això que, per defecte, l'eina mostra només dades dels usuaris.",
-	"faq-agents-title": "Què és els \"Agents\"?",
+	"faq-agents-title": "Què són els «agents»?",
 	"faq-agents-user": "inclou totes les persones que visualitzen una pàgina. Editors, editors anònims i els nostres lectors.",
 	"faq-bug-report-body": "Si voleu utilitzar un wiki per proporcionar comentaris, utilitzeu el <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>fòrum de Meta</a>. També podeu informar de problemes a <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-bug-report-title": "Tinc una petició de millora o un error per informar",

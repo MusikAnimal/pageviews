@@ -13,7 +13,8 @@
 			"Urhixidur",
 			"Derugon",
 			"Od1n",
-			"AntonierCH"
+			"AntonierCH",
+			"The RedBurn"
 		]
 	},
 	"active-users": "Utilisateurs actifs",
@@ -123,7 +124,7 @@
 	"faq-old-data-title": "Pourquoi ne puis-je pas afficher les données d'avant $1 ?",
 	"faq-redirects-body": "Si un utilisateur accède à une redirection, une page vue est enregistrée pour la redirection, mais pas pour la page cible. Si vous voulez obtenir le total des vues d’une page, y compris tous les redirections, essayez $1.",
 	"faq-redirects-title": "Comment sont les redirections sont-elles comptées?",
-	"faq-referrals-body": "Les informations de référent ne sont pas disponibles publiquement par page. Vous pouvez toutefois voir les statistiques globales de référent sur tous les sites de Wikimédia en $1.",
+	"faq-referrals-body": "Les informations de référent ne sont pas disponibles publiquement par page. Vous pouvez toutefois voir les statistiques combinées de référent des sites de Wikimédia sur $1.",
 	"faq-referrals-title": "Puis-je voir comment les lecteurs sont parvenus sur la page ?",
 	"faq-return-to": "Revenir à $1",
 	"faq-search-redirects-body": "Pour activer la recherche des redirections, modifiez votre méthode de recherche en « $1 » dans le panneau $2. Si vous voulez voir les pages vues pour toutes les redirections vers une page, essayez $3.",

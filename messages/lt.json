@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Zygimantus",
-			"Eitvys200"
+			"Eitvys200",
+			"Manvydasz"
 		]
 	},
 	"active-users": "Aktyvūs vartotojai",
@@ -80,7 +81,7 @@
 	"last-week": "Praėjusią savaitę",
 	"last-year": "Praeitais metais",
 	"latest": "Paskutinės",
-	"latest-days": "Per pastarąsias $1 dienas",
+	"latest-days": "Per pastarąsias $1",
 	"line": "Linija",
 	"links": "Nuorodos",
 	"list": "Sąrašas",
@@ -102,15 +103,15 @@
 	"none": "Nėra",
 	"note": "Pastaba",
 	"november": "Lapkritis",
-	"num-languages": "$1 kalbos",
+	"num-languages": "$1 {{PLURAL:$2|kalba|kalbos|kalbų}}",
 	"num-pages-info": "Įveskite iki $1 puslapių",
-	"num-projects": "$1 projektai",
+	"num-projects": "$1 {{PLURAL:$2|projektas|projektai|projektų}}",
 	"num-projects-info": "Įveskite iki $1 projektų",
-	"num-protections": "$1 apsaugos",
-	"num-redirects": "$1 nukreipimai",
-	"num-sections": "$1 skyriai",
+	"num-protections": "$1 {{PLURAL:$2|apsauga|apsaugos|apsaugų}}",
+	"num-redirects": "$1 {{PLURAL:$2|nukreipimas|nukreipimai|nukreipimų}}",
+	"num-sections": "$1 {{PLURAL:$2|skyrius|skyriai||skyrių}}",
 	"num-unique-devices": "$1 {{PLURAL:$2|unikalus įrenginys|unikalūs įrenginiai}}",
-	"num-wikilinks": "$1 {{PLURAL:$1|vikinuoroda|vikinuorodos}}",
+	"num-wikilinks": "$1 {{PLURAL:$2|vikinuoroda|vikinuorodos|vikinuorodų}}",
 	"october": "Spalis",
 	"ok": "GERAI",
 	"options": "Nustatymai",
