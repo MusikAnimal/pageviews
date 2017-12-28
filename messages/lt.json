@@ -3,7 +3,8 @@
 		"authors": [
 			"Zygimantus",
 			"Eitvys200",
-			"Manvydasz"
+			"Manvydasz",
+			"Tomasdd"
 		]
 	},
 	"active-users": "Aktyvūs vartotojai",
@@ -11,7 +12,7 @@
 	"agent": "Agentas",
 	"all": "Visi",
 	"all-languages": "Visos kalbos",
-	"all-of-wikimedia": "Visa Vikimedija",
+	"all-of-wikimedia": "Vikimedijos projektai",
 	"all-projects": "Visi projektai",
 	"all-time": "Visas laikas",
 	"another-query": "Atlikti kitą užklausą",
@@ -36,6 +37,7 @@
 	"chart": "Diagrama",
 	"chart-preferences": "Diagramos parinktys:",
 	"chart-types": "Diagramų tipai",
+	"class": "Klasė",
 	"clear": "Išvalyti",
 	"custom-range": "Pasirinktinis diapazonas",
 	"daily": "Kasdien",
@@ -178,6 +180,7 @@
 	"url-structure-topviews-date-month": "Konkretus mėnuo $1 formatu",
 	"user": "Naudotojas",
 	"users": "Vartotojai",
+	"validated-page": "Patvirtintas",
 	"view-source": "Žiūrėti kodą",
 	"views": "Peržiūros",
 	"watchers": "Stebėtojai",
