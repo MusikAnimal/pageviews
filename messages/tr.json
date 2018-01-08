@@ -8,7 +8,8 @@
 			"Vito Genovese",
 			"Bulgu",
 			"Rapsar",
-			"Trockya"
+			"Trockya",
+			"Hedda"
 		]
 	},
 	"active-users": "Aktif kullanıcılar",
@@ -95,10 +96,16 @@
 	"faq-counts-title": "Sayfa görüntülemeleri aynı kullanıcı tarafından yapılmış olsa bile yine de sayılır mı?",
 	"faq-data-dumps": "Tüm sayfalar için sayfa görüntüleme veri dizilerini indirebilir miyim?",
 	"faq-data-dumps-body": "Evet. $1 sayfasından tüm desteklenen Wikimedia sitelerinden döküm alınan bütün veriler indirilebilir.",
+	"faq-date-dot": "Tarih etiketlerinin yanındaki noktalar nelerdir?",
+	"faq-date-dot-body": "Bu, haftanın ilk gününü gösterir. Hafta sonları boyunca sayfa görüntüleme sayısı düşük olma eğilimindeyken bu gösterge yedi günlük modele geniş bakış açısı verebilir.",
+	"faq-location-body": "Okuyucuların sayfa bazında coğrafi konumu gizlilik nedenleriyle mevcut değildir. Bununla birlikte, ülke geneline göre toplam sayfa görüntülemelerini tüm Wikimedia sitelerinde $1 sayfasından görebilirsiniz.",
 	"faq-location-title": "Sayfa görüntülemelerinin hangi coğrafi bölgelerden yapıldığını görebilir miyim?",
 	"faq-massviews-sources-category": "Örneğin $1, bir kategori sayfasının tam bağlantı adresidir.",
+	"faq-massviews-sources-external-link": "Bir bağlantı modeli girin, örneğin $1. Daha fazlası için $2 sayfasına bakınız.",
+	"faq-massviews-sources-hashtag": "Hash ($1) karakterli veya karakteriz bir hashtag girin, örneğin $2. Sonuç kümesi, birden fazla viki'deki sayfaları içerebilir.  Daha fazla bilgi için $3 sayfasına bakınız. Bu özellik öncelikle editathons ve outreach amaçlar içindir.",
 	"faq-massviews-sources-pagepile": "$1 ile oluşturulan sayfaların bir dizi sayısal kimliğidir.",
 	"faq-massviews-sources-quarry": "sayısal bir kimlik ve $1 projesinin veri setidir. <code>$2</code> sütunu (gerekli) sayfa başlığı olarak kullanılacaktır.",
+	"faq-massviews-sources-search": "Arama sorgusunu ve projeyi girin, örneğin $1.",
 	"faq-massviews-sources-subpages": "Herhangi bir sayfanın tam adresini girin, örneğin $1.",
 	"faq-massviews-sources-template": "Örneğin $1, bir şablon sayfasının tam URL adresidir.",
 	"faq-massviews-sources-title": "\"Kaynaklar\" nelerdir?",

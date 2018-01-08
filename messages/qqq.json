@@ -15,7 +15,8 @@
 			"Arthur2e5",
 			"ANDROBETA",
 			"Srdjan m",
-			"Nemo bis"
+			"Nemo bis",
+			"Hamilton Abreu"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -368,7 +369,7 @@
 	"url-structure-special-range-latest-n": "Explains that you can use 'latest-N' and replace N with the number of days",
 	"url-structure-start-date": "Documentation for the 'start' parameter. $1 is the date format used",
 	"url-structure-start-month": "Documentation for the 'start' parameter when targeting a specific month instead of a day. $1 is the format used ('YYYY-MM' instead of 'YYYY-MM-DD').",
-	"url-structure-subjectpage": "Documentation for the 'subjectpage' parameter. $1 is a link to the FAQ entry for this option (the text of the link is the i18n message 'category-subject-toggle'). $2 is the value to enable the option, $2 is the value to disable it.",
+	"url-structure-subjectpage": "Documentation for the 'subjectpage' parameter. $1 is a link to the FAQ entry for this option (the text of the link is the i18n message 'category-subject-toggle'). $2 is the value to enable the option, $3 is the value to disable it.",
 	"url-structure-topviews-date": "Documentation for the 'date' parameter",
 	"url-structure-topviews-date-day": "Documentation for providing a specific day for the 'date' parameter. $1 is the format the date should be in.",
 	"url-structure-topviews-date-month": "Documentation for providing a specific month for the 'date' parameter. $1 is the format the date should be in.",
