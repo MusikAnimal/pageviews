@@ -271,6 +271,7 @@
 	"url-structure-project": "$1 tai muu voimassa oleva $2",
 	"url-structure-project-multilang": "Lähdeprojektin pitää olla monikielinen. Esimerkiksi $1 tai $2.",
 	"url-structure-siteviews-platform": "Milloin $1 on $2",
+	"url-structure-siteviews-platform-no-pageviews": "Kun $1 on $2 tai $3",
 	"url-structure-user": "Piilotettu käyttäjätunnus.",
 	"url-structure-userviews-namespace": "Nimiavaruuden numero. Oletuksena $1. Käytä $2 kaikille nimiavaruuksille.",
 	"user": "Käyttäjä",
