@@ -1,7 +1,7 @@
 /**
  * @file Templates used by Chart.js for Pageviews app
  * @author MusikAnimal
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  */
 
 /**

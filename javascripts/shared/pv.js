@@ -1,7 +1,7 @@
 /**
  * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
@@ -1584,23 +1584,11 @@ class Pv extends PvConfig {
     $(this.config.dateRangeSelector).daterangepicker(datepickerOptions);
 
     /** so people know why they can't query data older than July 2015 */
-    if (this.app === 'siteviews' && !this.isPagecounts()) {
-      // $('.daterangepicker').append(
-      //   $('<div>')
-      //     .addClass('daterange-notice')
-      //     .html($.i18n('date-notice', document.title,
-      //       "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",
-      //       `${$.i18n('july')} 2015`
-      //     ))
-      // );
-    } else {
+    if (!this.isPagecounts()) {
       $('.daterangepicker').append(
         $('<div>')
           .addClass('daterange-notice')
-          .html($.i18n('date-notice', document.title,
-            "<a href='http://stats.grok.se' target='_blank'>stats.grok.se</a>",
-            `${$.i18n('july')} 2015`
-          ))
+          .html($.i18n('date-notice'))
       );
     }
 

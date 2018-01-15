@@ -1,7 +1,7 @@
 /**
  * @file Customized zoom plugin for Chart.js, based on https://github.com/chartjs/chartjs-plugin-zoom
  * @author MusikAnimal, Evert Timberg
- * @copyright 2016 MusikAnimal, Evert Timberg
+ * @copyright 2016-2018 MusikAnimal, Evert Timberg
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 

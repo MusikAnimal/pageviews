@@ -1,5 +1,5 @@
 <!-- Metaviews Analysis tool -->
-<!-- Copyright 2016 MusikAnimal -->
+<!-- Copyright 2016-2018 MusikAnimal -->
 <?php $currentApp = 'metaviews'; ?>
 <!DOCTYPE html>
 <html>

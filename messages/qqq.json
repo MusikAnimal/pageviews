@@ -72,7 +72,7 @@
 	"data-unavailable": "Brief message indicating data is temporarily unavailable.",
 	"date": "Header for the part of the interface that lets the user select a date in the Topviews app. This may have the same translation as the 'dates' message, except singular.\n{{Identical|Date}}",
 	"date-created": "Indicates the date a page was created.\n{{Identical|Date created}}",
-	"date-notice": "Notice informing the user that the tool does not have older data. $1 is the name of the tool. $2 is a link to another website.",
+	"date-notice": "Notice informing the user that the tool does not have older data. $1 is the name of the tool.",
 	"date-type": "Header for the part of the interface that lets the user select which date type they want to view statistics for.",
 	"dates": "Header for the part of the interface that lets the user select a range of dates\n{{Identical|Date}}",
 	"day": "Used in the context of number of pageviews per day\n{{Identical|Day}}",

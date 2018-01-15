@@ -2,7 +2,7 @@
  * Metaviews Analysis tool
  * @file Main file for Metaviews application
  * @author MusikAnimal
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 

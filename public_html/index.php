@@ -1,5 +1,5 @@
 <!-- Pageviews Analysis tool -->
-<!-- Copyright 2016 MusikAnimal -->
+<!-- Copyright 2016-2018 MusikAnimal -->
 <?php $currentApp = 'pageviews'; ?>
 <!DOCTYPE html>
 <html>

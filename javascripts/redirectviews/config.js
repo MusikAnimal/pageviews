@@ -1,7 +1,7 @@
 /**
  * @file Configuration for Redirectviews application
  * @author MusikAnimal
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  */
 
 /**

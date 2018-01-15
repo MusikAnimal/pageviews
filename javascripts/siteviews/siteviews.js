@@ -2,7 +2,7 @@
  * Siteviews Analysis tool
  * @file Main file for Siteviews application
  * @author MusikAnimal
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  * @requires Pv
  * @requires ChartHelpers
@@ -68,14 +68,15 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setupDataSourceSelector();
     $(this.config.platformSelector).val(params.platform);
 
+    this.setupDateRangeSelector();
+    this.validateDateRange(params);
+
     if (params.source === 'pageviews') {
       $(this.config.agentSelector).val(params.agent);
     } else {
       $(this.config.dataSourceSelector).trigger('change');
     }
 
-    this.setupDateRangeSelector();
-    this.validateDateRange(params);
     this.resetSelect2();
 
     if (!params.sites || !params.sites.length || (params.sites.length === 1 && !params.sites[0])) {

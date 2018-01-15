@@ -1,7 +1,7 @@
 /**
  * @file Templates used by Chart.js for Siteviews app
  * @author MusikAnimal
- * @copyright 2016 MusikAnimal
+ * @copyright 2016-2018 MusikAnimal
  */
 
 /**
@@ -22,11 +22,14 @@ const templates = {
 
     const dataList = (entity, multiEntity = false) => {
       let infoHash = {
-        [pageviewsMsg]: {
-          [pageviewsMsg]: scope.formatNumber(entity.sum),
-          [$.i18n('daily-average')]: scope.formatNumber(entity.average)
-        }
+        [pageviewsMsg]: {}
       };
+
+      if (!scope.isUniqueDevices()) {
+        infoHash[pageviewsMsg][pageviewsMsg] = scope.formatNumber(entity.sum);
+      }
+
+      infoHash[pageviewsMsg][$.i18n('daily-average')] = scope.formatNumber(entity.average);
 
       if (scope.isAllProjects()) {
         const projects = ['wikipedia', 'wiktionary', 'wikiquote', 'wikibooks', 'wikisource',
@@ -114,23 +117,29 @@ const templates = {
         <a href="${scope.getTopviewsMonthURL(item.label)}" target="_blank">${$.i18n('most-viewed-pages')}</a>
       `;
 
-    let i18nMessage = 'views';
-
     if (scope.isUniqueDevices()) {
-      i18nMessage = 'devices';
-    } else if (scope.isPagecounts()) {
-      i18nMessage = 'counts';
+      $('.table-view--sum').hide();
+    } else {
+      $('.table-view--sum').show();
+      let i18nMessage = 'views';
+      if (scope.isPagecounts()) {
+        i18nMessage = 'counts';
+      }
+      $('.sort-link--sum .col-heading').text($.i18n(i18nMessage));
     }
 
-    $('.sort-link--sum .col-heading').text($.i18n(i18nMessage));
-
-    return `
+    let html = `
       <tr>
         <${tag} class='table-view--color-col'>
           <span class='table-view--color-block' style="background:${item.color}"></span>
         </${tag}>
-        <${tag} class='table-view--project'>${last ? item.label : scope.getSiteLink(item.label)}</${tag}>
-        <${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>
+        <${tag} class='table-view--project'>${last ? item.label : scope.getSiteLink(item.label)}</${tag}>`;
+
+    if (!scope.isUniqueDevices()) {
+      html += `<${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>`;
+    }
+
+    return html += `
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
         <${tag} class='table-view--pages'>${scope.formatNumber(item.pages)}</${tag}>
         <${tag} class='table-view--edits'>${scope.formatNumber(item.edits)}</${tag}>

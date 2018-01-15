@@ -1,5 +1,5 @@
 <!-- Siteviews Analysis tool -->
-<!-- Copyright 2016 MusikAnimal -->
+<!-- Copyright 2016-2018 MusikAnimal -->
 <?php $currentApp = 'siteviews'; ?>
 <!DOCTYPE html>
 <html>
