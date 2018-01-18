@@ -13,7 +13,8 @@
 			"INS Pirat",
 			"Redredsonia",
 			"Alexey zakharenkov",
-			"Facenapalm"
+			"Facenapalm",
+			"Edible Melon"
 		]
 	},
 	"active-users": "Активные участники",
@@ -68,7 +69,7 @@
 	"data-unavailable": "Данные недоступны",
 	"date": "Дата",
 	"date-created": "Дата создания",
-	"date-notice": "$1 представляет данные с июля 2015 года и позже. Для более старых данных попробуйте $2.",
+	"date-notice": "$1 представляет данные с июля 2015 года и позже.",
 	"date-type": "Тип данных",
 	"dates": "Даты",
 	"day": "день",
