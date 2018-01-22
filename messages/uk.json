@@ -5,7 +5,8 @@
 			"Piramidion",
 			"Visem",
 			"Macofe",
-			"Fitoschido"
+			"Fitoschido",
+			"Ата"
 		]
 	},
 	"active-users": "Активні користувачі",
@@ -60,7 +61,7 @@
 	"data-unavailable": "Дані недоступні",
 	"date": "Дата",
 	"date-created": "Дата створення",
-	"date-notice": "$1 забезпечує дані з липня 2015. Для старіших даних спробуйте $2.",
+	"date-notice": "$1 забезпечує дані з липня 2015 і далі.",
 	"date-type": "Тип даних",
 	"dates": "Дати",
 	"day": "день",
