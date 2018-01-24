@@ -1233,7 +1233,7 @@ class Pv extends PvConfig {
   patchUsage() {
     if (this.getFromLocalStorage('pageviews-no-usage') || this.debug) return;
 
-    const langApps = ['siteviews', 'massviews'];
+    const langApps = ['siteviews', 'massviews', 'mediaviews'];
     let project = this.project || 'unknown';
 
     if (langApps.includes(this.project)) project = i18nLang;
