@@ -47,6 +47,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Called in `pv.js` after translations have loaded
    */
   initialize() {
+    this.setupDateRangeSelector();
     this.setupSelect2();
     this.setupSelect2Colors();
     this.popParams();
@@ -68,7 +69,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setupDataSourceSelector();
     $(this.config.platformSelector).val(params.platform);
 
-    this.setupDateRangeSelector();
     this.validateDateRange(params);
 
     if (params.source === 'pageviews') {
@@ -363,7 +363,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    */
   processInput(force, removedSite) {
     this.pushParams();
-    this.patchUsage();
 
     /** prevent duplicate querying due to conflicting listeners */
     if (!force && location.search === this.params && this.prevChartType === this.chartType) {
@@ -379,6 +378,8 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     if (!sites.length) {
       return this.resetView();
     }
+
+    this.patchUsage();
 
     this.setInitialChartType(sites.length);
 

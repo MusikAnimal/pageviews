@@ -48,12 +48,14 @@ class TopViews extends Pv {
    */
   processInput(force) {
     this.pushParams();
-    this.patchUsage();
 
     /** prevent redundant querying */
     if (location.search === this.params && !force) {
       return false;
     }
+
+    this.patchUsage();
+
     this.params = location.search;
 
     $('#topviews_search_field').val('');
@@ -475,6 +477,8 @@ class TopViews extends Pv {
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
 
     this.params = location.search;
+
+    this.patchUsage();
 
     this.initData().done(() => {
       this.setupSelect2();

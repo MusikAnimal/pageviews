@@ -68,14 +68,14 @@ if ( $exists ) {
   $stmt->execute();
 } else {
   // create new record
-  $create_sql = "INSERT INTO " . $app . "_projects VALUES(NULL, ?, 0)";
+  $create_sql = "INSERT INTO " . $app . "_projects VALUES(NULL, ?, 1)";
   $stmt = $client->prepare( $create_sql );
   $stmt->bind_param( 's', $project );
   $stmt->execute();
 }
 
 // track massviews sources
-if ( $app === 'massviews' ) {
+if ( $app === 'massviews' && isset( $_POST['source'] ) ) {
   // first check if there is already a record for this project/page/platform/date
   $source = $_POST['source'];
   $exists_sql = "SELECT 1 FROM massviews_sources WHERE source = ?";
@@ -92,11 +92,14 @@ if ( $app === 'massviews' ) {
     $stmt->execute();
   } else {
     // create new record
-    $create_sql = "INSERT INTO massviews_sources VALUES(NULL, ?, 0)";
+    $create_sql = "INSERT INTO massviews_sources VALUES(NULL, ?, 1)";
     $stmt = $client->prepare( $create_sql );
     $stmt->bind_param( 's', $source );
     $stmt->execute();
   }
+
+  // Evidently need to reestablish the connection?
+  $client = new mysqli( META_DB_HOST, META_DB_USER, META_DB_PASSWORD, META_DB_NAME, META_DB_PORT );
 }
 
 // do the same for the timeline table.

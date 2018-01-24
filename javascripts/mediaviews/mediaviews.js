@@ -501,12 +501,14 @@ class MediaViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   processInput(force, removedFile) {
     this.pushParams();
-    this.patchUsage();
 
     /** prevent duplicate querying due to conflicting listeners */
     if (!force && location.search === this.params && this.prevChartType === this.chartType) {
       return;
     }
+
+    // clear out old error messages unless the is the first time rendering the chart
+    if (this.prevChartType) this.clearMessages();
 
     this.params = location.search;
 
@@ -528,6 +530,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if (!files.length) {
       return this.resetView();
     }
+
+    this.patchUsage();
 
     this.setInitialChartType(files.length);
 
@@ -578,6 +582,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   processCategory() {
     this.setState('processing');
+
+    this.patchUsage();
 
     this.getCategoryInfo($('#category-input').val()).then(() => {
 

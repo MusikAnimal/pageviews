@@ -29,7 +29,7 @@ const templates = {
         infoHash[pageviewsMsg][pageviewsMsg] = scope.formatNumber(entity.sum);
       }
 
-      infoHash[pageviewsMsg][$.i18n('daily-average')] = scope.formatNumber(entity.average);
+      infoHash[pageviewsMsg][$.i18n(`${$('#date-type-select').val()}-average`)] = scope.formatNumber(entity.average);
 
       if (scope.isAllProjects()) {
         const projects = ['wikipedia', 'wiktionary', 'wikiquote', 'wikibooks', 'wikisource',
@@ -138,6 +138,10 @@ const templates = {
     if (!scope.isUniqueDevices()) {
       html += `<${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>`;
     }
+
+    $('.table-view--average .col-heading').text(
+      $.i18n(`${$('#date-type-select').val()}-average`)
+    );
 
     return html += `
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>

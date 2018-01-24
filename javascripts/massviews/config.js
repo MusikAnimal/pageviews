@@ -33,7 +33,7 @@ const config = {
   logarithmicCheckbox: '.logarithmic-scale-option',
   sources: {
     category: {
-      placeholder: 'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+      placeholder: 'https://en.wikipedia.org/wiki/Category:Hip_hop_groups_from_New_York_City',
       descriptionParams: () => [
         `<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories'>${$.i18n('category').toLowerCase()}</a>`
       ],

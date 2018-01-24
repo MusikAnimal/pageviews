@@ -1,5 +1,7 @@
 'use strict';
 
+require('events').EventEmitter.defaultMaxListeners = 40;
+
 const gulp = require('gulp');
 const babel = require('babelify');
 const browserify = require('browserify');
@@ -363,7 +365,7 @@ gulp.task('watch', () => {
 
 gulp.task('production', () => {
   shouldNotify = false;
-  runSequence('lint', ['styles', 'scripts', 'views', 'help'], ['compress', 'jsdoc'], () => {
+  runSequence('lint', ['styles', 'scripts', 'views', 'help'], ['jsdoc'], ['compress'], () => {
     shouldNotify = true;
     gulp.src('')
       .pipe(notify('Production build complete'));

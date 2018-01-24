@@ -1,7 +1,7 @@
 # Pageviews Analysis
 A suite of tools to visualize pageviews data of Wikimedia Foundation wikis
 
-Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews), [Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews), [Massviews](https://tools.wmflabs.org/massviews), [Redirect Views](https://tools.wmflabs.org/redirectviews), [Userviews](https://tools.wmflabs.org/userviews))
+Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews), [Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews), [Massviews](https://tools.wmflabs.org/massviews), [Redirect Views](https://tools.wmflabs.org/redirectviews), [Userviews](https://tools.wmflabs.org/userviews), [Mediaviews](https://tools.wmflabs.org/mediaviews))
 
 User documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
 
@@ -47,7 +47,7 @@ This app aims to be a part of the future and not linger in the past. JavaScript 
 All assets and views are ultimately placed in `public_html`. With the exception of images, you won't need to make any manual modifications to this directory.
 
 ### Structure
-The repo contains seven separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews, Massviews, Redirect Views, and Userviews). The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main development asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). After compilation each app has it's own `application.js` and `application.css`. PHP partials and Sass imports are prepended with underscores (e.g. `_footer.php`, `_mixins.scss`).
+The repo contains eight separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews, Massviews, Redirect Views, Userviews, and Mediaviews). The root directory of `javascripts`, `stylesheets` and `views` represent the Pageviews app. Other apps have a subdirectory therein. The main development asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). After compilation each app has it's own `application.js` and `application.css`. PHP partials and Sass imports are prepended with underscores (e.g. `_footer.php`, `_mixins.scss`).
 
 #### JavaScripts
 [Browserify](http://browserify.org/) is used to help follow a module pattern. You'll need to `require('./file_name')` any file that is a dependency. All JavaScript is written in ES6 (and possibly ES7).

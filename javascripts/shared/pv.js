@@ -1231,19 +1231,21 @@ class Pv extends PvConfig {
    * Simple metric to see how many use it (pageviews of the pageviews app, a meta-pageview, if you will :)
    */
   patchUsage() {
-    if (this.getFromLocalStorage('pageviews-no-usage') || this.debug) return;
+    if (location.host !== 'localhost' && (this.getFromLocalStorage('pageviews-no-usage') || this.debug)) {
+      return;
+    }
 
     const langApps = ['siteviews', 'massviews', 'mediaviews'];
     let project = this.project || 'unknown';
 
-    if (langApps.includes(this.project)) project = i18nLang;
+    if (langApps.includes(this.app)) project = i18nLang;
 
     let data =  {
       app: this.app + (location.pathname.includes('-test') ? '-test' : ''),
       project
     };
 
-    if (this.app === 'massviews') {
+    if (this.app === 'massviews' && !!this.source) {
       data.source = this.source;
     }
 

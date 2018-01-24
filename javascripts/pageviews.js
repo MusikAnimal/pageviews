@@ -447,7 +447,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   processInput(force, removedPage) {
     this.pushParams();
-    this.patchUsage();
 
     /** prevent duplicate querying due to conflicting listeners */
     if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
@@ -461,6 +460,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     if (!entities.length) {
       return this.resetView();
     }
+
+    this.patchUsage();
 
     this.setInitialChartType(entities.length);
 
