@@ -7,7 +7,8 @@
 			"Tacsipacsi",
 			"R-Joe",
 			"BanKris",
-			"Urbalazs"
+			"Urbalazs",
+			"Csega"
 		]
 	},
 	"agent": "Ügynök",
@@ -77,6 +78,7 @@
 	"faq-topviews-false-positive-title": "Miért van néhány véletlenszerű lapnak ilyen nagy nézettsége?",
 	"fatal-error": "Végzetes hiba",
 	"february": "Február",
+	"file": "Fájl",
 	"format-numbers": "Számadatok formázása",
 	"fr": "Pé",
 	"help-translate": "Segíts fordítani",
@@ -136,6 +138,7 @@
 	"spider": "Keresőmotorok",
 	"statistics": "Statisztika",
 	"su": "Va",
+	"subcategories": "Alkategóriák",
 	"submit": "Elküld",
 	"th": "Cs",
 	"this-month": "E hónap",
