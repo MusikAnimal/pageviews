@@ -3,7 +3,8 @@
 		"authors": [
 			"Gwenn-Ael",
 			"Fulup",
-			"VIGNERON"
+			"VIGNERON",
+			"Dishual"
 		]
 	},
 	"active-users": "Implijerien oberiant",
@@ -55,6 +56,7 @@
 	"documentation": "Teuliadur",
 	"doughnut": "Gwalenn",
 	"download-label": "Pellgargañ",
+	"duration": "Padelezh",
 	"editors": "Aozerien",
 	"edits": "Kemmoù",
 	"excluded-pages": "Pajennoù ezlakaet",
@@ -78,6 +80,8 @@
 	"featured-article": "Pennad a-zoare",
 	"featured-list": "Roll ar pennadoù eus an dibab",
 	"february": "C'hwevrer",
+	"file": "Restr",
+	"files": "Restroù",
 	"format-numbers": "Furmad roadennoù niverel",
 	"fr": "Gwe.",
 	"good-article": "Pennad mat",
@@ -179,6 +183,7 @@
 	"spider": "Robot menegeriñ",
 	"statistics": "Stadegoù",
 	"su": "Sul",
+	"subcategories": "Isrummadoù",
 	"submit": "Kas",
 	"subpages": "Ispajennoù",
 	"target": "pal",

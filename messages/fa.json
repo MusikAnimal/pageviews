@@ -11,7 +11,8 @@
 			"Arash.pt",
 			"Ebraminio",
 			"Dejavu",
-			"محک"
+			"محک",
+			"Ommmmid"
 		]
 	},
 	"active-users": "کاربران فعال",
@@ -70,6 +71,7 @@
 	"documentation": "مستندات",
 	"doughnut": "دونات",
 	"download-label": "دریافت",
+	"duration": "مدت",
 	"editors": "ویرایشگران",
 	"edits": "ویرایش‌ها",
 	"elapsed-time": "زمان گذشته:  $1 {{PLURAL:$1|ثانیه|ثانیه}}",
@@ -93,6 +95,8 @@
 	"featured-article": "مقالهٔ برگزیده",
 	"featured-list": "فهرست برگزیده",
 	"february": "فوریه",
+	"files": "پرونده‌ها",
+	"file-type": "نوع",
 	"format-numbers": "قالب‌بندی داده‌های عددی",
 	"fr": "جمعه",
 	"good-article": "مقاله خوب",
