@@ -7,7 +7,8 @@
 			"Dvorapa",
 			"Matěj Suchánek",
 			"Walter Klosse",
-			"Marek Pavlica"
+			"Marek Pavlica",
+			"Ilimanaq29"
 		]
 	},
 	"active-users": "Aktivní uživatelé",
@@ -73,6 +74,7 @@
 	"faq-try-tool": "To můžete najít na $1.",
 	"fatal-error": "Kritická chyba",
 	"february": "únor",
+	"file-type": "Typ",
 	"format-numbers": "Formátovat číselné hodnoty",
 	"fr": "Pá",
 	"help": "Nápověda",
@@ -80,6 +82,7 @@
 	"hosted": "Hostováno s $1 na $2.",
 	"hover-to-exclude": "Chcete-li vyloučit stránky ze zobrazení, najeďte na jejich názvy a klikněte na ✖",
 	"images": "Obrázky",
+	"invalid-media-file": "$1 není platný zvukový soubor nebo video.",
 	"invalid-lang-project": "Projekt $1 je buď neplatný nebo není vícejazyčný",
 	"invalid-params": "Neplatné parametry!",
 	"invalid-project": "$1 není <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>platný projekt</a> nebo momentálně není podporován.",
@@ -116,7 +119,7 @@
 	"november": "listopad",
 	"num-languages": "$1 {{PLURAL:$2|jazyk|jazyky|jazyků}}",
 	"num-pages": "$1 {{PLURAL:$2|stránka|stránky|stránek}}",
-	"num-pages-info": "Zadejte až $1 stránek",
+	"num-pages-info": "Zadejte až $1 {{PLURAL:$1|stranu|strany}}",
 	"num-projects-info": "Zadejte až $1 projekty",
 	"october": "říjen",
 	"ok": "OK",
