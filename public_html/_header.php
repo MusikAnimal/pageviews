@@ -72,7 +72,7 @@
   <div class="navbar-collapse collapse interapp-navigation">
     <a class="home-link pull-left" href="<?php echo '/pageviews'; ?>"></a>
     <ol class="interapp-links nav navbar-nav navbar-left">
-      <?php $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ]; ?>
+      <?php $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews' ]; ?>
       <?php if ( $rtl === 'rtl' ) { ?>
         <?php $apps = array_reverse( $apps ); ?>
       <?php } ?>

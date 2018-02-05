@@ -53,7 +53,7 @@
   %div.navbar-collapse.collapse.interapp-navigation
     %a.home-link.pull-left(href='/pageviews')
     %ol.interapp-links.nav.navbar-nav.navbar-left
-      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ]
+      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews' ]
       - if ( $rtl === 'rtl' )
         - $apps = array_reverse( $apps )
 
