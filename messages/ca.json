@@ -128,6 +128,7 @@
 	"images": "Imatges",
 	"individual-projects": "Projectes individuals",
 	"info": "Info",
+	"invalid-media-file": "$1 no és un fitxer d’àudio o de vídeo vàlid.",
 	"invalid-lang-project": "$1 no és vàlid o no és un projecte multilingüe",
 	"invalid-params": "Paràmetres no vàlids!",
 	"invalid-project": "$1 no és un <a href=\"//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2\">projecte vàlid</a> o actualment no està actiu.",

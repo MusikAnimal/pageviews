@@ -5,7 +5,8 @@
 			"Milicevic01",
 			"Srdjan m",
 			"Obsuser",
-			"Acamicamacaraca"
+			"Acamicamacaraca",
+			"Zoranzoki21"
 		]
 	},
 	"active-users": "Активни корисници",
@@ -166,9 +167,9 @@
 	"num-languages": "$1 {{PLURAL:$2|језик|језика}}",
 	"num-pagecounts": "$1 {{PLURAL:$2|број странице|броја странице|бројева странице}}",
 	"num-pages": "$1 {{PLURAL:$2|страница|странице|страница}}",
-	"num-pages-info": "Можете унети до $1 страница",
+	"num-pages-info": "Можете унети до $1 {{PLURAL:$1|страница|странице}}",
 	"num-pageviews": "$1 {{PLURAL:$2|преглед|прегледа|прегледа}}",
-	"num-projects-info": "Можете унети до $1 пројеката",
+	"num-projects-info": "Можете унети до $1 {{PLURAL:$1|пројекат|пројеката}}",
 	"num-protections": "$1 {{PLURAL:$2|заштита|заштите|заштита}}",
 	"num-redirects": "$1 {{PLURAL:$2|преусмерење|преусмерења}}",
 	"num-sections": "$1 {{PLURAL:$2|одељак|одељка|одељака}}",

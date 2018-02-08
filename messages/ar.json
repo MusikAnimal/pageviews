@@ -12,7 +12,8 @@
 			"Aboulouei1",
 			"Meno25",
 			"يونس",
-			"Mido"
+			"Mido",
+			"Azouz.anis"
 		]
 	},
 	"active-users": "المستخدمون النشطون",
@@ -231,10 +232,10 @@
 	"num-languages": "$1 {{PLURAL:$2|لغة|لغات}}",
 	"num-pagecounts": "$1 {{PLURAL:$2|عدد الصفحات}}",
 	"num-pages": "$1 {{PLURAL:$2|صفحة|صفحات}}",
-	"num-pages-info": "أدخل ما يصل إلى $1 صفحات",
+	"num-pages-info": "أدخل ما يصل إلى $1 {{PLURAL:$1|صفحة|صفحات}}",
 	"num-pageviews": "$1 {{PLURAL:$2|مشاهدات للصفحة}}",
 	"num-projects": "$1 {{PLURAL:$2|مشروع|مشاريع}}",
-	"num-projects-info": "أدخل ما يصل إلى $1 مشاريع",
+	"num-projects-info": "أدخل ما يصل إلى $1 {{PLURAL:$1|مشروع|مشاريع}}",
 	"num-protections": "$1 {{PLURAL:$2|حماية|عمليات حماية}}",
 	"num-redirects": "$1 {{PLURAL:$2|تحويلة|تحويلات}}",
 	"num-sections": "$1 {{PLURAL:$2|قسم|أقسام}}",
@@ -318,7 +319,7 @@
 	"this-month": "هذا الشهر",
 	"this-year": "هذه السنة",
 	"title": "تحليل زيارات الصفحة",
-	"tool-labs": "Tool Labs",
+	"tool-labs": "أداة تزوير",
 	"topviews": "الأكثر مشاهدة",
 	"topviews-description": "صفحات المشروع الأكثر تصفحا",
 	"topviews-false-positive": "قد تكون بعض الصفحات المذكورة <a href='/topviews/faq#false_positive'>إيجابيات خاطئة</a>",
