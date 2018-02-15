@@ -14,7 +14,8 @@
 			"Derugon",
 			"Od1n",
 			"AntonierCH",
-			"The RedBurn"
+			"The RedBurn",
+			"Pols12"
 		]
 	},
 	"active-users": "Utilisateurs actifs",
@@ -195,7 +196,7 @@
 	"list-false-positives-text": "Les pages suivantes sont connues comme étant des faux positifs et ont été exclues automatiquement de Topviews ($1) :",
 	"list-values": "Un parmi : $1",
 	"loading-cache": "Chargement depuis le cache…",
-	"localization": "Localisation :",
+	"localization": "Régionalisation :",
 	"localize-dates": "Localiser le format de la date",
 	"logarithmic-scale": "Échelle logarithmique",
 	"main": "Principal",
