@@ -199,7 +199,7 @@
 	"unknown": "Neznámý",
 	"url-structure": "Struktura URL",
 	"url-structure-files": "Názvy souborů bez jmenného prostoru Soubor:, rozděleny pomocí znaků <code>|</code>. Příklad: $1",
-	"url-structure-mediaviews-example": "K získání nejnovějších dat k daným hratelným souborům na Wikimedia Commons (s výchozím nastavením) použijte $1.\n$2 vyřeší název souboru a odkazy.",
+	"url-structure-mediaviews-example": "Pro získání nejnovějších dat k danému spustitelnému souboru na Wikimedia Commons (s výchozím nastavením) použijte:\n$1\n$2 se změní název souboru, do kterého je odkaz vložen.",
 	"url-structure-parameters": "Parametry",
 	"url-structure-parameters-order": "Může být použit v libovolném pořadí",
 	"user": "Uživatel",
