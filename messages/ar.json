@@ -13,7 +13,8 @@
 			"Meno25",
 			"يونس",
 			"Mido",
-			"Azouz.anis"
+			"Azouz.anis",
+			"Mr. Ibrahem"
 		]
 	},
 	"active-users": "المستخدمون النشطون",
@@ -277,6 +278,7 @@
 	"pie": "دائرة مجزأة",
 	"platform": "المنصة",
 	"playcounts": "مرات التشغيل",
+	"png": "PNG",
 	"polar-area": "المنطقة القطبية",
 	"print": "اطبع",
 	"processing-page": "تمت معالجة الصفحة $1 من $2",

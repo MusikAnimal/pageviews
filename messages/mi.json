@@ -279,7 +279,7 @@
 	"unique-titles": "{{PLURAL:$1|kotahi|$1 ngā}} ingoa tūhāhā",
 	"unknown": "Kāhore i te mohiotia",
 	"unsupported-browser-error": "Kāhore e taupuatia tōu mata ipurangi ($1). <a href='http://browsehappy.com/'>Whakahoutia tōu mata ipurangi.</a>",
-	"url-structure": "Whakatakororanga o te URL",
+	"url-structure": "Whakatakotoranga o te URL",
 	"url-structure-agent": "Ko tētahi o $1(ngā tāngata; ko tēnei te noa), $2 (kaiwhakaputunga o ngā initia kimi), $3 (kaiwhakaputunga o te Wikimedia Foundation), $4 (te katoa)",
 	"url-structure-autolog": "Whakamahitia $1 hei whakawheto i te kōwhiringa ko $2 i ngā wā noa",
 	"url-structure-end-date": "Ko te rā whakamutunga e whakatakotohia ana pēnei ki $1; i ngā wā noa, ko $1 te rā",
