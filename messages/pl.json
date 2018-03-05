@@ -188,6 +188,8 @@
 	"massviews-oversized-set": "$1 zawiera $2 stron. Ze względu na wydajność zostanie przetworzanych tylko pierwszych $3 stron.",
 	"massviews-oversized-set-unknown": "$1 zawiera ponad $2 stron. Ze względu na wydajność, zostanie przetworzonych tylko pierwszych $2 stron.",
 	"may": "Maj",
+	"mediaviews": "Wyświetlenia multimediów",
+	"mediaviews-description": "Porównanie liczby odtworzeń audio i Video na Wikimedia Commons",
 	"metric": "Rodzaj",
 	"mo": "pn.",
 	"mobile": "Wersja mobilna",
