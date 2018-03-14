@@ -277,6 +277,7 @@
 	"param-error-3": "General error message for when an invalid parameter is passed in. $1 is the name of the parameter and $2 is a link to the tool's URL documentation, with the message 'documentation' as the text.",
 	"percent-mobile": "Label for the column showing the percentage of mobile pageviews a page had.\n{{Identical|Mobile}}",
 	"permalink": "A permanent link to the tool with the current data. By default the tool shows the latest-N days, this will link to the exact date range.\n{{Identical|Permalink}}",
+	"permalink-copied": "Message shown when a permanent link to the tool has been copied to the user's clipboard.",
 	"pie": "Label for pie chart option (https://en.wikipedia.org/wiki/Pie_chart)",
 	"platform": "Header for the part of the interface that lets the user choose which platform to view statistics for. For example, 'Desktop', 'Mobile app', etc.\n{{Identical|Platform}}",
 	"playcounts": "Term for the number of times an audio or video file has been played. This is used as a label.",

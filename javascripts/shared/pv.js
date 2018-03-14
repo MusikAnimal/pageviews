@@ -1498,7 +1498,7 @@ class Pv extends PvConfig {
       $('.permalink-copy').val($('.permalink').prop('href'))[0].select();
       try {
         document.execCommand('copy');
-        this.toastSuccess('Permalink copied to clipboard');
+        this.toastSuccess($.i18n('permalink-copied'));
         e.preventDefault();
         document.activeElement.blur();
       } catch (e) {

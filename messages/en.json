@@ -263,6 +263,7 @@
 	"param-error-3": "Invalid <code>$1</code>, using defaults instead. See the $2 for more information.",
 	"percent-mobile": "% Mobile",
 	"permalink": "Permalink",
+	"permalink-copied": "Permalink copied to clipboard",
 	"pie": "Pie",
 	"platform": "Platform",
 	"playcounts": "Playcounts",
