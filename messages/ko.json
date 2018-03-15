@@ -231,6 +231,7 @@
 	"param-error-3": "<code>$1</code>이(가) 올바르지 않습니다, 기본값을 대신 사용하세요. 자세한 정보에 대해서는 $2을(를) 참조하십시오.",
 	"percent-mobile": "% 모바일",
 	"permalink": "고유링크",
+	"permalink-copied": "고유링크가 클립보드에 복사되었습니다",
 	"pie": "파이",
 	"platform": "플랫폼",
 	"playcounts": "재생 수",

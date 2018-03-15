@@ -15,7 +15,8 @@
 			"Od1n",
 			"AntonierCH",
 			"The RedBurn",
-			"Pols12"
+			"Pols12",
+			"Pamputt"
 		]
 	},
 	"active-users": "Utilisateurs actifs",
@@ -276,6 +277,7 @@
 	"param-error-3": "Invalide <code>$1</code>, utilisation des valeurs par défaut à la place. Voir la $2 pour plus d'informations.",
 	"percent-mobile": "% Mobile",
 	"permalink": "Lien permanent",
+	"permalink-copied": "Lien permanent copié dans le presse-papier",
 	"pie": "Quartier",
 	"platform": "Plateforme",
 	"playcounts": "Nombre d’exécutions",

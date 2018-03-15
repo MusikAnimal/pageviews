@@ -267,6 +267,7 @@
 	"param-error-3": "无效的<code>$1</code>，改用默认值。参见$2以获取更多信息。",
 	"percent-mobile": "%移动版",
 	"permalink": "固定链接",
+	"permalink-copied": "固定链接已复制到剪贴板",
 	"pie": "饼图",
 	"platform": "平台",
 	"playcounts": "播放次数",

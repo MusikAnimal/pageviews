@@ -264,6 +264,7 @@
 	"param-error-3": "Ungültiger <code>$1</code>. Verwende stattdessen die Vorgabewerte. Siehe die $2 für weitere Informationen.",
 	"percent-mobile": "% Mobil",
 	"permalink": "Permanentlink",
+	"permalink-copied": "Permanentlink in die Zwischenablage kopiert",
 	"pie": "Kreis",
 	"platform": "Plattform",
 	"playcounts": "Anzahl der Wiedergaben",

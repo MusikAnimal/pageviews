@@ -268,6 +268,7 @@
 	"param-error-3": "<code>$1</code>無效，請嘗試改用預設範圍。可參考 $2獲取更多訊息。",
 	"percent-mobile": "%行動裝置",
 	"permalink": "靜態連結",
+	"permalink-copied": "靜態連結已複製到剪貼簿裡",
 	"pie": "餅狀圖",
 	"platform": "平台類型",
 	"playcounts": "播放次數",
