@@ -172,13 +172,13 @@ apps.forEach(app => {
   /** SCRIPTS */
   const coreJSDependencies = [
     'vendor/javascripts/jquery.min.js',
+    'vendor/javascripts/jquery.i18n/CLDRPluralRuleParser.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.messagestore.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.fallbacks.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.parser.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.emitter.js',
     'vendor/javascripts/jquery.i18n/jquery.i18n.language.js',
-    'vendor/javascripts/jquery.i18n/CLDRPluralRuleParser.js',
     'vendor/javascripts/jquery.i18n/languages/bs.js',
     'vendor/javascripts/jquery.i18n/languages/dsb.js',
     'vendor/javascripts/jquery.i18n/languages/fi.js',

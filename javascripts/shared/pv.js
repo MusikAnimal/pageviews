@@ -83,20 +83,7 @@ class Pv extends PvConfig {
       this.splash();
     }
 
-    /**
-     * Load translations then initialize the app.
-     * Each app has it's own initialize method.
-     * Make sure we load 'en.json' as a fallback
-     */
-    let messagesToLoad = {
-      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
-    };
-    if (i18nLang !== 'en') {
-      messagesToLoad.en = '/pageviews/messages/en.json';
-    }
-    $.i18n({
-      locale: i18nLang
-    }).load(messagesToLoad).then(this.initialize.bind(this));
+    this.loadTranslations();
 
     // extensions
     $.extend($.i18n.parser.emitter, {
@@ -131,6 +118,29 @@ class Pv extends PvConfig {
         warning: 'alert-warning'
       }
     };
+  }
+
+  /**
+   * Load translations then initialize the app.
+   * Each app has it's own initialize method.
+   * Make sure we load 'en.json' as a fallback.
+   */
+  loadTranslations() {
+    let messagesToLoad = {
+      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
+    };
+    if (i18nLang !== 'en') {
+      if ($.i18n.fallbacks[i18nLang]) {
+        $.i18n.fallbacks[i18nLang].forEach(fallback => {
+          messagesToLoad[fallback] = `/pageviews/messages/${fallback}.json`;
+        });
+      }
+
+      messagesToLoad.en = '/pageviews/messages/en.json';
+    }
+    $.i18n({
+      locale: i18nLang
+    }).load(messagesToLoad).then(this.initialize.bind(this));
   }
 
   /**
