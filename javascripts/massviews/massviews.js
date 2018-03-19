@@ -484,7 +484,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   getPagePile(id) {
     const dfd = $.Deferred();
-    const url = `https://tools.wmflabs.org/pagepile/api.php?id=${id}&action=get_data&format=json&metadata=1`;
+    const url = `https://tools.wmflabs.org/pagepile/api.php?id=${id}&action=get_data` +
+      `&format=json&metadata=1&limit=${this.config.apiLimit}`;
 
     $.ajax({
       url,
@@ -492,9 +493,15 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }).done(data => {
       let pages = Object.keys(data.pages);
 
-      if (pages.length > this.config.apiLimit) {
+      if (data.pages_total > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', this.getPileLink(id), this.formatNumber(pages.length), this.config.apiLimit)
+          $.i18n(
+            'massviews-oversized-set',
+            this.getPileLink(id),
+            this.formatNumber(data.pages_total),
+            this.config.apiLimit,
+            data.pages_total
+          )
         );
 
         pages = pages.slice(0, this.config.apiLimit);
@@ -839,7 +846,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
         if (size > this.config.apiLimit) {
           this.writeMessage(
-            $.i18n('massviews-oversized-set', hashTagLink, this.formatNumber(size), this.config.apiLimit)
+            $.i18n('massviews-oversized-set', hashTagLink, this.formatNumber(size), this.config.apiLimit, size)
           );
 
           pageURLs = pageURLs.slice(0, this.config.apiLimit);
@@ -957,7 +964,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       if (size > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', pageLink, this.formatNumber(size), this.config.apiLimit)
+          $.i18n('massviews-oversized-set', pageLink, this.formatNumber(size), this.config.apiLimit, size)
         );
 
         pages = pages.slice(0, this.config.apiLimit);
@@ -1117,7 +1124,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       if (titles.length > this.config.apiLimit) {
         this.writeMessage(
-          $.i18n('massviews-oversized-set', quarryLink, this.formatNumber(titles.length), this.config.apiLimit)
+          $.i18n('massviews-oversized-set', quarryLink, this.formatNumber(titles.length), this.config.apiLimit, titles.length)
         );
 
         titles = titles.slice(0, this.config.apiLimit);
