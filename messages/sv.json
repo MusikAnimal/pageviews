@@ -268,6 +268,7 @@
 	"param-error-3": "Ogiltigt <code>$1</code>, standardintervallet används istället. Se $2 för mer information.",
 	"percent-mobile": "% Mobil",
 	"permalink": "Permanent länk",
+	"permalink-copied": "Permanent länk kopierades till urklipp",
 	"pie": "Cirkel",
 	"platform": "Plattform",
 	"playcounts": "Uppspelningar",

@@ -110,6 +110,7 @@
 	"faq-massviews-subject-page-body": "Denne indstilling er for når du bruger en kategori som kilden. I nogle tilfælde kan kategorien indeholde diskussionssider, når du faktisk ønsker emnesiderne. For eksempel  <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City-artikler</a>, som viser diskussionssiderne for FA-kvalitetsartikler i WikiProject New York City.",
 	"faq-massviews-subject-page-title": "Hvad er indstillingen »$1«?",
 	"faq-multi-lang-title": "Jeg ønsker at se data for en side på tværs af alle sprog for et projekt.",
+	"faq-old-data-body": "Wikimedia-sidevisnings-API'en blev introduceret i august 2015 og har arkiveret data tilbage til juli 2015. Du er afhængig af andre værktøjer såsom <a href='http://stats.grok.se'>stats.grok.se</a> for at se data ældre end dette. Om de virker eller ej er desværre uden for omfanget af dette værktøj, og uden for vedligeholdernes kontrol.",
 	"faq-old-data-title": "Hvorfor kan jeg ikke se data som er ældre end juli 2015?",
 	"faq-redirects-title": "Hvordan tælles omdirigeringer med?",
 	"faq-referrals-title": "Kan jeg se hvordan læserne kom til siden?",

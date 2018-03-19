@@ -271,6 +271,7 @@
 	"param-error-3": "<code>$1</code> inválido: foi substituído pelo padrão. Veja a $2 para mais informações.",
 	"percent-mobile": "% móvel",
 	"permalink": "Ligação permanente",
+	"permalink-copied": "Hiperligação permanente copiada para a área de transferência",
 	"pie": "Circular",
 	"platform": "Plataforma",
 	"playcounts": "Contagem de reproduções",
