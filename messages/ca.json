@@ -210,7 +210,7 @@
 	"section": "Secció",
 	"select2-loading": "S’estan carregant més resultats…",
 	"select2-max-chars": "Si us plau, elimineu $1 caràcters",
-	"select2-max-items": "Només podeu seleccionar $1 elements",
+	"select2-max-items": "Només podeu seleccionar $1 {{PLURAL:$1|element|elements}}",
 	"select2-min-chars": "Introduïu $1 o més caràcters.",
 	"select2-no-results": "No s'han trobat resultats.",
 	"september": "setembre",
