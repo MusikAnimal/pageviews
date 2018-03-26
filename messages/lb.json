@@ -222,7 +222,7 @@
 	"search-method": "Sichmethod:",
 	"section": "Abschnitt",
 	"select2-loading": "Méi Resultater gi gelueden...",
-	"select2-max-chars": "Läscht w.e.g. $1 Zeechen",
+	"select2-max-chars": "Läscht w.e.g. {{PLURAL:$1|een|$1}} Zeechen",
 	"select2-max-items": "Dir kënnt nëmmen $1 Elementer eraussichen",
 	"select2-min-chars": "Gitt w.e.g. $1 oder méi Zeechen an",
 	"select2-no-results": "Näischt fonnt",

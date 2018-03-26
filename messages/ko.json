@@ -265,7 +265,7 @@
 	"section": "문단",
 	"select2-loading": "결과를 더 불러오는 중…",
 	"select2-max-chars": "$1{{PLURAL:$1|자}}를 삭제하세요",
-	"select2-max-items": "{{PLURAL:$1|항목}} $1개만을 선택할 수 있습니다",
+	"select2-max-items": "$1개의 {{PLURAL:$1|항목}}만 선택할 수 있습니다",
 	"select2-min-chars": "$1자 이상 입력하세요",
 	"select2-no-results": "결과가 없습니다",
 	"september": "9월",
