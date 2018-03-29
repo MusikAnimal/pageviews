@@ -6,7 +6,8 @@
 			"MrLeopold",
 			"SPQRobin",
 			"Siebrand",
-			"Romaine"
+			"Romaine",
+			"Patio"
 		]
 	},
 	"active-users": "Actieve gebruikers",
@@ -127,7 +128,7 @@
 	"massviews": "Verzamelde weergaven",
 	"massviews-description": "Importeer een paginalijst en vergelijk de paginaweergaven",
 	"massviews-empty-set": "$1 bevat geen pagina's!",
-	"massviews-notice": "Probeer $2 als u meer dan $1 pagina's wilt zien.",
+	"massviews-notice": "Probeer $2 als u meer dan $1 {{PLURAL:$1|pagina|pagina's}} wil zien.",
 	"massviews-title": "Analyse verzamelde weergaven",
 	"may": "mei",
 	"metric": "Gegeven",
