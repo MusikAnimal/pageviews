@@ -12,7 +12,9 @@
 			"Bhatakati aatma",
 			"Innocentbunny",
 			"Nitin1485",
-			"Swapnil.Karambelkar"
+			"Swapnil.Karambelkar",
+			"Sachinkatiyar",
+			"Smtchahal"
 		]
 	},
 	"active-users": "सक्रिय सदस्य",
@@ -195,8 +197,8 @@
 	"search-method": "खोज का तरीका",
 	"section": "अनुभाग",
 	"select2-loading": "और परिणाम दिखा रहा...",
-	"select2-max-chars": "कृपया $1 शब्द निकालें",
-	"select2-max-items": "आप केवल $1 वस्तु चुन सकते हो",
+	"select2-max-chars": "कृपया $1 अक्षर हटाएं {{PLURAL:$1|character|characters}}",
+	"select2-max-items": "आप केवल $1 {{PLURALL:$1|वस्तु|वस्तुएं}} चुन सकते हो",
 	"select2-min-chars": "कृपया $1 या और शब्द जोड़ें",
 	"select2-no-results": "कोई परिणाम नहीं मिले",
 	"september": "सितम्बर",
