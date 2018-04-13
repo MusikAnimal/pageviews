@@ -13,6 +13,12 @@ IE10 and Safari 8 and below are not supported.
 
 [![Build Status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)](https://travis-ci.org/MusikAnimal/pageviews)
 
+## License
+
+The source code for Pageviews Analysis and it's sister applications is released under the [MIT license](https://github.com/MusikAnimal/pageviews/blob/master/LICENSE).
+
+The underlying data shown in these applications was provided by the [Wikimedia RESTBase API](https://wikimedia.org/api/rest_v1/), released under the [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/) dedication.
+
 ## Dependencies
 This guide mostly assumes you're using OSX or Linux. The setup process may differ on Windows machines.
 
