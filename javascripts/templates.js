@@ -47,9 +47,10 @@ const templates = {
       };
 
       if (!multiEntity) {
+        const assessmentNode = entity.assessment ? `${scope.getAssessmentBadge(entity)}  ${entity.assessment.upcase()}` : '';
         Object.assign(infoHash[basicInfoMsg], {
           [$.i18n('protection')]: entity.protection,
-          [$.i18n('class')]: entity.assessment
+          [$.i18n('class')]: assessmentNode
         });
       }
 
@@ -140,7 +141,7 @@ const templates = {
           <span class='table-view--color-block' style="background:${item.color}"></span>
         </${tag}>
         <${tag} class='table-view--title'>${last ? item.label : scope.getPageLink(item.label)}</${tag}>
-        <${tag} class='table-view--class'>${item.assessment || ''}</${tag}>
+        <${tag} class='table-view--class'>${scope.getAssessmentBadge(item)}</${tag}>
         <${tag} class='table-view--views'>${scope.formatNumber(item.sum)}</${tag}>
         <${tag} class='table-view--average'>${scope.formatNumber(item.average)}</${tag}>
         <${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>

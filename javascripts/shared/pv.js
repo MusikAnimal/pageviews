@@ -879,9 +879,7 @@ class Pv extends PvConfig {
         end: this.daterangepicker.endDate.format('YYYY-MM-DD')
       },
       timeout: 8000
-    })
-    .done(data => dfd.resolve(data))
-    .fail(() => {
+    }).done(data => dfd.resolve(data)).fail(() => {
       // stable flag will be used to handle lack of data, so just resolve with empty data
       let data = {};
       pages.forEach(page => data[page] = {});
@@ -939,6 +937,24 @@ class Pv extends PvConfig {
     });
 
     return dfd;
+  }
+
+  /**
+   * Get the markup to show the assessment badge for the given item.
+   * @param  {Object} item
+   * @return {string}
+   */
+  getAssessmentBadge(item) {
+    if (!item.assessment) {
+      return '';
+    }
+
+    if (item.assessment_img) {
+      return `<img class='article-badge' src='https://upload.wikimedia.org/wikipedia/commons/${item.assessment_img}' ` +
+        `alt='${item.assessment}' title='${item.assessment}' />`;
+    } else {
+      return item.assessment;
+    }
   }
 
   /**

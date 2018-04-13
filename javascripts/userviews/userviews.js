@@ -475,8 +475,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     $.ajax({
       url: '/userviews/api.php',
       data: params
-    })
-    .done(data => {
+    }).done(data => {
       if (!Array.isArray(data)) return dfd.reject();
 
       const pages = data.map(page => {
@@ -495,8 +494,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         );
       }
       return dfd.resolve(pages);
-    })
-    .fail(() => dfd.reject());
+    }).fail(() => dfd.reject());
 
     return dfd;
   }
@@ -849,11 +847,9 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     // Add the rows to the CSV
     this.outputData.listData.forEach(page => {
       const pageName = '"' + page.label.descore().replace(/"/g, '""') + '"';
-        // badges = '"' + page.badges.map(badge => this.config.badges[badge].name.replace(/"/g, '""')) + '"';
 
       csvContent += [
-        pageName,
-        // badges
+        pageName
       ].concat(page.data).join(',') + '\n';
     });
 

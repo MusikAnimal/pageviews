@@ -114,11 +114,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     $(this.config.platformSelector).val(params.platform);
     $(this.config.agentSelector).val(params.agent);
 
-    // hide the badges column if it's an unsupported wiki
-    if (!this.config.pageAssessmentProjects.includes(this.project)) {
-      $('.sort-link--badges').hide();
-    }
-
     this.validateDateRange(params);
 
     this.resetSelect2();
@@ -474,12 +469,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     const getPageViewsAndAssessments = entities => {
       this.getPageViewsData(entities).done(xhrData => {
-        this.getPageAssessments(xhrData.entities).then(assessments => {
-          for (let page in assessments) {
-            this.entityInfo.entities[page].assessment = assessments[page];
-          }
-          this.updateChart(xhrData);
-        });
+        this.updateChart(xhrData);
       });
     };
 
@@ -539,7 +529,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $('.table-view').hide();
       $('.single-page-stats').html(`
         ${this.getPageLink(page.label)}
-        ${page.assessment ? '&middot;\n' + page.assessment : ''}
+        ${page.assessment ? '&middot;\n' + this.getAssessmentBadge(page) : ''}
         &middot;
         <span class='text-muted'>
           ${$(this.config.dateRangeSelector).val()}

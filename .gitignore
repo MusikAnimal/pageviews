@@ -17,3 +17,4 @@ reports/
 *.jar
 jsdocs/gen/
 false-positives
+disk_cache/

@@ -1,7 +1,7 @@
 <?php
 
 // config.php may be either in the parent directory or up two directories,
-//   depending on if this is ran on localhost or Tool Labs
+//   depending on if this is ran on localhost or Toolforge
 if ( file_exists( __DIR__ . '/../config.php' ) ) {
   require_once __DIR__ . '/../config.php';
 } else {
@@ -71,7 +71,28 @@ if ( preg_match( '/^\d{4}-\d{2}$/', $_GET['end'] ) ) {
 
 $url_pages = str_replace( ' ', '_', $_GET['pages'] );
 
-// echo 'https://' . $project . "/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2";
+// Attempt to fetch assessments, first trying the disk cache.
+$assessmentsCache = json_decode( file_get_contents( '../disk_cache/assessments.json' ), true );
+
+// Expires once every 24 hours.
+if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
+  // Fetch from XTools.
+  $ch = curl_init();
+  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+  curl_setopt( $ch, CURLOPT_URL, 'http://localhost/app_dev.php/api/project/assessments' );
+  $assessmentsConfig =json_decode( curl_exec( $ch ), true )['config'];
+  curl_close( $ch );
+
+  // Save result back to disk cache.
+  $fp = fopen( '../disk_cache/assessments.json', 'w' );
+  fwrite( $fp, json_encode( [
+    'fetched' => date('Y-m-d H:i:s'),
+    'config' => $assessmentsConfig,
+  ] ) );
+  fclose( $fp );
+} else {
+  $assessmentsConfig = $assessmentsCache['config'];
+}
 
 // get page IDs and build query
 $api_pages = file_get_contents( 'https://' . $project . "/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2" );
@@ -79,9 +100,6 @@ $api_pages = json_decode($api_pages)->query->pages;
 
 $db_start_date = $start_date->format( 'YmdHis' );
 $db_end_date = $end_date->format( 'Ymd235959' );
-
-$sql = "SELECT COUNT(*) AS num_edits, COUNT(DISTINCT(rev_user_text)) AS num_users FROM " .
-  "$db.revision WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
 
 $multipage_parts = [];
 foreach ($api_pages as $page) {
@@ -92,13 +110,25 @@ foreach ($api_pages as $page) {
   $multipage_parts[] = "rev_page = $page_id";
 
   // query for individual page
+  $paSelect = '';
+  if ( isset( $assessmentsConfig[$project] ) ) {
+    $paSelect = ", (SELECT pa_class FROM $db.page_assessments WHERE pa_page_id = $page_id LIMIT 1) AS assessment";
+  }
+  $sql = "SELECT COUNT(*) AS num_edits, COUNT(DISTINCT(rev_user_text)) AS num_users $paSelect FROM $db.revision " .
+    "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
+
   $res = $client->query( $sql . " rev_page = $page_id" );
   $output['pages'][$page->title] = $res->fetch_assoc();
 
-  // convert to ints
   foreach ($output['pages'] as $output_page => $page_data) {
+    // convert to ints
     $output['pages'][$output_page]['num_edits'] = (int) $page_data['num_edits'];
     $output['pages'][$output_page]['num_users'] = (int) $page_data['num_users'];
+
+    // add assessment data, if available
+    if ( isset( $page_data['assessment'] ) && isset( $assessmentsConfig[$project]['class'][$page_data['assessment']] ) ) {
+      $output['pages'][$output_page]['assessment_img'] = $assessmentsConfig[$project]['class'][$page_data['assessment']]['badge'];
+    }
   }
 }
 
@@ -107,6 +137,7 @@ if ( count( $api_pages ) > 1 ) {
   $pages_sql = implode( $multipage_parts, ' OR ' );
   $res = $client->query( $sql . '(' . $pages_sql . ')' );
   $output['totals'] = $res->fetch_assoc();
+  unset( $output['totals']['assessment'] );
   $output['totals']['num_edits'] = (int) $output['totals']['num_edits'];
   $output['totals']['num_users'] = (int) $output['totals']['num_users'];
 }

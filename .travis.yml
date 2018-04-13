@@ -1,23 +1,10 @@
-language: php
-php:
-  - 5.5
 before_script:
   - nvm install 5.6.0
   - nvm use 5.6.0
   - npm install -g grunt-cli
   - npm install
-  - sudo apt-get install apache2
-  - sudo a2enmod actions
-  - sudo a2enmod rewrite
-  - echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/roderik/16d751c979fdeb5a14e3/raw/gistfile1.txt)" | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/MusikAnimal/c2a2f79b6976e7ddd909/raw/gistfile1.txt)" | sed -e "s,PATH,`pwd`/public_html,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
-  - echo "$(curl -fsSL https://gist.github.com/MusikAnimal/ccdf098e2a9a163481d5/raw/config.php)" >> /home/travis/build/MusikAnimal/pageviews/config.php
-  - composer install
-  - sudo service apache2 restart
 script:
-  - ./nightwatch --env saucelabs,saucelabs_safari,saucelabs_ie11
-  - eslint -c .eslintrc javascripts/
+  - ./node_modules/eslint/bin/eslint.js -c .eslintrc javascripts/
 addons:
   sauce_connect:
     username: "MusikAnimal"

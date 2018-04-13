@@ -351,9 +351,8 @@ select {
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
-  .rtl .disabled, .rtl .loading .select2-container, .loading .rtl .select2-container, .rtl
-  .loading .page-selector,
-  .loading .rtl .page-selector {
+  .rtl .disabled, .rtl .loading .select2-container, .loading .rtl .select2-container,
+  .rtl .loading .page-selector, .loading .rtl .page-selector {
     opacity: .5;
     pointer-events: none; }
   .rtl .loading .chart-container::after, .loading .rtl .chart-container::after {
