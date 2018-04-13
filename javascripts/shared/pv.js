@@ -899,6 +899,10 @@ class Pv extends PvConfig {
   getPageAssessments(pages) {
     const dfd = $.Deferred();
 
+    if (!this.config.pageAssessmentProjects.includes(this.project)) {
+      return dfd.resolve({});
+    }
+
     this.massApi(
       {
         prop: 'pageassessments',
