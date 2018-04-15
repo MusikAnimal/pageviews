@@ -19,7 +19,7 @@ The source code for Pageviews Analysis and it's sister applications is released 
 
 The underlying data shown in these applications was provided by the [Wikimedia RESTBase API](https://wikimedia.org/api/rest_v1/), released under the [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/) dedication.
 
-Screenshots of the charts in Pageviews Analysis may be used without attribution.
+Screenshots of the charts in Pageviews Analysis may be used without attribution, but a link back to the application would be appreciated.
 
 ## Dependencies
 This guide mostly assumes you're using OSX or Linux. The setup process may differ on Windows machines.
