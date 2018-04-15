@@ -1610,7 +1610,7 @@ class Pv extends PvConfig {
       $('.daterangepicker').append(
         $('<div>')
           .addClass('daterange-notice')
-          .html($.i18n('date-notice'))
+          .html($.i18n('date-notice', $.i18n('title')))
       );
     }
 
