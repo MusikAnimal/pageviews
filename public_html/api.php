@@ -79,7 +79,7 @@ if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
   // Fetch from XTools.
   $ch = curl_init();
   curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-  curl_setopt( $ch, CURLOPT_URL, 'http://localhost/app_dev.php/api/project/assessments' );
+  curl_setopt( $ch, CURLOPT_URL, 'https://xtools.wmflabs.org/api/project/assessments' );
   $assessmentsConfig =json_decode( curl_exec( $ch ), true )['config'];
   curl_close( $ch );
 
