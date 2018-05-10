@@ -4,7 +4,8 @@
 			"Sator",
 			"Macofe",
 			"Subi",
-			"Theklan"
+			"Theklan",
+			"An13sa"
 		]
 	},
 	"active-users": "Lankide aktiboak",
@@ -133,10 +134,10 @@
 	"num-days-span": "$1 eguneko epemuga",
 	"num-languages": "{{PLURAL:$2|Hizkuntza $1|$1 hizkuntza}}",
 	"num-pages": "{{PLURAL:$2|orrialde 1|$1 orrialde}}",
-	"num-pages-info": "Sartu $1 orrialde arte",
+	"num-pages-info": "Sartu {{PLURAL:$1|orrialde 1|$1 orrialde}} arte",
 	"num-pageviews": "{{PLURAL:$2|orrialde bisita $1|$1 orrialde bisita}}",
 	"num-projects": "{{PLURAL:$2|proiektu $1|$1 proiektu}}",
-	"num-projects-info": "Sartu $1 proiektu arte",
+	"num-projects-info": "Sartu {{PLURAL:$1|proiektu 1|$1 proiektu}} arte",
 	"num-protections": "{{PLURAL:$2|babes $1|$1 babes}}",
 	"num-redirects": "{{PLURAL:$2|birbiderapen $1|$1 birbiderapen}}",
 	"october": "Urria",
@@ -194,7 +195,7 @@
 	"this-month": "Hilabete hau",
 	"this-year": "Aurten",
 	"title": "Bisiten Analisia",
-	"tool-labs": "Tool Labs",
+	"tool-labs": "Toolforge",
 	"topviews": "Bisitatuenak",
 	"topviews-description": "Proiektu bateko orrialde bisitatuenak",
 	"topviews-title": "Ikusienen Analasia",
