@@ -22,12 +22,12 @@
       <ul class="dropdown-menu dropdown-menu-right">
         <?php if ( $currentApp !== 'metaviews' ) { ?>
           <li>
-            <a href="/<?php echo $currentApp; ?>/faq">
+            <a href="/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/faq">
               <?php echo $I18N->msg( 'faq' ); ?>
             </a>
           </li>
           <li>
-            <a href="/<?php echo $currentApp; ?>/url_structure">
+            <a href="/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/url_structure">
               <?php echo $I18N->msg( 'url-structure' ); ?>
             </a>
           </li>

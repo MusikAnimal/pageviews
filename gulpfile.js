@@ -105,7 +105,7 @@ const appDependencies = {
       'vendor/javascripts/Chart.min.js'
     ]
   },
-  'meta': {
+  'metaviews': {
     css: [
       'vendor/stylesheets/select2.min.css',
       'vendor/stylesheets/daterangepicker.css'
@@ -119,8 +119,37 @@ const appDependencies = {
 };
 const apps = Object.keys(appDependencies);
 
-apps.forEach(app => {
-  const path = app === 'pageviews' ? '' : `${app}/`;
+apps.concat(['']).forEach(app => {
+  const path = app === '' ? '' : `${app}/`;
+
+  /** VIEWS */
+  const fileName = path => path.split('/').slice(-1)[0];
+  gulp.task(`views-${app}`, () => {
+    return gulp.src(`views/${path}*.haml`, {read: false})
+      .pipe(plugins.shell([
+        // 'echo Compiling <%= name(file.path) %> to <%= target(file.path) %>',
+        'php haml.php -d -t php <%= file.path %> <%= target(file.path) %>'
+      ], {
+        templateData: {
+          target: path => {
+            let newPath = path.replace('pageviews/views', 'pageviews/public_html');
+            if (/(faq|url_structure)\.haml$/.test(fileName(path))) {
+              newPath = newPath.replace(/\.haml$/, '/index.php');
+            }
+            return newPath.replace(/\.haml$/, '.php');
+          },
+          name: path => fileName(path)
+        }
+      }))
+      .pipe(notify({
+        message: 'Views task complete',
+        onLast: true
+      }));
+  });
+
+  if (app === 'shared') {
+    return;
+  }
 
   /** STYLES */
   const coreCSSDependencies = [
@@ -146,7 +175,7 @@ apps.forEach(app => {
       .pipe(gulp.dest(`public_html/${path}`))
       .pipe(notify('Styles task complete'));
   });
-  if (app !== 'meta') {
+  if (app !== 'metaviews') {
     gulp.task(`styles-${app}-help`, [`styles-${app}-faq`, `styles-${app}-url_structure`]);
     ['faq', 'url_structure'].forEach(helpPage => {
       gulp.task(`styles-${app}-${helpPage}`, () => {
@@ -233,7 +262,7 @@ apps.forEach(app => {
         onLast: true
       }));
   });
-  if (app !== 'meta') {
+  if (app !== 'metaviews') {
     gulp.task(`scripts-${app}-help`, [`scripts-${app}-faq`, `scripts-${app}-url_structure`]);
     ['faq', 'url_structure'].forEach(helpPage => {
       gulp.task(`scripts-${app}-${helpPage}`, () => {
@@ -243,31 +272,6 @@ apps.forEach(app => {
       });
     });
   }
-
-  /** VIEWS */
-  const fileName = path => path.split('/').slice(-1)[0];
-  gulp.task(`views-${app}`, () => {
-    return gulp.src(`views/${path}*.haml`, {read: false})
-      .pipe(plugins.shell([
-        // 'echo Compiling <%= name(file.path) %> to <%= target(file.path) %>',
-        'php haml.php -d -t php <%= file.path %> <%= target(file.path) %>'
-      ], {
-        templateData: {
-          target: path => {
-            let newPath = path.replace('pageviews/views', 'pageviews/public_html');
-            if (/(faq|url_structure)\.haml$/.test(fileName(path))) {
-              newPath = newPath.replace(/\.haml$/, '/index.php');
-            }
-            return newPath.replace(/\.haml$/, '.php');
-          },
-          name: path => fileName(path)
-        }
-      }))
-      .pipe(notify({
-        message: 'Views task complete',
-        onLast: true
-      }));
-  });
 
   /** COMPRESSION */
   gulp.task(`compress-${app}`, [`compress-styles-${app}`, `compress-scripts-${app}`]);
@@ -325,7 +329,7 @@ gulp.task('jsdoc', cb => {
     .pipe(plugins.jsdoc3(config, cb));
 });
 
-const nonMetaApps = apps.filter(app => app !== 'meta');
+const nonMetaApps = apps.filter(app => app !== 'metaviews');
 
 /** MAIN TASKS */
 gulp.task('lint', ['eslint', 'scsslint']);
@@ -342,7 +346,7 @@ gulp.task('help', nonMetaApps.map(app => `styles-${app}-help`).concat(
 apps.forEach(app => {
   gulp.task(app, [
     `styles-${app}`, `scripts-${app}`, `views-${app}`
-  ].concat(app === 'meta' ? [] : [`styles-${app}-help`, `scripts-${app}-help`]));
+  ].concat(app === 'metaviews' ? [] : [`styles-${app}-help`, `scripts-${app}-help`]));
 });
 
 gulp.task('watch', () => {
@@ -351,15 +355,21 @@ gulp.task('watch', () => {
   gulp.watch('javascripts/shared/*.js', ['scripts']);
   gulp.watch(['stylesheets/**/faq.scss', 'stylesheets/**/url_structure.scss'], ['help']);
 
-  apps.concat(['faq_parts', 'url_parts']).forEach(app => {
-    const path = app === 'pageviews' ? '' : `${app}/`;
+  apps.concat(['faq_parts', 'url_parts', '']).forEach(app => {
+    const path = app === '' ? '' : `${app}/`;
+
+    gulp.watch(`views/${path}*.haml`, [`views-${app}`]);
+
+    if (app === '') {
+      return;
+    }
+
     gulp.watch(
       // ignore FAQ and URL structure files
       [`stylesheets/${path}*.scss`, '!stylesheets/**/faq.scss', '!stylesheets/**/url_structure.scss'],
       [`styles-${app}`]
     );
     gulp.watch(`javascripts/${path}*.js`, [`scripts-${app}`]);
-    gulp.watch(`views/${path}*.haml`, [`views-${app}`]);
   });
 });
 

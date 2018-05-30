@@ -61,5 +61,14 @@
         "keywords": "userviews,pages created,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
+    },
+    {
+        "name": "mediaviews",
+        "title": "Mediaviews",
+        "description": "Get the playcounts of audio and video on Commons",
+        "url": "https://tools.wmflabs.org/mediaviews",
+        "keywords": "mediaviews,traffic,visitors,statistics,analytics,stats,views,playcounts,commons",
+        "author": "MusikAnimal",
+        "repository": "https://github.com/MusikAnimal/pageviews"
     }
 ]

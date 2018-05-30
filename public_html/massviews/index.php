@@ -1,5 +1,6 @@
 <!-- Massviews Analysis tool -->
 <!-- Copyright 2016-2018 MusikAnimal -->
+<?php require_once __DIR__ . '/../../config.php'; ?>
 <?php $currentApp = 'massviews'; ?>
 <!DOCTYPE html>
 <html>
