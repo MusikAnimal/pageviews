@@ -127,16 +127,16 @@ class Pv extends PvConfig {
    */
   loadTranslations() {
     let messagesToLoad = {
-      [i18nLang]: `/pageviews/messages/${i18nLang}.json`
+      [i18nLang]: `messages/${i18nLang}.json`
     };
     if (i18nLang !== 'en') {
       if ($.i18n.fallbacks[i18nLang]) {
         $.i18n.fallbacks[i18nLang].forEach(fallback => {
-          messagesToLoad[fallback] = `/pageviews/messages/${fallback}.json`;
+          messagesToLoad[fallback] = `messages/${fallback}.json`;
         });
       }
 
-      messagesToLoad.en = '/pageviews/messages/en.json';
+      messagesToLoad.en = 'messages/en.json';
     }
     $.i18n({
       locale: i18nLang
@@ -871,7 +871,7 @@ class Pv extends PvConfig {
     const dfd = $.Deferred();
 
     $.ajax({
-      url: 'api.php',
+      url: '/pageviews/api.php',
       data: {
         pages: pages.join('|'),
         project: this.project + '.org',
@@ -1280,7 +1280,7 @@ class Pv extends PvConfig {
     }
 
     $.ajax({
-      url: '/pageviews/meta/api.php',
+      url: `${appPath}/metaviews/api.php`,
       data,
       method: 'POST'
     });

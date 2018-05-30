@@ -48,9 +48,9 @@
   </div>
   <div>
     <?php if ( $currentApp !== 'metaviews' ) { ?>
-      <a href="/<?php echo $currentApp; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
+      <a href="/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/faq"><?php echo $I18N->msg( 'faq' ); ?></a>
       &middot;
-      <a href="/<?php echo $currentApp; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
+      <a href="/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/url_structure"><?php echo $I18N->msg( 'url-structure' ); ?></a>
       &middot;
     <?php } ?>
     <a href="https://github.com/MusikAnimal/pageviews"><?php echo $I18N->msg( 'view-source' ); ?></a>

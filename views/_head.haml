@@ -20,7 +20,6 @@
     return $availableLanguages;
   }
 
-  require_once __DIR__ . '/../config.php';
   require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
   require_once ROOTDIR . '/vendor/whichbrowser/parser/bootstrap.php';
   $I18N = new Intuition( 'pageviews' );
@@ -53,15 +52,16 @@
 :javascript
   i18nLang = "#{$I18N->getLang()}";
   i18nRtl = "#{$rtl}";
+  appPath = "#{BASE_PATH}";
 
 %meta(charset="utf-8")
 %meta(content="yes" name="apple-mobile-web-app-capable")
 %meta(content="black-translucent" name="apple-mobile-web-app-status-bar-style")
 %meta(content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport")
-%link(rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="/pageviews/images/favicon.ico?v=2")
-%script(src="application.js")
-%script(src="/pageviews/ad_block_test.js")
-%link(href="application.css" rel="stylesheet")
+%link(rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="images/favicon.ico?v=3")
+%script(src="#{BASE_PATH}/#{$currentApp}#{APP_SUFFIX}/application.js")
+%script(src="ad_block_test.js")
+%link(href="#{BASE_PATH}/#{$currentApp}#{APP_SUFFIX}/application.css" rel="stylesheet")
 
 :javascript
   // language selector

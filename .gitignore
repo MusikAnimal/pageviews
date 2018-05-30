@@ -18,3 +18,19 @@ reports/
 jsdocs/gen/
 false-positives
 disk_cache/
+
+# These files get created by the symlinks.sh script on Toolforge
+public_html/index.php
+public_html/api.php
+public_html/application.css
+public_html/application.js
+public_html/faq
+public_html/url_structure
+_browser_check.php
+_data_links.php
+_footer.php
+_head.php
+_header.php
+_modals.php
+_output.php
+images

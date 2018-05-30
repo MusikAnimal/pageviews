@@ -18,7 +18,7 @@ body {
   position: relative;
 
   &::after {
-    background: url('/pageviews/images/gradient.png');
+    background: url('images/gradient.png');
     content: '';
     // override Bootstrap
     // scss-lint:disable ImportantRule
@@ -52,7 +52,7 @@ body {
 }
 
 .home-link {
-  background: url('/pageviews/images/logo.svg') no-repeat;
+  background: url('images/logo.svg') no-repeat;
   background-size: 40px;
   display: inline-block;
   height: 40px;
@@ -391,7 +391,7 @@ footer {
 }
 
 .glyphicon-chart {
-  background: url('/pageviews/images/glyphicons-42-charts.png');
+  background: url('images/glyphicons-42-charts.png');
   background-size: cover;
   height: 14px;
   width: 14px;
@@ -439,7 +439,7 @@ footer {
 
 @font-face {
   font-family: 'Glyphter';
-  src: url('/pageviews/fonts/Glyphter.woff') format('woff');
+  src: url('../fonts/Glyphter.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
