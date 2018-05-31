@@ -65,7 +65,7 @@ if ( preg_match( '/^\d{4}-\d{2}$/', $_GET['end'] ) ) {
   $end_date = new DateTime( $_GET['end'] );
 }
 
-$url_pages = str_replace( ' ', '_', $_GET['pages'] );
+$url_pages = urlencode( str_replace( ' ', '_', $_GET['pages'] ) );
 
 // Attempt to fetch assessments, first trying the disk cache.
 $assessmentsCache = json_decode( file_get_contents( ROOTDIR . '/disk_cache/assessments.json' ), true );
