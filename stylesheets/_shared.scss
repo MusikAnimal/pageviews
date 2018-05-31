@@ -487,6 +487,10 @@ footer {
   display: inline-block;
 }
 
+.special-ranges {
+  padding: 5px 20px 0;
+}
+
 @media (max-width: $screen-sm) {
   .chart-buttons {
     float: left;

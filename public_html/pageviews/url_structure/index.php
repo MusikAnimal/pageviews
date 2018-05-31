@@ -1,14 +1,16 @@
+<?php require_once __DIR__ . '/../../../config.php'; ?>
+<?php $currentApp = 'pageviews'; ?>
+<?php $appSuffix .= '/url_structure'; ?>
 <!DOCTYPE html>
 <html>
   <head>
-    <?php include '../_head.php'; ?>
+    <?php include '../../_head.php'; ?>
     <title>
       <?php echo $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
   <body class="<?php echo $rtl; ?>">
-    <?php $currentApp = 'pageviews'; ?>
-    <?php include '../_header.php'; ?>
+    <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">
         <h4>
@@ -35,7 +37,7 @@
           </h3>
           <hr>
           <dl class="dl-horizontal">
-            <?php include "../url_parts/_project.php"; ?>
+            <?php include "../../url_parts/_project.php"; ?>
             <dt>pages</dt>
             <dd>
               <?php echo $I18N->msg( 'url-structure-pages' ); ?>
@@ -43,10 +45,10 @@
               <?php echo $I18N->msg( 'url-structure-onwiki-link', [ 'variables' => [ $fullpageNamee ], 'parsemag' => true ] ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>
-            <?php include "../url_parts/_date_ranges.php"; ?>
-            <?php include "../url_parts/_platform.php"; ?>
-            <?php include "../url_parts/_agent.php"; ?>
-            <?php include "../url_parts/_autolog.php"; ?>
+            <?php include "../../url_parts/_date_ranges.php"; ?>
+            <?php include "../../url_parts/_platform.php"; ?>
+            <?php include "../../url_parts/_agent.php"; ?>
+            <?php include "../../url_parts/_autolog.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">
@@ -55,7 +57,7 @@
           </a>
         </div>
       </main>
-      <?php include "../_footer.php"; ?>
+      <?php include "../../_footer.php"; ?>
     </div>
   </body>
 </html>

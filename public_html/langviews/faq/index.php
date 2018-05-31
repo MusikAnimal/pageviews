@@ -1,3 +1,6 @@
+<?php require_once __DIR__ . '/../../../config.php'; ?>
+<?php $currentApp = 'langviews'; ?>
+<?php $appSuffix .= '/faq'; ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,8 +9,7 @@
       <?php echo $I18N->msg( 'langviews-title' ) . ' - ' . $I18N->msg( 'faq' ); ?>
     </title>
   </head>
-  <body class="<?php echo $rtl; ?>">
-    <?php $currentApp = 'langviews'; ?>
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>-faq">
     <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">

@@ -9,10 +9,6 @@ define( 'ROOTDIR', '/data/project/pageviews' );
 // On Toolforge, this should be 'https://tools.wmflabs.org'
 define( 'BASE_PATH', 'http://localhost:8000' );
 
-// Leave this blank. This is used to append '-test' to the app name
-// to fix routing on Toolforge test installations.
-define( 'APP_SUFFIX', '' );
-
 // Replica database credentials.
 define( 'DB_HOST', '127.0.0.1' );
 define( 'DB_USER', 'username' );
@@ -28,3 +24,10 @@ define( 'META_DB_USER', 'username' );
 define( 'META_DB_PASSWORD', 'password' );
 define( 'META_DB_PORT', 3006 );
 define( 'META_DB_NAME', 'database_name' );
+
+// Leave this blank. This is used to append '-test' to the app name
+// to fix routing on Toolforge test installations.
+//
+// On FAQ pages, it is automatically appended with '/faq',
+// and likewise for URL structure pages.
+$appSuffix = '';

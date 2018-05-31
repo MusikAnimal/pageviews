@@ -1,10 +1,13 @@
+- require_once __DIR__ . '/../../../config.php'
+- $currentApp = 'topviews'
+- $appSuffix .= '/url_structure'
 !!!
 %html
   %head
     - include "../../_head.php"
     %title
       = $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
-  %body(class="#{$rtl}")
+  %body(class="#{$rtl} #{$currentApp}-url-structure")
     - $currentApp = 'topviews'
     - include '../../_header.php'
 

@@ -1,3 +1,6 @@
+<?php require_once __DIR__ . '/../../../config.php'; ?>
+<?php $currentApp = 'redirectviews'; ?>
+<?php $appSuffix .= '/faq'; ?>
 <!DOCTYPE html>
 <html>
   <head>

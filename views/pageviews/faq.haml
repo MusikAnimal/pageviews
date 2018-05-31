@@ -1,12 +1,14 @@
+- require_once __DIR__ . '/../../../config.php'
+- $currentApp = 'pageviews'
+- $appSuffix .= '/faq'
 !!!
 %html
   %head
-    - include '../_head.php'
+    - include '../../_head.php'
     %title
       = $I18N->msg( 'title' ) . ' - ' . $I18N->msg( 'faq' )
-  %body(class="#{$rtl}")
-    - $currentApp = 'pageviews'
-    - include '../_header.php'
+  %body(class="#{$rtl} #{$currentApp}-faq")
+    - include '../../_header.php'
 
     %div.container
       %header.col-lg-12.text-center
@@ -18,16 +20,16 @@
 
       %main.col-lg-10.col-lg-offset-1
         %ul.list-group
-          - include "../faq_parts/_old_data.php"
-          - include "../faq_parts/_todays_data.php"
-          - include "../faq_parts/_counts.php"
-          - include "../faq_parts/_search_redirects.php"
-          - include "../faq_parts/_redirects.php"
-          - include "../faq_parts/_location.php"
-          - include "../faq_parts/_referrals.php"
-          - include "../faq_parts/_date_dot.php"
-          - include "../faq_parts/_agents.php"
-          - include "../faq_parts/_chart_type.php"
+          - include "../../faq_parts/_old_data.php"
+          - include "../../faq_parts/_todays_data.php"
+          - include "../../faq_parts/_counts.php"
+          - include "../../faq_parts/_search_redirects.php"
+          - include "../../faq_parts/_redirects.php"
+          - include "../../faq_parts/_location.php"
+          - include "../../faq_parts/_referrals.php"
+          - include "../../faq_parts/_date_dot.php"
+          - include "../../faq_parts/_agents.php"
+          - include "../../faq_parts/_chart_type.php"
           %li.list-group-item
             %p
               %strong= $I18N->msg( 'faq-top-viewed-title' )
@@ -38,11 +40,11 @@
               %strong= $I18N->msg( 'faq-multi-lang-title' )
             %p
               = $I18N->msg( 'faq-try-tool', array( 'variables' => array( "<a href='/langviews'>" . $I18N->msg( 'langviews-title' ) . "</a>" ), 'parsemag' => true ) )
-          - include "../faq_parts/_data_dumps.php"
-          - include "../faq_parts/_feedback.php"
+          - include "../../faq_parts/_data_dumps.php"
+          - include "../../faq_parts/_feedback.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/pageviews")
             = $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) )
 
-      - include "../_footer.php"
+      - include "../../_footer.php"

@@ -1,12 +1,14 @@
+- require_once __DIR__ . '/../../../config.php'
+- $currentApp = 'pageviews'
+- $appSuffix .= '/url_structure'
 !!!
 %html
   %head
-    - include '../_head.php'
+    - include '../../_head.php'
     %title
       = $I18N->msg( 'title' ) . ' – ' . $I18N->msg( 'url-structure' )
   %body(class="#{$rtl}")
-    - $currentApp = 'pageviews'
-    - include '../_header.php'
+    - include '../../_header.php'
 
     %div.container
       %header.col-lg-12.text-center
@@ -30,20 +32,20 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
-            - include "../url_parts/_project.php"
+            - include "../../url_parts/_project.php"
             %dt pages
             %dd
               = $I18N->msg( 'url-structure-pages' )
               %br
               = $I18N->msg( 'url-structure-onwiki-link', [ 'variables' => [ $fullpageNamee ], 'parsemag' => true ] )
             - $defaultRange = 'latest'
-            - include "../url_parts/_date_ranges.php"
-            - include "../url_parts/_platform.php"
-            - include "../url_parts/_agent.php"
-            - include "../url_parts/_autolog.php"
+            - include "../../url_parts/_date_ranges.php"
+            - include "../../url_parts/_platform.php"
+            - include "../../url_parts/_agent.php"
+            - include "../../url_parts/_autolog.php"
 
         %div.col-lg-12.text-center.tm
           %a(href="/pageviews")
             = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'title' ) ], 'parsemag' => true ] )
 
-      - include "../_footer.php";
+      - include "../../_footer.php";

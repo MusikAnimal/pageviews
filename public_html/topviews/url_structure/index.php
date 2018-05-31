@@ -1,3 +1,6 @@
+<?php require_once __DIR__ . '/../../../config.php'; ?>
+<?php $currentApp = 'topviews'; ?>
+<?php $appSuffix .= '/url_structure'; ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,7 +9,7 @@
       <?php echo $I18N->msg( 'topviews-title' ) . ' – ' . $I18N->msg( 'url-structure' ); ?>
     </title>
   </head>
-  <body class="<?php echo $rtl; ?>">
+  <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>-url-structure">
     <?php $currentApp = 'topviews'; ?>
     <?php include '../../_header.php'; ?>
     <div class="container">

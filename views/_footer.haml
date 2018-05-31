@@ -46,10 +46,10 @@
 
   %div
     - if ( $currentApp !== 'metaviews' )
-      %a(href="/#{$currentApp}#{APP_SUFFIX}/faq")<
+      %a(href="/#{$currentApp}#{$appSuffix}/faq")<
         = $I18N->msg( 'faq' )
       &middot;
-      %a(href="/#{$currentApp}#{APP_SUFFIX}/url_structure")<
+      %a(href="/#{$currentApp}#{$appSuffix}/url_structure")<
         = $I18N->msg( 'url-structure' )
       &middot;
     %a(href="https://github.com/MusikAnimal/pageviews")<

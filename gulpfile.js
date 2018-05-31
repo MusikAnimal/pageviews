@@ -175,28 +175,6 @@ apps.concat(['']).forEach(app => {
       .pipe(gulp.dest(`public_html/${path}`))
       .pipe(notify('Styles task complete'));
   });
-  if (app !== 'metaviews') {
-    gulp.task(`styles-${app}-help`, [`styles-${app}-faq`, `styles-${app}-url_structure`]);
-    ['faq', 'url_structure'].forEach(helpPage => {
-      gulp.task(`styles-${app}-${helpPage}`, () => {
-        runSequence(`css-sass-${app}-${helpPage}`, `css-concat-${app}-${helpPage}`);
-      });
-      gulp.task(`css-sass-${app}-${helpPage}`, () => {
-        return gulp.src(`stylesheets/${path}${helpPage}.scss`)
-          .pipe(plugins.sass().on('error', plugins.sass.logError))
-          .pipe(plugins.autoprefixer('last 2 version'))
-          .pipe(plugins.rename('application.css'))
-          .pipe(gulp.dest(`public_html/${path}${helpPage}`));
-      });
-      gulp.task(`css-concat-${app}-${helpPage}`, () => {
-        return gulp.src(coreCSSDependencies
-            .concat([`public_html/${path}${helpPage}/application.css`])
-          )
-          .pipe(plugins.concat('application.css'))
-          .pipe(gulp.dest(`public_html/${path}${helpPage}`));
-      });
-    });
-  }
 
   /** SCRIPTS */
   const coreJSDependencies = [
@@ -337,16 +315,14 @@ gulp.task('styles', apps.map(app => `styles-${app}`));
 gulp.task('scripts', apps.map(app => `scripts-${app}`));
 gulp.task('views', apps.concat(['faq_parts', 'url_parts']).map(app => `views-${app}`));
 gulp.task('compress', apps.map(app => `compress-${app}`));
-gulp.task('help', nonMetaApps.map(app => `styles-${app}-help`).concat(
-  nonMetaApps.map(app => `scripts-${app}-help`)
-), () => {
+gulp.task('help', nonMetaApps.map(app => `scripts-${app}-help`), () => {
   gulp.src('').pipe(notify('Help task complete'));
 });
 
 apps.forEach(app => {
   gulp.task(app, [
     `styles-${app}`, `scripts-${app}`, `views-${app}`
-  ].concat(app === 'metaviews' ? [] : [`styles-${app}-help`, `scripts-${app}-help`]));
+  ].concat(app === 'metaviews' ? [] : [`scripts-${app}-help`]));
 });
 
 gulp.task('watch', () => {

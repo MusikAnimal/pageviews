@@ -1,11 +1,13 @@
+- require_once __DIR__ . '/../../../config.php'
+- $currentApp = 'langviews'
+- $appSuffix .= '/faq'
 !!!
 %html
   %head
     - include '../../_head.php'
     %title
       = $I18N->msg( 'langviews-title' ) . ' - ' . $I18N->msg( 'faq' )
-  %body(class="#{$rtl}")
-    - $currentApp = 'langviews'
+  %body(class="#{$rtl} #{$currentApp}-faq")
     - include '../../_header.php'
 
     %div.container
