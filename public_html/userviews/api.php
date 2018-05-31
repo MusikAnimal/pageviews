@@ -1,12 +1,6 @@
 <?php
 
-// config.php may be either in the parent directory or up two directories,
-//   depending on if this is ran on localhost or Tool Labs
-if ( file_exists( __DIR__ . '/../config.php' ) ) {
-  require_once __DIR__ . '/../config.php';
-} else {
-  require_once __DIR__ . '/../../config.php';
-}
+require_once __DIR__ . '/../../config.php';
 
 if ( !isset( $_GET['username'] ) || !isset( $_GET['project'] ) ) {
   exit();

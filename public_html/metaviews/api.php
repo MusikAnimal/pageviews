@@ -2,13 +2,7 @@
 
 date_default_timezone_set('UTC');
 
-// config.php may be either in the parent directory or up two directories,
-//   depending on if this is ran on localhost or Tool Labs
-if ( file_exists( __DIR__ . '/../config.php' ) ) {
-  require_once __DIR__ . '/../config.php';
-} else {
-  require_once __DIR__ . '/../../config.php';
-}
+require_once __DIR__ . '/../../config.php';
 
 if ( $_SERVER['REQUEST_METHOD'] === 'POST' && ( !isset( $_POST['project'] ) || !isset( $_POST['app'] ) ) ) {
   exit();

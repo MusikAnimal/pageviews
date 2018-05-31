@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('utc');
+date_default_timezone_set('UTC');
 
 require_once __DIR__ . '/../../config.php';
 
@@ -68,7 +68,7 @@ if ( preg_match( '/^\d{4}-\d{2}$/', $_GET['end'] ) ) {
 $url_pages = str_replace( ' ', '_', $_GET['pages'] );
 
 // Attempt to fetch assessments, first trying the disk cache.
-$assessmentsCache = json_decode( file_get_contents( '../../disk_cache/assessments.json' ), true );
+$assessmentsCache = json_decode( file_get_contents( ROOTDIR . '/disk_cache/assessments.json' ), true );
 
 // Expires once every 24 hours.
 if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
@@ -80,7 +80,7 @@ if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
   curl_close( $ch );
 
   // Save result back to disk cache.
-  $fp = fopen( '../../disk_cache/assessments.json', 'w' );
+  $fp = fopen( ROOTDIR . '/disk_cache/assessments.json', 'w' );
   fwrite( $fp, json_encode( [
     'fetched' => date('Y-m-d H:i:s'),
     'config' => $assessmentsConfig,
