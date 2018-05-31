@@ -98,6 +98,7 @@ $db_start_date = $start_date->format( 'YmdHis' );
 $db_end_date = $end_date->format( 'Ymd235959' );
 
 $multipage_parts = [];
+$total_edits = 0;
 foreach ($api_pages as $page) {
   if ( !isset( $page->pageid ) ) {
     continue;
@@ -120,6 +121,7 @@ foreach ($api_pages as $page) {
     // convert to ints
     $output['pages'][$output_page]['num_edits'] = (int) $page_data['num_edits'];
     $output['pages'][$output_page]['num_users'] = (int) $page_data['num_users'];
+    $total_edits += (int) $page_data['num_edits'];
 
     // add assessment data, if available
     if ( isset( $page_data['assessment'] ) && isset( $assessmentsConfig[$project]['class'][$page_data['assessment']] ) ) {
@@ -131,10 +133,10 @@ foreach ($api_pages as $page) {
 // query for totals
 if ( count( $api_pages ) > 1 ) {
   $pages_sql = implode( $multipage_parts, ' OR ' );
-  $res = $client->query( $sql . '(' . $pages_sql . ')' );
+  $res = $client->query( "SELECT COUNT(DISTINCT(rev_user_text)) AS num_users FROM $db.revision " .
+    "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND (" . $pages_sql . ')' );
   $output['totals'] = $res->fetch_assoc();
-  unset( $output['totals']['assessment'] );
-  $output['totals']['num_edits'] = (int) $output['totals']['num_edits'];
+  $output['totals']['num_edits'] = $total_edits;
   $output['totals']['num_users'] = (int) $output['totals']['num_users'];
 }
 

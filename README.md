@@ -53,6 +53,8 @@ All assets and views are ultimately placed in `public_html`. With the exception 
 ### Structure
 The repo contains eight separate applications that share code with each other (Pageviews, Langviews, Topviews, Siteviews, Massviews, Redirect Views, Userviews, and Mediaviews). Each app has a dedicated subdirectory within `javascripts`, `stylesheets` and `views`. The main development asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript file for Pageviews). After compilation each app has it's own `application.js` and `application.css` in the public_html directory. PHP partials and Sass imports are prepended with underscores (e.g. `_footer.php`, `_mixins.scss`).
 
+There are symlinks all throughout the public_html directory. These are to ensure you can use the native PHP server on your local machine and also deploy to Toolforge with the same code. The symlinks effectively change the document root of Toolforge's lighttpd server.
+
 #### JavaScripts
 [Browserify](http://browserify.org/) is used to help follow a module pattern. You'll need to `require('./file_name')` any file that is a dependency. All JavaScript is written in ES6 (and possibly ES7).
 
@@ -80,6 +82,8 @@ Run `gulp` to watch for changes and automatically compile as needed. You can als
 
 ### Production
 Before making a pull request or pushing to master, remember to run `gulp production` so the assets are minified and concatenated. JSDocs are also generated, and placed in a dedicated sub-repo (not submodule) in `jsdocs/gen`. These can optionally be pull requested to the [JSDocs repo](https://github.com/MusikAnimal/pageviews-jsdocs).
+
+For deployment instructions, see [Tool:Pageviews](https://wikitech.wikimedia.org/wiki/Tool:Pageviews) on Wikitech.org.
 
 ## Tests
 Tests will be ran automatically when you push or create a pull request.

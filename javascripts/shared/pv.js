@@ -127,16 +127,16 @@ class Pv extends PvConfig {
    */
   loadTranslations() {
     let messagesToLoad = {
-      [i18nLang]: `messages/${i18nLang}.json`
+      [i18nLang]: `${appPath}/${currentApp}/messages/${i18nLang}.json`
     };
     if (i18nLang !== 'en') {
       if ($.i18n.fallbacks[i18nLang]) {
         $.i18n.fallbacks[i18nLang].forEach(fallback => {
-          messagesToLoad[fallback] = `messages/${fallback}.json`;
+          messagesToLoad[fallback] = `${appPath}/${currentApp}/messages/${fallback}.json`;
         });
       }
 
-      messagesToLoad.en = 'messages/en.json';
+      messagesToLoad.en = `${appPath}/${currentApp}/messages/en.json`;
     }
     $.i18n({
       locale: i18nLang

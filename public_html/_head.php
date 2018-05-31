@@ -55,6 +55,7 @@
    i18nLang = "<?php echo $I18N->getLang(); ?>";
    i18nRtl = "<?php echo $rtl; ?>";
    appPath = "<?php echo BASE_PATH; ?>";
+   currentApp = "<?php echo $currentApp; ?>";
   
 //]]>
 </script>
