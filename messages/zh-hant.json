@@ -307,7 +307,7 @@
 	"select2-loading": "正載入更多結果中…",
 	"select2-max-chars": "請刪除 $1 個{{PLURAL:$1|字元|字元}}",
 	"select2-max-items": "您只可選擇 $1 個{{PLURAL:$1|項目|項目}}",
-	"select2-min-chars": "請輸入$1個或更多的字元",
+	"select2-min-chars": "請輸入 $1 個或更多的字元",
 	"select2-no-results": "查無結果",
 	"september": "九月",
 	"settings": "設定",
