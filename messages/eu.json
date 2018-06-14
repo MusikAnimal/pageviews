@@ -5,7 +5,8 @@
 			"Macofe",
 			"Subi",
 			"Theklan",
-			"An13sa"
+			"An13sa",
+			"Xabier Armendaritz"
 		]
 	},
 	"active-users": "Lankide aktiboak",
@@ -210,7 +211,7 @@
 	"url-structure-parameters": "Parametroak",
 	"url-structure-parameters-order": "Edozein ordenetan erabili daiteke",
 	"url-structure-siteviews-platform-no-pageviews": "$1 $2 edo $3 denean",
-	"url-structure-special-range-latest": "Azken 20 egunetako datuak",
+	"url-structure-special-range-latest": "Azken 20 eguneko datuak",
 	"user": "Lankide",
 	"users": "Erabiltzaileak",
 	"userviews": "Lankide bisitak",
