@@ -115,18 +115,17 @@ foreach ($api_pages as $page) {
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
 
   $res = $client->query( $sql . " rev_page = $page_id" );
-  $output['pages'][$page->title] = $res->fetch_assoc();
+  $page_data = $res->fetch_assoc();
+  $output['pages'][$page->title] = $page_data;
 
-  foreach ($output['pages'] as $output_page => $page_data) {
-    // convert to ints
-    $output['pages'][$output_page]['num_edits'] = (int) $page_data['num_edits'];
-    $output['pages'][$output_page]['num_users'] = (int) $page_data['num_users'];
-    $total_edits += (int) $page_data['num_edits'];
+  // convert to ints
+  $output['pages'][$page->title]['num_edits'] = (int) $page_data['num_edits'];
+  $output['pages'][$page->title]['num_users'] = (int) $page_data['num_users'];
+  $total_edits += (int) $page_data['num_edits'];
 
-    // add assessment data, if available
-    if ( isset( $page_data['assessment'] ) && isset( $assessmentsConfig[$project]['class'][$page_data['assessment']] ) ) {
-      $output['pages'][$output_page]['assessment_img'] = $assessmentsConfig[$project]['class'][$page_data['assessment']]['badge'];
-    }
+  // add assessment data, if available
+  if ( isset( $page_data['assessment'] ) && isset( $assessmentsConfig[$project]['class'][$page_data['assessment']] ) ) {
+    $output['pages'][$page->title]['assessment_img'] = $assessmentsConfig[$project]['class'][$page_data['assessment']]['badge'];
   }
 }
 
