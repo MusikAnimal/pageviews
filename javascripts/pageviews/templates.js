@@ -31,11 +31,19 @@ const templates = {
       // cache basic info message
       const basicInfoMsg = $.i18n('basic-information');
 
+      let pageviewsHash = {
+        [$.i18n('pageviews')]: scope.formatNumber(entity.sum)
+      };
+
+      // If there's a spike in pageviews show the median.
+      if (scope.shouldBeLogarithmic(scope.outputData.map(set => set.data))) {
+        pageviewsHash[$.i18n('median')] = scope.formatNumber(entity.median);
+      }
+
+      pageviewsHash[$.i18n(`${$('#date-type-select').val()}-average`)] = scope.formatNumber(entity.average);
+
       let infoHash = {
-        [$.i18n('pageviews')]: {
-          [$.i18n('pageviews')]: scope.formatNumber(entity.sum),
-          [$.i18n(`${$('#date-type-select').val()}-average`)]: scope.formatNumber(entity.average)
-        },
+        [$.i18n('pageviews')]: pageviewsHash,
         [$.i18n('revisions')]: {
           [$.i18n('edits')]: editsLink,
           [$.i18n('editors')]: scope.formatNumber(entity.num_users)

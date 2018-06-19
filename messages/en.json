@@ -207,6 +207,7 @@
 	"massviews-transclusions-description": "Get the pageviews of pages that <a href='$1'>transclude</a> a template",
 	"massviews-wikilinks-description": "Get the pageviews of <a href='$1'>linked pages</a> on a page",
 	"may": "May",
+	"median": "Median",
 	"mediaviews": "Mediaviews",
 	"mediaviews-description": "Comparison of play counts of audio and video on Wikimedia Commons",
 	"mediaviews-title": "Mediaviews Analysis",

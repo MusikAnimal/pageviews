@@ -298,12 +298,20 @@ const ChartHelpers = superclass => class extends superclass {
 
       const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[label] : {};
 
+      // Calculate the median.
+      const sortedValues = Object.values(values).sort((a, b) => a - b),
+        half = Math.floor(sortedValues.length / 2),
+        median = sortedValues.length % 2
+          ? sortedValues[half]
+          : (sortedValues[half - 1] + sortedValues[half]) / 2.0;
+
       dataset = Object.assign({
         label,
         data: values,
         value: sum, // duplicated because Chart.js wants a single `value` for circular charts
         sum,
         average,
+        median,
         max,
         min
       }, entityInfo);
