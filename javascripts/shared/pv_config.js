@@ -225,6 +225,8 @@ class PvConfig {
       maxDatePagecounts,
       maxMonthPagecounts,
       specialRanges: {
+        'current': [maxDate, maxDate],
+        'this-week': [moment().startOf('week'), moment().startOf('week').isAfter(maxDate) ? moment().startOf('week') : maxDate],
         'last-week': [moment().subtract(1, 'week').startOf('isoweek'), moment().subtract(1, 'week').endOf('isoweek')],
         'this-month': [moment().startOf('month'), moment().startOf('month').isAfter(maxDate) ? moment().startOf('month') : maxDate],
         'last-month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],

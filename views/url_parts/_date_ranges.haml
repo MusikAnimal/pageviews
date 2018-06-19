@@ -12,6 +12,13 @@
       %code latest-<i>N</i>
       = $I18N->msg( 'url-structure-special-range-latest-n' )
     %li
+      %code current
+      = $I18N->msg( 'url-structure-current' )
+    %li
+      %code this-week
+      = $defaultRange === 'this-week' ? $defaultMsg : ''
+      = $I18N->msg( 'this-week' )
+    %li
       %code last-week
       = $defaultRange === 'last-week' ? $defaultMsg : ''
       = $I18N->msg( 'last-week' )

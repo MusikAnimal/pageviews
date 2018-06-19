@@ -13,6 +13,15 @@
       <?php echo $I18N->msg( 'url-structure-special-range-latest-n' ); ?>
     </li>
     <li>
+      <code>current</code>
+      <?php echo $I18N->msg( 'url-structure-current' ); ?>
+    </li>
+    <li>
+      <code>this-week</code>
+      <?php echo $defaultRange === 'this-week' ? $defaultMsg : ''; ?>
+      <?php echo $I18N->msg( 'this-week' ); ?>
+    </li>
+    <li>
       <code>last-week</code>
       <?php echo $defaultRange === 'last-week' ? $defaultMsg : ''; ?>
       <?php echo $I18N->msg( 'last-week' ); ?>

@@ -1569,7 +1569,10 @@ class Pv extends PvConfig {
       startDate = moment(this.config.maxDatePagecounts).subtract(this.config.daysAgo, 'days');
     } else {
       Object.keys(this.config.specialRanges).forEach(key => {
-        if (key === 'latest') return; // this is a function, not meant to be in the list of special ranges
+        // These are functions or otherwise not meant to be in the list of special ranges.
+        if (['latest', 'current', 'last-week'].includes(key)) {
+          return;
+        }
         ranges[$.i18n(key)] = this.config.specialRanges[key];
       });
       startDate = moment().subtract(this.config.daysAgo, 'days');
