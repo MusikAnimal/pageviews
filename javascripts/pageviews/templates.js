@@ -100,8 +100,19 @@ const templates = {
     }
 
     const sum = scope.outputData.reduce((a,b) => a + b.sum, 0);
+
+    // Get overall median.
+    let summedDataset = new Array(scope.outputData[0].data.length).fill(0);
+    scope.outputData.forEach(dataset => {
+      dataset.data.forEach((val, index) => {
+        summedDataset[index] += val;
+      });
+    });
+    const median = scope.getMedian(summedDataset);
+
     const totals = {
       sum,
+      median,
       average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
       num_edits: scope.entityInfo.totals ? scope.entityInfo.totals.num_edits : null,
       num_users: scope.entityInfo.totals ? scope.entityInfo.totals.num_users : null,

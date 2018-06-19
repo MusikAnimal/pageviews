@@ -298,26 +298,33 @@ const ChartHelpers = superclass => class extends superclass {
 
       const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[label] : {};
 
-      // Calculate the median.
-      const sortedValues = Object.values(values).sort((a, b) => a - b),
-        half = Math.floor(sortedValues.length / 2),
-        median = sortedValues.length % 2
-          ? sortedValues[half]
-          : (sortedValues[half - 1] + sortedValues[half]) / 2.0;
-
       dataset = Object.assign({
         label,
         data: values,
         value: sum, // duplicated because Chart.js wants a single `value` for circular charts
         sum,
         average,
-        median,
+        median: this.getMedian(values),
         max,
         min
       }, entityInfo);
 
       return dataset;
     });
+  }
+
+  /**
+   * Get the median of the given dataset.
+   * @param  {object|array} dataset If object, assumes the values are the pageviews.
+   * @return {integer}
+   */
+  getMedian(dataset) {
+    const sortedValues = Object.values(dataset).sort((a, b) => a - b),
+      half = Math.floor(sortedValues.length / 2);
+
+    return sortedValues.length % 2
+        ? sortedValues[half]
+        : (sortedValues[half - 1] + sortedValues[half]) / 2.0;
   }
 
   /**

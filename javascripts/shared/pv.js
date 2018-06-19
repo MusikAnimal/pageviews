@@ -47,7 +47,7 @@ class Pv extends PvConfig {
      */
     this.processStart = null;
 
-    this.debug = location.search.includes('debug=true') || location.host === 'localhost';
+    this.debug = location.search.includes('debug=true') || location.host.includes('localhost');
 
     /** redirect to production if debug flag isn't given */
     if (location.pathname.includes('-test') && !location.search.includes('debug=true')) {
@@ -96,7 +96,7 @@ class Pv extends PvConfig {
     /** set up toastr config. The duration may be overriden later */
     toastr.options = {
       closeButton: true,
-      debug: location.host === 'localhost',
+      debug: location.host.includes('localhost'),
       newestOnTop: false,
       progressBar: false,
       positionClass: 'toast-top-center',
@@ -1261,7 +1261,7 @@ class Pv extends PvConfig {
    * Simple metric to see how many use it (pageviews of the pageviews app, a meta-pageview, if you will :)
    */
   patchUsage() {
-    if (location.host !== 'localhost' && (this.getFromLocalStorage('pageviews-no-usage') || this.debug)) {
+    if (location.host.includes('localhost') && (this.getFromLocalStorage('pageviews-no-usage') || this.debug)) {
       return;
     }
 
