@@ -195,29 +195,31 @@
           'admins' => 'admins'
         );
       ?>
-      <table class="table table-hover table-view">
-        <thead class="table-view--header">
-          <tr>
-            <th></th>
-            <?php foreach( $columns as $column => $translation ) { ?>
-              <th class="table-view--<?php echo $column; ?>">
-                <span class="sort-link sort-link--<?php echo $column; ?>" data-type="<?php echo $column; ?>">
-                  <span class="col-heading">
-                    <?php echo $I18N->msg( $translation ); ?>
+      <div class="table-view--wrapper">
+        <table class="table table-hover table-view">
+          <thead class="table-view--header">
+            <tr>
+              <th></th>
+              <?php foreach( $columns as $column => $translation ) { ?>
+                <th class="table-view--<?php echo $column; ?>">
+                  <span class="sort-link sort-link--<?php echo $column; ?>" data-type="<?php echo $column; ?>">
+                    <span class="col-heading">
+                      <?php echo $I18N->msg( $translation ); ?>
+                    </span>
+                    <span class="glyphicon glyphicon-sort"></span>
                   </span>
-                  <span class="glyphicon glyphicon-sort"></span>
+                </th>
+              <?php } ?>
+              <th>
+                <span>
+                  <?php echo $I18N->msg( 'links' ); ?>
                 </span>
               </th>
-            <?php } ?>
-            <th>
-              <span>
-                <?php echo $I18N->msg( 'links' ); ?>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="output-list"></tbody>
-      </table>
+            </tr>
+          </thead>
+          <tbody class="output-list"></tbody>
+        </table>
+      </div>
     </div>
     <?php include '../_footer.php'; ?>
     <?php include '../_modals.php'; ?>

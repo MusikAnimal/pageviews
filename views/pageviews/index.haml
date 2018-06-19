@@ -119,20 +119,21 @@
           'protection' => 'protection',
           'watchers' => 'watchers'
         );
-      %table.table.table-hover.table-view
-        %thead.table-view--header
-          %tr
-            %th
-            - foreach( $columns as $column => $translation )
-              %th(class="table-view--#{$column}")
-                %span(class="sort-link sort-link--#{$column}" data-type="#{$column}")
-                  %span.col-heading
-                    = $I18N->msg( $translation )
-                  %span.glyphicon.glyphicon-sort
-            %th
-              %span
-                = $I18N->msg( 'links' )
-        %tbody.output-list
+      %div.table-view--wrapper
+        %table.table.table-hover.table-view
+          %thead.table-view--header
+            %tr
+              %th
+              - foreach( $columns as $column => $translation )
+                %th(class="table-view--#{$column}")
+                  %span(class="sort-link sort-link--#{$column}" data-type="#{$column}")
+                    %span.col-heading
+                      = $I18N->msg( $translation )
+                    %span.glyphicon.glyphicon-sort
+              %th
+                %span
+                  = $I18N->msg( 'links' )
+          %tbody.output-list
 
     - include '../_footer.php'
 
