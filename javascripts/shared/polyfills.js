@@ -139,3 +139,8 @@ if (!Array.prototype.fill) {
     return O;
   };
 }
+
+// Object.values
+if (!Object.values) {
+  Object.values = o => Object.keys(o).map(k => o[k]);
+}
