@@ -16,7 +16,8 @@
 			"ANDROBETA",
 			"Srdjan m",
 			"Nemo bis",
-			"Hamilton Abreu"
+			"Hamilton Abreu",
+			"Matěj Suchánek"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -221,7 +222,7 @@
 	"massviews-transclusions-description": "Description of the 'transclusions' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is the URL to a page describing what transclusions are.",
 	"massviews-wikilinks-description": "Description of the 'wikilinks' source in the Massviews tool. This is shown below the input field, and also in the FAQ. $1 is the URL to a page describing what wikilinks are.",
 	"may": "{{doc-months|5}}\n{{Identical|May}}",
-	"median": "Label for the mathematical median of the dataset.\n{{Idental|Median}}",
+	"median": "Label for the mathematical median of the dataset.\n{{Identical|Median}}",
 	"mediaviews": "Abbreviated name of the Mediaviews application. This is used in the inter-app links in the header",
 	"mediaviews-description": "Brief description of the Mediaviews tool. Shown directly under the header.",
 	"mediaviews-title": "The title of the Mediaviews tool. This is shown as a header at the top of the page.",
@@ -337,9 +338,9 @@
 	"subpages": "Label for the 'Subpages' input field on the Massviews tool. See the wikidata item for 'Project:Subpages' for possible translations: https://www.wikidata.org/wiki/Q4592255\n{{Identical|Subpage}}",
 	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}",
 	"th": "Abbreviation for Thursday, a day of the week.",
-	"this-month": "Link to set the date range to the current month",
+	"this-month": "Link to set the date range to the current month\n{{Identical|This month}}",
 	"this-week": "Link to set the date range to the current week",
-	"this-year": "Link to set the date range to the current year",
+	"this-year": "Link to set the date range to the current year\n{{Identical|This year}}",
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
 	"tool-labs": "The name of the hosting service. See https://wikitech.wikimedia.org/wiki/Portal:Tool_Labs for more information.",
 	"topviews": "Abbreviated name of the Topviews application. This is used in the inter-app links in the header",
