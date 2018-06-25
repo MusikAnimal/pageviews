@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Dibya Dutta"
+			"Dibya Dutta",
+			"Sagsag"
 		]
 	},
 	"agent": "প্ৰতিনিধি",
@@ -128,6 +129,7 @@
 	"target": "লক্ষ্য",
 	"th": "বৃ",
 	"this-month": "চলিত মাহ",
+	"this-week": "এই সপ্তাহ",
 	"title": "পৃষ্ঠাদৰ্শনৰ বিশ্লেষণ",
 	"tool-labs": "সৰঞ্জামাগাৰ",
 	"topviews": "সৰ্বাধিক দৰ্শন",
