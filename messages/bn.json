@@ -7,7 +7,8 @@
 			"আজিজ",
 			"Ziyaurr",
 			"Elias Ahmmad",
-			"Mohammed Galib Hasan"
+			"Mohammed Galib Hasan",
+			"আফতাবুজ্জামান"
 		]
 	},
 	"active-users": "সক্রিয় ব্যবহারকারী",
@@ -183,6 +184,7 @@
 	"massviews-transclusions-description": "একটি টেমপ্লেট <a href='$1'>অন্তর্ভুক্ত করে</a> এমন পাতাগুলির পাতা দর্শন পান",
 	"massviews-wikilinks-description": "একটি পাতায় <a href='$1'>সংযুক্ত পাতাগুলির</a> পাতা দর্শন পান",
 	"may": "মে",
+	"median": "মধ্যবর্তী",
 	"mediaviews": "মিডিয়া দর্শন",
 	"mediaviews-description": "উইকিমিডিয়া কমন্সের অডিও এবং ভিডিও চালানোর তুলনা",
 	"mediaviews-title": "মিডিয়া দর্শনের বিশ্লেষণ",
@@ -316,6 +318,7 @@
 	"unsupported-browser-error": "$1 ও তাঁর নীচে সমর্থিত নয়। দয়া করে <a href='http://browsehappy.com/'>আপনার ব্রাউজার হালনাগাদ করুন</a></strong>।",
 	"url-structure": "URL'র গঠন",
 	"url-structure-autolog": "$2 বিকল্প সেটিং স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় করতে $1-এ নির্ধারণ করুন",
+	"url-structure-current": "সর্বশেষ উপলব্ধ দিন।",
 	"url-structure-massviews-project": "Quarry ফলাফলের পৃষ্ঠাগুলির জন্য একটি বৈধ $1।",
 	"url-structure-onwiki-link": "উইকিতে বর্তমান পাতাটির সংযোগ করতে, $1 ব্যবহার করুন",
 	"url-structure-page": "পলায়িত পাতার নাম।",

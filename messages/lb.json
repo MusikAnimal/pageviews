@@ -261,6 +261,7 @@
 	"unique-titles": "$1 verschidden {{PLURAL:$1|Titel|Titelen}}",
 	"unknown": "Onbekannt",
 	"url-structure": "URL-Struktur",
+	"url-structure-current": "De leschten disponibelen Dag.",
 	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-parameters": "Parameteren",
 	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
