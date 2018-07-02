@@ -17,7 +17,8 @@
 			"Srdjan m",
 			"Nemo bis",
 			"Hamilton Abreu",
-			"Matěj Suchánek"
+			"Matěj Suchánek",
+			"Patriccck"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -162,7 +163,7 @@
 	"help": "Label for the help button dropdown.\n{{Identical|Help}}",
 	"help-translate": "Link to translation page on translatewiki, to encourage the user to help translate",
 	"history": "A link to the wiki revision history page of the article. This appears in the 'info tiles' on Pageviews Analysis\n{{Identical|History}}",
-	"hosted": "Footer message about where the tool is hosted. $1 is a heart symbol (meaning 'love'). $2 is the name of the hosting service, for example, 'Tool Labs'.",
+	"hosted": "Footer message about where the tool is hosted. $1 is a heart symbol (♥, meaning 'love'). $2 is the name of the hosting service, for example, 'Tool Labs'.",
 	"hover-to-exclude": "Placeholder in the input of the Topviews application, instructing to hover over entries and click on the X to exclude them from view",
 	"images": "The word 'images'.\n{{Identical|Image}}",
 	"include-subcategories": "Option in the Massviews tool to include all subcategories when querying for a category.",
