@@ -82,7 +82,7 @@
 	"editors": "Editores",
 	"edits": "Edições",
 	"elapsed-time": "Tempo decorrido: $1 {{PLURAL:$1|segundo|segundos}}",
-	"error-please-report": "<strong>Atualize a página</strong> e tente novamente ou <a target=\"_blank\" href=\"$1\">reporte este problema</a>, por favor",
+	"error-please-report": "Por favor, <strong>atualize a página</strong> e tente novamente ou <a target=\"_blank\" href=\"$1\">reporte este problema</a>",
 	"error-timed-out": "A operação excedeu o tempo limite.",
 	"exclude-redirects": "Excluir redirecionamentos",
 	"excluded-pages": "Páginas excluídas",
