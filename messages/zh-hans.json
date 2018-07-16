@@ -212,7 +212,7 @@
 	"massviews-transclusions-description": "获取<a href='$1'>嵌入</a>某个模板的页面的页面浏览信息",
 	"massviews-wikilinks-description": "获取在页面上<a href='$1'>链接页面</a>的页面浏览信息",
 	"may": "五月",
-	"median": "中位数",
+	"median": "中值",
 	"mediaviews": "媒体浏览",
 	"mediaviews-description": "比较维基共享资源上音频和视频的播放次数",
 	"mediaviews-title": "媒体浏览分析",
