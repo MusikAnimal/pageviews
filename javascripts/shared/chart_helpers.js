@@ -323,8 +323,8 @@ const ChartHelpers = superclass => class extends superclass {
       half = Math.floor(sortedValues.length / 2);
 
     return sortedValues.length % 2
-        ? sortedValues[half]
-        : (sortedValues[half - 1] + sortedValues[half]) / 2.0;
+      ? sortedValues[half]
+      : (sortedValues[half - 1] + sortedValues[half]) / 2.0;
   }
 
   /**
