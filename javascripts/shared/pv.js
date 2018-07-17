@@ -93,6 +93,8 @@ class Pv extends PvConfig {
       }
     });
 
+    this.setupNavCollapsing();
+
     /** set up toastr config. The duration may be overriden later */
     toastr.options = {
       closeButton: true,
@@ -141,6 +143,40 @@ class Pv extends PvConfig {
     $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
+  }
+
+  /**
+   * If there are more tool links in the nav than will fit in the viewport,
+   *   move the last entry to the More menu, one at a time, until it all fits.
+   * This does not listen for window resize events.
+   */
+  setupNavCollapsing() {
+    const windowWidth = $(window).width(),
+      navRightWidth = $('.nav-buttons').outerWidth(),
+      homeLinkWidth = $('.home-link').outerWidth();
+    let toolNavWidth = $('.interapp-links').outerWidth();
+
+    // Ignore if in mobile responsive view
+    if (windowWidth < 768) {
+      return;
+    }
+
+    // Do this first so we account for the space the More menu takes up
+    if (toolNavWidth + navRightWidth + homeLinkWidth > windowWidth) {
+      $('.interapp-links--more').removeClass('hidden');
+    }
+
+    // Don't loop more than there are links in the nav.
+    // This more just a safeguard against an infinite loop should something go wrong.
+    let numLinks = $('.interapp-links--entry').length;
+    while (numLinks > 0 && toolNavWidth + navRightWidth + homeLinkWidth > windowWidth) {
+      // Remove the last tool link that is not the current tool being used
+      let $link = $('.interapp-links > .interapp-links--entry:not(.active)').last().remove();
+      $link.addClass('interapp-links--more-entry');
+      $('.interapp-links--more .dropdown-menu').append($link);
+      toolNavWidth = $('.interapp-links').outerWidth() + homeLinkWidth;
+      numLinks--;
+    }
   }
 
   /**

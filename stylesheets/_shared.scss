@@ -365,6 +365,21 @@ footer {
   }
 }
 
+.interapp-links--more.dropdown .interapp-link {
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover::after {
+    background-color: transparent;
+    display: none;
+  }
+}
+
+.interapp-links--more-entry .interapp-link:hover {
+  background-color: $bootstrap-nav-gray !important;
+}
+
 .list-group-item {
   background: $faq-entry-bg;
 }

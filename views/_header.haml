@@ -61,13 +61,19 @@
         - $i18nName = $app === 'pageviews' ? '' : $app . '-'
 
         - if ( $app === $currentApp )
-          %li.active(role="presentation")
+          %li.interapp-links--entry.active(role="presentation")
             %a(class="interapp-link interapp-link--#{$app}" href="/#{$app}")
               = $I18N->msg( $app )
         - else
-          %li(role="presentation")
+          %li.interapp-links--entry(role="presentation")
             %a(class="interapp-link interapp-link--#{$app}" href="/#{$app}")
               = $I18N->msg( $app )
+
+      %li.interapp-links--more.dropdown.hidden
+        %a.interapp-link.dropdown-toggle(href='#' data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false")
+          = $I18N->msg( 'more' )
+          %span.caret
+        %ul.dropdown-menu
 
 - if ( $isAppPage )
   %header.site-header

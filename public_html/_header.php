@@ -79,19 +79,26 @@
       <?php foreach( $apps as $app ) { ?>
         <?php $i18nName = $app === 'pageviews' ? '' : $app . '-'; ?>
         <?php if ( $app === $currentApp ) { ?>
-          <li class="active" role="presentation">
+          <li class="interapp-links--entry active" role="presentation">
             <a class="interapp-link interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
               <?php echo $I18N->msg( $app ); ?>
             </a>
           </li>
         <?php } else { ?>
-          <li role="presentation">
+          <li class="interapp-links--entry" role="presentation">
             <a class="interapp-link interapp-link--<?php echo $app; ?>" href="/<?php echo $app; ?>">
               <?php echo $I18N->msg( $app ); ?>
             </a>
           </li>
         <?php } ?>
       <?php } ?>
+      <li class="interapp-links--more dropdown hidden">
+        <a class="interapp-link dropdown-toggle" href="<?php echo '#'; ?>" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          <?php echo $I18N->msg( 'more' ); ?>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu"></ul>
+      </li>
     </ol>
   </div>
 </nav>
