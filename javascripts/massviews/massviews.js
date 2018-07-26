@@ -535,7 +535,14 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       matches = url.match(/\/\/(.*?)\/wiki\/(.*?)(?:\?|$)/);
     }
 
-    return matches ? matches.slice(1) : [null, null];
+    if (matches) {
+      return [
+        matches[1].replace(/^www\./, ''),
+        matches[2]
+      ];
+    } else {
+      return [null, null];
+    }
   }
 
   /**
