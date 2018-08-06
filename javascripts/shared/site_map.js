@@ -419,7 +419,7 @@ const siteMap = {
   'kowikisource': 'ko.wikisource.org',
   'kowikiversity': 'ko.wikiversity.org',
   'kowiktionary': 'ko.wiktionary.org',
-  'kbpwiki': 'kpb.wikipedia.org',
+  'kbpwiki': 'kbp.wikipedia.org',
   'krcwiki': 'krc.wikipedia.org',
   'krwiki': 'kr.wikipedia.org',
   'krwikiquote': 'kr.wikiquote.org',
