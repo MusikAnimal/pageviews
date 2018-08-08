@@ -87,14 +87,14 @@ function recurseCategory( $client, $db, $searchCats, $allCats = [], $count = 0 )
     return $allCats;
   }
 
-  $newCats = array_diff(
+  $newCats = array_slice( array_unique( array_diff(
     array_column( $res->fetch_all(), 0 ),
     $allCats
-  );
+  ) ), 0, 5000 );
 
-  $allCats = array_merge( $allCats, $newCats );
+  $allCats = array_unique( array_merge( $allCats, $newCats ) );
 
-  if ( $count < 50 ) {
+  if ( $count < 5 ) {
     $allCats = array_merge(
       recurseCategory( $client, $db, $newCats, $allCats, $count + 1 ),
       $allCats
