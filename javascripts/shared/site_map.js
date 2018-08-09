@@ -656,7 +656,7 @@ const siteMap = {
   'rwwiktionary': 'rw.wiktionary.org',
   'sahwiki': 'sah.wikipedia.org',
   'sahwikisource': 'sah.wikisource.org',
-  'satwikipedia': 'sat.wikipedia.org',
+  'satwiki': 'sat.wikipedia.org',
   'sawiki': 'sa.wikipedia.org',
   'sawikibooks': 'sa.wikibooks.org',
   'sawikiquote': 'sa.wikiquote.org',

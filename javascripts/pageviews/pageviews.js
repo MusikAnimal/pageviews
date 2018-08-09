@@ -142,9 +142,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         this.setInitialChartType(pages.length);
         getPageInfoAndSetDefaults(pages);
       }).fail(() => {
-        // manually hide spinny since we aren't drawing the chart,
-        // again using setTimeout to let everything catch up
-        setTimeout(this.stopSpinny.bind(this));
+        this.resetView();
         this.setInitialChartType();
         // leave Select2 empty and put focus on it so they can type in pages
         this.focusSelect2();
@@ -167,6 +165,12 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   getDefaultPages() {
     const dfd = $.Deferred();
 
+    const getMainPage = () => {
+      this.fetchSiteInfo(this.project).done(siteInfo => {
+        dfd.resolve([siteInfo[this.project].general.mainpage]);
+      }).fail(dfd.reject);
+    };
+
     // only set default of Cat and Dog for enwiki
     if (this.project === 'en.wikipedia') {
       dfd.resolve(['Cat', 'Dog']);
@@ -182,16 +186,19 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
         const dbName = Object.keys(siteMap).find(key => siteMap[key] === `${this.project}.org`);
         const pages = Object.keys(data.entities).map(key => {
-          return data.entities[key].sitelinks[dbName].title;
-        });
+          return data.entities[key].sitelinks[dbName] ? data.entities[key].sitelinks[dbName].title : null;
+        }).filter(Boolean);
+
+        // 'Cat' and 'Dog' do not exist, so use the Main Page.
+        if (!pages.length) {
+          return getMainPage();
+        }
 
         dfd.resolve(pages);
       });
     } else {
       // get mainpage from siteinfo
-      this.fetchSiteInfo(this.project).done(siteInfo => {
-        dfd.resolve([siteInfo[this.project].general.mainpage]);
-      }).fail(dfd.reject);
+      getMainPage();
     }
 
     return dfd;
