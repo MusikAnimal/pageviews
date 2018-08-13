@@ -3,7 +3,8 @@
 		"authors": [
 			"Harald",
 			"Tarjeimo",
-			"Jon Harald Søby"
+			"Jon Harald Søby",
+			"Guaca"
 		]
 	},
 	"agent": "agent",
@@ -89,7 +90,7 @@
 	"line": "Linje",
 	"localize-dates": "Tilpass datoformat",
 	"march": "mars",
-	"massviews": "Massevisnigner",
+	"massviews": "Massevisninger",
 	"massviews-description": "Importer en liste av sider og analyser antall sidevisninger",
 	"massviews-empty-set": "$1 inneholder ingen sider!",
 	"may": "mai",
