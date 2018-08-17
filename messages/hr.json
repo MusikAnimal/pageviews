@@ -149,6 +149,7 @@
 	"massviews-empty-set": "$1 ne sadrži niti jednu stranicu!",
 	"massviews-oversized-set": "$1 contains $2 {{PLURAL:$4|stranicu|stranice|stranica}}. Zbog brže obrade, obradit će se $3 {{PLURAL:$3|stranica|prve stranice|prvih stranica}}.",
 	"may": "Svibanj",
+	"median": "Medijan",
 	"mediaviews": "Reprodukcije medija",
 	"mediaviews-description": "Usporedba reprodukcije audio i video datoteka na Zajedničkom poslužitelju",
 	"mediaviews-title": "Analiza pregleda medija",
