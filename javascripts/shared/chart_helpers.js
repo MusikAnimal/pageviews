@@ -914,7 +914,7 @@ const ChartHelpers = superclass => class extends superclass {
           ctx.fillStyle = `rgba(68,68,68,${step})`;
           const scaleMax = dataset._meta[Object.keys(dataset._meta)[0]].data[index]._yScale.maxHeight;
           const yPos = (scaleMax - bar._model.y) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
-          ctx.fillText(dataset.data[index], bar._model.x, yPos);
+          ctx.fillText(dataset.data[index].toLocaleString(), bar._model.x, yPos);
         }), context);
       }), context);
     };
