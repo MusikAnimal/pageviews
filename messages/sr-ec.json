@@ -6,7 +6,8 @@
 			"Srdjan m",
 			"Obsuser",
 			"Acamicamacaraca",
-			"Zoranzoki21"
+			"Zoranzoki21",
+			"BadDog"
 		]
 	},
 	"active-users": "Активни корисници",
@@ -217,7 +218,7 @@
 	"search-method": "Начин претраге:",
 	"section": "Преусмерење на одељак",
 	"select2-loading": "Учитавам још резултата...",
-	"select2-max-chars": "Молимо обришите $1 знака",
+	"select2-max-chars": "Избришите $1 {{PLURAL:$1|знак|знака|знакова}}",
 	"select2-min-chars": "Молимо унесите $1 или више знакова",
 	"select2-no-results": "Нема резултата",
 	"september": "Септембар",
