@@ -68,7 +68,7 @@
 	"duration": "Trajanje",
 	"editors": "Urejevalci",
 	"edits": "Urejanja",
-	"elapsed-time": "Izvedeno v $1 {{PLURAL:$2|sekundi|sekundah}}",
+	"elapsed-time": "Izvedeno v $1 {{PLURAL:$1|sekundi|sekundah}}",
 	"error-timed-out": "Čas za operacijo je potekel.",
 	"exclude-redirects": "Izključite preusmeritev",
 	"excluded-pages": "Izključene strani",
