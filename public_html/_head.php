@@ -43,11 +43,7 @@
    }
   
    // Adds a .rtl class to the <body> if a right-to-left language
-   if ( in_array( $I18N->getLang(), [ 'ar', 'he', 'fa', 'ps', 'ur' ] ) ) {
-     $rtl = 'rtl';
-   } else {
-     $rtl = '';
-   }
+   $rtl = $I18N->isRtl( $I18N->getLang() ) ? 'rtl' : '';
   
 ?>
 <script type="text/javascript">
