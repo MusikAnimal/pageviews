@@ -8,7 +8,8 @@
 			"Einreiher",
 			"Dvorapa",
 			"Anto",
-			"Redredsonia"
+			"Redredsonia",
+			"Fringio"
 		]
 	},
 	"active-users": "Utenti attivi",
@@ -16,6 +17,7 @@
 	"agent": "Agente",
 	"all": "Tutto",
 	"all-languages": "Tutte le lingue",
+	"all-of-wikimedia": "Tutta Wikimedia",
 	"all-projects": "Tutti i progetti",
 	"all-time": "Intero periodo",
 	"another-query": "Fai un'altra interrogazione",
@@ -41,6 +43,7 @@
 	"begin-at-zero-option": "Mostra sempre l'asse y a partire da zero",
 	"bezier-curve-option": "Usa curva di Bézier su grafici a linee",
 	"bot": "Bot",
+	"building-dataset": "Compilo i dataset...",
 	"cancel": "Annulla",
 	"category": "Categoria",
 	"change-chart": "Tipi di grafico",
@@ -277,7 +280,7 @@
 	"tool-labs": "Toolforge",
 	"topviews": "Pagine più visualizzate",
 	"topviews-description": "Pagine più viste di un progetto",
-	"topviews-false-positive": "Alcune delle pagine elencate possono essere be <a href='/topviews/faq#false_positive'>falsi positivi</a>.",
+	"topviews-false-positive": "Alcune delle pagine elencate possono essere <a href='/topviews/faq#false_positive'>falsi positivi</a>.",
 	"topviews-title": "Analisi delle pagine più viste",
 	"total-pageviews": "Pagine per numero totale di visualizzazioni giornaliere",
 	"totals": "Totali",
