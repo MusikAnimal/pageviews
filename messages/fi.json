@@ -251,7 +251,7 @@
 	"search-method": "Hakuasetukset:",
 	"section": "Osuus",
 	"select2-loading": "Ladataan lisää tuloksia…",
-	"select2-max-chars": "Poista $1 merkki(ä)",
+	"select2-max-chars": "Poista $1 {{PLURAL:$1|merkki|merkkiä}}",
 	"select2-max-items": "Voit valita vain $1 {{PLURAL:$1|kohteen|kohdetta}}",
 	"select2-min-chars": "Kirjoita vähintään $1 merkki(ä)",
 	"select2-no-results": "Tuloksia ei löytynyt",
