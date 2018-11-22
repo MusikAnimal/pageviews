@@ -188,6 +188,7 @@
 	"more": "Altro",
 	"most-viewed-pages": "Pagine più viste",
 	"namespace": "Namespace",
+	"new-article-warning": "Una o più delle pagine richieste sono state create recentemente, quindi i dati delle visite potrebbero non essere ancora disponibili ($1)",
 	"no-autocompletion": "Nessun autocompletamento",
 	"none": "Nessuno",
 	"note": "Note",
