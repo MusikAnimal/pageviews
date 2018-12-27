@@ -276,7 +276,7 @@
 	"url-structure-topviews-date-month": "E spezifesche Mount am Format $1",
 	"user": "Benotzer",
 	"users": "Benotzer",
-	"userviews-edit-count-warning": "$1 huet $2 Ännerunge gemaach! D'Opruffe vun den ugeluechte Säite kann e bëssen daueren. Hutt w.e.g. e bësse Gedold.",
+	"userviews-edit-count-warning": "$1 huet {{PLURAL:$2|eng Ännerung|$2 Ännerunge}} gemaach! D'Opruffe vun den ugeluechte Säite kann e bëssen daueren. Hutt w.e.g. e bësse Gedold.",
 	"validated-page": "Validéiert",
 	"view-source": "Quellcode weisen",
 	"views": "Säitenofruffer",

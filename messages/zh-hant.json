@@ -22,7 +22,7 @@
 	"all-projects": "所有項目",
 	"all-time": "全部時間",
 	"another-query": "執行另一筆查詢",
-	"api-error": "查詢$1時出現錯誤。",
+	"api-error": "查詢 $1 時出現錯誤。",
 	"api-error-no-data": "查無資料",
 	"api-error-timeout": "由於 API 應用程式出現問題，以下暫無法處理：\n$1\n請等待數分鐘後在重新執行一次試試。",
 	"api-error-unknown": "在查詢 $1 時出現一個未知錯誤",

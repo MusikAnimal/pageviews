@@ -301,6 +301,7 @@
 	"url-structure-current": "Den seneste tilgængelige dag.",
 	"url-structure-end-date": "Slutdato i formatet $1, standard er forrige dag.",
 	"url-structure-parameters": "Parametre",
+	"url-structure-parameters-order": "Kan bruges i en hvilken som helst rækkefølge",
 	"url-structure-topviews-date-day": "En specifik dag i formatet $1",
 	"url-structure-topviews-date-month": "En specifik måned i formatet $1",
 	"user": "Bruger",

@@ -8,7 +8,8 @@
 			"Woytecr",
 			"InternerowyGołąb",
 			"Wojtas",
-			"DeRudySoulStorm"
+			"DeRudySoulStorm",
+			"CiaPan"
 		]
 	},
 	"active-users": "Użytkowników aktywnych",
@@ -242,7 +243,7 @@
 	"param-error-1": "API pageviews niestety nie zawiera danych starszych niż $1.",
 	"param-error-2": "Data początkowa musi być wcześniejsza od daty końcowej.",
 	"param-error-3": "Nieprawidłowy parametr <code>$1</code>, użyto zamiast tego wartości domyślnej. Zobacz $2, aby uzyskać więcej informacji.",
-	"percent-mobile": "Mobilna",
+	"percent-mobile": "% Mobilnych",
 	"permalink": "Stałe łącze",
 	"pie": "Kołowy",
 	"platform": "Platforma",
@@ -281,6 +282,7 @@
 	"september": "Wrzesień",
 	"settings": "Ustawienia",
 	"settings-notice": "Twoje ustawienia zostaną zapamiętanie na obecnej przeglądarce oraz komputerze.",
+	"show-mobile-percentages": "Pokaż udział mobilnych",
 	"show-more": "Pokaż więcej",
 	"show-values": "Pokaż wartości",
 	"siteviews": "Odwiedziny w witrynach",
