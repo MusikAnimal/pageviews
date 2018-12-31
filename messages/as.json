@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Dibya Dutta",
-			"Sagsag"
+			"Sagsag",
+			"Gitartha.bordoloi"
 		]
 	},
 	"agent": "প্ৰতিনিধি",
@@ -142,7 +143,7 @@
 	"unsupported-browser-error": "$1 আৰু তাতকৈ তলৰ সমৰ্থন নকৰে। অনুগ্ৰহ কৰি <a href='http://browsehappy.com/'>আপোনাৰ ব্ৰাউজাৰ নবীকৰণ কৰক</a></strong>।",
 	"url-structure": "ইউআৰএল গঠন",
 	"url-structure-agent": " $1 (মানৱ দৰ্শক, পূৰ্ৱনিৰ্ধাৰিত), $2 (চাৰ্চ ইঞ্জিন ক্ৰাউলাৰ্চ), $3 (ডব্লিউডব্লিউএফ ব') বা $4 ($1, $2 আৰু $3)ৰ ভিতৰত এটা",
-	"url-structure-onwiki-link": "বৰ্তমানৰ পৃষ্ঠাখন ৱিকিত সংযোগৰ বাবে $1 ব্যৱহাৰ কৰক",
+	"url-structure-onwiki-link": "বৰ্তমানৰ পৃষ্ঠাটো ৱিকিত সংযোগৰ বাবে $1 ব্যৱহাৰ কৰক",
 	"url-structure-parameters": "পেৰামিটাৰ",
 	"url-structure-parameters-order": "যিকোনো ক্ৰমত ব্যৱহাৰ কৰিব পাৰি",
 	"url-structure-project": "$1 বা অন্য বৈধ $2",
