@@ -28,6 +28,7 @@
 	"article-placeholder": "Kirjoita sivujen nimet",
 	"articles": "Artikkeleja",
 	"august": "Elokuu",
+	"auto-pagepile-error": "$1 luominen ei onnistunut. Näytetään ensimmäiset $2 pyydettyä sivua.",
 	"autocompletion": "Automaattinen täydennys",
 	"autocompletion-redirects": "Ohjaukset sisältävä automaattinen täydennys",
 	"autolog-option": "Käytä logaritmista asteikkoa automaattisesti, mikäli mahdollista",
