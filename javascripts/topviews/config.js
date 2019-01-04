@@ -21,7 +21,7 @@ const config = {
   formStates: ['processing', 'complete', 'search', 'reset'],
   maxDate: moment().subtract(1, 'day').startOf('day').utc().toDate(),
   maxYear: moment().subtract(1, 'year').startOf('year').utc().toDate(),
-  pageSize: 10,
+  pageSize: 100,
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   validateParams: ['project', 'platform'],
