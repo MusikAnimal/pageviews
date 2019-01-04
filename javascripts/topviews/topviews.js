@@ -85,8 +85,15 @@ class TopViews extends Pv {
         direction = !!i18nRtl ? 'to left' : 'to right',
         offsetTop = (count * 40) + 40;
 
-      let percentMobile = ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
-      if (percentMobile === '0.0') {
+      let percentMobile;
+
+      if (this.isYearly()) {
+        percentMobile = item.mobile_percentage;
+      } else {
+        percentMobile = ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
+      }
+
+      if (parseFloat(percentMobile) === 0.0) {
         percentMobile = '< 0.1';
       }
 
@@ -160,19 +167,24 @@ class TopViews extends Pv {
     });
 
     if (triggerChange) {
-      this.setState('processing');
+      if (this.pageData[this.offsetEnd]) {
+        this.setState('processing');
 
-      // get edit data and mobile views for the new page that has come into view
-      const newPage = this.pageData[this.offsetEnd].article;
+        // get edit data and mobile views for the new page that has come into view
+        const newPage = this.pageData[this.offsetEnd].article;
 
-      this.setSingleEditData(newPage)
-        .always(() => this.setSingleMobileViews(newPage)
-          .always(() => {
-            this.setState('complete');
-            $(this.config.select2Input).val(this.excludes).trigger('change');
-            this.showList();
-          })
-        );
+        this.setSingleEditData(newPage)
+          .always(() => this.setSingleMobileViews(newPage)
+            .always(() => {
+              this.setState('complete');
+              $(this.config.select2Input).val(this.excludes).trigger('change');
+              this.showList();
+            })
+          );
+      } else {
+        $(this.config.select2Input).val(this.excludes).trigger('change');
+        this.showList();
+      }
     }
     this.buildReportFalsePositiveForm();
   }
@@ -248,7 +260,9 @@ class TopViews extends Pv {
    * @return {Boolean} yes or no
    */
   shouldShowMobile() {
-    return $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access';
+    return this.isYearly() || (
+      $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access'
+    );
   }
 
   /**
@@ -295,7 +309,9 @@ class TopViews extends Pv {
     const datepickerValue = this.datepicker.getDate();
     let date;
 
-    if (this.isMonthly()) {
+    if (this.isYearly()) {
+      date = moment(datepickerValue).format('YYYY');
+    } else if (this.isMonthly()) {
       date = moment(datepickerValue).format('YYYY/MM');
     } else {
       date = moment(datepickerValue).format('YYYY/MM/DD');
@@ -313,7 +329,10 @@ class TopViews extends Pv {
     // first get the date range
     const date = moment(this.datepicker.getDate());
     let startDate, endDate;
-    if (this.isMonthly()) {
+    if (this.isYearly()) {
+      startDate = date.format('YYYY-01-01');
+      endDate = date.endOf('year').format('YYYY-MM-DD');
+    } else if (this.isMonthly()) {
       startDate = date.format('YYYY-MM-01');
       endDate = date.endOf('month').format('YYYY-MM-DD');
     } else {
@@ -348,6 +367,8 @@ class TopViews extends Pv {
      */
     if (this.specialRange && specialRange) {
       params.date = this.specialRange.range;
+    } else if (this.isYearly()) {
+      params.date = moment(datepickerValue).format('YYYY');
     } else if (this.isMonthly()) {
       params.date = moment(datepickerValue).format('YYYY-MM');
     } else {
@@ -374,7 +395,14 @@ class TopViews extends Pv {
    * @override
    */
   setSpecialRange(range) {
-    if (range === 'last-month') {
+    if (range === 'last-year') {
+      this.setupDateRangeSelector('yearly');
+      this.datepicker.setDate(this.config.maxYear);
+      this.specialRange = {
+        range,
+        value: moment(this.config.maxYear).format('YYYY')
+      };
+    } else if (range === 'last-month') {
       this.setupDateRangeSelector('monthly');
       this.datepicker.setDate(this.maxMonth);
       this.specialRange = {
@@ -403,7 +431,16 @@ class TopViews extends Pv {
   setDate(dateInput) {
     let date;
 
-    if (/\d{4}-\d{2}$/.test(dateInput)) {
+    if (/\d{4}$/.test(dateInput)) {
+      // yearly
+      this.setupDateRangeSelector('yearly');
+      date = moment(`${dateInput}-01-01`).toDate();
+
+      // if over max, set to max
+      if (date > this.config.maxYear) {
+        date = this.config.maxYear;
+      }
+    } else if (/\d{4}-\d{2}$/.test(dateInput)) {
       // monthly
       this.setupDateRangeSelector('monthly');
       date = moment(`${dateInput}-01`).toDate();
@@ -466,7 +503,13 @@ class TopViews extends Pv {
     $(this.config.projectInput).val(params.project);
     $(this.config.platformSelector).val(params.platform);
 
-    if (params.platform === 'all-access') {
+    if (this.isYearly()) {
+      $('.percent-mobile-wrapper').show();
+      $('.show-percent-mobile').prop('disabled', true).prop('checked', true);
+      $('.mainspace-only-option').prop('disabled', true).prop('checked', true);
+      $('.output-table').addClass('show-mobile');
+      $('#platform-select').prop('disabled', true).val('all-access');
+    } else if (params.platform === 'all-access') {
       $('.percent-mobile-wrapper').show();
       $('.show-percent-mobile').prop('checked', !!params.mobileviews);
       $('.output-table').toggleClass('show-mobile', !!params.mobileviews);
@@ -727,16 +770,29 @@ class TopViews extends Pv {
   setupDateRangeSelector(type = 'monthly') {
     $('#date-type-select').val(type);
 
-    const datepickerParams = type === 'monthly' ? {
-      format: 'MM yyyy',
-      viewMode: 'months',
-      minViewMode: 'months',
-      endDate: this.maxMonth
-    } : {
-      format: this.dateFormat,
-      viewMode: 'days',
-      endDate: this.maxDate
-    };
+    let datepickerParams;
+
+    if (type === 'yearly') {
+      datepickerParams = {
+        format: 'yyyy',
+        viewMode: 'years',
+        minViewMode: 'years',
+        endDate: this.config.maxYear
+      };
+    } else if (type === 'monthly') {
+      datepickerParams = {
+        format: 'MM yyyy',
+        viewMode: 'months',
+        minViewMode: 'months',
+        endDate: this.maxMonth
+      };
+    } else {
+      datepickerParams = {
+        format: this.dateFormat,
+        viewMode: 'days',
+        endDate: this.maxDate
+      };
+    }
 
     $(this.config.dateRangeSelector).datepicker('destroy');
     $(this.config.dateRangeSelector).datepicker(
@@ -754,13 +810,28 @@ class TopViews extends Pv {
     super.setupListeners();
 
     $(this.config.platformSelector).on('change', e => {
-      $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access');
+      $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access' || this.isYearly());
       $('.output-table').toggleClass('show-mobile', this.shouldShowMobile());
       this.processInput();
     });
     $('#date-type-select').on('change', e => {
-      // also calls setupDateRangeSelector
-      this.setSpecialRange(this.isMonthly() ? 'last-month' : 'yesterday');
+      $('#platform-select').prop('disabled', false);
+      $('.show-percent-mobile').prop('disabled', false);
+      $('.mainspace-only-option').prop('disabled', false);
+
+      // setSpecialRange() also calls setupDateRangeSelector()
+      if (this.isYearly()) {
+        $('#platform-select').val('all-access').prop('disabled', true);
+        $('.percent-mobile-wrapper').show();
+        $('.show-percent-mobile').prop('checked', true).prop('disabled', true);
+        $('.mainspace-only-option').prop('checked', true).prop('disabled', true);
+        $('.output-table').addClass('show-mobile');
+        this.setSpecialRange('last-year');
+      } else if (this.isMonthly()) {
+        this.setSpecialRange('last-month');
+      } else {
+        this.setSpecialRange('yesterday');
+      }
     });
     $('.show-more').on('click', () => {
       this.offset += this.config.pageSize;
@@ -814,11 +885,19 @@ class TopViews extends Pv {
   }
 
   /**
-   * Are we in 'monthly' mode? (If we aren't then we're in daily)
+   * Are we in 'monthly' mode?
    * @return {Boolean} yes or no
    */
   isMonthly() {
     return $('#date-type-select').val() === 'monthly';
+  }
+
+  /**
+   * Are we in 'yearly' mode?
+   * @return {Boolean}
+   */
+  isYearly() {
+    return $('#date-type-select').val() === 'yearly';
   }
 
   /**
@@ -828,7 +907,10 @@ class TopViews extends Pv {
   getAPIDate() {
     const datepickerValue = this.datepicker.getDate();
 
-    if (this.isMonthly()) {
+    if (this.isYearly()) {
+      // This ends up going to a temporary internal endpoint until T154381 is resolved.
+      return moment(datepickerValue).format('YYYY');
+    } else if (this.isMonthly()) {
       return moment(datepickerValue).format('YYYY/MM') + '/all-days';
     } else {
       return moment(datepickerValue).format('YYYY/MM/DD');
@@ -859,7 +941,10 @@ class TopViews extends Pv {
     const datepickerValue = this.datepicker.getDate();
     let startDate, endDate;
 
-    if (this.isMonthly()) {
+    if (this.isYearly()) {
+      startDate = moment(datepickerValue).startOf('year');
+      endDate = moment(datepickerValue).endOf('year');
+    } else if (this.isMonthly()) {
       startDate = moment(datepickerValue).startOf('month');
       endDate = moment(datepickerValue).endOf('month');
     } else {
@@ -896,8 +981,8 @@ class TopViews extends Pv {
 
   /**
    * Set this.editData for requested pages, providing number of edits and edits in the period
-   * @param {Integer} startIndex - start index of this.pageData
-   * @param {Integer} offset - number of entries to process following startIndex
+   * @param {Number} startIndex - start index of this.pageData
+   * @param {Number} offset - number of entries to process following startIndex
    * @returns {Deferred} promise resolving with this.mobileViews
    */
   setEditData(startIndex = 0, offset = this.config.pageSize) {
@@ -980,6 +1065,11 @@ class TopViews extends Pv {
       return dfd.resolve({});
     }
 
+    if (this.isYearly()) {
+      // this.mobileViews is already set when importing the yearly data from the internal API.
+      return dfd.resolve(this.mobileViews);
+    }
+
     const [startDate, endDate] = this.getDates();
 
     let promises = [];
@@ -1014,14 +1104,19 @@ class TopViews extends Pv {
 
   /**
    * Set this.mobileViews for requested pages
-   * @param {Integer} startIndex - start index of this.pageData
-   * @param {Integer} offset - number of entries to process following startIndex
+   * @param {Number} startIndex - start index of this.pageData
+   * @param {Number} offset - number of entries to process following startIndex
    * @returns {Deferred} promise resolving with this.mobileViews
    */
   setMobileViews(startIndex = 0, offset = this.config.pageSize) {
     const dfd = $.Deferred();
 
     if (!this.shouldShowMobile()) {
+      return dfd.resolve({});
+    }
+
+    if (this.isYearly()) {
+      // Mobile percentages are already set when importing the yearly data from the internal API.
       return dfd.resolve({});
     }
 
@@ -1091,52 +1186,70 @@ class TopViews extends Pv {
 
     this.setState('processing');
 
-    const access = $(this.config.platformSelector).val();
+    const postProcess = () => {
+      /** build the pageNames array for Select2 */
+      this.pageNames = this.pageData.map(page => page.article);
+
+      /** set up auto excludes now that we know what pages will be effected */
+      this.setupAutoExcludes();
+
+      if ($('.mainspace-only-option').is(':checked')) {
+        this.filterOutNamespace(this.pageNames).done(pageNames => {
+          this.pageNames = pageNames;
+          this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
+
+          if (access === 'all-access') {
+            return this.setEditData()
+              .always(() => this.setMobileViews()
+                .always(() => dfd.resolve(this.pageData))
+              );
+          } else {
+            return this.setEditData().always(() => dfd.resolve(this.pageData));
+          }
+        });
+      } else if (access === 'all-access') {
+        return this.setEditData()
+          .always(() => this.setMobileViews()
+            .always(() => dfd.resolve(this.pageData))
+          );
+      } else {
+        return this.setEditData().always(() => dfd.resolve(this.pageData));
+      }
+    };
+
+    const access = this.isYearly() ? 'all-access' : $(this.config.platformSelector).val();
 
     const showTopviews = () => {
-      $.ajax({
-        url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/${access}/${this.getAPIDate()}`,
-        dataType: 'json'
-      }).done(data => {
-        // store pageData from API, removing underscores from the page name
-        this.pageData = data.items[0].articles.map(page => {
-          page.article = page.article.descore();
-          return page;
+      if (this.isYearly()) {
+        $.getJSON(`/topviews/yearly_datasets/${this.project}/${this.getAPIDate()}.json`).done(data => {
+          this.pageData = data;
+
+          /** build the pageNames array for Select2 */
+          this.pageNames = this.pageData.map(page => page.article);
+
+          return postProcess();
+        }).fail(() => {
+          this.resetView();
+          this.writeMessage($.i18n('api-error', 'Yearly pageviews API'));
         });
-
-        /** build the pageNames array for Select2 */
-        this.pageNames = this.pageData.map(page => page.article);
-
-        /** set up auto excludes now that we know what pages will be effected */
-        this.setupAutoExcludes();
-
-        if ($('.mainspace-only-option').is(':checked')) {
-          this.filterOutNamespace(this.pageNames).done(pageNames => {
-            this.pageNames = pageNames;
-            this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
-
-            if (access === 'all-access') {
-              return this.setEditData()
-                .always(() => this.setMobileViews()
-                  .always(() => dfd.resolve(this.pageData))
-                );
-            } else {
-              return this.setEditData().always(() => dfd.resolve(this.pageData));
-            }
+      } else {
+        $.ajax({
+          url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/${access}/${this.getAPIDate()}`,
+          dataType: 'json'
+        }).done(data => {
+          // store pageData from API, removing underscores from the page name
+          this.pageData = data.items[0].articles.map(page => {
+            page.article = page.article.descore();
+            return page;
           });
-        } else if (access === 'all-access') {
-          return this.setEditData()
-            .always(() => this.setMobileViews()
-              .always(() => dfd.resolve(this.pageData))
-            );
-        } else {
-          return this.setEditData().always(() => dfd.resolve(this.pageData));
-        }
-      }).fail(errorData => {
-        this.resetView();
-        this.writeMessage(`${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
-        return dfd.reject();
-      });
+
+          return postProcess();
+        }).fail(errorData => {
+          this.resetView();
+          this.writeMessage(`${$.i18n('api-error', 'Pageviews API')} - ${errorData.responseJSON.title}`);
+          return dfd.reject();
+        });
+      }
     };
 
     this.getFalsePositives().done(autoExcludes => {

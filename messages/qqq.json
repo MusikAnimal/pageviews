@@ -427,5 +427,6 @@
 	"wikisource": "{{Optional}}\nName for the Wikisource project.\n{{Identical|Wikisource}}",
 	"wikiversity": "{{Optional}}\nName for the Wikiversity project.\n{{Identical|Wikiversity}}",
 	"wikivoyage": "{{Optional}}\nName for the Wikivoyage project.\n{{Identical|Wikivoyage}}",
-	"wiktionary": "{{Optional}}\nName for the Wiktionary project.\n{{Identical|Wiktionary}}"
+	"wiktionary": "{{Optional}}\nName for the Wiktionary project.\n{{Identical|Wiktionary}}",
+	"yearly": "Label for option to view statistics for on a yearly basis in the Topviews app\n{{Identical|Yearly}}"
 }

@@ -29,6 +29,9 @@
               <option value="daily">
                 <?php echo $I18N->msg( 'daily' ); ?>
               </option>
+              <option value="yearly">
+                <?php echo $I18N->msg( 'yearly' ); ?>
+              </option>
             </select>
           </div>
           <div class="col-lg-3 col-sm-3">

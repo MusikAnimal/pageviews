@@ -35,13 +35,15 @@ This guide mostly assumes you're using MacOS or Linux. The setup process may dif
 
 1. Run `composer install` to install all PHP dependencies.
 
+1. Run `npm install` to install all Node dependencies.
+
 1. Create a copy of `config.sample.php` named `config.php`. See the comments within that file on what you need to configure.
 
 1. Optionally [create the "meta" database](https://wikitech.wikimedia.org/wiki/Tool:Pageviews#Meta_database) on your local machine. This database is used for usage tracking, and also to store known [false positives](https://tools.wmflabs.org/topviews/faq/#false_positive) for Topviews. Unless you're working on Topviews, you can skip this step.
 
-1. Run `gulp` to watch the javascripts, stylesheets and views and automatically recompile when new changes are saved.
+1. Run `./node_modules/.bin/gulp` to watch the javascripts, stylesheets and views and automatically recompile when new changes are saved.
 
-1. Start the server with `php -S localhost:8000`
+1. Go to the public directory (`cd public_html`) and start the server with `php -S localhost:8000`.
 
 You should be able to access each application as a subpath of localhost:8000, e.g. http://localhost:8000/pageviews.
 
@@ -66,7 +68,7 @@ When the JS files are compiled, they are concatenated into a single `application
 
 All JavaScript is documented using [JSDoc](http://usejsdoc.org/). The documentation is hosted at https://tools.wmflabs.org/pageviews/jsdocs. You can generate the docs locally by running:
 ```
-gulp jsdoc && open jsdocs/gen/index.html
+./node_modules/.bin/gulp jsdoc && open jsdocs/gen/index.html
 ```
 
 #### Styles
@@ -78,10 +80,10 @@ Each page has it's own `.scss` file that imports dependencies. Shared files are 
 The views within `/views` are written in [MtHaml](https://github.com/arnaud-lb/MtHaml) and compiled to PHP files in `/public_html`.
 
 ### Local
-Run `gulp` to watch for changes and automatically compile as needed. You can also run tasks by app and function, such as `gulp massviews` for all Massviews-related files, or `gulp scripts` to compile only the JavaScripts, but `gulp` by itself should be all you need.
+Run `./node_modules/.bin/gulp` to watch for changes and automatically compile as needed. You can also run tasks by app and function, such as `gulp massviews` for all Massviews-related files, or `gulp scripts` to compile only the JavaScripts, but `gulp` by itself should be all you need.
 
 ### Production
-Before making a pull request or pushing to master, remember to run `gulp production` so the assets are minified and concatenated. JSDocs are also generated, and placed in a dedicated sub-repo (not submodule) in `jsdocs/gen`. These can optionally be pull requested to the [JSDocs repo](https://github.com/MusikAnimal/pageviews-jsdocs).
+Before making a pull request or pushing to master, remember to run `./node_modules/.bin/gulp production` so the assets are minified and concatenated. JSDocs are also generated, and placed in a dedicated sub-repo (not submodule) in `jsdocs/gen`. These can optionally be pull requested to the [JSDocs repo](https://github.com/MusikAnimal/pageviews-jsdocs).
 
 For deployment instructions, see [Tool:Pageviews](https://wikitech.wikimedia.org/wiki/Tool:Pageviews) on Wikitech.org.
 
@@ -92,4 +94,4 @@ Tests will be ran automatically when you push or create a pull request.
 Pageviews Analysis was once tested with acceptance tests, but after significant maintenance burden and general flakiness of the tests, they have been retired :(
 
 ### Linters
-The styling of all ES6 and SCSS is enforced with linters. You can run these locally with `gulp lint`, and will also be ran when you run `gulp production`. If you need a particular rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
+The styling of all ES6 and SCSS is enforced with linters. You can run these locally with `./node_modules/.bin/gulp lint`, and will also be ran when you run `gulp production`. If you need a particular rule to be ignored, you can add exceptions (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason), [Eslint](http://eslint.org/docs/user-guide/configuring)).
