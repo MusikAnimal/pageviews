@@ -66,6 +66,23 @@ class TopViews extends Pv {
   }
 
   /**
+   * Get a string for % of mobile traffic.
+   * @param item The item within this.pageData
+   * @returns {String}
+   */
+  percentMobile(item) {
+    if (this.isYearly()) {
+      return item.mobile_percentage;
+    } else {
+      return ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
+    }
+
+    if (parseFloat(percentMobile) === 0.0) {
+      return '< 0.1';
+    }
+  }
+
+  /**
    * Print list of top pages
    */
   showList() {
@@ -85,19 +102,7 @@ class TopViews extends Pv {
         direction = !!i18nRtl ? 'to left' : 'to right',
         offsetTop = (count * 40) + 40;
 
-      let percentMobile;
-
-      if (this.isYearly()) {
-        percentMobile = item.mobile_percentage;
-      } else {
-        percentMobile = ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
-      }
-
-      if (parseFloat(percentMobile) === 0.0) {
-        percentMobile = '< 0.1';
-      }
-
-      const percentMobileText = this.shouldShowMobile() ? percentMobile + '%' : '',
+      const percentMobileText = this.shouldShowMobile() ? this.percentMobile(item) + '%' : '',
         editData = this.editData[item.article] || {},
         editors = typeof editData.num_users === 'number' ? this.formatNumber(editData.num_users) : '?';
 
@@ -271,7 +276,7 @@ class TopViews extends Pv {
    * @override
    */
   exportCSV() {
-    let csvContent = `data:text/csv;charset=utf-8,Page,Edits,Editors,Views${this.shouldShowMobile() ? ',Mobile views' : ''}\n`;
+    let csvContent = `data:text/csv;charset=utf-8,Page,Edits,Editors,Views${this.shouldShowMobile() ? ',Mobile %' : ''}\n`;
 
     this.pageData.forEach(entry => {
       if (this.excludes.includes(entry.article) || this.autoExcludes.includes(entry.article)) return;
@@ -284,7 +289,9 @@ class TopViews extends Pv {
         editors = typeof editData.num_users === 'number' ? editData.num_users : '?';
 
       csvContent += `${title},${edits},${editors},${entry.views}`;
-      if (this.shouldShowMobile()) csvContent += `,${this.mobileViews[entry.article] || ''}`;
+      if (this.shouldShowMobile()) {
+        csvContent += `,${this.percentMobile(entry)}`;
+      }
       csvContent += '\n';
     });
 
