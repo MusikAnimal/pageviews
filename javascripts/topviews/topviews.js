@@ -67,19 +67,23 @@ class TopViews extends Pv {
 
   /**
    * Get a string for % of mobile traffic.
-   * @param item The item within this.pageData
+   * @param {Object} item The item within this.pageData
    * @returns {String}
    */
   percentMobile(item) {
+    let percentage = '';
+
     if (this.isYearly()) {
-      return item.mobile_percentage;
+      percentage = item.mobile_percentage;
     } else {
-      return ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
+      percentage = ((this.mobileViews[item.article] / item.views) * 100).toFixed(1);
     }
 
-    if (parseFloat(percentMobile) === 0.0) {
-      return '< 0.1';
+    if (parseFloat(percentage) === 0.0) {
+      percentage = '< 0.1';
     }
+
+    return percentage;
   }
 
   /**
