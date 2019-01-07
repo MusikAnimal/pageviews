@@ -25,7 +25,7 @@
 	"basic-information": "بنیادی معلومات",
 	"bot": "ٻوٹ",
 	"cancel": "منسوخ",
-	"category": "ون٘کی",
+	"category": "ونکی",
 	"change-chart": "چارٹ دی قسم",
 	"chart": "چارٹ",
 	"chart-preferences": "چارٹ ترجیحات:",
@@ -149,5 +149,6 @@
 	"wikisource": "وکی ماخذ",
 	"wikiversity": "وکی ورسٹی",
 	"wikivoyage": "وکی پندھ",
-	"wiktionary": "وکشنری"
+	"wiktionary": "وکشنری",
+	"yearly": "سالانہ"
 }

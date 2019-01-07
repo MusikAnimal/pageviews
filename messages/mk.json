@@ -3,7 +3,8 @@
 		"authors": [
 			"Bjankuloski06",
 			"Macofe",
-			"Srdjan m"
+			"Srdjan m",
+			"Vlad5250"
 		]
 	},
 	"active-users": "Активни корисници",
@@ -157,7 +158,7 @@
 	"invalid-category-url": "Неважечјка категорија! Внесете го полниот URL на камтегоријата.",
 	"invalid-lang-project": "$1 е неважечки или не е повеќејазичен проект",
 	"invalid-media-file": "$1 не е важечка звучна или видео податотека",
-	"invalid-page-url": "Неважечјка страница! Внесете ја целосната URL на страницата.",
+	"invalid-page-url": "Неважечка страница! Внесете ја целосната URL на страницата.",
 	"invalid-params": "Неважечки параметри!",
 	"invalid-project": "$1 не претставува <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'>важечки проект</a> или засега не е поддржана.",
 	"invalid-quarry-dataset": "Неважечки податочен збир од Quarry! Столбот <code>$1</code> е задолжителен, но не го пронајдов.",

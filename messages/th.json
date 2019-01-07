@@ -6,7 +6,8 @@
 			"Bluegram",
 			"Slentee",
 			"Ans",
-			"Geonuch"
+			"Geonuch",
+			"B20180"
 		]
 	},
 	"active-users": "ผู้ใช้ที่ยังมีความเคลื่อนไหว",
@@ -285,5 +286,6 @@
 	"wikiquote": "วิกิคำคม",
 	"wikiversity": "วิกิวิทยาลัย",
 	"wikivoyage": "วิกิท่องเที่ยว",
-	"wiktionary": "วิกิพจนานุกรม"
+	"wiktionary": "วิกิพจนานุกรม",
+	"yearly": "รายปี"
 }
