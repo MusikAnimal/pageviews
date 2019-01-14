@@ -119,6 +119,7 @@
 	"faq-search-redirects-title": "Як паглядзець колькасць праглядаў перанакіраванняў?",
 	"faq-source-pageviews": "— агульная колькасць праглядаў старонак, атрыманых праектам.",
 	"faq-source-title": "Што азначаюць «метрычныя» опцыі?",
+	"faq-todays-date-title": "Чаму я не магу паглядзець дадзеныя за сёння?",
 	"faq-try-tool": "Вы можаце знайсці гэта на $1.",
 	"fatal-error": "Фатальная памылка",
 	"featured-article": "Выдатны артыкул",
@@ -271,6 +272,7 @@
 	"spider": "Павук",
 	"statistics": "Статыстыка",
 	"su": "Ндз",
+	"subcategories": "Падкатэгорыі",
 	"submit": "Адправіць",
 	"subpages": "Падстаронкі",
 	"target": "мэта",
@@ -291,6 +293,8 @@
 	"unique-devices": "Унікальныя прылады",
 	"unknown": "Невядома",
 	"url-structure": "Структура URL",
+	"url-structure-current": "Апошні даступны дзень.",
+	"url-structure-end-date": "Канчатковая дата ў фармаце $1, па змаўчанні — папярэдні дзень.",
 	"url-structure-page": "Прапушчаная назва старонкі.",
 	"url-structure-parameters": "Параметры",
 	"url-structure-parameters-order": "Могуць быць выкарыстаныя ў любым парадку",
@@ -315,5 +319,6 @@
 	"wikisource": "Вікікрыніцы",
 	"wikiversity": "Віківерсітэт",
 	"wikivoyage": "Віківандроўка",
-	"wiktionary": "Вікіслоўнік"
+	"wiktionary": "Вікіслоўнік",
+	"yearly": "Штогод"
 }
