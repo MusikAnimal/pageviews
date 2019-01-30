@@ -68,7 +68,7 @@
 	"csv": "{{Optional}}\nLink for CSV file. See https://en.wikipedia.org/wiki/Comma-separated_values for information on what a CSV file is.\nCSV is the name of a file format; should not be translated.",
 	"current-size": "Indicates the current size of a page.\n{{Identical|Current size}}",
 	"custom-range": "Link to specify a custom date range\n{{Identical|Custom range}}",
-	"daily": "Label for option to view statistics for on a daily basis in the Topviews app\n{{Identical|Daily}}",
+	"daily": "Label for option to view statistics for on a daily basis in the Topviews app. Appears next to {{msg-wm|Pageviews-monthly}} and {{msg-wm|Pageviews-yearly}}.\n{{Identical|Daily}}",
 	"daily-average": "Label for the value showing the daily average of pageviews. This goes under a 'Pageviews' heading, so you do not need to use the word 'Pageviews'.",
 	"daily-pageviews": "Label for chart options that show daily pageviews for each article",
 	"data-unavailable": "Brief message indicating data is temporarily unavailable.",
@@ -232,7 +232,7 @@
 	"mobile": "Label for option to view statistics for the mobile site in the Siteviews application\n{{Identical|Mobile}}",
 	"mobile-app": "Label for option to view statistics for the mobile application only",
 	"mobile-web": "Label for option to view statistics for the mobile website only",
-	"monthly": "Label for option to view statistics for on a monthly basis in the Topviews app\n{{Identical|Monthly}}",
+	"monthly": "Label for option to view statistics for on a monthly basis in the Topviews app. Appears next to {{msg-wm|Pageviews-daily}} and {{msg-wm|Pageviews-yearly}}.\n{{Identical|Monthly}}",
 	"monthly-average": "Label for the value showing the monthly average of pageviews. This goes under a 'Pageviews' heading, so you do not need to use the word 'Pageviews'.",
 	"more": "Label for dropdown in navigation that lists more links.\n{{Identical|More}}",
 	"most-viewed-pages": "Link to view the most viewed pages of a project",
@@ -428,5 +428,5 @@
 	"wikiversity": "{{Optional}}\nName for the Wikiversity project.\n{{Identical|Wikiversity}}",
 	"wikivoyage": "{{Optional}}\nName for the Wikivoyage project.\n{{Identical|Wikivoyage}}",
 	"wiktionary": "{{Optional}}\nName for the Wiktionary project.\n{{Identical|Wiktionary}}",
-	"yearly": "Label for option to view statistics for on a yearly basis in the Topviews app\n{{Identical|Yearly}}"
+	"yearly": "Label for option to view statistics for on a yearly basis in the Topviews app. Appears next to {{msg-wm|Pageviews-daily}} and {{msg-wm|Pageviews-monthly}}.\n{{Identical|Yearly}}"
 }

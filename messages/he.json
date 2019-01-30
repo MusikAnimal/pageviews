@@ -53,7 +53,7 @@
 	"credits": "מובא אליכם על־ידי <bdi>$1</bdi>, <bdi>$2</bdi> ו־<bdi>$3</bdi>",
 	"current-size": "גודל נוכחי",
 	"custom-range": "טווח מותאם אישית",
-	"daily": "לפי יום",
+	"daily": "יומי",
 	"daily-average": "ממוצע יומי",
 	"daily-pageviews": "דפים לפי מספר צפיות יומי",
 	"data-unavailable": "נתונים לא זמינים",
@@ -216,7 +216,7 @@
 	"mobile": "נייד",
 	"mobile-app": "אפליקציה ניידת",
 	"mobile-web": "אתר נייד",
-	"monthly": "לפי חודש",
+	"monthly": "חודשי",
 	"monthly-average": "ממוצע חודשי",
 	"more": "עוד",
 	"most-viewed-pages": "הדפים הנצפים ביותר",
@@ -410,5 +410,6 @@
 	"wikisource": "ויקיטקסט",
 	"wikiversity": "ויקיברסיטה",
 	"wikivoyage": "ויקימסע",
-	"wiktionary": "ויקימילון"
+	"wiktionary": "ויקימילון",
+	"yearly": "שנתי"
 }
