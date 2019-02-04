@@ -83,6 +83,7 @@
 	"json": "JSON",
 	"july": "Temuz",
 	"june": "Heziran",
+	"known-false-positives-link": "$1 {{PLURAL:$1|pele|peli}}",
 	"language": "Zıwan",
 	"langviews": "Asayışê zıwani",
 	"last-month": "Aşma Peyên",
