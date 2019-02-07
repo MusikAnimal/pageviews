@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Nirjal stha"
+			"Nirjal stha",
+			"पर्वत सुबेदी"
 		]
 	},
 	"active-users": "सक्रिय प्रयोगकर्ताहरू",
@@ -79,7 +80,7 @@
 	"protection": "सुरक्षा",
 	"revisions": "संशोधनहरू",
 	"sa": "शनि",
-	"save": "संग्रह गर्ने",
+	"save": "सङ्ग्रह गर्ने",
 	"search": "खोज",
 	"search-method": "खोज्ने तरिकाः",
 	"section": "खण्ड",
