@@ -18,7 +18,8 @@
 			"Pols12",
 			"Pamputt",
 			"Fitoschido",
-			"Niridya"
+			"Niridya",
+			"Ltrlg"
 		]
 	},
 	"active-users": "Utilisateurs actifs",
@@ -353,7 +354,7 @@
 	"total-pageviews": "Pages en nombre total de vues",
 	"totals": "Totaux",
 	"transclusions": "Inclusions",
-	"translation-credits": "Traductions proposées par $1, $2 et $3.",
+	"translation-credits": "Traductions propulsées par $1, $2 et $3.",
 	"tu": "Ma",
 	"unique-devices": "Machines uniques",
 	"unique-titles": "$1 {{PLURAL:$1|titre unique|titres uniques}}",
