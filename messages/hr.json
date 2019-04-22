@@ -279,7 +279,7 @@
 	"users": "Suradnici",
 	"userviews-description": "Pregled stranica koje je stvorio suradnik",
 	"userviews-edit-count-warning": "$1 je napravio $2 {{PLURAL:$2|uređivanje|uređivanja}}! Dohvaćanje stranica moglo bi potrajati. Molimo strpljenje.",
-	"userviews-oversized-set": "$1 je stvorio više od $2 {{PLURAL:$2|stranice|stranice|stranica}}. Iz razloga performansi biti će obrađeno $3 {{PLURAL:$3|stranica|prve stranice|prvih stranica}}.",
+	"userviews-oversized-set": "$1 je stvorio/la više od $2 {{PLURAL:$2|stranice|stranice|stranica}}. Iz razloga performansi, obradit će se samo {{PLURAL:$3|prva stranica|prve $3 stranice|prvih $3 stranica}}.",
 	"userviews-title": "Analiza pregleda stranica koje je stvorio suradnik",
 	"view-source": "Vidi kôd",
 	"watchers": "Pratitelja",
