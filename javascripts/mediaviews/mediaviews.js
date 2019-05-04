@@ -885,5 +885,6 @@ $(document).ready(() => {
     return document.location.href = document.location.href.replace(/\#.*/, '');
   }
 
-  new MediaViews();
+  // Disabled for now.
+  // new MediaViews();
 });
