@@ -8,8 +8,6 @@ const browserify = require('browserify');
 const runSequence = require('run-sequence');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
-const watchify = require('watchify');
-const del = require('del');
 const pump = require('pump');
 const plugins = require('gulp-load-plugins')();
 
