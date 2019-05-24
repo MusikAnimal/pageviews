@@ -6,7 +6,7 @@ if ( !isset( $_GET['username'] ) || !isset( $_GET['project'] ) ) {
   exit();
 }
 
-$username = $_GET['username'];
+$username = ucfirst( $_GET['username'] );
 $project = $_GET['project'];
 
 // get database name given the project
