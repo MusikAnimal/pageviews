@@ -27,6 +27,7 @@
         <ul class="list-group">
           <?php include "../../faq_parts/_old_data.php"; ?>
           <?php include "../../faq_parts/_todays_data.php"; ?>
+          <?php include "../../faq_parts/_anomaly.php"; ?>
           <li class="list-group-item" id="metric">
             <p>
               <strong><?php echo $I18N->msg( 'faq-source-title' ); ?></strong>

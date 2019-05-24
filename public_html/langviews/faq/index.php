@@ -26,6 +26,7 @@
         <ul class="list-group">
           <?php include "../../faq_parts/_old_data.php"; ?>
           <?php include "../../faq_parts/_todays_data.php"; ?>
+          <?php include "../../faq_parts/_anomaly.php"; ?>
           <?php include "../../faq_parts/_counts.php"; ?>
           <?php include "../../faq_parts/_redirects.php"; ?>
           <?php include "../../faq_parts/_location.php"; ?>
