@@ -65,7 +65,6 @@
                 <?php echo generateListMessage( $values ); ?>
               </p>
             </dd>
-            <dt>agent</dt>
             <?php include "../../url_parts/_agent.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
           </dl>
