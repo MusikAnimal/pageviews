@@ -2,7 +2,7 @@
  * Pageviews Analysis tool
  * @file Main file for Pageviews application
  * @author MusikAnimal, Kaldari, Marcelrf
- * @copyright 2016-2018 MusikAnimal, Kaldari, Marcelrf
+ * @copyright MusikAnimal, Kaldari, Marcelrf
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 

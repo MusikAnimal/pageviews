@@ -11,9 +11,5 @@
       <i><?php echo $I18N->msg( 'spider' ); ?></i>
       <?php echo $I18N->msg( 'faq-agents-spider' ); ?>
     </li>
-    <li>
-      <i><?php echo $I18N->msg( 'bot' ); ?></i>
-      <?php echo $I18N->msg( 'faq-agents-bot' ); ?>
-    </li>
   </ul>
 </li>

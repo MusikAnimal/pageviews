@@ -240,7 +240,7 @@ class PvConfig {
       },
       timestampFormat: 'YYYYMMDD00',
       validParams: {
-        agent: ['all-agents', 'user', 'spider', 'bot'],
+        agent: ['all-agents', 'user', 'spider'],
         platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
         project: siteDomains
       },

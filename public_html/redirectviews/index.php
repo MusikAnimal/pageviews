@@ -70,9 +70,6 @@
               <option value="spider">
                 <?php echo $I18N->msg( 'spider' ); ?>
               </option>
-              <option value="bot">
-                <?php echo $I18N->msg( 'bot' ); ?>
-              </option>
             </select>
           </div>
         </div>

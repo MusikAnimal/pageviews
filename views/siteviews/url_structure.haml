@@ -54,10 +54,7 @@
                 - $values = [ '<code>all-sites</code> ' . $defaultMsg, '<code>desktop-site</code>', '<code>mobile-site</code>' ]
                 = generateListMessage( $values )
             %dt agent
-            %dd
-              = $I18N->msg( 'url-structure-siteviews-agent', [ 'variables' => [ '<code>source</code>', '<code>pageviews</code>' ] ] )
-              %br
-              = $I18N->msg( 'url-structure-agent-no-bots', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>all-agents</code>' ], 'parsemag' => true ] )
+            - include "../../url_parts/_agent.php"
             - include "../../url_parts/_autolog.php"
 
         %div.col-lg-12.text-center.tm

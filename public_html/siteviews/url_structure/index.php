@@ -66,11 +66,7 @@
               </p>
             </dd>
             <dt>agent</dt>
-            <dd>
-              <?php echo $I18N->msg( 'url-structure-siteviews-agent', [ 'variables' => [ '<code>source</code>', '<code>pageviews</code>' ] ] ); ?>
-              <br>
-              <?php echo $I18N->msg( 'url-structure-agent-no-bots', [ 'variables' => [ '<code>user</code>', '<code>spider</code>', '<code>all-agents</code>' ], 'parsemag' => true ] ); ?>
-            </dd>
+            <?php include "../../url_parts/_agent.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
           </dl>
         </div>
