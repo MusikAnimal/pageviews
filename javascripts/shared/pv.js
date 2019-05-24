@@ -1,7 +1,7 @@
 /**
  * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
  * @author MusikAnimal, Kaldari
- * @copyright 2016-2018 MusikAnimal
+ * @copyright MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  */
 
@@ -325,16 +325,22 @@ class Pv extends PvConfig {
       }
 
       // check if they are outside the valid range or if in the wrong order
-      if (startDate < this.minDate || endDate < this.minDate) {
+      if (startDate > endDate) {
+        this.toastError(`
+          <strong>${$.i18n('invalid-params')}</strong>
+          ${$.i18n('param-error-2')}
+        `);
+        return false;
+      } else if (startDate < this.minDate) {
         this.toastError(`
           <strong>${$.i18n('invalid-params')}</strong>
           ${$.i18n('param-error-1', moment(this.minDate).format(this.dateFormat))}
         `);
         return false;
-      } else if (startDate > endDate) {
+      } else if (endDate > this.maxDate) {
         this.toastError(`
-          <strong>${$.i18n('param-error-2')}</strong>
-          ${$.i18n('invalid-params')}
+          <strong>${$.i18n('invalid-params')}</strong>
+          ${$.i18n('param-error-4')}
         `);
         return false;
       }

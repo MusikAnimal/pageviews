@@ -263,6 +263,7 @@
 	"param-error-1": "Pageviews API does not contain data older than $1. Sorry.",
 	"param-error-2": "Start date must be older than the end date.",
 	"param-error-3": "Invalid <code>$1</code>, using defaults instead. See the $2 for more information.",
+	"param-error-4": "Date range exceeds the maximum date. Using defaults instead.",
 	"percent-mobile": "% Mobile",
 	"permalink": "Permalink",
 	"permalink-copied": "Permalink copied to clipboard",
