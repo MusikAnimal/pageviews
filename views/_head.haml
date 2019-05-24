@@ -20,8 +20,7 @@
     return $availableLanguages;
   }
 
-  require_once ROOTDIR . '/vendor/krinkle/intuition/ToolStart.php';
-  require_once ROOTDIR . '/vendor/whichbrowser/parser/bootstrap.php';
+  require_once ROOTDIR . '/vendor/autoload.php';
   $I18N = new Intuition( 'pageviews' );
   $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
   $langs = getAvailableLangs();

@@ -6,7 +6,6 @@ tmp/
 *.ruby-version
 node_modules/
 config.php
-composer.lock
 vendor/composer
 vendor/krinkle
 vendor/psr

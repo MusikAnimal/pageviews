@@ -1,7 +1,8 @@
 {
     "require": {
+        "ext-json": "*",
         "mthaml/mthaml": "1.8.0",
-        "Krinkle/intuition": "^0.2.3",
+        "Krinkle/intuition": "^1.2.0",
         "whichbrowser/parser": "^2.0"
     }
 }
