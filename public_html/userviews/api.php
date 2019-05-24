@@ -29,7 +29,8 @@ header('Content-type: application/json');
 $sql = "SELECT page_title AS title, rev_timestamp AS timestamp, " .
   "page_is_redirect AS redirect, page_len AS length, page_namespace AS namespace " .
   "FROM $db.page JOIN $db.revision_userindex ON page_id = rev_page " .
-  "WHERE rev_user_text = ? AND rev_timestamp > 1 AND rev_parent_id = 0";
+  "JOIN $db.actor ON actor_id = rev_actor ".
+  "WHERE actor_name = ? AND rev_timestamp > 1 AND rev_parent_id = 0";
 if ( isset( $_GET['namespace'] ) ) {
   $sql .= " AND page_namespace = " . $_GET['namespace'];
 }

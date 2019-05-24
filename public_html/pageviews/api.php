@@ -111,7 +111,7 @@ foreach ($api_pages as $page) {
   if ( isset( $assessmentsConfig[$project] ) ) {
     $paSelect = ", (SELECT pa_class FROM $db.page_assessments WHERE pa_page_id = $page_id LIMIT 1) AS assessment";
   }
-  $sql = "SELECT COUNT(*) AS num_edits, COUNT(DISTINCT(rev_user_text)) AS num_users $paSelect FROM $db.revision " .
+  $sql = "SELECT COUNT(*) AS num_edits, COUNT(DISTINCT(rev_actor)) AS num_users $paSelect FROM $db.revision " .
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
 
   $res = $client->query( $sql . " rev_page = $page_id" );
@@ -132,7 +132,7 @@ foreach ($api_pages as $page) {
 // query for totals
 if ( count( $api_pages ) > 1 ) {
   $pages_sql = implode( $multipage_parts, ' OR ' );
-  $res = $client->query( "SELECT COUNT(DISTINCT(rev_user_text)) AS num_users FROM $db.revision " .
+  $res = $client->query( "SELECT COUNT(DISTINCT(rev_actor)) AS num_users FROM $db.revision " .
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND (" . $pages_sql . ')' );
   $output['totals'] = $res->fetch_assoc();
   $output['totals']['num_edits'] = $total_edits;

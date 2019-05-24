@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbe8453a3d2c27f21ed896369f9a22a7",
+    "content-hash": "7c04c70f26fb1916cf61a7caa171264b",
     "packages": [
         {
             "name": "krinkle/intuition",
@@ -233,7 +233,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-mysqli": "*"
     },
     "platform-dev": []
 }

@@ -1,6 +1,7 @@
 {
     "require": {
         "ext-json": "*",
+        "ext-mysqli": "*",
         "mthaml/mthaml": "1.8.0",
         "Krinkle/intuition": "^1.2.0",
         "whichbrowser/parser": "^2.0"
