@@ -3,7 +3,8 @@
 		"authors": [
 			"Metalhead64",
 			"FriedhelmW",
-			"Inkowik"
+			"Inkowik",
+			"Mirzali"
 		]
 	},
 	"active-users": "Aktive Benutzer",
@@ -83,6 +84,7 @@
 	"faq-agents-spider": "Schließt <a href=\"https://de.wikipedia.org/wiki/Webcrawler\">Webcrawler</a> von Suchmaschinen wie Google ein, die Seiten zur Verbesserung der Suchergebnisse lesen. Seiten können erhebliche Aufrufe von Webcrawlern erhalten, deshalb zeigt das Werkzeug standardmäßig nur Daten von Benutzern an.",
 	"faq-agents-title": "Was sind die „Agenten“?",
 	"faq-agents-user": "Schließt alle Menschen ein, die eine Seite betrachten. Autoren, anonyme Autoren und unsere Leser.",
+	"faq-anomaly-body1": "Wenn Sie eine unerklärliche Spitze in Seitenaufrufen sehen, insbesondere wenn dies nur an bestimmten Tagen der Fall ist, handelt es sich möglicherweise um falschen Datenverkehr aus einem automatisierten Programm. Eine Taktik zum Identifizieren von überladenem Datenverkehr besteht darin, Desktopansichten mit mobilen Ansichten zu vergleichen. Sehen Sie sich zunächst für alle Artikel an, welche Agenten in Ihrem Projekt am beliebtesten sind, und verwenden Sie diese als Vergleichsgrundlage. Beispielsweise sollten mobile Webansichten in der englischen Wikipedia vergleichbar sein, wenn sie nicht höher sind als Desktop-Ansichten. Wenn also die Anzahl der mobilen Webansichten sehr niedrig ist, kann dies zu falschem Datenverkehr führen.",
 	"faq-bug-report-body": "Wenn du ein Wiki zum Geben von Rückmeldungen nutzen möchtest, verwende das <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">Rückmeldungs-Forum</a> auf Meta. Du kannst Fehler auch auf <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\">Phabricator</a> melden.",
 	"faq-bug-report-title": "Ich möchte einen Funktionswunsch oder Fehler melden",
 	"faq-chart-type-body": "Klicke auf „$1“ und wähle zwischen sechs unterschiedlichen Typen. Die Anwendung speichert deine Einstellung. Standardmäßig zeigt dir die Anwendung beim Betrachten von Daten für eine einzelne Seite ein Säulendiagramm und für mehrere Seiten ein Liniendiagramm an. Beachte, dass Kreis-, Ring- und „Polar Area“-Diagramme nur Daten für eine Gesamtanzahl an Aufrufen innerhalb des Datumsbereichs anzeigen können.",
@@ -262,6 +264,7 @@
 	"param-error-1": "Leider enthält die Pageviews-API keine Daten, die älter sind als aus dem $1.",
 	"param-error-2": "Das Startdatum muss älter sein als das Enddatum.",
 	"param-error-3": "Ungültiger <code>$1</code>. Verwende stattdessen die Vorgabewerte. Siehe die $2 für weitere Informationen.",
+	"param-error-4": "Der Datumsbereich überschreitet das maximale Datum. Verwenden Sie stattdessen die Standardeinstellungen.",
 	"percent-mobile": "% Mobil",
 	"permalink": "Permanentlink",
 	"permalink-copied": "Permanentlink in die Zwischenablage kopiert",

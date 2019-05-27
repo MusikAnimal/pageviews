@@ -299,6 +299,7 @@
 	"unique-titles": "$1 {{PLURAL:$1|sivu|eri sivua}}",
 	"unknown": "Tuntematon",
 	"url-structure": "URL-rakenne",
+	"url-structure-agent": "Yksi seuravista: $1 (ihminen, oletus), $2 (hakukoneindeksoijat), $3 (WMF-botit) tai $4 ($1, $2 ja $3)",
 	"url-structure-pages": "Turvakoodatut sivujen nimet <code>|</code>-merkein eroteltuna. Esimerkki <code>Cat|Dog</code> (oletus)",
 	"url-structure-parameters": "Parametrit",
 	"url-structure-parameters-order": "Voidaan käyttää missä tahansa järjestyksessä",

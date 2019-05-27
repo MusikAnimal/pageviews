@@ -293,6 +293,7 @@
 	"unknown": "Không xác định",
 	"unsupported-browser-error": "$1 và trước đó không được hỗ trợ. Vui lòng <a href='http://browsehappy.com/'>cập nhật trình duyệt của bạn</a></strong>.",
 	"url-structure": "Cấu trúc của URL",
+	"url-structure-agent": "Một trong số $1 (người thật, mặc định), $2 (bot của công cụ tìm kiếm), $3 (bot của WMF), hoặc $4 ($1, $2, và $3)",
 	"url-structure-example": "Để xem thống kê mới nhất cho một trang cụ thể trên wiki của bạn, với những tùy chọn mặc định, hãy dùng:\n$1\nthay $2 bởi một $3 hợp lệ. $4 sẽ tự động chuyển thành tên của trang mà bạn đặt liên kết.",
 	"url-structure-onwiki-link": "Để liên kết đến trang hiện tại trên wiki, dùng $1",
 	"url-structure-page": "Tên trang được thoát.",

@@ -269,6 +269,7 @@
 	"param-error-1": "A API de Visualizações de Página não contem dados anteriores a $1. Desculpe.",
 	"param-error-2": "A data inicial deve ser mais antiga do que a data final.",
 	"param-error-3": "<code>$1</code> inválido: usando o código padrão no lugar. Veja $2 para mais informações.",
+	"param-error-4": "O período excede a data máxima. Usando padrões em vez disso.",
 	"percent-mobile": "% Mobile",
 	"permalink": "Link permanente",
 	"permalink-copied": "Link permanente copiada para a área de transferência",
