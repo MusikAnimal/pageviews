@@ -87,6 +87,7 @@
 	"faq-agents-spider": "에이전트는 검색 결과 개선을 목적으로 문서를 읽는, 구글과 같은 검색 엔진 \"<a href='https://en.wikipedia.org/wiki/Web_crawler'>웹 크롤러</a>\"를 포함합니다. 문서는 웹 크롤러로부터 상당한 조회수를 받을 수 있기 때문에 도구는 기본적으로 사용자로부터 온 데이터만 표시합니다.",
 	"faq-agents-title": "\"에이전트\"는 무엇입니까?",
 	"faq-agents-user": "에이전트는 문서를 보는 모든 사람을 포함합니다. 편집자, 익명 편집자, 독자.",
+	"faq-anomaly-title": "왜 일부 페이지의 조회수는 비정상적으로 높습니까?",
 	"faq-bug-report-body": "위키 사용 시 의견을 주고 싶으시다면, 메타의 <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>피드백 포럼</a>을 이용하십시오. <a href='https://phabricator.wikimedia.org/project/profile/2045/'>파브리케이터</a>에 문제를 보고할 수도 있습니다.",
 	"faq-bug-report-title": "기능 요청이나 보고할 버그가 있습니다.",
 	"faq-chart-type-body": "6개의 각기 다른 유형 중 선택하려면 \"$1\"을 선택하십시오. 앱은 환경 설정을 기억합니다. 기본적으로 응용 프로그램은 문서 하나에 대한 데이터를 볼 때 막대 도표를, 여러 문서를 볼 때에는 선 도표를 표시합니다. 파이, 도넛, 극지방 차트의 경우 날짜 범위 내의 총 조회수에 대해서만 데이터를 표시할 수 있습니다.",
