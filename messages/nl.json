@@ -8,7 +8,8 @@
 			"Siebrand",
 			"Romaine",
 			"Patio",
-			"KlaasZ4usV"
+			"KlaasZ4usV",
+			"McDutchie"
 		]
 	},
 	"active-users": "Actieve gebruikers",
@@ -69,7 +70,7 @@
 	"editors": "Bewerkers",
 	"edits": "Bewerkingen",
 	"elapsed-time": "Verstreken tijd: $1 {{PLURAL:$1|seconde|seconden}}",
-	"error-please-report": "<strong>Vernieuw de pagina</strong> om het opnieuw te proberen of <a target=\"_blank\" href=\"$1\">dit meld probleem</a>.",
+	"error-please-report": "<strong>Vernieuw de pagina</strong> om het opnieuw te proberen of <a target=\"_blank\" href=\"$1\">meld dit probleem</a>.",
 	"error-timed-out": "Er is een time-out opgetreden.",
 	"excluded-pages": "Uitgesloten pagina's",
 	"external-link": "Externe koppeling",
