@@ -203,7 +203,7 @@
 	"unique-titles": "$1 titulos unic",
 	"unsupported-browser-error": "$1 e versiones precedente non es supportate. <a href='http://browsehappy.com/'>Actualisa tu navigator</a></strong>.",
 	"url-structure": "Structura del URL",
-	"url-structure-agent": "Un de $1 (visitator human, predefinite), $2 (robots de motor de recerca web), $3 (robots de Wikimedia) or $4 (usator, robots de motor de recerca web e robots de Wikimedia)",
+	"url-structure-agent": "Un de $1 (visitator human, predefinite), $2 (robots de motor de recerca web) o $3 ($1 e $2)",
 	"url-structure-end-date": "Data de fin in le formato $1, le die precedente es predefinite",
 	"url-structure-example": "Pro obtener le ultime datos sur un certe articulo in tu wiki, con optiones predefinite, usa:\n$1\nreimplaciante $2 per un $3 valide. $4 devenira le pagina sur le qual le ligamine es inserite",
 	"url-structure-example-siteviews": "Pro obtener le ultime datos sur un certe articulo in tu wiki, con optiones predefinite, usa:\n$1",
