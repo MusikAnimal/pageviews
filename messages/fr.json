@@ -19,7 +19,8 @@
 			"Pamputt",
 			"Fitoschido",
 			"Niridya",
-			"Ltrlg"
+			"Ltrlg",
+			"VIGNERON"
 		]
 	},
 	"active-users": "Utilisateurs actifs",
@@ -227,7 +228,7 @@
 	"may": "mai",
 	"median": "Médiane",
 	"mediaviews": "Vues du média",
-	"mediaviews-description": "Comparaison des nombres d’exécution des audios et vidéos sur Wikimédia Communs",
+	"mediaviews-description": "Comparaison des nombres d’exécution des audios et vidéos sur Wikimédia Commons",
 	"mediaviews-title": "Analyse des vues de média",
 	"metric": "Métrique",
 	"mo": "Lu",
@@ -376,7 +377,7 @@
 	"url-structure-massviews-project": "Un $1 valide pour les pages de résultats de Quarry.",
 	"url-structure-massviews-target": "L’ID de pile de page, ou l’URL complète d’une catégorie. Si un point d’interrogation <code>?</code> est dans l’URL, il <strong>doit être encodé</strong>.",
 	"url-structure-massviews-target-example": "Par exemple, <strong>ne pas utiliser</strong>:\n$1\nA la place, utiliser :\n$2\nOu vous pouvez simplement utiliser l'URL raccourcie du wiki :\n$3",
-	"url-structure-mediaviews-example": "Pour obtenir les dernières données d'un fichier exécutable sur Wikimédia Communs, avec les options par défaut, utilisez :\n$1\n$2 sera remplacé par le nom de fichier sur lequel le lien est placé.",
+	"url-structure-mediaviews-example": "Pour obtenir les dernières données d'un fichier exécutable sur Wikimédia Commons, avec les options par défaut, utilisez :\n$1\n$2 sera remplacé par le nom de fichier sur lequel le lien est placé.",
 	"url-structure-onwiki-link": "Pour être redirigé vers la page courante sur le wiki, utilisez $1",
 	"url-structure-page": "Nom de page échappé.",
 	"url-structure-pages": "Noms de page échappés séparés par un caractère <code>|</code> comme <code>Chat|Chien</code> (par défaut)",
