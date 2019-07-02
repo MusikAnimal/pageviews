@@ -366,6 +366,7 @@
 	"url-structure-autolog": "Documentation for the 'autolog' parameter. $1 is the only valid value for this parameter, and $2 is the i18n message 'logarithmic-scale'.",
 	"url-structure-current": "Documentation for the 'current' parameter, which evaluates to the most recent day.",
 	"url-structure-end-date": "Documentation for the 'end' parameter, stating it defaults to the previous day. $1 is the date format used.",
+	"url-structure-end-date-latest": "Documentation for using the latest available day as the 'end' parameter.",
 	"url-structure-end-month": "Documentation for the 'end' parameter when targeting a specific month instead of a day. $1 is the format used.",
 	"url-structure-example": "Example of how to link to Pageviews Analysis on a wiki. $1 is the example link, $2 is the example project, $3 is the link to the site matrix, $4 is {{FULLPAGENAMEE}}",
 	"url-structure-example-siteviews": "Example of how to link to Siteviews Analysis on a wiki. $1 is the example link. This message is the same as the first sentence of 'url-structure-example'",

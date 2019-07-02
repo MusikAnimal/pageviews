@@ -319,6 +319,8 @@ class Pv extends PvConfig {
       }
       if (params.end && dateRegex.test(params.end)) {
         endDate = moment(params.end);
+      } else if ('latest' === params.end) {
+        endDate = this.config.maxDate;
       } else {
         this.addInvalidParamNotice('end');
         return false;

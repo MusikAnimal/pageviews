@@ -52,5 +52,7 @@
   <?php if ( in_array( $currentApp, [ 'pageviews' ] ) ) { ?>
     <br>
     <?php echo $I18N->msg( 'url-structure-end-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] ); ?>
+    <br>
+    <?php echo $I18N->msg( 'url-structure-end-date-latest', [ 'variables' => [ '<code>latest</code>' ] ] ); ?>
   <?php } ?>
 </dd>

@@ -350,6 +350,7 @@
 	"url-structure-autolog": "Set to $1 to disable automatically setting the $2 option",
 	"url-structure-current": "The latest available day.",
 	"url-structure-end-date": "End date in the format $1, defaults to previous day.",
+	"url-structure-end-date-latest": "Use $1 for the latest available day.",
 	"url-structure-end-month": "Using the format $1 will be treated as the end month, and show monthly data instead of daily.",
 	"url-structure-example": "To get the latest data on a given page on your wiki, with default options, use:\n$1\nreplacing $2 with a valid $3. $4 will resolve to the page the link is placed on",
 	"url-structure-example-siteviews": "To get the latest data on total pageviews of all pages on your wiki, with default options, use:\n$1",
