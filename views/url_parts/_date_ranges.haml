@@ -30,12 +30,17 @@
       %code last-month
       = $defaultRange === 'last-month' ? $defaultMsg : ''
       = $I18N->msg( 'last-month' )
+    %li
+      %code all-time
+      = $I18N->msg( 'all-time' )
 %dt start
 %dd
   = $I18N->msg( 'url-structure-start-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>', '<code>end</code>' ], 'parsemag' => true ] )
   - if ( in_array( $currentApp, [ 'pageviews' ] ) )
     %br
     = $I18N->msg( 'url-structure-start-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] )
+    %br
+    = $I18N->msg( 'url-structure-start-date-earliest', [ 'variables' => [ '<code>earliest</code>' ] ] )
 %dt end
 %dd
   = $I18N->msg( 'url-structure-end-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>' ], 'parsemag' => true ] )

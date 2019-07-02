@@ -36,6 +36,10 @@
       <?php echo $defaultRange === 'last-month' ? $defaultMsg : ''; ?>
       <?php echo $I18N->msg( 'last-month' ); ?>
     </li>
+    <li>
+      <code>all-time</code>
+      <?php echo $I18N->msg( 'all-time' ); ?>
+    </li>
   </ul>
 </dd>
 <dt>start</dt>
@@ -44,6 +48,8 @@
   <?php if ( in_array( $currentApp, [ 'pageviews' ] ) ) { ?>
     <br>
     <?php echo $I18N->msg( 'url-structure-start-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] ); ?>
+    <br>
+    <?php echo $I18N->msg( 'url-structure-start-date-earliest', [ 'variables' => [ '<code>earliest</code>' ] ] ); ?>
   <?php } ?>
 </dd>
 <dt>end</dt>

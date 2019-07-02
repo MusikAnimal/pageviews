@@ -313,6 +313,8 @@ class Pv extends PvConfig {
       // then check format of start and end date
       if (params.start && dateRegex.test(params.start)) {
         startDate = moment(params.start);
+      } else if ('earliest' === params.start) {
+        startDate = this.minDate;
       } else {
         this.addInvalidParamNotice('start');
         return false;
@@ -334,17 +336,18 @@ class Pv extends PvConfig {
         `);
         return false;
       } else if (startDate < this.minDate) {
-        this.toastError(`
+        this.toastWarn(`
           <strong>${$.i18n('invalid-params')}</strong>
           ${$.i18n('param-error-1', moment(this.minDate).format(this.dateFormat))}
         `);
-        return false;
+        startDate = this.minDate;
+        params.start = this.minDate;
       } else if (endDate > this.maxDate) {
-        this.toastError(`
+        this.toastWarn(`
           <strong>${$.i18n('invalid-params')}</strong>
           ${$.i18n('param-error-4')}
         `);
-        return false;
+        endDate = this.maxDate;
       }
 
       if (params.monthly && ['pageviews', 'siteviews'].includes(this.app)) {
@@ -1606,7 +1609,7 @@ class Pv extends PvConfig {
 
     if (this.isPagecounts()) {
       // pagecounts only gets one special range, all-time. The others don't apply
-      //  because this is legacy data only avaialbe through August 2016
+      //  because this is legacy data only available through August 2016
       ranges = {
         [$.i18n('all-time')]: [this.config.minDatePagecounts, this.config.maxDatePagecounts]
       };
