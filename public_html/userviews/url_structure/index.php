@@ -69,6 +69,7 @@
               <?php echo $I18N->msg( 'url-structure-sort-direction', [ 'variables' => [ '<code>1</code>', '<code>-1</code>' ], 'parsemag' => true ] ); ?>
             </dd>
             <?php include "../../url_parts/_autolog.php"; ?>
+            <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

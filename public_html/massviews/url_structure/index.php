@@ -81,6 +81,7 @@
               <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
               <?php echo $I18N->msg( 'url-structure-massviews-project', [ 'variables' => [ $sitematrixLink ], 'parsemag' => true ] ); ?>
             </dd>
+            <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

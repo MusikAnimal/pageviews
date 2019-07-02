@@ -132,7 +132,7 @@
 	"pageviews": "Хуудасны дуудалт",
 	"param-error-1": "Уучлаарай, Pageviews-API нь $1-с хуучин мэдээлэл хадгалаагүй байна.",
 	"param-error-2": "Эхлэх хугацаа нь төгсгөлийн хугацаанаас эрт байх ёстой.",
-	"param-error-3": "Хүчингүй <код>$1</код>. Үүний оронд стандарт хэсгийг ашиглана уу. Verwende stattdessen den Standardbereich. Нэмэлт мэдээллийг $2 үзнэ үү!",
+	"param-error-3": "Хүчингүй <код>$1</код>. Үүний оронд стандарт хэсгийг ашиглана уу. Verwende stattdessen den Standardbereich.",
 	"percent-mobile": "% гар утас",
 	"permalink": "Байнгын холбоос",
 	"pie": "Тойрог",

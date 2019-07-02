@@ -47,6 +47,7 @@ class Pv extends PvConfig {
      */
     this.processStart = null;
 
+    this.muteValidations = location.search.includes('mutevalidations=true');
     this.debug = location.search.includes('debug=true') || location.host.includes('localhost');
 
     /** redirect to production if debug flag isn't given */
@@ -184,15 +185,15 @@ class Pv extends PvConfig {
    * @param {Object} opts - as follows:
    * {
    *   message: '',       // {String} message - message to show
-   *   level: 'warning',  // one of 'success', 'info', 'warning', 'error'
+   *   level: 'warning',  // {String} [level] - one of 'success', 'info', 'warning', 'error'
    *   timeout: 10,       // {Number} [timeout] - in seconds. Use 0 to show indefinitely
    *   title: ''          // {String} [title] - will appear in bold and in front of the message
    * }
    */
   toast(opts) {
     const title = opts.title ? `<strong>${opts.title}</strong> ` : '';
+    opts.message = title + opts.message;
     opts = Object.assign({
-      message: title + opts.message,
       level: 'warning',
       timeout: 10
     }, opts);
@@ -238,15 +239,27 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Add site notice for invalid parameter
-   * @param {String} param - name of parameter
+   * Add site notice for invalid parameter. Prefixes the given msg with "Invalid parameters!" in bold,
+   * and appends "See the documentation for more information".
+   * @param {String} msg Message to show. Defaults to
+   * @param {String} [level] One of 'success', 'info', 'warning', 'error'
+   * @param {String} [docPath] Relative path to docs.
+   *   Defaults to /url_structure, but you may want to link to an FAQ entry.
    */
-  addInvalidParamNotice(param) {
-    const docLink = `<a href='/${this.app}/url_structure'>${$.i18n('documentation').toLowerCase()}</a>`;
-    this.toastError(`
-      <strong>${$.i18n('invalid-params')}</strong>
-      ${$.i18n('param-error-3', param, docLink)}
-    `);
+  addInvalidParamNotice(msg, level = 'error', docPath = '/url_structure') {
+    if (this.muteValidations) {
+      return;
+    }
+
+    // Remove extraneous full stops.
+    msg = msg.replace(/\.+$/, '') + '.';
+    const docLink = `<a href='/${this.app}${docPath}'>${$.i18n('documentation').toLowerCase()}</a>`;
+
+    this.toast({
+      message: `${msg} ${$.i18n('param-error-see-docs', docLink)}`,
+      level,
+      title: $.i18n('invalid-params'),
+    });
   }
 
   /**
@@ -290,7 +303,7 @@ class Pv extends PvConfig {
   validateDateRange(params) {
     if (params.range) {
       if (!this.setSpecialRange(params.range)) {
-        this.addInvalidParamNotice('range');
+        this.addInvalidParamNotice($.i18n('param-error-3', 'range'));
         this.setSpecialRange(this.config.defaults.dateRange);
       }
     } else if (params.start) {
@@ -316,7 +329,7 @@ class Pv extends PvConfig {
       } else if ('earliest' === params.start) {
         startDate = this.minDate;
       } else {
-        this.addInvalidParamNotice('start');
+        this.addInvalidParamNotice($.i18n('param-error-3', 'start'));
         return false;
       }
       if (params.end && dateRegex.test(params.end)) {
@@ -324,29 +337,24 @@ class Pv extends PvConfig {
       } else if ('latest' === params.end) {
         endDate = this.config.maxDate;
       } else {
-        this.addInvalidParamNotice('end');
+        this.addInvalidParamNotice($.i18n('param-error-3', 'end'));
         return false;
       }
 
       // check if they are outside the valid range or if in the wrong order
       if (startDate > endDate) {
-        this.toastError(`
-          <strong>${$.i18n('invalid-params')}</strong>
-          ${$.i18n('param-error-2')}
-        `);
+        this.addInvalidParamNotice($.i18n('param-error-2'));
         return false;
       } else if (startDate < this.minDate) {
-        this.toastWarn(`
-          <strong>${$.i18n('invalid-params')}</strong>
-          ${$.i18n('param-error-1', moment(this.minDate).format(this.dateFormat))}
-        `);
+        this.addInvalidParamNotice(
+          $.i18n('param-error-1', moment(this.minDate).format(this.dateFormat)),
+          'warning',
+          '/faq#old_data'
+        );
         startDate = this.minDate;
         params.start = this.minDate;
       } else if (endDate > this.maxDate) {
-        this.toastWarn(`
-          <strong>${$.i18n('invalid-params')}</strong>
-          ${$.i18n('param-error-4')}
-        `);
+        this.addInvalidParamNotice($.i18n('param-error-4'), 'warning');
         endDate = this.maxDate;
       }
 
@@ -424,8 +432,7 @@ class Pv extends PvConfig {
     if (typeof link.download === 'string') {
       document.body.appendChild(link); // Firefox requires the link to be in the body
 
-      const filename = `${this.getExportFilename()}.${extension}`;
-      link.download = filename;
+      link.download = `${this.getExportFilename()}.${extension}`;
       link.href = encodedUri;
       link.click();
 
@@ -1118,14 +1125,14 @@ class Pv extends PvConfig {
    * @returns {Boolean} is multilingual or not
    */
   isMultilangProject(project = this.project) {
-    return new RegExp(`.*?\\.(${Pv.multilangProjects.join('|')})`).test(project);
+    return new RegExp(`.*?\\.(${this.multilangProjects.join('|')})`).test(project);
   }
 
   /**
    * List of valid multilingual projects
    * @return {Array} base projects, without the language
    */
-  static get multilangProjects() {
+  get multilangProjects() {
     return [
       'wikipedia',
       'wikibooks',
@@ -1273,7 +1280,7 @@ class Pv extends PvConfig {
 
   /**
    * Compute how many days are in the selected date range
-   * @returns {integer} number of days
+   * @returns {Number} number of days
    */
   numDaysInRange() {
     return this.daterangepicker.endDate.diff(this.daterangepicker.startDate, 'days') + 1;
@@ -1533,7 +1540,7 @@ class Pv extends PvConfig {
   /**
    * Setup colors for Select2 entries so we can dynamically change them
    * This is a necessary evil, as we have to mark them as !important
-   *   and since there are any number of entires, we need to use nth-child selectors
+   *   and since there are any number of entries, we need to use nth-child selectors
    * @returns {CSSStylesheet} our new stylesheet
    */
   setupSelect2Colors() {
@@ -1855,7 +1862,7 @@ class Pv extends PvConfig {
       if (defaultValue !== undefined && !this.config.validParams[paramKey].includes(paramValue)) {
         // only throw error if they tried to provide an invalid value
         if (!!paramValue) {
-          this.addInvalidParamNotice(paramKey);
+          this.addInvalidParamNotice($.i18n('param-error-3', paramKey));
         }
 
         params[paramKey] = defaultValue;

@@ -49,6 +49,7 @@
             <?php include "../../url_parts/_platform.php"; ?>
             <?php include "../../url_parts/_agent.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
+            <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

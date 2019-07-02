@@ -67,6 +67,7 @@
             <dd><?php echo $I18N->msg( 'url-structure-topviews-mobileviews', [ 'variables' => [ $I18N->msg( 'show-mobile-percentages' ), '<code>platform</code>', '<code>all-access</code>' ] ] ); ?></dd>
             <dt>mainspace</dt>
             <dd><?php echo $I18N->msg( 'url-structure-topviews-mainspace' ); ?></dd>
+            <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

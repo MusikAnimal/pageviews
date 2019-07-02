@@ -43,6 +43,7 @@
             <?php $defaultRange = 'latest'; ?>
             <?php include "../../url_parts/_date_ranges.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
+            <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>
         </div>
         <div class="col-lg-12 text-center tm">

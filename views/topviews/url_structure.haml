@@ -60,6 +60,8 @@
             %dt mainspace
             %dd= $I18N->msg( 'url-structure-topviews-mainspace' )
 
+            - include "../../url_parts/_mute_validations.php"
+
         %div.col-lg-12.text-center.tm
           %a(href="/topviews")
             = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'topviews-title' ) ], 'parsemag' => true ] )
