@@ -325,7 +325,7 @@ gulp.task('help', nonMetaApps.map(app => `scripts-${app}-help`), () => {
   gulp.src('').pipe(notify('Help task complete'));
 });
 
-// Temporary
+// For only Toolviews
 gulp.task('toolviews', ['styles-toolviews', 'scripts-toolviews', 'views-toolviews']);
 
 apps.forEach(app => {

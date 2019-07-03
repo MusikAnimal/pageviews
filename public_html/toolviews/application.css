@@ -847,14 +847,6 @@ footer {
 .output-table {
   display: none;
   white-space: nowrap; }
-  .output-table.show-mobile .toolview-entry--mobile {
-    display: table-cell; }
-
-.toolview-entry--mobile {
-  display: none; }
-
-.percent-mobile-wrapper {
-  display: none; }
 
 .toolview-entry {
   height: 40px;
@@ -862,21 +854,10 @@ footer {
   overflow: auto; }
   .toolview-entry td {
     vertical-align: inherit !important; }
-  .toolview-entry:hover .toolview-entry--rank {
-    visibility: hidden; }
-  .toolview-entry:hover .toolview-entry--remove {
-    display: block; }
 
 .toolview-entry--rank-wrapper {
   position: relative;
   width: 5%; }
-
-.toolview-entry--remove {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  display: none; }
 
 .toolview-entry--rank {
   font-weight: bold; }
@@ -893,32 +874,10 @@ footer {
   .toolview-entry--background.animate {
     width: 100%; }
 
-.rtl .toolview-entry--background {
-  left: inherit;
-  right: 0; }
-
-.rtl .download-btn-group .dropdown-menu {
-  left: 0 !important;
-  right: auto !important; }
-
-.rtl .toolviews-toggles input[type=checkbox] {
-  margin-left: auto;
-  margin-right: 15px; }
-
 .toolview-entry--label-wrapper {
   max-width: 675px;
   overflow: hidden;
   text-overflow: ellipsis; }
-
-.select2-selection {
-  border-radius: 4px !important;
-  pointer-events: none; }
-
-.select2-selection__choice__remove {
-  pointer-events: visible; }
-
-.select2-dropdown--below {
-  display: none; }
 
 .show-more {
   display: none; }
@@ -929,46 +888,11 @@ footer {
 .search-method-options {
   display: none; }
 
-.data-notice {
-  clear: both;
-  padding: 0 15px; }
-
-.search-toolviews {
-  margin-top: 15px; }
-  .search-toolviews .glyphicon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 10px; }
-  .search-toolviews .toolviews-search-icon.glyphicon-remove {
-    cursor: pointer;
-    z-index: 10; }
-
-.data-links {
-  visibility: visible; }
-
 .complete .show-more {
   display: block; }
 
 .complete .output-table {
   display: table; }
-
-.report-false-positive,
-.list-false-positives {
-  display: none; }
-
-.false-positive-list input {
-  margin-right: 5px; }
-
-.false-positive-list label {
-  font-weight: bold; }
-
-.search .output-table {
-  display: table; }
-  .search .output-table .toolview-entry--mobile,
-  .search .output-table .toolview-entry--edits,
-  .search .output-table .toolview-entry--editors {
-    display: none; }
 
 .loading .data-links,
 .reset .data-links {
@@ -986,12 +910,8 @@ footer {
 .message-container {
   margin-bottom: 10px; }
 
-.mainspace-only-option[type=checkbox] {
-  margin-left: 10px; }
+footer {
+  min-height: 95px !important; }
 
-@media (max-width: 1200px) {
-  .data-notice {
-    clear: left;
-    padding-top: 15px; }
-  .rtl .data-notice {
-    clear: right; } }
+.spacer {
+  height: 95px !important; }

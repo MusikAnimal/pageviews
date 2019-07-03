@@ -9,14 +9,15 @@
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport">
     <link rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="images/favicon.ico?v=3">
-    <script src="<?php echo BASE_PATH; ?>/toolviews/application.js"></script>
-    <link href="<?php echo BASE_PATH; ?>/toolviews/application.css" rel="stylesheet">
+    <script src="/toolviews/application.js"></script>
+    <link href="/toolviews/application.css" rel="stylesheet">
     <title>Toolviews</title>
   </head>
   <body class="clearfix toolviews">
     <header class="site-header">
       <h4 class="text-center">
         <strong>Toolviews</strong>
+        <small class="app-description">Pageviews to Toolforge tools</small>
       </h4>
     </header>
     <main class="col-lg-8 col-lg-offset-2">
@@ -49,5 +50,23 @@
         </a>
       </div>
     </main>
+    <div class="spacer"></div>
+    <footer>
+      <hr>
+      <span>
+        <?php $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>"; ?>
+        <?php $CloudServices = "<a href='https://www.mediawiki.org/wiki/Wikimedia_Cloud_Services_team'>Wikimedia Cloud Services</a>"; ?>
+        <?php $contributors = "contributors"; ?>
+        Brought to you by the <?php echo $CloudServices; ?> team, <?php echo $MusikAnimal; ?> and <?php echo $contributors; ?>.
+      </span>
+      <div>
+        <span class="nowrap">
+          <?php $heart = "<span class='heart'>&hearts;</span>"; ?>
+          <?php $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Toolforge'>Toolforge</a>"; ?>
+          Hosted with <?php echo $heart; ?> on <?php echo $host; ?> &middot;
+          <a href="https://github.com/MusikAnimal/pageviews">View source</a>
+        </span>
+      </div>
+    </footer>
   </body>
 </html>

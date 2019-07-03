@@ -94,7 +94,14 @@ class Pv extends PvConfig {
       }
     });
 
-    this.setupNavCollapsing();
+    // Things that are done everywhere except Toolviews.
+    if ('/toolviews' !== location.pathname) {
+
+      this.setupNavCollapsing();
+    } else {
+      // Just load the app for Toolviews.
+      this.initialize();
+    }
 
     /** set up toastr config. The duration may be overriden later */
     toastr.options = {
@@ -129,6 +136,13 @@ class Pv extends PvConfig {
    * Make sure we load 'en.json' as a fallback.
    */
   loadTranslations() {
+    // FIXME: remove this when full i18n integration has been added to Toolviews.
+    if ('/toolviews' === location.pathname) {
+      window.i18nLang = 'en';
+      window.appPath = '';
+      window.currentApp = 'toolviews';
+    }
+
     let messagesToLoad = {
       [i18nLang]: `${appPath}/${currentApp}/messages/${i18nLang}.json`
     };
@@ -1569,8 +1583,11 @@ class Pv extends PvConfig {
     $("a[href='#']").on('click', e => e.preventDefault());
 
     /** download listeners */
-    $('.download-csv').on('click', this.exportCSV.bind(this));
-    $('.download-json').on('click', this.exportJSON.bind(this));
+    // FIXME:
+    if ('toolviews' !== this.app) {
+      $('.download-csv').on('click', this.exportCSV.bind(this));
+      $('.download-json').on('click', this.exportJSON.bind(this));
+    }
 
     /** project input listeners, saving and restoring old value if new one is invalid */
     $(this.config.projectInput).on('focusin', function() {

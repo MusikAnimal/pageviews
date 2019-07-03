@@ -275,34 +275,6 @@ class TopViews extends Pv {
   }
 
   /**
-   * Exports current chart data to CSV format and loads it in a new tab
-   * With the prepended data:text/csv this should cause the browser to download the data
-   * @override
-   */
-  exportCSV() {
-    let csvContent = `data:text/csv;charset=utf-8,Page,Edits,Editors,Views${this.shouldShowMobile() ? ',Mobile %' : ''}\n`;
-
-    this.pageData.forEach(entry => {
-      if (this.excludes.includes(entry.article) || this.autoExcludes.includes(entry.article)) return;
-
-      // Build an array of page titles for use in the CSV header
-      const title = '"' + entry.article.replace(/"/g, '""') + '"';
-
-      const editData = this.editData[entry.article] || {},
-        edits = typeof editData.num_edits === 'number' ? editData.num_edits : '?',
-        editors = typeof editData.num_users === 'number' ? editData.num_users : '?';
-
-      csvContent += `${title},${edits},${editors},${entry.views}`;
-      if (this.shouldShowMobile()) {
-        csvContent += `,${this.percentMobile(entry)}`;
-      }
-      csvContent += '\n';
-    });
-
-    this.downloadData(csvContent, 'csv');
-  }
-
-  /**
    * Exports current chart data to JSON format and loads it in a new tab
    * @override
    */

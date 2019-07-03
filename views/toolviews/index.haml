@@ -9,13 +9,14 @@
     %meta(content="black-translucent" name="apple-mobile-web-app-status-bar-style")
     %meta(content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport")
     %link(rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="images/favicon.ico?v=3")
-    %script(src="#{BASE_PATH}/toolviews/application.js")
-    %link(href="#{BASE_PATH}/toolviews/application.css" rel="stylesheet")
+    %script(src="/toolviews/application.js")
+    %link(href="/toolviews/application.css" rel="stylesheet")
     %title Toolviews
   %body(class="clearfix toolviews")
     %header.site-header
       %h4.text-center
         %strong Toolviews
+        %small.app-description Pageviews to Toolforge tools
 
     %main.col-lg-8.col-lg-offset-2
       %div.form-wrapper
@@ -40,7 +41,19 @@
         %a.show-more(href="#")
           Show more
 
-    -#%div.spacer
-    -#%footer
-    -#  %hr
-    -#  %a(href="https://github.com/MusikAnimal/pageviews") View source
+    %div.spacer
+    %footer
+      %hr
+
+      %span
+        - $MusikAnimal = "<a href='https://en.wikipedia.org/wiki/User:MusikAnimal'>MusikAnimal</a>";
+        - $CloudServices = "<a href='https://www.mediawiki.org/wiki/Wikimedia_Cloud_Services_team'>Wikimedia Cloud Services</a>";
+        - $contributors = "contributors";
+        Brought to you by the #{$CloudServices} team, #{$MusikAnimal} and #{$contributors}.
+
+      %div
+        %span.nowrap
+          - $heart = "<span class='heart'>&hearts;</span>";
+          - $host = "<a href='https://wikitech.wikimedia.org/wiki/Portal:Toolforge'>Toolforge</a>";
+          Hosted with #{$heart} on #{$host} &middot;
+          %a(href="https://github.com/MusikAnimal/pageviews") View source

@@ -4027,7 +4027,14 @@ var Pv = function (_PvConfig) {
       }
     });
 
-    _this.setupNavCollapsing();
+    // Things that are done everywhere except Toolviews.
+    if ('/toolviews' !== location.pathname) {
+
+      _this.setupNavCollapsing();
+    } else {
+      // Just load the app for Toolviews.
+      _this.initialize();
+    }
 
     /** set up toastr config. The duration may be overriden later */
     toastr.options = {
@@ -4067,6 +4074,13 @@ var Pv = function (_PvConfig) {
   _createClass(Pv, [{
     key: 'loadTranslations',
     value: function loadTranslations() {
+      // FIXME: remove this when full i18n integration has been added to Toolviews.
+      if ('/toolviews' === location.pathname) {
+        window.i18nLang = 'en';
+        window.appPath = '';
+        window.currentApp = 'toolviews';
+      }
+
       var messagesToLoad = _defineProperty({}, i18nLang, appPath + '/' + currentApp + '/messages/' + i18nLang + '.json');
       if (i18nLang !== 'en') {
         if ($.i18n.fallbacks[i18nLang]) {
@@ -5678,8 +5692,11 @@ var Pv = function (_PvConfig) {
       });
 
       /** download listeners */
-      $('.download-csv').on('click', this.exportCSV.bind(this));
-      $('.download-json').on('click', this.exportJSON.bind(this));
+      // FIXME:
+      if ('toolviews' !== this.app) {
+        $('.download-csv').on('click', this.exportCSV.bind(this));
+        $('.download-json').on('click', this.exportJSON.bind(this));
+      }
 
       /** project input listeners, saving and restoring old value if new one is invalid */
       $(this.config.projectInput).on('focusin', function () {
@@ -7372,41 +7389,35 @@ module.exports = siteMap;
 'use strict';
 
 /**
- * @file Configuration for Topviews application
+ * @file Configuration for Toolviews application
  * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
+ * @copyright 2019 MusikAnimal
  */
 
 var pv = require('../shared/pv');
 
 /**
- * Configuration for Topviews application.
- * This includes selectors, defaults, and other constants specific to Topviews
+ * Configuration for Toolviews application.
+ * This includes selectors, defaults, and other constants specific to Toolviews
  * @type {Object}
  */
 var config = {
-  select2Input: '.aqs-select2-selector',
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
-    dateRange: 'last-month',
-    excludes: []
+    dateRange: 'yesterday'
   },
   formStates: ['processing', 'complete', 'search', 'reset'],
-  maxDate: moment().subtract(1, 'day').startOf('day').utc().toDate(),
-  maxYear: moment().subtract(1, 'year').startOf('year').utc().toDate(),
+  minDate: moment('2018-04-29').startOf('day'),
+  maxDate: moment().startOf('day').utc().toDate(),
   pageSize: 100,
-  platformSelector: '#platform-select',
-  projectInput: '.aqs-project-input',
-  validateParams: ['project', 'platform'],
-  timestampFormat: 'YYYYMMDD00'
+  timestampFormat: 'YYYY-MM-DD',
+  validateParams: []
 };
 
 module.exports = config;
 
 },{"../shared/pv":3}],7:[function(require,module,exports){
 'use strict';
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -7419,10 +7430,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Topviews Analysis tool
- * @file Main file for Topviews application
+ * Toolviews Analysis tool
+ * @file Main file for Toolviews application
  * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
+ * @copyright 2019 MusikAnimal
  * @license MIT License: https://opensource.org/licenses/MIT
  * @requires Pv
  */
@@ -7430,32 +7441,30 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var config = require('./config');
 var Pv = require('../shared/pv');
 
-/** Main TopViews class */
+/** Main ToolViews class */
 
-var TopViews = function (_Pv) {
-  _inherits(TopViews, _Pv);
+var ToolViews = function (_Pv) {
+  _inherits(ToolViews, _Pv);
 
   /**
    * Set instance variables and boot the app via pv.constructor
    * @override
    */
-  function TopViews() {
-    _classCallCheck(this, TopViews);
+  function ToolViews() {
+    _classCallCheck(this, ToolViews);
 
-    var _this = _possibleConstructorReturn(this, (TopViews.__proto__ || Object.getPrototypeOf(TopViews)).call(this, config));
+    // FIXME: for when localization is supported.
+    window.i18nLang = 'en';
+    window.i18nRtl = false;
 
-    _this.app = 'topviews';
+    var _this = _possibleConstructorReturn(this, (ToolViews.__proto__ || Object.getPrototypeOf(ToolViews)).call(this, config));
 
-    _this.excludes = [];
-    _this.autoExcludes = [];
+    _this.app = 'toolviews';
+
     _this.offset = 0;
     _this.offsetEnd = 0;
     _this.max = null;
-    _this.pageData = [];
-    _this.pageNames = [];
-    _this.mobileViews = {};
-    _this.editData = {};
-    _this.excludeAdded = false;
+    _this.toolData = [];
     return _this;
   }
 
@@ -7465,7 +7474,7 @@ var TopViews = function (_Pv) {
    */
 
 
-  _createClass(TopViews, [{
+  _createClass(ToolViews, [{
     key: 'initialize',
     value: function initialize() {
       this.popParams();
@@ -7480,7 +7489,9 @@ var TopViews = function (_Pv) {
 
   }, {
     key: 'processInput',
-    value: function processInput(force) {
+    value: function processInput() {
+      var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       this.pushParams();
 
       /** prevent redundant querying */
@@ -7492,35 +7503,11 @@ var TopViews = function (_Pv) {
 
       this.params = location.search;
 
-      $('#topviews_search_field').val('');
+      // $('#toolviews_search_field').val('');
       this.setState('reset');
       this.setState('processing');
 
       return this.initData().then(this.showList.bind(this));
-    }
-
-    /**
-     * Get a string for % of mobile traffic.
-     * @param {Object} item The item within this.pageData
-     * @returns {String}
-     */
-
-  }, {
-    key: 'percentMobile',
-    value: function percentMobile(item) {
-      var percentage = '';
-
-      if (this.isYearly()) {
-        percentage = item.mobile_percentage;
-      } else {
-        percentage = (this.mobileViews[item.article] / item.views * 100).toFixed(1);
-      }
-
-      if (parseFloat(percentage) === 0.0) {
-        percentage = '< 0.1';
-      }
-
-      return percentage;
     }
 
     /**
@@ -7532,251 +7519,63 @@ var TopViews = function (_Pv) {
     value: function showList() {
       var _this2 = this;
 
-      $('.topview-entries').html('');
+      $('.toolview-entries').html('');
 
-      var pageDataLength = this.pageData.length;
+      var toolDataLength = this.toolData.length;
 
       var count = 0,
           index = 0;
 
-      while (count < this.config.pageSize + this.offset && index < pageDataLength) {
-        var item = this.pageData[index++];
+      for (var tool in this.toolData) {
+        var views = this.toolData[tool];
 
-        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) continue;
-        if (!this.max) this.max = item.views;
+        if (!this.max) this.max = views;
 
-        var width = 100 * (item.views / this.max),
+        var width = 100 * (views / this.max),
             direction = !!i18nRtl ? 'to left' : 'to right',
             offsetTop = count * 40 + 40;
 
-        var percentMobileText = this.shouldShowMobile() ? this.percentMobile(item) + '%' : '',
-            editData = this.editData[item.article] || {},
-            editors = typeof editData.num_users === 'number' ? this.formatNumber(editData.num_users) : '?';
+        $('.toolview-entries').append('<tr class=\'toolview-entry\' id=\'toolview-entry-' + index + '\'>\n           <td class=\'toolview-entry--rank-wrapper\'>\n             <span class=\'toolview-entry--rank\'>' + ++count + '</span>\n           </td>\n           <td class=\'toolview-entry--label-wrapper\'>\n             <span class=\'toolview-entry--background\' style=\'top:' + offsetTop + 'px; background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%); opacity: 0.6\'></span>\n             <div class=\'toolview-entry--label\'>' + this.getToolLink(tool) + '</div>\n           </td>\n           <td>\n             <a class=\'toolview-entry--views\' href=\'' + this.getPageviewsURL(tool) + '\' target=\'_blank\'>' + this.formatNumber(views) + '</a>\n           </td>\n        </tr>');
 
-        // create link to edit history or ? if no data is available
-        var edits = '?';
-        if (typeof editData.num_edits === 'number') {
-          var _getDates = this.getDates(),
-              _getDates2 = _slicedToArray(_getDates, 2),
-              endDate = _getDates2[1];
-
-          edits = this.getHistoryLink(item.article, this.formatNumber(editData.num_edits), endDate, editData.num_edits);
-        }
-
-        $('.topview-entries').append('<tr class=\'topview-entry\' id=\'topview-entry-' + index + '\'>\n           <td class=\'topview-entry--rank-wrapper\'>\n             <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + (index - 1) + '\n               title=\'' + $.i18n('topviews-remove-page') + '\' aria-hidden=\'true\'></span>\n             <span class=\'topview-entry--rank\'>' + ++count + '</span>\n           </td>\n           <td class=\'topview-entry--label-wrapper\'>\n             <span class=\'topview-entry--background\' style=\'top:' + offsetTop + 'px; background:linear-gradient(' + direction + ', #EEE ' + width + '%, transparent ' + width + '%); opacity: 0.6\'></span>\n             <div class=\'topview-entry--label\'>' + this.getPageLink(item.article, this.project) + '</div>\n           </td>\n           <td class=\'topview-entry--edits\'>' + edits + '</td>\n           <td class=\'topview-entry--editors\'>' + editors + '</td>\n           <td>\n             <a class=\'topview-entry--views\' href=\'' + this.getPageviewsURL(item.article) + '\' target=\'_blank\'>' + this.formatNumber(item.views) + '</a>\n           </td>\n           <td class=\'topview-entry--mobile\'>' + percentMobileText + '</td>\n         </tr>');
+        index++;
       }
 
       this.offsetEnd = index;
 
       setTimeout(function () {
         _this2.setState('complete');
-        $('.topview-entry--background').addClass('animate');
+        $('.toolview-entry--background').addClass('animate');
       });
 
       this.pushParams();
       this.addExcludeListeners();
     }
 
-    /**
-     * Add given page(s) to list of excluded pages and optionally re-render the view
-     * @param {Array|String} pages - page(s) to add to excludes
-     * @param {Boolean} [triggerChange] - whether or not to re-render the view
-     */
-
-  }, {
-    key: 'addExclude',
-    value: function addExclude(pages) {
-      var _this3 = this;
-
-      var triggerChange = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-      if (!Array.isArray(pages)) pages = [pages];
-
-      pages.forEach(function (page) {
-        if (!_this3.excludes.includes(page)) {
-          _this3.excludes.push(page);
-        }
-      });
-
-      $(this.config.select2Input).html('');
-
-      this.excludes.forEach(function (exclude) {
-        var escapedText = $('<div>').text(exclude).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this3.config.select2Input);
-      });
-
-      if (triggerChange) {
-        if (this.pageData[this.offsetEnd]) {
-          this.setState('processing');
-
-          // get edit data and mobile views for the new page that has come into view
-          var newPage = this.pageData[this.offsetEnd].article;
-
-          this.setSingleEditData(newPage).always(function () {
-            return _this3.setSingleMobileViews(newPage).always(function () {
-              _this3.setState('complete');
-              $(_this3.config.select2Input).val(_this3.excludes).trigger('change');
-              _this3.showList();
-            });
-          });
-        } else {
-          $(this.config.select2Input).val(this.excludes).trigger('change');
-          this.showList();
-        }
-      }
-      this.buildReportFalsePositiveForm();
-    }
-
-    /**
-     * Re-add listeners to exclude pages, called after sorting or changing params
-     */
-
-  }, {
-    key: 'addExcludeListeners',
-    value: function addExcludeListeners() {
-      var _this4 = this;
-
-      $('.topview-entry--remove').off('click').on('click', function (e) {
-        // show 'Report false positive' button if they've manually excluded a page
-        if (!_this4.excludeAdded) {
-          _this4.excludeAdded = true;
-          $('.report-false-positive').show();
-        }
-
-        var pageName = _this4.pageNames[$(e.target).data('article-id')];
-        _this4.addExclude(pageName);
-        _this4.pushParams();
-      });
-    }
-
-    /**
-     * Uses this.excludes to build a list of pages
-     * that the user can report as a false positive.
-     */
-
-  }, {
-    key: 'buildReportFalsePositiveForm',
-    value: function buildReportFalsePositiveForm() {
-      var _this5 = this;
-
-      $('.false-positive-list').html('');
-      this.excludes.forEach(function (exclude, index) {
-        $('.false-positive-list').append('\n        <li>\n          <label>\n            <input type=\'checkbox\' data-index=\'' + index + '\' />\n            ' + exclude.escape() + '\n          </label>\n        </li>\n      ');
-      });
-      $('.submit-false-positive').off('click').on('click', function () {
-        var excludes = $.map($('.false-positive-list input:checked'), function (el) {
-          return encodeURIComponent(_this5.excludes[parseInt(el.dataset.index, 10)]);
-        });
-        if (!excludes.length) return;
-
-        $.ajax({
-          url: '/topviews/api.php',
-          data: {
-            project: _this5.project,
-            pages: excludes,
-            date: _this5.getParams(false).date,
-            platform: $(_this5.config.platformSelector).val()
-          },
-          method: 'POST'
-        });
-        _this5.toastSuccess($.i18n('report-false-positive-submitted', $.i18n('topviews')));
-        $('.report-false-positive').hide();
-      });
-    }
-
-    /**
-     * Clear the topviews search
-     */
-
-  }, {
-    key: 'clearSearch',
-    value: function clearSearch() {
-      this.setState('complete');
-      if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
-        $('#topviews_search_field').val('');
-        $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
-        this.showList();
-      }
-    }
-
-    /**
-     * Should the "% Mobile" column be shown?
-     * @return {Boolean} yes or no
-     */
-
-  }, {
-    key: 'shouldShowMobile',
-    value: function shouldShowMobile() {
-      return this.isYearly() || $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access';
-    }
-
-    /**
-     * Exports current chart data to CSV format and loads it in a new tab
-     * With the prepended data:text/csv this should cause the browser to download the data
-     * @override
-     */
-
-  }, {
-    key: 'exportCSV',
-    value: function exportCSV() {
-      var _this6 = this;
-
-      var csvContent = 'data:text/csv;charset=utf-8,Page,Edits,Editors,Views' + (this.shouldShowMobile() ? ',Mobile %' : '') + '\n';
-
-      this.pageData.forEach(function (entry) {
-        if (_this6.excludes.includes(entry.article) || _this6.autoExcludes.includes(entry.article)) return;
-
-        // Build an array of page titles for use in the CSV header
-        var title = '"' + entry.article.replace(/"/g, '""') + '"';
-
-        var editData = _this6.editData[entry.article] || {},
-            edits = typeof editData.num_edits === 'number' ? editData.num_edits : '?',
-            editors = typeof editData.num_users === 'number' ? editData.num_users : '?';
-
-        csvContent += title + ',' + edits + ',' + editors + ',' + entry.views;
-        if (_this6.shouldShowMobile()) {
-          csvContent += ',' + _this6.percentMobile(entry);
-        }
-        csvContent += '\n';
-      });
-
-      this.downloadData(csvContent, 'csv');
-    }
-
-    /**
-     * Exports current chart data to JSON format and loads it in a new tab
-     * @override
-     */
-
-  }, {
-    key: 'exportJSON',
-    value: function exportJSON() {
-      var jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(this.pageData);
-      this.downloadData(jsonContent, 'json');
-    }
-
-    /**
-     * Get informative filename without extension to be used for export options
-     * @return {string} filename without an extension
-     * @override
-     */
-
-  }, {
-    key: 'getExportFilename',
-    value: function getExportFilename() {
-      var datepickerValue = this.datepicker.getDate();
-      var date = void 0;
-
-      if (this.isYearly()) {
-        date = moment(datepickerValue).format('YYYY');
-      } else if (this.isMonthly()) {
-        date = moment(datepickerValue).format('YYYY/MM');
-      } else {
-        date = moment(datepickerValue).format('YYYY/MM/DD');
-      }
-
-      return this.app + '-' + date;
-    }
+    // /**
+    //  * Exports current chart data to CSV format and loads it in a new tab
+    //  * With the prepended data:text/csv this should cause the browser to download the data
+    //  * @override
+    //  */
+    // exportCSV() {
+    //   let csvContent = `data:text/csv;charset=utf-8,Rank,Tool,Views\n`;
+    //
+    //   for (tool in this.toolData) {
+    //
+    //
+    //
+    //   }
+    //
+    //
+    //   this.toolData.forEach(entry => {
+    //     // Build an array of page titles for use in the CSV header
+    //     const title = '"' + entry.article.replace(/"/g, '""') + '"';
+    //
+    //     csvContent += `,${edits},${editors},${entry.views}`;
+    //     csvContent += '\n';
+    //   });
+    //
+    //   this.downloadData(csvContent, 'csv');
+    // }
 
     /**
      * Link to /pageviews for given article and chosen daterange
@@ -7789,24 +7588,12 @@ var TopViews = function (_Pv) {
     value: function getPageviewsURL(article) {
       // first get the date range
       var date = moment(this.datepicker.getDate());
-      var startDate = void 0,
-          endDate = void 0;
-      if (this.isYearly()) {
-        startDate = date.format('YYYY-01-01');
-        endDate = date.endOf('year').format('YYYY-MM-DD');
-      } else if (this.isMonthly()) {
-        startDate = date.format('YYYY-MM-01');
-        endDate = date.endOf('month').format('YYYY-MM-DD');
-      } else {
-        // surround single dates with 3 days to make the pageviews chart meaningful
-        startDate = moment(date).subtract(3, 'days').format('YYYY-MM-DD');
-        endDate = date.add(3, 'days').format('YYYY-MM-DD');
-      }
 
-      var platform = $(this.config.platformSelector).val(),
-          project = $(this.config.projectInput).val();
+      // surround single dates with 3 days to make the pageviews chart meaningful
+      var startDate = moment(date).subtract(3, 'days').format('YYYY-MM-DD'),
+          endDate = date.add(3, 'days').format('YYYY-MM-DD');
 
-      return '/pageviews?start=' + startDate + '&end=' + endDate + '&project=' + project + ('&platform=' + platform + '&pages=' + encodeURIComponent(article.score()).replace("'", escape));
+      return '';
     }
 
     /**
@@ -7833,10 +7620,6 @@ var TopViews = function (_Pv) {
        */
       if (this.specialRange && specialRange) {
         params.date = this.specialRange.range;
-      } else if (this.isYearly()) {
-        params.date = moment(datepickerValue).format('YYYY');
-      } else if (this.isMonthly()) {
-        params.date = moment(datepickerValue).format('YYYY-MM');
       } else {
         params.date = moment(datepickerValue).format('YYYY-MM-DD');
       }
@@ -7859,7 +7642,7 @@ var TopViews = function (_Pv) {
 
     /**
      * Set datepicker based on provided relative range
-     * @param {String} range - e.g. 'last-month', 'yesterday'
+     * @param {String} range - e.g. 'yesterday'
      * @returns {Boolean} whether a valid range was provided and was set
      * @override
      */
@@ -7867,21 +7650,7 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setSpecialRange',
     value: function setSpecialRange(range) {
-      if (range === 'last-year') {
-        this.setupDateRangeSelector('yearly');
-        this.datepicker.setDate(this.config.maxYear);
-        this.specialRange = {
-          range: range,
-          value: moment(this.config.maxYear).format('YYYY')
-        };
-      } else if (range === 'last-month') {
-        this.setupDateRangeSelector('monthly');
-        this.datepicker.setDate(this.maxMonth);
-        this.specialRange = {
-          range: range,
-          value: moment(this.maxMonth).format('YYYY/MM')
-        };
-      } else if (range === 'yesterday') {
+      if (range === 'yesterday') {
         this.setupDateRangeSelector('daily');
         this.datepicker.setDate(this.maxDate);
         this.specialRange = {
@@ -7897,7 +7666,7 @@ var TopViews = function (_Pv) {
 
     /**
      * Set datepicker based on provided date or range
-     * @param {String} dateInput - either a range like 'last-month', 'yesterday' or date with format 'YYYY-MM-DD'
+     * @param {String} dateInput - either a range like 'yesterday' or date with format 'YYYY-MM-DD'
      * @return {null}
      */
 
@@ -7906,30 +7675,12 @@ var TopViews = function (_Pv) {
     value: function setDate(dateInput) {
       var date = void 0;
 
-      if (/\d{4}$/.test(dateInput)) {
-        // yearly
-        this.setupDateRangeSelector('yearly');
-        date = moment(dateInput + '-01-01').toDate();
-
-        // if over max, set to max
-        if (date > this.config.maxYear) {
-          date = this.config.maxYear;
-        }
-      } else if (/\d{4}-\d{2}$/.test(dateInput)) {
-        // monthly
-        this.setupDateRangeSelector('monthly');
-        date = moment(dateInput + '-01').toDate();
-
-        // if over max, set to max
-        if (date > this.maxMonth) {
-          date = this.maxMonth;
-        }
-      } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+      if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
         // daily
         this.setupDateRangeSelector('daily');
         date = moment(dateInput).toDate();
 
-        // if over max, set to max (Topviews maxDate is a Date object, not moment)
+        // if over max, set to max (Toolviews maxDate is a Date object, not moment)
         if (date > this.maxDate) {
           date = this.maxDate;
         }
@@ -7941,7 +7692,7 @@ var TopViews = function (_Pv) {
       // if less than min, throw error (since this is a common request)
       if (date < this.minDate.toDate()) {
         // use super.dateFormat since this is for moment, not for our datepicker
-        this.toastError('\n        <strong>' + $.i18n('invalid-params') + '</strong>\n        ' + $.i18n('param-error-1', moment(this.minDate).format(_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this))) + '\n      ');
+        this.toastError('\n        <strong>' + $.i18n('invalid-params') + '</strong>\n        ' + $.i18n('param-error-1', moment(this.minDate).format(_get(ToolViews.prototype.__proto__ || Object.getPrototypeOf(ToolViews.prototype), 'dateFormat', this))) + '\n      ');
         date = this.minDate.toDate();
       }
 
@@ -7956,92 +7707,23 @@ var TopViews = function (_Pv) {
   }, {
     key: 'popParams',
     value: function popParams() {
-      var _this7 = this;
+      var _this3 = this;
 
       this.setState('processing');
 
-      var params = this.validateParams(this.parseQueryString('excludes'));
-
-      // FIXME: remove once all affected wikis/links have been updated
-      if (params.range || params.start || params.end) {
-        this.fixLegacyDates(params);
-        this.toastWarn('\n        <strong>Topviews has been revamped!</strong>\n        Custom date ranges are\n        <a href=\'//meta.wikimedia.org/wiki/Special:Permalink/15931284#Topviews_revamped\'>no longer supported</a>.\n        Using defaults instead.\n      ');
-      }
+      var params = this.validateParams(this.parseQueryString());
 
       this.setDate(params.date); // also performs validations
-
-      $(this.config.projectInput).val(params.project);
-      $(this.config.platformSelector).val(params.platform);
-
-      if (this.isYearly()) {
-        $('.percent-mobile-wrapper').show();
-        $('.show-percent-mobile').prop('disabled', true).prop('checked', true);
-        $('.mainspace-only-option').prop('disabled', true).prop('checked', true);
-        $('.output-table').addClass('show-mobile');
-        $('#platform-select').prop('disabled', true).val('all-access');
-      } else if (params.platform === 'all-access') {
-        $('.percent-mobile-wrapper').show();
-        $('.show-percent-mobile').prop('checked', !!params.mobileviews);
-        $('.output-table').toggleClass('show-mobile', !!params.mobileviews);
-      }
-
-      $('.mainspace-only-option').prop('checked', params.mainspace !== 'false');
-
-      this.excludes = (params.excludes || []).map(function (exclude) {
-        return decodeURIComponent(exclude.descore());
-      });
 
       this.params = location.search;
 
       this.patchUsage();
 
       this.initData().done(function () {
-        _this7.setupSelect2();
-        _this7.showList();
+        _this3.showList();
       }).always(function () {
-        _this7.setupListeners();
+        _this3.setupListeners();
       });
-    }
-
-    /**
-     * Fix legacy links to Topviews that used a defined date range.
-     * Instead, we'll determine how wide the range is, and if it's greater than 3 days
-     *   then use the month, otherwise use the first day of the range
-     * @param {Object} params - params as provided by this.parseQueryString
-     * @returns {Object} modified params with corrected dates
-     */
-
-  }, {
-    key: 'fixLegacyDates',
-    value: function fixLegacyDates(params) {
-      // all is well if we were given a date parameter (new version)
-      //   or if no date params were provided
-      if (params.date || !params.start && !params.end && !params.range) return params;
-
-      // use last-month if any range was provided
-      if (params.range) {
-        params.date = 'last-month';
-        return params;
-      }
-
-      // if invalid start/end use last-month
-      var dateRegex = /\d{4}-\d{2}-\d{2}$/;
-      if (!dateRegex.test(params.start) && !dateRegex.test(params.end)) {
-        params.date = 'last-month';
-        return params;
-      }
-
-      var startDate = moment(params.start, 'YYYY-MM-DD'),
-          endDate = moment(params.end, 'YYYY-MM-DD'),
-          numDays = Math.abs(endDate.diff(startDate, 'days'));
-
-      if (numDays > 3) {
-        params.date = startDate.format('YYYY-MM');
-      } else {
-        params.date = params.start;
-      }
-
-      return params;
     }
 
     /**
@@ -8052,33 +7734,22 @@ var TopViews = function (_Pv) {
   }, {
     key: 'pushParams',
     value: function pushParams() {
-      var excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?+]/g, encodeURIComponent);
-
       if (window.history && window.history.replaceState) {
-        window.history.replaceState({}, document.title, '?' + $.param(this.getParams()) + '&excludes=' + excludes);
+        window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
       }
 
-      $('.permalink').prop('href', '?' + $.param(this.getPermaLink()) + '&excludes=' + excludes.replace('|', escape));
+      $('.permalink').prop('href', '?' + $.param(this.getPermaLink()) + '}');
     }
 
     /**
-     * Removes chart, messages, and resets Select2 selections
-     * @param {Boolean} [clearSelector] - whether to clear the Select2 control
+     * Removes chart and messages.
      */
 
   }, {
     key: 'resetView',
     value: function resetView() {
-      var clearSelector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
       this.setState('reset');
-      this.clearSearch();
-      $('.topview-entries').html('');
-
-      if (clearSelector) {
-        this.resetSelect2();
-        this.excludes = [];
-      }
+      $('.toolview-entries').html('');
     }
 
     /**
@@ -8098,15 +7769,11 @@ var TopViews = function (_Pv) {
         case 'initial':
         case 'reset':
           this.stopSpinny();
-          this.autoExcludes = [];
           this.offset = 0;
           this.offsetEnd = 0;
           this.max = null;
           this.pageData = [];
           this.pageNames = [];
-          this.mobileViews = {};
-          this.editData = {};
-          this.excludeAdded = false;
           $('.message-container').html('');
           $('.show-more').removeClass('hidden');
           break;
@@ -8124,168 +7791,18 @@ var TopViews = function (_Pv) {
     }
 
     /**
-     * Search the topviews data for the given page title
-     * and restrict the view to the matches
-     * @return {null}
-     */
-
-  }, {
-    key: 'searchTopviews',
-    value: function searchTopviews() {
-      var _this8 = this;
-
-      var query = $('#topviews_search_field').val().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-
-      if (!query) return this.clearSearch();
-
-      this.setState('search');
-
-      var matchedData = [],
-          count = 0;
-
-      // add ranking to pageData and fetch matches
-      this.pageData.forEach(function (entry, index) {
-        if (!_this8.excludes.includes(entry.article) && !_this8.autoExcludes.includes(entry.article)) {
-          count++;
-          if (new RegExp(query, 'i').test(entry.article)) {
-            entry.rank = count;
-            entry.index = index;
-            matchedData.push(entry);
-          }
-        }
-      });
-
-      $('.topview-entries').html('');
-      $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
-
-      matchedData.forEach(function (item) {
-        $('.topview-entries').append('<tr class=\'topview-entry\'>\n         <td class=\'topview-entry--rank-wrapper\'>\n           <span class=\'topview-entry--remove glyphicon glyphicon-remove\' data-article-id=' + item.index + '\n             title=\'' + $.i18n('topviews-remove-page') + '\' aria-hidden=\'true\'></span>\n           <span class=\'topview-entry--rank\'>' + item.rank + '</span>\n         </td>\n         <td>\n           <a class=\'topview-entry--label\' href="' + _this8.getPageURL(item.article) + '" target="_blank">' + item.article + '</a>\n         </td>\n         <td class=\'topview-entry--edits\'></td>\n         <td class=\'topview-entry--editors\'></td>\n         <td>\n           <a class=\'topview-entry--views\' target=\'_blank\'\n              href=\'' + _this8.getPageviewsURL(item.article) + '\'>' + _this8.formatNumber(item.views) + '\n           </a>\n         </td>\n         <td class=\'topview-entry--mobile\'></td></tr>');
-      });
-
-      this.addExcludeListeners();
-    }
-
-    /**
-     * Calls parent setupProjectInput and updates the view if validations passed
-     *   reverting to the old value if the new one is invalid
-     * @override
-     */
-
-  }, {
-    key: 'validateProject',
-    value: function validateProject() {
-      if (_get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'validateProject', this).call(this)) {
-        this.resetView(true);
-        this.processInput();
-      }
-    }
-
-    /**
-     * Sets up the Select2 selector and adds listener to update chart
-     * @param {array} excludes - default page names to exclude
-     */
-
-  }, {
-    key: 'setupSelect2',
-    value: function setupSelect2() {
-      var _this9 = this;
-
-      var excludes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.excludes;
-
-      var select2Input = $(this.config.select2Input);
-
-      select2Input.select2({
-        data: [],
-        maximumSelectionLength: 50,
-        minimumInputLength: 0,
-        minimumResultsForSearch: Infinity,
-        placeholder: $.i18n('hover-to-exclude')
-      });
-
-      if (excludes.length) this.setSelect2Defaults(excludes);
-
-      select2Input.on('change', function (e) {
-        _this9.excludes = $(e.target).val() || [];
-        _this9.max = null;
-        _this9.clearSearch();
-
-        /** for topviews we don't want the user input functionality of Select2 */
-        $('.select2-search__field').prop('disabled', true);
-      });
-
-      select2Input.on('select2:unselect', function (e) {
-        var pageName = e.params.data.text;
-
-        if (!_this9.mobileViews[pageName]) {
-          _this9.setState('processing');
-          _this9.setSingleMobileViews(pageName).always(_this9.showList.bind(_this9));
-        } else {
-          _this9.showList();
-        }
-
-        if (!$(e.target).val()) $('.report-false-positive').hide();
-      });
-    }
-
-    /**
-     * Directly set pages in Select2 selector
-     * Currently is not able to remove underscore from page names
-     *
-     * @param {array} pages - page titles
-     * @returns {array} - untouched array of pages
-     */
-
-  }, {
-    key: 'setSelect2Defaults',
-    value: function setSelect2Defaults(pages) {
-      var _this10 = this;
-
-      pages = pages.map(function (page) {
-        var escapedText = $('<div>').text(page).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this10.config.select2Input);
-        return page;
-      });
-      $(this.config.select2Input).select2('val', pages);
-
-      return pages;
-    }
-
-    /**
      * sets up the datepicker based on given type
-     * @param {String} [type] - either 'monthly' or 'daily'
      * @override
      */
 
   }, {
     key: 'setupDateRangeSelector',
     value: function setupDateRangeSelector() {
-      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'monthly';
-
-      $('#date-type-select').val(type);
-
-      var datepickerParams = void 0;
-
-      if (type === 'yearly') {
-        datepickerParams = {
-          format: 'yyyy',
-          viewMode: 'years',
-          minViewMode: 'years',
-          endDate: this.config.maxYear
-        };
-      } else if (type === 'monthly') {
-        datepickerParams = {
-          format: 'MM yyyy',
-          viewMode: 'months',
-          minViewMode: 'months',
-          endDate: this.maxMonth
-        };
-      } else {
-        datepickerParams = {
-          format: this.dateFormat,
-          viewMode: 'days',
-          endDate: this.maxDate
-        };
-      }
+      var datepickerParams = {
+        format: this.dateFormat,
+        viewMode: 'days',
+        endDate: this.maxDate
+      };
 
       $(this.config.dateRangeSelector).datepicker('destroy');
       $(this.config.dateRangeSelector).datepicker(Object.assign({
@@ -8301,65 +7818,27 @@ var TopViews = function (_Pv) {
   }, {
     key: 'setupListeners',
     value: function setupListeners() {
-      var _this11 = this;
+      var _this4 = this;
 
-      _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'setupListeners', this).call(this);
+      _get(ToolViews.prototype.__proto__ || Object.getPrototypeOf(ToolViews.prototype), 'setupListeners', this).call(this);
 
-      $(this.config.platformSelector).on('change', function (e) {
-        $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access' || _this11.isYearly());
-        $('.output-table').toggleClass('show-mobile', _this11.shouldShowMobile());
-        _this11.processInput();
-      });
-      $('#date-type-select').on('change', function (e) {
-        $('#platform-select').prop('disabled', false);
-        $('.show-percent-mobile').prop('disabled', false);
-        $('.mainspace-only-option').prop('disabled', false);
-
-        // setSpecialRange() also calls setupDateRangeSelector()
-        if (_this11.isYearly()) {
-          $('#platform-select').val('all-access').prop('disabled', true);
-          $('.percent-mobile-wrapper').show();
-          $('.show-percent-mobile').prop('checked', true).prop('disabled', true);
-          $('.mainspace-only-option').prop('checked', true).prop('disabled', true);
-          $('.output-table').addClass('show-mobile');
-          _this11.setSpecialRange('last-year');
-        } else if (_this11.isMonthly()) {
-          _this11.setSpecialRange('last-month');
-        } else {
-          _this11.setSpecialRange('yesterday');
-        }
-      });
       $('.show-more').on('click', function () {
-        _this11.offset += _this11.config.pageSize;
-        _this11.setState('processing');
+        _this4.offset += _this4.config.pageSize;
+        _this4.setState('processing');
 
-        var editDataOffset = _this11.config.pageSize;
-
-        // if we're on the last page, instruct setEditData to only process
-        //  the remaining pages (which might be less than this.config.pageSize)
-        if (_this11.pageData.length - _this11.offsetEnd < _this11.config.pageSize) {
-          editDataOffset = _this11.pageData.length - _this11.offsetEnd;
+        if (_this4.pageData.length - _this4.offsetEnd < _this4.config.pageSize) {
           $('.show-more').addClass('hidden');
         }
 
-        _this11.setEditData(_this11.offsetEnd, editDataOffset).always(function () {
-          return _this11.setMobileViews(_this11.offsetEnd).always(_this11.showList.bind(_this11));
-        });
+        _this4.showList();
       });
       $(this.config.dateRangeSelector).on('change', function (e) {
         /** clear out specialRange if it doesn't match our input */
-        if (_this11.specialRange && _this11.specialRange.value !== e.target.value) {
-          _this11.specialRange = null;
+        if (_this4.specialRange && _this4.specialRange.value !== e.target.value) {
+          _this4.specialRange = null;
         }
-        _this11.processInput();
+        _this4.processInput();
       });
-      $('.mainspace-only-option').on('click', this.processInput.bind(this));
-      $('.show-percent-mobile').on('click', function (e) {
-        $('.output-table').toggleClass('show-mobile', $(e.target).prop('checked'));
-        _this11.processInput(true);
-      });
-      $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
-      $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
     }
 
     /**
@@ -8369,65 +7848,16 @@ var TopViews = function (_Pv) {
      */
 
   }, {
-    key: 'isMonthly',
+    key: 'getAPIDate',
 
-
-    /**
-     * Are we in 'monthly' mode?
-     * @return {Boolean} yes or no
-     */
-    value: function isMonthly() {
-      return $('#date-type-select').val() === 'monthly';
-    }
-
-    /**
-     * Are we in 'yearly' mode?
-     * @return {Boolean}
-     */
-
-  }, {
-    key: 'isYearly',
-    value: function isYearly() {
-      return $('#date-type-select').val() === 'yearly';
-    }
 
     /**
      * Get the currently selected date for the purposes of pageviews API call
      * @return {String} formatted date
      */
-
-  }, {
-    key: 'getAPIDate',
     value: function getAPIDate() {
       var datepickerValue = this.datepicker.getDate();
-
-      if (this.isYearly()) {
-        // This ends up going to a temporary internal endpoint until T154381 is resolved.
-        return moment(datepickerValue).format('YYYY');
-      } else if (this.isMonthly()) {
-        return moment(datepickerValue).format('YYYY/MM') + '/all-days';
-      } else {
-        return moment(datepickerValue).format('YYYY/MM/DD');
-      }
-    }
-
-    /**
-     * Get known false positives for currently selected project, date and platform
-     * @return {Deferred} Promise resolving with an array of page names
-     */
-
-  }, {
-    key: 'getFalsePositives',
-    value: function getFalsePositives() {
-      return $.ajax({
-        url: '/topviews/api.php',
-        data: {
-          project: this.project,
-          date: this.getParams(false).date,
-          platform: $(this.config.platformSelector).val()
-        },
-        timeout: 8000
-      });
+      return moment(datepickerValue).format('YYYY-MM-DD');
     }
 
     /**
@@ -8439,289 +7869,10 @@ var TopViews = function (_Pv) {
     key: 'getDates',
     value: function getDates() {
       var datepickerValue = this.datepicker.getDate();
-      var startDate = void 0,
-          endDate = void 0;
-
-      if (this.isYearly()) {
-        startDate = moment(datepickerValue).startOf('year');
-        endDate = moment(datepickerValue).endOf('year');
-      } else if (this.isMonthly()) {
-        startDate = moment(datepickerValue).startOf('month');
-        endDate = moment(datepickerValue).endOf('month');
-      } else {
-        startDate = moment(datepickerValue);
-        endDate = moment(datepickerValue);
-      }
+      var startDate = moment(datepickerValue),
+          endDate = moment(datepickerValue);
 
       return [startDate, endDate];
-    }
-
-    /**
-     * Set this.editData for a single page
-     * @param {String} page - page title
-     * @returns {Deferred} promise resolving with this.editData
-     */
-
-  }, {
-    key: 'setSingleEditData',
-    value: function setSingleEditData(page) {
-      var _this12 = this;
-
-      var dfd = $.Deferred(),
-          _getDates3 = this.getDates(),
-          _getDates4 = _slicedToArray(_getDates3, 2),
-          startDate = _getDates4[0],
-          endDate = _getDates4[1];
-
-      // if we already have the data, resolve with this.editData as-is
-      if (this.editData[page]) {
-        return dfd.resolve(this.editData);
-      }
-
-      var url = '/pageviews/api.php?project=' + this.project + '.org&start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&pages=' + encodeURIComponent(page));
-
-      $.ajax({ url: url, dataType: 'json' }).done(function (data) {
-        Object.assign(_this12.editData, data.pages);
-      }).always(function () {
-        return dfd.resolve(_this12.editData);
-      });
-
-      return dfd;
-    }
-
-    /**
-     * Set this.editData for requested pages, providing number of edits and edits in the period
-     * @param {Number} startIndex - start index of this.pageData
-     * @param {Number} offset - number of entries to process following startIndex
-     * @returns {Deferred} promise resolving with this.mobileViews
-     */
-
-  }, {
-    key: 'setEditData',
-    value: function setEditData() {
-      var _this13 = this;
-
-      var startIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.config.pageSize;
-      var dfd = $.Deferred(),
-          _getDates5 = this.getDates(),
-          _getDates6 = _slicedToArray(_getDates5, 2),
-          startDate = _getDates6[0],
-          endDate = _getDates6[1];
-
-
-      var index = startIndex,
-          counter = 0,
-          requestCount = offset;
-
-      // Set total page length to as the requestCount if it is less than the offset
-      // Also hide the 'show more' link
-      if (this.pageData.length < offset) {
-        $('.show-more').addClass('hidden');
-        requestCount = this.pageData.length;
-      }
-
-      var makeRequest = function makeRequest(pages) {
-        var originalNumPages = pages.length;
-
-        // filter out pages we already have data for
-        pages = pages.filter(function (page) {
-          return !_this13.editData[page];
-        }).map(function (page) {
-          return encodeURIComponent(page);
-        });
-
-        // if we already have the data, just go straight to resolving via dummy Deferred
-        if (!pages.length) {
-          requestCount -= originalNumPages;
-          if (requestCount <= 0) {
-            return dfd.resolve(_this13.editData);
-          }
-
-          return $.Deferred().resolve();
-        }
-
-        var url = '/pageviews/api.php?project=' + _this13.project + '.org&start=' + startDate.format('YYYY-MM-DD') + ('&end=' + endDate.format('YYYY-MM-DD') + '&pages=' + pages.join('|'));
-
-        $.ajax({ url: url, dataType: 'json' }).done(function (data) {
-          Object.assign(_this13.editData, data.pages);
-        }).always(function () {
-          requestCount -= originalNumPages;
-          if (requestCount <= 0) {
-            dfd.resolve(_this13.editData);
-          }
-        });
-      };
-
-      var requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
-          pageDataLength = this.pageData.length;
-
-      var queue = [];
-
-      while (counter < offset && index < pageDataLength) {
-        var item = this.pageData[index];
-        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
-          index++;
-          continue;
-        }
-        queue.push(this.pageData[index].article);
-        if (queue.length === 10 || index + 1 === pageDataLength) {
-          requestFn(queue);
-          queue = [];
-        }
-        counter++;
-        index++;
-      }
-
-      return dfd;
-    }
-
-    /**
-     * Set this.mobileViews for a single page
-     * @param {String} page - page title
-     * @returns {Deferred} promise resolving with this.mobileViews
-     */
-
-  }, {
-    key: 'setSingleMobileViews',
-    value: function setSingleMobileViews(page) {
-      var _this14 = this,
-          _$;
-
-      var dfd = $.Deferred();
-
-      if (!this.shouldShowMobile()) {
-        return dfd.resolve({});
-      }
-
-      if (this.isYearly()) {
-        // this.mobileViews is already set when importing the yearly data from the internal API.
-        return dfd.resolve(this.mobileViews);
-      }
-
-      var _getDates7 = this.getDates(),
-          _getDates8 = _slicedToArray(_getDates7, 2),
-          startDate = _getDates8[0],
-          endDate = _getDates8[1];
-
-      var promises = [];
-
-      ['mobile-web', 'mobile-app'].forEach(function (endpoint) {
-        var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' + ('/' + _this14.project + '/' + endpoint + '/all-agents/' + page + '/' + (_this14.isMonthly() ? 'monthly' : 'daily')) + ('/' + startDate.format(_this14.config.timestampFormat) + '/' + endDate.format(_this14.config.timestampFormat));
-
-        // if we already have the data, just go straight to resolving via dummy Deferred
-        if (_this14.mobileViews[page]) {
-          var dummyDfd = $.Deferred();
-          promises.push(dummyDfd);
-          return dummyDfd.resolve();
-        }
-
-        var promise = $.ajax({ url: url, dataType: 'json' });
-
-        promises.push(promise);
-
-        promise.done(function (data) {
-          var views = data.items.reduce(function (a, b) {
-            return a + b.views;
-          }, 0),
-              pageTitle = data.items[0].article.descore();
-          _this14.mobileViews[pageTitle] = views + (_this14.mobileViews[pageTitle] || 0);
-        });
-      });
-
-      (_$ = $).whenAll.apply(_$, promises).always(function () {
-        return dfd.resolve(_this14.mobileViews);
-      });
-
-      return dfd;
-    }
-
-    /**
-     * Set this.mobileViews for requested pages
-     * @param {Number} startIndex - start index of this.pageData
-     * @param {Number} offset - number of entries to process following startIndex
-     * @returns {Deferred} promise resolving with this.mobileViews
-     */
-
-  }, {
-    key: 'setMobileViews',
-    value: function setMobileViews() {
-      var _this15 = this;
-
-      var startIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.config.pageSize;
-
-      var dfd = $.Deferred();
-
-      if (!this.shouldShowMobile()) {
-        return dfd.resolve({});
-      }
-
-      if (this.isYearly()) {
-        // Mobile percentages are already set when importing the yearly data from the internal API.
-        return dfd.resolve({});
-      }
-
-      var _getDates9 = this.getDates(),
-          _getDates10 = _slicedToArray(_getDates9, 2),
-          startDate = _getDates10[0],
-          endDate = _getDates10[1];
-
-      var index = startIndex,
-          counter = 0,
-          requestCount = offset;
-
-      var makeRequest = function makeRequest(page) {
-        var _$2;
-
-        var promises = [];
-
-        ['mobile-web', 'mobile-app'].forEach(function (endpoint) {
-          var url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' + ('/' + _this15.project + '/' + endpoint + '/all-agents/' + encodeURIComponent(page) + '/' + (_this15.isMonthly() ? 'monthly' : 'daily')) + ('/' + startDate.format(_this15.config.timestampFormat) + '/' + endDate.format(_this15.config.timestampFormat));
-
-          // if we already have the data, just go straight to resolving via dummy Deferred
-          if (_this15.mobileViews[page]) {
-            var dummyDfd = $.Deferred();
-            promises.push(dummyDfd);
-            return dummyDfd.resolve();
-          }
-
-          var promise = $.ajax({ url: url, dataType: 'json' });
-
-          promises.push(promise);
-
-          promise.done(function (data) {
-            var views = data.items.reduce(function (a, b) {
-              return a + b.views;
-            }, 0),
-                pageTitle = data.items[0].article.descore();
-            _this15.mobileViews[pageTitle] = views + (_this15.mobileViews[pageTitle] || 0);
-          });
-        });
-
-        (_$2 = $).whenAll.apply(_$2, promises).always(function () {
-          if (--requestCount === 0) {
-            dfd.resolve(_this15.mobileViews);
-          }
-        });
-      };
-
-      var requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
-          pageDataLength = this.pageData.length;
-
-      while (counter < offset && index < pageDataLength) {
-        // for (let index = startIndex; index <= endIndex; index++) {
-        var item = this.pageData[index];
-        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
-          index++;
-          continue;
-        }
-        requestFn(this.pageData[index].article);
-        counter++;
-        index++;
-      }
-
-      return dfd;
     }
 
     /**
@@ -8732,206 +7883,36 @@ var TopViews = function (_Pv) {
   }, {
     key: 'initData',
     value: function initData() {
-      var _this16 = this;
+      var _this5 = this;
 
       var dfd = $.Deferred();
 
       this.setState('processing');
 
-      var postProcess = function postProcess() {
-        /** build the pageNames array for Select2 */
-        _this16.pageNames = _this16.pageData.map(function (page) {
-          return page.article;
-        });
-
-        /** set up auto excludes now that we know what pages will be effected */
-        _this16.setupAutoExcludes();
-
-        if ($('.mainspace-only-option').is(':checked')) {
-          _this16.filterOutNamespace(_this16.pageNames).done(function (pageNames) {
-            _this16.pageNames = pageNames;
-            _this16.pageData = _this16.pageData.filter(function (page) {
-              return pageNames.includes(page.article);
-            });
-
-            if (access === 'all-access') {
-              return _this16.setEditData().always(function () {
-                return _this16.setMobileViews().always(function () {
-                  return dfd.resolve(_this16.pageData);
-                });
-              });
-            } else {
-              return _this16.setEditData().always(function () {
-                return dfd.resolve(_this16.pageData);
-              });
-            }
-          });
-        } else if (access === 'all-access') {
-          return _this16.setEditData().always(function () {
-            return _this16.setMobileViews().always(function () {
-              return dfd.resolve(_this16.pageData);
-            });
-          });
-        } else {
-          return _this16.setEditData().always(function () {
-            return dfd.resolve(_this16.pageData);
-          });
-        }
-      };
-
-      var access = this.isYearly() ? 'all-access' : $(this.config.platformSelector).val();
-
-      var showTopviews = function showTopviews() {
-        if (_this16.isYearly()) {
-          $.getJSON('/topviews/yearly_datasets/' + _this16.project + '/' + _this16.getAPIDate() + '.json').done(function (data) {
-            _this16.pageData = data;
-
-            /** build the pageNames array for Select2 */
-            _this16.pageNames = _this16.pageData.map(function (page) {
-              return page.article;
-            });
-
-            return postProcess();
-          }).fail(function () {
-            _this16.resetView();
-            _this16.writeMessage($.i18n('api-error', 'Yearly pageviews API'));
-          });
-        } else {
-          $.ajax({
-            url: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/' + _this16.project + '/' + access + '/' + _this16.getAPIDate(),
-            dataType: 'json'
-          }).done(function (data) {
-            // store pageData from API, removing underscores from the page name
-            _this16.pageData = data.items[0].articles.map(function (page) {
-              page.article = page.article.descore();
-              return page;
-            });
-
-            return postProcess();
-          }).fail(function (errorData) {
-            _this16.resetView();
-            _this16.writeMessage($.i18n('api-error', 'Pageviews API') + ' - ' + errorData.responseJSON.title);
-            return dfd.reject();
-          });
-        }
-      };
-
-      this.getFalsePositives().done(function (autoExcludes) {
-        _this16.autoExcludes = autoExcludes;
-      }).always(showTopviews);
-
-      return dfd;
-    }
-
-    /**
-     * Adds a message below the "Excluded pages" list, that has a link to show
-     *   the automatically excluded pages (as retrieved from /musikanimal/api/topviews/false_positives).
-     * Also reremoves any auto-excluded pages from this.excludes
-     * @returns {null} nothing
-     */
-
-  }, {
-    key: 'setupAutoExcludes',
-    value: function setupAutoExcludes() {
-      var _this17 = this;
-
-      // remove any that aren't actually in the results
-      this.autoExcludes = this.autoExcludes.filter(function (page) {
-        return _this17.pageNames.includes(page);
-      });
-
-      if (!this.autoExcludes.length) return $('.list-false-positives').hide();
-
-      var listFPLink = '<a href=\'#\' data-target=\'#list-false-positives-modal\' data-toggle=\'modal\'>\n        ' + $.i18n('known-false-positives-link', this.autoExcludes.length) + '\n      </a>';
-
-      $('.list-false-positives').html($.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length));
-
-      $('.list-false-positives').show();
-      $('#list-false-positives-modal').on('show.bs.modal', function () {
-        // list the false positives
-        $('.false-positive-list').html('');
-        _this17.autoExcludes.forEach(function (exclude) {
-          var rank = _this17.pageData.find(function (page) {
-            return page.article === exclude;
-          }).rank;
-          $('.false-positive-list').append('\n          <tr><td>' + _this17.getPageLink(exclude, _this17.project) + '</td><td>' + rank + '</td></tr>\n        ');
-        });
-      });
-
-      // remove autoExcludes from excludes given via URL param
-      this.excludes = this.excludes.filter(function (exclude) {
-        return _this17.autoExcludes.indexOf(exclude) === -1;
-      });
-    }
-
-    /**
-     * Get the pages that are not in the given namespace
-     * @param {array} pages - pages to filter
-     * @param {Number} [restrictedNamespace] - ID of the namespace to restrict to, defaults to 0 (mainspace)
-     * @return {Deferred} promise resolving with pages in given namespace
-     */
-
-  }, {
-    key: 'filterOutNamespace',
-    value: function filterOutNamespace(pages) {
-      var _this18 = this;
-
-      var restrictedNamespace = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-      var dfd = $.Deferred();
-
-      var doFiltering = function doFiltering(entries, unacceptableNamespaces) {
-        return entries.filter(function (entry) {
-          var ns = entry.split(':')[0];
-
-          // include main page as non-mainspace
-          var mainPage = _this18.getSiteInfo(_this18.project).general.mainpage;
-
-          // main page may include project namespace, so compare against main page name without namespace, too
-          if (restrictedNamespace === 0 && (entry === mainPage || entry === mainPage.split(':')[1])) {
-            return false;
-          }
-
-          // Verify there was a namespace. For instance, don't filter out a mainspace article
-          //  called 'Search', when we wanted to filter out Special:Search
-          if (!entry.includes(':')) return true;
-
-          return !unacceptableNamespaces.includes(ns);
+      var endpoint = 'http://tools.wmflabs.org/toolviews/api/v1/day/' + this.getAPIDate();
+      // http://localhost:8010/toolviews/api/v1/day/${moment(this.maxDate).format('YYYY-MM-DD')}`;
+      var showToolviews = function showToolviews() {
+        $.ajax({
+          url: '/metaviews/toolviews_api.php?endpoint=' + endpoint,
+          dataType: 'json'
+        }).done(function (data) {
+          _this5.toolData = data.results;
+          return dfd.resize(_this5.toolData);
+        }).fail(function () {
+          _this5.resetView();
+          _this5.writeMessage($.i18n('api-error', 'Toolviews API'));
+          return dfd.reject();
         });
       };
 
-      this.fetchSiteInfo(this.project).done(function () {
-        var unacceptableNamespaces = [];
-
-        // for non-mainspace, count 'Wikipedia' and 'Special' since API seems to
-        //  include for instance both Wikipedia and Wikipédia in some projects
-        // FIXME: the 'Sp?cial' is an apparent bug, see phab:T145043
-        if (restrictedNamespace === 0) {
-          unacceptableNamespaces = ['Wikipedia', 'Special', 'Sp?cial'];
-        }
-
-        for (var ns in _this18.getSiteInfo(_this18.project).namespaces) {
-          unacceptableNamespaces.push(_this18.getSiteInfo(_this18.project).namespaces[ns]['*']);
-        }
-
-        // the actual filtering of the given pages
-        pages = doFiltering(pages, unacceptableNamespaces);
-
-        // remove excludes that would otherwise automatically be filtered out
-        _this18.excludes = doFiltering(_this18.excludes, unacceptableNamespaces);
-
-        dfd.resolve(pages);
-      }).fail(function () {
-        _this18.writeMessage('' + $.i18n('api-error', 'Siteinfo API'));
-        dfd.resolve(pages);
-      });
+      showToolviews();
 
       return dfd;
     }
   }, {
     key: 'dateFormat',
     get: function get() {
-      return _get(TopViews.prototype.__proto__ || Object.getPrototypeOf(TopViews.prototype), 'dateFormat', this).toLowerCase();
+      return _get(ToolViews.prototype.__proto__ || Object.getPrototypeOf(ToolViews.prototype), 'dateFormat', this).toLowerCase();
     }
 
     /**
@@ -8946,18 +7927,11 @@ var TopViews = function (_Pv) {
     }
   }]);
 
-  return TopViews;
+  return ToolViews;
 }(Pv);
 
 $(document).ready(function () {
-  /** assume hash params are supposed to be query params */
-  if (document.location.hash && !document.location.search) {
-    return document.location.href = document.location.href.replace('#', '?');
-  } else if (document.location.hash) {
-    return document.location.href = document.location.href.replace(/\#.*/, '');
-  }
-
-  // new TopViews();
+  new ToolViews();
 });
 
 },{"../shared/pv":3,"./config":6}]},{},[7]);
