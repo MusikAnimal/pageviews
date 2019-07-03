@@ -1,0 +1,46 @@
+/ Toolviews
+/ Copyright 2016-2019 MusikAnimal
+- require_once __DIR__ . '/../../config.php'
+- $currentApp = 'toolviews'
+!!!
+%html
+  %head
+    %meta(content="yes" name="apple-mobile-web-app-capable")
+    %meta(content="black-translucent" name="apple-mobile-web-app-status-bar-style")
+    %meta(content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport")
+    %link(rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="images/favicon.ico?v=3")
+    %script(src="#{BASE_PATH}/toolviews/application.js")
+    %link(href="#{BASE_PATH}/toolviews/application.css" rel="stylesheet")
+    %title Toolviews
+  %body(class="clearfix toolviews")
+    %header.site-header
+      %h4.text-center
+        %strong Toolviews
+
+    %main.col-lg-8.col-lg-offset-2
+      %div.form-wrapper
+        %div.row.aqs-row.options
+          %div.col-lg-3.col-sm-3
+            %label(for="range-input")
+              Date
+            %input.form-control.aqs-date-range-selector#range-input
+
+      %div.message-container.col-lg-10
+
+      %div.chart-container.col-lg-12
+        %table.table.output-table
+          %thead
+            %tr.toolview-entry
+              %th Rank
+              %th Tool
+              %th Views
+          %tbody.toolview-entries
+
+      %div.col-lg-12.text-center
+        %a.show-more(href="#")
+          Show more
+
+    -#%div.spacer
+    -#%footer
+    -#  %hr
+    -#  %a(href="https://github.com/MusikAnimal/pageviews") View source

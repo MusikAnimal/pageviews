@@ -1,0 +1,115 @@
+@import '../bootstrap';
+@import '../shared';
+@import '../mixins';
+
+$gray: #ccc;
+
+.chart-container {
+  overflow-x: auto;
+  padding: 0;
+}
+
+.output-table {
+  display: none;
+  white-space: nowrap;
+}
+
+.toolview-entry {
+  height: 40px;
+  line-height: 40px;
+  overflow: auto;
+
+  td {
+    // override Bootstrap
+    // scss-lint:disable ImportantRule
+    vertical-align: inherit !important;
+  }
+}
+
+.toolview-entry--rank-wrapper {
+  position: relative;
+  width: 5%;
+}
+
+.toolview-entry--rank {
+  font-weight: bold;
+
+  &::after {
+    content: '.';
+  }
+}
+
+.toolview-entry--background {
+  height: 40px;
+  left: 0;
+  position: absolute;
+  transition: all 1s ease;
+  width: 0;
+  z-index: -1;
+
+  &.animate {
+    width: 100%;
+  }
+}
+
+.toolview-entry--label-wrapper {
+  max-width: 675px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.show-more {
+  display: none;
+}
+
+.chart-specific {
+  display: none;
+}
+
+.search-method-options {
+  display: none;
+}
+
+.complete {
+  .show-more {
+    display: block;
+  }
+
+  .output-table {
+    display: table;
+  }
+}
+
+.loading,
+.reset {
+  .form-wrapper {
+    @extend %disabled;
+  }
+
+  .chart-container {
+    @extend %disabled;
+  }
+
+  .data-links {
+    visibility: visible;
+  }
+}
+
+.loading {
+  .output-table {
+    display: table;
+  }
+
+  .chart-container::after {
+    display: none;
+  }
+
+  main::after {
+    @extend %loading;
+    top: 250px;
+  }
+}
+
+.message-container {
+  margin-bottom: 10px;
+}

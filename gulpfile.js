@@ -44,7 +44,7 @@ const appDependencies = {
       'vendor/stylesheets/select2.min.css',
       'vendor/stylesheets/bootstrap-datepicker.min.css'
     ],
-    'js': [
+    js: [
       'vendor/javascripts/select2.min.js',
       'vendor/javascripts/bootstrap-datepicker.min.js'
     ]
@@ -101,6 +101,14 @@ const appDependencies = {
       'vendor/javascripts/bootstrap-datepicker.min.js',
       'vendor/javascripts/bootstrap-typeahead.js',
       'vendor/javascripts/Chart.min.js'
+    ]
+  },
+  'toolviews': {
+    css: [
+      'vendor/stylesheets/bootstrap-datepicker.min.css'
+    ],
+    js: [
+      'vendor/javascripts/bootstrap-datepicker.min.js'
     ]
   },
   'metaviews': {
@@ -316,6 +324,9 @@ gulp.task('compress', apps.map(app => `compress-${app}`));
 gulp.task('help', nonMetaApps.map(app => `scripts-${app}-help`), () => {
   gulp.src('').pipe(notify('Help task complete'));
 });
+
+// Temporary
+gulp.task('toolviews', ['styles-toolviews', 'scripts-toolviews', 'views-toolviews']);
 
 apps.forEach(app => {
   gulp.task(app, [
