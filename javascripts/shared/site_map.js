@@ -339,6 +339,7 @@ const siteMap = {
   'hywikiquote': 'hy.wikiquote.org',
   'hywikisource': 'hy.wikisource.org',
   'hywiktionary': 'hy.wiktionary.org',
+  'hywwiki': 'hyw.wikipedia.org',
   'hzwiki': 'hz.wikipedia.org',
   'iawiki': 'ia.wikipedia.org',
   'iawikibooks': 'ia.wikibooks.org',
