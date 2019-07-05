@@ -218,7 +218,7 @@
 	"pages": "Pagine",
 	"pageviews": "Visualizzazioni per pagina",
 	"pageviews-description": "Confronto delle visualizzazioni delle pagine per più pagine",
-	"param-error-1": "L'API sulle visualizzazioni delle pagine non contiene dati precedenti rispetto ad $1. Spiacenti.",
+	"param-error-1": "L'API sulle visualizzazioni delle pagine non contiene dati precedenti rispetto ad $1, verrà invece utilizzati i dati più vecchi disponibili.",
 	"param-error-2": "La data inizio deve essere precedente la data fine.",
 	"param-error-3": "<code>$1</code> non valido, utilizza invece un intervallo predefinito.",
 	"param-error-see-docs": "Vedi la $1 per ulteriori informazioni.",
