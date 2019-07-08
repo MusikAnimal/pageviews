@@ -399,7 +399,7 @@
 	"url-structure-special-range-latest": "Les 20 derniers jours de données",
 	"url-structure-special-range-latest-n": "où <i>N</i> est un nombre. Par exemple <code>latest-30</code> montrera les données des 30 derniers jours",
 	"url-structure-start-date": "Date de début au format $1.<br/>Omettez ce paramètre ainsi que le paramètre $2 pour afficher les données les plus récentes.",
-	"url-structure-start-date-earliest": "Utiliser $1 pour le jour disponible le plus récent.",
+	"url-structure-start-date-earliest": "Utiliser $1 pour le jour disponible au plus tôt.",
 	"url-structure-start-month": "L’utilisation du format $1 sera traitée comme le début du mois, et affichera des données mensuelles au lieu de quotidiennes.",
 	"url-structure-subjectpage": "Met l’option « $1 » quand des catégories sont utilisées comme source. Utiliser $2 pour l’activer, ou $3 pour le désactiver (par défaut).",
 	"url-structure-topviews-date": "Une date qui représente soit un jour précis, soit un mois ou une plage relative. Peut être l'une des valeurs suivantes :",
