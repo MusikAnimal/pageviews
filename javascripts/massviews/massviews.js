@@ -284,7 +284,20 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           items: pvData.items
         });
       }).fail(errorData => {
-        /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
+        /**
+         * 404s are treated as having zero pageviews
+         * See https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews#Gotchas
+         */
+        if (errorData.status === 404) {
+          pageViewsData.push({
+            title: page,
+            project: queryProject,
+            items: [],
+          });
+          return;
+        }
+
+        /** Schedule a re-try for Cassandra errors. */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
           : $.i18n('unknown');
@@ -312,8 +325,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           );
         }
 
-        // unless it was a 404, don't cache this series of requests
-        if (errorData.status !== 404) this.hadFailure = true;
+        // Don't cache this series of requests.
+        this.hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 
@@ -334,9 +347,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
 
-    pages.forEach((page, index) => {
-      requestFn(page);
-    });
+    pages.forEach(page => requestFn(page));
 
     return dfd;
   }

@@ -431,7 +431,7 @@ const ChartHelpers = superclass => class extends superclass {
       endDate = this.daterangepicker.endDate.startOf('day');
 
     /**
-     * everything we need to keep track of for the promises
+     * Everything we need to keep track of for the promises.
      * @type {Object}
      */
     let xhrData = {
@@ -443,7 +443,7 @@ const ChartHelpers = superclass => class extends superclass {
       promises: []
     };
 
-    const makeRequest = (entity, index) => {
+    const makeRequest = entity => {
       const url = this.getApiUrl(entity, startDate, endDate),
         promise = $.ajax({ url, dataType: 'json' });
 
@@ -480,7 +480,7 @@ const ChartHelpers = superclass => class extends superclass {
           /** maximum of 3 retries */
           if (failureRetries[entity] < 3) {
             totalRequestCount++;
-            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(entity, index);
+            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(entity);
           }
         }
 
@@ -537,7 +537,7 @@ const ChartHelpers = superclass => class extends superclass {
       });
     };
 
-    entities.forEach((entity, index) => makeRequest(entity, index));
+    entities.forEach(entity => makeRequest(entity));
 
     return dfd;
   }

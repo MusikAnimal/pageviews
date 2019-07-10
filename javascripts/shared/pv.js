@@ -1371,8 +1371,8 @@ class Pv extends PvConfig {
    *
    * Same as _.debounce but queues and executes all function calls
    * @param  {Function} fn - function to debounce
-   * @param  {delay} delay - delay duration of milliseconds
-   * @param  {object} context - scope the function should refer to
+   * @param  {Number} delay - delay duration of milliseconds
+   * @param  {Object} context - scope the function should refer to
    * @return {Function} rate-limited function to call instead of your function
    */
   rateLimit(fn, delay, context) {
@@ -1384,7 +1384,8 @@ class Pv extends PvConfig {
         fn.apply(item.context, item.arguments);
       }
       if (queue.length === 0) {
-        clearInterval(timer), timer = null;
+        clearInterval(timer);
+        timer = null;
       }
     };
 
