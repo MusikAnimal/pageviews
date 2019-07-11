@@ -6,7 +6,8 @@
 			"Macofe",
 			"Minh Nguyen",
 			"Yue Ling",
-			"Harriettruong3"
+			"Harriettruong3",
+			"Tuanminh01"
 		]
 	},
 	"active-users": "Thành viên tích cực",
@@ -218,7 +219,7 @@
 	"pageviews-description": "So sánh số lượt xem nhiều trang",
 	"param-error-1": "Xin lỗi. API thống kê lượt xem trang không có dữ liệu cho thời gian từ $1 trở về trước.",
 	"param-error-2": "Ngày bắt đầu phải trước ngày kết thúc.",
-	"param-error-3": "<code>$1</code> không hợp lệ, đang sử dụng khoảng thời gian mặc định.",
+	"param-error-3": "<code>$1</code> không hợp lệ, đang sử dụng giá trị mặc định.",
 	"param-error-see-docs": "Xem $1 để biết thêm thông tin.",
 	"percent-mobile": "% di động",
 	"permalink": "Liên kết thường trực",
