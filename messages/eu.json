@@ -183,7 +183,7 @@
 	"search": "Bilatu",
 	"search-method": "Bilaketa-metodoa:",
 	"select2-loading": "Emaitza gehiago kargatzen...",
-	"select2-max-chars": "Ezabatu mesedez $1 karakterea",
+	"select2-max-chars": "Ezabatu mesedez $1 {{PLURAL:$1|karaktere 1|karaktere}}",
 	"select2-max-items": "$1 elementu soilik aukera dezakezu",
 	"select2-min-chars": "Sartu mesedez karaktere $1 edo gehiago",
 	"select2-no-results": "Ez da emaitzarik aurkitu",
