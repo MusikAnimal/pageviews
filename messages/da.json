@@ -5,7 +5,8 @@
 			"Macofe",
 			"Sarrus",
 			"Joedalton",
-			"Saederup92"
+			"Saederup92",
+			"Tinamalmgren"
 		]
 	},
 	"active-users": "Aktive brugere",
@@ -231,9 +232,9 @@
 	"pagecounts-legacy": "Sideantal (forældet)",
 	"pages": "Sider",
 	"pageviews": "Sidevisninger",
-	"param-error-1": "Sidevisnings-API'en har ikke data som er fra før $1, bruger tidligst tilgængelige data istedet.",
+	"param-error-1": "Sidevisnings-API'en har ikke data, som er fra før $1, bruger tidligst tilgængelige data istedet.",
 	"param-error-2": "Startdatoen skal være ældre end slutdatoen.",
-	"param-error-3": "Ugyldigt <code>$1</code>, standarder anvendes istedet.",
+	"param-error-3": "Ugyldig <code>$1</code>, standarder anvendes istedet.",
 	"param-error-see-docs": "Se $1 for mere information.",
 	"pie": "Cirkeldiagram",
 	"platform": "Platform",

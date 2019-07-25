@@ -388,6 +388,7 @@
 	"url-structure-project": "$1 или другие корректные $2",
 	"url-structure-project-multilang": "Предоставленный исходный проект должен быть многоязычным. Например, $1 или $2",
 	"url-structure-projects": "Допустимый $1, разделённый символами <code>|</code>. Например, $2",
+	"url-structure-mute-validations": "Установите параметр в $1, чтобы не отображать сообщения при валидации формы. Значения по умолчанию будут применяться для некорректных значений, как обычно.",
 	"url-structure-siteviews-agent": "Действует только тогда, когда $1 составляет $2.",
 	"url-structure-siteviews-platform": "Когда $1 составляет $2",
 	"url-structure-siteviews-platform-no-pageviews": "Когда $1 составляет $2 или $3",
