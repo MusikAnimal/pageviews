@@ -1,11 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cekli829"
+			"Cekli829",
+			"Hüseynzadə"
 		]
 	},
 	"active-users": "Aktiv istifadəçilər",
 	"admins": "İdarəçilər",
+	"agent": "Agent",
 	"all": "Bütün",
 	"all-languages": "Bütün dillər",
 	"all-of-wikimedia": "Bütün Vikimedia üçün",
@@ -13,12 +15,17 @@
 	"all-time": "Bütün vaxt",
 	"another-query": "Başqa bir sorğu edin",
 	"api-error-no-data": "Məlumat yoxdur.",
+	"api-error-unknown": "$1 sorğusu zamanı bilinməyən bir xəta meydana gəldi",
 	"apply": "Tətbiq et",
 	"april": "Aprel",
 	"article-placeholder": "Səhifə adlarını yazın...",
 	"articles": "Məqalələr",
 	"august": "Avqust",
+	"autocompletion": "Avtodoldurma",
+	"autocompletion-redirects": "Avtodoldurma keçidləri də ehtiva edir",
+	"average": "Ortalama",
 	"badges": "Nişanlar",
+	"basic-information": "Əsas məlumatlar",
 	"begin-at-zero": "Sıfırdan başlayın",
 	"cancel": "Ləğv et",
 	"category": "Kateqoriya",
