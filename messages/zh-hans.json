@@ -8,7 +8,8 @@
 			"Arthur2e5",
 			"RyRubyy",
 			"Deathkon",
-			"94rain"
+			"94rain",
+			"VulpesVulpes825"
 		]
 	},
 	"active-users": "活跃用户",
@@ -264,9 +265,10 @@
 	"pages": "页面",
 	"pageviews": "页面浏览",
 	"pageviews-description": "跨多个页面的页面浏览比较",
-	"param-error-1": "页面浏览API不包含早于$1的数据。对不起。",
+	"param-error-1": "页面浏览API不包含早于$1的数据。已使用最早可用数据。",
 	"param-error-2": "开始日期必须早于结束日期。",
-	"param-error-3": "无效的<code>$1</code>，改用默认值。",
+	"param-error-3": "<code>$1</code>无效，已改用默认值。",
+	"param-error-4": "日期范围超出最大允许日期，已改用默认值。",
 	"param-error-see-docs": "参见$1以获取更多信息。",
 	"percent-mobile": "%移动版",
 	"permalink": "固定链接",
@@ -353,6 +355,7 @@
 	"url-structure-autolog": "设置为$1以禁用自动设置$2选项",
 	"url-structure-current": "最近可用日。",
 	"url-structure-end-date": "结束日期，格式为$1，默认为前一日。",
+	"url-structure-end-date-latest": "请使用最晚可用日期$1",
 	"url-structure-end-month": "使用格式$1将视作结束月，并显示每月数据而不是每日数据。",
 	"url-structure-example": "要获取您wiki上指定页面的最新数据，并使用默认选项，请使用：\n$1\n将$2替换为有效的$3。$4将决定链接放置的页面",
 	"url-structure-example-siteviews": "要获取您wiki上所有页面的总计页面浏览的最新数据，并使用默认选项，请使用：\n$1",
@@ -381,6 +384,7 @@
 	"url-structure-special-range-latest": "过去20天的数据",
 	"url-structure-special-range-latest-n": "这里<i>N</i>是一个数字。例如<code>latest-30</code>将显示过去30天的数据",
 	"url-structure-start-date": "开始日期，格式为$1。<br/>忽略此参数和$2参数以显示最新数据。",
+	"url-structure-start-date-earliest": "请使用最早可用日期$1",
 	"url-structure-start-month": "使用格式$1将视作开始月，并显示每月数据而不是每日数据。",
 	"url-structure-subjectpage": "当使用分类作为来源时设置“$1”选项。使用$2启用，或$3禁用（默认）。",
 	"url-structure-topviews-date": "代表某个特定日或月的日期，或相对范围。可能是以下之一：",
