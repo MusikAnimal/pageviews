@@ -167,7 +167,7 @@
 	"massviews-category-description": "Näytä sivujen näyttökerrat luokassa $1",
 	"massviews-description": "Tuo luettelo sivuista ja vertaa niiden näyttökertoja",
 	"massviews-empty-set": "$1 ei sisällä sivuja!",
-	"massviews-external-link-description": "Näytä näyttökerrat sivuilta, jotka siältävät $1",
+	"massviews-external-link-description": "Näytä näyttökerrat sivuilta, jotka sisältävät $1",
 	"massviews-hashtag-description": "$1. Näyttää näyttökerrat sivuilta, joiden muokkauksen yhteenvedossa on haluttu $2",
 	"massviews-notice": "Näyttääksesi enemmän kuin $1 {{PLURAL:$1|sivun|sivua}}, kokeile $2.",
 	"massviews-oversized-set": "$1 sisältää $2 {{PLURAL:$4|sivun|sivua}}. Suorituskykyisistä syistä, vain ensimmäiset $3 {{PLURAL:$3|sivu|sivua}} tullaan käsittelemään.",
