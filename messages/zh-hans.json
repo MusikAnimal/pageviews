@@ -9,7 +9,8 @@
 			"RyRubyy",
 			"Deathkon",
 			"94rain",
-			"VulpesVulpes825"
+			"VulpesVulpes825",
+			"A Chinese Wikipedian"
 		]
 	},
 	"active-users": "活跃用户",
@@ -91,7 +92,7 @@
 	"faq-agents-user": "包含所有查看一个页面的人。编辑者、匿名编辑者和我们的读者。",
 	"faq-anomaly-body1": "如果您看到一个无法解释的异常高峰页面浏览次数，尤其是仅在特定日期的情况之下，这可能是来自于自动化程式的虚假流量。要识别出是由机器人所带来膨胀流量的一个方法，是比较桌面端与移动端的浏览次数。首先，查看在您的项目上所有条目出现最多的用户代理，并使用其来做为比较基准。例如在英语维基百科上移动端浏览次数应相当或高于桌面端。所以，如果移动端浏览次数相当低，这可能会是虚假流量。",
 	"faq-anomaly-body2": "如果您无法判断其为虚假流量，您可以在$1上填写工单来请求调查。因为这些页面浏览数异常普遍且调查繁琐，所以回复时间可能会很长，敬请谅解。",
-	"faq-anomaly-title": "为什么一些页面有不正常的高浏览数？",
+	"faq-anomaly-title": "为什么有些页面的浏览量异常高？",
 	"faq-bug-report-body": "如果您愿意使用wiki提供反馈，请使用元维基上的<a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>反馈论坛</a>。您也可以在<a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>报告问题。",
 	"faq-bug-report-title": "我有一个功能请求或错误要报告",
 	"faq-chart-type-body": "点击“$1”以在6种不同类型的图表中选择。应用程序将记住您的参数设置。默认情况下，当查看单一页面的数据时，应用程序将显示条形图，并在查看多个页面时显示折线图。注意饼图、圆环图和极区图只能显示在一段日期范围内的浏览总数数据。",
