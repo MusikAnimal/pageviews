@@ -26,7 +26,7 @@
     "gulp-sass": "^4.0.2",
     "gulp-scss-lint": "^0.7.2",
     "gulp-shell": "^0.5.2",
-    "gulp-uglify": "^2.0.0",
+    "gulp-uglify": "^3.0.2",
     "jquery": "^3.4.1",
     "moment": "2.19.3",
     "pump": "^1.0.1",
