@@ -5,16 +5,10 @@ require('events').EventEmitter.defaultMaxListeners = 40;
 const gulp = require('gulp');
 const babel = require('babelify');
 const browserify = require('browserify');
-const runSequence = require('run-sequence');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const pump = require('pump');
 const plugins = require('gulp-load-plugins')();
-
-let shouldNotify = true;
-const notify = message => {
-  return shouldNotify ? plugins.notify(message) : plugins.notify(() => false);
-};
 
 const appDependencies = {
   'pageviews': {
@@ -138,10 +132,6 @@ apps.concat(['']).forEach(app => {
           },
           name: path => fileName(path)
         }
-      }))
-      .pipe(notify({
-        message: 'Views task complete',
-        onLast: true
       }));
   });
 
@@ -154,8 +144,9 @@ apps.concat(['']).forEach(app => {
     'vendor/stylesheets/bootstrap.min.css',
     'vendor/stylesheets/toastr.css'
   ];
-  gulp.task(`styles-${app}`, () => {
-    runSequence(`css-sass-${app}`, `css-concat-${app}`);
+  gulp.task(`styles-${app}`, done => {
+    gulp.series(`css-sass-${app}`, `css-concat-${app}`);
+    done();
   });
   gulp.task(`css-sass-${app}`, () => {
     return gulp.src(`stylesheets/${path}${app}.scss`)
@@ -170,8 +161,7 @@ apps.concat(['']).forEach(app => {
         .concat([`public_html/${path}application.css`])
       )
       .pipe(plugins.concat('application.css'))
-      .pipe(gulp.dest(`public_html/${path}`))
-      .pipe(notify('Styles task complete'));
+      .pipe(gulp.dest(`public_html/${path}`));
   });
 
   /** SCRIPTS */
@@ -204,8 +194,9 @@ apps.concat(['']).forEach(app => {
     'vendor/javascripts/toastr.min.js',
     'vendor/javascripts/simpleStorage.js'
   ];
-  gulp.task(`scripts-${app}`, () => {
-    runSequence(`js-browserify-${app}`, `js-concat-${app}`);
+  gulp.task(`scripts-${app}`, done => {
+    gulp.series(`js-browserify-${app}`, `js-concat-${app}`);
+    done();
   });
   gulp.task(`js-browserify-${app}`, () => {
     const bundler = browserify(
@@ -232,14 +223,9 @@ apps.concat(['']).forEach(app => {
         .concat([`public_html/${path}application.js`])
       )
       .pipe(plugins.concat('application.js'))
-      .pipe(gulp.dest(`public_html/${path}`))
-      .pipe(notify({
-        message: 'Scripts task complete',
-        onLast: true
-      }));
+      .pipe(gulp.dest(`public_html/${path}`));
   });
   if (app !== 'metaviews') {
-    gulp.task(`scripts-${app}-help`, [`scripts-${app}-faq`, `scripts-${app}-url_structure`]);
     ['faq', 'url_structure'].forEach(helpPage => {
       gulp.task(`scripts-${app}-${helpPage}`, () => {
         return gulp.src(coreJSDependencies)
@@ -247,10 +233,10 @@ apps.concat(['']).forEach(app => {
           .pipe(gulp.dest(`public_html/${path}${helpPage}`));
       });
     });
+    gulp.task(`scripts-${app}-help`, gulp.parallel(`scripts-${app}-faq`, `scripts-${app}-url_structure`));
   }
 
   /** COMPRESSION */
-  gulp.task(`compress-${app}`, [`compress-styles-${app}`, `compress-scripts-${app}`]);
   gulp.task(`compress-scripts-${app}`, cb => {
     pump([
       gulp.src(`public_html/${path}application.js`),
@@ -260,9 +246,10 @@ apps.concat(['']).forEach(app => {
   });
   gulp.task(`compress-styles-${app}`, () => {
     return gulp.src(`public_html/${path}application.css`)
-      .pipe(plugins.cssnano())
+      .pipe(plugins.cleanCss())
       .pipe(gulp.dest(`public_html/${path}`));
   });
+  gulp.task(`compress-${app}`, gulp.parallel(`compress-styles-${app}`, `compress-scripts-${app}`));
 });
 
 // special handling for faq_parts and url_parts
@@ -308,52 +295,31 @@ gulp.task('jsdoc', cb => {
 const nonMetaApps = apps.filter(app => app !== 'metaviews');
 
 /** MAIN TASKS */
-gulp.task('lint', ['eslint', 'scsslint']);
-gulp.task('styles', apps.map(app => `styles-${app}`));
-gulp.task('scripts', apps.map(app => `scripts-${app}`));
-gulp.task('views', apps.concat(['faq_parts', 'url_parts']).map(app => `views-${app}`));
-gulp.task('compress', apps.map(app => `compress-${app}`));
-gulp.task('help', nonMetaApps.map(app => `scripts-${app}-help`), () => {
-  gulp.src('').pipe(notify('Help task complete'));
-});
+gulp.task('lint', gulp.parallel('eslint', 'scsslint'));
+gulp.task('styles', gulp.parallel(...apps.map(app => `styles-${app}`)));
+gulp.task('scripts', gulp.parallel(...apps.map(app => `scripts-${app}`)));
+gulp.task('views', gulp.parallel(...apps.concat(['faq_parts', 'url_parts']).map(app => `views-${app}`)));
+gulp.task('compress', gulp.parallel(...apps.map(app => `compress-${app}`)));
+gulp.task('help', gulp.parallel(nonMetaApps.map(app => `scripts-${app}-help`)));
 
 apps.forEach(app => {
-  gulp.task(app, [
+  gulp.task(app, gulp.parallel(...[
     `styles-${app}`, `scripts-${app}`, `views-${app}`
-  ].concat(app === 'metaviews' ? [] : [`scripts-${app}-help`]));
+  ].concat(app === 'metaviews' ? [] : [`scripts-${app}-help`])));
 });
 
 gulp.task('watch', () => {
   // compile all apps if shared files are altered
-  gulp.watch('stylesheets/_*.scss', ['styles']);
-  gulp.watch('javascripts/shared/*.js', ['scripts']);
-  gulp.watch(['stylesheets/**/faq.scss', 'stylesheets/**/url_structure.scss'], ['help']);
+  gulp.watch('stylesheets/_*.scss', gulp.parallel('styles'));
+  gulp.watch('javascripts/shared/*.js', gulp.parallel('scripts'));
+  gulp.watch(['stylesheets/**/faq.scss', 'stylesheets/**/url_structure.scss'], gulp.parallel('help'));
 
   apps.concat(['faq_parts', 'url_parts', '']).forEach(app => {
     const path = app === '' ? '' : `${app}/`;
-
-    gulp.watch(`views/${path}*.haml`, [`views-${app}`]);
-
-    if (app === '') {
-      return;
-    }
-
-    gulp.watch(
-      // ignore FAQ and URL structure files
-      [`stylesheets/${path}*.scss`, '!stylesheets/**/faq.scss', '!stylesheets/**/url_structure.scss'],
-      [`styles-${app}`]
-    );
-    gulp.watch(`javascripts/${path}*.js`, [`scripts-${app}`]);
+    gulp.watch(`views/${path}*.haml`, gulp.parallel(`views-${app}`));
   });
 });
 
-gulp.task('production', () => {
-  shouldNotify = false;
-  runSequence('lint', ['styles', 'scripts', 'views', 'help'], ['jsdoc'], ['compress'], () => {
-    shouldNotify = true;
-    gulp.src('')
-      .pipe(notify('Production build complete'));
-  });
-});
+gulp.task('production', gulp.series('lint', gulp.parallel('styles', 'scripts', 'views', 'help'), 'jsdoc', 'compress'));
 
-gulp.task('default', ['watch']);
+gulp.task('default', gulp.parallel('watch'));
