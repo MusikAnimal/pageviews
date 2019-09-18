@@ -22,7 +22,7 @@
     "gulp-load-plugins": "^2.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
-    "gulp-scss-lint": "^0.7.2",
+    "gulp-scss-lint": "^1.0.0",
     "gulp-shell": "^0.5.2",
     "gulp-uglify": "^3.0.2",
     "jquery": "^3.4.1",
