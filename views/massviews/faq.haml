@@ -1,6 +1,5 @@
 - require_once __DIR__ . '/../../../config.php'
 - $currentApp = 'massviews'
-- $appSuffix .= '/faq'
 !!!
 %html
   %head
@@ -8,7 +7,6 @@
     %title
       = $I18N->msg( 'massviews-title' ) . ' - ' . $I18N->msg( 'faq' )
   %body(class="#{$rtl}")
-    - $currentApp = 'massviews'
     - include '../../_header.php'
 
     %div.container

@@ -8,6 +8,8 @@ const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const pump = require('pump');
+const revDelOriginal = require('gulp-rev-delete-original');
+const revDel = require('rev-del');
 const plugins = require('gulp-load-plugins')();
 
 const appDependencies = {
@@ -215,19 +217,9 @@ apps.concat(['']).forEach(app => {
       .pipe(plugins.concat('application.js'))
       .pipe(gulp.dest(`public_html/${path}`));
   });
-  if (app !== 'metaviews') {
-    ['faq', 'url_structure'].forEach(helpPage => {
-      gulp.task(`scripts-${app}-${helpPage}`, () => {
-        return gulp.src(coreJSDependencies)
-          .pipe(plugins.concat('application.js'))
-          .pipe(gulp.dest(`public_html/${path}${helpPage}`));
-      });
-    });
-    gulp.task(`scripts-${app}-help`, gulp.parallel(`scripts-${app}-faq`, `scripts-${app}-url_structure`));
-  }
   gulp.task(`scripts-${app}`, gulp.series(`js-browserify-${app}`, `js-concat-${app}`));
 
-  /** COMPRESSION */
+  /** COMPRESSION AND VERSIONING */
   gulp.task(`compress-scripts-${app}`, cb => {
     pump([
       gulp.src(`public_html/${path}application.js`),
@@ -240,7 +232,19 @@ apps.concat(['']).forEach(app => {
       .pipe(plugins.cleanCss())
       .pipe(gulp.dest(`public_html/${path}`));
   });
-  gulp.task(`compress-${app}`, gulp.parallel(`compress-styles-${app}`, `compress-scripts-${app}`));
+  gulp.task(`version-${app}`, () => {
+    return gulp.src([`public_html/${path}application.js`, `public_html/${path}application.css`])
+      .pipe(plugins.rev())
+      .pipe(gulp.dest(`public_html/${path}`))
+      .pipe(revDelOriginal())
+      .pipe(plugins.rev.manifest())
+      .pipe(revDel({dest: `public_html/${path}`}))
+      .pipe(gulp.dest(`public_html/${path}`));
+  });
+  gulp.task(`compress-${app}`, gulp.series(
+    gulp.parallel(`compress-styles-${app}`, `compress-scripts-${app}`),
+    `version-${app}`
+  ));
 });
 
 // special handling for faq_parts and url_parts
@@ -271,9 +275,13 @@ gulp.task('eslint', () => {
     .pipe(plugins.eslint.format())
     .pipe(plugins.eslint.failAfterError());
 });
-gulp.task('scsslint', () => {
+gulp.task('stylelint', () => {
   return gulp.src('stylesheets/**/*.scss')
-    .pipe(plugins.scssLint());
+    .pipe(plugins.stylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ]
+    }));
 });
 
 /** JSDOC */
@@ -286,24 +294,22 @@ gulp.task('jsdoc', cb => {
 const nonMetaApps = apps.filter(app => app !== 'metaviews');
 
 /** MAIN TASKS */
-gulp.task('lint', gulp.parallel('eslint', 'scsslint'));
+gulp.task('lint', gulp.parallel('eslint', 'stylelint'));
 gulp.task('styles', gulp.parallel(...apps.map(app => `styles-${app}`)));
 gulp.task('scripts', gulp.parallel(...apps.map(app => `scripts-${app}`)));
 gulp.task('views', gulp.parallel(...apps.concat(['faq_parts', 'url_parts']).map(app => `views-${app}`)));
 gulp.task('compress', gulp.parallel(...apps.map(app => `compress-${app}`)));
-gulp.task('help', gulp.parallel(nonMetaApps.map(app => `scripts-${app}-help`)));
 
 apps.forEach(app => {
   gulp.task(app, gulp.parallel(...[
     `styles-${app}`, `scripts-${app}`, `views-${app}`
-  ].concat(app === 'metaviews' ? [] : [`scripts-${app}-help`])));
+  ]));
 });
 
 gulp.task('watch', () => {
   // compile all apps if shared files are altered
   gulp.watch('stylesheets/**/*.scss', gulp.parallel('styles'));
   gulp.watch('javascripts/**/*.js', gulp.parallel('scripts'));
-  gulp.watch(['stylesheets/**/faq.scss', 'stylesheets/**/url_structure.scss'], gulp.parallel('help'));
 
   apps.concat(['faq_parts', 'url_parts', '']).forEach(app => {
     const path = app === '' ? '' : `${app}/`;
@@ -311,6 +317,6 @@ gulp.task('watch', () => {
   });
 });
 
-gulp.task('production', gulp.series('lint', gulp.parallel('styles', 'scripts', 'views', 'help'), 'jsdoc', 'compress'));
+gulp.task('production', gulp.series('lint', gulp.parallel('styles', 'scripts', 'views'), 'jsdoc', 'compress'));
 
 gulp.task('default', gulp.parallel('watch'));

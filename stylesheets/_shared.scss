@@ -198,7 +198,7 @@ footer {
 }
 
 .heart {
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
   font-size: 12px;
 }
 
@@ -207,7 +207,7 @@ footer {
 }
 
 .mono {
-  font-family: Consolas, Lucida Console, monospace;
+  font-family: Consolas, 'Lucida Console', monospace;
 }
 
 .loading {
@@ -453,7 +453,7 @@ footer {
 }
 
 @font-face {
-  font-family: 'Glyphter';
+  font-family: Glyphter;
   src: url('fonts/Glyphter.woff') format('woff');
   font-weight: normal;
   font-style: normal;

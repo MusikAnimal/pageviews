@@ -430,13 +430,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
 
 }
 
-$(document).ready(() => {
-  /** assume hash params are supposed to be query params */
-  if (document.location.hash && !document.location.search) {
-    return document.location.href = document.location.href.replace('#', '?');
-  } else if (document.location.hash) {
-    return document.location.href = document.location.href.replace(/\#.*/, '');
-  }
-
+$(() => {
   new MetaViews();
 });

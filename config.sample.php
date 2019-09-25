@@ -27,7 +27,4 @@ define( 'META_DB_NAME', 'database_name' );
 
 // Leave this blank. This is used to append '-test' to the app name
 // to fix routing on Toolforge test installations.
-//
-// On FAQ pages, it is automatically appended with '/faq',
-// and likewise for URL structure pages.
-$appSuffix = '';
+define( 'APP_SUFFIX', '' );
