@@ -14,7 +14,7 @@ const ChartHelpers = require('../shared/chart_helpers');
 /** Main PageViews class */
 class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
-   * Set instance variables and boot the app via pv.constructor
+   * Set instance variables and boot the app via pv.constructor.
    * @override
    */
   constructor() {
@@ -27,7 +27,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.sort = 'views';
     this.direction = '1';
 
-    // Keep track of last valid start/end of month (when date type is set to month)
+    // Keep track of last valid start/end of month (when date type is set to month).
     // This is because the bootstrap datepicker library does not handle this natively
     this.monthStart = this.initialMonthStart;
     this.monthEnd = this.maxMonth;
@@ -733,13 +733,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 }
 
-$(document).ready(() => {
-  /** assume hash params are supposed to be query params */
-  if (document.location.hash && !document.location.search) {
-    return document.location.href = document.location.href.replace('#', '?');
-  } else if (document.location.hash) {
-    return document.location.href = document.location.href.replace(/\#.*/, '');
-  }
-
+$(() => {
   new PageViews();
 });

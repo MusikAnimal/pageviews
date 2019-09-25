@@ -84,6 +84,11 @@ class Pv extends PvConfig {
       this.splash();
     }
 
+    /** Exit out if we're on a FAQ or URL Structure page, since no further JS is needed */
+    if (/\/(faq|url_structure)$/.test(document.location.pathname)) {
+      return;
+    }
+
     this.loadTranslations();
 
     // extensions
@@ -851,7 +856,7 @@ class Pv extends PvConfig {
     try {
       return localStorage.getItem(key);
     } catch (err) {
-      return storage[key];
+      return this.storage[key];
     }
   }
 

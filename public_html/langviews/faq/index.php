@@ -1,6 +1,5 @@
 <?php require_once __DIR__ . '/../../../config.php'; ?>
 <?php $currentApp = 'langviews'; ?>
-<?php $appSuffix .= '/faq'; ?>
 <!DOCTYPE html>
 <html>
   <head>

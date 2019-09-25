@@ -1,6 +1,5 @@
 - require_once __DIR__ . '/../../../config.php'
 - $currentApp = 'redirectviews'
-- $appSuffix .= '/url_structure'
 !!!
 %html
   %head
@@ -8,7 +7,6 @@
     %title
       = $I18N->msg( 'redirectviews-title' ) . ' – ' . $I18N->msg( 'url-structure' )
   %body(class="#{$rtl}")
-    - $currentApp = 'redirectviews'
     - include '../../_header.php'
 
     %div.container

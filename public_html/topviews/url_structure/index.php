@@ -1,6 +1,5 @@
 <?php require_once __DIR__ . '/../../../config.php'; ?>
 <?php $currentApp = 'topviews'; ?>
-<?php $appSuffix .= '/url_structure'; ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,7 +9,6 @@
     </title>
   </head>
   <body class="<?php echo $rtl; ?> <?php echo $currentApp; ?>-url-structure">
-    <?php $currentApp = 'topviews'; ?>
     <?php include '../../_header.php'; ?>
     <div class="container">
       <header class="col-lg-12 text-center">

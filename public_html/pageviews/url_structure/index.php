@@ -1,6 +1,5 @@
 <?php require_once __DIR__ . '/../../../config.php'; ?>
 <?php $currentApp = 'pageviews'; ?>
-<?php $appSuffix .= '/url_structure'; ?>
 <!DOCTYPE html>
 <html>
   <head>

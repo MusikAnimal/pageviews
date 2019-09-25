@@ -44,6 +44,21 @@
   // Adds a .rtl class to the <body> if a right-to-left language
   $rtl = $I18N->isRtl( $I18N->getLang() ) ? 'rtl' : '';
 
+  // Get the file names for the assets.
+  // This uses the development files if present, otherwise what's specified by rev-manifest.json.
+  $assetPath = ROOTDIR . "/public_html/$currentApp";
+  $manifest = json_decode( file_get_contents( "$assetPath/rev-manifest.json" ), true );
+  if ( file_exists( "$assetPath/application.js" ) ) {
+    $jsFile = 'application.js';
+  } else {
+    $jsFile = $manifest['application.js'];
+  }
+  if ( file_exists( "$assetPath/application.css" ) ) {
+    $cssFile = 'application.css';
+  } else {
+    $cssFile = $manifest['application.css'];
+  }
+
 :javascript
   i18nLang = "#{$I18N->getLang()}";
   i18nRtl = "#{$rtl}";
@@ -55,9 +70,9 @@
 %meta(content="black-translucent" name="apple-mobile-web-app-status-bar-style")
 %meta(content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport")
 %link(rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="images/favicon.ico?v=3")
-%script(src="#{BASE_PATH}/#{$currentApp}#{$appSuffix}/application.js")
-%script(src="#{BASE_PATH}/#{$currentApp}/ad_block_test.js")
-%link(href="#{BASE_PATH}/#{$currentApp}/application.css" rel="stylesheet")
+%script(src="#{BASE_PATH}/#{$currentApp}#{$appSuffix}/#{$jsFile}")
+%script(src="#{BASE_PATH}/#{$currentApp}#{$appSuffix}/ad_block_test.js")
+%link(href="#{BASE_PATH}/#{$currentApp}#{$appSuffix}/#{$cssFile}" rel="stylesheet")
 
 :javascript
   // language selector
