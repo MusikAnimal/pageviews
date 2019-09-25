@@ -144,10 +144,6 @@ apps.concat(['']).forEach(app => {
     'vendor/stylesheets/bootstrap.min.css',
     'vendor/stylesheets/toastr.css'
   ];
-  gulp.task(`styles-${app}`, done => {
-    gulp.series(`css-sass-${app}`, `css-concat-${app}`);
-    done();
-  });
   gulp.task(`css-sass-${app}`, () => {
     return gulp.src(`stylesheets/${path}${app}.scss`)
       .pipe(plugins.sass().on('error', plugins.sass.logError))
@@ -163,6 +159,7 @@ apps.concat(['']).forEach(app => {
       .pipe(plugins.concat('application.css'))
       .pipe(gulp.dest(`public_html/${path}`));
   });
+  gulp.task(`styles-${app}`, gulp.series(`css-sass-${app}`, `css-concat-${app}`));
 
   /** SCRIPTS */
   const coreJSDependencies = [
@@ -194,28 +191,21 @@ apps.concat(['']).forEach(app => {
     'vendor/javascripts/toastr.min.js',
     'vendor/javascripts/simpleStorage.js'
   ];
-  gulp.task(`scripts-${app}`, done => {
-    gulp.series(`js-browserify-${app}`, `js-concat-${app}`);
-    done();
-  });
   gulp.task(`js-browserify-${app}`, () => {
     const bundler = browserify(
       `javascripts/${path}${app}.js`
     ).transform(babel.configure({
       presets: ['es2015']
     }));
-    const rebundle = () => {
-      return bundler.bundle()
-        .on('error', err => {
-          console.error(err);
-          this.emit('end');
-        })
-        .pipe(source(`${app}.js`))
-        .pipe(buffer())
-        .pipe(plugins.rename('application.js'))
-        .pipe(gulp.dest(`public_html/${path}`));
-    };
-    return rebundle();
+    return bundler.bundle()
+      .on('error', err => {
+        console.error(err);
+        this.emit('end');
+      })
+      .pipe(source(`${app}.js`))
+      .pipe(buffer())
+      .pipe(plugins.rename('application.js'))
+      .pipe(gulp.dest(`public_html/${path}`));
   });
   gulp.task(`js-concat-${app}`, () => {
     return gulp.src(coreJSDependencies
@@ -235,6 +225,7 @@ apps.concat(['']).forEach(app => {
     });
     gulp.task(`scripts-${app}-help`, gulp.parallel(`scripts-${app}-faq`, `scripts-${app}-url_structure`));
   }
+  gulp.task(`scripts-${app}`, gulp.series(`js-browserify-${app}`, `js-concat-${app}`));
 
   /** COMPRESSION */
   gulp.task(`compress-scripts-${app}`, cb => {
@@ -310,8 +301,8 @@ apps.forEach(app => {
 
 gulp.task('watch', () => {
   // compile all apps if shared files are altered
-  gulp.watch('stylesheets/_*.scss', gulp.parallel('styles'));
-  gulp.watch('javascripts/shared/*.js', gulp.parallel('scripts'));
+  gulp.watch('stylesheets/**/*.scss', gulp.parallel('styles'));
+  gulp.watch('javascripts/**/*.js', gulp.parallel('scripts'));
   gulp.watch(['stylesheets/**/faq.scss', 'stylesheets/**/url_structure.scss'], gulp.parallel('help'));
 
   apps.concat(['faq_parts', 'url_parts', '']).forEach(app => {
