@@ -74,9 +74,9 @@
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" name="viewport">
 <link rel="shortcut icon" sizes="16x16 32x32 48x48 96x96" href="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?>/images/favicon.ico?v=3">
-<script src="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo $appSuffix; ?>/<?php echo $jsFile; ?>"></script>
-<script src="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo $appSuffix; ?>/ad_block_test.js"></script>
-<link href="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo $appSuffix; ?>/<?php echo $cssFile; ?>" rel="stylesheet">
+<script src="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/<?php echo $jsFile; ?>"></script>
+<script src="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/ad_block_test.js"></script>
+<link href="<?php echo BASE_PATH; ?>/<?php echo $currentApp; ?><?php echo APP_SUFFIX; ?>/<?php echo $cssFile; ?>" rel="stylesheet">
 <script type="text/javascript">
 //<![CDATA[
    // language selector

@@ -1,0 +1,5 @@
+This directory stores cached data that should not be committed.
+
+For example pageviews/api.php fetches page assessments data
+from XTools, then caches it here.
+

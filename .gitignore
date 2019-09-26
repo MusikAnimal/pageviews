@@ -16,7 +16,6 @@ reports/
 *.jar
 jsdocs/gen/
 false-positives
-disk_cache/
 .idea/
 i18n_helper.js
 

@@ -1,5 +1,6 @@
 {
     "require": {
+        "ext-curl": "*",
         "ext-json": "*",
         "ext-mysqli": "*",
         "mthaml/mthaml": "1.8.0",
