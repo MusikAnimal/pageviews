@@ -85,7 +85,7 @@ class Pv extends PvConfig {
     }
 
     /** Exit out if we're on a FAQ or URL Structure page, since no further JS is needed */
-    if (/\/(faq|url_structure)$/.test(document.location.pathname)) {
+    if (/\/(faq|url_structure)\/?$/.test(document.location.pathname)) {
       return;
     }
 
