@@ -11,7 +11,7 @@
 #     sh deploy.sh 2018-refactor topviews
 
 if [ -z "$2" ]; then
-    app=$(basename $PWD)
+    app=$(basename "$PWD")
 else
     app=$2
 fi
@@ -31,6 +31,6 @@ composer install
 sh symlinks.sh $app
 
 if [ $app = "pageviews" ]; then
-    cd public_html/jsdocs
+    cd public_html/jsdocs || exit
     git pull origin master
 fi

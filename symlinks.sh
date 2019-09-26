@@ -9,7 +9,7 @@
 #   sh setup.sh topviews
 
 if [ -z "$1" ]; then
-    app=$(basename $PWD)
+    app=$(basename "$PWD")
 else
     app=$1
 fi
@@ -17,8 +17,8 @@ fi
 cd public_html
 ln -s $app/index.php index.php
 ln -s $app/api.php api.php
-ln -s $app/application.css application.css
-ln -s $app/application.js application.js
+rm application-*
+ln -s $app/application-* .
 ln -s $app/faq faq
 ln -s $app/url_structure url_structure
 cd ~
