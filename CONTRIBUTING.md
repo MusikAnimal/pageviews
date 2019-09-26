@@ -65,7 +65,7 @@ Shared JavaScript goes in the `/shared` directory and must be required as needed
 and Userviews. All apps but Topviews show a chart of some sort, and require `chart_helpers.js`.
 
 When the JS files are compiled, they are concatenated into a single `application.js`
-that lives within the directory for that app inside `public_html`. We you run the production build,
+that lives within the directory for that app inside `public_html`. When you run the production build,
 they will get versioned and the original `application.js` will be deleted.
 
 All JavaScript is documented using [JSDoc](http://usejsdoc.org/).
