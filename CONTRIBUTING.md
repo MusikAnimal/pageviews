@@ -76,7 +76,7 @@ You can generate the docs locally by running:
 ```
 
 #### Styles
-Styles are written in [http://sass-lang.com/](Sass) and [compiled to CSS](https://github.com/dlmanning/gulp-sass).
+Styles are written in [Sass](https://sass-lang.com/) (of the [SCSS](https://sass-lang.com/documentation/syntax#scss) variety) and [compiled to CSS](https://github.com/dlmanning/gulp-sass).
 The CSS is then [automatically vendor-prefixed](https://github.com/sindresorhus/gulp-autoprefixer) to support
 modern browsers. [Bootstrap](http://getbootstrap.com/) is used as the CSS framework.
 
