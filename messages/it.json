@@ -10,7 +10,8 @@
 			"Anto",
 			"Redredsonia",
 			"Fringio",
-			"GiorgioHerbie"
+			"GiorgioHerbie",
+			"Nemo bis"
 		]
 	},
 	"active-users": "Utenti attivi",
@@ -351,7 +352,7 @@
 	"users": "Utenti",
 	"userviews": "Visualizzazioni utente",
 	"userviews-description": "Visualizzazioni di tutte le patine create da un utente",
-	"userviews-edit-count-warning": "$1 ha fatto $2 {{PLURAL:$2|modifica|modifiche}}! Ottenere le pagine create potrebbe impiegare un po'. Si prega di pazientare.",
+	"userviews-edit-count-warning": "$1 ha fatto $2 {{PLURAL:$2|modifica|modifiche}}! Ottenere le pagine create potrebbe richiedere un po'. Si prega di pazientare.",
 	"userviews-oversized-set": "$1 ha creato più di $2 {{PLURAL:$2|pagina|pagine}}. Per motivi di performance solo {{PLURAL:$3|la prima pagina sarà elaborata|le prime pagine saranno elaborate}}.",
 	"userviews-title": "Analisi visualizzazione utente",
 	"validated-page": "Convalidato",

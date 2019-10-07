@@ -9,7 +9,8 @@
 			"InternerowyGołąb",
 			"Wojtas",
 			"DeRudySoulStorm",
-			"CiaPan"
+			"CiaPan",
+			"Rail"
 		]
 	},
 	"active-users": "Użytkowników aktywnych",
@@ -238,6 +239,7 @@
 	"pagecounts": "Licznik stron",
 	"pages": "Strony",
 	"pageviews": "Wyświetlenia stron",
+	"pageviews-description": "Porównanie liczby odsłon pomiędzy wieloma stronami",
 	"param-error-1": "API pageviews niestety nie zawiera danych starszych niż $1.",
 	"param-error-2": "Data początkowa musi być wcześniejsza od daty końcowej.",
 	"param-error-3": "Nieprawidłowy parametr <code>$1</code>, użyto zamiast tego wartości domyślnej.",
