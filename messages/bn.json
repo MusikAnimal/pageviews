@@ -210,7 +210,7 @@
 	"num-pagecounts": "$1টি {{PLURAL:$2|পাতা গণনা}}",
 	"num-pages": "$1টি {{PLURAL:$2|পাতা}}",
 	"num-pages-info": "$1টি পর্যন্ত {{PLURAL:$1|পাতা}} অন্তর্ভুক্ত করুন",
-	"num-pageviews": "$1টি {{PLURAL:$2|পাতাপ্রদর্শন}}",
+	"num-pageviews": "$1 বার {{PLURAL:$2|পাতাপরিদর্শন}}",
 	"num-playcounts": "$1 বার {{PLURAL:$2|চালানো হয়েছে}}",
 	"num-projects": "$1টি {{PLURAL:$2|প্রকল্প}}",
 	"num-projects-info": "$1টি পর্যন্ত {{PLURAL:$1|প্রকল্প}} অন্তর্ভুক্ত করুন",
@@ -365,5 +365,6 @@
 	"wikisource": "উইকিসংকলন",
 	"wikiversity": "উইকিবিশ্ববিদ্যালয়",
 	"wikivoyage": "উইকিভ্রমণ",
-	"wiktionary": "উইকিঅভিধান"
+	"wiktionary": "উইকিঅভিধান",
+	"yearly": "বার্ষিক"
 }
