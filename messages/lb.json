@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Robby"
+			"Robby",
+			"Les Meloures"
 		]
 	},
 	"active-users": "Aktiv Benotzer",
@@ -22,7 +23,7 @@
 	"article-placeholder": "Tippt Säitennimm...",
 	"articles": "Artikelen",
 	"august": "August",
-	"autocompletion": "Automatesch kompletéieren",
+	"autocompletion": "Automatesch komplettéieren",
 	"autocompletion-redirects": "Automatesch Ausfëllen inklusiv Viruleedungen",
 	"autolog-option": "Logarithmesch Skala automatesch benotzen, wann applikabel.",
 	"average": "Duerchschnëtt",
@@ -160,7 +161,7 @@
 	"most-viewed-pages": "Meescht gekuckt Säiten",
 	"most-viewed-rank": "Klasséiert $1 vu(n) $2 fir $3",
 	"namespace": "Nummraum",
-	"no-autocompletion": "Net automatesch kompletéieren",
+	"no-autocompletion": "Net automatesch komplettéieren",
 	"none": "Keng",
 	"note": "Notiz",
 	"november": "November",
