@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Mehtab ahmed",
-			"Tweety"
+			"Tweety",
+			"JogiAsad"
 		]
 	},
 	"active-users": "سرگرم واپرائيندڙ",
@@ -92,9 +93,11 @@
 	"faq-source-title": "”ميٽرڪ“ آپشن ڇا آهن؟",
 	"faq-todays-date-title": "اڄ جي ڏينهن لاءِ ڊيٽا ميسر ڇو ناهي؟",
 	"faq-try-tool": "توھان ھن کي ھتي لھي سگھو ٿا $1.",
+	"fatal-error": "موتمار چُڪَ",
 	"featured-article": "چونڊ مضمون",
 	"featured-list": "نمايان فھرست",
 	"february": "فيبروري",
+	"fetching-data": "$1 تان ڊيٽا آڻي رهيو آهي",
 	"file": "فائيل",
 	"file-type": "قسم",
 	"files": "فائيلون",
@@ -106,6 +109,7 @@
 	"help": "مدد",
 	"help-translate": "ترجمي ۾ مدد ڪريو",
 	"history": "سوانح",
+	"hosted": "$2 تي $1 سان ميزباني ڪئي وئي.",
 	"images": "عڪس",
 	"info": "معلومات",
 	"invalid-params": "غلط پيراميٽرز!",
