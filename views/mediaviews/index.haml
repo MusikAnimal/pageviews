@@ -8,24 +8,130 @@
     - include '../_head.php'
     %title= $I18N->msg( 'mediaviews-title' )
   %body(class="clearfix #{$rtl} #{$currentApp}")
+    %div.text-center.site-notice-wrapper
+      %div.site-notice
+        - include '../_browser_check.php'
+
     - include '../_header.php'
 
-    %main.col-lg-12
-      %div.text-center.text-danger(style="margin-top:50px; font-size:125%")
-        %p
-          Mediaviews has temporarily been
-          %strong
-            retired
-          due to technical challenges.
-        %p
-          A long-term solution is tracked at
-          <a href="https://phabricator.wikimedia.org/T207208" target="_blank">T207208</a> and
-          <a href="https://phabricator.wikimedia.org/T210313" target="_blank">T210313</a>.
-          %br
-          If you have a Phabricator account, feel free to award a token to encourage progress.
-        %p
-          Apologies for the inconvenience.
+    %aside.col-lg-2.col-md-2.page-selector
+      %header.text-center
+        %h4
+          = $I18N->msg( 'options' )
+      %div.page-selector--container
+        %div.date-selector
+          %label(for="range-input")
+            = $I18N->msg( 'dates' )
+          %div.btn-group.dropdown.latest-group
+            %button.btn.btn-default.btn-xs.dropdown-toggle(type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+              %span.latest-text
+                = $I18N->msg( 'latest' )
+              %span.caret
+            %ul.dropdown-menu.dropdown-menu-right.date-latest
+              - foreach ([10, 20, 30, 60, 90] as $offset)
+                %li
+                  %a(href="#" data-value="#{$offset}")= $offset
+          %input.form-control.aqs-date-range-selector#range-input
+        %div.month-selector.input-daterange.clearfix
+          %label(for="month-start")
+            = $I18N->msg( 'dates' )
+          %div
+            %input.form-control.input-control.month-selector-start.pull-left#month-start(readonly="readonly")
+            %input.form-control.input-control.month-selector-end.pull-left#month-end(readonly="readonly")
+        %div
+          %label(for="date-type-select")
+            = $I18N->msg( 'date-type' )
+          %select.form-control#date-type-select
+            %option(value="daily")
+              = $I18N->msg( 'daily' )
+            %option(value="monthly")
+              = $I18N->msg( 'monthly' )
+        %div
+          %label(for="project-input")
+            = $I18N->msg( 'project' )
+          %input.form-control.aqs-project-input#project-input(placeholder="en.wikipedia.org" spellcheck="false")
+        %div
+          %label(for="referer-select")
+            = $I18N->msg( 'referer' )
+          %select.form-control#referer-select
+            %option(value="all-referers")
+              = $I18N->msg( 'referer-all-referers' )
+            %option(value="internal")
+              = $I18N->msg( 'referer-internal' )
+            %option(value="external")
+              = $I18N->msg( 'referer-external' )
+            %option(value="search-engine")
+              = $I18N->msg( 'referer-search-engine' )
+            %option(value="unknown")
+              = $I18N->msg( 'unknown' )
+            %option(value="none")
+              = $I18N->msg( 'none' )
+        %div
+          %label(for="agent-select")
+            = $I18N->msg( 'agent' )
+            %a.help-link(href="/mediaviews/faq#agents")
+              %span.glyphicon.glyphicon-question-sign
+          %select.form-control#agent-select
+            %option(value="all-agents")
+              = $I18N->msg( 'all' )
+            %option(selected="selected" value="user")
+              = $I18N->msg( 'user' )
+            %option(value="spider")
+              = $I18N->msg( 'spider' )
 
+    %main.col-lg-8.col-md-10
+      / File selector
+      %div.file-selector
+        %label(for="file-input")
+          %span.select2-title
+            = $I18N->msg( 'files' )
+          %small.text-muted.num-entities-info
+            = $I18N->msg( 'num-files-info', [ 'variables' => [ 10 ] ] )
+        %span.clear-pages.pull-right
+          &#x2715;
+          = $I18N->msg( 'clear' )
+        %select.aqs-select2-selector.col-lg-12.invisible#file-input(multiple="multiple")
+
+      - include "../_data_links.php"
+
+      / Chart
+      %div.chart-container
+        %canvas.aqs-chart
+
+      %div.message-container.col-lg-12
+
+    %aside.col-lg-2.visible-lg-block.summary-column
+      %header.text-center
+        %h4
+          = $I18N->msg( 'totals' )
+      %div.summary-column--container
+        %div.chart-legend.col-lg-12.clearfix
+
+    %div.col-lg-10.col-lg-offset-1
+      %h4.single-entity-stats.text-center
+      %h5.single-entity-ranking.text-center
+      %div.single-entity-legend.hidden-lg.col-md-4.col-md-offset-4.tm
+      :php
+        $columns = array(
+          'file' => 'file',
+          'requests' => 'requests',
+          'average' => 'daily-average',
+          'duration' => 'duration',
+          'size' => 'size',
+          'date' => 'date',
+          'type' => 'file-type',
+        );
+      %table.table.table-hover.table-view
+        %thead.table-view--header
+          %tr
+            %th
+            - foreach( $columns as $column => $translation )
+              %th(class="table-view--#{$column}")
+                %span(class="sort-link sort-link--#{$column}" data-type="#{$column}")
+                  %span.col-heading
+                    = $I18N->msg( $translation )
+                  %span.glyphicon.glyphicon-sort
+        %tbody.output-list
 
     - include '../_footer.php'
 

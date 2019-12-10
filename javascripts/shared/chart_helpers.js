@@ -262,7 +262,9 @@ const ChartHelpers = superclass => class extends superclass {
       viewKey = forceViewKey;
     } else if (this.isPageviews()) {
       viewKey = 'views';
-    } else if (['metaviews', 'mediaviews'].includes(this.app) || this.isPagecounts()) {
+    } else if (this.app === 'mediaviews') {
+      viewKey = 'requests';
+    } else if (this.app === 'metaviews' || this.isPagecounts()) {
       viewKey = 'count';
     } else {
       viewKey = 'devices';
@@ -281,8 +283,6 @@ const ChartHelpers = superclass => class extends superclass {
 
         if (this.app === 'metaviews') {
           date = elem.date;
-        } else if (this.app === 'mediaviews') {
-          date = moment(elem.date, this.config.mpcDateFormat).format(dateFormat);
         } else {
           date = moment(elem.timestamp, this.config.timestampFormat).format(dateFormat);
         }

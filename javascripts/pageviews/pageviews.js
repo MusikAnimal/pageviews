@@ -360,7 +360,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     if (this.autocomplete !== 'no_autocomplete') {
       /**
        * This ajax call queries the Mediawiki API for article name
-       * suggestions given the search term inputed in the selector.
+       * suggestions given the search term inputted in the selector.
        * We ultimately want to make the endpoint configurable based on whether they want redirects
        */
       return {
@@ -445,7 +445,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * Query the API for each page, building up the datasets and then calling renderData
    * @param {boolean} [force] - whether to force the chart to re-render, even if no params have changed
    * @param {string} [removedPage] - page that was just removed via Select2, supplied by select2:unselect handler
-   * @return {null}
+   * @return {undefined}
    */
   processInput(force, removedPage) {
     this.pushParams();
@@ -593,7 +593,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     let hasProtection = false,
       hasAssessment = false;
-    datasets.forEach((item, index) => {
+    datasets.forEach(item => {
       if (item.protection !== $.i18n('none').toLowerCase()) hasProtection = true;
       if (item.assessment && item.assessment.length) hasAssessment = true;
 

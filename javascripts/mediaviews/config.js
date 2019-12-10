@@ -17,16 +17,18 @@ const config = {
   dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
     dateRange: 'latest-20',
-    files: ['How_Wikipedia_contributes_to_free_knowledge.webm'],
-    source: 'pageviews'
+    referer: 'all-referers',
+    project: 'commons.wikimedia.org'
+  },
+  validParams: {
+    referer: ['all-referers', 'internal', 'external', 'search-engine', 'unknown', 'none']
   },
   logarithmicCheckbox: '.logarithmic-scale-option',
   minDate: moment('2015-01-01').startOf('day'),
-  mpcDateFormat: 'YYYYMMDD',
+  projectInput: '.aqs-project-input',
   select2Input: '.aqs-select2-selector',
-  formStates: ['initial', 'processing', 'complete', 'invalid'],
   templates,
-  validateParams: []
+  validateParams: ['project', 'referer', 'agent']
 };
 
 module.exports = config;

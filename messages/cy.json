@@ -128,7 +128,6 @@
 	"num-pages": "$1 {{PLURAL:$2|tudalen|tudalen}}",
 	"num-pages-info": "Ychwanegwch hyd at {{PLURAL:$1|tudalen|tudalen}}",
 	"num-pageviews": "$1 {{PLURAL:$2|pageview|pageview}}",
-	"num-playcounts": "$1 {{PLURAL:$2|playcount|playcount}}",
 	"num-projects": "$1 {{PLURAL:$2|prosiect|prosiect}}",
 	"num-projects-info": "Ychwanegwch hyd at $1 {{PLURAL:$1|prosiect|prosiect}}",
 	"num-protections": "$1 {{PLURAL:$2|protection|protection}}",

@@ -24,9 +24,11 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/mediaviews?files={{PAGENAMEE}}</pre>"; ?>
+          <?php $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/mediaviews?project=commons.wikimedia.org&files={{PAGENAMEE}}</pre>"; ?>
           <?php $fullpageNamee = "<code>{{PAGENAMEE}}</code>"; ?>
-          <?php echo $I18N->msg( 'url-structure-mediaviews-example', [ 'variables' => [ $mediaviewsLink, $fullpageNamee ], 'parsemag' => true ] ); ?>
+          <?php $project = "<code>commons.wikimedia.org</code>"; ?>
+          <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+          <?php echo $I18N->msg( 'url-structure-example', [ 'variables' => [ $mediaviewsLink, $project, $sitematrixLink, $fullpageNamee ], 'parsemag' => true ] ); ?>
         </div>
         <div>
           <h3>
@@ -35,12 +37,20 @@
           </h3>
           <hr>
           <dl class="dl-horizontal">
+            <?php $defaultProject = 'commons.wikimedia.org'; ?>
+            <?php include "../../url_parts/_project.php"; ?>
             <dt>files</dt>
             <dd>
-              <?php echo $I18N->msg( 'url-structure-files', [ 'variables' => [ '<code>Lion_cubs_(Panthera_leo).webm|VJSC_1425D-q1.ogv</code>' ], 'parsemag' => true ] ); ?>
+              <?php echo $I18N->msg( 'url-structure-files', [ 'variables' => [ '<code>Lion_cubs_(Panthera_leo).webm|Example.jpg</code>' ], 'parsemag' => true ] ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>
             <?php include "../../url_parts/_date_ranges.php"; ?>
+            <dt>referer</dt>
+            <dd>
+              <?php $values = [ '<code>all-referers</code> ' . $defaultMsg, '<code>internal</code>', '<code>external</code>', '<code>search-engine</code>', '<code>unknown</code>', '<code>none</code>' ]; ?>
+              <?php echo generateListMessage( $values ); ?>
+            </dd>
+            <?php include "../../url_parts/_agent.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
             <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>

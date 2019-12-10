@@ -20,9 +20,11 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/mediaviews?files={{PAGENAMEE}}</pre>"
+          - $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/mediaviews?project=commons.wikimedia.org&files={{PAGENAMEE}}</pre>"
           - $fullpageNamee = "<code>{{PAGENAMEE}}</code>"
-          = $I18N->msg( 'url-structure-mediaviews-example', [ 'variables' => [ $mediaviewsLink, $fullpageNamee ], 'parsemag' => true ] )
+          - $project = "<code>commons.wikimedia.org</code>"
+          - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
+          = $I18N->msg( 'url-structure-example', [ 'variables' => [ $mediaviewsLink, $project, $sitematrixLink, $fullpageNamee ], 'parsemag' => true ] )
 
         %div
           %h3
@@ -30,11 +32,18 @@
             %small= $I18N->msg( 'url-structure-parameters-order' )
           %hr
           %dl.dl-horizontal
+            - $defaultProject = 'commons.wikimedia.org'
+            - include "../../url_parts/_project.php"
             %dt files
             %dd
-              = $I18N->msg( 'url-structure-files', [ 'variables' => [ '<code>Lion_cubs_(Panthera_leo).webm|VJSC_1425D-q1.ogv</code>' ], 'parsemag' => true ] )
+              = $I18N->msg( 'url-structure-files', [ 'variables' => [ '<code>Lion_cubs_(Panthera_leo).webm|Example.jpg</code>' ], 'parsemag' => true ] )
             - $defaultRange = 'latest'
             - include "../../url_parts/_date_ranges.php"
+            %dt referer
+            %dd
+              - $values = [ '<code>all-referers</code> ' . $defaultMsg, '<code>internal</code>', '<code>external</code>', '<code>search-engine</code>', '<code>unknown</code>', '<code>none</code>' ]
+              = generateListMessage( $values )
+            - include "../../url_parts/_agent.php"
             - include "../../url_parts/_autolog.php"
             - include "../../url_parts/_mute_validations.php"
 
@@ -42,4 +51,4 @@
           %a(href="/mediaviews")
             = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'mediaviews-title' ) ], 'parsemag' => true ] )
 
-      -include "../../_footer.php";
+      - include "../../_footer.php";

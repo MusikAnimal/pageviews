@@ -24,7 +24,6 @@
       <main class="col-lg-10 col-lg-offset-1">
         <ul class="list-group">
           <?php include "../../faq_parts/_todays_data.php"; ?>
-          <?php include "../../faq_parts/_counts.php"; ?>
           <?php include "../../faq_parts/_date_dot.php"; ?>
           <?php include "../../faq_parts/_chart_type.php"; ?>
           <?php include "../../faq_parts/_feedback.php"; ?>
