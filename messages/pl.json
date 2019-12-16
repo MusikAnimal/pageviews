@@ -10,7 +10,8 @@
 			"Wojtas",
 			"DeRudySoulStorm",
 			"CiaPan",
-			"Rail"
+			"Rail",
+			"WaldiSt"
 		]
 	},
 	"active-users": "Użytkowników aktywnych",
@@ -89,6 +90,7 @@
 	"faq-agents-spider": "uwzględnia \"<a href='https://pl.wikipedia.org/wiki/Robot_internetowy'>pająki sieciowe</a>\" wyszukiwarek takich jak Google, które czytają strony, aby tworzyć wyniki wyszukiwania. Strony mogą mieć znaczną ilość odsłon przez roboty wyszukiwarek, przez co domyślnie to narzędzie wyświetla tylko dane o zwykłych użytkownikach.",
 	"faq-agents-title": "Czym są \"Agents\"?",
 	"faq-agents-user": "uwzględnia wszystkich ludzi, którzy zobaczyli stronę. Edytujących, niezalogowanych edytujących oraz czytelników.",
+	"faq-anomaly-body1": "Jeśli zobaczysz niewytłumaczalny wzrost liczby odsłon, zwłaszcza jeśli jest to tylko w określone dni, może to być fałszywy ruch ze strony zautomatyzowanego programu. Jedną z taktyk pozwalających zidentyfikować ruch napompowany botem jest porównanie widoków z komputerów stacjonarnych z widokami z urządzeń mobilnych. Najpierw sprawdź, którzy agenci są najbardziej popularni w twoim projekcie dla wszystkich artykułów, i wykorzystaj to jako podstawę do porównania. Na przykład w angielskiej Wikipedii wyświetlenia mobilne powinny być porównywalne, jeśli nie wyższe niż na komputerach, więc jeśli wyświetlenia mobilne są bardzo niskie, ruch może być fałszywy.",
 	"faq-bug-report-body": "Jeżeli chcesz napisać opinię poprzez wiki, skorzystaj z <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> na Meta. Błędy można zgłaszać w <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricatorze</a>.",
 	"faq-bug-report-title": "Mam prośbę o nową funkcję lub zgłoszenie błędu",
 	"faq-chart-type-title": "W jaki sposób mogę zmienić rodzaj wykresu?",
