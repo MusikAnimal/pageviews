@@ -207,7 +207,7 @@
 	"massviews-search-description": "Добивање на посетеност на страници дадени со пребарување, користејќи го погонот $1",
 	"massviews-subpages-description": "Дава посетеност на една страница и сите нејзини $1",
 	"massviews-title": "Масовна анализа",
-	"massviews-transclusions-description": "Дава посетеност на страници што <a href='$1'>превметнуваат</a> даден шаблон",
+	"massviews-transclusions-description": "Дава посетеност на страници што <a href='$1'>превметнуваат</a> дадена предлошка",
 	"massviews-wikilinks-description": "Дава посетеност на <a href='$1'>врзани страници</a> на страница",
 	"may": "мај",
 	"median": "Медијана",
