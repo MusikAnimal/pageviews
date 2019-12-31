@@ -4,7 +4,8 @@
 			"Metalhead64",
 			"FriedhelmW",
 			"Inkowik",
-			"Mirzali"
+			"Mirzali",
+			"WikiBayer"
 		]
 	},
 	"active-users": "Aktive Benutzer",
@@ -351,6 +352,7 @@
 	"url-structure-autolog": "Auf $1 festlegen, um die automatische Festlegung der Option $2 zu deaktivieren",
 	"url-structure-current": "Der derzeit verfügbare Tag.",
 	"url-structure-end-date": "Enddatum im Format $1, der vorherige Tag ist Standard.",
+	"url-structure-end-date-latest": "Verwenden Sie $1 für den letzten verfügbaren Tag.",
 	"url-structure-end-month": "Das Verwenden des Formats $1 wird als Endmonat behandelt und es werden monatliche statt tägliche Daten angezeigt.",
 	"url-structure-example": "Um die aktuellsten Daten zu einer angegebenen Seite auf deinem Wiki mit Standardoptionen abzurufen, verwende:\n$1\nErsetze $2 durch ein gültiges $3. $4 wird durch die Seite aufgelöst, auf der der Link platziert ist.",
 	"url-structure-example-siteviews": "Um die aktuellsten Daten zu den Gesamtaufrufen aller Seiten auf deinem Wiki mit Standardoptionen zu erhalten, verwende:\n$1",
@@ -369,6 +371,7 @@
 	"url-structure-project": "$1 oder andere gültige $2",
 	"url-structure-project-multilang": "Das angegebene Quellprojekt muss mehrsprachig sein, zum Beispiel $1 oder $2",
 	"url-structure-projects": "Gültiges $1, getrennt durch ein <code>|</code>, wie zum Beispiel $2",
+	"url-structure-mute-validations": "Setzen Sie den Wert auf $1, um die Anzeige von Warnungen beim Validieren des Formulars zu deaktivieren. Die Standardeinstellungen werden auch bei ungültigen Eingaben wie gewohnt angewendet.",
 	"url-structure-siteviews-agent": "Nur zutreffend, wenn $1 $2 ist.",
 	"url-structure-siteviews-platform": "Wenn $1 $2 ist",
 	"url-structure-siteviews-platform-no-pageviews": "Wenn die „$1“ $2 oder $3 ist",
@@ -379,6 +382,7 @@
 	"url-structure-special-range-latest": "Die letzten 20 Tage der Daten",
 	"url-structure-special-range-latest-n": "Wo <i>N</i> eine Zahl ist. Zum Beispiel zeigt <code>latest-30</code> die letzten 30 Tage der Daten an",
 	"url-structure-start-date": "Startdatum im Format $1.<br/>Lasse diesen und den Parameter $2 weg, um die aktuellsten Daten anzuzeigen.",
+	"url-structure-start-date-earliest": "Verwenden Sie $1 für den frühesten verfügbaren Tag.",
 	"url-structure-start-month": "Das Verwenden des Formats $1 wird als Startmonat behandelt und es werden monatliche statt tägliche Daten angezeigt.",
 	"url-structure-subjectpage": "Legt die Option „$1“ bei der Verwendung von Kategorien als Quelle fest. $2 zur Aktivierung oder $3 zur Deaktivierung (Standard) verwenden.",
 	"url-structure-topviews-date": "Ein Datum, das entweder einen speziellen Tag oder Monat oder einen relativen Bereich darstellt. Kann eines der folgenden Daten sein:",
