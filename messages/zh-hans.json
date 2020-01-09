@@ -10,7 +10,8 @@
 			"Deathkon",
 			"94rain",
 			"VulpesVulpes825",
-			"A Chinese Wikipedian"
+			"A Chinese Wikipedian",
+			"沈澄心"
 		]
 	},
 	"active-users": "活跃用户",
@@ -267,7 +268,7 @@
 	"pagecounts": "页面计数",
 	"pagecounts-legacy": "页面计数（传统）",
 	"pages": "页面",
-	"pageviews": "页面浏览",
+	"pageviews": "页面访问量",
 	"pageviews-description": "跨多个页面的页面浏览比较",
 	"param-error-1": "页面浏览API不包含早于$1的数据。已使用最早可用数据。",
 	"param-error-2": "开始日期必须早于结束日期。",
