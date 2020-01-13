@@ -28,7 +28,7 @@ fi
 
 composer install
 
-sh symlinks.sh $app
+sh ./bin/symlinks.sh $app
 
 if [ $app = "pageviews" ]; then
     cd public_html/jsdocs || exit
