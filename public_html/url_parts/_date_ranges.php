@@ -37,6 +37,16 @@
       <?php echo $I18N->msg( 'last-month' ); ?>
     </li>
     <li>
+      <code>this-year</code>
+      <?php echo $defaultRange === 'this-year' ? $defaultMsg : ''; ?>
+      <?php echo $I18N->msg( 'this-year' ); ?>
+    </li>
+    <li>
+      <code>last-year</code>
+      <?php echo $defaultRange === 'last-year' ? $defaultMsg : ''; ?>
+      <?php echo $I18N->msg( 'last-year' ); ?>
+    </li>
+    <li>
       <code>all-time</code>
       <?php echo $I18N->msg( 'all-time' ); ?>
     </li>

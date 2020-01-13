@@ -31,6 +31,14 @@
       = $defaultRange === 'last-month' ? $defaultMsg : ''
       = $I18N->msg( 'last-month' )
     %li
+      %code this-year
+      = $defaultRange === 'this-year' ? $defaultMsg : ''
+      = $I18N->msg( 'this-year' )
+    %li
+      %code last-year
+      = $defaultRange === 'last-year' ? $defaultMsg : ''
+      = $I18N->msg( 'last-year' )
+    %li
       %code all-time
       = $I18N->msg( 'all-time' )
 %dt start
