@@ -1806,7 +1806,7 @@ class Pv extends PvConfig {
     // Clear the old spinny timeout
     clearTimeout(this.timeout);
 
-    // Set new spinny timeout that will show error after 30 seconds
+    // Set new spinny timeout that will show error after 60 seconds
     this.timeout = setTimeout(err => {
       this.resetView();
       this.toastError(`
@@ -1814,7 +1814,7 @@ class Pv extends PvConfig {
         ${$.i18n('error-timed-out')}
         ${$.i18n('error-please-report', this.getBugReportURL())}
       `);
-    }, 30 * 1000);
+    }, 60 * 1000);
   }
 
   /**
