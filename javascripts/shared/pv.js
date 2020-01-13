@@ -89,7 +89,37 @@ class Pv extends PvConfig {
       return;
     }
 
-    this.loadTranslations();
+    this.loadTranslations().then(() => {
+      // Advertise most-viewed pages for the year.
+
+      // Don't show when viewing the yearly results in Topviews.
+      if ('topviews' === this.app && this.isYearly()) {
+        return;
+      }
+
+      // Don't show if seen over 3 times.
+      const cacheKey = 'pageviews-yearly-topviews-add';
+      const seenCount = parseInt(this.getFromLocalStorage(cacheKey), 10) || 0;
+      if (seenCount > 3) {
+        return;
+      }
+      this.setLocalStorage(cacheKey, seenCount + 1);
+
+      let project = this.project;
+
+      // Grab the first project in the list if viewing Siteviews.
+      if ('siteviews' === this.app) {
+        if (this.isAllProjects()) {
+          return;
+        }
+        project = ($(this.config.select2Input).select2('val') || [])[0].replace(/\.org$/, '');
+      }
+
+      const year = 2019;
+      this.toastInfo(
+        `<a href="/topviews?project=${project}.org&date=${year}"><strong>${$.i18n('notice-year-stats', year)}</strong></a>`
+      );
+    });
 
     // extensions
     $.extend($.i18n.parser.emitter, {
@@ -132,6 +162,7 @@ class Pv extends PvConfig {
    * Load translations then initialize the app.
    * Each app has it's own initialize method.
    * Make sure we load 'en.json' as a fallback.
+   * @returns {jQuery.Promise}
    */
   loadTranslations() {
     let messagesToLoad = {
@@ -146,7 +177,7 @@ class Pv extends PvConfig {
 
       messagesToLoad.en = `${appPath}/${currentApp}/messages/en.json`;
     }
-    $.i18n({
+    return $.i18n({
       locale: i18nLang
     }).load(messagesToLoad).then(this.initialize.bind(this));
   }

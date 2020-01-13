@@ -227,6 +227,7 @@
 	"no-autocompletion": "No autocompletion",
 	"none": "None",
 	"note": "Note",
+	"notice-year-stats": "The most-viewed pages of $1 is now available!",
 	"november": "November",
 	"num-bytes": "$1 {{PLURAL:$2|byte|bytes}}",
 	"num-days-span": "$1-day span",

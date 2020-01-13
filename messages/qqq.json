@@ -243,6 +243,7 @@
 	"no-autocompletion": "Label for option to disable autocompletion when searching",
 	"none": "The word 'none', used for general purpose.\n{{Identical|None}}",
 	"note": "The word that goes before a general notice, such as a temporarily limited feature.\n{{Identical|Note}}",
+	"notice-year-stats": "Message advertizing that the most-viewed pages of the past year are now available. $1 is the year.",
 	"november": "{{doc-months|11}}\n{{Identical|November}}",
 	"num-bytes": "Text indicating a number of bytes. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Byte}}",
 	"num-days-span": "Indicates the number of days across which a user was active in creating articles. Shown above the 'date created' column in the Userviews tool. $1 is the number of days as a formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.",

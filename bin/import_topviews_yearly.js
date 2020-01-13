@@ -1,7 +1,7 @@
 const fs = require('fs');
 const [sourceFile, year] = process.argv.slice(2);
 
-const source = fs.readFile(sourceFile, 'utf8', function (err, tsv) {
+fs.readFile(sourceFile, 'utf8', function(err, tsv) {
   const lines = tsv.split('\n');
   const headers = lines.slice(0, 1)[0].split('\t');
 
