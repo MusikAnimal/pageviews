@@ -235,6 +235,7 @@
 	"no-autocompletion": "不使用自動完成",
 	"none": "無",
 	"note": "備註",
+	"notice-year-stats": "$1年度瀏覽最多次頁面現可查看！",
 	"november": "十一月",
 	"num-bytes": "$1 {{PLURAL:$2| 位元組| 位元組}}",
 	"num-days-span": "$1-日期間",

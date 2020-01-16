@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Fwolff",
-			"Taalvalk"
+			"Taalvalk",
+			"Joris Darlington Quarshie"
 		]
 	},
 	"active-users": "Aktiewe gebruikers",
@@ -115,6 +116,7 @@
 	"no-autocompletion": "Geen outovoltooiing",
 	"none": "Geen",
 	"note": "Let wel",
+	"notice-year-stats": "Die bladsye van $1 wat die meeste bekyk word,is nou beskikbaar!",
 	"november": "November",
 	"num-bytes": "$1 {{PLURAL:$2|greep|grepe}}",
 	"num-days-span": "$1-dagperiode",

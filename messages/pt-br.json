@@ -235,6 +235,7 @@
 	"no-autocompletion": "Sem autocompletar",
 	"none": "Nenhum",
 	"note": "Nota",
+	"notice-year-stats": "A maioria das páginas visualizadas de $1 não estão disponíveis!",
 	"november": "novembro",
 	"num-bytes": "$1 {{PLURAL:$2|byte|bytes}}",
 	"num-days-span": "Período de $1 dias",

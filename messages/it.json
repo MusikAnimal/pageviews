@@ -315,7 +315,7 @@
 	"unsupported-browser-error": "$1 e versioni precedenti non è supportato. <a href='http://browsehappy.com/'>Aggiorna il tuo browser</a></strong>.",
 	"url-structure": "Struttura URL",
 	"url-structure-agent": "Uno tra $1 (visualizzatore umano, predefinito), $2 (crawler dei motore di ricerca) o $3 ($1 e $2)",
-	"url-structure-current": "L'ultimo giorno disponibile.",
+	"url-structure-current": "L'ultimo giorno disponibile",
 	"url-structure-end-date": "Data di fine nel formato $1, per impostazione predefinita il giorno precedente.",
 	"url-structure-end-month": "Utilizzando il formato $1 sarà trattato come il mese di fine, e mostrerà i dati mensili invece che giornalieri.",
 	"url-structure-example": "Per ottenere i dati più recenti su una determinata pagina sul tuo wiki, con le opzioni predefinite, usa:\n$1\nsostituendo $2 con un $3 valido. $4 risolverà la pagina su cui il collegamento è posto",
