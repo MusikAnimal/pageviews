@@ -6,7 +6,8 @@
 			"Milicevic01",
 			"Ivi104",
 			"Srdjan m",
-			"Bugoslav"
+			"Bugoslav",
+			"Neptune, the Mystic"
 		]
 	},
 	"active-users": "Aktivni suradnici",
@@ -164,6 +165,7 @@
 	"no-autocompletion": "Bez samodovršavanja",
 	"none": "Nema",
 	"note": "Bilješke",
+	"notice-year-stats": "Sad su dostupne najposjećenije stranice iz $1 godine!",
 	"november": "Studeni",
 	"num-bytes": "$1 {{PLURAL:$2|bajt|bajta|bajtova}}",
 	"num-files": "$1 {{PLURAL:$2|datoteka|datoteke|datoteka}}",

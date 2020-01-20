@@ -12,7 +12,8 @@
 			"Hedda",
 			"Mirzali",
 			"BaRaN6161 TURK",
-			"Grkn gll"
+			"Grkn gll",
+			"SwornToTranslate29"
 		]
 	},
 	"active-users": "Aktif kullanıcılar",
@@ -357,7 +358,7 @@
 	"url-structure": "URL Yapısı",
 	"url-structure-agent": "$1 (varsayılan, kullanıcı görüntülemeleri), $2 (arama motoru tarayıcısı), $3 (WMF botları) veya $3 ($1 ve $2)",
 	"url-structure-autolog": "$2 seçeneğini otomatik olarak devre dışı bırakmak için $1 olarak ayarlayın",
-	"url-structure-current": "Mevcut en son gün.",
+	"url-structure-current": "Mevcut en son gün",
 	"url-structure-end-date": "Biti, tarihi formatı $1 şeklindedir ve varsayılan olarak önceki günü gösterir.",
 	"url-structure-end-date-latest": "En son gün için $1 kullanın.",
 	"url-structure-end-month": "$1 formatının kullanılması, son ay olarak kabul edilir ve günlük yerine aylık verileri gösterir.",

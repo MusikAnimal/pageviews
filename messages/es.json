@@ -12,7 +12,8 @@
 			"MusikAnimal",
 			"Julián L",
 			"Javiersanp",
-			"James"
+			"James",
+			"Joanmp17"
 		]
 	},
 	"active-users": "Usuarios activos",
@@ -305,7 +306,7 @@
 	"unknown": "Desconocido",
 	"unsupported-browser-error": "No se admite $1 y anteriores. <a href='http://browsehappy.com/'>Actualiza tu navegador</a></strong>.",
 	"url-structure": "Estructura del URL",
-	"url-structure-current": "El último día disponible.",
+	"url-structure-current": "El último día disponible",
 	"url-structure-end-date": "Fecha final en el formato $1, por defecto es el día anterior.",
 	"url-structure-end-month": "El uso del formato $1 se tratará como el mes final, y mostrará datos mensuales en vez de diarios.",
 	"url-structure-example": "Para obtener los últimos datos sobre una página dada de tu wiki, con las opciones predefinidas, usa:\n$1\nreemplazando $2 por un $3 válido. $4 se resolverá como la página en la que esté colocado el enlace",

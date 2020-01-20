@@ -354,7 +354,7 @@
 	"url-structure": "Adresstruktur",
 	"url-structure-agent": "En av $1 (människobesökare, standard), $2 (sökmotorer) eller $3 ($1 och $2)",
 	"url-structure-autolog": "Ändra till $1 för att inaktivera att alternativet $2 ändras automatiskt",
-	"url-structure-current": "Den senast tillgängliga dagen.",
+	"url-structure-current": "Den senast tillgängliga dagen",
 	"url-structure-end-date": "Slutdatum i formatet $1, standard är föregående dag.",
 	"url-structure-end-date-latest": "Använd $1 för den senast tillgängliga dagen.",
 	"url-structure-end-month": "När formatet $1 används kommer det att behandlas som slutmånaden och visa månatlig data i stället för daglig data.",

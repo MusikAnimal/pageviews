@@ -358,7 +358,7 @@
 	"url-structure": "Estrutura de URL",
 	"url-structure-agent": "Um de $1 (visitante humano, por omissão), $2 (rastreadores de motor de pesquisa), ou $3 ($1 e $2)",
 	"url-structure-autolog": "Defina como $1 para desabilitar automaticamente configuração da opção $2.",
-	"url-structure-current": "O último dia disponível.",
+	"url-structure-current": "O último dia disponível",
 	"url-structure-end-date": "Data final no formato $1, sendo o dia anterior o padrão.",
 	"url-structure-end-date-latest": "Use $1 para o último dia disponível.",
 	"url-structure-end-month": "A utilização do formato $1 será tratada como o mês final, que mostra os dados mensais ao invés dos quotidianos.",
