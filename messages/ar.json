@@ -362,7 +362,7 @@
 	"url-structure": "هيكل URL",
 	"url-structure-agent": "أحد $1 (مشاهد بشري، الافتراضي)، أو $2 (برامج زحف محرك البحث)، أو $3 ($1 و$2)",
 	"url-structure-autolog": "تعيين $1 لتعطيل تحديد الخيار $2 تلقائيا",
-	"url-structure-current": "آخر يوم متاح.",
+	"url-structure-current": "آخر يوم متاح",
 	"url-structure-end-date": "تاريخ الانتهاء بالصيغة $1، افتراضي إلى اليوم السابق.",
 	"url-structure-end-date-latest": "استخدم $1 لآخر يوم متاح.",
 	"url-structure-end-month": "استخدام الصيغة $1 سيتم التعامل معه كشهر نهاية، وسيظهر بيانات شهرية بدلا من يومية.",

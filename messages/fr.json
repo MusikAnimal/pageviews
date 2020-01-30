@@ -326,7 +326,7 @@
 	"select2-loading": "Chargement de plus de résultats...",
 	"select2-max-chars": "Veuillez supprimer $1 {{PLURAL:$1|caractère|caractères}}",
 	"select2-max-items": "Vous ne pouvez sélectionner {{PLURAL:$1|qu’un élément|que $1 éléments}}",
-	"select2-min-chars": "Veuillez saisir $1 caractères ou plus",
+	"select2-min-chars": "Veuillez saisir $1 {{PLURAL:$1|caractère|caractères}} ou plus",
 	"select2-no-results": "Aucun résultat trouvé",
 	"september": "septembre",
 	"settings": "Paramètres",

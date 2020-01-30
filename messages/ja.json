@@ -199,6 +199,7 @@
 	"new-article-warning": "入力されたページに最近に作成されたものが含まれており、ページビューのデータが利用できないかもしれません。（$1）",
 	"no-autocompletion": "オートコンプリート切",
 	"none": "なし",
+	"notice-year-stats": "$1年の最も閲覧された記事の一覧が利用できます！",
 	"november": "11月",
 	"num-bytes": "$1 {{PLURAL:$2|バイト}}",
 	"num-days-span": "$1日間",
