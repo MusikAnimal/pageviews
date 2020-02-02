@@ -55,7 +55,7 @@
 <dt>start</dt>
 <dd>
   <?php echo $I18N->msg( 'url-structure-start-date', [ 'variables' => [ '<code>YYYY-MM-DD</code>', '<code>end</code>' ], 'parsemag' => true ] ); ?>
-  <?php if ( in_array( $currentApp, [ 'pageviews' ] ) ) { ?>
+  <?php if ( in_array( $currentApp, [ 'pageviews', 'siteviews' ] ) ) { ?>
     <br>
     <?php echo $I18N->msg( 'url-structure-start-month', [ 'variables' => [ '<code>YYYY-MM</code>' ] ] ); ?>
     <br>
