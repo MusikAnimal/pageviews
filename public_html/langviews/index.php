@@ -31,7 +31,7 @@
             <label for="project_input">
               <?php echo $I18N->msg( 'source-project' ); ?>
             </label>
-            <input class="form-control" id="project_input" placeholder="en.wikipedia.org" required="required">
+            <input class="form-control" id="project_input" placeholder="en.wikipedia.org" required="required" spellcheck="false">
           </div>
           <!-- Advanced options -->
           <div class="col-lg-3 col-sm-3">

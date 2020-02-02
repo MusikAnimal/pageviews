@@ -69,7 +69,7 @@
           <label for="project-input">
             <?php echo $I18N->msg( 'project' ); ?>
           </label>
-          <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org">
+          <input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org" spellcheck="false">
         </div>
         <div>
           <label for="platform-select">

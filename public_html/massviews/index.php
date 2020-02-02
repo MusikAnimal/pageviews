@@ -147,7 +147,7 @@
                 </ul>
               </div>
               <input class="form-control input-control source-input" id="source_input" required="required">
-              <input class="form-control input-control project-input col-lg-6" required="required" placeholder="en.wikipedia.org" disabled="disabled">
+              <input class="form-control input-control project-input col-lg-6" required="required" placeholder="en.wikipedia.org" spellcheck="false" disabled="disabled">
               <span class="input-group-btn">
                 <button class="btn btn-primary pull-right btn-submit">
                   <?php echo $I18N->msg( 'submit' ); ?>
