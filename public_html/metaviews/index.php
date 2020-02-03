@@ -36,7 +36,7 @@
             ?>
             <?php echo $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) ); ?>
           </span>
-          <input class="form-control aqs-date-range-selector" id="range-input">
+          <input class="form-control date-range-selector" id="range-input">
         </div>
       </div>
       <!-- Tool selector -->
@@ -45,13 +45,13 @@
           <label for="tool-input">
             Tools
           </label>
-          <select class="aqs-select2-selector col-lg-12 invisible" id="tool-input" multiple="multiple"></select>
+          <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
         </div>
       </div>
       <?php include '../_data_links.php'; ?>
       <!-- Chart -->
       <div class="chart-container">
-        <canvas class="aqs-chart"></canvas>
+        <canvas id="chart"></canvas>
       </div>
       <div class="message-container col-lg-12"></div>
       <div class="output col-lg-10 col-lg-offset-1">

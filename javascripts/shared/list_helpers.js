@@ -14,6 +14,14 @@ const ListHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Get search input element.
+   * @returns {jQuery}
+   */
+  get $sourceInput() {
+    return this.cachedElement('#source-input');
+  }
+
+  /**
    * Prepare chart options before showing chart view, based on current chart type
    */
   assignOutputDataChartOpts() {
@@ -89,7 +97,7 @@ const ListHelpers = superclass => class extends superclass {
   getPageviewsURL(project, page) {
     let startDate = moment(this.daterangepicker.startDate),
       endDate = moment(this.daterangepicker.endDate);
-    const platform = $(this.config.platformSelector).val();
+    const platform = this.$platformSelector.val();
 
     if (endDate.diff(startDate, 'days') === 0) {
       startDate.subtract(3, 'days');
@@ -201,7 +209,7 @@ const ListHelpers = superclass => class extends superclass {
 
       if (this.autoLogDetection === 'true') {
         const shouldBeLogarithmic = this.shouldBeLogarithmic([this.outputData.datasets[0].data]);
-        $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+        this.$logarithmicCheckbox.prop('checked', shouldBeLogarithmic);
       }
 
       if (this.isLogarithmic()) {
@@ -241,7 +249,7 @@ const ListHelpers = superclass => class extends superclass {
       //  in case they changed the localization options
       this.outputData.labels = this.getDateHeadings();
 
-      const context = $(this.config.chart)[0].getContext('2d');
+      const context = this.$chart[0].getContext('2d');
       this.chartObj = new Chart(context, {
         type: this.chartType,
         data: this.outputData,
@@ -279,6 +287,30 @@ const ListHelpers = superclass => class extends superclass {
         $.i18n('processing-page', value, total)
       );
     }
+  }
+
+  /**
+   * Listeners specific to list-based apps.
+   * @override
+   */
+  setupListeners() {
+    super.setupListeners();
+
+    $('.another-query').on('click', () => {
+      this.setState('initial');
+      this.pushParams(true);
+    });
+
+    $('.view-btn').on('click', e => {
+      document.activeElement.blur();
+      this.view = e.currentTarget.dataset.value;
+      this.toggleView(this.view);
+    });
+
+    $('#pv_form').on('submit', e => {
+      e.preventDefault(); // prevent page from reloading
+      this.processInput();
+    });
   }
 };
 

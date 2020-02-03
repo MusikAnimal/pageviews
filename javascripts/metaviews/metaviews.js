@@ -131,7 +131,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const tools = $(this.config.select2Input).select2('val') || [];
+    const tools = this.getEntities();
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -146,8 +146,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * Sets up the tool selector and adds listener to update chart
    */
   setupSelect2() {
-    const select2Input = $(this.config.select2Input);
-
     const data = this.config.apps.map(app => {
       return {
         id: app,
@@ -162,8 +160,8 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    select2Input.select2(params);
-    select2Input.on('change', this.processInput.bind(this));
+    this.$select2Input.select2(params);
+    this.$select2Input.on('change', this.processInput.bind(this));
   }
 
   /**
@@ -174,24 +172,9 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * @override
    */
   setSelect2Defaults(items) {
-    $(this.config.select2Input).val(items).trigger('change');
+    this.$select2Input.val(items).trigger('change');
 
     return items;
-  }
-
-  /**
-   * General place to add page-wide listeners
-   * @override
-   */
-  setupListeners() {
-    super.setupListeners();
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.updateTable();
-    });
   }
 
   /**
@@ -207,7 +190,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    const entities = $(this.config.select2Input).select2('val') || [];
+    const entities = this.getEntities();
     this.setInitialChartType(entities.length);
 
     /**
@@ -365,7 +348,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       <a href='/${app.label}'>${app.label}</a>
       &middot;
       <span class='text-muted'>
-        ${$(this.config.dateRangeSelector).val()}
+        ${this.$dateRangeSelector.val()}
       </span>
       &middot;
       ${app.sum} page load${app.sum === 1 ? '' : 's'}
@@ -415,7 +398,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
           <tr>
             <td class='project-table-view--rank'>${index + 1}</td>
             <td class='project-table-view--title'>
-              <a href='//${project.project}.org' target='_blank'>${project.project}</a>
+              <a href='https://${project.project}.org' target='_blank'>${project.project}</a>
             </td>
             <td class='project-table-view--pageloads'>${this.formatNumber(project.count)}</td>
           </tr>

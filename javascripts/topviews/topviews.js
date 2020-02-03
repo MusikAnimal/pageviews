@@ -39,8 +39,8 @@ class TopViews extends Pv {
 
   /**
    * Apply user input by updating the URL query string and view, if needed
-   * @param {boolean} force - apply all user options even if we've detected nothing has changed
-   * @returns {Deferred} deferred object from initData
+   * @param {boolean} [force] - apply all user options even if we've detected nothing has changed
+   * @returns {Deferred|boolean} deferred object from initData, or false if nothing needs to be processed.
    */
   processInput(force) {
     this.pushParams();
@@ -86,7 +86,7 @@ class TopViews extends Pv {
    * Print list of top pages
    */
   showList() {
-    $('.topview-entries').html('');
+    this.$topviewEntries.html('');
 
     const pageDataLength = this.pageData.length;
 
@@ -118,7 +118,7 @@ class TopViews extends Pv {
         );
       }
 
-      $('.topview-entries').append(
+      this.$topviewEntries.append(
         `<tr class='topview-entry' id='topview-entry-${index}'>
            <td class='topview-entry--rank-wrapper'>
              <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${index - 1}
@@ -164,11 +164,11 @@ class TopViews extends Pv {
       }
     });
 
-    $(this.config.select2Input).html('');
+    this.$select2Input.html('');
 
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
-      $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
+      $(`<option>${escapedText}</option>`).appendTo(this.$select2Input);
     });
 
     if (triggerChange) {
@@ -182,12 +182,12 @@ class TopViews extends Pv {
           .always(() => this.setSingleMobileViews(newPage)
             .always(() => {
               this.setState('complete');
-              $(this.config.select2Input).val(this.excludes).trigger('change');
+              this.$select2Input.val(this.excludes).trigger('change');
               this.showList();
             })
           );
       } else {
-        $(this.config.select2Input).val(this.excludes).trigger('change');
+        this.$select2Input.val(this.excludes).trigger('change');
         this.showList();
       }
     }
@@ -239,7 +239,7 @@ class TopViews extends Pv {
           project: this.project,
           pages: excludes,
           date: this.getParams(false).date,
-          platform: $(this.config.platformSelector).val()
+          platform: this.$platformSelector.val()
         },
         method: 'POST'
       });
@@ -253,9 +253,9 @@ class TopViews extends Pv {
    */
   clearSearch() {
     this.setState('complete');
-    if ($('.topviews-search-icon').hasClass('glyphicon-remove')) {
+    if (this.$topviewsSearchIcon.hasClass('glyphicon-remove')) {
       $('#topviews_search_field').val('');
-      $('.topviews-search-icon').removeClass('glyphicon-remove').addClass('glyphicon-search');
+      this.$topviewsSearchIcon.removeClass('glyphicon-remove').addClass('glyphicon-search');
       this.showList();
     }
   }
@@ -266,7 +266,7 @@ class TopViews extends Pv {
    */
   shouldShowMobile() {
     return this.isYearly() || (
-      $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access'
+      this.$showMobileCheckbox.is(':checked') && this.$platformSelector.val() === 'all-access'
     );
   }
 
@@ -328,7 +328,7 @@ class TopViews extends Pv {
   }
 
   /**
-   * Link to /pageviews for given article and chosen daterange
+   * Link to /pageviews for given article and range around chosen date.
    * @param {string} article - page name
    * @returns {string} URL
    */
@@ -348,8 +348,8 @@ class TopViews extends Pv {
       endDate = date.add(3, 'days').format('YYYY-MM-DD');
     }
 
-    const platform = $(this.config.platformSelector).val(),
-      project = $(this.config.projectInput).val();
+    const platform = this.$platformSelector.val(),
+      project = this.$projectInput.val();
 
     return `/pageviews?start=${startDate}&end=${endDate}&project=${project}` +
       `&platform=${platform}&pages=${encodeURIComponent(article.score()).replace("'", escape)}`;
@@ -362,15 +362,15 @@ class TopViews extends Pv {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val()
     };
 
     const datepickerValue = this.datepicker.getDate();
 
     /**
      * Override start and end with custom range values,
-     *   if configured (set by URL params or setupDateRangeSelector)
+     *   if configured (set by URL params or setupDatePicker)
      */
     if (this.specialRange && specialRange) {
       params.date = this.specialRange.range;
@@ -403,21 +403,21 @@ class TopViews extends Pv {
    */
   setSpecialRange(range) {
     if (range === 'last-year') {
-      this.setupDateRangeSelector('yearly');
+      this.setupDatePicker('yearly');
       this.datepicker.setDate(this.config.maxYear);
       this.specialRange = {
         range,
         value: moment(this.config.maxYear).format('YYYY')
       };
     } else if (range === 'last-month') {
-      this.setupDateRangeSelector('monthly');
+      this.setupDatePicker('monthly');
       this.datepicker.setDate(this.maxMonth);
       this.specialRange = {
         range,
         value: moment(this.maxMonth).format('YYYY/MM')
       };
     } else if (range === 'yesterday') {
-      this.setupDateRangeSelector('daily');
+      this.setupDatePicker('daily');
       this.datepicker.setDate(this.maxDate);
       this.specialRange = {
         range,
@@ -433,14 +433,13 @@ class TopViews extends Pv {
   /**
    * Set datepicker based on provided date or range
    * @param {String} dateInput - either a range like 'last-month', 'yesterday' or date with format 'YYYY-MM-DD'
-   * @return {null}
    */
   setDate(dateInput) {
     let date;
 
     if (/\d{4}$/.test(dateInput)) {
       // yearly
-      this.setupDateRangeSelector('yearly');
+      this.setupDatePicker('yearly');
       date = moment(`${dateInput}-01-01`).toDate();
 
       // if over max, set to max
@@ -449,7 +448,7 @@ class TopViews extends Pv {
       }
     } else if (/\d{4}-\d{2}$/.test(dateInput)) {
       // monthly
-      this.setupDateRangeSelector('monthly');
+      this.setupDatePicker('monthly');
       date = moment(`${dateInput}-01`).toDate();
 
       // if over max, set to max
@@ -458,7 +457,7 @@ class TopViews extends Pv {
       }
     } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
       // daily
-      this.setupDateRangeSelector('daily');
+      this.setupDatePicker('daily');
       date = moment(dateInput).toDate();
 
       // if over max, set to max (Topviews maxDate is a Date object, not moment)
@@ -467,7 +466,8 @@ class TopViews extends Pv {
       }
     } else {
       // attempt to set as special range, or default range if range is invalid
-      return this.setSpecialRange(dateInput) || this.setSpecialRange(this.config.defaults.dateRange);
+      this.setSpecialRange(dateInput) || this.setSpecialRange(this.config.defaults.dateRange);
+      return;
     }
 
     // if less than min, throw error (since this is a common request)
@@ -480,7 +480,7 @@ class TopViews extends Pv {
       date = this.minDate.toDate();
     }
 
-    return this.datepicker.setDate(date);
+    this.datepicker.setDate(date);
   }
 
   /**
@@ -507,22 +507,22 @@ class TopViews extends Pv {
 
     this.setDate(params.date); // also performs validations
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.platformSelector).val(params.platform);
+    this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
 
     if (this.isYearly()) {
       $('.percent-mobile-wrapper').show();
-      $('.show-percent-mobile').prop('disabled', true).prop('checked', true);
-      $('.mainspace-only-option').prop('disabled', true).prop('checked', true);
+      this.$showMobileCheckbox.prop('disabled', true).prop('checked', true);
+      this.$mainspaceCheckbox.prop('disabled', true).prop('checked', true);
       $('.output-table').addClass('show-mobile');
-      $('#platform-select').prop('disabled', true).val('all-access');
+      this.$platformSelector.prop('disabled', true).val('all-access');
     } else if (params.platform === 'all-access') {
       $('.percent-mobile-wrapper').show();
-      $('.show-percent-mobile').prop('checked', !!params.mobileviews);
+      this.$showMobileCheckbox.prop('checked', !!params.mobileviews);
       $('.output-table').toggleClass('show-mobile', !!params.mobileviews);
     }
 
-    $('.mainspace-only-option').prop('checked', params.mainspace !== 'false');
+    this.$mainspaceCheckbox.prop('checked', params.mainspace !== 'false');
 
     this.excludes = (params.excludes || []).map(exclude => decodeURIComponent(exclude.descore()));
 
@@ -579,15 +579,10 @@ class TopViews extends Pv {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
+   * @override
    */
   pushParams() {
-    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?+]/g, encodeURIComponent);
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&excludes=${excludes.replace('|', escape)}`);
+    super.pushParams('excludes');
   }
 
   /**
@@ -597,7 +592,7 @@ class TopViews extends Pv {
   resetView(clearSelector = true) {
     this.setState('reset');
     this.clearSearch();
-    $('.topview-entries').html('');
+    this.$topviewEntries.html('');
 
     if (clearSelector) {
       this.resetSelect2();
@@ -671,11 +666,11 @@ class TopViews extends Pv {
       }
     });
 
-    $('.topview-entries').html('');
-    $('.topviews-search-icon').removeClass('glyphicon-search').addClass('glyphicon-remove');
+    this.$topviewEntries.html('');
+    this.$topviewsSearchIcon.removeClass('glyphicon-search').addClass('glyphicon-remove');
 
     matchedData.forEach(item => {
-      $('.topview-entries').append(
+      this.$topviewEntries.append(
         `<tr class='topview-entry'>
          <td class='topview-entry--rank-wrapper'>
            <span class='topview-entry--remove glyphicon glyphicon-remove' data-article-id=${item.index}
@@ -716,9 +711,7 @@ class TopViews extends Pv {
    * @param {array} excludes - default page names to exclude
    */
   setupSelect2(excludes = this.excludes) {
-    const select2Input = $(this.config.select2Input);
-
-    select2Input.select2({
+    this.$select2Input.select2({
       data: [],
       maximumSelectionLength: 50,
       minimumInputLength: 0,
@@ -728,7 +721,7 @@ class TopViews extends Pv {
 
     if (excludes.length) this.setSelect2Defaults(excludes);
 
-    select2Input.on('change', e => {
+    this.$select2Input.on('change', e => {
       this.excludes = $(e.target).val() || [];
       this.max = null;
       this.clearSearch();
@@ -737,7 +730,7 @@ class TopViews extends Pv {
       $('.select2-search__field').prop('disabled', true);
     });
 
-    select2Input.on('select2:unselect', e => {
+    this.$select2Input.on('select2:unselect', e => {
       const pageName = e.params.data.text;
 
       if (!this.mobileViews[pageName]) {
@@ -761,10 +754,10 @@ class TopViews extends Pv {
   setSelect2Defaults(pages) {
     pages = pages.map(page => {
       const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(this.config.select2Input);
+      $('<option>' + escapedText + '</option>').appendTo(this.$select2Input);
       return page;
     });
-    $(this.config.select2Input).select2('val', pages);
+    this.$select2Input.select2('val', pages);
 
     return pages;
   }
@@ -774,7 +767,7 @@ class TopViews extends Pv {
    * @param {String} [type] - either 'monthly' or 'daily'
    * @override
    */
-  setupDateRangeSelector(type = 'monthly') {
+  setupDatePicker(type = 'monthly') {
     $('#date-type-select').val(type);
 
     let datepickerParams;
@@ -801,8 +794,8 @@ class TopViews extends Pv {
       };
     }
 
-    $(this.config.dateRangeSelector).datepicker('destroy');
-    $(this.config.dateRangeSelector).datepicker(
+    this.$dateSelector.datepicker('destroy');
+    this.$dateSelector.datepicker(
       Object.assign({
         autoclose: true,
         startDate: this.minDate.toDate()
@@ -816,22 +809,22 @@ class TopViews extends Pv {
   setupListeners() {
     super.setupListeners();
 
-    $(this.config.platformSelector).on('change', e => {
+    this.$platformSelector.on('change', e => {
       $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access' || this.isYearly());
       $('.output-table').toggleClass('show-mobile', this.shouldShowMobile());
       this.processInput();
     });
-    $('#date-type-select').on('change', e => {
-      $('#platform-select').prop('disabled', false);
-      $('.show-percent-mobile').prop('disabled', false);
-      $('.mainspace-only-option').prop('disabled', false);
+    $('#date-type-select').on('change', () => {
+      this.$platformSelector.prop('disabled', false);
+      this.$showMobileCheckbox.prop('disabled', false);
+      this.$mainspaceCheckbox.prop('disabled', false);
 
-      // setSpecialRange() also calls setupDateRangeSelector()
+      // setSpecialRange() also calls setupDatePicker()
       if (this.isYearly()) {
-        $('#platform-select').val('all-access').prop('disabled', true);
+        this.$platformSelector.val('all-access').prop('disabled', true);
         $('.percent-mobile-wrapper').show();
-        $('.show-percent-mobile').prop('checked', true).prop('disabled', true);
-        $('.mainspace-only-option').prop('checked', true).prop('disabled', true);
+        this.$showMobileCheckbox.prop('checked', true).prop('disabled', true);
+        this.$mainspaceCheckbox.prop('checked', true).prop('disabled', true);
         $('.output-table').addClass('show-mobile');
         this.setSpecialRange('last-year');
       } else if (this.isMonthly()) {
@@ -858,20 +851,52 @@ class TopViews extends Pv {
           .always(this.showList.bind(this))
         );
     });
-    $(this.config.dateRangeSelector).on('change', e => {
+    this.$dateSelector.on('change', e => {
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
         this.specialRange = null;
       }
       this.processInput();
     });
-    $('.mainspace-only-option').on('click', this.processInput.bind(this));
-    $('.show-percent-mobile').on('click', e => {
+    this.$mainspaceCheckbox.on('click', this.processInput.bind(this));
+    this.$showMobileCheckbox.on('click', e => {
       $('.output-table').toggleClass('show-mobile', $(e.target).prop('checked'));
       this.processInput(true);
     });
     $('#topviews_search_field').on('keyup', this.searchTopviews.bind(this));
-    $('.topviews-search-icon').on('click', this.clearSearch.bind(this));
+    this.$topviewsSearchIcon.on('click', this.clearSearch.bind(this));
+  }
+
+  /**
+   * The 'Show mobile percentage' checkbox.
+   * @return {jQuery}
+   */
+  get $showMobileCheckbox() {
+    return this.cachedElement('.show-percent-mobile');
+  }
+
+  /**
+   * The "Show only mainspace pages" checkbox.
+   * @return {jQuery}
+   */
+  get $mainspaceCheckbox() {
+    return this.cachedElement('.mainspace-only-option');
+  }
+
+  /**
+   * The table containing the list of pages.
+   * @return {jQuery}
+   */
+  get $topviewEntries() {
+    return this.cachedElement('.topview-entries');
+  }
+
+  /**
+   * The search icon within the search input field.
+   * @return {jQuery}
+   */
+  get $topviewsSearchIcon() {
+    return this.cachedElement('.topviews-search-icon');
   }
 
   /**
@@ -884,11 +909,19 @@ class TopViews extends Pv {
   }
 
   /**
+   * The date selector input.
+   * @returns {jQuery}
+   */
+  get $dateSelector() {
+    return this.cachedElement('.date-selector');
+  }
+
+  /**
    * Get instance of datepicker
    * @return {Object} the datepicker instance
    */
   get datepicker() {
-    return $(this.config.dateRangeSelector).data('datepicker');
+    return this.$dateSelector.data('datepicker');
   }
 
   /**
@@ -934,7 +967,7 @@ class TopViews extends Pv {
       data: {
         project: this.project,
         date: this.getParams(false).date,
-        platform: $(this.config.platformSelector).val()
+        platform: this.$platformSelector.val()
       },
       timeout: 8000
     });
@@ -1066,56 +1099,17 @@ class TopViews extends Pv {
    * @returns {Deferred} promise resolving with this.mobileViews
    */
   setSingleMobileViews(page) {
-    const dfd = $.Deferred();
-
-    if (!this.shouldShowMobile()) {
-      return dfd.resolve({});
-    }
-
-    if (this.isYearly()) {
-      // this.mobileViews is already set when importing the yearly data from the internal API.
-      return dfd.resolve(this.mobileViews);
-    }
-
-    const [startDate, endDate] = this.getDates();
-
-    let promises = [];
-
-    ['mobile-web', 'mobile-app'].forEach(endpoint => {
-      const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' +
-        `/${this.project}/${endpoint}/all-agents/${page}/${this.isMonthly() ? 'monthly' : 'daily'}` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
-
-      // if we already have the data, just go straight to resolving via dummy Deferred
-      if (this.mobileViews[page]) {
-        const dummyDfd = $.Deferred();
-        promises.push(dummyDfd);
-        return dummyDfd.resolve();
-      }
-
-      const promise = $.ajax({ url, dataType: 'json' });
-
-      promises.push(promise);
-
-      promise.done(data => {
-        const views = data.items.reduce((a, b) => a + b.views, 0),
-          pageTitle = data.items[0].article.descore();
-        this.mobileViews[pageTitle] = views + (this.mobileViews[pageTitle] || 0);
-      });
-    });
-
-    $.whenAll(...promises).always(() => dfd.resolve(this.mobileViews));
-
-    return dfd;
+    return this.setMobileViews(null, null, page);
   }
 
   /**
    * Set this.mobileViews for requested pages
-   * @param {Number} startIndex - start index of this.pageData
-   * @param {Number} offset - number of entries to process following startIndex
+   * @param {Number|null} startIndex - start index of this.pageData. null if using 'page' instead.
+   * @param {Number|null} offset - number of entries to process following startIndex. null if using 'page' instead.
+   * @param {String|null} page - page title to be used instead of startIndex and offset.
    * @returns {Deferred} promise resolving with this.mobileViews
    */
-  setMobileViews(startIndex = 0, offset = this.config.pageSize) {
+  setMobileViews(startIndex = 0, offset = this.config.pageSize, page = null) {
     const dfd = $.Deferred();
 
     if (!this.shouldShowMobile()) {
@@ -1166,19 +1160,23 @@ class TopViews extends Pv {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
-      pageDataLength = this.pageData.length;
+    if (page) {
+      makeRequest(page);
+    } else {
+      const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle * 2, this),
+        pageDataLength = this.pageData.length;
 
-    while (counter < offset && index < pageDataLength) {
-    // for (let index = startIndex; index <= endIndex; index++) {
-      const item = this.pageData[index];
-      if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
+      while (counter < offset && index < pageDataLength) {
+        // for (let index = startIndex; index <= endIndex; index++) {
+        const item = this.pageData[index];
+        if (this.excludes.includes(item.article) || this.autoExcludes.includes(item.article)) {
+          index++;
+          continue;
+        }
+        requestFn(this.pageData[index].article);
+        counter++;
         index++;
-        continue;
       }
-      requestFn(this.pageData[index].article);
-      counter++;
-      index++;
     }
 
     return dfd;
@@ -1200,7 +1198,7 @@ class TopViews extends Pv {
       /** set up auto excludes now that we know what pages will be effected */
       this.setupAutoExcludes();
 
-      if ($('.mainspace-only-option').is(':checked')) {
+      if (this.$mainspaceCheckbox.is(':checked')) {
         this.filterOutNamespace(this.pageNames).done(pageNames => {
           this.pageNames = pageNames;
           this.pageData = this.pageData.filter(page => pageNames.includes(page.article));
@@ -1224,7 +1222,7 @@ class TopViews extends Pv {
       }
     };
 
-    const access = this.isYearly() ? 'all-access' : $(this.config.platformSelector).val();
+    const access = this.isYearly() ? 'all-access' : this.$platformSelector.val();
 
     const showTopviews = () => {
       if (this.isYearly()) {
@@ -1269,24 +1267,26 @@ class TopViews extends Pv {
   /**
    * Adds a message below the "Excluded pages" list, that has a link to show
    *   the automatically excluded pages (as retrieved from /musikanimal/api/topviews/false_positives).
-   * Also reremoves any auto-excluded pages from this.excludes
+   * Also re-removes any auto-excluded pages from this.excludes
    * @returns {null} nothing
    */
   setupAutoExcludes() {
     // remove any that aren't actually in the results
     this.autoExcludes = this.autoExcludes.filter(page => this.pageNames.includes(page));
 
-    if (!this.autoExcludes.length) return $('.list-false-positives').hide();
+    const $listFalsePositives = $('.list-false-positives');
+
+    if (!this.autoExcludes.length) return $listFalsePositives.hide();
 
     const listFPLink = `<a href='#' data-target='#list-false-positives-modal' data-toggle='modal'>
         ${$.i18n('known-false-positives-link', this.autoExcludes.length)}
       </a>`;
 
-    $('.list-false-positives').html(
+    $listFalsePositives.html(
       $.i18n('known-false-positives-text', listFPLink, this.autoExcludes.length)
     );
 
-    $('.list-false-positives').show();
+    $listFalsePositives.show();
     $('#list-false-positives-modal').on('show.bs.modal', () => {
       // list the false positives
       $('.false-positive-list').html('');

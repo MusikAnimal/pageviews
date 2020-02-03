@@ -29,7 +29,7 @@
               - foreach ([10, 20, 30, 60, 90] as $offset)
                 %li
                   %a(href="#" data-value="#{$offset}")= $offset
-          %input.form-control.aqs-date-range-selector#range-input
+          %input.form-control.date-range-selector#range-input
         %div.month-selector.input-daterange.clearfix
           %label(for="month-start")
             = $I18N->msg( 'dates' )
@@ -97,20 +97,20 @@
     %main.col-lg-8.col-md-10
       / Site selector
       %div.site-selector
-        %label(for="site-input")
+        %label(for="select2-input")
           = $I18N->msg( 'projects' )
           %small.text-muted.num-entities-info
             = $I18N->msg( 'num-projects-info', [ 'variables' => [ 10 ] ] )
         %span.clear-pages.pull-right
           &#x2715;
           = $I18N->msg( 'clear' )
-        %select.aqs-select2-selector.col-lg-12.invisible#site-input(multiple="multiple")
+        %select.col-lg-12.invisible#select2-input(multiple="multiple")
 
       - include "../_data_links.php"
 
       / Chart
       %div.chart-container
-        %canvas.aqs-chart
+        %canvas#chart
 
       %div.message-container.col-lg-12
 
@@ -123,7 +123,7 @@
 
     %div.output.col-lg-10.col-lg-offset-1
       %h4.single-site-stats.text-center
-      %h5.single-site-ranking.text-center
+      %h5.single-entity-ranking.text-center
       %div.single-site-legend.hidden-lg.col-md-4.col-md-offset-4.tm
       :php
         $columns = array(

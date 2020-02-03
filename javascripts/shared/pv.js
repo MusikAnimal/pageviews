@@ -22,12 +22,10 @@ class Pv extends PvConfig {
     this.config = Object.assign({}, this.config, appConfig);
     this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
     this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
-
     this.colorsStyleEl = undefined;
-    this.storage = {}; // used as fallback when localStorage is not supported
 
     ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(setting => {
-      this[setting] = this.getFromLocalStorage(`pageviews-settings-${setting}`) || this.config.defaults[setting];
+      this[setting] = localStorage.getItem(`pageviews-settings-${setting}`) || this.config.defaults[setting];
     });
     this.setupSettingsModal();
 
@@ -94,11 +92,11 @@ class Pv extends PvConfig {
       //
       // // Don't show if seen over 3 times.
       // const cacheKey = 'pageviews-yearly-topviews-add';
-      // const seenCount = parseInt(this.getFromLocalStorage(cacheKey), 10) || 0;
+      // const seenCount = parseInt(localStorage.getItem(cacheKey), 10) || 0;
       // if (seenCount > 3) {
       //   return;
       // }
-      // this.setLocalStorage(cacheKey, seenCount + 1);
+      // localStorage.setItem(cacheKey, seenCount + 1);
       //
       // let project = this.project;
       //
@@ -107,7 +105,7 @@ class Pv extends PvConfig {
       //   if (this.isAllProjects()) {
       //     return;
       //   }
-      //   project = ($(this.config.select2Input).select2('val') || [])[0].replace(/\.org$/, '');
+      //   project = this.getEntities()[0].replace(/\.org$/, '');
       // }
       //
       // const year = 2019;
@@ -294,38 +292,6 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Minimum allowed date based on metric type
-   * @return {moment}
-   */
-  get minDate() {
-    return this.isPagecounts() ? this.config.minDatePagecounts : this.config.minDate;
-  }
-
-  /**
-   * Maximum allowed date based on metric type
-   * @return {moment}
-   */
-  get maxDate() {
-    return this.isPagecounts() ? this.config.maxDatePagecounts : this.config.maxDate;
-  }
-
-  /**
-   * Maximum allowed month based on metric type
-   * @return {Date}
-   */
-  get maxMonth() {
-    return this.isPagecounts() ? this.config.maxMonthPagecounts : this.config.maxMonth;
-  }
-
-  /**
-   * Get the initial month to show (when they switch from daily to monthly view)
-   * @return {Date}
-   */
-  get initialMonthStart() {
-    return moment(this.maxMonth).subtract(11, 'months').toDate();
-  }
-
-  /**
    * Validate the date range of given params
    *   and throw errors as necessary and/or set defaults
    * @param {Object} params - as returned by this.parseQueryString()
@@ -438,7 +404,31 @@ class Pv extends PvConfig {
    * @return {Object} daterange picker
    */
   get daterangepicker() {
-    return $(this.config.dateRangeSelector).data('daterangepicker');
+    return this.$dateRangeSelector.data('daterangepicker');
+  }
+
+  /**
+   * Minimum allowed date based on metric type.
+   * @return {moment}
+   */
+  get minDate() {
+    return this.isPagecounts() ? this.config.minDatePagecounts : this.config.minDate;
+  }
+
+  /**
+   * Maximum allowed date based on metric type.
+   * @return {moment}
+   */
+  get maxDate() {
+    return this.isPagecounts() ? this.config.maxDatePagecounts : this.config.maxDate;
+  }
+
+  /**
+   * Maximum allowed month based on metric type.
+   * @return {Date}
+   */
+  get maxMonth() {
+    return this.isPagecounts() ? this.config.maxMonthPagecounts : this.config.maxMonth;
   }
 
   /**
@@ -495,33 +485,6 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Format number based on current settings, e.g. localize with comma delimeters
-   * @param {number|string} num - number to format
-   * @returns {string} formatted number
-   */
-  formatNumber(num) {
-    const numericalFormatting = this.getFromLocalStorage('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
-    if (numericalFormatting === 'true') {
-      return this.n(num);
-    } else {
-      return num;
-    }
-  }
-
-  /**
-   * show every other number in the y-axis, called from PvConfig
-   * @param  {Number} num - numerical value
-   * @return {String|null} formatted number or null if an even number
-   */
-  formatYAxisNumber(num) {
-    if (num % 1 === 0) {
-      return this.formatNumber(num);
-    } else {
-      return null;
-    }
-  }
-
-  /**
    * Gets the date headings as strings - i18n compliant
    * @param {boolean} localized - whether the dates should be localized per browser language
    * @returns {Array} the date headings as strings
@@ -559,7 +522,7 @@ class Pv extends PvConfig {
    * @param  {string} page - page to link to
    * @param  {string} content - what to put as the link text
    * @param  {moment|string} [offset] - if provided, will link to page history from this date backward
-   * @param  {integer} [limit] - number of revisions to show, max 500
+   * @param  {Number} [limit] - number of revisions to show, max 500
    * @return {string} HTML markup
    */
   getHistoryLink(page, content, offset, limit) {
@@ -609,7 +572,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape)}`;
+    return `https://${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape)}`;
   }
 
   /**
@@ -619,7 +582,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the site
    */
   getSiteLink(site) {
-    return `<a target="_blank" href="//${site.replace(/\.org$/, '')}.org">${site}</a>`;
+    return `<a target="_blank" href="https://${site.replace(/\.org$/, '')}.org">${site}</a>`;
   }
 
   /**
@@ -628,7 +591,7 @@ class Pv extends PvConfig {
    * @returns {string} lang.projectname
    */
   get project() {
-    const project = $(this.config.projectInput).val();
+    const project = this.$projectInput.val();
 
     /** Get the first 2 characters from the project code to get the language */
     return project ? project.toLowerCase().replace(/.org$/, '') : null;
@@ -645,260 +608,15 @@ class Pv extends PvConfig {
   }
 
   /**
-   * get date format for the browser's locale
-   * @return {String} format to be passed to moment.format()
-   */
-  getLocaleDateString() {
-    if (!navigator.language) {
-      return this.config.defaults.dateFormat;
-    }
-
-    const formats = {
-      'ar-sa': 'DD/MM/YY',
-      'bg-bg': 'DD.M.YYYY',
-      'ca-es': 'DD/MM/YYYY',
-      'zh-tw': 'YYYY/M/D',
-      'cs-cz': 'D.M.YYYY',
-      'da-dk': 'DD-MM-YYYY',
-      'de-de': 'DD.MM.YYYY',
-      'el-gr': 'D/M/YYYY',
-      'en-us': 'M/D/YYYY',
-      'fi-fi': 'D.M.YYYY',
-      'fr-fr': 'DD/MM/YYYY',
-      'he-il': 'DD/MM/YYYY',
-      'hu-hu': 'YYYY. MM. DD.',
-      'is-is': 'D.M.YYYY',
-      'it-it': 'DD/MM/YYYY',
-      'ja-jp': 'YYYY/MM/DD',
-      'ko-kr': 'YYYY-MM-DD',
-      'nl-nl': 'D-M-YYYY',
-      'nb-no': 'DD.MM.YYYY',
-      'pl-pl': 'YYYY-MM-DD',
-      'pt-br': 'D/M/YYYY',
-      'ro-ro': 'DD.MM.YYYY',
-      'ru-ru': 'DD.MM.YYYY',
-      'hr-hr': 'D.M.YYYY',
-      'sk-sk': 'D. M. YYYY',
-      'sq-al': 'YYYY-MM-DD',
-      'sv-se': 'YYYY-MM-DD',
-      'th-th': 'D/M/YYYY',
-      'tr-tr': 'DD.MM.YYYY',
-      'ur-pk': 'DD/MM/YYYY',
-      'id-id': 'DD/MM/YYYY',
-      'uk-ua': 'DD.MM.YYYY',
-      'be-by': 'DD.MM.YYYY',
-      'sl-si': 'D.M.YYYY',
-      'et-ee': 'D.MM.YYYY',
-      'lv-lv': 'YYYY.MM.DD.',
-      'lt-lt': 'YYYY.MM.DD',
-      'fa-ir': 'MM/DD/YYYY',
-      'vi-vn': 'DD/MM/YYYY',
-      'hy-am': 'DD.MM.YYYY',
-      'az-latn-az': 'DD.MM.YYYY',
-      'eu-es': 'YYYY/MM/DD',
-      'mk-mk': 'DD.MM.YYYY',
-      'af-za': 'YYYY/MM/DD',
-      'ka-ge': 'DD.MM.YYYY',
-      'fo-fo': 'DD-MM-YYYY',
-      'hi-in': 'DD-MM-YYYY',
-      'ms-my': 'DD/MM/YYYY',
-      'kk-kz': 'DD.MM.YYYY',
-      'ky-kg': 'DD.MM.YY',
-      'sw-ke': 'M/d/YYYY',
-      'uz-latn-uz': 'DD/MM YYYY',
-      'tt-ru': 'DD.MM.YYYY',
-      'pa-in': 'DD-MM-YY',
-      'gu-in': 'DD-MM-YY',
-      'ta-in': 'DD-MM-YYYY',
-      'te-in': 'DD-MM-YY',
-      'kn-in': 'DD-MM-YY',
-      'mr-in': 'DD-MM-YYYY',
-      'sa-in': 'DD-MM-YYYY',
-      'mn-mn': 'YY.MM.DD',
-      'gl-es': 'DD/MM/YY',
-      'kok-in': 'DD-MM-YYYY',
-      'syr-sy': 'DD/MM/YYYY',
-      'dv-mv': 'DD/MM/YY',
-      'ar-iq': 'DD/MM/YYYY',
-      'zh-cn': 'YYYY/M/D',
-      'de-ch': 'DD.MM.YYYY',
-      'en-gb': 'DD/MM/YYYY',
-      'es-mx': 'DD/MM/YYYY',
-      'fr-be': 'D/MM/YYYY',
-      'it-ch': 'DD.MM.YYYY',
-      'nl-be': 'D/MM/YYYY',
-      'nn-no': 'DD.MM.YYYY',
-      'pt-pt': 'DD-MM-YYYY',
-      'sr-latn-cs': 'D.M.YYYY',
-      'sv-fi': 'D.M.YYYY',
-      'az-cyrl-az': 'DD.MM.YYYY',
-      'ms-bn': 'DD/MM/YYYY',
-      'uz-cyrl-uz': 'DD.MM.YYYY',
-      'ar-eg': 'DD/MM/YYYY',
-      'zh-hk': 'D/M/YYYY',
-      'de-at': 'DD.MM.YYYY',
-      'en-au': 'D/MM/YYYY',
-      'es-es': 'DD/MM/YYYY',
-      'fr-ca': 'YYYY-MM-DD',
-      'sr-cyrl-cs': 'D.M.YYYY',
-      'ar-ly': 'DD/MM/YYYY',
-      'zh-sg': 'D/M/YYYY',
-      'de-lu': 'DD.MM.YYYY',
-      'en-ca': 'DD/MM/YYYY',
-      'es-gt': 'DD/MM/YYYY',
-      'fr-ch': 'DD.MM.YYYY',
-      'ar-dz': 'DD-MM-YYYY',
-      'zh-mo': 'D/M/YYYY',
-      'de-li': 'DD.MM.YYYY',
-      'en-nz': 'D/MM/YYYY',
-      'es-cr': 'DD/MM/YYYY',
-      'fr-lu': 'DD/MM/YYYY',
-      'ar-ma': 'DD-MM-YYYY',
-      'en-ie': 'DD/MM/YYYY',
-      'es-pa': 'MM/DD/YYYY',
-      'fr-mc': 'DD/MM/YYYY',
-      'ar-tn': 'DD-MM-YYYY',
-      'en-za': 'YYYY/MM/DD',
-      'es-do': 'DD/MM/YYYY',
-      'ar-om': 'DD/MM/YYYY',
-      'en-jm': 'DD/MM/YYYY',
-      'es-ve': 'DD/MM/YYYY',
-      'ar-ye': 'DD/MM/YYYY',
-      'en-029': 'MM/DD/YYYY',
-      'es-co': 'DD/MM/YYYY',
-      'ar-sy': 'DD/MM/YYYY',
-      'en-bz': 'DD/MM/YYYY',
-      'es-pe': 'DD/MM/YYYY',
-      'ar-jo': 'DD/MM/YYYY',
-      'en-tt': 'DD/MM/YYYY',
-      'es-ar': 'DD/MM/YYYY',
-      'ar-lb': 'DD/MM/YYYY',
-      'en-zw': 'M/D/YYYY',
-      'es-ec': 'DD/MM/YYYY',
-      'ar-kw': 'DD/MM/YYYY',
-      'en-ph': 'M/D/YYYY',
-      'es-cl': 'DD-MM-YYYY',
-      'ar-ae': 'DD/MM/YYYY',
-      'es-uy': 'DD/MM/YYYY',
-      'ar-bh': 'DD/MM/YYYY',
-      'es-py': 'DD/MM/YYYY',
-      'ar-qa': 'DD/MM/YYYY',
-      'es-bo': 'DD/MM/YYYY',
-      'es-sv': 'DD/MM/YYYY',
-      'es-hn': 'DD/MM/YYYY',
-      'es-ni': 'DD/MM/YYYY',
-      'es-pr': 'DD/MM/YYYY',
-      'am-et': 'D/M/YYYY',
-      'tzm-latn-dz': 'DD-MM-YYYY',
-      'iu-latn-ca': 'D/MM/YYYY',
-      'sma-no': 'DD.MM.YYYY',
-      'mn-mong-cn': 'YYYY/M/D',
-      'gd-gb': 'DD/MM/YYYY',
-      'en-my': 'D/M/YYYY',
-      'prs-af': 'DD/MM/YY',
-      'bn-bd': 'DD-MM-YY',
-      'wo-sn': 'DD/MM/YYYY',
-      'rw-rw': 'M/D/YYYY',
-      'qut-gt': 'DD/MM/YYYY',
-      'sah-ru': 'MM.DD.YYYY',
-      'gsw-fr': 'DD/MM/YYYY',
-      'co-fr': 'DD/MM/YYYY',
-      'oc-fr': 'DD/MM/YYYY',
-      'mi-nz': 'DD/MM/YYYY',
-      'ga-ie': 'DD/MM/YYYY',
-      'se-se': 'YYYY-MM-DD',
-      'br-fr': 'DD/MM/YYYY',
-      'smn-fi': 'D.M.YYYY',
-      'moh-ca': 'M/D/YYYY',
-      'arn-cl': 'DD-MM-YYYY',
-      'ii-cn': 'YYYY/M/D',
-      'dsb-de': 'D. M. YYYY',
-      'ig-ng': 'D/M/YYYY',
-      'kl-gl': 'DD-MM-YYYY',
-      'lb-lu': 'DD/MM/YYYY',
-      'ba-ru': 'DD.MM.YY',
-      'nso-za': 'YYYY/MM/DD',
-      'quz-bo': 'DD/MM/YYYY',
-      'yo-ng': 'D/M/YYYY',
-      'ha-latn-ng': 'D/M/YYYY',
-      'fil-ph': 'M/D/YYYY',
-      'ps-af': 'DD/MM/YY',
-      'fy-nl': 'D-M-YYYY',
-      'ne-np': 'M/D/YYYY',
-      'se-no': 'DD.MM.YYYY',
-      'iu-cans-ca': 'D/M/YYYY',
-      'sr-latn-rs': 'D.M.YYYY',
-      'si-lk': 'YYYY-MM-DD',
-      'sr-cyrl-rs': 'D.M.YYYY',
-      'lo-la': 'DD/MM/YYYY',
-      'km-kh': 'YYYY-MM-DD',
-      'cy-gb': 'DD/MM/YYYY',
-      'bo-cn': 'YYYY/M/D',
-      'sms-fi': 'D.M.YYYY',
-      'as-in': 'DD-MM-YYYY',
-      'ml-in': 'DD-MM-YY',
-      'en-in': 'DD-MM-YYYY',
-      'or-in': 'DD-MM-YY',
-      'bn-in': 'DD-MM-YY',
-      'tk-tm': 'DD.MM.YY',
-      'bs-latn-ba': 'D.M.YYYY',
-      'mt-mt': 'DD/MM/YYYY',
-      'sr-cyrl-me': 'D.M.YYYY',
-      'se-fi': 'D.M.YYYY',
-      'zu-za': 'YYYY/MM/DD',
-      'xh-za': 'YYYY/MM/DD',
-      'tn-za': 'YYYY/MM/DD',
-      'hsb-de': 'D. M. YYYY',
-      'bs-cyrl-ba': 'D.M.YYYY',
-      'tg-cyrl-tj': 'DD.MM.yy',
-      'sr-latn-ba': 'D.M.YYYY',
-      'smj-no': 'DD.MM.YYYY',
-      'rm-ch': 'DD/MM/YYYY',
-      'smj-se': 'YYYY-MM-DD',
-      'quz-ec': 'DD/MM/YYYY',
-      'quz-pe': 'DD/MM/YYYY',
-      'hr-ba': 'D.M.YYYY.',
-      'sr-latn-me': 'D.M.YYYY',
-      'sma-se': 'YYYY-MM-DD',
-      'en-sg': 'D/M/YYYY',
-      'ug-cn': 'YYYY-M-D',
-      'sr-cyrl-ba': 'D.M.YYYY',
-      'es-us': 'M/D/YYYY'
-    };
-
-    const key = navigator.language.toLowerCase();
-    return formats[key] || this.config.defaults.dateFormat;
-  }
-
-  /**
-   * Get a value from localStorage, using a temporary storage if localStorage is not supported
-   * @param {string} key - key for the value to retrieve
-   * @returns {Mixed} stored value
-   */
-  getFromLocalStorage(key) {
-    // See if localStorage is supported and enabled
-    try {
-      return localStorage.getItem(key);
-    } catch (err) {
-      return this.storage[key];
-    }
-  }
-
-  /**
    * Get URL to file a report on Meta, preloaded with permalink
-   * @param {String} [phabPaste] URL to auto-generated error report on Phabricator
-   * @param {String} [titleOverride] goes in the title input field of the wiki editing interface
+   * @param {Array} [errors] To be automatically pasted in with the bug report.
    * @return {String} URL
    */
-  getBugReportURL(phabPaste, titleOverride) {
+  getBugReportURL(errors) {
     const reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
-      `&section=new&preloadtitle=${titleOverride || this.app.upcase() + ' bug report'}`;
+      `&section=new&preloadtitle=${this.app.upcase() + ' bug report'}`;
 
-    if (phabPaste) {
-      return `${reportURL}&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${phabPaste}`;
-    } else {
-      return reportURL;
-    }
+    return reportURL;
   }
 
   /**
@@ -976,7 +694,7 @@ class Pv extends PvConfig {
 
   /**
    * Get the markup to show the assessment badge for the given item.
-   * @param  {Object} item
+   * @param {Object} item
    * @return {string}
    */
   getAssessmentBadge(item) {
@@ -1036,23 +754,8 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Set a value to localStorage, using a temporary storage if localStorage is not supported
-   * @param {string} key - key for the value to set
-   * @param {Mixed} value - value to store
-   * @returns {Mixed} stored value
-   */
-  setLocalStorage(key, value) {
-    // See if localStorage is supported and enabled
-    try {
-      return localStorage.setItem(key, value);
-    } catch (err) {
-      return storage[key] = value;
-    }
-  }
-
-  /**
    * Generate a unique hash code from given string
-   * @param  {String} str - to be hashed
+   * @param {String} str - to be hashed
    * @return {String} the hash
    */
   hashCode(str) {
@@ -1211,7 +914,7 @@ class Pv extends PvConfig {
    * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
    */
   n(value) {
-    return (new Number(value)).toLocaleString();
+    return Number(value).toLocaleString();
   }
 
   /**
@@ -1296,7 +999,7 @@ class Pv extends PvConfig {
    * Simple metric to see how many use it (pageviews of the pageviews app, a meta-pageview, if you will :)
    */
   patchUsage() {
-    if (location.host.includes('localhost') && (this.getFromLocalStorage('pageviews-no-usage') || this.debug)) {
+    if (location.host.includes('localhost') && (localStorage.getItem('pageviews-no-usage') || this.debug)) {
       return;
     }
 
@@ -1389,12 +1092,11 @@ class Pv extends PvConfig {
    * @param {boolean} [setup] Whether to re-setup the selector.
    */
   resetSelect2(setup = true) {
-    const select2Input = $(this.config.select2Input);
-    if (select2Input.data('select2')) {
-      select2Input.off('change');
-      select2Input.select2('val', null);
-      select2Input.select2('data', null);
-      select2Input.select2('destroy');
+    if (this.$select2Input.data('select2')) {
+      this.$select2Input.off('change');
+      this.$select2Input.select2('val', null);
+      this.$select2Input.select2('data', null);
+      this.$select2Input.select2('destroy');
     }
     if (setup) {
       this.setupSelect2();
@@ -1420,7 +1122,7 @@ class Pv extends PvConfig {
    */
   saveSetting(key, value) {
     this[key] = value;
-    this.setLocalStorage(`pageviews-settings-${key}`, value);
+    localStorage.setItem(`pageviews-settings-${key}`, value);
   }
 
   /**
@@ -1472,10 +1174,10 @@ class Pv extends PvConfig {
   setSelect2Defaults(items) {
     items.forEach(item => {
       const escapedText = $('<div>').text(item).html();
-      $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
+      $(`<option>${escapedText}</option>`).appendTo(this.$select2Input);
     });
-    $(this.config.select2Input).select2('val', items);
-    $(this.config.select2Input).trigger('select2:select');
+    this.$select2Input.select2('val', items);
+    this.$select2Input.trigger('select2:select');
 
     return items;
   }
@@ -1523,7 +1225,7 @@ class Pv extends PvConfig {
    * Setup colors for Select2 entries so we can dynamically change them
    * This is a necessary evil, as we have to mark them as !important
    *   and since there are any number of entries, we need to use nth-child selectors
-   * @returns {CSSStylesheet} our new stylesheet
+   * @returns {CSSStyleSheet} our new stylesheet
    */
   setupSelect2Colors() {
     /** first delete old stylesheet, if present */
@@ -1555,10 +1257,10 @@ class Pv extends PvConfig {
     $('.download-json').on('click', this.exportJSON.bind(this));
 
     /** project input listeners, saving and restoring old value if new one is invalid */
-    $(this.config.projectInput).on('focusin', function() {
+    this.$projectInput.on('focusin', function() {
       this.dataset.value = this.value;
     });
-    $(this.config.projectInput).on('change', () => this.validateProject());
+    this.$projectInput.on('change', () => this.validateProject());
 
     $('.permalink').on('click', e => {
       $('.permalink-copy').val($('.permalink').prop('href'))[0].select();
@@ -1570,6 +1272,13 @@ class Pv extends PvConfig {
       } catch (e) {
         // silently ignore
       }
+    });
+
+    $('.sort-link').on('click', e => {
+      const sortType = $(e.currentTarget).data('type');
+      this.direction = this.sort === sortType ? -this.direction : 1;
+      this.sort = sortType;
+      this.isChartApp() ? this.updateTable() : this.renderData();
     });
   }
 
@@ -1653,12 +1362,12 @@ class Pv extends PvConfig {
     if (this.config.dateLimit) datepickerOptions.dateLimit = { days: this.config.dateLimit };
 
     if (this.daterangepicker) {
-      $(this.config.dateRangeSelector).data('daterangepicker').remove();
-      const $datepicker = $(this.config.dateRangeSelector).remove();
+      this.$dateRangeSelector.data('daterangepicker').remove();
+      const $datepicker = this.$dateRangeSelector.remove();
       $('.date-selector').append($datepicker);
     }
 
-    $(this.config.dateRangeSelector).daterangepicker(datepickerOptions);
+    this.$dateRangeSelector.daterangepicker(datepickerOptions);
 
     /** so people know why they can't query data older than July 2015 */
     if (!this.isPagecounts() && this.app !== 'mediaviews') {
@@ -1692,7 +1401,7 @@ class Pv extends PvConfig {
       };
     });
 
-    $(this.config.dateRangeSelector).off('apply.daterangepicker').on('apply.daterangepicker', (e, action) => {
+    this.$dateRangeSelector.off('apply.daterangepicker').on('apply.daterangepicker', (e, action) => {
       if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -1702,8 +1411,8 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Loop through given errors and show them to the user, also creating a paste on phabricator
-   * @param  {Array} errors - list of error messages (strings)
+   * Loop through given errors and show them to the user.
+   * @param {Array} errors - list of error messages (strings)
    */
   showFatalErrors(errors) {
     this.resetView();
@@ -1713,38 +1422,12 @@ class Pv extends PvConfig {
       );
     });
 
-    const throwToastError = bugUrl => this.toastError(`
-      <strong>${$.i18n('fatal-error')}</strong>: ${$.i18n('error-please-report', this.getBugReportURL(bugUrl))}
-    `, 0);
-
     if (this.debug) {
       throw errors[0];
     } else if (errors && errors[0] && errors[0].stack) {
-      // Disabling automatic phab pastings for now...
-      throwToastError();
-      // $.ajax({
-      //   method: 'POST',
-      //   url: '//tools.wmflabs.org/musikanimal/paste',
-      //   data: {
-      //     content: '' +
-      //       `\ndate:      ${moment().utc().format()}` +
-      //       `\ntool:      ${this.app}` +
-      //       `\nlanguage:  ${i18nLang}` +
-      //       `\nchart:     ${this.chartType}` +
-      //       `\nurl:       ${document.location.href}` +
-      //       `\ntrace:     ${errors[0].stack}`
-      //     ,
-      //     title: `Pageviews Analysis error report: ${errors[0]}`
-      //   }
-      // }).done(data => {
-      //   if (data && data.result && data.result.objectName) {
-      //     throwToastError(data.result.objectName);
-      //   } else {
-      //     throwToastError();
-      //   }
-      // }).fail(() => {
-      //   throwToastError();
-      // });
+      this.toastError(`
+        <strong>${$.i18n('fatal-error')}</strong>: ${$.i18n('error-please-report', this.getBugReportURL(errors))}
+      `, 0);
     }
   }
 
@@ -1783,7 +1466,7 @@ class Pv extends PvConfig {
     clearTimeout(this.timeout);
 
     // Set new spinny timeout that will show error after 60 seconds
-    this.timeout = setTimeout(err => {
+    this.timeout = setTimeout(() => {
       this.resetView();
       this.toastError(`
         <strong>${$.i18n('fatal-error')}</strong>:
@@ -1827,10 +1510,55 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Trigger an update to the chart or list.
+   */
+  triggerUpdate() {
+    this.isChartApp() ? this.updateChart() : this.renderData();
+  }
+
+  /**
+   * Get the entity names from the Select2 input (chart-based apps) or the source input (list-based apps).
+   * @return {array}
+   */
+  getEntities() {
+    if (this.$select2Input.length) {
+      return this.$select2Input.select2('val') || [];
+    } else if (this.$sourceInput && this.$sourceInput.length) {
+      return [this.$sourceInput.val()];
+    } else {
+      console.warn(`[${this.app}] No select2 or source input found.`);
+      return [];
+    }
+  }
+
+  /**
+   * Push relevant class properties to the URL query string.
+   * @param {String} paramName - URL param name for the entity/entities, e.g. 'pages', 'sites', 'user'.
+   *   All other params such as 'project' and 'agent' are fetched with getParams() and getPermaLink().
+   * @param {Boolean} [clear] - whether to clear the query string entirely.
+   */
+  pushParams(paramName, clear) {
+    if (clear) {
+      history.replaceState(null, document.title, location.href.split('?')[0]);
+      return;
+    }
+
+    const entities = this.getEntities().join('|').replace(/[&%?+]/g, encodeURIComponent);
+
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title,
+        `?${$.param(this.getParams())}&${paramName}=${entities}`
+      );
+    }
+
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace(/\|/g, escape)}`);
+  }
+
+  /**
    * Validate basic params against what is defined in the config,
    *   and if they are invalid set the default
    * @param {Object} params - params as fetched by this.parseQueryString()
-   * @returns {Object} same params with some invalid parameters correted, as necessary
+   * @returns {Object} same params with some invalid parameters corrected, as necessary
    */
   validateParams(params) {
     this.config.validateParams.forEach(paramKey => {
@@ -1861,13 +1589,13 @@ class Pv extends PvConfig {
    * @returns {Boolean} whether or not validations passed
    */
   validateProject(multilingual = false) {
-    const projectInput = $(this.config.projectInput)[0];
+    const projectInput = this.$projectInput[0];
     let project = projectInput.value.replace(/^www\./, ''),
       valid = false;
 
     if (multilingual && !this.isMultilangProject()) {
       this.toastWarn(
-        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
+        $.i18n('invalid-lang-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     } else if (siteDomains.includes(project)) {
@@ -1875,13 +1603,13 @@ class Pv extends PvConfig {
       valid = true;
     } else {
       this.toastWarn(
-        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
+        $.i18n('invalid-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     }
 
     // fire custom event that the project has changed
-    if (valid) $(this.config.projectInput).trigger('updated');
+    if (valid) this.$projectInput.trigger('updated');
 
     projectInput.value = project;
 

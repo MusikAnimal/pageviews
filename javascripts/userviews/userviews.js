@@ -37,49 +37,26 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Add general event listeners
+   * Add general event listeners.
    * @override
    */
   setupListeners() {
     super.setupListeners();
 
-    $('#pv_form').on('submit', e => {
-      e.preventDefault(); // prevent page from reloading
-      this.processInput();
-    });
-
-    $('.another-query').on('click', () => {
-      this.setState('initial');
-      this.pushParams(true);
-    });
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.renderData();
-    });
-
-    $('.view-btn').on('click', e => {
-      document.activeElement.blur();
-      this.view = e.currentTarget.dataset.value;
-      this.toggleView(this.view);
-    });
-
     // update namespace selector when project is changed, 0 to force selection of main namespace
-    $(this.config.projectInput).on('updated', this.setupNamespaceSelector.bind(this, 0));
+    this.$projectInput.on('updated', this.setupNamespaceSelector.bind(this, 0));
   }
 
   /**
    * Fetch namespaces and populate the namespace selector
-   * @param {String|Integer} [namespace] - namespace number to default to
+   * @param {String|number} [namespace] - namespace number to default to
    * @returns {Deferred} Empty promise
    */
   setupNamespaceSelector(namespace = 0) {
     const dfd = $.Deferred();
 
     this.fetchSiteInfo(this.project).then(data => {
-      $('#namespace_input').html(
+      $('#namespace-select').html(
         `<option value='all'>${$.i18n('all')}</option>`
       );
 
@@ -87,11 +64,11 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       for (let ns in namespaces) {
         if (ns < 0) continue;
         const nsTitle = namespaces[ns]['*'] || $.i18n('main');
-        $('#namespace_input').append(
+        $('#namespace-select').append(
           `<option value=${ns}>${nsTitle}</option>`
         );
       }
-      $('#namespace_input').val(namespace);
+      $('#namespace-select').val(namespace);
       return dfd.resolve();
     });
 
@@ -276,7 +253,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {Typeahead} instance
    */
   get typeahead() {
-    return $(this.config.sourceInput).data('typeahead');
+    return this.$sourceInput.data('typeahead');
   }
 
   /**
@@ -296,11 +273,11 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   getParams(forCacheKey = false) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
-      agent: $(this.config.agentSelector).val(),
-      namespace: $('#namespace_input').val(),
-      redirects: $('#redirects_select').val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val(),
+      namespace: $('#namespace-select').val(),
+      redirects: $('#redirects-select').val()
     };
 
     /**
@@ -318,7 +295,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if (forCacheKey) {
       // Page name needed to make a unique cache key for the query.
       // For other purposes (e.g. this.pushParams()), we want to do special escaping of the page name
-      params.user = $(this.config.sourceInput).val().score();
+      params.user = this.$sourceInput.val().score();
     } else {
       params.sort = this.sort;
       params.direction = this.direction;
@@ -332,34 +309,12 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @return {null}
+   * Push relevant class properties to the URL query string.
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?]/g, escape);
-
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&user=${escapedPageName}`);
-
-    $('.permalink').prop('href', `/userviews?${$.param(this.getPermaLink())}&user=${escapedPageName}`);
-  }
-
-  /**
-   * Given the badge code provided by the Wikidata API, return a image tag of the badge
-   * @param  {String} badgeCode - as defined in this.config.badges
-   * @return {String} HTML markup for the image
-   */
-  getBadgeMarkup(badgeCode) {
-    if (!this.config.badges[badgeCode]) return '';
-    const badgeImage = this.config.badges[badgeCode].image,
-      badgeName = this.config.badges[badgeCode].name;
-    return `<img class='article-badge' src='${badgeImage}' alt='${badgeName}' title='${badgeName}' />`;
+    super.pushParams('user', clear);
   }
 
   /**
@@ -368,10 +323,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   renderData() {
     super.renderData(sortedDatasets => {
-      // const totalBadgesMarkup = Object.keys(this.outputData.badges).map(badge => {
-      //   return `<span class='nowrap'>${this.getBadgeMarkup(badge)} &times; ${this.outputData.badges[badge]}</span>`;
-      // }).join(', ');
-
       $('.output-totals').html(
         `<th scope='row'>${$.i18n('totals')}</th>
          <th>${$.i18n('num-pages', this.formatNumber(this.outputData.titles.length), this.outputData.titles.length)}</th>
@@ -383,11 +334,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('#output_list').html('');
 
       sortedDatasets.forEach((item, index) => {
-        // let badgeMarkup = '';
-        // if (item.badges) {
-        //   badgeMarkup = item.badges.map(this.getBadgeMarkup.bind(this)).join();
-        // }
-
         const datestamp = moment(item.datestamp).format(this.dateFormat);
         const redirect = item.redirect ? `<span class='text-muted'>(${$.i18n('redirect').toLowerCase()})</span>` : '';
 
@@ -456,15 +402,15 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   getPagesCreated() {
     const dfd = $.Deferred(),
-      username = $(this.config.sourceInput).val();
+      username = this.$sourceInput.val();
 
     let params = {
       username,
       project: this.project + '.org',
-      redirects: $('#redirects_select').val()
+      redirects: $('#redirects-select').val()
     };
-    if ($('#namespace_input').val() !== 'all') {
-      params.namespace = $('#namespace_input').val();
+    if ($('#namespace-select').val() !== 'all') {
+      params.namespace = $('#namespace-select').val();
     }
     $.ajax({
       url: '/userviews/api.php',
@@ -512,10 +458,10 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
+        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
-      const promise = $.ajax({ url, dataType: 'json' });
+      const promise = $.ajax({url, dataType: 'json'});
       promises.push(promise);
 
       promise.done(pvData => {
@@ -580,60 +526,6 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Query Wikidata to find data about a given page across all sister projects
-   * @param  {String} dbName - database name of source project
-   * @param  {String} pageName - name of page we want to get data about
-   * @return {Deferred} - Promise resolving with interwiki data
-   */
-  getInterwikiData(dbName, pageName) {
-    const dfd = $.Deferred();
-    const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&sites=${dbName}` +
-      `&titles=${encodeURIComponent(pageName)}&props=sitelinks/urls|datatype&format=json&callback=?`;
-
-    $.getJSON(url).done(data => {
-      if (data.error) {
-        return dfd.reject(`${$.i18n('api-error', 'Wikidata')}: ${data.error.info}`);
-      } else if (data.entities['-1']) {
-        return dfd.reject(
-          `<a target='_blank' href='${this.getPageURL(pageName).escape()}'>${pageName.descore().escape()}</a> - ${$.i18n('api-error-no-data')}`
-        );
-      }
-
-      const key = Object.keys(data.entities)[0],
-        sitelinks = data.entities[key].sitelinks,
-        filteredLinks = {},
-        matchRegex = new RegExp(`^https://[\\w-]+\\.${this.baseProject}\\.org`);
-
-      /** restrict to selected base project (e.g. wikipedias, not wikipedias and wikivoyages) */
-      Object.keys(sitelinks).forEach(key => {
-        const siteMapKey = sitelinks[key].site.replace(/-/g, '_');
-
-        if (matchRegex.test(sitelinks[key].url) && siteMap[siteMapKey]) {
-          sitelinks[key].lang = siteMap[siteMapKey].replace(/\.wiki.*$/, '');
-          filteredLinks[key] = sitelinks[key];
-        }
-      });
-
-      return dfd.resolve(filteredLinks);
-    });
-
-    return dfd;
-  }
-
-  /**
-   * Parse wiki URL for the page name
-   * @param  {String} url - full URL to a wiki page
-   * @return {String|null} page name
-   */
-  getPageNameFromURL(url) {
-    if (url.includes('?')) {
-      return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
-    } else {
-      return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
@@ -642,7 +534,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       this.parseQueryString()
     );
 
-    $(this.config.projectInput).val(params.project);
+    this.$projectInput.val(params.project);
     this.validateDateRange(params);
 
     // If there are invalid params, remove page from params so we don't process the defaults.
@@ -652,9 +544,9 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       delete params.page;
     }
 
-    $(this.config.platformSelector).val(params.platform);
-    $(this.config.agentSelector).val(params.agent);
-    $('#redirects_select').val(params.redirects || '0');
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
+    $('#redirects-select').val(params.redirects || '0');
 
     /** export necessary params to outer scope */
     ['sort', 'direction', 'view'].forEach(key => {
@@ -665,7 +557,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     /** start up processing if page name is present */
     if (params.user) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.user).descore());
+      this.$sourceInput.val(decodeURIComponent(params.user).descore());
 
       // namespace selector may fetch siteinfo, which we need *before* processing input
       this.setupNamespaceSelector(params.namespace).then(() => {
@@ -673,7 +565,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       });
     } else {
       this.setupNamespaceSelector(params.namespace);
-      $(this.config.sourceInput).focus();
+      this.$sourceInput.focus();
     }
   }
 
@@ -694,7 +586,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
-      $(this.config.sourceInput).val('').focus();
+      this.$sourceInput.val('').focus();
       break;
     case 'processing':
       this.processStarted();
@@ -722,13 +614,13 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   processInput() {
     this.patchUsage();
 
-    const user = $(this.config.sourceInput).val();
+    const user = this.$sourceInput.val();
 
     this.setState('processing');
 
     const readyForRendering = () => {
       $('.output-title').html(this.outputData.link);
-      $('.output-params').html($(this.config.dateRangeSelector).val());
+      $('.output-params').html(this.$dateRangeSelector.val());
       this.setInitialChartType();
       this.renderData();
     };
@@ -790,7 +682,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   setupSourceInput() {
     if (this.typeahead) this.typeahead.destroy();
 
-    $(this.config.sourceInput).typeahead({
+    this.$sourceInput.typeahead({
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         timeout: 200,

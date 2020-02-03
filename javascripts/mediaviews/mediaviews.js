@@ -55,8 +55,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('files')
     );
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.agentSelector).val(params.agent);
+    this.$projectInput.val(params.project);
+    this.$agentSelector.val(params.agent);
     $('#referer-select').val(params.referer);
 
     this.setupDateRangeSelector();
@@ -176,8 +176,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
       referer: $('#referer-select').val()
     };
 
@@ -199,36 +199,19 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Push relevant class properties to the query string
-   * Called whenever we go to update the chart
+   * Replaces history state with new URL query string representing current user input.
+   * Called whenever we go to update the chart.
+   * @override
    */
   pushParams() {
-    const entities = this.getEntities();
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&files=${entities.join('|')}`
-      );
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&files=${entities.join('%7C')}`);
-  }
-
-  /**
-   * Get the file names from the Select2 input.
-   * @return {array}
-   */
-  getEntities() {
-    return $(this.config.select2Input).select2('val') || [];
+    super.pushParams('files');
   }
 
   /**
    * Sets up the file selector and adds listener to update chart
    */
   setupSelect2() {
-    const $select2Input = $(this.config.select2Input);
-
-    let params = {
+    const params = {
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         dataType: 'jsonp',
@@ -268,12 +251,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    $select2Input.select2(params);
-    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    $select2Input.off('select2:unselect').on('select2:unselect', e => {
-      this.processInput(false, e.params.data.text);
-      $select2Input.trigger('select2:close');
-    });
+    super.setupSelect2(params);
   }
 
   /**
@@ -283,35 +261,6 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   setupListeners() {
     super.setupListeners();
     $('#referer-select, #agent-select').on('change', this.processInput.bind(this));
-    $('#date-type-select').on('change', e => {
-      $('.date-selector').toggle(e.target.value === 'daily');
-      $('.month-selector').toggle(e.target.value === 'monthly');
-      if (e.target.value === 'monthly') {
-        // no special ranges for month data type
-        this.specialRange = null;
-
-        this.setupMonthSelector();
-
-        // Set values of normal daterangepicker, which is what is used when we query the API
-        // This will in turn call this.processInput()
-        this.daterangepicker.setStartDate(this.monthStartDatepicker.getDate());
-        this.daterangepicker.setEndDate(
-          moment(this.monthEndDatepicker.getDate()).endOf('month')
-        );
-      } else {
-        this.processInput();
-      }
-    });
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.updateTable();
-    });
-    $('.clear-pages').on('click', () => {
-      this.resetView(true);
-      this.focusSelect2();
-    });
   }
 
   /**
@@ -334,19 +283,23 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * @param {string} [removedFile] - file that was just removed via Select2, supplied by select2:unselect handler
    */
   processInput(force, removedFile) {
-    this.pushParams();
-
-    /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
+    const files = this.beforeProcessInput(force);
+    if (!files) {
       return;
     }
 
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.params = location.search;
-
-    this.processFiles(removedFile);
+    if (removedFile) {
+      // we've got the data already, just removed a single page so we'll remove that data
+      // and re-render the chart
+      this.removeEntity(removedFile);
+      this.updateChart();
+    } else {
+      this.getFileInfo(files).then(() => {
+        this.getRequestCounts(files).done(xhrData => {
+          this.updateChart(xhrData);
+        });
+      });
+    }
   }
 
   /**
@@ -358,51 +311,10 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    */
   getMvApiUrl(file, startDate, endDate) {
     const granularity = $('#date-type-select').val() || 'daily',
-      agent = $(this.config.agentSelector).val() || this.config.defaults.agent;
+      agent = this.$agentSelector.val() || this.config.defaults.agent;
     return `https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/${$('#referer-select').val()}` +
         `/${agent}/${encodeURIComponent(file)}/${granularity}/` +
         `${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
-  }
-
-  /**
-   * Process a set of files set in the Select2 input.
-   * @param {string} [removedFile] - file that was just removed via Select2, supplied by select2:unselect handler
-   * @return {void}
-   */
-  processFiles(removedFile) {
-    const files = $(config.select2Input).select2('val') || [];
-
-    if (!files.length) {
-      return this.resetView();
-    }
-
-    this.patchUsage();
-
-    this.setInitialChartType(files.length);
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.prevChartType = this.chartType;
-    this.destroyChart();
-    this.startSpinny();
-
-    if (removedFile) {
-      // we've got the data already, just removed a single page so we'll remove that data
-      // and re-render the chart
-      this.outputData = this.outputData.filter(entry => entry.label !== removedFile.descore());
-      this.outputData = this.outputData.map(entity => {
-        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
-      });
-      delete this.entityInfo.entities[removedFile];
-      this.updateChart();
-    } else {
-      this.getFileInfo(files).then(() => {
-        this.getRequestCounts(files).done(xhrData => {
-          this.updateChart(xhrData);
-        });
-      });
-    }
   }
 
   /**
@@ -485,35 +397,13 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Update the page comparison table, shown below the chart
-   * @return {null}
+   * Update the page comparison table, shown below the chart.
    */
   updateTable() {
-    if (this.outputData.length === 1) {
-      return this.showSingleEntityLegend();
-    } else {
-      $('.single-entity-stats').html('');
+    const datasets = this.beforeUpdateTable();
+    if (!datasets) {
+      return;
     }
-
-    this.$outputList.html('');
-
-    /** sort ascending by current sort setting, using slice() to clone the array */
-    const datasets = this.outputData.slice().sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
       this.$outputList.append(this.config.templates.tableRow(this, item));
@@ -524,7 +414,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
     let totals = {
       label: $.i18n('num-files', this.formatNumber(datasets.length), datasets.length),
       sum,
-      average: Math.round(sum / this.numDaysInRange()),
+      average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
     };
     ['duration', 'size'].forEach(type => {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
@@ -610,12 +500,12 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       ${this.getFileLink(this.addNamespace(file.label))}
       &middot;
       <span class='text-muted'>
-        ${$(this.config.dateRangeSelector).val()}
+        ${this.$dateRangeSelector.val()}
       </span>
       &middot;
       ${$.i18n('num-requests', this.formatNumber(file.sum), file.sum)}
       <span class='hidden-lg'>
-        (${this.formatNumber(file.average)}/${$.i18n('day')})
+        (${this.formatNumber(file.average)}/${$.i18n(this.isMonthly() ? 'month' : 'day')})
       </span>
     `);
     $('.single-entity-legend').html(

@@ -4,9 +4,6 @@
  * @type {Object}
  */
 const config = {
-  agentSelector: '#agent_select',
-  chart: '.aqs-chart',
-  dateRangeSelector: '#range_input',
   defaults: {
     dateRange: 'latest-20',
     project: 'en.wikipedia.org',
@@ -24,7 +21,6 @@ const config = {
     return `<strong>${$.i18n('totals')}:</strong> ${scope.formatNumber(scope.outputData.sum)}
       (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },
-  logarithmicCheckbox: '.logarithmic-scale-option',
   sources: {
     category: {
       placeholder: 'https://en.wikipedia.org/wiki/Category:Hip_hop_groups_from_New_York_City',
@@ -40,7 +36,7 @@ const config = {
     },
     pagepile: {
       placeholder: '12345',
-      descriptionParams: () => ["<a target='_blank' href='//tools.wmflabs.org/pagepile'>PagePile</a>"],
+      descriptionParams: () => ["<a target='_blank' href='https://tools.wmflabs.org/pagepile'>PagePile</a>"],
       type: 'number'
     },
     subpages: {
@@ -57,14 +53,14 @@ const config = {
     },
     quarry: {
       placeholder: '12345',
-      descriptionParams: () => ["<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>"],
+      descriptionParams: () => ["<a target='_blank' href='https://quarry.wmflabs.org'>Quarry</a>"],
       type: 'number'
     },
     hashtag: {
       placeholder: '#editathon',
       descriptionParams: () => [
-        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
-        `<a target='_blank' href='//tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
+        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='https://tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
+        `<a target='_blank' href='https://tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
       ],
       type: 'string'
     },
@@ -83,9 +79,6 @@ const config = {
       type: 'string'
     }
   },
-  platformSelector: '#platform_select',
-  sourceButton: '#source_button',
-  sourceInput: '#source_input',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
   validateParams: ['source', 'subjectpage', 'subcategories', 'platform', 'agent', 'direction', 'sort', 'view'],

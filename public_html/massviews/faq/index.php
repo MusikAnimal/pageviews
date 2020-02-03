@@ -43,10 +43,10 @@
                 <?php echo $I18N->msg( 'faq-massviews-sources-wikilinks', [ 'variables' => [ $wikilinksLink ] ] ); ?>
               </li>
               <li>
-                <?php $pagePileLink = "<a href='//tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"; ?>
+                <?php $pagePileLink = "<a href='https://tools.wmflabs.org/pagepile' target='_blank'>Page Pile</a>"; ?>
                 <i>Page Pile</i>
                 &mdash;
-                <?php echo $I18N->msg( 'massviews-pagepile-description', [ 'variables' => [ "<a target='_blank' href='//tools.wmflabs.org/pagepile'>PagePile</a>" ] ] ) . '.'; ?>
+                <?php echo $I18N->msg( 'massviews-pagepile-description', [ 'variables' => [ "<a target='_blank' href='https://tools.wmflabs.org/pagepile'>PagePile</a>" ] ] ) . '.'; ?>
                 <?php echo $I18N->msg( 'faq-massviews-sources-pagepile', [ 'variables' => [ $pagePileLink ] ] ); ?>
               </li>
               <li>

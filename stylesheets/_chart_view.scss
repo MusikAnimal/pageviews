@@ -10,7 +10,7 @@ body.initial { // scss-lint:disable QualifyingElement
   .table-view,
   .summary-column,
   .single-page-stats,
-  .single-page-ranking,
+  .single-entity-ranking,
   .clear-pages {
     display: none !important;
   }
@@ -89,7 +89,7 @@ body.initial { // scss-lint:disable QualifyingElement
   }
 }
 
-.single-page-ranking {
+.single-entity-ranking {
   font-weight: normal;
   margin-top: 20px;
 }

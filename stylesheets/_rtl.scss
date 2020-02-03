@@ -167,7 +167,7 @@ input[type=checkbox] {
   text-align: right;
 }
 
-#source_input {
+#source-input {
   direction: rtl;
 }
 
@@ -201,7 +201,7 @@ input[type=checkbox] {
 &.langviews,
 &.redirectviews,
 &.userviews {
-  #source_input {
+  #source-input {
     border-radius: 0 3px 3px 0;
   }
 }

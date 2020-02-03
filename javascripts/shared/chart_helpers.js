@@ -16,17 +16,12 @@ const ChartHelpers = superclass => class extends superclass {
 
     this.chartObj = null;
     this.prevChartType = null;
-    this.autoChartType = true; // will become false when they manually change the chart type
-    this.jQueryCache = {}; // Cache jQuery selectors
 
     /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
-    const storedChartType = this.getFromLocalStorage('pageviews-chart-preference');
+    const storedChartType = localStorage.getItem('pageviews-chart-preference');
     if (!this.config.linearCharts.includes(storedChartType) && !this.config.circularCharts.includes(storedChartType)) {
-      this.setLocalStorage('pageviews-chart-preference', this.config.defaults.chartType());
+      localStorage.setItem('pageviews-chart-preference', this.config.defaults.chartType());
     }
-
-    // leave if there's no chart configured
-    if (!this.config.chart) return;
 
     /**
      * add ability to disable auto-log detection
@@ -42,32 +37,38 @@ const ChartHelpers = superclass => class extends superclass {
       this.config.chartConfig[circularChart].opts.legendTemplate = this.config.circularLegend;
     });
 
+    this.setupChartOptions();
+  }
+
+  /**
+   * Set initial values and attach click events to the chart options.
+   */
+  setupChartOptions() {
     /** changing of chart types */
     $('.modal-chart-type a').on('click', e => {
       this.chartType = $(e.currentTarget).data('type');
-      this.autoChartType = false;
 
       $('.logarithmic-scale').toggle(this.isLogarithmicCapable());
       $('.begin-at-zero').toggle(this.config.linearCharts.includes(this.chartType));
       $('.show-labels').toggle(['bar', 'line'].includes(this.chartType));
 
       if (this.rememberChart === 'true') {
-        this.setLocalStorage('pageviews-chart-preference', this.chartType);
+        localStorage.setItem('pageviews-chart-preference', this.chartType);
       }
 
-      this.isChartApp() ? this.updateChart() : this.renderData();
+      this.triggerUpdate();
     });
 
-    $(this.config.logarithmicCheckbox).on('click', () => {
+    this.$logarithmicCheckbox.on('click', () => {
       this.autoLogDetection = 'false';
-      this.isChartApp() ? this.updateChart() : this.renderData();
+      this.triggerUpdate();
     });
 
     /**
-     * disabled/enable begin at zero checkbox accordingly,
-     * but don't update chart since the log scale value can change pragmatically and not from user input
+     * Disabled/enable begin at zero checkbox accordingly, but don't update chart
+     * since the log scale value can change pragmatically and not from user input.
      */
-    $(this.config.logarithmicCheckbox).on('change', () => {
+    this.$logarithmicCheckbox.on('change', () => {
       $('.begin-at-zero').toggleClass('disabled', this.checked);
     });
 
@@ -75,29 +76,13 @@ const ChartHelpers = superclass => class extends superclass {
       $('.begin-at-zero-option').prop('checked', true);
     }
 
-    $('.begin-at-zero-option').on('click', () => {
-      this.isChartApp() ? this.updateChart() : this.renderData();
-    });
-
-    $('.show-labels-option').on('click', () => {
-      this.isChartApp() ? this.updateChart() : this.renderData();
+    $.merge(this.$beginAtZeroCheckbox, this.$showLabelsCheckbox).on('click', () => {
+      this.triggerUpdate();
     });
 
     /** chart download listeners */
     $('.download-png').on('click', this.exportPNG.bind(this));
     $('.print-chart').on('click', this.printChart.bind(this));
-  }
-
-  /**
-   * Set and get cached jQuery element.
-   * @param {String} selector
-   * @returns {jQuery}
-   */
-  cachedElement(selector) {
-    if (this.jQueryCache[selector]) {
-      return this.jQueryCache[selector];
-    }
-    return this.jQueryCache[selector] = $(selector);
   }
 
   /**
@@ -134,12 +119,36 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Get the checkbox input that toggles logarithmic view.
+   * @returns {jQuery}
+   */
+  get $logarithmicCheckbox() {
+    return this.cachedElement('#logarithmic-checkbox');
+  }
+
+  /**
+   * Get the "Begin at zero" checkbox.
+   * @return {jQuery}
+   */
+  get $beginAtZeroCheckbox() {
+    return this.cachedElement('.begin-at-zero');
+  }
+
+  /**
+   * Get the "Show labels" checkbox.
+   * @return {jQuery}
+   */
+  get $showLabelsCheckbox() {
+    return this.cachedElement('.show-labels-option');
+  }
+
+  /**
    * Set the default chart type or the one from localStorage, based on settings
    * @param {Number} [numDatasets] - number of datasets
    */
   setInitialChartType(numDatasets = 1) {
     if (this.rememberChart === 'true') {
-      this.chartType = this.getFromLocalStorage('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
+      this.chartType = localStorage.getItem('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
     } else {
       this.chartType = this.config.defaults.chartType(numDatasets);
     }
@@ -358,7 +367,7 @@ const ChartHelpers = superclass => class extends superclass {
       // This is used to make sure Select2 colours match those in the chart and legend,
       //   though in some cases (all-projects in Siteviews) the Select2 control may be empty
       //   so we instead use an empty array
-      select2Values = ($(this.config.select2Input).select2('val') || []).map(title => title.descore());
+      select2Values = this.getEntities().map(title => title.descore());
 
     return outputData.map((dataset, index) => {
       // Use zero instead of null for some data due to Gotcha in Pageviews API:
@@ -406,8 +415,8 @@ const ChartHelpers = superclass => class extends superclass {
     }
 
     // Use defaults if options aren't set
-    const platform = $(this.config.platformSelector).val() || this.config.defaults.platform,
-      agent = $(this.config.agentSelector).val() || this.config.defaults.agent;
+    const platform = this.$platformSelector.val() || this.config.defaults.platform,
+      agent = this.$agentSelector.val() || this.config.defaults.agent;
 
     if (this.app === 'siteviews') {
       if (this.isPageviews()) {
@@ -430,6 +439,57 @@ const ChartHelpers = superclass => class extends superclass {
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
     }
+  }
+
+  /**
+   * Should be called at the top of processInput() in chart-related apps.
+   * @param {boolean} force - Whether to force the chart to re-render, even if no params have changed.
+   * @return {array|boolean} False if there's nothing to be rendered (child function should also short-circuit),
+   *   or the list of entities fetched from the Select2 input.
+   */
+  beforeProcessInput(force) {
+    this.pushParams();
+
+    /** Prevent duplicate querying due to conflicting listeners. */
+    if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
+      return false;
+    }
+
+    this.params = location.search;
+    const entities = this.getEntities();
+
+    if (!entities.length) {
+      this.resetView();
+      return false;
+    }
+
+    this.patchUsage();
+
+    this.setInitialChartType(entities.length);
+
+    // Clear out old error messages unless the is the first time rendering the chart.
+    if (this.prevChartType) this.clearMessages();
+
+    this.prevChartType = this.chartType;
+    this.destroyChart();
+    this.startSpinny(); // show spinny and capture against fatal errors
+
+    return entities;
+  }
+
+  /**
+   * Remove an entity from this.outputData and this.entityInfo.entities.
+   * This is called at some point within this.processInput() in chart-based apps.
+   * @param {String} removedEntity - Title of the page, file, site, etc.
+   */
+  removeEntity(removedEntity) {
+    // we've got the data already, just removed a single page so we'll remove that data
+    // and re-render the chart
+    this.outputData = this.outputData.filter(entry => entry.label !== removedEntity.descore());
+    this.outputData = this.outputData.map(entity => {
+      return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
+    });
+    delete this.entityInfo.entities[removedEntity];
   }
 
   /**
@@ -579,7 +639,7 @@ const ChartHelpers = superclass => class extends superclass {
    * @returns {Boolean} true or false
    */
   isLogarithmic() {
-    return $(this.config.logarithmicCheckbox).is(':checked') && this.isLogarithmicCapable();
+    return this.$logarithmicCheckbox.is(':checked') && this.isLogarithmicCapable();
   }
 
   /**
@@ -616,7 +676,7 @@ const ChartHelpers = superclass => class extends superclass {
     } finally {
       this.stopSpinny();
       $('body').addClass('initial');
-      $(this.config.chart).hide();
+      this.$chart.hide();
       if (clearMessages) this.clearMessages();
     }
   }
@@ -680,6 +740,19 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Setup the Select2 input.
+   * @param {Object} params that would be passed to the select2 library.
+   */
+  setupSelect2(params) {
+    this.$select2Input.select2(params);
+    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
+      this.processInput(false, e.params.data.text);
+      this.$select2Input.trigger('select2:close');
+    });
+  }
+
+  /**
    * sets up the daterange selector and adds listeners
    */
   setupDateRangeSelector() {
@@ -688,7 +761,7 @@ const ChartHelpers = superclass => class extends superclass {
     /** prevent duplicate setup since the list view apps also use charts */
     if (!this.isChartApp()) return;
 
-    const dateRangeSelector = $(this.config.dateRangeSelector);
+    const dateRangeSelector = this.$dateRangeSelector;
 
     /** the "Latest N days" links */
     $('.date-latest a').on('click', e => {
@@ -795,14 +868,53 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Called at the top of updateTable() in the chart-only apps.
+   * @return {boolean|array} False if short-circuited, otherwise the sorted datasets.Z
+   */
+  beforeUpdateTable() {
+    if (this.outputData.length === 1) {
+      this.showSingleEntityLegend();
+      return false;
+    } else {
+      $('.single-entity-stats').html('');
+
+      if (['pageviews', 'siteviews'].includes(this.app)) {
+        $('.single-entity-ranking').html('');
+      }
+    }
+
+    this.$outputList.html('');
+
+    /** sort ascending by current sort setting, using slice() to clone the array */
+    const datasets = this.outputData.slice().sort((a, b) => {
+      const before = this.getSortProperty(a, this.sort),
+        after = this.getSortProperty(b, this.sort);
+
+      if (before < after) {
+        return this.direction;
+      } else if (before > after) {
+        return -this.direction;
+      } else {
+        return 0;
+      }
+    });
+
+    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
+    return datasets;
+  }
+
+  /**
    * Update the chart with data provided by processInput()
    * @param {Object} [xhrData] - data as constructed by processInput()
-   *   data is ommitted if we already have everything we need in this.outputData
+   *   data is omitted if we already have everything we need in this.outputData
    * @returns {null}
    */
   updateChart(xhrData) {
     $('.chart-legend').html(''); // clear old chart legend
-    const entityNames = xhrData ? xhrData.entities : $(this.config.select2Input).val();
+    const entityNames = xhrData ? xhrData.entities : this.$select2Input.val();
 
     // show pending error messages if present, exiting if fatal
     if (xhrData && this.showErrors(xhrData)) return;
@@ -822,7 +934,7 @@ const ChartHelpers = superclass => class extends superclass {
     // first figure out if we should use a log chart
     if (this.autoLogDetection === 'true') {
       const shouldBeLogarithmic = this.shouldBeLogarithmic(this.outputData.map(set => set.data));
-      $(this.config.logarithmicCheckbox).prop('checked', shouldBeLogarithmic);
+      this.$logarithmicCheckbox.prop('checked', shouldBeLogarithmic);
       $('.begin-at-zero').toggleClass('disabled', shouldBeLogarithmic);
     }
 
@@ -857,9 +969,9 @@ const ChartHelpers = superclass => class extends superclass {
     this.stopSpinny();
 
     try {
-      $('.chart-container').html('').append("<canvas class='aqs-chart'>");
+      $('.chart-container').html('').append("<canvas id='chart'>");
       this.setChartPointDetectionRadius();
-      const context = $(this.config.chart)[0].getContext('2d');
+      const context = this.$chart[0].getContext('2d');
       const grandMin = Math.min(...this.outputData.map(d => d.min));
 
       if (this.config.linearCharts.includes(this.chartType)) {
@@ -995,6 +1107,39 @@ const ChartHelpers = superclass => class extends superclass {
     }
 
     return false;
+  }
+
+  /**
+   * Listeners specific to chart-based apps.
+   * @override
+   */
+  setupListeners() {
+    super.setupListeners();
+
+    $('.clear-pages').on('click', () => {
+      this.resetView(true);
+      this.focusSelect2();
+    });
+
+    $('#date-type-select').on('change', e => {
+      $('.date-selector').toggle(e.target.value === 'daily');
+      $('.month-selector').toggle(e.target.value === 'monthly');
+      if (e.target.value === 'monthly') {
+        // no special ranges for month data type
+        this.specialRange = null;
+
+        this.setupMonthSelector();
+
+        // Set values of normal daterangepicker, which is what is used when we query the API
+        // This will in turn call this.processInput()
+        this.daterangepicker.setStartDate(this.monthStartDatepicker.getDate());
+        this.daterangepicker.setEndDate(
+          moment(this.monthEndDatepicker.getDate()).endOf('month')
+        );
+      } else {
+        this.processInput();
+      }
+    });
   }
 };
 

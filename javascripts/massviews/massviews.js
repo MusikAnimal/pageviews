@@ -36,36 +36,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Add general event listeners
+   * Add general event listeners.
    * @override
    */
   setupListeners() {
     super.setupListeners();
-
-    $('#pv_form').on('submit', e => {
-      e.preventDefault(); // prevent page from reloading
-      this.processInput();
-    });
-
-    $('.another-query').on('click', () => {
-      this.setState('initial');
-      this.pushParams(true);
-    });
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.renderData();
-    });
-
     $('.source-option').on('click', e => this.updateSourceInput(e.target));
-
-    $('.view-btn').on('click', e => {
-      document.activeElement.blur();
-      this.view = e.currentTarget.dataset.value;
-      this.toggleView(this.view);
-    });
   }
 
   /**
@@ -87,7 +63,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     $('#source_button').data('value', source).html(`${node.textContent} <span class='caret'></span>`);
 
-    $(this.config.sourceInput).prop('type', this.config.sources[source].type)
+    this.$sourceInput.prop('type', this.config.sources[source].type)
       .prop('placeholder', this.config.sources[source].placeholder)
       .val('');
 
@@ -109,7 +85,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.project-input').prop('disabled', true);
     }
 
-    $(this.config.sourceInput).focus();
+    this.$sourceInput.focus();
   }
 
   /**
@@ -121,17 +97,16 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Get all user-inputted parameters
+   * Get user-inputted parameters except the target.
    * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
    *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
    * @return {Object} project, platform, agent, etc.
    */
   getParams(forCacheKey = false) {
     let params = {
-      platform: $(this.config.platformSelector).val(),
-      agent: $(this.config.agentSelector).val(),
-      source: $(this.config.sourceButton).data('value'),
-      target: $(this.config.sourceInput).val().score()
+      platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val(),
+      source: $('#source_button').data('value')
     };
 
     /**
@@ -167,20 +142,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @returns {null}
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    /** only certain characters within the page name are escaped */
-    window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
-
-    $('.permalink').prop('href', `/massviews?${$.param(this.getPermaLink())}`);
+    super.pushParams('target', clear);
   }
 
   /**
@@ -266,7 +232,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       const uriEncodedPageName = encodeURIComponent(page);
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${queryProject}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
+        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
@@ -564,7 +530,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     // fill in value for the target
     if (params.target) {
-      $(this.config.sourceInput).val(decodeURIComponent(params.target).descore());
+      this.$sourceInput.val(decodeURIComponent(params.target).descore());
     }
 
     // If there are invalid params, remove target from params so we don't process the defaults.
@@ -583,8 +549,8 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       );
     }
 
-    $(this.config.platformSelector).val(params.platform);
-    $(this.config.agentSelector).val(params.agent);
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
 
     /** export necessary params to outer scope */
     ['sort', 'direction', 'view', 'source', 'subjectpage'].forEach(key => {
@@ -628,7 +594,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
-      $(this.config.sourceInput).val('').focus();
+      this.$sourceInput.val('').focus();
       if (typeof cb === 'function') cb.call(this);
       break;
     case 'processing':
@@ -672,7 +638,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    *   given the label and link for the PagePile and the pageviews data
    */
   processPagePile(cb) {
-    const pileId = $(this.config.sourceInput).val();
+    const pileId = this.$sourceInput.val();
 
     $('.progress-counter').text($.i18n('fetching-data', 'Page Pile API'));
     this.getPagePile(pileId).done(pileData => {
@@ -701,7 +667,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         // $('.output-title').text(label).prop('href', this.getPileURL(pileData.id));
         $('.output-params').html(
           `
-          ${$(this.config.dateRangeSelector).val()}
+          ${this.$dateRangeSelector.val()}
           &mdash;
           <a href="https://${project.escape()}" target="_blank">
             ${project.replace(/.org$/, '').escape()}
@@ -775,7 +741,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    *   given the label and link for the hashtag and the pageviews data
    */
   processHashtag(cb) {
-    const hashtag = $(this.config.sourceInput).val().replace(/^#/, ''),
+    const hashtag = this.$sourceInput.val().replace(/^#/, ''),
       hashTagLink = `<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/${hashtag}">#${hashtag.escape()}</a>`;
 
     $('.progress-counter').text($.i18n('fetching-data', 'Hashtag API'));
@@ -1117,7 +1083,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   processQuarry(cb) {
     const project = $('.project-input').val(),
-      id = $(this.config.sourceInput).val();
+      id = this.$sourceInput.val();
     if (!this.validateProject(project)) return;
 
     const url = `https://quarry.wmflabs.org/query/${id}/result/latest/0/json`,
@@ -1163,7 +1129,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     // get protocol, supported values: https://www.mediawiki.org/wiki/Manual:$wgUrlProtocols
     const protocolRegex = /^(?:\/\/|(ftps?|git|gopher|https?|ircs?|mms|nntp|redis|sftp|ssh|svn|telnet|worldwind):\/\/|(bitcoin|geo|magnet|mailto|news|sips?|sms|tel|urn|xmpp):)/;
-    let link = $(this.config.sourceInput).val();
+    let link = this.$sourceInput.val();
     const protocol = (protocolRegex.exec(link) || [,])[1] || 'http';
     const euquery = link.replace(protocolRegex, '');
 
@@ -1231,7 +1197,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const project = $('.project-input').val();
     if (!this.validateProject(project)) return;
 
-    let srsearch = $(this.config.sourceInput).val();
+    let srsearch = this.$sourceInput.val();
 
     let requestData = {
       list: 'search',
@@ -1305,7 +1271,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.setState('initial');
     this.writeMessage(
-      $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
+      $.i18n('invalid-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`),
       true
     );
 
@@ -1352,7 +1318,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     const readyForRendering = () => {
       $('.output-title').html(this.outputData.link);
-      $('.output-params').html($(this.config.dateRangeSelector).val());
+      $('.output-params').html(this.$dateRangeSelector.val());
       this.setInitialChartType();
       this.renderData();
     };
@@ -1392,7 +1358,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     }
 
     // validate wiki URL
-    let [project, target] = this.getWikiPageFromURL($(this.config.sourceInput).val());
+    let [project, target] = this.getWikiPageFromURL(this.$sourceInput.val());
 
     if (!project || !target) {
       return this.setState('initial', () => {

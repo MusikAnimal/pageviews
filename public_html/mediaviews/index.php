@@ -39,7 +39,7 @@
               <?php } ?>
             </ul>
           </div>
-          <input class="form-control aqs-date-range-selector" id="range-input">
+          <input class="form-control date-range-selector" id="range-input">
         </div>
         <div class="month-selector input-daterange clearfix">
           <label for="month-start">
@@ -118,7 +118,7 @@
     <main class="col-lg-8 col-md-10">
       <!-- File selector -->
       <div class="file-selector">
-        <label for="file-input">
+        <label for="select2-input">
           <span class="select2-title">
             <?php echo $I18N->msg( 'files' ); ?>
           </span>
@@ -130,12 +130,12 @@
           &#x2715;
           <?php echo $I18N->msg( 'clear' ); ?>
         </span>
-        <select class="aqs-select2-selector col-lg-12 invisible" id="file-input" multiple="multiple"></select>
+        <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
       </div>
       <?php include "../_data_links.php"; ?>
       <!-- Chart -->
       <div class="chart-container">
-        <canvas class="aqs-chart"></canvas>
+        <canvas id="chart"></canvas>
       </div>
       <div class="message-container col-lg-12"></div>
     </main>

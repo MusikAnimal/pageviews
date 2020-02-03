@@ -31,20 +31,20 @@
                 $dayLinks .= " <a data-value='{$day}' href='#'>{$day}</a>";
               }
             = $I18N->msg( 'latest-days', array( 'variables' => array( $dayLinks ) ) )
-          %input.form-control.aqs-date-range-selector#range-input
+          %input.form-control.date-range-selector#range-input
 
       / Tool selector
       %div.row.aqs-row
         %div.col-lg-12
           %label(for="tool-input")
             Tools
-          %select.aqs-select2-selector.col-lg-12.invisible#tool-input(multiple="multiple")
+          %select.col-lg-12.invisible#select2-input(multiple="multiple")
 
       - include '../_data_links.php'
 
       / Chart
       %div.chart-container
-        %canvas.aqs-chart
+        %canvas#chart
 
       %div.message-container.col-lg-12
 

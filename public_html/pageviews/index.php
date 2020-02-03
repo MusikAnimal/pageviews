@@ -39,7 +39,7 @@
               <?php } ?>
             </ul>
           </div>
-          <input class="form-control aqs-date-range-selector" id="range-input">
+          <input class="form-control date-range-selector" id="range-input">
         </div>
         <div class="month-selector input-daterange clearfix">
           <label for="month-start">
@@ -111,7 +111,7 @@
     </aside>
     <main class="col-lg-8 col-md-10">
       <div>
-        <label for="article-input">
+        <label for="select2-input">
           <?php echo $I18N->msg( 'pages' ); ?>
           <small class="text-muted num-entities-info">
             <?php echo $I18N->msg( 'num-pages-info', [ 'variables' => [ 10 ] ] ); ?>
@@ -121,12 +121,12 @@
           &#x2715;
           <?php echo $I18N->msg( 'clear' ); ?>
         </span>
-        <select class="aqs-select2-selector col-lg-12 invisible" id="article-input" multiple="multiple"></select>
+        <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
       </div>
       <?php include '../_data_links.php'; ?>
       <!-- Chart -->
       <div class="chart-container">
-        <canvas class="aqs-chart"></canvas>
+        <canvas id="chart"></canvas>
       </div>
       <div class="message-container col-lg-12"></div>
     </main>
@@ -142,7 +142,7 @@
     </aside>
     <div class="output col-lg-10 col-lg-offset-1">
       <h4 class="single-page-stats text-center"></h4>
-      <h5 class="single-page-ranking text-center"></h5>
+      <h5 class="single-entity-ranking text-center"></h5>
       <div class="single-page-legend hidden-lg col-md-4 col-md-offset-4 tm"></div>
       <?php
         $columns = array(

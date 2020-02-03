@@ -10,7 +10,7 @@ const templates = {
       let infoHash = {
         [$.i18n('requests')]: {
           [$.i18n('requests')]: scope.formatNumber(entity.sum),
-          [$.i18n('daily-average')]: scope.formatNumber(entity.average)
+          [$.i18n(`${$('#date-type-select').val()}-average`)]: scope.formatNumber(entity.average)
         }
       };
 
@@ -67,7 +67,7 @@ const templates = {
       size = scope.outputData.reduce((a, b) => a + b.size, 0);
     const totals = {
       sum,
-      average: Math.round(sum / scope.numDaysInRange()),
+      average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
       duration: scope.outputData.reduce((a, b) => a + b.duration, 0),
       size,
       sizeAvg: Math.round(size / scope.numDaysInRange())

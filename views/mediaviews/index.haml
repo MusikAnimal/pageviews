@@ -29,7 +29,7 @@
               - foreach ([10, 20, 30, 60, 90] as $offset)
                 %li
                   %a(href="#" data-value="#{$offset}")= $offset
-          %input.form-control.aqs-date-range-selector#range-input
+          %input.form-control.date-range-selector#range-input
         %div.month-selector.input-daterange.clearfix
           %label(for="month-start")
             = $I18N->msg( 'dates' )
@@ -80,7 +80,7 @@
     %main.col-lg-8.col-md-10
       / File selector
       %div.file-selector
-        %label(for="file-input")
+        %label(for="select2-input")
           %span.select2-title
             = $I18N->msg( 'files' )
           %small.text-muted.num-entities-info
@@ -88,13 +88,13 @@
         %span.clear-pages.pull-right
           &#x2715;
           = $I18N->msg( 'clear' )
-        %select.aqs-select2-selector.col-lg-12.invisible#file-input(multiple="multiple")
+        %select.col-lg-12.invisible#select2-input(multiple="multiple")
 
       - include "../_data_links.php"
 
       / Chart
       %div.chart-container
-        %canvas.aqs-chart
+        %canvas#chart
 
       %div.message-container.col-lg-12
 

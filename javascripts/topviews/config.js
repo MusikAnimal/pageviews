@@ -6,8 +6,6 @@ const pv = require('../shared/pv');
  * @type {Object}
  */
 const config = {
-  select2Input: '.aqs-select2-selector',
-  dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
     dateRange: 'last-month',
     excludes: []
@@ -16,11 +14,8 @@ const config = {
   maxDate: moment().subtract(1, 'day').startOf('day').utc().toDate(),
   maxYear: moment().subtract(1, 'year').startOf('year').utc().toDate(),
   pageSize: 100,
-  platformSelector: '#platform-select',
-  projectInput: '.aqs-project-input',
   validateParams: ['project', 'platform'],
-  timestampFormat: 'YYYYMMDD00',
-  cacheTime: 60 // In seconds, for server-side queries.
+  cacheTime: 60 // In minutes, for server-side queries.
 };
 
 module.exports = config;

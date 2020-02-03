@@ -107,9 +107,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('pages')
     );
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.platformSelector).val(params.platform);
-    $(this.config.agentSelector).val(params.agent);
+    this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
 
     this.validateDateRange(params);
 
@@ -251,9 +251,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
-      agent: $(this.config.agentSelector).val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val()
     };
 
     /**
@@ -274,28 +274,18 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Replaces history state with new URL query string representing current user input
-   * Called whenever we go to update the chart
+   * Replaces history state with new URL query string representing current user input.
+   * Called whenever we go to update the chart.
+   * @override
    */
   pushParams() {
-    const pages = $(this.config.select2Input).select2('val') || [],
-      escapedPages = pages.join('|').replace(/[&%?+]/g, encodeURIComponent);
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&pages=${escapedPages}`
-      );
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&pages=${escapedPages.replace('|', escape)}`);
+    super.pushParams('pages');
   }
 
   /**
    * Sets up the article selector and adds listener to update chart
    */
   setupSelect2() {
-    const $select2Input = $(this.config.select2Input);
-
     let params = {
       ajax: this.getArticleSelectorAjax(),
       tags: this.autocomplete === 'no_autocomplete',
@@ -303,14 +293,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       maximumSelectionLength: 10,
       minimumInputLength: 1
     };
+    super.setupSelect2(params);
 
-    $select2Input.select2(params);
-    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    $select2Input.off('select2:unselect').on('select2:unselect', e => {
-      this.processInput(false, e.params.data.text);
-      $select2Input.trigger('select2:close');
-    });
-    $select2Input.off('select2:open').on('select2:open', e => {
+    this.$select2Input.off('select2:open').on('select2:open', e => {
       if ($(e.target).val() && $(e.target).val().length === 10) {
         $('.select2-search__field').one('keyup', () => {
           const message = $.i18n(
@@ -358,7 +343,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
     this.$outputList.html('');
-    $('.single-page-ranking').html('');
+    $('.single-entity-ranking').html('');
     $('.single-page-stats').html('');
     $('.single-page-legend').html('');
   }
@@ -381,70 +366,20 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   setupListeners() {
     super.setupListeners();
-    $('#platform-select, #agent-select').on('change', this.processInput.bind(this));
-    $('#date-type-select').on('change', e => {
-      $('.date-selector').toggle(e.target.value === 'daily');
-      $('.month-selector').toggle(e.target.value === 'monthly');
-      if (e.target.value === 'monthly') {
-        // no special ranges for month data type
-        this.specialRange = null;
-
-        this.setupMonthSelector();
-
-        // Set values of normal daterangepicker, which is what is used when we query the API
-        // This will in turn call this.processInput()
-        this.daterangepicker.setStartDate(this.monthStartDatepicker.getDate());
-        this.daterangepicker.setEndDate(
-          moment(this.monthEndDatepicker.getDate()).endOf('month')
-        );
-      } else {
-        this.processInput();
-      }
-    });
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.updateTable();
-    });
-    $('.clear-pages').on('click', () => {
-      this.resetView(true);
-      this.focusSelect2();
-    });
+    $.merge(this.$platformSelector, this.$agentSelector).on('change', this.processInput.bind(this));
   }
 
   /**
    * Query the API for each page, building up the datasets and then calling renderData
    * @param {boolean} [force] - whether to force the chart to re-render, even if no params have changed
    * @param {string} [removedPage] - page that was just removed via Select2, supplied by select2:unselect handler
-   * @return {undefined}
+   * @return {void}
    */
   processInput(force, removedPage) {
-    this.pushParams();
-
-    /** prevent duplicate querying due to conflicting listeners */
-    if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
+    const entities = this.beforeProcessInput(force);
+    if (!entities) {
       return;
     }
-
-    this.params = location.search;
-
-    const entities = $(config.select2Input).select2('val') || [];
-
-    if (!entities.length) {
-      return this.resetView();
-    }
-
-    this.patchUsage();
-
-    this.setInitialChartType(entities.length);
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.prevChartType = this.chartType;
-    this.destroyChart();
-    this.startSpinny(); // show spinny and capture against fatal errors
 
     const getPageViewsAndAssessments = entities => {
       this.getPageViewsData(entities).done(xhrData => {
@@ -455,23 +390,20 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     if (removedPage) {
       // we've got the data already, just removed a single page so we'll remove that data
       // and re-render the chart
-      this.outputData = this.outputData.filter(entry => entry.label !== removedPage.descore());
-      this.outputData = this.outputData.map(entity => {
-        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
-      });
+      this.removeEntity(removedPage);
+
       // But make sure we have editing totals first. We have to re-query to ensure an
       //   accurate number of "unique" editors.
-      delete this.entityInfo.entities[removedPage];
       this.getEditData(Object.keys(this.entityInfo.entities)).done(editData => {
         Object.assign(this.entityInfo.totals, editData.totals);
         this.updateChart();
       });
     } else if (this.initialQuery) {
-      // We've already gotten data about the intial set of pages
-      // This is because we need any page names given to be normalized when the app first loads
+      // We've already gotten data about the initial set of pages.
+      // This is because we need any page names given to be normalized when the app first loads.
       getPageViewsAndAssessments(entities);
 
-      // set back to false so we get page and edit info for any newly entered pages
+      // Set back to false so we get page and edit info for any newly entered pages.
       this.initialQuery = false;
     } else {
       this.getPageAndEditInfo(entities.map(entity => encodeURIComponent(entity))).then(() => {
@@ -483,14 +415,14 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Show info below the chart when there is only one page being queried
    */
-  showSinglePageLegend() {
+  showSingleEntityLegend() {
     const page = this.outputData[0];
     const topviewsMonth = this.getTopviewsMonth(false); // 'false' to go off of endDate
     const topviewsDate = `${topviewsMonth.format('YYYY')}/${topviewsMonth.format('MM')}/all-days`;
 
     $.ajax({
       url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/` +
-        `${$(this.config.platformSelector).val()}/${topviewsDate}`,
+        `${this.$platformSelector.val()}/${topviewsDate}`,
       dataType: 'json'
     }).done(data => {
       // store pageData from API, removing underscores from the page name
@@ -500,7 +432,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         const topviewsLink = `<a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>` +
             $.i18n('most-viewed-pages').toLowerCase() + '</a>';
 
-        $('.single-page-ranking').html(
+        $('.single-entity-ranking').html(
           $.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
         );
       }
@@ -511,7 +443,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         ${page.assessment ? '&middot;\n' + this.getAssessmentBadge(page) : ''}
         &middot;
         <span class='text-muted'>
-          ${$(this.config.dateRangeSelector).val()}
+          ${this.$dateRangeSelector.val()}
         </span>
         &middot;
         ${$.i18n('num-pageviews', this.formatNumber(page.sum), page.sum)}
@@ -526,42 +458,19 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Update the page comparison table, shown below the chart
-   * @return {null}
+   * Update the page comparison table, shown below the chart.
    */
   updateTable() {
+    const datasets = this.beforeUpdateTable();
+    if (!datasets) {
+      return;
+    }
+
     if (!$.isNumeric(this.outputData[0].num_edits)) {
       $('.legend-block--revisions .legend-block--body').html(
         `<span class='text-muted'>${$.i18n('data-unavailable')}</span>`
       );
     }
-
-    if (this.outputData.length === 1) {
-      return this.showSinglePageLegend();
-    } else {
-      $('.single-page-stats').html('');
-      $('.single-page-ranking').html('');
-    }
-
-    this.$outputList.html('');
-
-    /** sort ascending by current sort setting, using slice() to clone the array */
-    const datasets = this.outputData.slice().sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     let hasProtection = false,
       hasAssessment = false;
@@ -606,7 +515,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     case 'title':
       return item.label;
     case 'class':
-      return $(item.assessment).prop('alt'); // use alt attribute of image tag
+      return item.assessment;
     case 'views':
       return Number(item.sum);
     case 'average':
@@ -683,7 +592,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     const dfd = $.Deferred();
 
     $.ajax({
-      url: '//tools.wmflabs.org/pagepile/api.php',
+      url: 'https://tools.wmflabs.org/pagepile/api.php',
       data: {
         action: 'create_pile_with_data',
         wiki: this.dbName(this.project),

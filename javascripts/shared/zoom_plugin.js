@@ -50,7 +50,7 @@ const zoomPlugin = {
 
       /** set start and end date, which will fire the event to re-process the form and render the chart */
       const dateLabels = chartObj.data.labels,
-        daterangepicker = $('.aqs-date-range-selector').data('daterangepicker');
+        daterangepicker = $('.date-range-selector').data('daterangepicker');
 
       /** if they selected the same area that is already shown */
       if (end - start + 1 === dateLabels.length) {

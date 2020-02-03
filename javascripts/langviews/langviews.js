@@ -37,37 +37,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Add general event listeners
-   * @override
-   */
-  setupListeners() {
-    super.setupListeners();
-
-    $('#pv_form').on('submit', e => {
-      e.preventDefault(); // prevent page from reloading
-      this.processInput();
-    });
-
-    $('.another-query').on('click', () => {
-      this.setState('initial');
-      this.pushParams(true);
-    });
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.renderData();
-    });
-
-    $('.view-btn').on('click', e => {
-      document.activeElement.blur();
-      this.view = e.currentTarget.dataset.value;
-      this.toggleView(this.view);
-    });
-  }
-
-  /**
    * Copy necessary default values to class instance.
    * Called when the view is reset.
    */
@@ -223,7 +192,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @returns {Typeahead} instance
    */
   get typeahead() {
-    return $(this.config.sourceInput).data('typeahead');
+    return this.$sourceInput.data('typeahead');
   }
 
   /**
@@ -234,9 +203,9 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   getParams(forCacheKey = false) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
-      agent: $(this.config.agentSelector).val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val()
     };
 
     /**
@@ -254,7 +223,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if (forCacheKey) {
       // Page name needed to make a unique cache key for the query.
       // For other purposes (e.g. this.pushParams()), we want to do special escaping of the page name
-      params.page = $(this.config.sourceInput).val().score();
+      params.page = this.$sourceInput.val().score();
     } else {
       params.sort = this.sort;
       params.direction = this.direction;
@@ -269,21 +238,11 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @return {null}
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    const escapedPageName = $(this.config.sourceInput).val().score().replace(/[&%?+]/g, encodeURIComponent);
-
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
-
-    $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}&page=${escapedPageName}`);
+    super.pushParams('page', clear);
   }
 
   /**
@@ -299,7 +258,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Render list of langviews into view
+   * Render list of Langviews into view.
    * @override
    */
   renderData() {
@@ -377,7 +336,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
       const url = (
         `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${data.lang}.${this.baseProject}` +
-        `/${$(this.config.platformSelector).val()}/${$(this.config.agentSelector).val()}/${uriEncodedPageName}/daily` +
+        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
       const promise = $.ajax({ url, dataType: 'json' });
@@ -492,28 +451,18 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Parse wiki URL for the page name
-   * @param  {String} url - full URL to a wiki page
-   * @return {String|null} page name
-   */
-  getPageNameFromURL(url) {
-    if (url.includes('?')) {
-      return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
-    } else {
-      return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
   popParams() {
     let params = this.validateParams(
-      this.parseQueryString('pages')
+      this.parseQueryString()
     );
 
-    $(this.config.projectInput).val(params.project);
+    this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
+
     this.validateDateRange(params);
 
     // If there are invalid params, remove page from params so we don't process the defaults.
@@ -522,9 +471,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if ($('.site-notice .alert-danger').length) {
       delete params.page;
     }
-
-    $(this.config.platformSelector).val(params.platform);
-    $(this.config.agentSelector).val(params.agent);
 
     /** export necessary params to outer scope */
     ['sort', 'direction', 'view'].forEach(key => {
@@ -543,13 +489,13 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           return this.writeMessage(`${this.getPageLink(normalizedPage)}: ${$.i18n('api-error-no-data')}`);
         }
         // fill in value for the page
-        $(this.config.sourceInput).val(normalizedPage);
+        this.$sourceInput.val(normalizedPage);
         this.processInput();
       }).fail(() => {
         this.writeMessage($.i18n('api-error-unknown', 'Info'));
       });
     } else {
-      $(this.config.sourceInput).focus();
+      this.$sourceInput.focus();
     }
   }
 
@@ -570,7 +516,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       $('.output').removeClass('list-mode').removeClass('chart-mode');
       $('.data-links').addClass('invisible');
       if (this.typeahead) this.typeahead.hide();
-      $(this.config.sourceInput).val('').focus();
+      this.$sourceInput.val('').focus();
       break;
     case 'processing':
       this.processStarted();
@@ -598,13 +544,13 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   processInput() {
     this.patchUsage();
 
-    const page = $(this.config.sourceInput).val();
+    const page = this.$sourceInput.val();
 
     this.setState('processing');
 
     const readyForRendering = () => {
       $('.output-title').html(this.outputData.link);
-      $('.output-params').html($(this.config.dateRangeSelector).val());
+      $('.output-params').html(this.$dateRangeSelector.val());
       this.setInitialChartType();
       this.renderData();
     };
@@ -618,7 +564,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       }, 500);
     }
 
-    const dbName = Object.keys(siteMap).find(key => siteMap[key] === $(this.config.projectInput).val());
+    const dbName = Object.keys(siteMap).find(key => siteMap[key] === this.$projectInput.val());
 
     $('.progress-counter').text($.i18n('fetching-data', 'Wikidata'));
     this.getInterwikiData(dbName, page).done(interWikiData => {
@@ -649,7 +595,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   setupSourceInput() {
     if (this.typeahead) this.typeahead.destroy();
 
-    $(this.config.sourceInput).typeahead({
+    this.$sourceInput.typeahead({
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         timeout: 200,

@@ -33,10 +33,10 @@
             </select>
           </div>
           <div class="col-lg-3 col-sm-3">
-            <label for="range-input">
+            <label for="date-input">
               <?php echo $I18N->msg( 'date' ); ?>
             </label>
-            <input class="form-control aqs-date-range-selector" id="range-input">
+            <input class="form-control date-selector" id="date-input">
           </div>
           <div class="col-lg-3 col-sm-3">
             <label for="project-input">
@@ -84,7 +84,7 @@
                 <?php echo $I18N->msg( 'show-mobile-percentages' ); ?>
               </label>
             </span>
-            <select class="aqs-select2-selector col-lg-12" multiple="multiple"></select>
+            <select class="col-lg-12" id="select2-input" multiple="multiple"></select>
             <!-- * Report false positive modal */ -->
             <div class="modal fade" id="report-false-positive-modal" role="dialog" tabindex="-1">
               <div class="modal-dialog" role="document">
