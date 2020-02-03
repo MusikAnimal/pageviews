@@ -83,35 +83,37 @@ class Pv extends PvConfig {
     }
 
     this.loadTranslations().then(() => {
-      // Advertise most-viewed pages for the year.
+      /** To be shown during the month of January of each year, after yearly stats have been imported */
 
-      // Don't show when viewing the yearly results in Topviews.
-      if ('topviews' === this.app && this.isYearly()) {
-        return;
-      }
-
-      // Don't show if seen over 3 times.
-      const cacheKey = 'pageviews-yearly-topviews-add';
-      const seenCount = parseInt(this.getFromLocalStorage(cacheKey), 10) || 0;
-      if (seenCount > 3) {
-        return;
-      }
-      this.setLocalStorage(cacheKey, seenCount + 1);
-
-      let project = this.project;
-
-      // Grab the first project in the list if viewing Siteviews.
-      if ('siteviews' === this.app) {
-        if (this.isAllProjects()) {
-          return;
-        }
-        project = ($(this.config.select2Input).select2('val') || [])[0].replace(/\.org$/, '');
-      }
-
-      const year = 2019;
-      this.toastInfo(
-        `<a href="/topviews?project=${project}.org&date=${year}"><strong>${$.i18n('notice-year-stats', year)}</strong></a>`
-      );
+      // // Advertise most-viewed pages for the year.
+      //
+      // // Don't show when viewing the yearly results in Topviews.
+      // if ('topviews' === this.app && this.isYearly()) {
+      //   return;
+      // }
+      //
+      // // Don't show if seen over 3 times.
+      // const cacheKey = 'pageviews-yearly-topviews-add';
+      // const seenCount = parseInt(this.getFromLocalStorage(cacheKey), 10) || 0;
+      // if (seenCount > 3) {
+      //   return;
+      // }
+      // this.setLocalStorage(cacheKey, seenCount + 1);
+      //
+      // let project = this.project;
+      //
+      // // Grab the first project in the list if viewing Siteviews.
+      // if ('siteviews' === this.app) {
+      //   if (this.isAllProjects()) {
+      //     return;
+      //   }
+      //   project = ($(this.config.select2Input).select2('val') || [])[0].replace(/\.org$/, '');
+      // }
+      //
+      // const year = 2019;
+      // this.toastInfo(
+      //   `<a href="/topviews?project=${project}.org&date=${year}"><strong>${$.i18n('notice-year-stats', year)}</strong></a>`
+      // );
     });
 
     // extensions
