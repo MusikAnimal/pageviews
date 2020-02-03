@@ -226,7 +226,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * Sets up the file selector and adds listener to update chart
    */
   setupSelect2() {
-    let params = {
+    const params = {
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
         dataType: 'jsonp',
@@ -266,12 +266,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    this.$select2Input.select2(params);
-    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
-      this.processInput(false, e.params.data.text);
-      this.$select2Input.trigger('select2:close');
-    });
+    super.setupSelect2(params);
   }
 
   /**
@@ -368,7 +363,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * @return {void}
    */
   processFiles(removedFile) {
-    const files = $(config.select2Input).select2('val') || [];
+    const files = this.$select2Input.select2('val') || [];
 
     if (!files.length) {
       return this.resetView();

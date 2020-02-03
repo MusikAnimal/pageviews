@@ -75,14 +75,14 @@
 
     %main.col-lg-8.col-md-10
       %div
-        %label(for="article-input")
+        %label(for="select2-input")
           = $I18N->msg( 'pages' )
           %small.text-muted.num-entities-info
             = $I18N->msg( 'num-pages-info', [ 'variables' => [ 10 ] ] )
         %span.clear-pages.pull-right
           &#x2715;
           = $I18N->msg( 'clear' )
-        %select.aqs-select2-selector.col-lg-12.invisible#article-input(multiple="multiple")
+        %select.col-lg-12.invisible#select2-input(multiple="multiple")
 
       - include '../_data_links.php'
 

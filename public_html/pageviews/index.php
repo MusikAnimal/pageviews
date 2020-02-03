@@ -111,7 +111,7 @@
     </aside>
     <main class="col-lg-8 col-md-10">
       <div>
-        <label for="article-input">
+        <label for="select2-input">
           <?php echo $I18N->msg( 'pages' ); ?>
           <small class="text-muted num-entities-info">
             <?php echo $I18N->msg( 'num-pages-info', [ 'variables' => [ 10 ] ] ); ?>
@@ -121,7 +121,7 @@
           &#x2715;
           <?php echo $I18N->msg( 'clear' ); ?>
         </span>
-        <select class="aqs-select2-selector col-lg-12 invisible" id="article-input" multiple="multiple"></select>
+        <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
       </div>
       <?php include '../_data_links.php'; ?>
       <!-- Chart -->

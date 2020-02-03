@@ -5685,13 +5685,8 @@ var PageViews = function (_mix$with) {
         maximumSelectionLength: 10,
         minimumInputLength: 1
       };
+      _get(PageViews.prototype.__proto__ || Object.getPrototypeOf(PageViews.prototype), 'setupSelect2', this).call(this, params);
 
-      this.$select2Input.select2(params);
-      this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-      this.$select2Input.off('select2:unselect').on('select2:unselect', function (e) {
-        _this4.processInput(false, e.params.data.text);
-        _this4.$select2Input.trigger('select2:close');
-      });
       this.$select2Input.off('select2:open').on('select2:open', function (e) {
         if ($(e.target).val() && $(e.target).val().length === 10) {
           $('.select2-search__field').one('keyup', function () {
@@ -5831,7 +5826,7 @@ var PageViews = function (_mix$with) {
 
       this.params = location.search;
 
-      var entities = $(config.select2Input).select2('val') || [];
+      var entities = this.$select2Input.select2('val') || [];
 
       if (!entities.length) {
         return this.resetView();
@@ -7006,13 +7001,31 @@ var ChartHelpers = function ChartHelpers(superclass) {
       }
 
       /**
+       * Setup the Select2 input.
+       * @param {Object} params that would be passed to the select2 library.
+       */
+
+    }, {
+      key: 'setupSelect2',
+      value: function setupSelect2(params) {
+        var _this7 = this;
+
+        this.$select2Input.select2(params);
+        this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+        this.$select2Input.off('select2:unselect').on('select2:unselect', function (e) {
+          _this7.processInput(false, e.params.data.text);
+          _this7.$select2Input.trigger('select2:close');
+        });
+      }
+
+      /**
        * sets up the daterange selector and adds listeners
        */
 
     }, {
       key: 'setupDateRangeSelector',
       value: function setupDateRangeSelector() {
-        var _this7 = this;
+        var _this8 = this;
 
         _get(_class.prototype.__proto__ || Object.getPrototypeOf(_class.prototype), 'setupDateRangeSelector', this).call(this);
 
@@ -7024,17 +7037,17 @@ var ChartHelpers = function ChartHelpers(superclass) {
         /** the "Latest N days" links */
         $('.date-latest a').on('click', function (e) {
           var value = $(e.target).data('value');
-          _this7.setSpecialRange('latest-' + value);
+          _this8.setSpecialRange('latest-' + value);
           $('.latest-text').text($.i18n('latest-days', value));
         });
 
         dateRangeSelector.on('change', function (e) {
-          _this7.processInput();
+          _this8.processInput();
           $('.latest-text').text($.i18n('latest'));
 
           /** clear out specialRange if it doesn't match our input */
-          if (_this7.specialRange && _this7.specialRange.value !== e.target.value) {
-            _this7.specialRange = null;
+          if (_this8.specialRange && _this8.specialRange.value !== e.target.value) {
+            _this8.specialRange = null;
           }
         });
       }
@@ -7048,7 +7061,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'setupMonthSelector',
       value: function setupMonthSelector(start, end) {
-        var _this8 = this;
+        var _this9 = this;
 
         // destroy old datepicker, if present
         if (this.monthDatepicker) {
@@ -7069,8 +7082,8 @@ var ChartHelpers = function ChartHelpers(superclass) {
         end = end || this.maxMonth;
 
         var validateDates = function validateDates(start, end) {
-          if (start < _this8.minDate.toDate()) start = _this8.minDate;
-          if (end > _this8.maxMonth) end = _this8.maxMonth;
+          if (start < _this9.minDate.toDate()) start = _this9.minDate;
+          if (end > _this9.maxMonth) end = _this9.maxMonth;
           if (end < start || start > end) {
             start = end;
           }
@@ -7092,13 +7105,13 @@ var ChartHelpers = function ChartHelpers(superclass) {
         this.daterangepicker.setEndDate(moment(end).endOf('month'));
 
         var setDates = function setDates() {
-          var _validateDates3 = validateDates(_this8.monthStartDatepicker.getDate(), _this8.monthEndDatepicker.getDate()),
+          var _validateDates3 = validateDates(_this9.monthStartDatepicker.getDate(), _this9.monthEndDatepicker.getDate()),
               _validateDates4 = _slicedToArray(_validateDates3, 2),
               start = _validateDates4[0],
               end = _validateDates4[1];
 
-          _this8.daterangepicker.startDate = moment(start).startOf('month');
-          _this8.daterangepicker.setEndDate(moment(end).endOf('month'));
+          _this9.daterangepicker.startDate = moment(start).startOf('month');
+          _this9.daterangepicker.setEndDate(moment(end).endOf('month'));
         };
 
         $('.month-selector-start').on('hide', setDates);
@@ -7147,7 +7160,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'updateChart',
       value: function updateChart(xhrData) {
-        var _this9 = this;
+        var _this10 = this;
 
         $('.chart-legend').html(''); // clear old chart legend
         var entityNames = xhrData ? xhrData.entities : this.$select2Input.val();
@@ -7190,7 +7203,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
                   var remain = value / Math.pow(10, Math.floor(Chart.helpers.log10(value)));
 
                   if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-                    return _this9.formatNumber(value);
+                    return _this10.formatNumber(value);
                   } else {
                     return '';
                   }
@@ -7290,7 +7303,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showPointLabels',
       value: function showPointLabels(options) {
-        var _this10 = this;
+        var _this11 = this;
 
         if (!['bar', 'line'].includes(this.chartType)) return;
 
@@ -7312,7 +7325,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
               ctx.fillStyle = 'rgba(68,68,68,' + step + ')';
               var scaleMax = dataset._meta[Object.keys(dataset._meta)[0]].data[index]._yScale.maxHeight;
               var yPos = (scaleMax - bar._model.y) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
-              ctx.fillText(_this10.n(dataset.data[index]), bar._model.x, yPos);
+              ctx.fillText(_this11.n(dataset.data[index]), bar._model.x, yPos);
             }), context);
           }), context);
         };
@@ -7338,7 +7351,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
     }, {
       key: 'showErrors',
       value: function showErrors(xhrData) {
-        var _this11 = this;
+        var _this12 = this;
 
         if (xhrData.fatalErrors.length) {
           this.resetView(true);
@@ -7355,7 +7368,7 @@ var ChartHelpers = function ChartHelpers(superclass) {
           }
 
           xhrData.errors.unique().forEach(function (error) {
-            return _this11.writeMessage(error);
+            return _this12.writeMessage(error);
           });
         }
 
@@ -9280,11 +9293,11 @@ var Pv = function (_PvConfig) {
     value: function resetSelect2() {
       var setup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-      if (this.select2Input.data('select2')) {
-        this.select2Input.off('change');
-        this.select2Input.select2('val', null);
-        this.select2Input.select2('data', null);
-        this.select2Input.select2('destroy');
+      if (this.$select2Input.data('select2')) {
+        this.$select2Input.off('change');
+        this.$select2Input.select2('val', null);
+        this.$select2Input.select2('data', null);
+        this.$select2Input.select2('destroy');
       }
       if (setup) {
         this.setupSelect2();
@@ -9378,7 +9391,7 @@ var Pv = function (_PvConfig) {
 
       items.forEach(function (item) {
         var escapedText = $('<div>').text(item).html();
-        $('<option>' + escapedText + '</option>').appendTo(_this6.config.select2Input);
+        $('<option>' + escapedText + '</option>').appendTo(_this6.$select2Input);
       });
       this.$select2Input.select2('val', items);
       this.$select2Input.trigger('select2:select');

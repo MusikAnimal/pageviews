@@ -97,14 +97,14 @@
     %main.col-lg-8.col-md-10
       / Site selector
       %div.site-selector
-        %label(for="site-input")
+        %label(for="select2-input")
           = $I18N->msg( 'projects' )
           %small.text-muted.num-entities-info
             = $I18N->msg( 'num-projects-info', [ 'variables' => [ 10 ] ] )
         %span.clear-pages.pull-right
           &#x2715;
           = $I18N->msg( 'clear' )
-        %select.aqs-select2-selector.col-lg-12.invisible#site-input(multiple="multiple")
+        %select.col-lg-12.invisible#select2-input(multiple="multiple")
 
       - include "../_data_links.php"
 

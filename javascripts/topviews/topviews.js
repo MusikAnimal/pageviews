@@ -168,7 +168,7 @@ class TopViews extends Pv {
 
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
-      $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
+      $(`<option>${escapedText}</option>`).appendTo(this.$select2Input);
     });
 
     if (triggerChange) {
@@ -759,7 +759,7 @@ class TopViews extends Pv {
   setSelect2Defaults(pages) {
     pages = pages.map(page => {
       const escapedText = $('<div>').text(page).html();
-      $('<option>' + escapedText + '</option>').appendTo(this.config.select2Input);
+      $('<option>' + escapedText + '</option>').appendTo(this.$select2Input);
       return page;
     });
     this.$select2Input.select2('val', pages);

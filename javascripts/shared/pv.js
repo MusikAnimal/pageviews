@@ -1450,11 +1450,11 @@ class Pv extends PvConfig {
    * @param {boolean} [setup] Whether to re-setup the selector.
    */
   resetSelect2(setup = true) {
-    if (this.select2Input.data('select2')) {
-      this.select2Input.off('change');
-      this.select2Input.select2('val', null);
-      this.select2Input.select2('data', null);
-      this.select2Input.select2('destroy');
+    if (this.$select2Input.data('select2')) {
+      this.$select2Input.off('change');
+      this.$select2Input.select2('val', null);
+      this.$select2Input.select2('data', null);
+      this.$select2Input.select2('destroy');
     }
     if (setup) {
       this.setupSelect2();
@@ -1532,7 +1532,7 @@ class Pv extends PvConfig {
   setSelect2Defaults(items) {
     items.forEach(item => {
       const escapedText = $('<div>').text(item).html();
-      $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
+      $(`<option>${escapedText}</option>`).appendTo(this.$select2Input);
     });
     this.$select2Input.select2('val', items);
     this.$select2Input.trigger('select2:select');

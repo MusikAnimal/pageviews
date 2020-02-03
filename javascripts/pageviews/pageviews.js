@@ -301,13 +301,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       maximumSelectionLength: 10,
       minimumInputLength: 1
     };
+    super.setupSelect2(params);
 
-    this.$select2Input.select2(params);
-    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
-      this.processInput(false, e.params.data.text);
-      this.$select2Input.trigger('select2:close');
-    });
     this.$select2Input.off('select2:open').on('select2:open', e => {
       if ($(e.target).val() && $(e.target).val().length === 10) {
         $('.select2-search__field').one('keyup', () => {
@@ -427,7 +422,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     this.params = location.search;
 
-    const entities = $(config.select2Input).select2('val') || [];
+    const entities = this.$select2Input.select2('val') || [];
 
     if (!entities.length) {
       return this.resetView();

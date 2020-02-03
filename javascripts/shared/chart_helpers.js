@@ -672,6 +672,19 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Setup the Select2 input.
+   * @param {Object} params that would be passed to the select2 library.
+   */
+  setupSelect2(params) {
+    this.$select2Input.select2(params);
+    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
+      this.processInput(false, e.params.data.text);
+      this.$select2Input.trigger('select2:close');
+    });
+  }
+
+  /**
    * sets up the daterange selector and adds listeners
    */
   setupDateRangeSelector() {

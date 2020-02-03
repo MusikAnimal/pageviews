@@ -213,13 +213,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       maximumSelectionLength: 10,
       minimumInputLength: 1
     };
-
-    this.$select2Input.select2(params);
-    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
-      this.processInput(false, e.params.data.text);
-      this.$select2Input.trigger('select2:close');
-    });
+    super.setupSelect2(params);
   }
 
   /**
@@ -306,7 +300,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $('.all-projects-radio').on('change', e => {
       $('.site-selector').toggleClass('disabled', e.target.value === '1');
 
-      if (e.target.value === '0' && !$(config.select2Input).select2('val')) {
+      if (e.target.value === '0' && !this.$select2Input.select2('val')) {
         this.resetView();
         return this.setSelect2Defaults(config.defaults.projects);
       }
@@ -358,7 +352,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     const sites = this.isAllProjects()
       ? ['all-projects']
-      : ($(config.select2Input).select2('val') || []);
+      : (this.$select2Input.select2('val') || []);
 
     if (!sites.length) {
       return this.resetView();
