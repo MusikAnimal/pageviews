@@ -1,12 +1,6 @@
 /**
- * UserViews Analysis tool
- * @file Main file for UserViews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- * @requires Pv
- * @requires ChartHelpers
- * @requires ListHelpers
+ * Userviews Analysis tool
+ * @link https://tools.wmflabs.org/userviews
  */
 
 const config = require('./config');

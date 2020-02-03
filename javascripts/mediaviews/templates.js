@@ -1,11 +1,5 @@
 /**
- * @file Templates used by Chart.js for Mediaviews app
- * @author MusikAnimal
- * @copyright 2016 MusikAnimal
- */
-
-/**
- * Templates used by Chart.js.
+ * Templates used by Chart.js in the Mediaviews application.
  * Functions used within our app must be in the global scope.
  * All quotations must be double-quotes or properly escaped.
  * @type {Object}

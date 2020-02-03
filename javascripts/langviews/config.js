@@ -1,10 +1,4 @@
 /**
- * @file Configuration for Langviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
  * Configuration for Langviews application.
  * This includes selectors, defaults, and other constants specific to Langviews
  * @type {Object}

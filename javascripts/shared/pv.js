@@ -1,10 +1,3 @@
-/**
- * @file Shared code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views)
- * @author MusikAnimal, Kaldari
- * @copyright MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- */
-
 /** class-less files with global overrides */
 require('./core_extensions');
 require('./polyfills');
@@ -13,7 +6,7 @@ const PvConfig = require('./pv_config');
 const siteMap = require('./site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 
-/** Pv class, contains code amongst all apps (Pageviews, Topviews, Langviews, Siteviews, Massviews, Redirect Views) */
+/** Pv class, contains code used by all apps. */
 class Pv extends PvConfig {
   /**
    * Main constructor for each app, giving way to the parent constructor in list_helpers or chart_helpers

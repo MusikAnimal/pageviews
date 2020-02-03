@@ -1,12 +1,6 @@
 /**
- * Redirectviews Analysis tool
- * @file Main file for Redirectviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- * @requires Pv
- * @requires ChartHelpers
- * @requires ListHelpers
+ * Redirect Views Analysis tool
+ * @link https://tools.wmflabs.org/redirectviews
  */
 
 const config = require('./config');

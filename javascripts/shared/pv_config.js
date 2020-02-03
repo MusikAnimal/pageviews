@@ -1,16 +1,9 @@
-/**
- * @file Shared config amongst all apps
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- */
-
 const siteMap = require('./site_map');
 const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 
 /**
  * Configuration for all Pageviews applications.
- * Some properties may be overriden by app-specific configs
+ * Some properties may be overridden by app-specific configs
  */
 class PvConfig {
   /** set instance variable (config), also defining any private methods */

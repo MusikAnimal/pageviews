@@ -1,11 +1,5 @@
 /**
- * @file Templates used by Chart.js for Siteviews app
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
- * Templates used by Chart.js.
+ * Templates used by Chart.js in the Siteviews application.
  * Functions used within our app must be in the global scope.
  * All quotations must be double-quotes or properly escaped.
  * @type {Object}

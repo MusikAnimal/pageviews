@@ -1,12 +1,6 @@
 /**
  * Massviews Analysis tool
- * @file Main file for Massviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- * @requires Pv
- * @requires ChartHelpers
- * @requires ListHelpers
+ * @link https://tools.wmflabs.org/massviews
  */
 
 const config = require('./config');

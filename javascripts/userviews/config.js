@@ -1,10 +1,4 @@
 /**
- * @file Configuration for Userviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
  * Configuration for Userviews application.
  * This includes selectors, defaults, and other constants specific to Userviews
  * @type {Object}

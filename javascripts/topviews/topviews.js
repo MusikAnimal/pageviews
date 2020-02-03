@@ -1,10 +1,6 @@
 /**
  * Topviews Analysis tool
- * @file Main file for Topviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- * @requires Pv
+ * @link https://tools.wmflabs.org/topviews
  */
 
 const config = require('./config');

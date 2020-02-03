@@ -1,9 +1,6 @@
 /**
  * Metaviews Analysis tool
- * @file Main file for Metaviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
+ * @link https://tools.wmflabs.org/metaviews
  */
 
 const config = require('./config');

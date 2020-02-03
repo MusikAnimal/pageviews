@@ -1,9 +1,3 @@
-/**
- * @file Configuration for Mediaviews application
- * @author MusikAnimal
- * @copyright 2016-17 MusikAnimal
- */
-
 const templates = require('./templates');
 
 /**

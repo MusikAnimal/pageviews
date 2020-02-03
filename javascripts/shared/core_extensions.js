@@ -1,9 +1,6 @@
 /**
- * @file Core JavaScript extensions, either to native JS or a library.
- *   Polyfills have their own file [polyfills.js](global.html#polyfills)
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
+ * Core JavaScript extensions, either to native JS or a library.
+ * Polyfills can be found at polyfills.js
  */
 
 String.prototype.descore = function() {

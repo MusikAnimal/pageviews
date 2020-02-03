@@ -1,10 +1,4 @@
 /**
- * @file Configuration for Metaviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
  * Configuration for Metaviews application.
  * This includes selectors, defaults, and other constants specific to Metaviews
  * @type {Object}

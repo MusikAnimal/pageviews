@@ -1,11 +1,6 @@
 /**
  * Siteviews Analysis tool
- * @file Main file for Siteviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- * @requires Pv
- * @requires ChartHelpers
+ * @link https://tools.wmflabs.org/siteviews
  */
 
 const config = require('./config');

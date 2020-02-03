@@ -1,8 +1,4 @@
 /**
- * @file WMF [site matrix](https://www.mediawiki.org/w/api.php?action=sitematrix), with some unsupported wikis removed
- */
-
-/**
  * Sitematrix of all supported WMF wikis
  * @type {Object}
  */

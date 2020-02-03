@@ -1,6 +1,6 @@
 /**
- * @file Polyfills for users who refuse to upgrade their browsers
- *   Most code is adapted from [MDN](https://developer.mozilla.org)
+ * Polyfills for users who refuse or are unable to upgrade their browsers.
+ * Most code is adapted from [MDN](https://developer.mozilla.org)
  */
 
 // Array.includes function polyfill

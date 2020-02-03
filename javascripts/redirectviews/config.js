@@ -1,11 +1,5 @@
 /**
- * @file Configuration for Redirectviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
- * Configuration for Redirectviews application.
+ * Configuration for Redirect Views application.
  * This includes selectors, defaults, and other constants specific to Redirectviews
  * @type {Object}
  */

@@ -1,9 +1,6 @@
 /**
  * Mediaviews Analysis tool
- * @file Main file for Mediaviews application
- * @author MusikAnimal
- * @copyright 2016-17 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
+ * @link https://tools.wmflabs.org/mediaviews
  */
 
 const config = require('./config');

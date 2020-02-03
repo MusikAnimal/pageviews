@@ -1,10 +1,3 @@
-/**
- * @file Shared chart-specific logic
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- */
-
 require('./zoom_plugin');
 
 /**

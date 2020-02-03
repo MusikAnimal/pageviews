@@ -1,10 +1,4 @@
 /**
- * @file Configuration for Massviews application
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- */
-
-/**
  * Configuration for Massviews application.
  * This includes selectors, defaults, and other constants specific to Massviews
  * @type {Object}

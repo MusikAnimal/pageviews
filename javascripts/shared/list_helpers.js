@@ -1,12 +1,5 @@
 /**
- * @file Shared list-specific logic
- * @author MusikAnimal
- * @copyright 2016-2018 MusikAnimal
- * @license MIT License: https://opensource.org/licenses/MIT
- */
-
-/**
- * Shared list-specific logic
+ * Shared list-specific logic (for Langviews and Massviews)
  * @param {class} superclass - base class
  * @returns {null} class extending superclass
  */
