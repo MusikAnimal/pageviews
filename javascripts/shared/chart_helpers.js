@@ -17,6 +17,7 @@ const ChartHelpers = superclass => class extends superclass {
     this.chartObj = null;
     this.prevChartType = null;
     this.autoChartType = true; // will become false when they manually change the chart type
+    this.jQueryCache = {}; // Cache jQuery selectors
 
     /** ensure we have a valid chart type in localStorage, result of Chart.js 1.0 to 2.0 migration */
     const storedChartType = this.getFromLocalStorage('pageviews-chart-preference');
@@ -88,12 +89,24 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Set and get cached jQuery element.
+   * @param {String} selector
+   * @returns {jQuery}
+   */
+  cachedElement(selector) {
+    if (this.jQueryCache[selector]) {
+      return this.jQueryCache[selector];
+    }
+    return this.jQueryCache[selector] = $(selector);
+  }
+
+  /**
    * Get the datepicker (not daterangepicker) instance of the combined
    *   start and end month selectors, as provided by the library
    * @return {Object} datepicker
    */
   get monthDatepicker() {
-    return $('.month-selector').data('datepicker');
+    return this.cachedElement('.month-selector').data('datepicker');
   }
 
   /**
@@ -101,7 +114,7 @@ const ChartHelpers = superclass => class extends superclass {
    * @return {Object} datepicker
    */
   get monthStartDatepicker() {
-    return $('.month-selector-start').data('datepicker');
+    return this.cachedElement('.month-selector-start').data('datepicker');
   }
 
   /**
@@ -109,7 +122,15 @@ const ChartHelpers = superclass => class extends superclass {
    * @return {Object} datepicker
    */
   get monthEndDatepicker() {
-    return $('.month-selector-end').data('datepicker');
+    return this.cachedElement('.month-selector-end').data('datepicker');
+  }
+
+  /**
+   * Get the output list (table shown the chart for when there are multiple entities).
+   * @returns {jQuery}
+   */
+  get $outputList() {
+    return this.cachedElement('.output-list');
   }
 
   /**
@@ -584,7 +605,7 @@ const ChartHelpers = superclass => class extends superclass {
   /**
    * Removes chart, messages, and resets site selections
    * @param {boolean} [select2] whether or not to clear the Select2 input
-   * @param {boolean} [clearMessages] whether or not to clear any exisitng errors from view
+   * @param {boolean} [clearMessages] whether or not to clear any existing errors from view
    */
   resetView(select2 = false, clearMessages = true) {
     try {
@@ -746,6 +767,31 @@ const ChartHelpers = superclass => class extends superclass {
 
     $('.month-selector-start').on('hide', setDates);
     $('.month-selector-end').on('hide', setDates);
+  }
+
+  /**
+   * Get currently selected start and end dates as moment objects
+   * @param {Boolean} [format] - if true, will return YYYY-MM for months, YYYY-MM-DD for dates
+   * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
+   */
+  getDates(format = false) {
+    let startDate, endDate, dateFormat = 'YYYY-MM-DD';
+
+    if (this.isMonthly()) {
+      startDate = moment(this.monthStartDatepicker.getDate());
+      endDate = moment(this.monthEndDatepicker.getDate());
+      dateFormat = 'YYYY-MM';
+    } else {
+      startDate = this.daterangepicker.startDate;
+      endDate = this.daterangepicker.endDate;
+    }
+
+    if (format) {
+      startDate = startDate.format(dateFormat);
+      endDate = endDate.format(dateFormat);
+    }
+
+    return [startDate, endDate];
   }
 
   /**

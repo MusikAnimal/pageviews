@@ -170,31 +170,6 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Get currently selected start and end dates as moment objects
-   * @param {Boolean} [format] - if true, will return YYYY-MM for months, YYYY-MM-DD for dates
-   * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
-   */
-  getDates(format = false) {
-    let startDate, endDate, dateFormat = 'YYYY-MM-DD';
-
-    if (this.isMonthly()) {
-      startDate = moment(this.monthStartDatepicker.getDate());
-      endDate = moment(this.monthEndDatepicker.getDate());
-      dateFormat = 'YYYY-MM';
-    } else {
-      startDate = this.daterangepicker.startDate;
-      endDate = this.daterangepicker.endDate;
-    }
-
-    if (format) {
-      startDate = startDate.format(dateFormat);
-      endDate = endDate.format(dateFormat);
-    }
-
-    return [startDate, endDate];
-  }
-
-  /**
    * Get all user-inputted parameters except the files
    * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
    * @return {Object} project, referer, agent, etc.
@@ -347,7 +322,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    */
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
-    $('.output-list').html('');
+    this.$outputList.html('');
     $('.single-entity-stats').html('');
     $('.single-entity-legend').html('');
     $('.file-selector').removeClass('disabled');
@@ -520,7 +495,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       $('.single-entity-stats').html('');
     }
 
-    $('.output-list').html('');
+    this.$outputList.html('');
 
     /** sort ascending by current sort setting, using slice() to clone the array */
     const datasets = this.outputData.slice().sort((a, b) => {
@@ -541,7 +516,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
     $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
-      $('.output-list').append(this.config.templates.tableRow(this, item));
+      this.$outputList.append(this.config.templates.tableRow(this, item));
     });
 
     // add summations to show up as the bottom row in the table
@@ -555,7 +530,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
     });
 
-    $('.output-list').append(this.config.templates.tableRow(this, totals, true));
+    this.$outputList.append(this.config.templates.tableRow(this, totals, true));
 
     // Hide duration column if no data available (no files are videos).
     $('.table-view--duration').toggle(datasets.some(ds => !!ds.duration));

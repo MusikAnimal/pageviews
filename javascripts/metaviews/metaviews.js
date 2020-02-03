@@ -298,7 +298,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       $('.single-page-stats').html('');
     }
 
-    $('.output-list').html('');
+    this.$outputList.html('');
 
     /** sort ascending by current sort setting, using slice() to clone the array */
     const datasets = this.outputData.slice().sort((a, b) => {
@@ -319,7 +319,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
     $(`.sort-link--${this.sort} span`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach(item => {
-      $('.output-list').append(`
+      this.$outputList.append(`
         <tr>
           <td class='table-view--color-col'>
             <span class='table-view--color-block' style="background:${item.color}"></span>
@@ -338,7 +338,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       sum,
       average: Math.round(sum / datasets[0].data.length)
     };
-    $('.output-list').append(`
+    this.$outputList.append(`
       <tr>
         <th class='table-view--color-col'></th>
         <th class='table-view--title'>${totals.label}</th>

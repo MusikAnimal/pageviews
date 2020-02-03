@@ -156,21 +156,13 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     /**
      * Override start and end with custom range values, if configured (set by URL params or setupDateRangeSelector)
-     * Valid values are those defined in this.config.specialRanges, constructed like `{range: 'last-month'}`,
+     * Valid values are those defined in config.specialRanges, constructed like `{range: 'last-month'}`,
      *   or a relative range like `{range: 'latest-N'}` where N is the number of days.
      */
     if (this.specialRange && specialRange) {
       params.range = this.specialRange.range;
-    } else if (this.isMonthly()) {
-      params.start = moment(
-        this.monthStartDatepicker.getDate()
-      ).format('YYYY-MM');
-      params.end = moment(
-        this.monthEndDatepicker.getDate()
-      ).format('YYYY-MM');
     } else {
-      params.start = this.daterangepicker.startDate.format('YYYY-MM-DD');
-      params.end = this.daterangepicker.endDate.format('YYYY-MM-DD');
+      [params.start, params.end] = this.getDates(true);
     }
 
     /** add autolog param only if it was passed in originally, and only if it was false (true would be default) */
@@ -343,7 +335,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    */
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
-    $('.output-list').html('');
+    this.$outputList.html('');
     $('.single-site-ranking').html('');
     $('.single-site-stats').html('');
     $('.single-site-legend').html('');
@@ -412,7 +404,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       $('.single-site-ranking').html('');
     }
 
-    $('.output-list').html('');
+    this.$outputList.html('');
 
     /** sort ascending by current sort setting, using slice() to clone the array */
     const datasets = this.outputData.slice().sort((a, b) => {
@@ -433,7 +425,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
-      $('.output-list').append(this.config.templates.tableRow(this, item));
+      this.$outputList.append(this.config.templates.tableRow(this, item));
     });
 
     // add summations to show up as the bottom row in the table
@@ -446,7 +438,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     ['pages', 'articles', 'edits', 'images', 'users', 'activeusers', 'admins'].forEach(type => {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
     });
-    $('.output-list').append(this.config.templates.tableRow(this, totals, true));
+    this.$outputList.append(this.config.templates.tableRow(this, totals, true));
 
     $('.table-view').show();
   }

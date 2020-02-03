@@ -245,31 +245,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Get currently selected start and end dates as moment objects
-   * @param {Boolean} [format] - if true, will return YYYY-MM for months, YYYY-MM-DD for dates
-   * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
-   */
-  getDates(format = false) {
-    let startDate, endDate, dateFormat = 'YYYY-MM-DD';
-
-    if (this.isMonthly()) {
-      startDate = moment(this.monthStartDatepicker.getDate());
-      endDate = moment(this.monthEndDatepicker.getDate());
-      dateFormat = 'YYYY-MM';
-    } else {
-      startDate = this.daterangepicker.startDate;
-      endDate = this.daterangepicker.endDate;
-    }
-
-    if (format) {
-      startDate = startDate.format(dateFormat);
-      endDate = endDate.format(dateFormat);
-    }
-
-    return [startDate, endDate];
-  }
-
-  /**
    * Get all user-inputted parameters except the pages
    * @param {boolean} [specialRange] whether or not to include the special range instead of start/end, if applicable
    * @return {Object} project, platform, agent, etc.
@@ -382,7 +357,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
-    $('.output-list').html('');
+    this.$outputList.html('');
     $('.single-page-ranking').html('');
     $('.single-page-stats').html('');
     $('.single-page-legend').html('');
@@ -568,7 +543,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       $('.single-page-ranking').html('');
     }
 
-    $('.output-list').html('');
+    this.$outputList.html('');
 
     /** sort ascending by current sort setting, using slice() to clone the array */
     const datasets = this.outputData.slice().sort((a, b) => {
@@ -594,7 +569,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       if (item.protection !== $.i18n('none').toLowerCase()) hasProtection = true;
       if (item.assessment && item.assessment.length) hasAssessment = true;
 
-      $('.output-list').append(this.config.templates.tableRow(this, item));
+      this.$outputList.append(this.config.templates.tableRow(this, item));
     });
 
     // add summations to show up as the bottom row in the table
@@ -611,7 +586,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       protection: $.i18n('num-protections', this.formatNumber(numProtections), numProtections),
       watchers: datasets.reduce((a, b) => a + b.watchers || 0, 0)
     };
-    $('.output-list').append(this.config.templates.tableRow(this, totals, true));
+    this.$outputList.append(this.config.templates.tableRow(this, totals, true));
 
     // hide protection column if no pages are protected
     $('.table-view--protection').toggle(hasProtection);
