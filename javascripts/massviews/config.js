@@ -79,7 +79,6 @@ const config = {
       type: 'string'
     }
   },
-  sourceButton: '#source_button',
   formStates: ['initial', 'processing', 'complete', 'invalid'],
   timestampFormat: 'YYYYMMDD00',
   validateParams: ['source', 'subjectpage', 'subcategories', 'platform', 'agent', 'direction', 'sort', 'view'],

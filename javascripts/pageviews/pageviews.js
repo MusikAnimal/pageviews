@@ -278,7 +278,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const pages = $(this.config.select2Input).select2('val') || [],
+    const pages = this.$select2Input.select2('val') || [],
       escapedPages = pages.join('|').replace(/[&%?+]/g, encodeURIComponent);
 
     if (window.history && window.history.replaceState) {
@@ -294,8 +294,6 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * Sets up the article selector and adds listener to update chart
    */
   setupSelect2() {
-    const $select2Input = $(this.config.select2Input);
-
     let params = {
       ajax: this.getArticleSelectorAjax(),
       tags: this.autocomplete === 'no_autocomplete',
@@ -304,13 +302,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    $select2Input.select2(params);
-    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    $select2Input.off('select2:unselect').on('select2:unselect', e => {
+    this.$select2Input.select2(params);
+    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
       this.processInput(false, e.params.data.text);
-      $select2Input.trigger('select2:close');
+      this.$select2Input.trigger('select2:close');
     });
-    $select2Input.off('select2:open').on('select2:open', e => {
+    this.$select2Input.off('select2:open').on('select2:open', e => {
       if ($(e.target).val() && $(e.target).val().length === 10) {
         $('.select2-search__field').one('keyup', () => {
           const message = $.i18n(

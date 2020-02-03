@@ -108,7 +108,7 @@ class Pv extends PvConfig {
       //   if (this.isAllProjects()) {
       //     return;
       //   }
-      //   project = ($(this.config.select2Input).select2('val') || [])[0].replace(/\.org$/, '');
+      //   project = (this.$select2Input.select2('val') || [])[0].replace(/\.org$/, '');
       // }
       //
       // const year = 2019;
@@ -376,6 +376,14 @@ class Pv extends PvConfig {
    */
   get $chart() {
     return $('#chart');
+  }
+
+  /**
+   * Get the select2 input.
+   * @returns {jQuery}
+   */
+  get $select2Input() {
+    return this.cachedElement('#select2-input');
   }
 
   /**
@@ -1442,12 +1450,11 @@ class Pv extends PvConfig {
    * @param {boolean} [setup] Whether to re-setup the selector.
    */
   resetSelect2(setup = true) {
-    const select2Input = $(this.config.select2Input);
-    if (select2Input.data('select2')) {
-      select2Input.off('change');
-      select2Input.select2('val', null);
-      select2Input.select2('data', null);
-      select2Input.select2('destroy');
+    if (this.select2Input.data('select2')) {
+      this.select2Input.off('change');
+      this.select2Input.select2('val', null);
+      this.select2Input.select2('data', null);
+      this.select2Input.select2('destroy');
     }
     if (setup) {
       this.setupSelect2();
@@ -1527,8 +1534,8 @@ class Pv extends PvConfig {
       const escapedText = $('<div>').text(item).html();
       $(`<option>${escapedText}</option>`).appendTo(this.config.select2Input);
     });
-    $(this.config.select2Input).select2('val', items);
-    $(this.config.select2Input).trigger('select2:select');
+    this.$select2Input.select2('val', items);
+    this.$select2Input.trigger('select2:select');
 
     return items;
   }

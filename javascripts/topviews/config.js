@@ -6,7 +6,6 @@ const pv = require('../shared/pv');
  * @type {Object}
  */
 const config = {
-  select2Input: '.aqs-select2-selector',
   defaults: {
     dateRange: 'last-month',
     excludes: []

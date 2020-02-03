@@ -350,7 +350,7 @@ const ChartHelpers = superclass => class extends superclass {
       // This is used to make sure Select2 colours match those in the chart and legend,
       //   though in some cases (all-projects in Siteviews) the Select2 control may be empty
       //   so we instead use an empty array
-      select2Values = ($(this.config.select2Input).select2('val') || []).map(title => title.descore());
+      select2Values = (this.$select2Input.select2('val') || []).map(title => title.descore());
 
     return outputData.map((dataset, index) => {
       // Use zero instead of null for some data due to Gotcha in Pageviews API:
@@ -794,7 +794,7 @@ const ChartHelpers = superclass => class extends superclass {
    */
   updateChart(xhrData) {
     $('.chart-legend').html(''); // clear old chart legend
-    const entityNames = xhrData ? xhrData.entities : $(this.config.select2Input).val();
+    const entityNames = xhrData ? xhrData.entities : this.$select2Input.val();
 
     // show pending error messages if present, exiting if fatal
     if (xhrData && this.showErrors(xhrData)) return;

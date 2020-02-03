@@ -178,7 +178,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   pushParams() {
     const sites = this.isAllProjects()
       ? ['all-projects']
-      : ($(this.config.select2Input).select2('val') || []);
+      : (this.$select2Input.select2('val') || []);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -193,8 +193,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Sets up the site selector and adds listener to update chart
    */
   setupSelect2() {
-    const $select2Input = $(this.config.select2Input);
-
     let params = {
       ajax: {
         transport: (params, success, failure) => {
@@ -216,11 +214,11 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    $select2Input.select2(params);
-    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    $select2Input.off('select2:unselect').on('select2:unselect', e => {
+    this.$select2Input.select2(params);
+    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
       this.processInput(false, e.params.data.text);
-      $select2Input.trigger('select2:close');
+      this.$select2Input.trigger('select2:close');
     });
   }
 

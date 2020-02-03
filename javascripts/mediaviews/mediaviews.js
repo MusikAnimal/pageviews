@@ -219,15 +219,13 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * @return {array}
    */
   getEntities() {
-    return $(this.config.select2Input).select2('val') || [];
+    return this.$select2Input.select2('val') || [];
   }
 
   /**
    * Sets up the file selector and adds listener to update chart
    */
   setupSelect2() {
-    const $select2Input = $(this.config.select2Input);
-
     let params = {
       ajax: {
         url: `https://${this.project}.org/w/api.php`,
@@ -268,11 +266,11 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    $select2Input.select2(params);
-    $select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-    $select2Input.off('select2:unselect').on('select2:unselect', e => {
+    this.$select2Input.select2(params);
+    this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+    this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
       this.processInput(false, e.params.data.text);
-      $select2Input.trigger('select2:close');
+      this.$select2Input.trigger('select2:close');
     });
   }
 

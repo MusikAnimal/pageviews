@@ -131,7 +131,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const tools = $(this.config.select2Input).select2('val') || [];
+    const tools = this.$select2Input.select2('val') || [];
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -146,8 +146,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * Sets up the tool selector and adds listener to update chart
    */
   setupSelect2() {
-    const select2Input = $(this.config.select2Input);
-
     const data = this.config.apps.map(app => {
       return {
         id: app,
@@ -162,8 +160,8 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       minimumInputLength: 1
     };
 
-    select2Input.select2(params);
-    select2Input.on('change', this.processInput.bind(this));
+    this.$select2Input.select2(params);
+    this.$select2Input.on('change', this.processInput.bind(this));
   }
 
   /**
@@ -174,7 +172,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * @override
    */
   setSelect2Defaults(items) {
-    $(this.config.select2Input).val(items).trigger('change');
+    this.$select2Input.val(items).trigger('change');
 
     return items;
   }
@@ -207,7 +205,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    const entities = $(this.config.select2Input).select2('val') || [];
+    const entities = this.$select2Input.select2('val') || [];
     this.setInitialChartType(entities.length);
 
     /**

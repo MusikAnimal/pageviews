@@ -164,7 +164,7 @@ class TopViews extends Pv {
       }
     });
 
-    $(this.config.select2Input).html('');
+    this.$select2Input.html('');
 
     this.excludes.forEach(exclude => {
       const escapedText = $('<div>').text(exclude).html();
@@ -182,12 +182,12 @@ class TopViews extends Pv {
           .always(() => this.setSingleMobileViews(newPage)
             .always(() => {
               this.setState('complete');
-              $(this.config.select2Input).val(this.excludes).trigger('change');
+              this.$select2Input.val(this.excludes).trigger('change');
               this.showList();
             })
           );
       } else {
-        $(this.config.select2Input).val(this.excludes).trigger('change');
+        this.$select2Input.val(this.excludes).trigger('change');
         this.showList();
       }
     }
@@ -716,9 +716,7 @@ class TopViews extends Pv {
    * @param {array} excludes - default page names to exclude
    */
   setupSelect2(excludes = this.excludes) {
-    const select2Input = $(this.config.select2Input);
-
-    select2Input.select2({
+    this.$select2Input.select2({
       data: [],
       maximumSelectionLength: 50,
       minimumInputLength: 0,
@@ -728,7 +726,7 @@ class TopViews extends Pv {
 
     if (excludes.length) this.setSelect2Defaults(excludes);
 
-    select2Input.on('change', e => {
+    this.$select2Input.on('change', e => {
       this.excludes = $(e.target).val() || [];
       this.max = null;
       this.clearSearch();
@@ -737,7 +735,7 @@ class TopViews extends Pv {
       $('.select2-search__field').prop('disabled', true);
     });
 
-    select2Input.on('select2:unselect', e => {
+    this.$select2Input.on('select2:unselect', e => {
       const pageName = e.params.data.text;
 
       if (!this.mobileViews[pageName]) {
@@ -764,7 +762,7 @@ class TopViews extends Pv {
       $('<option>' + escapedText + '</option>').appendTo(this.config.select2Input);
       return page;
     });
-    $(this.config.select2Input).select2('val', pages);
+    this.$select2Input.select2('val', pages);
 
     return pages;
   }

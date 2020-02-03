@@ -130,7 +130,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     let params = {
       platform: this.$platformSelector.val(),
       agent: this.$agentSelector.val(),
-      source: $(this.config.sourceButton).data('value'),
+      source: $('#source_button').data('value'),
       target: this.$sourceInput.val().score()
     };
 
