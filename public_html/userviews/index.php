@@ -22,7 +22,7 @@
             <label for="range_input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
-            <input class="form-control aqs-date-range-selector" id="range_input">
+            <input class="form-control date-range-selector" id="range_input">
           </div>
           <!-- Project selector -->
           <div class="col-lg-3 col-sm-3">
@@ -36,7 +36,7 @@
             <label for="platform_select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
-            <select class="form-control" id="platform_select">
+            <select class="form-control">
               <option value="all-access">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>

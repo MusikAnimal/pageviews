@@ -33,10 +33,10 @@
             </select>
           </div>
           <div class="col-lg-3 col-sm-3">
-            <label for="range-input">
+            <label for="date-input">
               <?php echo $I18N->msg( 'date' ); ?>
             </label>
-            <input class="form-control aqs-date-range-selector" id="range-input">
+            <input class="form-control date-selector" id="date-input">
           </div>
           <div class="col-lg-3 col-sm-3">
             <label for="project-input">

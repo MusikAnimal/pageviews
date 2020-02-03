@@ -107,9 +107,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('pages')
     );
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.platformSelector).val(params.platform);
-    $(this.config.agentSelector).val(params.agent);
+    this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
 
     this.validateDateRange(params);
 
@@ -251,9 +251,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
-      agent: $(this.config.agentSelector).val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val()
     };
 
     /**
@@ -490,7 +490,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     $.ajax({
       url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/` +
-        `${$(this.config.platformSelector).val()}/${topviewsDate}`,
+        `${this.$platformSelector.val()}/${topviewsDate}`,
       dataType: 'json'
     }).done(data => {
       // store pageData from API, removing underscores from the page name
@@ -511,7 +511,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         ${page.assessment ? '&middot;\n' + this.getAssessmentBadge(page) : ''}
         &middot;
         <span class='text-muted'>
-          ${$(this.config.dateRangeSelector).val()}
+          ${this.$dateRangeSelector.val()}
         </span>
         &middot;
         ${$.i18n('num-pageviews', this.formatNumber(page.sum), page.sum)}

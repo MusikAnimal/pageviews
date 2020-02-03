@@ -62,12 +62,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
     $(this.config.dataSourceSelector).val(params.source);
     this.setupDataSourceSelector();
-    $(this.config.platformSelector).val(params.platform);
+    this.$platformSelector.val(params.platform);
 
     this.validateDateRange(params);
 
     if (params.source === 'pageviews') {
-      $(this.config.agentSelector).val(params.agent);
+      this.$agentSelector.val(params.agent);
     } else {
       $(this.config.dataSourceSelector).trigger('change');
     }
@@ -146,12 +146,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    */
   getParams(specialRange = true) {
     let params = {
-      platform: $(this.config.platformSelector).val(),
+      platform: this.$platformSelector.val(),
       source: $(this.config.dataSourceSelector).val()
     };
 
     if (this.isPageviews()) {
-      params.agent = $(this.config.agentSelector).val();
+      params.agent = this.$agentSelector.val();
     }
 
     /**
@@ -229,7 +229,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    *   pageviews vs unique devices or pagecounts
    */
   setPlatformOptionValues() {
-    $(this.config.platformSelector).find('option').each((index, el) => {
+    this.$platformSelector.find('option').each((index, el) => {
       $(el).prop('value', this.isPageviews() ? $(el).data('value') : $(el).data('ud-value'));
     });
   }
@@ -241,7 +241,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     this.setPlatformOptionValues();
 
     $(this.config.dataSourceSelector).on('change', e => {
-      const platform = $(this.config.platformSelector).val() || '',
+      const platform = this.$platformSelector.val() || '',
         wasMobileValue = platform.includes('mobile'),
         wasPagecounts = this.params ? this.params.includes('pagecounts') : false;
 
@@ -250,13 +250,13 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
         $('.all-projects-selector').show();
         $('.platform-select--mobile-web, .platform-select--mobile-app').show();
         $('.platform-select--mobile').hide();
-        $(this.config.agentSelector).prop('disabled', false);
+        this.$agentSelector.prop('disabled', false);
       } else { // applies to unique devices and pagecounts
         $('.site-selector').removeClass('disabled');
         $('.all-projects-selector').hide();
         $('.platform-select--mobile-web, .platform-select--mobile-app').hide();
         $('.platform-select--mobile').show();
-        $(this.config.agentSelector).val('user').prop('disabled', true);
+        this.$agentSelector.val('user').prop('disabled', true);
       }
 
       this.setPlatformOptionValues();
@@ -264,9 +264,9 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       // If we're going from a mobile value select a corresponding mobile value for the new data source.
       // Desktop and all-access share the same options so we don't need to add logic for those options.
       if (wasMobileValue && !this.isPageviews()) {
-        $(this.config.platformSelector).val('mobile-site'); // chart will automatically re-render
+        this.$platformSelector.val('mobile-site'); // chart will automatically re-render
       } else if (wasMobileValue && this.isPageviews()) {
-        $(this.config.platformSelector).val('mobile-web');
+        this.$platformSelector.val('mobile-web');
       }
 
       // re-init date selectors with new date range constraints, which will in turn call processInput()
@@ -487,7 +487,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       ${this.getSiteLink(site.label)}
       &middot;
       <span class='text-muted'>
-        ${$(this.config.dateRangeSelector).val()}
+        ${this.$dateRangeSelector.val()}
       </span>
       &middot;
       ${$.i18n(pageviewsMsg, this.formatNumber(site.sum), site.sum)}

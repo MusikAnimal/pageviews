@@ -6,16 +6,10 @@ const templates = require('./templates');
  * @type {Object}
  */
 const config = {
-  agentSelector: '#agent-select',
-  chart: '.aqs-chart',
   chartLegend: templates.chartLegend,
-  dateRangeSelector: '.aqs-date-range-selector',
   defaults: {
     dateRange: 'latest-20'
   },
-  logarithmicCheckbox: '.logarithmic-scale-option',
-  platformSelector: '#platform-select',
-  projectInput: '.aqs-project-input',
   select2Input: '.aqs-select2-selector',
   templates,
   validateParams: ['project', 'platform', 'agent']

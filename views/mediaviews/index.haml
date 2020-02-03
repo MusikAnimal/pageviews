@@ -29,7 +29,7 @@
               - foreach ([10, 20, 30, 60, 90] as $offset)
                 %li
                   %a(href="#" data-value="#{$offset}")= $offset
-          %input.form-control.aqs-date-range-selector#range-input
+          %input.form-control.date-range-selector#range-input
         %div.month-selector.input-daterange.clearfix
           %label(for="month-start")
             = $I18N->msg( 'dates' )
@@ -94,7 +94,7 @@
 
       / Chart
       %div.chart-container
-        %canvas.aqs-chart
+        %canvas#chart
 
       %div.message-container.col-lg-12
 

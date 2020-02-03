@@ -55,8 +55,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('files')
     );
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.agentSelector).val(params.agent);
+    this.$projectInput.val(params.project);
+    this.$agentSelector.val(params.agent);
     $('#referer-select').val(params.referer);
 
     this.setupDateRangeSelector();
@@ -176,8 +176,8 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val(),
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val(),
       referer: $('#referer-select').val()
     };
 
@@ -358,7 +358,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    */
   getMvApiUrl(file, startDate, endDate) {
     const granularity = $('#date-type-select').val() || 'daily',
-      agent = $(this.config.agentSelector).val() || this.config.defaults.agent;
+      agent = this.$agentSelector.val() || this.config.defaults.agent;
     return `https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/${$('#referer-select').val()}` +
         `/${agent}/${encodeURIComponent(file)}/${granularity}/` +
         `${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
@@ -610,7 +610,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       ${this.getFileLink(this.addNamespace(file.label))}
       &middot;
       <span class='text-muted'>
-        ${$(this.config.dateRangeSelector).val()}
+        ${this.$dateRangeSelector.val()}
       </span>
       &middot;
       ${$.i18n('num-requests', this.formatNumber(file.sum), file.sum)}

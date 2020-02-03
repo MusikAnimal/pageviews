@@ -365,7 +365,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       <a href='/${app.label}'>${app.label}</a>
       &middot;
       <span class='text-muted'>
-        ${$(this.config.dateRangeSelector).val()}
+        ${this.$dateRangeSelector.val()}
       </span>
       &middot;
       ${app.sum} page load${app.sum === 1 ? '' : 's'}

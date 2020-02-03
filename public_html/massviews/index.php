@@ -22,7 +22,7 @@
             <label for="range_input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
-            <input class="form-control aqs-date-range-selector" id="range_input">
+            <input class="form-control date-range-selector" id="range_input">
           </div>
           <!-- Advanced options -->
           <div class="col-lg-4 col-sm-4">

@@ -33,6 +33,7 @@ class Pv extends PvConfig {
 
     this.params = null;
     this.siteInfo = {};
+    this.jQueryCache = {}; // Cache jQuery selectors
 
     /**
      * tracking of elapsed time
@@ -326,6 +327,58 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Set and get cached jQuery element.
+   * @param {String} selector
+   * @returns {jQuery}
+   */
+  cachedElement(selector) {
+    if (this.jQueryCache[selector]) {
+      return this.jQueryCache[selector];
+    }
+    return this.jQueryCache[selector] = $(selector);
+  }
+
+  /**
+   * Get the date range selector.
+   * @returns {jQuery}
+   */
+  get $dateRangeSelector() {
+    return this.cachedElement('.date-range-selector');
+  }
+
+  /**
+   * Get the agent selector.
+   * @returns {jQuery}
+   */
+  get $agentSelector() {
+    return this.cachedElement('#agent-select');
+  }
+
+  /**
+   * Get the platform selector.
+   * @returns {jQuery}
+   */
+  get $platformSelector() {
+    return this.cachedElement('#platform-select');
+  }
+
+  /**
+   * Get the project input.
+   * @returns {jQuery}
+   */
+  get $projectInput() {
+    return this.cachedElement('#project-input');
+  }
+
+  /**
+   * Get the chart canvas element. This jQuery object cannot be cached.
+   * @returns {jQuery}
+   */
+  get $chart() {
+    return $('#chart');
+  }
+
+  /**
    * Validate the date range of given params
    *   and throw errors as necessary and/or set defaults
    * @param {Object} params - as returned by this.parseQueryString()
@@ -438,7 +491,7 @@ class Pv extends PvConfig {
    * @return {Object} daterange picker
    */
   get daterangepicker() {
-    return $(this.config.dateRangeSelector).data('daterangepicker');
+    return this.$dateRangeSelector.data('daterangepicker');
   }
 
   /**
@@ -628,7 +681,7 @@ class Pv extends PvConfig {
    * @returns {string} lang.projectname
    */
   get project() {
-    const project = $(this.config.projectInput).val();
+    const project = this.$projectInput.val();
 
     /** Get the first 2 characters from the project code to get the language */
     return project ? project.toLowerCase().replace(/.org$/, '') : null;
@@ -1555,10 +1608,10 @@ class Pv extends PvConfig {
     $('.download-json').on('click', this.exportJSON.bind(this));
 
     /** project input listeners, saving and restoring old value if new one is invalid */
-    $(this.config.projectInput).on('focusin', function() {
+    this.$projectInput.on('focusin', function() {
       this.dataset.value = this.value;
     });
-    $(this.config.projectInput).on('change', () => this.validateProject());
+    this.$projectInput.on('change', () => this.validateProject());
 
     $('.permalink').on('click', e => {
       $('.permalink-copy').val($('.permalink').prop('href'))[0].select();
@@ -1653,12 +1706,12 @@ class Pv extends PvConfig {
     if (this.config.dateLimit) datepickerOptions.dateLimit = { days: this.config.dateLimit };
 
     if (this.daterangepicker) {
-      $(this.config.dateRangeSelector).data('daterangepicker').remove();
-      const $datepicker = $(this.config.dateRangeSelector).remove();
+      this.$dateRangeSelector.data('daterangepicker').remove();
+      const $datepicker = this.$dateRangeSelector.remove();
       $('.date-selector').append($datepicker);
     }
 
-    $(this.config.dateRangeSelector).daterangepicker(datepickerOptions);
+    this.$dateRangeSelector.daterangepicker(datepickerOptions);
 
     /** so people know why they can't query data older than July 2015 */
     if (!this.isPagecounts() && this.app !== 'mediaviews') {
@@ -1692,7 +1745,7 @@ class Pv extends PvConfig {
       };
     });
 
-    $(this.config.dateRangeSelector).off('apply.daterangepicker').on('apply.daterangepicker', (e, action) => {
+    this.$dateRangeSelector.off('apply.daterangepicker').on('apply.daterangepicker', (e, action) => {
       if (action.chosenLabel === $.i18n('custom-range')) {
         this.specialRange = null;
         /** force events to re-fire since apply.daterangepicker occurs before 'change' event */
@@ -1861,7 +1914,7 @@ class Pv extends PvConfig {
    * @returns {Boolean} whether or not validations passed
    */
   validateProject(multilingual = false) {
-    const projectInput = $(this.config.projectInput)[0];
+    const projectInput = this.$projectInput[0];
     let project = projectInput.value.replace(/^www\./, ''),
       valid = false;
 
@@ -1881,7 +1934,7 @@ class Pv extends PvConfig {
     }
 
     // fire custom event that the project has changed
-    if (valid) $(this.config.projectInput).trigger('updated');
+    if (valid) this.$projectInput.trigger('updated');
 
     projectInput.value = project;
 

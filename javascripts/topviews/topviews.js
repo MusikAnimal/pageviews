@@ -39,8 +39,8 @@ class TopViews extends Pv {
 
   /**
    * Apply user input by updating the URL query string and view, if needed
-   * @param {boolean} force - apply all user options even if we've detected nothing has changed
-   * @returns {Deferred} deferred object from initData
+   * @param {boolean} [force] - apply all user options even if we've detected nothing has changed
+   * @returns {Deferred|boolean} deferred object from initData, or false if nothing needs to be processed.
    */
   processInput(force) {
     this.pushParams();
@@ -239,7 +239,7 @@ class TopViews extends Pv {
           project: this.project,
           pages: excludes,
           date: this.getParams(false).date,
-          platform: $(this.config.platformSelector).val()
+          platform: this.$platformSelector.val()
         },
         method: 'POST'
       });
@@ -266,7 +266,7 @@ class TopViews extends Pv {
    */
   shouldShowMobile() {
     return this.isYearly() || (
-      $('.show-percent-mobile').is(':checked') && $(this.config.platformSelector).val() === 'all-access'
+      $('.show-percent-mobile').is(':checked') && this.$platformSelector.val() === 'all-access'
     );
   }
 
@@ -328,7 +328,7 @@ class TopViews extends Pv {
   }
 
   /**
-   * Link to /pageviews for given article and chosen daterange
+   * Link to /pageviews for given article and range around chosen date.
    * @param {string} article - page name
    * @returns {string} URL
    */
@@ -348,8 +348,8 @@ class TopViews extends Pv {
       endDate = date.add(3, 'days').format('YYYY-MM-DD');
     }
 
-    const platform = $(this.config.platformSelector).val(),
-      project = $(this.config.projectInput).val();
+    const platform = this.$platformSelector.val(),
+      project = this.$projectInput.val();
 
     return `/pageviews?start=${startDate}&end=${endDate}&project=${project}` +
       `&platform=${platform}&pages=${encodeURIComponent(article.score()).replace("'", escape)}`;
@@ -362,15 +362,15 @@ class TopViews extends Pv {
    */
   getParams(specialRange = true) {
     let params = {
-      project: $(this.config.projectInput).val(),
-      platform: $(this.config.platformSelector).val()
+      project: this.$projectInput.val(),
+      platform: this.$platformSelector.val()
     };
 
     const datepickerValue = this.datepicker.getDate();
 
     /**
      * Override start and end with custom range values,
-     *   if configured (set by URL params or setupDateRangeSelector)
+     *   if configured (set by URL params or setupDatePicker)
      */
     if (this.specialRange && specialRange) {
       params.date = this.specialRange.range;
@@ -403,21 +403,21 @@ class TopViews extends Pv {
    */
   setSpecialRange(range) {
     if (range === 'last-year') {
-      this.setupDateRangeSelector('yearly');
+      this.setupDatePicker('yearly');
       this.datepicker.setDate(this.config.maxYear);
       this.specialRange = {
         range,
         value: moment(this.config.maxYear).format('YYYY')
       };
     } else if (range === 'last-month') {
-      this.setupDateRangeSelector('monthly');
+      this.setupDatePicker('monthly');
       this.datepicker.setDate(this.maxMonth);
       this.specialRange = {
         range,
         value: moment(this.maxMonth).format('YYYY/MM')
       };
     } else if (range === 'yesterday') {
-      this.setupDateRangeSelector('daily');
+      this.setupDatePicker('daily');
       this.datepicker.setDate(this.maxDate);
       this.specialRange = {
         range,
@@ -440,7 +440,7 @@ class TopViews extends Pv {
 
     if (/\d{4}$/.test(dateInput)) {
       // yearly
-      this.setupDateRangeSelector('yearly');
+      this.setupDatePicker('yearly');
       date = moment(`${dateInput}-01-01`).toDate();
 
       // if over max, set to max
@@ -449,7 +449,7 @@ class TopViews extends Pv {
       }
     } else if (/\d{4}-\d{2}$/.test(dateInput)) {
       // monthly
-      this.setupDateRangeSelector('monthly');
+      this.setupDatePicker('monthly');
       date = moment(`${dateInput}-01`).toDate();
 
       // if over max, set to max
@@ -458,7 +458,7 @@ class TopViews extends Pv {
       }
     } else if (/\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
       // daily
-      this.setupDateRangeSelector('daily');
+      this.setupDatePicker('daily');
       date = moment(dateInput).toDate();
 
       // if over max, set to max (Topviews maxDate is a Date object, not moment)
@@ -507,8 +507,8 @@ class TopViews extends Pv {
 
     this.setDate(params.date); // also performs validations
 
-    $(this.config.projectInput).val(params.project);
-    $(this.config.platformSelector).val(params.platform);
+    this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
 
     if (this.isYearly()) {
       $('.percent-mobile-wrapper').show();
@@ -774,7 +774,7 @@ class TopViews extends Pv {
    * @param {String} [type] - either 'monthly' or 'daily'
    * @override
    */
-  setupDateRangeSelector(type = 'monthly') {
+  setupDatePicker(type = 'monthly') {
     $('#date-type-select').val(type);
 
     let datepickerParams;
@@ -801,8 +801,8 @@ class TopViews extends Pv {
       };
     }
 
-    $(this.config.dateRangeSelector).datepicker('destroy');
-    $(this.config.dateRangeSelector).datepicker(
+    this.$dateSelector.datepicker('destroy');
+    this.$dateSelector.datepicker(
       Object.assign({
         autoclose: true,
         startDate: this.minDate.toDate()
@@ -816,7 +816,7 @@ class TopViews extends Pv {
   setupListeners() {
     super.setupListeners();
 
-    $(this.config.platformSelector).on('change', e => {
+    this.$platformSelector.on('change', e => {
       $('.percent-mobile-wrapper').toggle(e.target.value === 'all-access' || this.isYearly());
       $('.output-table').toggleClass('show-mobile', this.shouldShowMobile());
       this.processInput();
@@ -826,7 +826,7 @@ class TopViews extends Pv {
       $('.show-percent-mobile').prop('disabled', false);
       $('.mainspace-only-option').prop('disabled', false);
 
-      // setSpecialRange() also calls setupDateRangeSelector()
+      // setSpecialRange() also calls setupDatePicker()
       if (this.isYearly()) {
         $('#platform-select').val('all-access').prop('disabled', true);
         $('.percent-mobile-wrapper').show();
@@ -858,7 +858,7 @@ class TopViews extends Pv {
           .always(this.showList.bind(this))
         );
     });
-    $(this.config.dateRangeSelector).on('change', e => {
+    this.$dateSelector.on('change', e => {
       /** clear out specialRange if it doesn't match our input */
       if (this.specialRange && this.specialRange.value !== e.target.value) {
         this.specialRange = null;
@@ -884,11 +884,19 @@ class TopViews extends Pv {
   }
 
   /**
+   * The date selector input.
+   * @returns {jQuery}
+   */
+  get $dateSelector() {
+    return this.cachedElement('.date-selector');
+  }
+
+  /**
    * Get instance of datepicker
    * @return {Object} the datepicker instance
    */
   get datepicker() {
-    return $(this.config.dateRangeSelector).data('datepicker');
+    return this.$dateSelector.data('datepicker');
   }
 
   /**
@@ -934,7 +942,7 @@ class TopViews extends Pv {
       data: {
         project: this.project,
         date: this.getParams(false).date,
-        platform: $(this.config.platformSelector).val()
+        platform: this.$platformSelector.val()
       },
       timeout: 8000
     });
@@ -1224,7 +1232,7 @@ class TopViews extends Pv {
       }
     };
 
-    const access = this.isYearly() ? 'all-access' : $(this.config.platformSelector).val();
+    const access = this.isYearly() ? 'all-access' : this.$platformSelector.val();
 
     const showTopviews = () => {
       if (this.isYearly()) {

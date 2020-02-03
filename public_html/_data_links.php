@@ -40,7 +40,7 @@
   <span class="chart-toggles chart-specific">
     <span class="pull-right">
       <label class="logarithmic-scale">
-        <input class="logarithmic-scale-option" type="checkbox">
+        <input id="logarithmic-checkbox" type="checkbox">
         <?php echo $I18N->msg( 'logarithmic-scale' ); ?>
       </label>
     </span>
