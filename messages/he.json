@@ -360,7 +360,6 @@
 	"url-structure-massviews-project": "$1 תקין בשביל דפים של תוצאות מ־Quarry.",
 	"url-structure-massviews-target": "מזהה ערמת הדפים או URL שלם לקטגוריה. אם ב־URL יש סימן השאלה <code>?</code>, הוא <strong>חייב להיות מקודד</strong>.",
 	"url-structure-massviews-target-example": "למשל, נא <strong>לא להשתמש</strong> ב:\n$1\nבמקום זאת, יש להשתמש ב:\n$2\nלחלופין, באפשרותך פשוט להשתמש בכתובת ה־URL המקוצרת של אתר הוויקי:\n$3",
-	"url-structure-mediaviews-example": "כדי לקבל את הנתונים עבור קובץ בר־השמעה נתון בוויקישיתוף, עם אפשרויות ברירת מחדל, יש להשתמש ב־:\n$1\n$2 יתורגם לשם הקובץ שהקישור נמצא בו.",
 	"url-structure-mute-validations": "להגדיר ל־$1 כדי לכבות אזהרות שמוצגות בזמן בדיקת התקינות על הטופס. ברירות המחדל יחולו על קלט בלתי־תקין כמו במצב הרגיל.",
 	"url-structure-onwiki-link": "כדי לקשר לדף הנוכחי באתר ויקי, יש להשתמש בפרמטר $1",
 	"url-structure-page": "שם הדף המחולף.",

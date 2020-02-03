@@ -354,7 +354,6 @@
 	"url-structure-massviews-project": "Sebuah $1 yang sah untuk hasil halaman Quarry.",
 	"url-structure-massviews-target": "ID PagePile, atau URL lengkap ke suatu kategori. Tanda tanya <code>?</code> yang terdapat pada URL tersebut, jika ada, <strong>harus dienkodekan</strong>.",
 	"url-structure-massviews-target-example": "Misalnya, <strong>jangan gunakan</strong>:\n$1\nTapi gunakan:\n$2\nAtau Anda dapat menggunakan dengan mudah URL wiki yang lebih pendek:\n$3",
-	"url-structure-mediaviews-example": "Untuk mendapatkan data terakhir untuk suatu berkas yang dapat diputar tertentu pada Wikimedia Commons, dengan opsi baku, gunakan:\n$1\n$2 akan mengarah ke nama berkas tempat pranala tersebut ditempatkan.",
 	"url-structure-onwiki-link": "Untuk membuat pranala ke halaman saat ini di wiki, gunakan $1",
 	"url-structure-page": "Nama halaman yang di''escape''",
 	"url-structure-pages": "Nama halaman yang di''escape'' dipisahkan oleh karakter <code>|</code>. Misalnya <code>Anjing|Kucing</code> (baku)",

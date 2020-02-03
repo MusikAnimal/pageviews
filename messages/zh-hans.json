@@ -369,7 +369,6 @@
 	"url-structure-massviews-project": "用于Quarry结果的有效$1。",
 	"url-structure-massviews-target": "页面堆ID，或链至分类的完整URL。如果URL中有问号<code>?</code>，它<strong>必须被编码</strong>。",
 	"url-structure-massviews-target-example": "例如，<strong>请不要使用</strong>：\n$1\n请改用：\n$2\n或者您可以简单地使用缩短的wiki URL：\n$3",
-	"url-structure-mediaviews-example": "要获取指定的维基共享资源上可播放文件的最新数据（使用默认选项），请使用：\n$1\n$2将解决放置链接的文件名。",
 	"url-structure-mute-validations": "设置为$1以禁用在验证表单时显示警告。 默认值仍然会像通常那样应用于无效输入。",
 	"url-structure-onwiki-link": "要在wiki上链接到当前页面，使用$1",
 	"url-structure-page": "出现的页面名称。",

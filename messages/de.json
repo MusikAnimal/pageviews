@@ -360,7 +360,6 @@
 	"url-structure-massviews-project": "Eine gültige $1 für die Seiten der Quarry-Ergebnisse.",
 	"url-structure-massviews-target": "Die „Page Pile“-Kennung oder vollständige URL zu einer Kategorie. Falls die URL ein Fragezeichen <code>?</code> enthält, <strong>muss es kodiert werden</strong>.",
 	"url-structure-massviews-target-example": "<strong>Verwende nicht</strong> beispielsweise:\n$1\nVerwende stattdessen:\n$2\nDu kannst auch die kürzere Wiki-URL verwenden:\n$3",
-	"url-structure-mediaviews-example": "Um die aktuellsten Daten für eine angegebene abspielbare Datei auf Wikimedia Commons mit Standardoptionen abzurufen, verwende:\n$1\n$2 wird den Dateinamen auflösen, auf dem der Link platziert ist.",
 	"url-structure-mute-validations": "Setzen Sie den Wert auf $1, um die Anzeige von Warnungen beim Validieren des Formulars zu deaktivieren. Die Standardeinstellungen werden auch bei ungültigen Eingaben wie gewohnt angewendet.",
 	"url-structure-onwiki-link": "Zur Verlinkung der aktuellen Seite auf einem Wiki, verwende $1",
 	"url-structure-page": "Ausgegebener Seitenname.",

@@ -369,7 +369,6 @@
 	"url-structure-massviews-project": "Um $1 válido para as páginas de resultados do Quarry.",
 	"url-structure-massviews-target": "O identificador da pilha de páginas, ou o URL completo de uma categoria. Se aparecer um ponto de interrogação <code>?</code> no URL, ele <strong>tem de ser codificado</strong>.",
 	"url-structure-massviews-target-example": "Por exemplo, <strong>não utilize</strong>:\n$1\nUtilize:\n$2\nOu pode simplesmente utilizar o URL mais curto da wiki:\n$3",
-	"url-structure-mediaviews-example": "Para obter os últimos dados de um determinado ficheiro reproduzível da wiki Wikimedia Commons, com as opções predefinidas, utilize:\n$1\n$2 conduzirá ao nome do ficheiro onde a hiperligação é colocada.",
 	"url-structure-mute-validations": "Definir como $1 para que não sejam mostrados avisos ao validar o formulário. Os valores por omissão continuarão a ser aplicados às entradas inválidas, como seriam normalmente.",
 	"url-structure-onwiki-link": "Para criar uma hiperligação para a página atual na wiki, utilize $1",
 	"url-structure-page": "Nome escapado da página.",

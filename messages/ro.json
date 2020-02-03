@@ -355,7 +355,6 @@
 	"url-structure-massviews-project": "Un $1 valid pentru paginile rezultatelor Quarry.",
 	"url-structure-massviews-target": "ID-ul Page Pile sau adresa URL completă a unei categorii. Dacă există un semn de întrebare <code>?</code> în adresa URL, acesta <strong>trebuie codat</strong>.",
 	"url-structure-massviews-target-example": "De exemplu, <strong>nu folosiți</strong>:\n$1\nFolosiți în loc:\n$2\nSau puteți pur și simplu folosi adresa URL mai scurtă:\n$3",
-	"url-structure-mediaviews-example": "Pentru a obține ultimele informații despre un anumit fișier media audio-video de pe Wikimedia Commons, cu opțiuni implicite, folosiți:\n$1\nValoarea $2 a parametrului „files” va rezulta în folosirea numelui fișierului în a cărui pagină este plasată hiperlegătura (linkul).",
 	"url-structure-onwiki-link": "Pentru a trimite la pagina curentă de pe wiki, folosiți $1",
 	"url-structure-page": "Numele paginii dorite.",
 	"url-structure-pages": "Numele paginilor dorite separate cu caracterul „<code>|</code>”, de exemplu <code>Pisică|Câine</code> (implicit)",

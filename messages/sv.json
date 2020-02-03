@@ -364,7 +364,6 @@
 	"url-structure-massviews-project": "En giltig $1 för sidorna i Quarry-resultaten.",
 	"url-structure-massviews-target": "Sidhögs-ID eller full webbadress till en kategori. Om ett frågetecken <code>?</code> finns i webbadressen <strong>måste den vara kodad</strong>.",
 	"url-structure-massviews-target-example": "Till exempel, <strong>använd inte</strong>:\n$1\nAnvänd detta istället:\n$2\nEller använd den kortare wikiadressen:\n$3",
-	"url-structure-mediaviews-example": "För att hämta den senaste data för en angiven spelbar fil på Wikimedia Commons, med standardalternativ, använd:\n$1\n$2 kommer att omvandlas till filnamnet länken placeras på.",
 	"url-structure-mute-validations": "Ändra till $1 för att inaktivera varningar från att dyka upp när formuläret valideras. Standardvärden kommer fortfarande tillämpas på ogiltiga inmatningar som de skulle vanligtvis.",
 	"url-structure-onwiki-link": "Använd $1 för att länka till den aktuella sidan på wikin",
 	"url-structure-page": "Maskerade sidnamn.",
