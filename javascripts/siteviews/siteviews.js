@@ -176,9 +176,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const sites = this.isAllProjects()
-      ? ['all-projects']
-      : (this.$select2Input.select2('val') || []);
+    const sites = this.getEntities();
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -300,7 +298,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     $('.all-projects-radio').on('change', e => {
       $('.site-selector').toggleClass('disabled', e.target.value === '1');
 
-      if (e.target.value === '0' && !this.$select2Input.select2('val')) {
+      if (e.target.value === '0' && !this.getEntities()) {
         this.resetView();
         return this.setSelect2Defaults(config.defaults.projects);
       }
@@ -335,39 +333,27 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
+   * Get the site domains from the Select2 input.
+   * @return {array}
+   * @override
+   */
+  getEntities() {
+    return this.isAllProjects()
+      ? ['all-projects']
+      : super.getEntities();
+  }
+
+  /**
    * Query the API for each site, building up the datasets and then calling renderData
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
    * @param {string} [removedSite] - site that was just removed via Select2, supplied by select2:unselect handler
-   * @return {null}
+   * @return {void}
    */
   processInput(force, removedSite) {
-    this.pushParams();
-
-    /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
+    const sites = this.beforeProcessInput(force);
+    if (!sites) {
       return;
     }
-
-    this.params = location.search;
-
-    const sites = this.isAllProjects()
-      ? ['all-projects']
-      : (this.$select2Input.select2('val') || []);
-
-    if (!sites.length) {
-      return this.resetView();
-    }
-
-    this.patchUsage();
-
-    this.setInitialChartType(sites.length);
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.prevChartType = this.chartType;
-    this.destroyChart();
-    this.startSpinny();
 
     if (removedSite) {
       // we've got the data already, just removed a single page so we'll remove that data

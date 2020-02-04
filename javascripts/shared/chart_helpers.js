@@ -350,7 +350,7 @@ const ChartHelpers = superclass => class extends superclass {
       // This is used to make sure Select2 colours match those in the chart and legend,
       //   though in some cases (all-projects in Siteviews) the Select2 control may be empty
       //   so we instead use an empty array
-      select2Values = (this.$select2Input.select2('val') || []).map(title => title.descore());
+      select2Values = this.getEntities().map(title => title.descore());
 
     return outputData.map((dataset, index) => {
       // Use zero instead of null for some data due to Gotcha in Pageviews API:
@@ -422,6 +422,42 @@ const ChartHelpers = superclass => class extends superclass {
         `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
       );
     }
+  }
+
+  /**
+   * Should be called at the top of processInput() in chart-related apps.
+   * @param {boolean} force - Whether to force the chart to re-render, even if no params have changed.
+   * @return {array|boolean} False if there's nothing to be rendered (child function should also short-circuit),
+   *   or the list of entities fetched from the Select2 input.
+   */
+  beforeProcessInput(force) {
+    this.pushParams();
+
+    /** Prevent duplicate querying due to conflicting listeners. */
+    if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
+      return false;
+    }
+
+    this.params = location.search;
+    const entities = this.getEntities();
+
+    if (!entities.length) {
+      this.resetView();
+      return false;
+    }
+
+    this.patchUsage();
+
+    this.setInitialChartType(entities.length);
+
+    // Clear out old error messages unless the is the first time rendering the chart.
+    if (this.prevChartType) this.clearMessages();
+
+    this.prevChartType = this.chartType;
+    this.destroyChart();
+    this.startSpinny(); // show spinny and capture against fatal errors
+
+    return entities;
   }
 
   /**
@@ -682,6 +718,14 @@ const ChartHelpers = superclass => class extends superclass {
       this.processInput(false, e.params.data.text);
       this.$select2Input.trigger('select2:close');
     });
+  }
+
+  /**
+   * Get the entity names from the Select2 input.
+   * @return {array}
+   */
+  getEntities() {
+    return this.$select2Input.select2('val') || [];
   }
 
   /**

@@ -45,7 +45,7 @@
           <label for="tool-input">
             Tools
           </label>
-          <select class="aqs-select2-selector col-lg-12 invisible" id="tool-input" multiple="multiple"></select>
+          <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
         </div>
       </div>
       <?php include '../_data_links.php'; ?>

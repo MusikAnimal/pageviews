@@ -108,7 +108,7 @@ class Pv extends PvConfig {
       //   if (this.isAllProjects()) {
       //     return;
       //   }
-      //   project = (this.$select2Input.select2('val') || [])[0].replace(/\.org$/, '');
+      //   project = this.getEntities()[0].replace(/\.org$/, '');
       // }
       //
       // const year = 2019;

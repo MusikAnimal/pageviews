@@ -203,23 +203,16 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const entities = this.getEntities();
+    const entities = this.getEntities(),
+      escapedEntities = entities.join('|').replace(/[&%?+]/g, encodeURIComponent);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&files=${entities.join('|')}`
+        `?${$.param(this.getParams())}&files=${escapedEntities}`
       );
     }
 
     $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&files=${entities.join('%7C')}`);
-  }
-
-  /**
-   * Get the file names from the Select2 input.
-   * @return {array}
-   */
-  getEntities() {
-    return this.$select2Input.select2('val') || [];
   }
 
   /**
@@ -327,58 +320,10 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
    * @param {string} [removedFile] - file that was just removed via Select2, supplied by select2:unselect handler
    */
   processInput(force, removedFile) {
-    this.pushParams();
-
-    /** prevent duplicate querying due to conflicting listeners */
-    if (!force && location.search === this.params && this.prevChartType === this.chartType) {
+    const files = this.beforeProcessInput(force);
+    if (!files) {
       return;
     }
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.params = location.search;
-
-    this.processFiles(removedFile);
-  }
-
-  /**
-   * Get URL to the mediaviews API endpoint for the given file.
-   * @param {String} file
-   * @param {moment} startDate
-   * @param {moment} endDate
-   * @returns {String}
-   */
-  getMvApiUrl(file, startDate, endDate) {
-    const granularity = $('#date-type-select').val() || 'daily',
-      agent = this.$agentSelector.val() || this.config.defaults.agent;
-    return `https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/${$('#referer-select').val()}` +
-        `/${agent}/${encodeURIComponent(file)}/${granularity}/` +
-        `${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
-  }
-
-  /**
-   * Process a set of files set in the Select2 input.
-   * @param {string} [removedFile] - file that was just removed via Select2, supplied by select2:unselect handler
-   * @return {void}
-   */
-  processFiles(removedFile) {
-    const files = this.$select2Input.select2('val') || [];
-
-    if (!files.length) {
-      return this.resetView();
-    }
-
-    this.patchUsage();
-
-    this.setInitialChartType(files.length);
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.prevChartType = this.chartType;
-    this.destroyChart();
-    this.startSpinny();
 
     if (removedFile) {
       // we've got the data already, just removed a single page so we'll remove that data
@@ -396,6 +341,21 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
         });
       });
     }
+  }
+
+  /**
+   * Get URL to the mediaviews API endpoint for the given file.
+   * @param {String} file
+   * @param {moment} startDate
+   * @param {moment} endDate
+   * @returns {String}
+   */
+  getMvApiUrl(file, startDate, endDate) {
+    const granularity = $('#date-type-select').val() || 'daily',
+      agent = this.$agentSelector.val() || this.config.defaults.agent;
+    return `https://wikimedia.org/api/rest_v1/metrics/mediarequests/per-file/${$('#referer-select').val()}` +
+        `/${agent}/${encodeURIComponent(file)}/${granularity}/` +
+        `${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
   }
 
   /**

@@ -131,7 +131,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const tools = this.$select2Input.select2('val') || [];
+    const tools = this.getEntities();
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -205,7 +205,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
       return;
     }
 
-    const entities = this.$select2Input.select2('val') || [];
+    const entities = this.getEntities();
     this.setInitialChartType(entities.length);
 
     /**

@@ -84,7 +84,7 @@
                 <?php echo $I18N->msg( 'show-mobile-percentages' ); ?>
               </label>
             </span>
-            <select class="aqs-select2-selector col-lg-12" multiple="multiple"></select>
+            <select class="col-lg-12" id="select2-input" multiple="multiple"></select>
             <!-- * Report false positive modal */ -->
             <div class="modal fade" id="report-false-positive-modal" role="dialog" tabindex="-1">
               <div class="modal-dialog" role="document">

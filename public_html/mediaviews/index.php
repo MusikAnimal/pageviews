@@ -118,7 +118,7 @@
     <main class="col-lg-8 col-md-10">
       <!-- File selector -->
       <div class="file-selector">
-        <label for="file-input">
+        <label for="select2-input">
           <span class="select2-title">
             <?php echo $I18N->msg( 'files' ); ?>
           </span>
@@ -130,7 +130,7 @@
           &#x2715;
           <?php echo $I18N->msg( 'clear' ); ?>
         </span>
-        <select class="aqs-select2-selector col-lg-12 invisible" id="file-input" multiple="multiple"></select>
+        <select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
       </div>
       <?php include "../_data_links.php"; ?>
       <!-- Chart -->

@@ -278,8 +278,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * Called whenever we go to update the chart
    */
   pushParams() {
-    const pages = this.$select2Input.select2('val') || [],
-      escapedPages = pages.join('|').replace(/[&%?+]/g, encodeURIComponent);
+    const escapedPages = this.getEntities().join('|').replace(/[&%?+]/g, encodeURIComponent);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title,
@@ -410,34 +409,13 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    * Query the API for each page, building up the datasets and then calling renderData
    * @param {boolean} [force] - whether to force the chart to re-render, even if no params have changed
    * @param {string} [removedPage] - page that was just removed via Select2, supplied by select2:unselect handler
-   * @return {undefined}
+   * @return {void}
    */
   processInput(force, removedPage) {
-    this.pushParams();
-
-    /** prevent duplicate querying due to conflicting listeners */
-    if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
+    const entities = this.beforeProcessInput(force);
+    if (!entities) {
       return;
     }
-
-    this.params = location.search;
-
-    const entities = this.$select2Input.select2('val') || [];
-
-    if (!entities.length) {
-      return this.resetView();
-    }
-
-    this.patchUsage();
-
-    this.setInitialChartType(entities.length);
-
-    // clear out old error messages unless the is the first time rendering the chart
-    if (this.prevChartType) this.clearMessages();
-
-    this.prevChartType = this.chartType;
-    this.destroyChart();
-    this.startSpinny(); // show spinny and capture against fatal errors
 
     const getPageViewsAndAssessments = entities => {
       this.getPageViewsData(entities).done(xhrData => {
@@ -460,11 +438,11 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         this.updateChart();
       });
     } else if (this.initialQuery) {
-      // We've already gotten data about the intial set of pages
-      // This is because we need any page names given to be normalized when the app first loads
+      // We've already gotten data about the initial set of pages.
+      // This is because we need any page names given to be normalized when the app first loads.
       getPageViewsAndAssessments(entities);
 
-      // set back to false so we get page and edit info for any newly entered pages
+      // Set back to false so we get page and edit info for any newly entered pages.
       this.initialQuery = false;
     } else {
       this.getPageAndEditInfo(entities.map(entity => encodeURIComponent(entity))).then(() => {
