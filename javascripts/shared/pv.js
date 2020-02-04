@@ -1887,10 +1887,48 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Get the entity names from the Select2 input (chart-based apps) or the source input (list-based apps).
+   * @return {array}
+   */
+  getEntities() {
+    if (this.$select2Input.length) {
+      return this.$select2Input.select2('val') || [];
+    } else if (this.$sourceInput && this.$sourceInput.length) {
+      return [this.$sourceInput.val()];
+    } else {
+      console.warn(`[${this.app}] No select2 or source input found.`);
+      return [];
+    }
+  }
+
+  /**
+   * Push relevant class properties to the URL query string.
+   * @param {String} paramName - URL param name for the entity/entities, e.g. 'pages', 'sites', 'user'.
+   *   All other params such as 'project' and 'agent' are fetched with getParams() and getPermaLink().
+   * @param {Boolean} [clear] - whether to clear the query string entirely.
+   */
+  pushParams(paramName, clear) {
+    if (clear) {
+      history.replaceState(null, document.title, location.href.split('?')[0]);
+      return;
+    }
+
+    const entities = this.getEntities().join('|').replace(/[&%?+]/g, encodeURIComponent);
+
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title,
+        `?${$.param(this.getParams())}&${paramName}=${entities}`
+      );
+    }
+
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace('|', escape)}`);
+  }
+
+  /**
    * Validate basic params against what is defined in the config,
    *   and if they are invalid set the default
    * @param {Object} params - params as fetched by this.parseQueryString()
-   * @returns {Object} same params with some invalid parameters correted, as necessary
+   * @returns {Object} same params with some invalid parameters corrected, as necessary
    */
   validateParams(params) {
     this.config.validateParams.forEach(paramKey => {

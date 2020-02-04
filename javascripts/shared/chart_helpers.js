@@ -721,14 +721,6 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Get the entity names from the Select2 input.
-   * @return {array}
-   */
-  getEntities() {
-    return this.$select2Input.select2('val') || [];
-  }
-
-  /**
    * sets up the daterange selector and adds listeners
    */
   setupDateRangeSelector() {

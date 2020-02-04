@@ -18,21 +18,21 @@
         %div.row.aqs-row.options
           / Date range selector
           %div.col-lg-3.col-sm-4
-            %label(for="range_input")
+            %label(for="range-input")
               = $I18N->msg( 'dates' )
-            %input.form-control.date-range-selector#range_input
+            %input.form-control.date-range-selector#range-input
 
           / Project selector
           %div.col-lg-3.col-sm-3
-            %label(for="project_input")
+            %label(for="project-input")
               = $I18N->msg( 'source-project' )
-            %input.form-control#project_input(placeholder="en.wikipedia.org" required="required" spellcheck="false")
+            %input.form-control#project-input(placeholder="en.wikipedia.org" required="required" spellcheck="false")
 
           / Advanced options
           %div.col-lg-3.col-sm-3
-            %label(for="platform_select")
+            %label(for="platform-select")
               = $I18N->msg( 'platform' )
-            %select.form-control#platform_select
+            %select.form-control#platform-select
               %option(value="all-access")
                 = $I18N->msg( 'all' )
               %option(value="desktop")
@@ -43,11 +43,11 @@
                 = $I18N->msg( 'mobile-web' )
 
           %div.col-lg-3.col-sm-2
-            %label(for="agent_select")
+            %label(for="agent-select")
               = $I18N->msg( 'agent' )
               %a.help-link(href="/redirectviews/faq#agents")
                 %span.glyphicon.glyphicon-question-sign
-            %select.form-control#agent_select
+            %select.form-control#agent-select
               %option(value="all-agents")
                 = $I18N->msg( 'all' )
               %option(selected="selected" value="user")
@@ -58,10 +58,10 @@
         / Article URL input
         %div.row.aqs-row.article-input-row
           %div.col-lg-12
-            %label(for="source_input")
+            %label(for="source-input")
               = $I18N->msg( 'page' )
             %div.input-group
-              %input.form-control.input-control#source_input(placeholder="Star Wars" required="required" autocomplete="off")
+              %input.form-control.input-control#source-input(placeholder="Star Wars" required="required" autocomplete="off")
               %span.input-group-btn
                 %button.btn.btn-primary.btn-submit.pull-right
                   = $I18N->msg( 'submit' )

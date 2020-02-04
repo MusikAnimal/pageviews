@@ -52,7 +52,7 @@
     <tbody id="output_list"></tbody>
   </table>
   <div class="chart-view chart-container">
-    <canvas class="aqs-chart"></canvas>
+    <canvas id="chart"></canvas>
   </div>
   <div class="col-lg-12 tm clearfix legend-elapsed-time">
     <span id="chart-legend" class="chart-view pull-left"></span>

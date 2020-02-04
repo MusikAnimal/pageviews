@@ -269,21 +269,11 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @return {null}
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    const escapedPageName = this.$sourceInput.val().score().replace(/[&%?+]/g, encodeURIComponent);
-
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
-
-    $('.permalink').prop('href', `/langviews?${$.param(this.getPermaLink())}&page=${escapedPageName}`);
+    super.pushParams('page', clear);
   }
 
   /**
@@ -299,7 +289,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Render list of langviews into view
+   * Render list of Langviews into view.
    * @override
    */
   renderData() {
@@ -492,28 +482,18 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Parse wiki URL for the page name
-   * @param  {String} url - full URL to a wiki page
-   * @return {String|null} page name
-   */
-  getPageNameFromURL(url) {
-    if (url.includes('?')) {
-      return url.match(/\?(?:.*\b)?title=(.*?)(?:&|$)/)[1];
-    } else {
-      return url.match(/\/wiki\/(.*?)(?:\?|$)/)[1];
-    }
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
   popParams() {
     let params = this.validateParams(
-      this.parseQueryString('pages')
+      this.parseQueryString()
     );
 
     this.$projectInput.val(params.project);
+    this.$platformSelector.val(params.platform);
+    this.$agentSelector.val(params.agent);
+
     this.validateDateRange(params);
 
     // If there are invalid params, remove page from params so we don't process the defaults.
@@ -522,9 +502,6 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     if ($('.site-notice .alert-danger').length) {
       delete params.page;
     }
-
-    this.$platformSelector.val(params.platform);
-    this.$agentSelector.val(params.agent);
 
     /** export necessary params to outer scope */
     ['sort', 'direction', 'view'].forEach(key => {

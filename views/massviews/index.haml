@@ -18,15 +18,15 @@
         %div.row.aqs-row.options
           / Date range selector
           %div.col-lg-4.col-sm-4
-            %label(for="range_input")
+            %label(for="range-input")
               = $I18N->msg( 'dates' )
-            %input.form-control.date-range-selector#range_input
+            %input.form-control.date-range-selector#range-input
 
           / Advanced options
           %div.col-lg-4.col-sm-4
-            %label(for="platform_select")
+            %label(for="platform-select")
               = $I18N->msg( 'platform' )
-            %select.form-control#platform_select
+            %select.form-control#platform-select
               %option(value="all-access")
                 = $I18N->msg( 'all' )
               %option(value="desktop")
@@ -37,11 +37,11 @@
                 = $I18N->msg( 'mobile-web' )
 
           %div.col-lg-4.col-sm-4
-            %label(for="agent_select")
+            %label(for="agent-select")
               = $I18N->msg( 'agent' )
               %a.help-link(href="/massviews/faq#agents")
                 %span.glyphicon.glyphicon-question-sign
-            %select.form-control#agent_select
+            %select.form-control#agent-select
               %option(value="all-agents")
                 = $I18N->msg( 'all' )
               %option(selected="selected" value="user")
@@ -52,7 +52,7 @@
         / Source input
         %div.row.aqs-row.massviews-source-input
           %div.col-lg-12
-            %label(for="source_input")
+            %label(for="source-input")
               = $I18N->msg( 'source' )
               %a.help-link(href="/massviews/faq#sources")
                 %span.glyphicon.glyphicon-question-sign
@@ -100,7 +100,7 @@
                   %li
                     %a.source-option(href="#" data-value="search")
                       = $I18N->msg( 'search' )
-              %input.form-control.input-control.source-input#source_input(required="required")
+              %input.form-control.input-control.source-input#source-input(required="required")
               %input.form-control.input-control.project-input.col-lg-6(required="required" placeholder="en.wikipedia.org" spellcheck="false" disabled="disabled")
               %span.input-group-btn
                 %button.btn.btn-primary.pull-right.btn-submit

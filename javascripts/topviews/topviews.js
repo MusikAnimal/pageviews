@@ -579,15 +579,10 @@ class TopViews extends Pv {
   /**
    * Replaces history state with new URL query string representing current user input
    * Called whenever we go to update the chart
+   * @override
    */
   pushParams() {
-    const excludes = this.underscorePageNames(this.excludes).join('|').replace(/[&%?+]/g, encodeURIComponent);
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&excludes=${excludes}`);
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&excludes=${excludes.replace('|', escape)}`);
+    super.pushParams('excludes');
   }
 
   /**

@@ -274,19 +274,12 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Replaces history state with new URL query string representing current user input
-   * Called whenever we go to update the chart
+   * Replaces history state with new URL query string representing current user input.
+   * Called whenever we go to update the chart.
+   * @override
    */
   pushParams() {
-    const escapedPages = this.getEntities().join('|').replace(/[&%?+]/g, encodeURIComponent);
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&pages=${escapedPages}`
-      );
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&pages=${escapedPages.replace('|', escape)}`);
+    super.pushParams('pages');
   }
 
   /**

@@ -119,7 +119,7 @@ apps.concat(['']).forEach(app => {
   /** VIEWS */
   const fileName = path => path.split('/').slice(-1)[0];
   gulp.task(`views-${app}`, () => {
-    return gulp.src(`views/${path}*.haml`, {read: false})
+    return gulp.src([`views/${path}*.haml`, 'views/*.haml'], {read: false})
       .pipe(plugins.shell([
         // 'echo Compiling <%= name(file.path) %> to <%= target(file.path) %>',
         'php haml.php -d -t php <%= file.path %> <%= target(file.path) %>'

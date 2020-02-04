@@ -18,7 +18,7 @@ const ListHelpers = superclass => class extends superclass {
    * @returns {jQuery}
    */
   get $sourceInput() {
-    return this.cachedElement('#source_input');
+    return this.cachedElement('#source-input');
   }
 
   /**

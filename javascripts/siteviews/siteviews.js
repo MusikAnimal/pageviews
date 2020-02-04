@@ -172,19 +172,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Push relevant class properties to the query string
-   * Called whenever we go to update the chart
+   * Replaces history state with new URL query string representing current user input.
+   * Called whenever we go to update the chart.
+   * @override
    */
   pushParams() {
-    const sites = this.getEntities();
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&sites=${sites.join('|')}`
-      );
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&sites=${sites.join('%7C')}`);
+    super.pushParams('sites');
   }
 
   /**

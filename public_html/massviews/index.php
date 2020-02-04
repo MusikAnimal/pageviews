@@ -19,17 +19,17 @@
         <div class="row aqs-row options">
           <!-- Date range selector -->
           <div class="col-lg-4 col-sm-4">
-            <label for="range_input">
+            <label for="range-input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
-            <input class="form-control date-range-selector" id="range_input">
+            <input class="form-control date-range-selector" id="range-input">
           </div>
           <!-- Advanced options -->
           <div class="col-lg-4 col-sm-4">
-            <label for="platform_select">
+            <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
-            <select class="form-control" id="platform_select">
+            <select class="form-control" id="platform-select">
               <option value="all-access">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>
@@ -45,13 +45,13 @@
             </select>
           </div>
           <div class="col-lg-4 col-sm-4">
-            <label for="agent_select">
+            <label for="agent-select">
               <?php echo $I18N->msg( 'agent' ); ?>
               <a class="help-link" href="/massviews/faq#agents">
                 <span class="glyphicon glyphicon-question-sign"></span>
               </a>
             </label>
-            <select class="form-control" id="agent_select">
+            <select class="form-control" id="agent-select">
               <option value="all-agents">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>
@@ -67,7 +67,7 @@
         <!-- Source input -->
         <div class="row aqs-row massviews-source-input">
           <div class="col-lg-12">
-            <label for="source_input">
+            <label for="source-input">
               <?php echo $I18N->msg( 'source' ); ?>
               <a class="help-link" href="/massviews/faq#sources">
                 <span class="glyphicon glyphicon-question-sign"></span>
@@ -144,7 +144,7 @@
                   </li>
                 </ul>
               </div>
-              <input class="form-control input-control source-input" id="source_input" required="required">
+              <input class="form-control input-control source-input" id="source-input" required="required">
               <input class="form-control input-control project-input col-lg-6" required="required" placeholder="en.wikipedia.org" spellcheck="false" disabled="disabled">
               <span class="input-group-btn">
                 <button class="btn btn-primary pull-right btn-submit">

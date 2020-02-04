@@ -199,20 +199,12 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Push relevant class properties to the query string
-   * Called whenever we go to update the chart
+   * Replaces history state with new URL query string representing current user input.
+   * Called whenever we go to update the chart.
+   * @override
    */
   pushParams() {
-    const entities = this.getEntities(),
-      escapedEntities = entities.join('|').replace(/[&%?+]/g, encodeURIComponent);
-
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title,
-        `?${$.param(this.getParams())}&files=${escapedEntities}`
-      );
-    }
-
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&files=${entities.join('%7C')}`);
+    super.pushParams('files');
   }
 
   /**

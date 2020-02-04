@@ -18,21 +18,21 @@
         %div.row.aqs-row.options
           / Date range selector
           %div.col-lg-3.col-sm-4
-            %label(for="range_input")
+            %label(for="range-input")
               = $I18N->msg( 'dates' )
-            %input.form-control.date-range-selector#range_input
+            %input.form-control.date-range-selector#range-input
 
           / Project selector
           %div.col-lg-3.col-sm-3
-            %label(for="project_input")
+            %label(for="project-input")
               = $I18N->msg( 'project' )
-            %input.form-control#project_input(placeholder="en.wikipedia.org" required="required" spellcheck="false")
+            %input.form-control#project-input(placeholder="en.wikipedia.org" required="required" spellcheck="false")
 
           / Advanced options
           %div.col-lg-3.col-sm-3
-            %label(for="platform_select")
+            %label(for="platform-select")
               = $I18N->msg( 'platform' )
-            %select.form-control
+            %select.form-control#platform-select
               %option(value="all-access")
                 = $I18N->msg( 'all' )
               %option(value="desktop")
@@ -43,11 +43,11 @@
                 = $I18N->msg( 'mobile-web' )
 
           %div.col-lg-3.col-sm-2
-            %label(for="agent_select")
+            %label(for="agent-select")
               = $I18N->msg( 'agent' )
               %a.help-link(href="/langviews/faq#agents")
                 %span.glyphicon.glyphicon-question-sign
-            %select.form-control#agent_select
+            %select.form-control#agent-select
               %option(value="all-agents")
                 = $I18N->msg( 'all' )
               %option(selected="selected" value="user")
@@ -57,14 +57,14 @@
 
         %div.row.aqs-row
           %div.col-lg-3
-            %label(for="namespace_input")
+            %label(for="namespace-select")
               = $I18N->msg( 'namespace' )
-            %select.form-control.clearfix#namespace_input
+            %select.form-control.clearfix#namespace-select
 
           %div.col-lg-3
-            %label(for="namespace_input")
+            %label(for="redirects-select")
               = $I18N->msg( 'redirects' )
-            %select.form-control.clearfix#redirects_select
+            %select.form-control.clearfix#redirects-select
               %option(value="0")
                 = $I18N->msg( 'exclude-redirects' )
               %option(value="1")
@@ -73,10 +73,10 @@
                 = $I18N->msg( 'redirects-and-non-redirects' )
 
           %div.col-lg-6
-            %label(for="source_input")
+            %label(for="source-input")
               = $I18N->msg( 'user' )
             %div.input-group
-              %input.form-control.input-control#source_input(placeholder="Jimbo Wales" required="required" autocomplete="off")
+              %input.form-control.input-control#source-input(placeholder="Jimbo Wales" required="required" autocomplete="off")
               %span.input-group-btn
                 %button.btn.btn-primary.btn-submit.pull-right
                   = $I18N->msg( 'submit' )

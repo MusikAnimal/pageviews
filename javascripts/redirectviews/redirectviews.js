@@ -272,21 +272,11 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @return {null}
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    const escapedPageName = this.$sourceInput.val().score().replace(/[&%?+]/g, encodeURIComponent);
-
-    window.history.replaceState({}, document.title, `?${$.param(this.getParams())}&page=${escapedPageName}`);
-
-    $('.permalink').prop('href', `/redirectviews?${$.param(this.getPermaLink())}&page=${escapedPageName}`);
+    super.pushParams('page', clear);
   }
 
   /**

@@ -19,24 +19,24 @@
         <div class="row aqs-row options">
           <!-- Date range selector -->
           <div class="col-lg-3 col-sm-4">
-            <label for="range_input">
+            <label for="range-input">
               <?php echo $I18N->msg( 'dates' ); ?>
             </label>
-            <input class="form-control date-range-selector" id="range_input">
+            <input class="form-control date-range-selector" id="range-input">
           </div>
           <!-- Project selector -->
           <div class="col-lg-3 col-sm-3">
-            <label for="project_input">
+            <label for="project-input">
               <?php echo $I18N->msg( 'project' ); ?>
             </label>
-            <input class="form-control" id="project_input" placeholder="en.wikipedia.org" required="required" spellcheck="false">
+            <input class="form-control" id="project-input" placeholder="en.wikipedia.org" required="required" spellcheck="false">
           </div>
           <!-- Advanced options -->
           <div class="col-lg-3 col-sm-3">
-            <label for="platform_select">
+            <label for="platform-select">
               <?php echo $I18N->msg( 'platform' ); ?>
             </label>
-            <select class="form-control">
+            <select class="form-control" id="platform-select">
               <option value="all-access">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>
@@ -52,13 +52,13 @@
             </select>
           </div>
           <div class="col-lg-3 col-sm-2">
-            <label for="agent_select">
+            <label for="agent-select">
               <?php echo $I18N->msg( 'agent' ); ?>
               <a class="help-link" href="/langviews/faq#agents">
                 <span class="glyphicon glyphicon-question-sign"></span>
               </a>
             </label>
-            <select class="form-control" id="agent_select">
+            <select class="form-control" id="agent-select">
               <option value="all-agents">
                 <?php echo $I18N->msg( 'all' ); ?>
               </option>
@@ -73,16 +73,16 @@
         </div>
         <div class="row aqs-row">
           <div class="col-lg-3">
-            <label for="namespace_input">
+            <label for="namespace-select">
               <?php echo $I18N->msg( 'namespace' ); ?>
             </label>
-            <select class="form-control clearfix" id="namespace_input"></select>
+            <select class="form-control clearfix" id="namespace-select"></select>
           </div>
           <div class="col-lg-3">
-            <label for="namespace_input">
+            <label for="redirects-select">
               <?php echo $I18N->msg( 'redirects' ); ?>
             </label>
-            <select class="form-control clearfix" id="redirects_select">
+            <select class="form-control clearfix" id="redirects-select">
               <option value="0">
                 <?php echo $I18N->msg( 'exclude-redirects' ); ?>
               </option>
@@ -95,11 +95,11 @@
             </select>
           </div>
           <div class="col-lg-6">
-            <label for="source_input">
+            <label for="source-input">
               <?php echo $I18N->msg( 'user' ); ?>
             </label>
             <div class="input-group">
-              <input class="form-control input-control" id="source_input" placeholder="Jimbo Wales" required="required" autocomplete="off">
+              <input class="form-control input-control" id="source-input" placeholder="Jimbo Wales" required="required" autocomplete="off">
               <span class="input-group-btn">
                 <button class="btn btn-primary btn-submit pull-right">
                   <?php echo $I18N->msg( 'submit' ); ?>

@@ -121,7 +121,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Get all user-inputted parameters
+   * Get user-inputted parameters except the target.
    * @param {boolean} [forCacheKey] whether or not to include the page name, and exclude sort and direction
    *   in the returned object. This is for the purposes of generating a unique cache key for params affecting the API queries
    * @return {Object} project, platform, agent, etc.
@@ -130,8 +130,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     let params = {
       platform: this.$platformSelector.val(),
       agent: this.$agentSelector.val(),
-      source: $('#source_button').data('value'),
-      target: this.$sourceInput.val().score()
+      source: $('#source_button').data('value')
     };
 
     /**
@@ -167,20 +166,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Push relevant class properties to the query string
-   * @param {Boolean} clear - wheter to clear the query string entirely
-   * @returns {null}
+   * @param {Boolean} clear - whether to clear the query string entirely
+   * @override
    */
   pushParams(clear = false) {
-    if (!window.history || !window.history.replaceState) return;
-
-    if (clear) {
-      return history.replaceState(null, document.title, location.href.split('?')[0]);
-    }
-
-    /** only certain characters within the page name are escaped */
-    window.history.replaceState({}, document.title, '?' + $.param(this.getParams()));
-
-    $('.permalink').prop('href', `/massviews?${$.param(this.getPermaLink())}`);
+    super.pushParams('target', clear);
   }
 
   /**
