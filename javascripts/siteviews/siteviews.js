@@ -319,7 +319,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
     this.$outputList.html('');
-    $('.single-site-ranking').html('');
+    $('.single-entity-ranking').html('');
     $('.single-site-stats').html('');
     $('.single-site-legend').html('');
     $('.site-selector').removeClass('disabled');
@@ -365,35 +365,12 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Update the page comparison table, shown below the chart
-   * @return {null}
    */
   updateTable() {
-    if (this.outputData.length === 1) {
-      return this.showSinglePageLegend();
-    } else {
-      $('.single-site-stats').html('');
-      $('.single-site-ranking').html('');
+    const datasets = this.beforeUpdateTable();
+    if (!datasets) {
+      return;
     }
-
-    this.$outputList.html('');
-
-    /** sort ascending by current sort setting, using slice() to clone the array */
-    const datasets = this.outputData.slice().sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
       this.$outputList.append(this.config.templates.tableRow(this, item));
@@ -404,7 +381,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     let totals = {
       label: $.i18n('num-projects', this.formatNumber(datasets.length), datasets.length),
       sum,
-      average: Math.round(sum / this.numDaysInRange()),
+      average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
     };
     ['pages', 'articles', 'edits', 'images', 'users', 'activeusers', 'admins'].forEach(type => {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
@@ -443,7 +420,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Show info below the chart when there is only one site being queried
    */
-  showSinglePageLegend() {
+  showSingleEntityLegend() {
     const site = this.outputData[0];
     let pageviewsMsg = 'num-pageviews';
 

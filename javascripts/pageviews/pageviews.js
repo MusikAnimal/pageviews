@@ -343,7 +343,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   resetView(select2 = false, clearMessages = true) {
     super.resetView(select2, clearMessages);
     this.$outputList.html('');
-    $('.single-page-ranking').html('');
+    $('.single-entity-ranking').html('');
     $('.single-page-stats').html('');
     $('.single-page-legend').html('');
   }
@@ -447,7 +447,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Show info below the chart when there is only one page being queried
    */
-  showSinglePageLegend() {
+  showSingleEntityLegend() {
     const page = this.outputData[0];
     const topviewsMonth = this.getTopviewsMonth(false); // 'false' to go off of endDate
     const topviewsDate = `${topviewsMonth.format('YYYY')}/${topviewsMonth.format('MM')}/all-days`;
@@ -464,7 +464,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
         const topviewsLink = `<a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>` +
             $.i18n('most-viewed-pages').toLowerCase() + '</a>';
 
-        $('.single-page-ranking').html(
+        $('.single-entity-ranking').html(
           $.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
         );
       }
@@ -490,42 +490,19 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Update the page comparison table, shown below the chart
-   * @return {null}
+   * Update the page comparison table, shown below the chart.
    */
   updateTable() {
+    const datasets = this.beforeUpdateTable();
+    if (!datasets) {
+      return;
+    }
+
     if (!$.isNumeric(this.outputData[0].num_edits)) {
       $('.legend-block--revisions .legend-block--body').html(
         `<span class='text-muted'>${$.i18n('data-unavailable')}</span>`
       );
     }
-
-    if (this.outputData.length === 1) {
-      return this.showSinglePageLegend();
-    } else {
-      $('.single-page-stats').html('');
-      $('.single-page-ranking').html('');
-    }
-
-    this.$outputList.html('');
-
-    /** sort ascending by current sort setting, using slice() to clone the array */
-    const datasets = this.outputData.slice().sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     let hasProtection = false,
       hasAssessment = false;

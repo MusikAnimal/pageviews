@@ -430,35 +430,13 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * Update the page comparison table, shown below the chart
-   * @return {null}
+   * Update the page comparison table, shown below the chart.
    */
   updateTable() {
-    if (this.outputData.length === 1) {
-      return this.showSingleEntityLegend();
-    } else {
-      $('.single-entity-stats').html('');
+    const datasets = this.beforeUpdateTable();
+    if (!datasets) {
+      return;
     }
-
-    this.$outputList.html('');
-
-    /** sort ascending by current sort setting, using slice() to clone the array */
-    const datasets = this.outputData.slice().sort((a, b) => {
-      const before = this.getSortProperty(a, this.sort),
-        after = this.getSortProperty(b, this.sort);
-
-      if (before < after) {
-        return this.direction;
-      } else if (before > after) {
-        return -this.direction;
-      } else {
-        return 0;
-      }
-    });
-
-    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
 
     datasets.forEach((item, index) => {
       this.$outputList.append(this.config.templates.tableRow(this, item));
@@ -469,7 +447,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
     let totals = {
       label: $.i18n('num-files', this.formatNumber(datasets.length), datasets.length),
       sum,
-      average: Math.round(sum / this.numDaysInRange()),
+      average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
     };
     ['duration', 'size'].forEach(type => {
       totals[type] = datasets.reduce((a, b) => a + b[type], 0);
@@ -560,7 +538,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
       &middot;
       ${$.i18n('num-requests', this.formatNumber(file.sum), file.sum)}
       <span class='hidden-lg'>
-        (${this.formatNumber(file.average)}/${$.i18n('day')})
+        (${this.formatNumber(file.average)}/${$.i18n(this.isMonthly() ? 'month' : 'day')})
       </span>
     `);
     $('.single-entity-legend').html(

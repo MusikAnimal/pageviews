@@ -92,7 +92,7 @@ const templates = {
     const sum = scope.outputData.reduce((a,b) => a + b.sum, 0);
     const totals = {
       sum,
-      average: Math.round(sum / scope.numDaysInRange()),
+      average: Math.round(sum / (scope.outputData[0].data.filter(el => el !== null)).length),
       pages: scope.outputData.reduce((a, b) => a + b.pages, 0),
       articles: scope.outputData.reduce((a, b) => a + b.articles, 0),
       edits: scope.outputData.reduce((a, b) => a + b.edits, 0),

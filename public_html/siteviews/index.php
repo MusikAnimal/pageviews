@@ -178,7 +178,7 @@
     </aside>
     <div class="output col-lg-10 col-lg-offset-1">
       <h4 class="single-site-stats text-center"></h4>
-      <h5 class="single-site-ranking text-center"></h5>
+      <h5 class="single-entity-ranking text-center"></h5>
       <div class="single-site-legend hidden-lg col-md-4 col-md-offset-4 tm"></div>
       <?php
         $columns = array(

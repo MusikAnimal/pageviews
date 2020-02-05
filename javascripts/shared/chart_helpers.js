@@ -835,10 +835,45 @@ const ChartHelpers = superclass => class extends superclass {
     return [startDate, endDate];
   }
 
+  beforeUpdateTable() {
+    if (this.outputData.length === 1) {
+      this.showSingleEntityLegend();
+      return false;
+    } else {
+      $('.single-entity-stats').html('');
+
+      if (['pageviews', 'siteviews'].includes(this.app)) {
+        $('.single-entity-ranking').html('');
+      }
+    }
+
+    this.$outputList.html('');
+
+    /** sort ascending by current sort setting, using slice() to clone the array */
+    const datasets = this.outputData.slice().sort((a, b) => {
+      const before = this.getSortProperty(a, this.sort),
+        after = this.getSortProperty(b, this.sort);
+
+      if (before < after) {
+        return this.direction;
+      } else if (before > after) {
+        return -this.direction;
+      } else {
+        return 0;
+      }
+    });
+
+    $('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
+    const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+    $(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
+
+    return datasets;
+  }
+
   /**
    * Update the chart with data provided by processInput()
    * @param {Object} [xhrData] - data as constructed by processInput()
-   *   data is ommitted if we already have everything we need in this.outputData
+   *   data is omitted if we already have everything we need in this.outputData
    * @returns {null}
    */
   updateChart(xhrData) {
