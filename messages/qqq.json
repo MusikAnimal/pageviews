@@ -18,7 +18,8 @@
 			"Nemo bis",
 			"Hamilton Abreu",
 			"Matěj Suchánek",
-			"Patriccck"
+			"Patriccck",
+			"BaRaN6161 TURK"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
@@ -317,7 +318,7 @@
 	"report-false-positive-submitted": "Message shown when a user has submitted a false positive report. $1 is the 'topviews' message (name of the app).",
 	"report-false-positive-text": "Text above the 'Report false positive' form. $1 is a link to the FAQ with the message 'learn-more' as the link text.",
 	"report-issue": "Link to report an issue or bug with the tool",
-	"requests": "Label for number of requests that were made to a file. This is the unit of measurement used in the Mediaviews app.",
+	"requests": "Label for number of requests that were made to a file. This is the unit of measurement used in the Mediaviews app.\n{{Identical|Request}}",
 	"revisions": "Heading for the list of data about revisions of a page.\n{{Identical|Revision}}",
 	"sa": "Abbreviation for Saturday, a day of the week.",
 	"save": "Label for button\n{{Identical|Save}}",

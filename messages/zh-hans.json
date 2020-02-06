@@ -11,7 +11,8 @@
 			"94rain",
 			"VulpesVulpes825",
 			"A Chinese Wikipedian",
-			"沈澄心"
+			"沈澄心",
+			"铁桶"
 		]
 	},
 	"active-users": "活跃用户",
@@ -304,6 +305,7 @@
 	"report-false-positive-submitted": "您的误报汇报已提交。感谢您改进$1数据！",
 	"report-false-positive-text": "使用该表单选择您希望汇报为误报的被排除页面（$1）",
 	"report-issue": "报告问题",
+	"requests": "请求",
 	"revisions": "修订版本",
 	"sa": "六",
 	"save": "保存",
@@ -375,7 +377,7 @@
 	"url-structure-pages": "出现的页面名称，以<code>|</code>字符分隔，例如<code>Cat|Dog</code>（默认）",
 	"url-structure-parameters": "参数",
 	"url-structure-parameters-order": "可被用在任何顺序",
-	"url-structure-project": "$1或其他有效的$2",
+	"url-structure-project": "$1或其他有效的$2。",
 	"url-structure-project-multilang": "提供的来源项目必须多语言。例如$1或$2",
 	"url-structure-projects": "有效的$1由<code>|</code>字符隔开。例如$2",
 	"url-structure-siteviews-agent": "只在$1为$2时应用。",

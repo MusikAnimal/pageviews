@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Dr Lotus Black",
-			"Ninjastrikers"
+			"Ninjastrikers",
+			"Teitei"
 		]
 	},
 	"active-users": "တက်ကြွ အသုံးပြုသူများ",
@@ -75,6 +76,7 @@
 	"main": "ပင်မ",
 	"march": "မတ်",
 	"may": "မေ",
+	"mediaviews-description": "ဖိုင်များစွာမှမီဒီယာတောင်းဆိုမှုများကိုနှိုင်းယှဉ်ခြင်း",
 	"mobile": "မိုလ်ဘိုင်း",
 	"mobile-app": "မိုဘိုင်း ဆော့ဖ်ဝဲ",
 	"mobile-web": "မိုလ်ဘိုင်း ဝဘ်",
@@ -96,6 +98,7 @@
 	"num-projects": "$1 {{PLURAL:$2|ပရောဂျက်|ပရောဂျက်များ}}",
 	"num-protections": "$1 {{PLURAL:$2|ကာကွယ်မှု|ကာကွယ်မှုများ}}",
 	"num-redirects": "$1 {{PLURAL:$2|ပြန်ညွှန်း|ပြန်ညွှန်းများ}}",
+	"num-requests": "$1 {{PLURAL:$2|တောင်းဆိုမှု|တောင်းဆိုမှုများ}}",
 	"num-seconds": "$1 {{PLURAL:$2|စက္ကန့်|စက္ကန့်}}",
 	"num-sections": "$1 {{PLURAL:$2|အပိုင်း|အပိုင်းများ}}",
 	"num-subpages": "$1 {{PLURAL:$2|စာမျက်နှာခွဲ|စာမျက်နှာခွဲများ}}",
@@ -118,6 +121,10 @@
 	"rank": "အဆင့်",
 	"redirect": "ပြန်ညွှန်း",
 	"redirects": "ပြန်ညွှန်းများ",
+	"referer-external": "ပြင်ပ",
+	"referer-internal": "အတွင်းပိုင်း",
+	"referer-search-engine": "ရှာဖွေရေး အင်ဂျင်",
+	"requests": "တောင်းဆိုမှုများ",
 	"save": "သိမ်းရန်",
 	"search": "ရှာဖွေရန်",
 	"search-method": "ရှာဖွေရန် နည်းလမ်းများ:",

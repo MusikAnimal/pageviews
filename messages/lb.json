@@ -271,7 +271,7 @@
 	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-parameters": "Parameteren",
 	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
-	"url-structure-project": "$1 oder aner valabel $2",
+	"url-structure-project": "$1 oder aner valabel $2.",
 	"url-structure-projects": "Valabel $1 getrennt duerch d'Zeechen <code>|</code>. Zum Beispill $2",
 	"url-structure-siteviews-platform": "Wann de(n) $1 $2 ass",
 	"url-structure-sort": "D'Kolonn op déi zortéiert gi soll.",
