@@ -390,13 +390,10 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     if (removedPage) {
       // we've got the data already, just removed a single page so we'll remove that data
       // and re-render the chart
-      this.outputData = this.outputData.filter(entry => entry.label !== removedPage.descore());
-      this.outputData = this.outputData.map(entity => {
-        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
-      });
+      this.removeEntity(removedPage);
+
       // But make sure we have editing totals first. We have to re-query to ensure an
       //   accurate number of "unique" editors.
-      delete this.entityInfo.entities[removedPage];
       this.getEditData(Object.keys(this.entityInfo.entities)).done(editData => {
         Object.assign(this.entityInfo.totals, editData.totals);
         this.updateChart();

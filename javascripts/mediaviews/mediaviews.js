@@ -291,11 +291,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
     if (removedFile) {
       // we've got the data already, just removed a single page so we'll remove that data
       // and re-render the chart
-      this.outputData = this.outputData.filter(entry => entry.label !== removedFile.descore());
-      this.outputData = this.outputData.map(entity => {
-        return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
-      });
-      delete this.entityInfo.entities[removedFile];
+      this.removeEntity(removedFile);
       this.updateChart();
     } else {
       this.getFileInfo(files).then(() => {

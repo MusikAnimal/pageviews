@@ -478,6 +478,21 @@ const ChartHelpers = superclass => class extends superclass {
   }
 
   /**
+   * Remove an entity from this.outputData and this.entityInfo.entities.
+   * This is called at some point within this.processInput() in chart-based apps.
+   * @param {String} removedEntity - Title of the page, file, site, etc.
+   */
+  removeEntity(removedEntity) {
+    // we've got the data already, just removed a single page so we'll remove that data
+    // and re-render the chart
+    this.outputData = this.outputData.filter(entry => entry.label !== removedEntity.descore());
+    this.outputData = this.outputData.map(entity => {
+      return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
+    });
+    delete this.entityInfo.entities[removedEntity];
+  }
+
+  /**
    * Mother function for querying the API and processing data
    * @param  {Array}  entities - list of page names, or projects for Siteviews
    * @return {Deferred} Promise resolving with pageviews data and errors, if present
