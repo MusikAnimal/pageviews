@@ -37,34 +37,11 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Add general event listeners
+   * Add general event listeners.
    * @override
    */
   setupListeners() {
     super.setupListeners();
-
-    $('#pv_form').on('submit', e => {
-      e.preventDefault(); // prevent page from reloading
-      this.processInput();
-    });
-
-    $('.another-query').on('click', () => {
-      this.setState('initial');
-      this.pushParams(true);
-    });
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.renderData();
-    });
-
-    $('.view-btn').on('click', e => {
-      document.activeElement.blur();
-      this.view = e.currentTarget.dataset.value;
-      this.toggleView(this.view);
-    });
 
     // update namespace selector when project is changed, 0 to force selection of main namespace
     this.$projectInput.on('updated', this.setupNamespaceSelector.bind(this, 0));
@@ -72,7 +49,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
   /**
    * Fetch namespaces and populate the namespace selector
-   * @param {String|Integer} [namespace] - namespace number to default to
+   * @param {String|number} [namespace] - namespace number to default to
    * @returns {Deferred} Empty promise
    */
   setupNamespaceSelector(namespace = 0) {

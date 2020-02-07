@@ -288,6 +288,30 @@ const ListHelpers = superclass => class extends superclass {
       );
     }
   }
+
+  /**
+   * Listeners specific to list-based apps.
+   * @override
+   */
+  setupListeners() {
+    super.setupListeners();
+
+    $('.another-query').on('click', () => {
+      this.setState('initial');
+      this.pushParams(true);
+    });
+
+    $('.view-btn').on('click', e => {
+      document.activeElement.blur();
+      this.view = e.currentTarget.dataset.value;
+      this.toggleView(this.view);
+    });
+
+    $('#pv_form').on('submit', e => {
+      e.preventDefault(); // prevent page from reloading
+      this.processInput();
+    });
+  }
 };
 
 module.exports = ListHelpers;

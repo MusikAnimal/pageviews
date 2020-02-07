@@ -36,36 +36,12 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Add general event listeners
+   * Add general event listeners.
    * @override
    */
   setupListeners() {
     super.setupListeners();
-
-    $('#pv_form').on('submit', e => {
-      e.preventDefault(); // prevent page from reloading
-      this.processInput();
-    });
-
-    $('.another-query').on('click', () => {
-      this.setState('initial');
-      this.pushParams(true);
-    });
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.renderData();
-    });
-
     $('.source-option').on('click', e => this.updateSourceInput(e.target));
-
-    $('.view-btn').on('click', e => {
-      document.activeElement.blur();
-      this.view = e.currentTarget.dataset.value;
-      this.toggleView(this.view);
-    });
   }
 
   /**

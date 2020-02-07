@@ -21,6 +21,14 @@
 >>>>>>> Refactor pushParams(); fix broken selectors
 =======
   "application.css": "application-c762eea75f.css",
+<<<<<<< HEAD
+<<<<<<< HEAD
   "application.js": "application-35d0e48815.js"
 >>>>>>> Encode all pipes in permalink URL; comments
+=======
+  "application.js": "application-5d0a8fde30.js"
+>>>>>>> Move formatting/jQuery getters to pv_config
+=======
+  "application.js": "application-db05bfa6b9.js"
+>>>>>>> compiled assets
 }

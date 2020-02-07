@@ -178,21 +178,6 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
   }
 
   /**
-   * General place to add page-wide listeners
-   * @override
-   */
-  setupListeners() {
-    super.setupListeners();
-
-    $('.sort-link').on('click', e => {
-      const sortType = $(e.currentTarget).data('type');
-      this.direction = this.sort === sortType ? -this.direction : 1;
-      this.sort = sortType;
-      this.updateTable();
-    });
-  }
-
-  /**
    * Query the API for each tool, building up the datasets and then calling renderData
    * @param {boolean} force - whether to force the chart to re-render, even if no params have changed
    * @return {null}
