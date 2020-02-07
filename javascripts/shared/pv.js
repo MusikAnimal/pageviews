@@ -1921,7 +1921,7 @@ class Pv extends PvConfig {
       );
     }
 
-    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace('|', escape)}`);
+    $('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace(/\|/g, escape)}`);
   }
 
   /**

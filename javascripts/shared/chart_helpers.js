@@ -835,6 +835,10 @@ const ChartHelpers = superclass => class extends superclass {
     return [startDate, endDate];
   }
 
+  /**
+   * Called at the top of updateTable() in the chart-only apps.
+   * @return {boolean|array} False if short-circuited, otherwise the sorted datasets.Z
+   */
   beforeUpdateTable() {
     if (this.outputData.length === 1) {
       this.showSingleEntityLegend();
