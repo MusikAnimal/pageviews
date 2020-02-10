@@ -5,7 +5,8 @@
 			"FriedhelmW",
 			"Inkowik",
 			"Mirzali",
-			"WikiBayer"
+			"WikiBayer",
+			"1233qwer1234qwer4"
 		]
 	},
 	"active-users": "Aktive Benutzer",
@@ -290,11 +291,15 @@
 	"redirectviews": "Weiterleitungsaufrufe",
 	"redirectviews-description": "Seitenaufrufe aller Weiterleitungen auf eine Seite",
 	"redirectviews-title": "Weiterleitungsaufrufe",
+	"referer-external": "Extern",
+	"referer-internal": "Intern",
+	"referer-search-engine": "Suchmaschine",
 	"remember-chart-option": "Diagrammeinstellung speichern",
 	"report-false-positive": "Falsche Positive melden",
 	"report-false-positive-submitted": "Deine Falsch-Positive-Meldung wurde eingesandt. Vielen Dank für die Verbesserung der $1-Daten!",
 	"report-false-positive-text": "Verwende dieses Formular, um auszuwählen, welche ausgeschlossenen Seiten du als falsche Positive melden möchtest. ($1)",
 	"report-issue": "Ein Problem melden",
+	"requests": "Anfragen",
 	"revisions": "Versionen",
 	"sa": "Sa",
 	"save": "Speichern",
