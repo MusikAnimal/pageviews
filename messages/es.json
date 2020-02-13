@@ -14,7 +14,8 @@
 			"Javiersanp",
 			"James",
 			"Joanmp17",
-			"Ihojose"
+			"Ihojose",
+			"MarcoAurelio"
 		]
 	},
 	"active-users": "Usuarios activos",
@@ -324,7 +325,7 @@
 	"url-structure-pages": "Nombres de páginas escapados y separados por caracteres <code>|</code>, como por ejemplo <code>Gato|Perro</code> (predeterminado)",
 	"url-structure-parameters": "Parámetros",
 	"url-structure-parameters-order": "Puede usarse en cualquier orden",
-	"url-structure-project": "$1 u otro $2 válido",
+	"url-structure-project": "$1 u otro $2 válido.",
 	"url-structure-project-multilang": "El proyecto fuente proporcionado debe ser multilingüe. Por ejemplo, $1 o $2",
 	"url-structure-projects": "$1 válidos separados por caracteres <code>|</code>. Por ejemplo, $2",
 	"url-structure-siteviews-agent": "Sólo se aplica cuando $1 es $2.",
