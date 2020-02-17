@@ -959,7 +959,9 @@ class Pv extends PvConfig {
         pages: pages.join('|'),
         project: this.project + '.org',
         start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
-        end: this.daterangepicker.endDate.format('YYYY-MM-DD')
+        end: this.daterangepicker.endDate.format('YYYY-MM-DD'),
+        totals: true,
+        ttl: this.config.cacheTime
       },
       timeout: 8000
     }).done(data => dfd.resolve(data)).fail(() => {
@@ -967,56 +969,6 @@ class Pv extends PvConfig {
       let data = {};
       pages.forEach(page => data[page] = {});
       dfd.resolve({ pages: data });
-    });
-
-    return dfd;
-  }
-
-  /**
-   * Query PageAssessments API and return the classifications
-   * @param  {Array} pages - pages to query for
-   * @return {Deferred} Promise resolving with object like {page: "//assessment_image.svg"}
-   */
-  getPageAssessments(pages) {
-    const dfd = $.Deferred();
-
-    if (!this.config.pageAssessmentProjects.includes(this.project)) {
-      return dfd.resolve({});
-    }
-
-    this.massApi(
-      {
-        prop: 'pageassessments',
-        titles: pages.join('|')
-      },
-      this.project,
-      'pacontinue',
-      'pages'
-    ).done(data => {
-      // something went wrong
-      if (!data.pages) return dfd.resolve({});
-
-      let assessments = {};
-      data.pages.forEach(page => {
-        // API limit is on the number of assessments, not pages,
-        //   so we might already have the assessment for this page
-        if (!page.pageassessments) return;
-
-        const wikiprojects = Object.keys(page.pageassessments),
-          firstAssessment = page.pageassessments[wikiprojects[0]]; // just go with the first assessment
-
-        if (firstAssessment && firstAssessment.class.length && !assessments[page.title]) {
-          const imgUrl = this.config.pageAssessmentBadges[this.project][firstAssessment.class] || '';
-
-          // skip if no image is available
-          if (!imgUrl.length) return;
-
-          const imgMarkup = `<img class='article-badge' src='https://upload.wikimedia.org/wikipedia/commons/${imgUrl}' ` +
-            `alt='${firstAssessment.class}' title='${firstAssessment.class}' />`;
-          assessments[page.title] = imgMarkup;
-        }
-      });
-      return dfd.resolve(assessments);
     });
 
     return dfd;

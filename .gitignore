@@ -12,6 +12,7 @@ vendor/psr
 vendor/whichbrowser
 vendor/autoload.php
 vendor/mthaml
+vendor/symfony
 reports/
 *.jar
 jsdocs/gen/

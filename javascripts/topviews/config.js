@@ -19,7 +19,8 @@ const config = {
   platformSelector: '#platform-select',
   projectInput: '.aqs-project-input',
   validateParams: ['project', 'platform'],
-  timestampFormat: 'YYYYMMDD00'
+  timestampFormat: 'YYYYMMDD00',
+  cacheTime: 60 // In seconds, for server-side queries.
 };
 
 module.exports = config;

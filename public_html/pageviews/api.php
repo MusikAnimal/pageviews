@@ -1,11 +1,22 @@
 <?php
 
-date_default_timezone_set('UTC');
-
 require_once __DIR__ . '/../../config.php';
+require_once ROOTDIR . '/vendor/autoload.php';
+
+use Symfony\Component\Cache\Adapter\ApcuAdapter;
+
+date_default_timezone_set( 'UTC' );
 
 // set header as JSON
-header('Content-type: application/json');
+header( 'Content-type: application/json' );
+
+// Return cached data, if available.
+$cache = new ApcuAdapter( 'pageviews', 1800, 1 );
+$cacheKey = md5( $_SERVER['QUERY_STRING'] );
+if ( $cache->hasItem( $cacheKey ) ) {
+    echo json_encode( $cache->getItem( $cacheKey )->get() );
+    return;
+}
 
 $required_fields = [ 'pages', 'project', 'start', 'end' ];
 $errors = [];
@@ -25,8 +36,8 @@ if ( count( $errors ) ) {
   return;
 }
 
-// get database name given the project
-// first add .org if not present
+// Get database name given the project.
+// First add .org if not present.
 $project = $_GET['project'];
 if ( !preg_match( '/\.org$/' , $project ) ) {
   $project .= '.org';
@@ -43,7 +54,7 @@ $db = $site_map[$project] . '_p';
 // connect to database
 $client = new mysqli( DB_HOST, DB_USER, DB_PASSWORD, $db, DB_PORT );
 if (mysqli_connect_errno()) {
-  printf("Connect failed: %s\n", mysqli_connect_error());
+  printf( "Connect failed: %s\n", mysqli_connect_error() );
   exit();
 }
 
@@ -114,8 +125,7 @@ foreach ($api_pages as $page) {
   $sql = "SELECT COUNT(*) AS num_edits, COUNT(DISTINCT(rev_actor)) AS num_users $paSelect FROM $db.revision " .
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
 
-  $res = $client->query( $sql . " rev_page = $page_id" );
-  $page_data = $res->fetch_assoc();
+  $page_data = $client->query( $sql . " rev_page = $page_id" )->fetch_assoc();
   $output['pages'][$page->title] = $page_data;
 
   // convert to ints
@@ -130,7 +140,7 @@ foreach ($api_pages as $page) {
 }
 
 // query for totals
-if ( count( $api_pages ) > 1 ) {
+if ( count( $api_pages ) > 1 && isset( $_GET['totals'] ) ) {
   $pages_sql = implode( $multipage_parts, ' OR ' );
   $res = $client->query( "SELECT COUNT(DISTINCT(rev_actor)) AS num_users FROM $db.revision " .
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND (" . $pages_sql . ')' );
@@ -140,5 +150,11 @@ if ( count( $api_pages ) > 1 ) {
 }
 
 $output['pages'] = (object) $output['pages'];
+
+$ttl = min(max((int)$_GET['ttl'], 10), 60);
+$cacheItem = $cache->getItem( $cacheKey )
+    ->set( $output )
+    ->expiresAfter( new DateInterval( 'PT' . $ttl . 'M' ) );
+$cache->save( $cacheItem );
 
 echo json_encode( $output );

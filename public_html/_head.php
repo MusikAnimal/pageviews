@@ -1,4 +1,6 @@
 <?php
+   require_once ROOTDIR . '/vendor/autoload.php';
+  
    // Return all languages available
    function getAvailableLangs() {
      global $I18N;
@@ -20,7 +22,6 @@
      return $availableLanguages;
    }
   
-   require_once ROOTDIR . '/vendor/autoload.php';
    $I18N = new Intuition( 'pageviews' );
    $I18N->registerDomain( 'pageviews', ROOTDIR . '/messages' );
    $langs = getAvailableLangs();
