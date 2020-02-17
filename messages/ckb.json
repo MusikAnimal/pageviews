@@ -4,7 +4,8 @@
 			"Sarchia",
 			"Muhammed taha",
 			"Lost Whispers",
-			"Épine"
+			"Épine",
+			"Arya sarhan"
 		]
 	},
 	"active-users": "بەکارھێنەرە چالاکەکان",
@@ -55,6 +56,7 @@
 	"december": "کانوونی یەکەم",
 	"default": "بنچینەیی",
 	"desktop": "کۆمپیوتەر",
+	"devices": "ئامێرەکان",
 	"disclaimer": "نابەرپرسییەکان",
 	"documentation": "بەڵگەنامە",
 	"doughnut": "بازنەییی ناوبۆش",
@@ -62,6 +64,7 @@
 	"duration": "ماوە",
 	"editors": "دەستکاریکەران",
 	"edits": "دەستکارییەکان",
+	"elapsed-time": "جێبەجێکرا لەماوەی: $1 {{PLURAL:$1|چرکەدا|چرکەدا}}",
 	"exclude-redirects": "ڕەوانەکەرەکان مەژمێرە",
 	"excluded-pages": "پەڕە لەخۆنەگرتووەکان",
 	"external-link": "بەستەری دەرەکی",
@@ -131,9 +134,10 @@
 	"none": "هیچ",
 	"note": "تێبینی",
 	"november": "تشرینی دووەم",
-	"num-languages": "$1 زمان",
+	"num-languages": "$1 {{PLURAL:$2|زمان|زمان}}",
 	"num-pageviews": "$1 {{PLURAL:$2|بینین|بینین}}",
 	"num-redirects": "$1 ڕەوانەکەر",
+	"num-seconds": "$1 {{PLURAL:$2|sچرکە|چرکە}}",
 	"num-sections": "$1 بەش",
 	"october": "تشرینی یەکەم",
 	"ok": "باشە",

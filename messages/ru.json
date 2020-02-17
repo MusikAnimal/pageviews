@@ -23,7 +23,8 @@
 			"Vlad5250",
 			"Diralik",
 			"Alexander Istomin",
-			"XnL"
+			"XnL",
+			"Pacha Tchernof"
 		]
 	},
 	"active-users": "Активные участники",
@@ -313,6 +314,7 @@
 	"report-false-positive-submitted": "Ваш отчёт о ложных срабатываниях отправлен. Спасибо за улучшение данных $1!",
 	"report-false-positive-text": "Используйте эту форму для выбора исключённых страниц, которые вы считаете ложными срабатываниями ($1)",
 	"report-issue": "Сообщить о проблеме",
+	"requests": "Запросы",
 	"revisions": "Правки",
 	"sa": "Сб",
 	"save": "Сохранить",
