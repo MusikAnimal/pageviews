@@ -26,6 +26,8 @@ class PvConfig {
     const maxDatePagecounts = moment('2016-08-05').endOf('day'),
       maxMonthPagecounts = moment('2016-07-01').toDate();
 
+    this.jQueryCache = {}; // Cache jQuery selectors
+
     this.config = {
       apiLimit: 20000,
       apiThrottle: 10,

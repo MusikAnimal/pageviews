@@ -31,7 +31,6 @@ class Pv extends PvConfig {
 
     this.params = null;
     this.siteInfo = {};
-    this.jQueryCache = {}; // Cache jQuery selectors
 
     /**
      * tracking of elapsed time
@@ -523,7 +522,7 @@ class Pv extends PvConfig {
    * @param  {string} page - page to link to
    * @param  {string} content - what to put as the link text
    * @param  {moment|string} [offset] - if provided, will link to page history from this date backward
-   * @param  {integer} [limit] - number of revisions to show, max 500
+   * @param  {Number} [limit] - number of revisions to show, max 500
    * @return {string} HTML markup
    */
   getHistoryLink(page, content, offset, limit) {
@@ -920,7 +919,7 @@ class Pv extends PvConfig {
    * @returns {string} - with locale delimiters, e.g. 1,234,567 (en-US)
    */
   n(value) {
-    return (new Number(value)).toLocaleString();
+    return Number(value).toLocaleString();
   }
 
   /**
@@ -1231,7 +1230,7 @@ class Pv extends PvConfig {
    * Setup colors for Select2 entries so we can dynamically change them
    * This is a necessary evil, as we have to mark them as !important
    *   and since there are any number of entries, we need to use nth-child selectors
-   * @returns {CSSStylesheet} our new stylesheet
+   * @returns {CSSStyleSheet} our new stylesheet
    */
   setupSelect2Colors() {
     /** first delete old stylesheet, if present */
@@ -1498,7 +1497,7 @@ class Pv extends PvConfig {
     clearTimeout(this.timeout);
 
     // Set new spinny timeout that will show error after 60 seconds
-    this.timeout = setTimeout(err => {
+    this.timeout = setTimeout(() => {
       this.resetView();
       this.toastError(`
         <strong>${$.i18n('fatal-error')}</strong>:
