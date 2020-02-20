@@ -214,7 +214,7 @@
 	"url-structure-pages": "Nomine de pagina con \"escappamento\" de characteres special, separate per un character <code>|</code>, p.ex. <code>Catto|Can</code> (predefinition)",
 	"url-structure-parameters": "Parametros",
 	"url-structure-parameters-order": "Pote esser usate in qualcunque ordine",
-	"url-structure-project": "$1 o altere $2 valide",
+	"url-structure-project": "$1 o altere sito valide de $2.",
 	"url-structure-project-multilang": "Le projecto de fonte fornite debe esser multilingue, como $1 o $2",
 	"url-structure-projects": "$1 valide separate per un character <code>|</code>, como p.ex. $2",
 	"url-structure-sort": "Le columna a ordinar. Un de $1, $2, $3 o $4",

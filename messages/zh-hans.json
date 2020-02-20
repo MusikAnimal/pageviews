@@ -12,7 +12,8 @@
 			"VulpesVulpes825",
 			"A Chinese Wikipedian",
 			"沈澄心",
-			"铁桶"
+			"铁桶",
+			"荣智浩"
 		]
 	},
 	"active-users": "活跃用户",
@@ -220,7 +221,7 @@
 	"may": "五月",
 	"median": "中值",
 	"mediaviews": "媒体浏览",
-	"mediaviews-description": "比较维基共享资源上音频和视频的播放次数",
+	"mediaviews-description": "比较跨多个文件的媒体请求",
 	"mediaviews-title": "媒体浏览分析",
 	"metric": "度量",
 	"mo": "一",
@@ -252,6 +253,7 @@
 	"num-projects-info": "输入最多$1个{{PLURAL:$1|项目}}",
 	"num-protections": "$1次{{PLURAL:$2|保护}}",
 	"num-redirects": "$1个{{PLURAL:$2|重定向}}",
+	"num-requests": "$1条{{PLURAL:$1|申请}}$2",
 	"num-seconds": "$1{{PLURAL:$2|秒}}",
 	"num-sections": "$1个{{PLURAL:$2|章节}}",
 	"num-subpages": "$1个{{PLURAL:$2|子页面}}",
@@ -300,6 +302,11 @@
 	"redirectviews": "重定向浏览",
 	"redirectviews-description": "所有至某一页面的重定向的页面浏览",
 	"redirectviews-title": "重定向浏览",
+	"referer": "推荐人",
+	"referer-all-referers": "所有推荐人",
+	"referer-external": "外部",
+	"referer-internal": "内部",
+	"referer-search-engine": "搜索引擎",
 	"remember-chart-option": "记住图标参数设置",
 	"report-false-positive": "汇报误报",
 	"report-false-positive-submitted": "您的误报汇报已提交。感谢您改进$1数据！",
