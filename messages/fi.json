@@ -222,7 +222,7 @@
 	"pageviews": "Sivun näyttökerrat",
 	"pageviews-description": "Eri sivujen näyttökertojen määrän vertailu",
 	"param-error-1": "Pageviews API ei sisällä vanhempaa tietoa kuin $1. Anteeksi.",
-	"param-error-2": "Aloituspäivän on oltava vanhempi kuin päättymispäivä.",
+	"param-error-2": "Alotustaatumin on oltava vanhempi kuin päättymistaatumi.",
 	"percent-mobile": "% Mobiili",
 	"permalink": "Ikilinkki",
 	"permalink-copied": "Ikilinkki kopioitu leikepöydälle",

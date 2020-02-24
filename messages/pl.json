@@ -11,7 +11,8 @@
 			"DeRudySoulStorm",
 			"CiaPan",
 			"Rail",
-			"WaldiSt"
+			"WaldiSt",
+			"Matma Rex"
 		]
 	},
 	"active-users": "Użytkowników aktywnych",
@@ -332,7 +333,7 @@
 	"url-structure-example-siteviews": "Aby uzyskać najnowsze dane dotyczące ogólnej liczby odsłon wszystkich stron na wiki, z domyślnymi opcjami, użyj:\n$1",
 	"url-structure-parameters": "Parametry",
 	"url-structure-parameters-order": "Mogą być używane w dowolnej kolejności",
-	"url-structure-project": "$1 lub inny poprawny $2",
+	"url-structure-project": "$1 lub inny poprawny $2.",
 	"url-structure-siteviews-agent": "Ma zastosowanie tylko gdy $1 to $2.",
 	"url-structure-siteviews-platform": "Gdy $1 to $2",
 	"url-structure-siteviews-platform-no-pageviews": "Dla $1 równego $2 lub $3",

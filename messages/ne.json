@@ -66,6 +66,7 @@
 	"november": "नोभेम्बर",
 	"num-languages": "$1 भाषाहरू",
 	"num-projects": "$1 परियोजनाहरू",
+	"num-requests": "$1 {{PLURAL:$2|अनुरोध|अनुरोधहरू}}",
 	"october": "अक्टोबर",
 	"ok": "ठीक",
 	"options": "विकल्पहरू",
