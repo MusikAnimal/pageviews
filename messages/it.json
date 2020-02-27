@@ -11,7 +11,8 @@
 			"Redredsonia",
 			"Fringio",
 			"GiorgioHerbie",
-			"Nemo bis"
+			"Nemo bis",
+			"Albe Albe460"
 		]
 	},
 	"active-users": "Utenti attivi",
@@ -83,6 +84,7 @@
 	"edits": "Modifiche",
 	"elapsed-time": "Tempo trascorso: $1 {{PLURAL:$1|secondo|secondi}}",
 	"error-please-report": "<strong>Aggiorna la pagina</strong> per riprovare o <a target='_blank' href='$1'>segnala questa anomalia</a>",
+	"error-timed-out": "Operazione scaduta.",
 	"exclude-redirects": "Escludi i reindirizzamenti",
 	"excluded-pages": "Pagine escluse",
 	"external-link": "Collegamento esterno",

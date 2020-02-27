@@ -296,6 +296,8 @@
 	"redirectviews": "Omdirigeringsvisningar",
 	"redirectviews-description": "Sidvisningar av alla omdirigeringar till en sida",
 	"redirectviews-title": "Omdirigeringsvisningar",
+	"referer": "Referent",
+	"referer-all-referers": "Alla referenter",
 	"referer-external": "Externa",
 	"referer-internal": "Interna",
 	"referer-search-engine": "Sökmotor",

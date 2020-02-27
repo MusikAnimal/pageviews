@@ -47,7 +47,7 @@
 	"january": "Janyaari",
 	"july": "Jyyli",
 	"june": "Jyyni",
-	"known-false-positives-text": "$1 {{PLURAL:$2|on|on}} auttomaattisesti jätetty pois katsotuimmista sivuista.",
+	"known-false-positives-text": "$1 {{PLURAL:$2|oon|oon}} auttomaattisesti jätetty pois katotuimmista sivuista.",
 	"language": "Kieli",
 	"langviews": "Eri kieliversuunien näyttökerrat",
 	"langviews-description": "Sivun näyttökertojen määrä eri kieliversuuneissa",
