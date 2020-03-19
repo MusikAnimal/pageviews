@@ -572,7 +572,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the page
    */
   getPageURL(page, project = this.project) {
-    return `//${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape)}`;
+    return `https://${project.replace(/\.org$/, '').escape()}.org/wiki/${encodeURIComponent(page.score()).replace(/%3A|%2F/g, unescape)}`;
   }
 
   /**
@@ -582,7 +582,7 @@ class Pv extends PvConfig {
    * @returns {string} URL for the site
    */
   getSiteLink(site) {
-    return `<a target="_blank" href="//${site.replace(/\.org$/, '')}.org">${site}</a>`;
+    return `<a target="_blank" href="https://${site.replace(/\.org$/, '')}.org">${site}</a>`;
   }
 
   /**
@@ -609,19 +609,14 @@ class Pv extends PvConfig {
 
   /**
    * Get URL to file a report on Meta, preloaded with permalink
-   * @param {String} [phabPaste] URL to auto-generated error report on Phabricator
-   * @param {String} [titleOverride] goes in the title input field of the wiki editing interface
+   * @param {Array} [errors] To be automatically pasted in with the bug report.
    * @return {String} URL
    */
-  getBugReportURL(phabPaste, titleOverride) {
+  getBugReportURL(errors) {
     const reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
-      `&section=new&preloadtitle=${titleOverride || this.app.upcase() + ' bug report'}`;
+      `&section=new&preloadtitle=${this.app.upcase() + ' bug report'}`;
 
-    if (phabPaste) {
-      return `${reportURL}&preload=Talk:Pageviews_Analysis/Preload&preloadparams[]=${phabPaste}`;
-    } else {
-      return reportURL;
-    }
+    return reportURL;
   }
 
   /**
@@ -699,7 +694,7 @@ class Pv extends PvConfig {
 
   /**
    * Get the markup to show the assessment badge for the given item.
-   * @param  {Object} item
+   * @param {Object} item
    * @return {string}
    */
   getAssessmentBadge(item) {
@@ -760,7 +755,7 @@ class Pv extends PvConfig {
 
   /**
    * Generate a unique hash code from given string
-   * @param  {String} str - to be hashed
+   * @param {String} str - to be hashed
    * @return {String} the hash
    */
   hashCode(str) {
@@ -1416,8 +1411,8 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Loop through given errors and show them to the user, also creating a paste on phabricator
-   * @param  {Array} errors - list of error messages (strings)
+   * Loop through given errors and show them to the user.
+   * @param {Array} errors - list of error messages (strings)
    */
   showFatalErrors(errors) {
     this.resetView();
@@ -1427,38 +1422,12 @@ class Pv extends PvConfig {
       );
     });
 
-    const throwToastError = bugUrl => this.toastError(`
-      <strong>${$.i18n('fatal-error')}</strong>: ${$.i18n('error-please-report', this.getBugReportURL(bugUrl))}
-    `, 0);
-
     if (this.debug) {
       throw errors[0];
     } else if (errors && errors[0] && errors[0].stack) {
-      // Disabling automatic phab pastings for now...
-      throwToastError();
-      // $.ajax({
-      //   method: 'POST',
-      //   url: '//tools.wmflabs.org/musikanimal/paste',
-      //   data: {
-      //     content: '' +
-      //       `\ndate:      ${moment().utc().format()}` +
-      //       `\ntool:      ${this.app}` +
-      //       `\nlanguage:  ${i18nLang}` +
-      //       `\nchart:     ${this.chartType}` +
-      //       `\nurl:       ${document.location.href}` +
-      //       `\ntrace:     ${errors[0].stack}`
-      //     ,
-      //     title: `Pageviews Analysis error report: ${errors[0]}`
-      //   }
-      // }).done(data => {
-      //   if (data && data.result && data.result.objectName) {
-      //     throwToastError(data.result.objectName);
-      //   } else {
-      //     throwToastError();
-      //   }
-      // }).fail(() => {
-      //   throwToastError();
-      // });
+      this.toastError(`
+        <strong>${$.i18n('fatal-error')}</strong>: ${$.i18n('error-please-report', this.getBugReportURL(errors))}
+      `, 0);
     }
   }
 
@@ -1626,7 +1595,7 @@ class Pv extends PvConfig {
 
     if (multilingual && !this.isMultilangProject()) {
       this.toastWarn(
-        $.i18n('invalid-lang-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
+        $.i18n('invalid-lang-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     } else if (siteDomains.includes(project)) {
@@ -1634,7 +1603,7 @@ class Pv extends PvConfig {
       valid = true;
     } else {
       this.toastWarn(
-        $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`)
+        $.i18n('invalid-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
     }
