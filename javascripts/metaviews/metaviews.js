@@ -398,7 +398,7 @@ class MetaViews extends mix(Pv).with(ChartHelpers) {
           <tr>
             <td class='project-table-view--rank'>${index + 1}</td>
             <td class='project-table-view--title'>
-              <a href='//${project.project}.org' target='_blank'>${project.project}</a>
+              <a href='https://${project.project}.org' target='_blank'>${project.project}</a>
             </td>
             <td class='project-table-view--pageloads'>${this.formatNumber(project.count)}</td>
           </tr>

@@ -1271,7 +1271,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     this.setState('initial');
     this.writeMessage(
-      $.i18n('invalid-project', `<a href='//${project.escape()}'>${project.escape()}</a>`),
+      $.i18n('invalid-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`),
       true
     );
 

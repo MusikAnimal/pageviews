@@ -36,7 +36,7 @@ const config = {
     },
     pagepile: {
       placeholder: '12345',
-      descriptionParams: () => ["<a target='_blank' href='//tools.wmflabs.org/pagepile'>PagePile</a>"],
+      descriptionParams: () => ["<a target='_blank' href='https://tools.wmflabs.org/pagepile'>PagePile</a>"],
       type: 'number'
     },
     subpages: {
@@ -53,14 +53,14 @@ const config = {
     },
     quarry: {
       placeholder: '12345',
-      descriptionParams: () => ["<a target='_blank' href='//quarry.wmflabs.org'>Quarry</a>"],
+      descriptionParams: () => ["<a target='_blank' href='https://quarry.wmflabs.org'>Quarry</a>"],
       type: 'number'
     },
     hashtag: {
       placeholder: '#editathon',
       descriptionParams: () => [
-        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
-        `<a target='_blank' href='//tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
+        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='https://tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
+        `<a target='_blank' href='https://tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
       ],
       type: 'string'
     },

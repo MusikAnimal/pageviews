@@ -592,7 +592,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     const dfd = $.Deferred();
 
     $.ajax({
-      url: '//tools.wmflabs.org/pagepile/api.php',
+      url: 'https://tools.wmflabs.org/pagepile/api.php',
       data: {
         action: 'create_pile_with_data',
         wiki: this.dbName(this.project),
