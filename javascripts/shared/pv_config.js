@@ -613,6 +613,14 @@ class PvConfig {
   get $select2Input() {
     return this.cachedElement('#select2-input');
   }
+
+  /**
+   * Get the 'Data source' selector.
+   * @return {jQuery}
+   */
+  get $dataSourceSelector() {
+    return this.cachedElement('#data-source-select');
+  }
 }
 
 module.exports = PvConfig;

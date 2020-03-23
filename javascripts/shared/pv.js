@@ -784,7 +784,7 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isPageviews() {
-    return this.app === 'pageviews' || $(this.config.dataSourceSelector).val() === 'pageviews';
+    return this.app === 'pageviews' || this.$dataSourceSelector.val() === 'pageviews';
   }
 
   /**
@@ -792,7 +792,7 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isUniqueDevices() {
-    return $(this.config.dataSourceSelector).val() === 'unique-devices';
+    return this.$dataSourceSelector.val() === 'unique-devices';
   }
 
   /**
@@ -800,7 +800,7 @@ class Pv extends PvConfig {
    * @return {Boolean} true or false
    */
   isPagecounts() {
-    return $(this.config.dataSourceSelector).val() === 'pagecounts';
+    return this.$dataSourceSelector.val() === 'pagecounts';
   }
 
   /**

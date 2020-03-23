@@ -60,7 +60,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       this.parseQueryString('sites')
     );
 
-    $(this.config.dataSourceSelector).val(params.source);
+    this.$dataSourceSelector.val(params.source);
     this.setupDataSourceSelector();
     this.$platformSelector.val(params.platform);
 
@@ -69,7 +69,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
     if (params.source === 'pageviews') {
       this.$agentSelector.val(params.agent);
     } else {
-      $(this.config.dataSourceSelector).trigger('change');
+      this.$dataSourceSelector.trigger('change');
     }
 
     this.resetSelect2();
@@ -147,7 +147,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   getParams(specialRange = true) {
     let params = {
       platform: this.$platformSelector.val(),
-      source: $(this.config.dataSourceSelector).val()
+      source: this.$dataSourceSelector.val()
     };
 
     if (this.isPageviews()) {
@@ -223,7 +223,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   setupDataSourceSelector() {
     this.setPlatformOptionValues();
 
-    $(this.config.dataSourceSelector).on('change', () => {
+    this.$dataSourceSelector.on('change', () => {
       const platform = this.$platformSelector.val() || '',
         wasMobileValue = platform.includes('mobile'),
         wasPagecounts = this.params ? this.params.includes('pagecounts') : false;

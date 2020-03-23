@@ -7,7 +7,6 @@ const templates = require('./templates');
  */
 const config = {
   chartLegend: templates.chartLegend,
-  dataSourceSelector: '#data-source-select',
   defaults: {
     dateRange: 'latest-20',
     projects: ['fr.wikipedia.org', 'de.wikipedia.org'],
