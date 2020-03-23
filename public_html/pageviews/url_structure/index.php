@@ -47,6 +47,7 @@
             <?php include "../../url_parts/_date_ranges.php"; ?>
             <?php include "../../url_parts/_platform.php"; ?>
             <?php include "../../url_parts/_agent.php"; ?>
+            <?php include "../../url_parts/_redirects.php"; ?>
             <?php include "../../url_parts/_autolog.php"; ?>
             <?php include "../../url_parts/_mute_validations.php"; ?>
           </dl>

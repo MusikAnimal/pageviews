@@ -24,7 +24,7 @@ class Pv extends PvConfig {
     this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
     this.colorsStyleEl = undefined;
 
-    ['localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(setting => {
+    ['alwaysRedirects', 'localizeDateFormat', 'numericalFormatting', 'bezierCurve', 'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart'].forEach(setting => {
       this[setting] = localStorage.getItem(`pageviews-settings-${setting}`) || this.config.defaults[setting];
     });
     this.setupSettingsModal();
@@ -829,6 +829,14 @@ class Pv extends PvConfig {
   }
 
   /**
+   * Should pageviews of redirects be included?
+   * @return {Boolean}
+   */
+  includeRedirects() {
+    return this.app === 'redirectviews' || this.$redirectsCheckbox[0].checked;
+  }
+
+  /**
    * Make mass requests to MediaWiki API
    * The API normally limits to 500 pages, but gives you a 'continue' value
    *   to finish iterating through the resource.
@@ -960,6 +968,56 @@ class Pv extends PvConfig {
       });
       return dfd.resolve(pageData);
     });
+  }
+
+  /**
+   * Get all redirects of a page
+   * @param {String|Array} pages - name of page(s) we want to get data about
+   * @return {Deferred} - Promise resolving with redirect data
+   */
+  getRedirects(pages) {
+    const dfd = $.Deferred();
+    const titles = (Array.isArray(pages) ? pages : [pages]).join('|');
+
+    if (!this.includeRedirects() || !titles.length) {
+      return dfd.resolve({});
+    }
+
+    const promise = $.ajax({
+      url: `https://${this.project}.org/w/api.php`,
+      jsonp: 'callback',
+      dataType: 'jsonp',
+      data: {
+        action: 'query',
+        format: 'json',
+        formatversion: 2,
+        prop: 'redirects',
+        rdprop: 'title|fragment',
+        rdlimit: 500,
+        titles
+      }
+    });
+
+    promise.done(data => {
+      if (data.error) {
+        return this.setState('initial', () => {
+          this.writeMessage(
+            `${$.i18n('api-error', 'Redirect API')}: ${data.error.info.escape()}`
+          );
+        });
+      }
+
+      let redirects = {};
+      data.query.pages.forEach(page => {
+        redirects[page.title] = [{
+          title: page.title
+        }].concat(page.redirects || []);
+      });
+
+      return dfd.resolve(redirects);
+    });
+
+    return dfd;
   }
 
   /**
@@ -1518,17 +1576,24 @@ class Pv extends PvConfig {
 
   /**
    * Get the entity names from the Select2 input (chart-based apps) or the source input (list-based apps).
+   * @param {Boolean} [score] Whether to convert spaces into underscores.
    * @return {array}
    */
-  getEntities() {
+  getEntities(score = false) {
+    let entities = [];
     if (this.$select2Input.length) {
-      return this.$select2Input.select2('val') || [];
+      entities = this.$select2Input.select2('val') || [];
     } else if (this.$sourceInput && this.$sourceInput.length) {
-      return [this.$sourceInput.val()];
+      entities = [this.$sourceInput.val()];
     } else {
       console.warn(`[${this.app}] No select2 or source input found.`);
-      return [];
     }
+
+    if (score) {
+      entities = entities.map(entity => entity.score());
+    }
+
+    return entities;
   }
 
   /**

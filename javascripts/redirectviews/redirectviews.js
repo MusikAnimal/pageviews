@@ -394,48 +394,6 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   }
 
   /**
-   * Get all redirects of a page
-   * @param  {String} pageName - name of page we want to get data about
-   * @return {Deferred} - Promise resolving with redirect data
-   */
-  getRedirects(pageName) {
-    const dfd = $.Deferred();
-
-    const promise = $.ajax({
-      url: `https://${this.project}.org/w/api.php`,
-      jsonp: 'callback',
-      dataType: 'jsonp',
-      data: {
-        action: 'query',
-        format: 'json',
-        formatversion: 2,
-        prop: 'redirects',
-        rdprop: 'title|fragment',
-        rdlimit: 500,
-        titles: pageName
-      }
-    });
-
-    promise.done(data => {
-      if (data.error) {
-        return this.setState('initial', () => {
-          this.writeMessage(
-            `${$.i18n('api-error', 'Redirect API')}: ${data.error.info.escape()}`
-          );
-        });
-      }
-
-      const redirects = [{
-        title: pageName
-      }].concat(data.query.pages[0].redirects || []);
-
-      return dfd.resolve(redirects);
-    });
-
-    return dfd;
-  }
-
-  /**
    * Parses the URL query string and sets all the inputs accordingly
    * Should only be called on initial page load, until we decide to support pop states (probably never)
    */
@@ -551,7 +509,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     $('.progress-counter').text($.i18n('fetching-data', 'Redirects API'));
     this.getRedirects(page).done(redirectData => {
-      this.getPageViewsData(redirectData).done(pageViewsData => {
+      this.getPageViewsData(redirectData[page]).done(pageViewsData => {
         $('.progress-bar').css('width', '100%');
         $('.progress-counter').text($.i18n('building-dataset'));
         const pageLink = this.getPageLink(page, this.project);

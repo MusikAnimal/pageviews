@@ -107,6 +107,15 @@
             </option>
           </select>
         </div>
+        <div>
+          <label>
+            <input id="redirects-checkbox" type="checkbox">
+            <?php echo $I18N->msg( 'include-redirects' ); ?>
+            <a class="help-link" href="/pageviews/faq#redirects">
+              <span class="glyphicon glyphicon-question-sign"></span>
+            </a>
+          </label>
+        </div>
       </div>
     </aside>
     <main class="col-lg-8 col-md-10">
