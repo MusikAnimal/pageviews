@@ -300,7 +300,7 @@ const ChartHelpers = superclass => class extends superclass {
 
       dataset.forEach(elem => {
         // Due to a GOTCHA, the API may only return data for certain dates in the requested date range,
-        //  so here we line them up with the requested date range and fill in zeros for the missing dates
+        //  so here we line them up with the requested date range and fill in zeros for the missing dates.
         const value = elem[viewKey];
         let date;
 
@@ -494,7 +494,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Mother function for querying the API and processing data
-   * @param  {Array}  entities - list of page names, or projects for Siteviews
+   * @param {Array} entities - list of page names, or projects for Siteviews
    * @return {Deferred} Promise resolving with pageviews data and errors, if present
    */
   getPageViewsData(entities) {
@@ -503,6 +503,16 @@ const ChartHelpers = superclass => class extends superclass {
 
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
+
+    /**
+     * This bit determines whether we should show errors for a given entity.
+     * This is only used to suppress errors when we're including redirects,
+     * since this can be confusing to the user, and 404s are rather common for redirects.
+     */
+    const targetEntities = this.getEntities(true);
+    const shouldShowErrors = entity => {
+      return targetEntities.includes(entity.score);
+    };
 
     /**
      * Everything we need to keep track of for the promises.
@@ -574,11 +584,15 @@ const ChartHelpers = superclass => class extends superclass {
               dataType: 'jsonp'
             }).then(data => {
               const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
-              if (dateCreated && moment(dateCreated).isAfter(this.maxDate)) {
+              if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
                 const faqLink = `<a href='/pageviews/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
                 this.toastWarn($.i18n('new-article-warning', faqLink));
               }
             });
+          }
+
+          if (!shouldShowErrors(entity)) {
+            return;
           }
 
           let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);

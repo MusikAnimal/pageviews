@@ -1,6 +1,9 @@
 %li.list-group-item(id="redirects")
   %p
     %strong= $I18N->msg( 'faq-redirects-title' )
+  - $redirectsOption = $I18N->msg( 'include-redirects' )
   %p
     - $redirectViewsLink = "<a href='/redirectviews'>" . $I18N->msg( 'redirectviews' ) . "</a>"
-    = $I18N->msg( 'faq-redirects-body', [ 'variables' => [ $redirectViewsLink ] ] )
+    = $I18N->msg( 'faq-redirects-body', [ 'variables' => [ $redirectViewsLink, $redirectsOption ] ] )
+  %p
+    = $I18N->msg( 'faq-redirects-body2', [ 'variables' => [ $redirectsOption ] ] )

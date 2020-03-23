@@ -83,6 +83,15 @@
         <p>
           <?php echo $I18N->msg( 'settings-notice' ); ?>
         </p>
+        <fieldset>
+          <div class="checkbox">
+            <label>
+              <input name="alwaysRedirects" type="checkbox">
+                <?php echo $I18N->msg( 'always-include-redirects' ); ?>
+              </input>
+            </label>
+          </div>
+        </fieldset>
         <fieldset class="radio-list search-method-options">
           <?php echo $I18N->msg( 'search-method' ); ?>
           <div class="radio">

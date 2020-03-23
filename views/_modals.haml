@@ -59,6 +59,11 @@
         %p
           = $I18N->msg( 'settings-notice' )
 
+        %fieldset
+          %div.checkbox
+            %label
+              %input(name="alwaysRedirects" type="checkbox")
+                = $I18N->msg( 'always-include-redirects' )
         %fieldset.radio-list.search-method-options
           = $I18N->msg( 'search-method' )
           %div.radio

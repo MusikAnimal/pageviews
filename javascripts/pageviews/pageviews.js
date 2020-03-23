@@ -110,6 +110,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     this.$projectInput.val(params.project);
     this.$platformSelector.val(params.platform);
     this.$agentSelector.val(params.agent);
+    this.$redirectsCheckbox.prop('checked', this.alwaysRedirects === 'true' || params.redirects === '1');
 
     this.validateDateRange(params);
 
@@ -253,7 +254,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     let params = {
       project: this.$projectInput.val(),
       platform: this.$platformSelector.val(),
-      agent: this.$agentSelector.val()
+      agent: this.$agentSelector.val(),
+      redirects: this.includeRedirects() ? '1' : '0',
     };
 
     /**
@@ -366,7 +368,71 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
    */
   setupListeners() {
     super.setupListeners();
-    $.merge(this.$platformSelector, this.$agentSelector).on('change', this.processInput.bind(this));
+    this.$platformSelector
+      .add(this.$agentSelector)
+      .add(this.$redirectsCheckbox)
+      .on('change', this.processInput.bind(this));
+  }
+
+  /**
+   * Combine redirect views into the main set of pageviews.
+   * @param {Object} redirectsData - As retrieved by getRedirects()
+   * @param {Object} xhrData - As retrieved by getPageViewsData()
+   * @returns {Object}
+   */
+  consolidateRedirectData(redirectsData, xhrData) {
+    const targetTitles = Object.keys(redirectsData);
+
+    if (!this.includeRedirects() || !targetTitles.length) {
+      return xhrData;
+    }
+
+    let newXhrData = {
+      entities: targetTitles,
+      labels: xhrData.labels,
+      datasets: new Array(targetTitles.length),
+      errors: xhrData.errors,
+      fatalErrors: xhrData.fatalErrors,
+      promises: xhrData.promises
+    };
+    const dateHeadings = this.getDateHeadings(false),
+      dateFormat = this.isMonthly() ? 'YYYY-MM' : 'YYYY-MM-DD';
+
+    Object.keys(redirectsData).forEach((target, targetIndex) => {
+      // Collect all the titles of the redirects for this `target` page.
+      const allTitles = redirectsData[target].map(rd => rd.title);
+
+      allTitles.forEach(title => {
+        // Find index within `xhrData.entities`.
+        const redirIndex = xhrData.entities.indexOf(title);
+
+        if (redirIndex === -1) {
+          // Most likely 404'd (no pageviews).
+          return;
+        }
+
+        // Get the data set for that redirect.
+        const redirDataset = xhrData.datasets[redirIndex];
+
+        // Loop through each item in the timeseries, summing redirect pageviews as if they were all for the target page.
+        redirDataset.map(elem => {
+          const date = moment(elem.timestamp, this.config.timestampFormat).format(dateFormat);
+          const index = dateHeadings.indexOf(date);
+          const newViews = newXhrData.datasets[targetIndex] && newXhrData.datasets[targetIndex][index]
+            ? newXhrData.datasets[targetIndex][index].views
+            : 0;
+
+          elem.article = title;
+          elem.views = elem.views + newViews;
+
+          // Add to newXhrData.
+          newXhrData.datasets[targetIndex] = newXhrData.datasets[targetIndex] || new Array(dateHeadings.length);
+          newXhrData.datasets[targetIndex][index] = elem;
+        });
+      });
+    });
+
+    return newXhrData;
   }
 
   /**
@@ -382,8 +448,16 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     }
 
     const getPageViewsAndAssessments = entities => {
-      this.getPageViewsData(entities).done(xhrData => {
-        this.updateChart(xhrData);
+      this.getRedirects(entities).done(redirectsData => {
+        // Fetch all the redirects and concat into `entities`.
+        Object.keys(redirectsData).forEach(target => {
+          entities = entities.concat(redirectsData[target].map(rd => rd.title));
+        });
+        this.getPageViewsData(entities.unique()).done(xhrData => {
+          this.updateChart(
+            this.consolidateRedirectData(redirectsData, xhrData)
+          );
+        });
       });
     };
 

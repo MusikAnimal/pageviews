@@ -72,6 +72,12 @@
               = $I18N->msg( 'user' )
             %option(value="spider")
               = $I18N->msg( 'spider' )
+        %div
+          %label
+            %input#redirects-checkbox(type="checkbox")
+            = $I18N->msg( 'include-redirects' )
+            %a.help-link(href="/pageviews/faq#redirects")
+              %span.glyphicon.glyphicon-question-sign
 
     %main.col-lg-8.col-md-10
       %div
