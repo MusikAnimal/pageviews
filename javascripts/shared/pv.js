@@ -1217,6 +1217,10 @@ class Pv extends PvConfig {
       if (this.beginAtZero === 'true') {
         $('.begin-at-zero-option').prop('checked', true);
       }
+
+      if (this.alwaysRedirects === 'true') {
+        this.$redirectsCheckbox.prop('checked', true);
+      }
     }
 
     this.processInput(true);
