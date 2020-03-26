@@ -9,7 +9,8 @@
 			"Josve05a",
 			"Larske",
 			"Umeaboy",
-			"Mjälten"
+			"Mjälten",
+			"Technic2"
 		]
 	},
 	"active-users": "Aktiva användare",
@@ -20,6 +21,7 @@
 	"all-of-wikimedia": "Hela Wikimedia",
 	"all-projects": "Alla projekt",
 	"all-time": "Hela tiden",
+	"always-include-redirects": "Inkludera alltid omdirigeringar (möjligtvis långsamt)",
 	"another-query": "Gör en till förfrågan",
 	"api-error": "Fel uppstod när $1 anropades",
 	"api-error-no-data": "Ingen data hittades.",
@@ -118,7 +120,8 @@
 	"faq-multi-lang-title": "Jag vill se data för en sida på alla språk i ett projekt",
 	"faq-old-data-body": "Wikimedias API för sidvisningar introducerades i augusti 2015 och har data fr.o.m. $1. Du kommer att förlita dig på andra verktyg som <a href='http://stats.grok.se'>stats.grok.se</a> för att se data äldre än detta. Om dessa fungerar eller inte har inte detta verktyg ansvar för och är bortom kontroll för de ansvariga.",
 	"faq-old-data-title": "Varför kan jag inte visa data äldre än $1?",
-	"faq-redirects-body": "Om en användare går till en omdirigering registreras en sidvisning, men inte för målsidan. Om du vill få det totala antalet sidvisningar för en sida, inklusive alla omdirigeringar, prova $1.",
+	"faq-redirects-body": "Om en användare går till en omdirigering registreras en sidvisning, men inte för målsidan. Om du vill få det totala antalet sidvisningar för en sida, inklusive alla omdirigeringar, aktivera $2, eller använd $1.",
+	"faq-redirects-body2": "Notera att alternativet $1 kan potentiellt sakta ner verktyget, och redigeringar till omdirigeringssidor räknas inte.",
 	"faq-redirects-title": "Hur räknas omdirigeringar?",
 	"faq-referrals-body": "Referensinformation är inte offentligt tillgänglig per sida. Du kan dock se total referensstatistik över alla Wikimedia-webbplatser på $1.",
 	"faq-referrals-title": "Kan jag se hur läsarna kom till sidan?",
@@ -157,6 +160,7 @@
 	"hosted": "Drivs med $1 på $2.",
 	"hover-to-exclude": "För muspekaren över sidornas namn och klicka på ✖ att utesluta dem från vy",
 	"images": "Bilder",
+	"include-redirects": "Inkludera omdirigeringar",
 	"include-subcategories": "Inkludera alla underkategorier",
 	"individual-projects": "Individuella projekt",
 	"info": "Info",

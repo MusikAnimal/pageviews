@@ -143,6 +143,7 @@
 	"hosted": "Ospitato con $1 su $2.",
 	"hover-to-exclude": "Per escludere pagine dalla vista, passa il mouse sopra il loro nome e clicca sulla ✖",
 	"images": "Immagini",
+	"include-redirects": "Includi reindirizzamenti",
 	"include-subcategories": "Includi tutte le sottocategorie",
 	"individual-projects": "Progetti individuali",
 	"info": "Informazioni",
