@@ -143,6 +143,7 @@
 	"hosted": "$2의 $1(으)로 호스팅됨.",
 	"hover-to-exclude": "뷰에서 문서를 제외하려면, 문서 이름 위를 가리킨 다음 ✖를 클릭하십시오",
 	"images": "그림",
+	"include-redirects": "넘겨주기 포함",
 	"include-subcategories": "모든 하위 분류 포함",
 	"individual-projects": "개별 프로젝트",
 	"info": "정보",

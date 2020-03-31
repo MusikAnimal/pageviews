@@ -303,7 +303,7 @@
 	"url-structure-project": "$1またはその他正しい$2",
 	"url-structure-special-range-latest": "最後の20日分のデータ",
 	"url-structure-special-range-latest-n": "。ただし<i>N</i>は整数。例えば<code>latest-30</code>は最後の30日分のデータを返します。",
-	"url-structure-start-date": "始期は$1形式で表示した日付。このパラメータと$2パラメータを省くと直近のデータを返します。",
+	"url-structure-start-date": "始期は$1形式で表示した日付。このパラメーターと$2パラメーターを省くと直近のデータを返します。",
 	"user": "利用者",
 	"users": "利用者",
 	"userviews": "ユーザービュー",

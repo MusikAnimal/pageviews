@@ -124,6 +124,7 @@
 	"hosted": "Allotjat amb $1 a $2.",
 	"hover-to-exclude": "Per excloure pàgines de la vista, poseu el ratolí sobre el seu nom i feu clic a la ✖",
 	"images": "Imatges",
+	"include-redirects": "Inclou-hi les redireccions",
 	"individual-projects": "Projectes individuals",
 	"info": "Info",
 	"invalid-lang-project": "$1 no és vàlid o no és un projecte multilingüe",
