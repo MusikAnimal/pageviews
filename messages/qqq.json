@@ -1,25 +1,25 @@
 {
 	"@metadata": {
 		"authors": [
+			"ANDROBETA",
+			"Amire80",
+			"Arthur2e5",
+			"BaRaN6161 TURK",
+			"Hamilton Abreu",
 			"Kaldari",
-			"MusikAnimal",
 			"Liuxinyu970226",
-			"Nike",
-			"Robby",
-			"Wladek92",
 			"LordMsz",
 			"Macofe",
-			"Purodha",
-			"Amire80",
-			"Siebrand",
-			"Arthur2e5",
-			"ANDROBETA",
-			"Srdjan m",
-			"Nemo bis",
-			"Hamilton Abreu",
 			"Matěj Suchánek",
+			"MusikAnimal",
+			"Nemo bis",
+			"Nike",
 			"Patriccck",
-			"BaRaN6161 TURK"
+			"Purodha",
+			"Robby",
+			"Siebrand",
+			"Srdjan m",
+			"Wladek92"
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",

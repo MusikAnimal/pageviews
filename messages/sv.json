@@ -1,16 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"WikiPhoenix",
 			"Ainali",
-			"Jopparn",
-			"Macofe",
 			"Dvorapa",
+			"Jopparn",
 			"Josve05a",
 			"Larske",
-			"Umeaboy",
+			"Macofe",
 			"Mjälten",
-			"Technic2"
+			"Technic2",
+			"Umeaboy",
+			"WikiPhoenix"
 		]
 	},
 	"active-users": "Aktiva användare",
@@ -385,6 +385,7 @@
 	"url-structure-project": "$1 eller annan giltig $2.",
 	"url-structure-project-multilang": "Det angivna källprojektet måste vara flerspråkigt. T.ex. $1 eller $2",
 	"url-structure-projects": "Giltiga $1 separerade med <code>|</code>. T.ex. $2",
+	"url-structure-redirects": "Inkluderar sidvisningarna för alla omdirigeringar för de begärda sidorna. Ändra till $1 för att aktivera eller $2 för att inaktivera (standard). Omdirigeringar kan tvingas att visas om alternativet \"Inkludera alltid omdirigeringar\" är valt användarens inställningar. Observera även att om det finns många omdirigeringar kan verktyget prestera avsevärt sämre.",
 	"url-structure-siteviews-agent": "Gäller endast när $1 är $2.",
 	"url-structure-siteviews-platform": "När $1 är $2",
 	"url-structure-siteviews-platform-no-pageviews": "När $1 är $2 eller $3",

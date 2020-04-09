@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gwenn-Ael",
+			"Dishual",
 			"Fulup",
-			"VIGNERON",
-			"Dishual"
+			"Gwenn-Ael",
+			"VIGNERON"
 		]
 	},
 	"active-users": "Implijerien oberiant",
@@ -73,7 +73,7 @@
 	"faq-massviews-sources-wikilinks": "Ebarzhit URL klok ur bajenn, da skouer $1.",
 	"faq-massviews-subject-page-title": "Petra eo an dibarzh « $1 » ?",
 	"faq-old-data-title": "Perak ne c'hallan ket diswel ar roadennoù a-raok $1 ?",
-	"faq-redirects-title": "Penaos e vez kontet an adkasadennoù ?",
+	"faq-redirects-title": "Penaos e vez kontet an adkasoù ?",
 	"faq-return-to": "Distreiñ d'ar bajenn $1.",
 	"faq-todays-date-title": "Perak ne c'hallan ket diskwel ar roadennoù hiziv ?",
 	"faq-try-tool": "Gallout a rit kavout an dra-se e $1.",
@@ -93,6 +93,7 @@
 	"history": "Istor",
 	"hosted": "Herberc'hiet gant $1 e $2",
 	"images": "Skeudennoù",
+	"include-redirects": "Lakaat an adkasoù ivez",
 	"info": "Titouroù",
 	"invalid-lang-project": "$1 zo ur rakres pe direizh, pe n'eo ket liesyezhek",
 	"invalid-params": "Arventennoù direizh !",

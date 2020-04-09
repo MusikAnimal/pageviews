@@ -1,19 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
-			"Incelemeelemani",
-			"Sayginer",
 			"1917 Ekim Devrimi",
-			"MrSchipunov",
-			"Vito Genovese",
-			"Bulgu",
-			"Rapsar",
-			"Trockya",
-			"Hedda",
-			"Mirzali",
 			"BaRaN6161 TURK",
+			"Bulgu",
 			"Grkn gll",
-			"SwornToTranslate29"
+			"Hedda",
+			"Incelemeelemani",
+			"Mirzali",
+			"MrSchipunov",
+			"Rapsar",
+			"Sayginer",
+			"SwornToTranslate29",
+			"Trockya",
+			"Vito Genovese"
 		]
 	},
 	"active-users": "Aktif kullanıcılar",
@@ -188,7 +188,7 @@
 	"latest": "En son",
 	"latest-days": "Son $1",
 	"learn-more": "Daha fazla bilgi",
-	"line": "Çizgi",
+	"line": "Satır",
 	"links": "Bağlantılar",
 	"list": "Liste",
 	"list-false-positives-heading": "Bilinen yanlış kesin şeyler",
