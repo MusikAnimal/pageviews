@@ -1148,7 +1148,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const linkSearchLink = `<a target='_blank' href='https://${project}/w/index.php?target=${link}&title=Special:LinkSearch'>${link}</a>`;
 
     $('.progress-counter').text($.i18n('fetching-data', 'External link API'));
-    this.massApi(requestData, project, 'euoffset', 'exturlusage').done(data => {
+    this.massApi(requestData, project, 'eucontinue', 'exturlusage').done(data => {
       if (data.error) {
         return this.apiErrorReset('External link API', data.error.info);
       }
