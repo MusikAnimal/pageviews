@@ -128,7 +128,11 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       params.project = $('.project-input').val();
     }
 
-    if (!forCacheKey) {
+    if (forCacheKey) {
+      // Page name needed to make a unique cache key for the query.
+      // For other purposes (e.g. this.pushParams()), we want to do special escaping of the page name.
+      params.target = this.$sourceInput.val().score();
+    } else {
       params.sort = this.sort;
       params.direction = this.direction;
       params.view = this.view;
