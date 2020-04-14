@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Adithyak1997",
 			"Ayyappaas",
 			"Praveenp"
 		]
@@ -13,6 +14,7 @@
 	"all-of-wikimedia": "വിക്കിമീഡിയയിലെ എല്ലാം",
 	"all-projects": "എല്ലാ പദ്ധതികളും",
 	"all-time": "ആകെ സമയം",
+	"always-include-redirects": "അപേക്ഷകൾ",
 	"another-query": "മറ്റൊരു ക്വറി",
 	"api-error": "$1 ക്വറി ചെയ്തതിൽ പിഴവ്",
 	"api-error-no-data": "വിവരങ്ങൾ ഒന്നും കണ്ടെത്തിയില്ല.",
@@ -77,6 +79,7 @@
 	"excluded-pages": "താളുകൾ ഒഴിവാക്കുക",
 	"external-link": "പുറത്തേയ്ക്കുള്ള കണ്ണി",
 	"faq": "പതിവുചോദ്യങ്ങൾ",
+	"faq-massviews-sources-title": "എന്താണ് \"സ്രോതസ്സുകൾ\"?",
 	"faq-return-to": "$1 എന്ന താളിലേക്ക് മടങ്ങുക.",
 	"faq-try-tool": "താങ്കൾക്കിത് $1 കണ്ണിയിൽ കാണാവുന്നതാണ്.",
 	"fatal-error": "പെരും പിഴവ്",
