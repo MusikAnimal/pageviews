@@ -134,6 +134,7 @@
 	"none": "ھیچیان",
 	"note": "تێبینی",
 	"november": "تشرینی دووەم",
+	"num-files": "$1 {{PLURAL:$2|پەڕگە|پەڕگە}}",
 	"num-languages": "$1 {{PLURAL:$2|زمان|زمان}}",
 	"num-pageviews": "$1 {{PLURAL:$2|بینین|بینین}}",
 	"num-redirects": "$1 ڕەوانەکەر",
@@ -221,5 +222,6 @@
 	"wikisource": "ویکیسەرچاوە",
 	"wikiversity": "ویکیزانکۆ",
 	"wikivoyage": "ویکیسەفەر",
-	"wiktionary": "ویکیفەرھەنگ"
+	"wiktionary": "ویکیفەرھەنگ",
+	"yearly": "ساڵانە"
 }
