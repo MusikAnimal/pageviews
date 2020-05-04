@@ -1132,7 +1132,7 @@ class TopViews extends Pv {
 
       ['mobile-web', 'mobile-app'].forEach(endpoint => {
         const url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article' +
-          `/${this.project}/${endpoint}/all-agents/${encodeURIComponent(page)}/${this.isMonthly() ? 'monthly' : 'daily'}` +
+          `/${this.project}/${endpoint}/user/${encodeURIComponent(page)}/${this.isMonthly() ? 'monthly' : 'daily'}` +
           `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
 
         // if we already have the data, just go straight to resolving via dummy Deferred
