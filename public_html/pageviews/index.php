@@ -105,6 +105,9 @@
             <option value="spider">
               <?php echo $I18N->msg( 'spider' ); ?>
             </option>
+            <option value="automated">
+              <?php echo $I18N->msg( 'automated' ); ?>
+            </option>
           </select>
         </div>
         <div>

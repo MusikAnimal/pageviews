@@ -16,8 +16,7 @@ const config = {
   templates,
   validateParams: ['source', 'agent', 'platform'],
   validParams: {
-    source: ['pageviews', 'unique-devices', 'pagecounts'],
-    agent: ['all-agents', 'user', 'spider']
+    source: ['pageviews', 'unique-devices', 'pagecounts']
   }
 };
 

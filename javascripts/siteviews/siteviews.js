@@ -420,7 +420,7 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Extends super.validateParams to handle special conditional params specific to Siteviews
    * @param {Object} params - params as fetched by this.parseQueryString()
-   * @returns {Object} same params with some invalid parameters correted, as necessary
+   * @returns {Object} same params with some invalid parameters corrected, as necessary
    * @override
    */
   validateParams(params) {
@@ -428,8 +428,6 @@ class SiteViews extends mix(Pv).with(ChartHelpers) {
       this.config.validParams.platform = ['all-sites', 'desktop-site', 'mobile-site'];
       this.config.defaults.platform = 'all-sites';
       params.agent = 'user';
-    } else {
-      this.config.validParams.agent = ['all-agents', 'user', 'spider'];
     }
 
     return super.validateParams(params);

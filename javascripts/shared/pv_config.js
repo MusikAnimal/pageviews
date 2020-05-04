@@ -237,7 +237,7 @@ class PvConfig {
       },
       timestampFormat: 'YYYYMMDD00',
       validParams: {
-        agent: ['all-agents', 'user', 'spider'],
+        agent: ['all-agents', 'user', 'spider', 'automated'],
         platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
         project: siteDomains
       },
