@@ -7,6 +7,7 @@
 			"Inkowik",
 			"Metalhead64",
 			"Mirzali",
+			"MusikAnimal",
 			"WikiBayer"
 		]
 	},
@@ -212,7 +213,7 @@
 	"massviews-transclusions-description": "Ruft die Aufrufe von Seiten ab, die eine Vorlage <a href='$1'>einbinden</a>",
 	"massviews-wikilinks-description": "Ruft die Aufrufe von <a href='$1'>verlinkten Seiten</a> auf einer Seite ab",
 	"may": "Mai",
-	"median": "Mittel",
+	"median": "Median",
 	"mediaviews": "Mediaviews",
 	"mediaviews-description": "Vergleich der Wiedergabezahlen von Audio- und Videodateien auf Wikimedia Commons",
 	"mediaviews-title": "Mediaviews Analysis",

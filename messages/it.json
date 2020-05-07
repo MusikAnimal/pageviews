@@ -12,7 +12,8 @@
 			"Matteocng",
 			"Nemo bis",
 			"Redredsonia",
-			"Ricordisamoa"
+			"Ricordisamoa",
+			"Scompo"
 		]
 	},
 	"active-users": "Utenti attivi",
@@ -38,6 +39,7 @@
 	"autocompletion": "Completamento automatico",
 	"autocompletion-redirects": "Completamento automatico che include i reindirizzamenti",
 	"autolog-option": "Usa automaticamente la scala logaritmica, se applicabile",
+	"automated": "Automatizzato",
 	"average": "Media",
 	"badges": "Distintivi",
 	"bar": "Barra",
@@ -89,6 +91,7 @@
 	"excluded-pages": "Pagine escluse",
 	"external-link": "Collegamento esterno",
 	"faq": "Domande frequenti",
+	"faq-agents-automated": "include programmi automatici che non sono crawler di motori di ricerca.",
 	"faq-agents-spider": "comprende i \"<a href='https://it.wikipedia.org/wiki/Crawler'>web crawler</a>\" dei motori di ricerca come Google che leggono le pagine ai fini del miglioramento dei risultati di ricerca. Le pagine possono ricevere molte viste dai web crawler, questo è il motivo per cui, per impostazione predefinita, lo strumento mostra solo i dati da parte degli utenti.",
 	"faq-agents-title": "Cosa sono gli \"Agenti\"?",
 	"faq-agents-user": "comprende tutte le persone che visualizzano una pagina. Contributori registrati, anonimi, e i nostri lettori.",
@@ -322,7 +325,7 @@
 	"unknown": "Sconosciuto",
 	"unsupported-browser-error": "$1 e versioni precedenti non è supportato. <a href='http://browsehappy.com/'>Aggiorna il tuo browser</a></strong>.",
 	"url-structure": "Struttura URL",
-	"url-structure-agent": "Uno tra $1 (visualizzatore umano, predefinito), $2 (crawler dei motore di ricerca) o $3 ($1 e $2)",
+	"url-structure-agent": "Uno tra $1 (visualizzatore umano, predefinito), $2 (crawler dei motore di ricerca), $3 (programmi automatizzati) o $4 (tutti i tipi)",
 	"url-structure-current": "L'ultimo giorno disponibile",
 	"url-structure-end-date": "Data di fine nel formato $1, per impostazione predefinita il giorno precedente.",
 	"url-structure-end-month": "Utilizzando il formato $1 sarà trattato come il mese di fine, e mostrerà i dati mensili invece che giornalieri.",
