@@ -295,7 +295,7 @@
 	"unknown": "不明",
 	"unsupported-browser-error": "$1以下はサポートされませんでした。<a href='http://browsehappy.com/'>ブラウザをアップデート</a>してください</strong>.",
 	"url-structure": "URLストラクチャ",
-	"url-structure-agent": "$1 (既定・人間の閲覧者)、$2 (検索エンジンのクローラ)または$3 ($1と$2の合計)",
+	"url-structure-agent": "$1 (既定・人間の閲覧者)、$2 (検索エンジンのクローラ)または$3 (自動化されたプログラム)あるいは$4(全区分)",
 	"url-structure-autolog": "$2にオプションを設定して$1で自動的に処理を停止",
 	"url-structure-end-date": "$1形式で表示した日付。既定ではその前日。",
 	"url-structure-end-month": "$1形式を採用すると最終月として処理、日別の代わりに月別で表示する。",
