@@ -23,9 +23,9 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $pagePileExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
-          <?php $categoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
-          <?php $wikiCategoryExample = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"; ?>
+          <?php $pagePileExample = "<pre dir='ltr' class='url-structure-example'>https://pageviews.toolforge.org/massviews?source=pagepile&amp;target=12345</pre>"; ?>
+          <?php $categoryExample = "<pre dir='ltr' class='url-structure-example'>https://pageviews.toolforge.org/massviews?source=category&amp;target=//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>"; ?>
+          <?php $wikiCategoryExample = "<pre dir='ltr' class='url-structure-example'>https://pageviews.toolforge.org/massviews?source=category&amp;target={{urlencode:{{fullurl}}}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-massviews-example', [ 'variables' => [ $pagePileExample, $categoryExample, $wikiCategoryExample ], 'parsemag' => true ] ); ?>
         </div>
         <div>
@@ -45,7 +45,7 @@
             <dd>
               <?php echo $I18N->msg( 'url-structure-massviews-target' ); ?>
               <br>
-              <?php echo $I18N->msg( 'url-structure-massviews-target-example', [ 'variables' => [ '<pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>', '<pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>', '<pre>//en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>' ] ] ); ?>
+              <?php echo $I18N->msg( 'url-structure-massviews-target-example', [ 'variables' => [ '<pre>https://en.wikipedia.org/w/index.php?title=Category:Folk_musicians_from_New_York</pre>', '<pre>https%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DCategory%3AFolk_musicians_from_New_York</pre>', '<pre>https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York</pre>' ] ] ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>
             <?php include "../../url_parts/_date_ranges.php"; ?>

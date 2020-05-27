@@ -1,6 +1,6 @@
 /**
  * Massviews Analysis tool
- * @link https://tools.wmflabs.org/massviews
+ * @link https://pageviews.toolforge.org/massviews
  */
 
 const config = require('./config');
@@ -746,10 +746,10 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   processHashtag(cb) {
     const hashtag = this.$sourceInput.val().replace(/^#/, ''),
-      hashTagLink = `<a target="_blank" href="http://tools.wmflabs.org/hashtags/search/${hashtag}">#${hashtag.escape()}</a>`;
+      hashTagLink = `<a target="_blank" href="https://hashtags.wmflabs.org/search/${hashtag}">#${hashtag.escape()}</a>`;
 
     $('.progress-counter').text($.i18n('fetching-data', 'Hashtag API'));
-    $.get(`//tools.wmflabs.org/hashtags/csv/${hashtag}?limit=5000`).done(data => {
+    $.get(`https://hashtags.wmflabs.org/csv/?query=${hashtag}`).done(data => {
       /**
        * CSVToArray code courtesy of Ben Nadel
        * http://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm

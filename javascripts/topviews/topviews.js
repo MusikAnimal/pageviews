@@ -1,6 +1,6 @@
 /**
  * Topviews Analysis tool
- * @link https://tools.wmflabs.org/topviews
+ * @link https://pageviews.toolforge.org/topviews
  */
 
 const config = require('./config');

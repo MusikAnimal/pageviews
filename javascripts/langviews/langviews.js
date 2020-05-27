@@ -1,6 +1,6 @@
 /**
  * Langviews Analysis tool
- * @link https://tools.wmflabs.org/langviews
+ * @link https://pageviews.toolforge.org/langviews
  */
 
 const config = require('./config');

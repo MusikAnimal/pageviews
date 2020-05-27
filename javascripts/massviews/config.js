@@ -59,8 +59,8 @@ const config = {
     hashtag: {
       placeholder: '#editathon',
       descriptionParams: () => [
-        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='https://tools.wmflabs.org/hashtags'>Wikipedia social search</a>")}`,
-        `<a target='_blank' href='https://tools.wmflabs.org/hashtags/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
+        `<span class='glyphicon glyphicon-flash'></span>${$.i18n('hashtag-credits', "<a target='_blank' href='https://hashtags.wmflabs.org'>Wikimedia hashtag search</a>")}`,
+        `<a target='_blank' href='https://hashtags.wmflabs.org/docs'>${$.i18n('hashtag').toLowerCase()}</a>`
       ],
       type: 'string'
     },

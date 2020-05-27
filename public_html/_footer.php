@@ -11,12 +11,12 @@
     <p>
       Or you can manually whitelist
       <code>
-        tools.wmflabs.org
+        pageviews.toolforge.org
       </code>
     </p>
     <h4>AdBlock Plus</h4>
     <p>
-      Click on the AdBlock Plus icon and select <i>Disable on tools.wmflabs.org</i>. Reload the page.
+      Click on the AdBlock Plus icon and select <i>Disable on pageviews.toolforge.org</i>. Reload the page.
     </p>
     <h4>uBlock</h4>
     <p>

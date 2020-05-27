@@ -22,7 +22,7 @@ This guide mostly assumes you're using MacOS or Linux. The setup process may dif
 
 1. Optionally [create the "meta" database](https://wikitech.wikimedia.org/wiki/Tool:Pageviews#Meta_database) on your
    local machine. This database is used for usage tracking, and also to store known
-   [false positives](https://tools.wmflabs.org/topviews/faq/#false_positive) for Topviews.
+   [false positives](https://pageviews.toolforge.org/topviews/faq/#false_positive) for Topviews.
    Unless you're working on Topviews, you can skip this step.
 
 1. Run `./node_modules/.bin/gulp` to watch the javascripts, stylesheets and views and automatically
