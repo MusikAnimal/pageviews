@@ -1,6 +1,6 @@
 /**
  * Siteviews Analysis tool
- * @link https://tools.wmflabs.org/siteviews
+ * @link https://pageviews.toolforge.org/siteviews
  */
 
 const config = require('./config');

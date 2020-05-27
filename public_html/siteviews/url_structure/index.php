@@ -23,7 +23,7 @@
       </header>
       <main class="col-lg-10 col-lg-offset-1">
         <div>
-          <?php $siteviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/siteviews?sites={{SERVERNAME}}</pre>"; ?>
+          <?php $siteviewsLink = "<pre dir='ltr' class='url-structure-example'>https://pageviews.toolforge.org/siteviews?sites={{SERVERNAME}}</pre>"; ?>
           <?php echo $I18N->msg( 'url-structure-example-siteviews', [ 'variables' => [ $siteviewsLink ], 'parsemag' => true ] ); ?>
         </div>
         <div>

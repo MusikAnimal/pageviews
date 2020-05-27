@@ -151,7 +151,7 @@ if ( count( $api_pages ) > 1 && isset( $_GET['totals'] ) ) {
 
 $output['pages'] = (object) $output['pages'];
 
-$ttl = min(max((int)$_GET['ttl'], 10), 60);
+$ttl = min(max((int)($_GET['ttl'] ?? 0), 10), 60);
 $cacheItem = $cache->getItem( $cacheKey )
     ->set( $output )
     ->expiresAfter( new DateInterval( 'PT' . $ttl . 'M' ) );

@@ -1,6 +1,6 @@
 /**
  * Userviews Analysis tool
- * @link https://tools.wmflabs.org/userviews
+ * @link https://pageviews.toolforge.org/userviews
  */
 
 const config = require('./config');

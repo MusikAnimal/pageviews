@@ -1,6 +1,6 @@
 /**
  * Metaviews Analysis tool
- * @link https://tools.wmflabs.org/metaviews
+ * @link https://pageviews.toolforge.org/metaviews
  */
 
 const config = require('./config');

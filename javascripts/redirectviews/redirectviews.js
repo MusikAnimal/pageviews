@@ -1,6 +1,6 @@
 /**
  * Redirect Views Analysis tool
- * @link https://tools.wmflabs.org/redirectviews
+ * @link https://pageviews.toolforge.org/redirectviews
  */
 
 const config = require('./config');

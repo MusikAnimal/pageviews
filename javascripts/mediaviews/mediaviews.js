@@ -1,6 +1,6 @@
 /**
  * Mediaviews Analysis tool
- * @link https://tools.wmflabs.org/mediaviews
+ * @link https://pageviews.toolforge.org/mediaviews
  */
 
 const config = require('./config');

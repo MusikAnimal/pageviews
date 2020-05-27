@@ -73,12 +73,12 @@
                 <?php echo $I18N->msg( 'faq-massviews-sources-external-link', [ 'variables' => [ $linkSearchLink, $linkSearchDocLink ] ] ); ?>
               </li>
               <li>
-                <?php $hashtagCredits = $I18N->msg( 'hashtag-credits', [ 'variables' => [ "<a target='_blank' href='//tools.wmflabs.org/hashtags'>Wikipedia social search</a>" ] ] ); ?>
-                <?php $hashtagLink = "<a href='http://tools.wmflabs.org/hashtags/search/100wikidays'>#100wikidays</a>"; ?>
-                <?php $infoLink = "<a href='http://tools.wmflabs.org/hashtags/docs'>" . $I18N->msg( 'documentation' ) . "</a>"; ?>
+                <?php $hashtagCredits = $I18N->msg( 'hashtag-credits', [ 'variables' => [ "<a target='_blank' href='https://hashtags.wmflabs.org'>Wikimedia hashtag search</a>" ] ] ); ?>
+                <?php $hashtagLink = "<a href='http://hashtags.wmflabs.org/search/100wikidays'>#100wikidays</a>"; ?>
+                <?php $infoLink = "<a href='http://hashtags.wmflabs.org/docs'>" . $I18N->msg( 'documentation' ) . "</a>"; ?>
                 <i><?php echo $I18N->msg( 'hashtag' ); ?></i>
                 &mdash;
-                <?php echo $I18N->msg( 'massviews-hashtag-description', [ 'variables' => [ $hashtagCredits, "<a target='_blank' href='//tools.wmflabs.org/hashtags/docs'>" . strtolower( $I18N->msg( 'hashtag' ) ) . "</a>" ] ] ) . '.'; ?>
+                <?php echo $I18N->msg( 'massviews-hashtag-description', [ 'variables' => [ $hashtagCredits, "<a target='_blank' href='https://hashtags.wmflabs.org/docs'>" . strtolower( $I18N->msg( 'hashtag' ) ) . "</a>" ] ] ) . '.'; ?>
                 <?php echo $I18N->msg( 'faq-massviews-sources-hashtag', [ 'variables' => [ '<code>#</code>', $hashtagLink, $infoLink ] ] ); ?>
               </li>
               <li>

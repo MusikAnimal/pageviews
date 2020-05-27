@@ -88,7 +88,7 @@ const ListHelpers = superclass => class extends superclass {
   }
 
   /**
-   * Link to /pageviews for given article and chosen daterange
+   * Link to pageviews app for given article and chosen daterange
    * @param {String} project - base project, e.g. en.wikipedia.org
    * @param {String} page - page name
    * @returns {String} URL

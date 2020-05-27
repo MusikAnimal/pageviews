@@ -54,7 +54,7 @@
           <?php include "../../faq_parts/_feedback.php"; ?>
         </ul>
         <div class="col-lg-12 text-center tm">
-          <a href="/pageviews">
+          <a href="/">
             <?php echo $I18N->msg( 'faq-return-to', array( 'variables' => array( $I18N->msg( 'title' ) ), 'parsemag' => true ) ); ?>
           </a>
         </div>

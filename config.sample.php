@@ -6,7 +6,7 @@ define( 'ROOTDIR', '/data/project/pageviews' );
 // Whatever your localhost (or production) base path is set to.
 // On local, the following should work if you start the server with
 //   `php -S localhost:8000` within the public_html directory.
-// On Toolforge, this should be 'https://tools.wmflabs.org'
+// On Toolforge, this should be 'https://pageviews.toolforge.org'
 define( 'BASE_PATH', 'http://localhost:8000' );
 
 // Replica database credentials.
@@ -24,7 +24,3 @@ define( 'META_DB_USER', 'username' );
 define( 'META_DB_PASSWORD', 'password' );
 define( 'META_DB_PORT', 3006 );
 define( 'META_DB_NAME', 'database_name' );
-
-// Leave this blank. This is used to append '-test' to the app name
-// to fix routing on Toolforge test installations.
-define( 'APP_SUFFIX', '' );
