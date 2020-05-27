@@ -159,16 +159,16 @@ class Pv extends PvConfig {
    */
   loadTranslations() {
     let messagesToLoad = {
-      [i18nLang]: `${appPath}/${currentApp}/messages/${i18nLang}.json`
+      [i18nLang]: `/messages/${i18nLang}.json`
     };
     if (i18nLang !== 'en') {
       if ($.i18n.fallbacks[i18nLang]) {
         $.i18n.fallbacks[i18nLang].forEach(fallback => {
-          messagesToLoad[fallback] = `${appPath}/${currentApp}/messages/${fallback}.json`;
+          messagesToLoad[fallback] = `/messages/${fallback}.json`;
         });
       }
 
-      messagesToLoad.en = `${appPath}/${currentApp}/messages/en.json`;
+      messagesToLoad.en = '/messages/en.json';
     }
     return $.i18n({
       locale: i18nLang
@@ -672,7 +672,7 @@ class Pv extends PvConfig {
     const dfd = $.Deferred();
 
     $.ajax({
-      url: '/pageviews/api.php',
+      url: '/api.php',
       data: {
         pages: pages.join('|'),
         project: this.project + '.org',

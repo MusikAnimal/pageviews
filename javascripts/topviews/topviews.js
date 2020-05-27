@@ -328,7 +328,7 @@ class TopViews extends Pv {
   }
 
   /**
-   * Link to /pageviews for given article and range around chosen date.
+   * Link to pageviews app for given article and range around chosen date.
    * @param {string} article - page name
    * @returns {string} URL
    */
@@ -1009,7 +1009,7 @@ class TopViews extends Pv {
       return dfd.resolve(this.editData);
     }
 
-    const url = `/pageviews/api.php?project=${this.project}.org&start=${startDate.format('YYYY-MM-DD')}` +
+    const url = `/api.php?project=${this.project}.org&start=${startDate.format('YYYY-MM-DD')}` +
       `&end=${endDate.format('YYYY-MM-DD')}&pages=${encodeURIComponent(page)}`;
 
     $.ajax({ url, dataType: 'json' }).done(data => {

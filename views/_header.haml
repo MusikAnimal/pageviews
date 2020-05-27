@@ -51,9 +51,9 @@
             %a.lang-link(href="#" data-lang="#{$lang}")= $langName
 
   %div.navbar-collapse.collapse.interapp-navigation
-    %a.home-link.pull-left(href='/pageviews')
+    %a.home-link.pull-left(href='/')
     %ol.interapp-links.nav.navbar-nav.navbar-left
-      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews' ]
+      - $apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ]
       - if ( $rtl === 'rtl' )
         - $apps = array_reverse( $apps )
 

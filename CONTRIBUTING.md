@@ -28,9 +28,14 @@ This guide mostly assumes you're using MacOS or Linux. The setup process may dif
 1. Run `./node_modules/.bin/gulp` to watch the javascripts, stylesheets and views and automatically
    recompile when new changes are saved.
 
-1. Go to the public directory (`cd public_html`) and start the server with `php -S localhost:8000`.
+1. Go to the public directory for the desired app (e.g. `cd public_html/pageviews`) and
+   start the server with `php -S localhost:8000`.
 
-You should be able to access each application as a subpath of localhost:8000, e.g. http://localhost:8000/pageviews.
+You should be up and running at http://localhost:8000. Unfortunately, after the
+[toolforge.org migration](https://phabricator.wikimedia.org/T251684), you can no longer access
+the individual apps via subpath. Some links are hard-coded to Toolforge due to this same caveat.
+Eventually a Docker container will be used for development that will mimic the Toolforge
+environment without needing any hard-coded links.
 
 ## Code walkthrough
 JavaScript is written in ES6+ where possible, and transpiled to ES5 with [Babel](https://babeljs.io/).
@@ -69,7 +74,7 @@ that lives within the directory for that app inside `public_html`. When you run 
 they will get versioned and the original `application.js` will be deleted.
 
 All JavaScript is documented using [JSDoc](http://usejsdoc.org/).
-The documentation is hosted at https://tools.wmflabs.org/pageviews/jsdocs.
+The documentation is hosted at https://pageviews.toolforge.org/jsdocs.
 You can generate the docs locally by running:
 ```
 ./node_modules/.bin/gulp jsdoc && open jsdocs/gen/index.html

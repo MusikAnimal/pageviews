@@ -19,7 +19,7 @@
 
       %main.col-lg-10.col-lg-offset-1
         %div
-          - $pageviewsLink = "<pre dir='ltr' class='url-structure-example'>//tools.wmflabs.org/pageviews?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
+          - $pageviewsLink = "<pre dir='ltr' class='url-structure-example'>//pageviews.toolforge.org/?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"
           - $project = "<code>en.wikipedia.org</code>"
           - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
           - $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"
@@ -46,7 +46,7 @@
             - include "../../url_parts/_mute_validations.php"
 
         %div.col-lg-12.text-center.tm
-          %a(href="/pageviews")
+          %a(href="/")
             = $I18N->msg( 'faq-return-to', [ 'variables' => [ $I18N->msg( 'title' ) ], 'parsemag' => true ] )
 
       - include "../../_footer.php";

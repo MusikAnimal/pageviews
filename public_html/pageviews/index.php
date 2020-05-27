@@ -91,7 +91,7 @@
         <div>
           <label for="agent-select">
             <?php echo $I18N->msg( 'agent' ); ?>
-            <a class="help-link" href="/pageviews/faq#agents">
+            <a class="help-link" href="/faq#agents">
               <span class="glyphicon glyphicon-question-sign"></span>
             </a>
           </label>
@@ -114,7 +114,7 @@
           <label>
             <input id="redirects-checkbox" type="checkbox">
             <?php echo $I18N->msg( 'include-redirects' ); ?>
-            <a class="help-link" href="/pageviews/faq#redirects">
+            <a class="help-link" href="/faq#redirects">
               <span class="glyphicon glyphicon-question-sign"></span>
             </a>
           </label>

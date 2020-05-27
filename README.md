@@ -1,15 +1,15 @@
 # Pageviews Analysis
 A suite of tools to visualize pageviews data of Wikimedia Foundation wikis
 
-Live tool: https://tools.wmflabs.org/pageviews (and [Langviews](https://tools.wmflabs.org/langviews),
-[Topviews](https://tools.wmflabs.org/topviews), [Siteviews](https://tools.wmflabs.org/siteviews),
-[Massviews](https://tools.wmflabs.org/massviews), [Redirect Views](https://tools.wmflabs.org/redirectviews),
-[Userviews](https://tools.wmflabs.org/userviews), [Mediaviews](https://tools.wmflabs.org/mediaviews))
+Live tool: https://pageviews.toolforge.org (and [Langviews](https://pageviews.toolforge.org/langviews),
+[Topviews](https://pageviews.toolforge.org/topviews), [Siteviews](https://pageviews.toolforge.org/siteviews),
+[Massviews](https://pageviews.toolforge.org/massviews), [Redirect Views](https://pageviews.toolforge.org/redirectviews),
+[Userviews](https://pageviews.toolforge.org/userviews), [Mediaviews](https://pageviews.toolforge.org/mediaviews))
 
 * User documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
 * Feedback forum: https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis
 * Bug tracker: https://phabricator.wikimedia.org/project/board/2045/
-* JavaScript documentation: https://tools.wmflabs.org/pageviews/jsdocs
+* JavaScript documentation: https://pageviews.toolforge.org/jsdocs
 * Metaviews (pageviews of the Pageviews apps): https://tools.wmflabs.org/metaviews
 * Toolforge maintainer documentation: https://wikitech.wikimedia.org/wiki/Tool:Pageviews
 
