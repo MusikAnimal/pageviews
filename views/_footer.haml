@@ -1,26 +1,15 @@
 %div#ad_blocker_notice(style="display:none")
-  %div(style="padding:20px")
-    %h3 Looks like you are using an ad blocker!
+  %div.alert.alert-danger.alert-dismissable
+    %button.close(type="button" data-dismiss="alert" aria-label="Close")
+      %span(aria-hidden="true")
+        &times;
 
-    Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
-    In our case, we're just trying to show you metrics, not collect them!
-
-    %p
-      This issue may be resolved by simply updating your ad blocker, specifically the
-      %code EasyPrivacy
-      list.
-
-    %p
-      Or you can manually whitelist
-      %code
-        pageviews.toolforge.org
-
-    %h4 AdBlock Plus
-    %p
-      Click on the AdBlock Plus icon and select <i>Disable on pageviews.toolforge.org</i>. Reload the page.
-    %h4 uBlock
-    %p
-      Click on the uBlock icon and then click on the large power icon. Reload the page.
+    %div.text-center
+      %strong = $I18N->msg( 'adblock-error-title' )
+      %br
+      = $I18N->msg( 'adblock-error-body1' )
+      %br
+      = $I18N->msg( 'adblock-error-body2' )
 
 %div.spacer
 
@@ -65,5 +54,5 @@
 :javascript
   if ( !window.noAdBlockers ) {
     var noticeContent = document.getElementById('ad_blocker_notice');
-    document.querySelector('body').innerHTML = noticeContent.innerHTML;
+    document.querySelector('.site-header').innerHTML = noticeContent.innerHTML + document.querySelector('.site-header').innerHTML;
   }
