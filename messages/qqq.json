@@ -23,6 +23,9 @@
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
+	"adblock-error-title": "Title for error message shown when the user has an ad blocker enabled.",
+	"adblock-error-body1": "Body for error message shown when the user has an ad blocker enabled.",
+	"adblock-error-body2": "Additional text for error message shown when the user has an ad blocker enabled.",
 	"admins": "Word for the users who have sysop rights on a wiki.\n{{Identical|Admin}}",
 	"agent": "Header for the part of the interface that lets the user choose which type of browser agents to view statistics for. For example, 'User', 'Spider', etc.\n{{Identical|Agent}}",
 	"all": "Label for option to view statistics for all platforms.\n{{Identical|All}}",

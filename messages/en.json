@@ -6,6 +6,9 @@
 		]
 	},
 	"active-users": "Active users",
+	"adblock-error-title": "Looks like you are using an ad blocker!",
+	"adblock-error-body1": "Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics. In our case, we're just trying to show you metrics, not collect them!",
+	"adblock-error-body2": "If the tool is not working properly, please try whitelisting <b>pageviews.toolforge.org</b>",
 	"admins": "Admins",
 	"agent": "Agent",
 	"all": "All",

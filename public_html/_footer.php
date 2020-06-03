@@ -1,27 +1,16 @@
 <div id="ad_blocker_notice" style="display:none">
-  <div style="padding:20px">
-    <h3>Looks like you are using an ad blocker!</h3>
-    Pageviews Analysis shows no ads, but the ad blockers blacklist websites that collect metrics.
-    In our case, we're just trying to show you metrics, not collect them!
-    <p>
-      This issue may be resolved by simply updating your ad blocker, specifically the
-      <code>EasyPrivacy</code>
-      list.
-    </p>
-    <p>
-      Or you can manually whitelist
-      <code>
-        pageviews.toolforge.org
-      </code>
-    </p>
-    <h4>AdBlock Plus</h4>
-    <p>
-      Click on the AdBlock Plus icon and select <i>Disable on pageviews.toolforge.org</i>. Reload the page.
-    </p>
-    <h4>uBlock</h4>
-    <p>
-      Click on the uBlock icon and then click on the large power icon. Reload the page.
-    </p>
+  <div class="alert alert-danger alert-dismissable">
+    <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">
+        &times;
+      </span>
+    </button>
+    <div class="text-center">
+      <strong><?php echo $I18N->msg( 'adblock-error-title' ); ?></strong>
+      <?php echo $I18N->msg( 'adblock-error-body1' ); ?>
+      <br>
+      <?php echo $I18N->msg( 'adblock-error-body2' ); ?>
+    </div>
   </div>
 </div>
 <div class="spacer"></div>
@@ -70,7 +59,7 @@
 //<![CDATA[
   if ( !window.noAdBlockers ) {
     var noticeContent = document.getElementById('ad_blocker_notice');
-    document.querySelector('body').innerHTML = noticeContent.innerHTML;
+    document.querySelector('.site-header').innerHTML = noticeContent.innerHTML + document.querySelector('.site-header').innerHTML;
   }
   
 //]]>
