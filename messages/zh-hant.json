@@ -14,6 +14,9 @@
 		]
 	},
 	"active-users": "活躍使用者",
+	"adblock-error-title": "您似乎使用了 ad blocker 廣告攔截程式！",
+	"adblock-error-body1": "Pageviews Analysis 必不會跳出任何廣告，但是您的 ad blocker 可能會阻擋一些度量的顯示，因為這些內容包含著「pageview」字詞。",
+	"adblock-error-body2": "若工具無法正常運作，請為 <b>pageviews.toolforge.org</b> 停用 ad blocker",
 	"admins": "管理員",
 	"agent": "使用媒介",
 	"all": "所有",

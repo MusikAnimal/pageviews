@@ -27,6 +27,9 @@
 		]
 	},
 	"active-users": "Utilisateurs actifs",
+	"adblock-error-title": "Il semblerait que vous utilisez un bloqueur de publicité !",
+	"adblock-error-body1": "Pageviews Analysis ne montre aucune publicité, mais votre bloqueur de publicités peut empêcher certains métriques d’être affichés parce qu’ils contiennent le mot 'pageview'.",
+	"adblock-error-body2": "Si l’outil ne fonctionne pas correctement, veuillez désactiver le bloqueur de publicité pour <b>pageviews.toolforge.org</b>",
 	"admins": "Administrateurs",
 	"agent": "Agent",
 	"all": "Tous",
