@@ -13,6 +13,9 @@
 		]
 	},
 	"active-users": "Aktív szerkesztők",
+	"adblock-error-title": "Úgy tűnik, reklámblokkolót használsz!",
+	"adblock-error-body1": "A Pageviews Analysis nem jelenít meg reklámokat, de a reklámblokkolód megakadályozhatja bizonyos statisztikák megjelenítését azért, mert tartalmazzák a „pageview” szót.",
+	"adblock-error-body2": "Ha nem működik megfelelően az eszköz, kapcsold ki a reklámblokkolót a <b>pageviews.toolforge.org</b> honlapra.",
 	"admins": "Adminisztrátor",
 	"agent": "Ügynök",
 	"all": "Összes",
@@ -154,6 +157,7 @@
 	"monthly-average": "Havi átlag",
 	"more": "Több",
 	"most-viewed-pages": "Legtöbbször nézett lapok",
+	"most-viewed-rank": "$1. a $2 között $3 hónapban",
 	"namespace": "Névtér",
 	"no-autocompletion": "Nincs automatikus kiegészítés",
 	"note": "Megjegyzés",

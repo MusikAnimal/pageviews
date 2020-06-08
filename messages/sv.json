@@ -14,6 +14,9 @@
 		]
 	},
 	"active-users": "Aktiva användare",
+	"adblock-error-title": "Det ser ut som att du använder en annonsblockerare!",
+	"adblock-error-body1": "Pageviews Analysis visar inte några annonser, men din annonsblockerare kan förhindra lite statistik från att visas eftersom det innehåller ordet \"pageview\".",
+	"adblock-error-body2": "Om verktyg inte fungerar ordentligt, var god inaktivera annonsblockering för <b>pageviews.toolforge.org</b>",
 	"admins": "Administratörer",
 	"agent": "Agent",
 	"all": "Alla",

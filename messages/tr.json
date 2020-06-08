@@ -17,6 +17,9 @@
 		]
 	},
 	"active-users": "Aktif kullanıcılar",
+	"adblock-error-title": "Bir reklam engelleyici kullandığınız anlaşılıyor!",
+	"adblock-error-body1": "Sayfa Görüntüleme Analizi hiçbir reklam göstermez, ancak reklam engelleyiciniz 'sayfa görüntüleme' kelimesini içerdiği için bazı metriklerin gösterilmesini engelleyebilir.",
+	"adblock-error-body2": "Araç düzgün çalışmıyorsa, lütfen <b>pageviews.toolforge.org</b> için reklam engelleyiciyi devre dışı bırakın",
 	"admins": "Yöneticiler",
 	"agent": "Ajan",
 	"all": "Hepsi",

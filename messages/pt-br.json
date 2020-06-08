@@ -14,6 +14,9 @@
 		]
 	},
 	"active-users": "Usuários ativos",
+	"adblock-error-title": "Parece que você está usando um bloqueador de anúncios!",
+	"adblock-error-body1": "A Análise de visualizações de página não mostra nenhum anúncio, mas seu bloqueador de anúncios pode impedir que algumas métricas sejam exibidas porque contêm a palavra 'pageview'.",
+	"adblock-error-body2": "Se a ferramenta não estiver funcionando corretamente, desative o bloqueador de anúncios para <b>pageviews.toolforge.org</b>",
 	"admins": "Administradores",
 	"agent": "Agente",
 	"all": "Todas",
