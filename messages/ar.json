@@ -20,6 +20,8 @@
 		]
 	},
 	"active-users": "المستخدمون النشطون",
+	"adblock-error-title": "يبدو أنك تستخدم برنامج لمنع الإعلانات!",
+	"adblock-error-body2": "لو أن الأداة لا تعمل بشكل سليم، فمن فضلك عطل مانع الإعلانات ل<b>pageviews.toolforge.org</b>",
 	"admins": "الإداريون",
 	"agent": "وكيل",
 	"all": "الكل",

@@ -17,6 +17,9 @@
 		]
 	},
 	"active-users": "活動中の利用者",
+	"adblock-error-title": "アドブロッカーを使っていませんか？",
+	"adblock-error-body1": "ページビュー分析であ、いかなる広告も表示しませんが、“pageview” という単語が入っているため、アドブロッカーが特定の項目の表示を妨げることがあります。",
+	"adblock-error-body2": "もし、ツールが正常に動作しない場合は、<b>pageviews.toolforge.org</b>に対するアドブロッカーの動作をオフにしてください。",
 	"admins": "管理者",
 	"agent": "エージェント",
 	"all": "すべて",
