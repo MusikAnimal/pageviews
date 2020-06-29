@@ -67,7 +67,7 @@
 	"chart-types": "Header for the interface that lets the user choose what type of chart they want",
 	"class": "Classification of an article, also known as an assessment. This message should be brief.\n{{Identical|Class}}",
 	"clear": "Label for the link to clear all pages from the page selector.\n{{Identical|Clear}}",
-	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.\n{{Identical|,}}",
+	"comma-character": "{{Optional}}\nThe character to show separating values of a list. In most languages this is a comma.",
 	"counts": "Label for the value showing the number of counts that a page received. This is an abbreviated word for 'pagecounts'.\n{{Identical|Count}}",
 	"credits": "Footer message crediting the programmers. $1, $2, and $3 are links to the programmers.",
 	"csv": "{{Optional}}\nLink for CSV file. See https://en.wikipedia.org/wiki/Comma-separated_values for information on what a CSV file is.\nCSV is the name of a file format; should not be translated.",
