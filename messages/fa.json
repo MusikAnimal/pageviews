@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Aammiinn11",
 			"Alifakoor",
 			"Alirn",
 			"Arash.pt",
@@ -19,6 +20,8 @@
 		]
 	},
 	"active-users": "کاربران فعال",
+	"adblock-error-title": "گویا شما از مسدودکنندهٔ آگهی استفاده می‌کنید.",
+	"adblock-error-body2": "اگر ابزار به‌درستی کار نمی‌کند، مسدودکنندهٔ آگهی را برای نشانی زیر غیرفعال کنید: <b>pageviews.toolforge.org</b>",
 	"admins": "مدیران",
 	"agent": "عامل‌",
 	"all": "همه",
