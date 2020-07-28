@@ -346,7 +346,7 @@ class Pv extends PvConfig {
         this.addInvalidParamNotice(
           $.i18n('param-error-1', moment(this.minDate).format(this.dateFormat)),
           'warning',
-          '/faq#old_data'
+          `/${this.app}/faq#old_data`
         );
         startDate = this.minDate;
         params.start = this.minDate;
@@ -672,7 +672,7 @@ class Pv extends PvConfig {
     const dfd = $.Deferred();
 
     $.ajax({
-      url: '/api.php',
+      url: `/${this.app}/api.php`,
       data: {
         pages: pages.join('|'),
         project: this.project + '.org',

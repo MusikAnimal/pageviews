@@ -585,7 +585,7 @@ const ChartHelpers = superclass => class extends superclass {
             }).then(data => {
               const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
               if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
-                const faqLink = `<a href='/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
+                const faqLink = `<a href='/${this.app}/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
                 this.toastWarn($.i18n('new-article-warning', faqLink));
               }
             });
