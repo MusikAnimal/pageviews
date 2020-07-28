@@ -32,7 +32,7 @@
     <span class="nowrap">
       <?php $translateWiki = "<a href='https://translatewiki.net/'>translatewiki.net</a>"; ?>
       <?php $jqueryI18n = "<a href='https://github.com/wikimedia/jquery.i18n'>jQuery.i18n</a>"; ?>
-      <?php $intuition = "<a href='https://tools.wmflabs.org/intuition/#tab-about'>Intuition</a>"; ?>
+      <?php $intuition = "<a href='https://intuition.toolforge.org#tab-about'>Intuition</a>"; ?>
       <?php echo $I18N->msg( 'translation-credits', [ 'variables' => [ $translateWiki, $jqueryI18n, $intuition ], 'parsemag' => true ] ); ?>
     </span>
   </div>

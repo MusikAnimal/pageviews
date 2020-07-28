@@ -440,7 +440,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    * @return {String} - the URL
    */
   getPileURL(id) {
-    return `http://tools.wmflabs.org/pagepile/api.php?action=get_data&id=${id}`;
+    return `http://pagepile.toolforge.org/api.php?action=get_data&id=${id}`;
   }
 
   /**
@@ -459,7 +459,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
    */
   getPagePile(id) {
     const dfd = $.Deferred();
-    const url = `https://tools.wmflabs.org/pagepile/api.php?id=${id}&action=get_data` +
+    const url = `https://pagepile.toolforge.org/api.php?id=${id}&action=get_data` +
       `&format=json&metadata=1&limit=${this.config.apiLimit}`;
 
     $.ajax({

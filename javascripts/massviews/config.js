@@ -36,7 +36,7 @@ const config = {
     },
     pagepile: {
       placeholder: '12345',
-      descriptionParams: () => ["<a target='_blank' href='https://tools.wmflabs.org/pagepile'>PagePile</a>"],
+      descriptionParams: () => ["<a target='_blank' href='https://pagepile.toolforge.org'>PagePile</a>"],
       type: 'number'
     },
     subpages: {
