@@ -3,7 +3,7 @@
         "name" : "pageviews",
         "title": "Pageviews Analysis",
         "description": "Analysis of pageviews across multiple pages",
-        "url": "https://tools.wmflabs.org/pageviews",
+        "url": "https://pageviews.toolforge.org",
         "keywords": "pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal, Kaldari, Marcel Ruiz Forns",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -12,7 +12,7 @@
         "name" : "langviews",
         "title": "Langviews Analysis",
         "description": "Pageviews of an article across all languages",
-        "url": "https://tools.wmflabs.org/langviews",
+        "url": "https://langviews.toolforge.org",
         "keywords": "langviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -21,7 +21,7 @@
         "name" : "topveiws",
         "title": "Topviews Analysis",
         "description": "Most viewed pages of a project",
-        "url": "https://tools.wmflabs.org/topviews",
+        "url": "https://topviews.toolforge.org",
         "keywords": "topviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -30,7 +30,7 @@
         "name" : "siteviews",
         "title": "Siteviews Analysis",
         "description": "Analysis of total pageviews across multiple projects",
-        "url": "https://tools.wmflabs.org/siteviews",
+        "url": "https://siteviews.toolforge.org",
         "keywords": "siteviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -39,7 +39,7 @@
         "name" : "massviews",
         "title": "Massviews Analysis",
         "description": "Import a list of pages and analyze the pageviews",
-        "url": "https://tools.wmflabs.org/massviews",
+        "url": "https://massviews.toolforge.org",
         "keywords": "massviews,pageviews,page views,traffic,visitors,statistics,analytics,stats,views,glam",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -48,7 +48,7 @@
         "name" : "redirectviews",
         "title": "Redirect Views",
         "description": "Get the pageviews of all redirects to a page",
-        "url": "https://tools.wmflabs.org/redirectviews",
+        "url": "https://redirectviews.toolforge.org",
         "keywords": "redirectviews,redirects,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -57,7 +57,7 @@
         "name" : "userviews",
         "title": "Userviews",
         "description": "Get the pageviews of all pages created by a user",
-        "url": "https://tools.wmflabs.org/userviews",
+        "url": "https://userviews.toolforge.org",
         "keywords": "userviews,pages created,pageviews,page views,traffic,visitors,statistics,analytics,stats,views",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
@@ -66,7 +66,7 @@
         "name": "mediaviews",
         "title": "Mediaviews",
         "description": "Get the playcounts of audio and video on Commons",
-        "url": "https://tools.wmflabs.org/mediaviews",
+        "url": "https://mediaviews.toolforge.org",
         "keywords": "mediaviews,traffic,visitors,statistics,analytics,stats,views,playcounts,commons",
         "author": "MusikAnimal",
         "repository": "https://github.com/MusikAnimal/pageviews"
