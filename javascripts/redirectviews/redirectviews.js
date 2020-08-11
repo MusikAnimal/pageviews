@@ -509,7 +509,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     $('.progress-counter').text($.i18n('fetching-data', 'Redirects API'));
     this.getRedirects(page).done(redirectData => {
-      this.getPageViewsData(redirectData[page]).done(pageViewsData => {
+      this.getPageViewsData(redirectData[page.descore()]).done(pageViewsData => {
         $('.progress-bar').css('width', '100%');
         $('.progress-counter').text($.i18n('building-dataset'));
         const pageLink = this.getPageLink(page, this.project);

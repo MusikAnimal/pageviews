@@ -383,7 +383,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   consolidateRedirectData(redirectsData, xhrData) {
     const targetTitles = Object.keys(redirectsData);
 
-    if (!this.includeRedirects() || !targetTitles.length) {
+    if (!this.includeRedirects() || !targetTitles.length || !xhrData.entities.length) {
       return xhrData;
     }
 

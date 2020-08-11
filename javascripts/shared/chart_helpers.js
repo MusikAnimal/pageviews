@@ -511,7 +511,7 @@ const ChartHelpers = superclass => class extends superclass {
      */
     const targetEntities = this.getEntities(true);
     const shouldShowErrors = entity => {
-      return targetEntities.includes(entity.score);
+      return targetEntities.includes(entity.score());
     };
 
     /**
