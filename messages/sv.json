@@ -8,6 +8,7 @@
 			"Larske",
 			"Macofe",
 			"Mjälten",
+			"Sabelöga",
 			"Technic2",
 			"Umeaboy",
 			"WikiPhoenix"
@@ -107,7 +108,7 @@
 	"faq-data-dumps": "Kan jag ladda ned fullständiga datamängd för alla sidor?",
 	"faq-data-dumps-body": "Ja. Fullständiga datadumpar för alla stödjande Wikimedia-webbplatser kan laddas ned på $1.",
 	"faq-date-dot": "Vad innebär prickarna intill datumetiketterna?",
-	"faq-date-dot-body": "Detta indikerar veckans första dag. Antalet sidvisningar tenderar att vara lågt under helgerna, så denna indikator kan ge ett perspektiv till sjudagarsmönstret.",
+	"faq-date-dot-body": "Dessa indikerar veckans första dag. Antalet sidvisningar tenderar att vara lågt under helgerna, så denna indikator kan ge ett perspektiv till sjudagarsmönstret.",
 	"faq-location-body": "Geografiska positionen för läsare per sida är inte tillgänglig. Detta är primärt för integritetsorsaker. Du kan i alla fall se den totala sidvisningen efter land över alla Wikimedia-webbplatser på $1.",
 	"faq-location-title": "Kan jag se vilken geografisk region sidvisningarna kommer från?",
 	"faq-massviews-sources-category": "Ange den fullständiga webbadressen för en kategorisida, t.ex. $1.",
