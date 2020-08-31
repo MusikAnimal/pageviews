@@ -7,6 +7,7 @@
 			"Geonuch",
 			"Horus",
 			"Macofe",
+			"Patsagorn Y.",
 			"Pon44695",
 			"Slentee"
 		]
@@ -205,9 +206,9 @@
 	"num-projects-info": "ใส่ได้มากถึง $1 โครงการ",
 	"num-protections": "$1 การป้องกัน",
 	"num-redirects": "$1 เปลี่ยนทาง",
-	"num-requests": "$1 คำขอ",
-	"num-seconds": "$1 วินาที",
-	"num-sections": "$1 ส่วน",
+	"num-requests": "$1 {{PLURAL:$2|คำขอ}}",
+	"num-seconds": "$1 {{PLURAL:$2|วินาที}}",
+	"num-sections": "$1 {{PLURAL:$2|ส่วน}}",
 	"num-subpages": "$1 {{PLURAL:$1|หน้าย่อย|หน้าย่อย}}",
 	"num-transclusions": "{{PLURAL:$2|ใช้แม่แบบ}} $1 ที่",
 	"num-wikilinks": "$1 {{PLURAL:$1|วิกิลิงก์|วิกิลิงก์}}",
