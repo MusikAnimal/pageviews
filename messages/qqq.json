@@ -133,7 +133,7 @@
 	"faq-massviews-subject-page-body": "FAQ - explanation of what the 'use subject page' option is",
 	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",
 	"faq-multi-lang-title": "FAQ - title of the section advertising the Langviews app",
-	"faq-old-data-body": "FAQ - body of the section about seeing old data",
+	"faq-old-data-body": "FAQ - body of the section about seeing old data.\n\n\"backfilled data to July 2015\" can be translated simply as \"since July 2015\", if \"backfilled\" is difficult to translate into your language.",
 	"faq-old-data-title": "FAQ - title of the section about seeing old data",
 	"faq-redirects-body": "FAQ - body of the section about how redirects are counted. $1 is a link to the Redirect Views tool, with the message 'redirectviews' as the label. $2 is the message 'include-redirects'.",
 	"faq-redirects-title": "FAQ - title of the section about how redirects are counted",
