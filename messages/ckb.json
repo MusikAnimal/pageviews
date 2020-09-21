@@ -5,7 +5,8 @@
 			"Lost Whispers",
 			"Muhammed taha",
 			"Sarchia",
-			"Épine"
+			"Épine",
+			"ئارام بکر"
 		]
 	},
 	"active-users": "بەکارھێنەرە چالاکەکان",
@@ -18,7 +19,7 @@
 	"all-time": "ھەموو کات",
 	"another-query": "بەدواداچوونێکی تر ئەنجام بدە",
 	"api-error-no-data": "ھیچ داتایەک نەدۆزرایەوە.",
-	"api-incomplete-data": "ھەندێک داتا ھێشتا بەردەست نین بۆ ڕێکەوتەکانی: $1",
+	"api-incomplete-data": "ھەندێک دراوە ھێشتا بەردەست نین بۆ ڕێکەوتەکانی: $1",
 	"apply": "جێبەجێکردن",
 	"april": "نیسان",
 	"article-placeholder": "ناوی پەڕەکان بنووسە...",
