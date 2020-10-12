@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Arjunaraoc",
 			"Chaduvari",
 			"Veeven"
 		]
 	},
-	"active-users": "చురుగ్గా ఉన్న వాడుకరులు",
+	"active-users": "క్రియాశీల వాడుకరులు",
 	"admins": "నిర్వాహకులు",
 	"agent": "ఏజెంటు",
 	"all": "అన్నీ",
