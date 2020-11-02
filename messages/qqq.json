@@ -311,7 +311,7 @@
 	"rank": "Heading for the column showing the page rank in the Topviews application.\n{{Identical|Rank}}",
 	"recommended-article": "The name for the 'recommended' quality assessment of a page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17559452",
 	"redirect": "{{Identical|Redirect}}",
-	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirects}}",
+	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirect}}",
 	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool.",
 	"redirectviews": "Abbreviated name of the Redirect Views application. For this particular app, the name should probably be the same as the 'redirectviews-title' message.",
 	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
