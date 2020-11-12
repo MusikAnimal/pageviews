@@ -95,7 +95,7 @@
 	"faq-bug-report-title": "I have a feature request or bug to report",
 	"faq-chart-type-body": "Click \"$1\" to choose amongst 6 different types. The app will remember your preference. By default, the application will show a bar chart when viewing data for a single page, and a line chart for multiple pages. Note that the pie, doughnut and polar area charts can only show data for total number of views within the daterange.",
 	"faq-chart-type-title": "How can I change the chart type?",
-	"faq-counts-body": "Yes. Every time you load a page, a pageview is registered, even if you created the page. You can learn more about the pageview definiton at $1.",
+	"faq-counts-body": "Yes. Every time you load a page, a pageview is registered, even if you created the page. You can learn more about the pageview definition at $1.",
 	"faq-counts-title": "Are pageviews by the same user counted every time?",
 	"faq-data-dumps": "Can I download the full pageviews dataset for all pages?",
 	"faq-data-dumps-body": "Yes. The full data dumps for all supported Wikimedia sites can be downloaded at $1.",
