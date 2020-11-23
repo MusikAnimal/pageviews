@@ -113,7 +113,7 @@
 	"faq-location-title": "Kan jag se vilken geografisk region sidvisningarna kommer från?",
 	"faq-massviews-sources-category": "Ange den fullständiga webbadressen för en kategorisida, t.ex. $1.",
 	"faq-massviews-sources-external-link": "Ange ett webbadressmönster, t.ex. $1. Se $2 för mer information.",
-	"faq-massviews-sources-hashtag": "Ange en hashtagg med eller utan hashtecknet ($1), t.ex. $2. Resultaten kan inkludera sidor över flera wikis. Se $3 för mer information. Denna funktion är huvudsakligen till för redigeringsmaraton och hjälpande syften.",
+	"faq-massviews-sources-hashtag": "Ange en hashtagg med eller utan hashtecknet ($1), t.ex. $2. Resultaten kan inkludera sidor över flera wikier. Se $3 för mer information. Denna funktion är huvudsakligen till för redigeringsmaraton och hjälpande syften.",
 	"faq-massviews-sources-pagepile": "Ange ett numeriskt ID för en grupp sidor som skapades med $1.",
 	"faq-massviews-sources-quarry": "Ange det numeriska ID:et och projektet för ett $1-datamängd. Kolumnen <code>$2</code> (krävs) kommer att användas som sidtitlarna.",
 	"faq-massviews-sources-search": "Ange sökterm och projekt, t.ex. $1.",
