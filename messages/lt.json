@@ -8,6 +8,7 @@
 		]
 	},
 	"active-users": "Aktyvūs vartotojai",
+	"adblock-error-title": "Panašu, kad esate įjungę reklamų blokavimą!",
 	"admins": "Administratoriai",
 	"agent": "Agentas",
 	"all": "Visi",
@@ -27,6 +28,7 @@
 	"autocompletion": "Automatinis užbaigimas",
 	"autocompletion-redirects": "Autoužbaigimas įskaitant nukreipimus",
 	"autolog-option": "Automatiškai naudoti logaritminę skalę, kai tik įmanoma",
+	"automated": "Automatinis",
 	"average": "Vidurkis",
 	"badges": "Ženkliukai",
 	"bar": "Juostinė",
@@ -84,12 +86,14 @@
 	"format-numbers": "Formuoti skaitinius duomenis",
 	"fr": "Pe",
 	"good-article": "Vertingas straipsnis",
+	"hashtag-credits": "Sukurta jums $1",
 	"help": "Pagalba",
 	"help-translate": "Padėti išversti",
 	"history": "Istorija",
 	"hosted": "Patalpinta su $1 į $2.",
 	"hover-to-exclude": "Norėdami pašalinti puslapius iš sąrašo, užveskite pelę ant jų pavadinimų ir paspauskite ✖",
 	"images": "Paveikslėliai",
+	"include-redirects": "Įtraukti nukreipimus",
 	"include-subcategories": "Įtraukti visas subkategorijas",
 	"individual-projects": "Individualūs projektai",
 	"info": "Informacija",
@@ -263,5 +267,6 @@
 	"wikisource": "Vikišaltiniai",
 	"wikiversity": "Vikiversitetas",
 	"wikivoyage": "Vikikelionės",
-	"wiktionary": "Vikižodynas"
+	"wiktionary": "Vikižodynas",
+	"yearly": "Kas metus"
 }
