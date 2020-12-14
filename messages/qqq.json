@@ -272,7 +272,7 @@
 	"num-sections": "Indicates the number of redirects to a section there were in the Redirectviews results. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Second}}",
 	"num-subpages": "Text indicating a number of subpages. This is used as a label in the Massviews app, indicating how many subpages a page has. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Subpage}}",
 	"num-transclusions": "Text indicating a number of transclusions. This is used as a label in the Massviews app, indicating how many transclusions a template has. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Transclusion}}",
-	"num-unique-devices": "Text indicating a number of unique devices. This is used as a label in the Siteviews app, indicating how many unique devices accessed a project. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Unique device}}",
+	"num-unique-devices": "Text indicating a number of unique devices. This is used as a label in the Siteviews app, indicating how many unique devices accessed a project. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.",
 	"num-wikilinks": "Text indicating a number of wikilinks. This is used as a label in the Massviews app, indicating how many wikilinks are on a page. $1 is the formatted number, $2 is the same number but unformatted so that it can be used with PLURAL.\n{{Identical|Wikilink}}",
 	"october": "{{doc-months|10}}\n{{Identical|October}}",
 	"ok": "Label for button\n{{Identical|OK}}",

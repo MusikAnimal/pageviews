@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Abbas dhothar",
 			"BukhariSaeed",
 			"Macofe",
 			"Obaid Raza",
@@ -77,6 +78,7 @@
 	"most-viewed-pages": "سب سے زیادہ دیکھے گئے صفحات",
 	"note": "یاددہانی",
 	"november": "نومبر",
+	"num-bytes": "$1 {{PLURAL:$2|بائٹ}}",
 	"num-languages": "$1 زبانیں",
 	"num-pages": "$1 {{PLURAL:$1|صفحہ|صفحات}}",
 	"num-pageviews": "$1 مشاہدات صفحہ",
