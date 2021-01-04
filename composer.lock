@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "966e2dea1906627f765f56dd3ec11d92",
+    "content-hash": "017b1b984003b726e4ed2123ecee9040",
     "packages": [
         {
             "name": "krinkle/intuition",
@@ -588,5 +588,6 @@
         "ext-json": "*",
         "ext-mysqli": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
