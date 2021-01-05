@@ -14,7 +14,8 @@ $site_map = (array) json_decode( file_get_contents( ROOTDIR . '/site_map.json' )
 $db = $site_map[$project] . '_p';
 
 // connect to database
-$client = new mysqli( DB_HOST, DB_USER, DB_PASSWORD, $db, DB_PORT );
+$host = str_replace( '*', $site_map[$project], DB_HOST ); // For production replicas
+$client = new mysqli( $host, DB_USER, DB_PASSWORD, $db, DB_PORT );
 
 // quit if something went wrong
 if (mysqli_connect_errno()) {
