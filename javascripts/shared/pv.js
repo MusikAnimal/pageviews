@@ -42,7 +42,7 @@ class Pv extends PvConfig {
     this.debug = location.search.includes('debug=true') || location.host.includes('localhost');
 
     /** redirect to production if debug flag isn't given */
-    if (location.pathname.includes('-test') && !location.search.includes('debug=true')) {
+    if (location.origin.includes('-test') && !location.search.includes('debug=true')) {
       const actualPathName = location.pathname.replace(/-test\/?/, '');
       $('body').html(`
         <p class='tm text-center'>This is the staging environment!</p>
