@@ -10,7 +10,7 @@ define( 'ROOTDIR', '/data/project/pageviews' );
 define( 'BASE_PATH', 'http://localhost:8000' );
 
 // Replica database credentials.
-define( 'DB_HOST', '127.0.0.1' );
+define( 'DB_HOST', '127.0.0.1' ); // On Toolforge this should be '*.web.db.svc.eqiad.wmflabs'
 define( 'DB_USER', 'username' );
 define( 'DB_PASSWORD', 'password' );
 define( 'DB_PORT', 3306 );
