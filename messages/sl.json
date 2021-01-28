@@ -171,7 +171,7 @@
 	"none": "Noben",
 	"note": "Opomba",
 	"november": "November",
-	"num-bytes": "$1 {{PLURAL:$2|znak|znaka|znaki|znakov}}",
+	"num-bytes": "$1 {{PLURAL:$2|bajt|bajta|bajti|bajtov}}",
 	"num-days-span": "$1-dnevni razpon",
 	"num-files": "$1 {{PLURAL:$2|datoteka|datoteki|datoteke|datotek}}",
 	"num-files-info": "Vnesi največ $1 {{PLURAL:$1|datoteko|datoteki|datoteke|datotek}}",
