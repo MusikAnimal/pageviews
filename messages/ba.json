@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ilmira",
+			"Lizalizaufa",
+			"Macofe",
 			"Азат Хәлилов",
 			"Айсар",
-			"Янмурза Баки",
-			"Ilmira",
-			"Macofe",
 			"Ләйсән",
-			"Lizalizaufa"
+			"Янмурза Баки"
 		]
 	},
 	"agent": "Агент",
@@ -77,7 +77,6 @@
 	"projects": "Проекттар",
 	"radar": "Радар",
 	"report-issue": "Проблема хаҡында хәбәр итергә",
-	"rest-api": "Викимедиялы REST API",
 	"sa": "Шб",
 	"save": "Һаҡларға",
 	"search-method": "Эҙләү ысулы",
