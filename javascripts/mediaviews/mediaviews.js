@@ -178,6 +178,7 @@ class MediaViews extends mix(Pv).with(ChartHelpers) {
     let params = {
       project: this.$projectInput.val(),
       platform: this.$platformSelector.val(),
+      agent: this.$agentSelector.val(),
       referer: $('#referer-select').val()
     };
 

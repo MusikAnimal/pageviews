@@ -31,10 +31,10 @@
     "moment": "2.24.0",
     "pump": "^3.0.0",
     "rev-del": "^2.0.0",
-    "stylelint": "^11.0.0",
+    "stylelint": "^13.9.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.1"
+    "watchify": "^4.0.0"
   },
   "scripts": {
     "test": "eslint -c .eslintrc javascripts/"
