@@ -4,10 +4,14 @@
 			"ANDROBETA",
 			"Lucdrei",
 			"MSClaudiu",
-			"Minisarm"
+			"Minisarm",
+			"NGC 54"
 		]
 	},
 	"active-users": "Utilizatori activi",
+	"adblock-error-title": "Pare că utilizați un ad blocker!",
+	"adblock-error-body1": "Pageviews Analysis nu afișează niciun anunț, dar ad blocker-ul dvs. poate împiedica afișarea unor valori, deoarece conțin cuvântul „pageview”.",
+	"adblock-error-body2": "Dacă unealta nu funcționează cum trebuie, vă rugăm să dezactivați ad blocker-ul pentru <b>pageviews.toolforge.org</b>",
 	"admins": "Administratori",
 	"agent": "Agent",
 	"all": "Toate",
@@ -193,7 +197,7 @@
 	"localization": "Localizare:",
 	"localize-dates": "Localizare format dată",
 	"logarithmic-scale": "Scară logaritmică",
-	"main": "Pagina principală",
+	"main": "Principal",
 	"mainspace-only-option": "Arată numai paginile din spațiul principal",
 	"march": "martie",
 	"massviews": "Vizualizări pe liste",
@@ -222,7 +226,7 @@
 	"mo": "Lu",
 	"mobile": "Mobil",
 	"mobile-app": "Aplicație mobilă",
-	"mobile-web": "Sait mobil",
+	"mobile-web": "Site mobil",
 	"monthly": "Lunar",
 	"monthly-average": "Media lunară",
 	"more": "Mai multe",
@@ -427,7 +431,7 @@
 	"wikiquote": "Wikicitat",
 	"wikisource": "Wikisursă",
 	"wikiversity": "Wikiversitate",
-	"wikivoyage": "Wikivoiaj",
+	"wikivoyage": "Wikivoyage",
 	"wiktionary": "Wikționar",
 	"yearly": "Anual"
 }
