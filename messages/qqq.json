@@ -317,7 +317,7 @@
 	"redirect": "{{Identical|Redirect}}",
 	"redirects": "Link to show all redirects for an article.\n{{Identical|Redirect}}",
 	"redirects-and-non-redirects": "Option to return redirects and non-redirects in the Userviews tool.",
-	"redirectviews": "Ogledi preusmeritev",
+	"redirectviews": "Abbreviated name of the Redirect Views application. For this particular app, the name should probably be the same as the 'redirectviews-title' message.",
 	"redirectviews-description": "Brief description of the Redirectviews tool. Shown directly under the header.",
 	"redirectviews-title": "The title of the Redirectviews tool. This is shown as a header at the top of the page. (See https://pageviews.toolforge.org/redirectviews/)",
 	"referer": "Label for dropdown to chose the [[Wikipedia:HTTP referer|referer]] type in the Mediaviews app.",
