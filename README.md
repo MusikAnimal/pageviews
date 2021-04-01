@@ -25,8 +25,11 @@ The underlying data shown in these applications was provided by the
 [Wikimedia RESTBase API](https://wikimedia.org/api/rest_v1/), released under the
 [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/) dedication.
 
-Screenshots of the charts in Pageviews Analysis may be used without attribution,
-but a link back to the application would be appreciated.
+Screenshots of the charts in Pageviews Analysis are also under the
+[CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/) dedication,
+but a link back to the application would be appreciated. Screenshots of the broader
+user interface are subject to the
+[license of the code](https://github.com/MusikAnimal/pageviews/blob/master/LICENSE) itself.
 
 ## Contributing
 
