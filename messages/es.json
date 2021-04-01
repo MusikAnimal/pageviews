@@ -16,10 +16,12 @@
 			"MarcoAurelio",
 			"MusikAnimal",
 			"Peter Bowman",
-			"Rubentl134"
+			"Rubentl134",
+			"ZealousBlaze"
 		]
 	},
 	"active-users": "Usuarios activos",
+	"adblock-error-title": "¡Parece que estas utilizando un bloqueador de publicidad!",
 	"admins": "Administradores",
 	"agent": "Agente",
 	"all": "Todas",
