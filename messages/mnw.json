@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Aue Nai"
+			"Aue Nai",
+			"咽頭べさ"
 		]
 	},
 	"active-users": "ညးလွပ်မချဳဒရာၚ်",
@@ -70,7 +71,7 @@
 	"july": "ဂျူလာင်",
 	"june": "ဂျောန်",
 	"known-false-positives-link": "$1 {{PLURAL:$1|မုက်လိက်|မုက်လိက်ဂမၠိုင်}}",
-	"language": "အရေဝ်ဘာသာ",
+	"language": "ဘာသာ :",
 	"last-month": "ဂိတု တုဲကၠုၚ်",
 	"last-week": "အပါတ် တုဲကၠုၚ်",
 	"last-year": "သၞာံ တုဲကၠုၚ်",
