@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Ccv2020",
 			"Dinhxuanduyet",
 			"Harriettruong3",
 			"Macofe",
@@ -120,6 +121,7 @@
 	"hosted": "Hosted with $1 tại $2.",
 	"hover-to-exclude": "Để loại trừ các trang khỏi khung nhìn, rê chuột lên các mục và bấm ✖",
 	"images": "Hình ảnh",
+	"include-redirects": "Bao gồm đổi hướng",
 	"include-subcategories": "Tính tất cả các thể loại con",
 	"individual-projects": "Dự án riêng",
 	"info": "Thông tin",
