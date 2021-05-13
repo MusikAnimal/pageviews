@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dušan Kreheľ",
 			"Hromoslav",
 			"Vegetator",
 			"Yardom78"
@@ -8,8 +9,8 @@
 	},
 	"active-users": "Aktívni používatelia",
 	"adblock-error-title": "Vyzerá to, že používate niečo na blokovanie reklamy!",
-	"adblock-error-body1": "Analýza zobrazení stránok neobsahuje žiadne reklamy, ale Váš nástroj na blokovanie reklamy môže spôsobiť, že niektoré merania nebudú zobrazené, pretože obsahujú slovo \"zobrazenie stránky\".",
-	"adblock-error-body2": "Ak nástroj pracuje nesprávne, prosím vypnite blokovanie reklamy pre <b>pageviews.toolforge.org</b>",
+	"adblock-error-body1": "Analýza zobrazení stránok neobsahuje žiadne reklamy, ale Váš nástroj na blokovanie reklamy môže spôsobiť, že niektoré merania nebudú zobrazené, pretože obsahujú slovo „zobrazenie stránky“.",
+	"adblock-error-body2": "Ak nástroj nepracuje správne, prosím vypnite si blokovanie reklám pre <b>pageviews.toolforge.org</b>",
 	"admins": "Správcovia",
 	"agent": "Agent",
 	"all": "Všetky",
