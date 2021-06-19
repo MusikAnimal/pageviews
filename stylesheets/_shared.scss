@@ -576,6 +576,7 @@ footer {
         appearance: none
     }
 
+    .table > thead > tr > th,
     .table > tbody > tr > th,
     .table > tbody > tr > td {
         border-color: #444;
