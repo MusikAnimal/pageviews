@@ -519,7 +519,8 @@ footer {
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
+    body,
+    .list-group-item {
         background-color: #000;
         color: #aaa;
     }
@@ -578,7 +579,8 @@ footer {
 
     .table > thead > tr > th,
     .table > tbody > tr > th,
-    .table > tbody > tr > td {
+    .table > tbody > tr > td,
+    .list-group-item {
         border-color: #444;
     }
     .table-hover > tbody > tr:hover {
