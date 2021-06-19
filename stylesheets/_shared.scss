@@ -528,7 +528,8 @@ footer {
         filter: invert(1) brightness(5);
     }
 
-    button.btn-default {
+    .btn-default,
+    .input-group-addon {
         background-color: #555;
         color: #fff;
         border: none;
@@ -586,15 +587,25 @@ footer {
     .topview-entry--rank-wrapper {
         color: #000;
     }
-    .topview-entry--label a {
+    .topview-entry--label a,
+    .topview-entry--editors {
         font-weight: bold;
         color: #eee;
         text-shadow: 2px 2px 5px #000;
+    }
+    .topview-entry--edits a,
+    .topview-entry--views {
+        background: #000;
+        padding: 10px;
+        border-radius: 20px
     }
     .topview-entry--edits,
     .topview-entry--editors,
     .topview-entry--views {
         font-weight: bold;
+    }
+    .topview-entry a:hover {
+        color: lightblue;
     }
 
     .select2-dropdown {
