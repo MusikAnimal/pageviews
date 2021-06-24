@@ -143,7 +143,7 @@
 	"note": "Oharra",
 	"november": "Azaroa",
 	"num-days-span": "$1 eguneko epemuga",
-	"num-languages": "{{PLURAL:$2|Hizkuntza $1|$1 hizkuntza}}",
+	"num-languages": "{{PLURAL:$2|Hizkuntza bat|$1 hizkuntza}}",
 	"num-pages": "{{PLURAL:$2|orrialde 1|$1 orrialde}}",
 	"num-pages-info": "Sartu {{PLURAL:$1|orri bat|$1 orri}} arte",
 	"num-pageviews": "{{PLURAL:$2|orrialde bisita $1|$1 orrialde bisita}}",
