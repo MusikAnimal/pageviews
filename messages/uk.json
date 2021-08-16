@@ -3,6 +3,7 @@
 		"authors": [
 			"Andriy.v",
 			"Base",
+			"DDPAT",
 			"Fitoschido",
 			"Green Zero",
 			"Macofe",
@@ -292,7 +293,7 @@
 	"print": "Друк",
 	"processing-page": "Опрацювання сторінки $1 із $2",
 	"project": "Проєкт",
-	"projects": "Проекти",
+	"projects": "Проєкти",
 	"projects-placeholder": "Введіть назви проектів...",
 	"proofread-page": "Вичитка",
 	"protection": "Захист",
