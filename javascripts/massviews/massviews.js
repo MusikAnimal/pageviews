@@ -1090,7 +1090,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       id = this.$sourceInput.val();
     if (!this.validateProject(project)) return;
 
-    const url = `https://quarry.wmflabs.org/query/${id}/result/latest/0/json`,
+    const url = `https://quarry.wmcloud.org/query/${id}/result/latest/0/json`,
       quarryLink = `<a target='_blank' href='https://quarry.wmflabs.org/query/${id}'>Quarry ${id}</a>`;
 
     $('.progress-counter').text($.i18n('fetching-data', 'Quarry API'));
