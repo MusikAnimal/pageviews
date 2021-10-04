@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Arya sarhan",
+			"Halbast",
 			"Lost Whispers",
 			"Muhammed taha",
 			"Sarchia",
@@ -115,7 +116,7 @@
 	"list": "پێڕست",
 	"list-values": "یەکێک لە: $1",
 	"localization": "نێوخۆییکردن:",
-	"localize-dates": "شێوازی خۆماڵیی بۆ بەروار بەکاربھێنە",
+	"localize-dates": "شێوازی خۆماڵی بۆ ڕێکەوت بەکاربھێنە",
 	"main": "سەرەکی",
 	"mainspace-only-option": "تەنھا پەڕەکانی بۆشایی سەرەکی پیشان بدە",
 	"march": "ئادار",

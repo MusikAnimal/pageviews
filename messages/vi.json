@@ -6,6 +6,7 @@
 			"Harriettruong3",
 			"Macofe",
 			"Minh Nguyen",
+			"NguoiDungKhongDinhDanh",
 			"Nguyên Lê",
 			"Tuanminh01",
 			"Yue Ling"
@@ -315,7 +316,7 @@
 	"url-structure-special-range-latest-n": "với <i>N</i> là một số. Ví dụ <code>latest-30</code> sẽ hiển thị dữ liệu của 30 ngày gần nhất.",
 	"url-structure-start-date": "Ngày bắt đầu theo định dạng $1.<br/>Bỏ qua tham số này và $2 để hiển thị dữ liệu gần đây nhất.",
 	"user": "Người dùng",
-	"users": "Những người dùng",
+	"users": "Thành viên",
 	"userviews": "Lượt người dùng xem",
 	"userviews-description": "Số lượt xem tất cả các trang do một người dùng tạo ra",
 	"userviews-edit-count-warning": "$1 đã thu lại lời là $2. Sẽ mất một lúc để tạo trang. Hãy kiên nhẫn.",
