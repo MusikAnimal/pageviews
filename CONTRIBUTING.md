@@ -44,7 +44,7 @@ The repo contains eight separate applications that share code with each other
 (Pageviews, Langviews, Topviews, Siteviews, Massviews, Redirect Views, Userviews, and Mediaviews).
 Each app has a dedicated subdirectory within `javascripts`, `stylesheets` and `views`.
 The main development asset files share the same name as the app (e.g. `pageviews.js` for the main JavaScript
-file for Pageviews). After compilation each app has it's own `application.js` and `application.css` in the public_html
+file for Pageviews). After compilation each app has its own `application.js` and `application.css` in the public_html
 directory. PHP partials and Sass imports are prepended with underscores (e.g. `_footer.php`, `_mixins.scss`).
 
 There are symlinks all throughout the public_html directory. These are to ensure you can use the native
@@ -56,7 +56,7 @@ The symlinks effectively change the document root of Toolforge's lighttpd server
 You'll need to `require('./file_name')` any file that is a dependency.
 All JavaScript is written in ECMAScript 2015+.
 
-Each app has it's own `config.js`, which are constants for application-wide use.
+Each app has its own `config.js`, which are constants for application-wide use.
 Pageviews, Siteviews and Mediaviews also have a `templates.js` file that defines how data is shown
 in the right column on the interface.
 
@@ -80,7 +80,7 @@ Styles are written in [Sass](https://sass-lang.com/) (of the [SCSS](https://sass
 The CSS is then [automatically vendor-prefixed](https://github.com/sindresorhus/gulp-autoprefixer) to support
 modern browsers. [Bootstrap](http://getbootstrap.com/) is used as the CSS framework.
 
-Each page has it's own `.scss` file that imports dependencies. Shared files are simply prefixed with an
+Each page has its own `.scss` file that imports dependencies. Shared files are simply prefixed with an
 underscore. `_mixins.scss` is for the mixins, placeholders, keyframes and colour variables.
 Similar to the JavaScripts, `_list_view.scss` is imported by apps that have a list view
 (Massviews, Langviews, Redirect Views and Mediaviews), and `_chart_view.scss` by apps that show charts.
