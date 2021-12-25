@@ -97,7 +97,6 @@ const siteMap = {
   'biwikibooks': 'bi.wikibooks.org',
   'biwiktionary': 'bi.wiktionary.org',
   'bjnwiki': 'bjn.wikipedia.org',
-  'bjnwikibooks': 'bjn.wikibooks.org',
   'bmwiki': 'bm.wikipedia.org',
   'bmwikibooks': 'bm.wikibooks.org',
   'bmwikiquote': 'bm.wikiquote.org',
