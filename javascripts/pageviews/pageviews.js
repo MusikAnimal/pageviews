@@ -567,7 +567,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       num_users: this.entityInfo.totals ? this.entityInfo.totals.num_users : null,
       length: datasets.reduce((a, b) => a + b.length, 0),
       protection: $.i18n('num-protections', this.formatNumber(numProtections), numProtections),
-      watchers: datasets.reduce((a, b) => a + b.watchers || 0, 0)
+      watchers: datasets.reduce((a, b) => a + (b.watchers || 0), 0)
     };
     this.$outputList.append(this.config.templates.tableRow(this, totals, true));
 
