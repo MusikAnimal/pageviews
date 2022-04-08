@@ -28,7 +28,7 @@
     "gulp-stylelint": "^9.0.0",
     "gulp-uglify": "^2.0.0",
     "jquery": "^3.5.0",
-    "moment": "2.24.0",
+    "moment": "2.29.2",
     "pump": "^3.0.0",
     "rev-del": "^2.0.0",
     "stylelint": "^13.9.0",
