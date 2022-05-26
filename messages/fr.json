@@ -226,7 +226,7 @@
 	"massviews-description": "Importer une liste de pages et comparer les pages vues",
 	"massviews-empty-set": "$1 ne contient aucune page !",
 	"massviews-external-link-description": "Obtenir le nombre de vues des pages contenant un $1",
-	"massviews-hashtag-description": "$1. Obtient le nombre de vues des pages qui ont des modifications balisées avec $2 dans leur résumé de modification.",
+	"massviews-hashtag-description": "$1. Obtient le nombre de vues des pages qui ont des modifications balisées avec $2 dans leur résumé des modifications.",
 	"massviews-notice": "Pour voir plus {{PLURAL:$1|d’une page|de $1 pages}}, essayez $2.",
 	"massviews-oversized-set": "$1 contient $2 page{{PLURAL:$4||s}}. Pour des raisons de performance, {{PLURAL:$3|seule la première page sera traitée|seules les $3 premières pages seront traitées}}.",
 	"massviews-oversized-set-unknown": "$1 contient plus {{PLURAL:$2|d’une page|de $2 pages}}. Pour des raisons de performance, {{PLURAL:$2|seule la première page sera traitée|seules les $2 premières pages seront traitées}}.",
