@@ -3,7 +3,8 @@
 		"authors": [
 			"Beqabai",
 			"David1010",
-			"MIKHEIL"
+			"MIKHEIL",
+			"Გიო ოქრო"
 		]
 	},
 	"active-users": "აქტიური მომხმარებელი",
@@ -54,7 +55,7 @@
 	"disclaimer": "პასუხისმგებლობის უარყოფა",
 	"documentation": "დოკუმენტაცია",
 	"doughnut": "წრიული",
-	"download-label": "გადმოწერა",
+	"download-label": "ჩამოტვირთვა",
 	"editors": "რედაქტორი",
 	"edits": "რედაქტირება",
 	"elapsed-time": "გასული დრო: $1 {{PLURAL:$1|წამი|წამი}}",
