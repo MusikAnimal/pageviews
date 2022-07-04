@@ -10,6 +10,7 @@
 			"SeoJeongHo",
 			"Ykhwong",
 			"Yunbj",
+			"렌즈",
 			"아라"
 		]
 	},
@@ -365,7 +366,7 @@
 	"url-structure-userviews-namespace": "이름공간 번호입니다. 기본값은 $1입니다. 모든 이름공간의 경우 $1을(를) 사용하십시오.",
 	"user": "사용자",
 	"users": "사용자",
-	"userviews": "조회수",
+	"userviews": "사용자뷰",
 	"userviews-description": "사용자가 만든 모든 문서의 조회수",
 	"userviews-edit-count-warning": "$1님이 $2건의 {{PLURAL:$2|편집}}을 했습니다. 만든 문서를 가져오는 데에 시간이 걸릴 수 있습니다. 기다려 주십시오.",
 	"userviews-oversized-set": "$1님이 $2개가 넘는 {{PLURAL:$2|문서}}를 만들었습니다. 성능상의 이유로 처음 $3개 {{PLURAL:$3|문서}}만 처리합니다.",
