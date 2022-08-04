@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Bada Kaji",
 			"Nirjal stha",
 			"पर्वत सुबेदी",
 			"हिमाल सुबेदी"
@@ -91,7 +92,7 @@
 	"section": "खण्ड",
 	"select2-no-results": "कुनै नतिजाहरू भेटिएन",
 	"september": "सेप्टेम्बर",
-	"settings": "सेटिङहरू",
+	"settings": "मेरो अभिरुचिहरू",
 	"size": "आकार",
 	"source": "स्रोत",
 	"source-project": "स्रोत परियोजना",
