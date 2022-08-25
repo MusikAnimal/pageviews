@@ -4,6 +4,7 @@
 			"Dishual",
 			"Fulup",
 			"Gwenn-Ael",
+			"Huñvreüs",
 			"VIGNERON"
 		]
 	},
@@ -161,8 +162,8 @@
 	"rank": "Renk",
 	"recommended-article": "Pennad erbedet",
 	"redirects": "Adkasoù",
-	"redirectviews": "Adkas ar gweloù",
-	"redirectviews-title": "Adkas ar gweladennoù",
+	"redirectviews": "Gweladennoù adkasoù",
+	"redirectviews-title": "Gweladennoù adkasoù",
 	"referer-external": "Diavaez",
 	"referer-internal": "Diabarzh",
 	"referer-search-engine": "Lusker enklask",
