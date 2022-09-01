@@ -102,7 +102,7 @@
 	"edits": "Modifications",
 	"elapsed-time": "Temps écoulé : $1 seconde{{PLURAL:$1||s}}",
 	"error-please-report": "Veuillez <strong>actualiser la page</strong> pour réessayer ou <a target=\"_blank\" href=\"$1\">signaler ce problème</a>.",
-	"error-timed-out": "Dépassement du temps autorisé pour effectuer l’opération.",
+	"error-timed-out": "Le délai d’attente de l’opération a été dépassé.",
 	"exclude-redirects": "Exclure les redirections",
 	"excluded-pages": "Pages exclues",
 	"external-link": "Lien externe",
