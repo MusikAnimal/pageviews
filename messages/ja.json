@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Darklanlan",
+			"Jaw Salvager",
 			"Kkairri",
 			"Kokage si",
 			"Object＊tofu",
@@ -134,7 +135,9 @@
 	"faq-redirects-body": "リダイレクト元を入力した場合、ページビューではリダイレクト先ではなくリダイレクト元を入力ページとします。特定のページ閲覧数に、全てのリダイレクトを含めた合計を知りたい場合は、「$2」を有効にするか、$1をご利用ください。",
 	"faq-redirects-title": "リダイレクトはどのように数えられますか？",
 	"faq-referrals-body": "1ページ単位の参考情報は利用できません。ただしすべてのウィキメディア・サイトに関して、$1で総参照統計を見ることができます。",
+	"faq-referrals-title": "読者がページにたどり着いた方法は確認できますか?",
 	"faq-return-to": "$1 に戻る",
+	"faq-search-redirects-title": "リダイレクトのページビューはどうすれば確認できますか?",
 	"faq-source-pagecounts": "は、以前、より信頼性の低い方法で取られたページビューです。2007年12月から2016年8月までのデータがあります。",
 	"faq-source-pageviews": "は、プロジェクトが受けたページビューの合計です。",
 	"faq-source-title": "「度量」というオプションの意味は？",
@@ -193,6 +196,7 @@
 	"list-false-positives-text": "以下のページは誤検出として報告されており、自動的にトップビューから除外されています（$1）",
 	"loading-cache": "キャッシュから読み込み中...",
 	"localization": "ローカライズ:",
+	"localize-dates": "日付形式のローカライズ",
 	"logarithmic-scale": "対数目盛",
 	"main": "（標準）",
 	"mainspace-only-option": "標準名前空間のページのみ表示",
@@ -227,6 +231,7 @@
 	"new-article-warning": "入力されたページに最近に作成されたものが含まれており、ページビューのデータが利用できないかもしれません。（$1）",
 	"no-autocompletion": "オートコンプリート切",
 	"none": "なし",
+	"note": "注記",
 	"notice-year-stats": "$1年の最も閲覧された記事の一覧が利用できます！",
 	"november": "11月",
 	"num-bytes": "$1 {{PLURAL:$2|バイト}}",
