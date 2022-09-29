@@ -9,7 +9,7 @@
 			"Upwinxp"
 		]
 	},
-	"active-users": "Aktivni uporabniki",
+	"active-users": "Dejavni uporabniki",
 	"admins": "Administratorji",
 	"agent": "Agent",
 	"all": "Vse",
@@ -87,7 +87,7 @@
 	"faq-counts-title": "So ogledi strani enega uporabnika šteti vsakič?",
 	"faq-location-title": "Ali je možno videti geografsko področje, iz katerega ogledi strani prihajajo?",
 	"faq-massviews-sources-category": "Vnesi poln spletni naslov strani kategorije, na primer $1.",
-	"faq-massviews-sources-hashtag": "Vpišite oznako z ali brez znaka lastve ($1), kot na primer $2. Rezultati lahko vključujejo strani z več wikijev. Za več informacij si oglejte $3. Ta možnost je namenjena predvsem za maratone urejanja in zunanje namene.",
+	"faq-massviews-sources-hashtag": "Vpišite oznako z ali brez znaka lestve ($1), kot na primer $2. Zadetki lahko vključujejo strani iz več vikijev. Za več informacij glejte $3. Ta možnost je namenjena predvsem za maratone urejanja in namene ozaveščanja.",
 	"faq-massviews-sources-search": "Vnesi iskalni niz in projekt, kot na primer $1.",
 	"faq-massviews-sources-subpages": "Vnesite celoten URL katere koli strani, na primer $1.",
 	"faq-massviews-sources-template": "Vnesi poln spletni naslov strani predloge, na primer $1.",
@@ -249,7 +249,7 @@
 	"search": "Iskanje",
 	"search-method": "Način iskanja",
 	"section": "Razdelek",
-	"select2-loading": "Nalaganje več rezultatov...",
+	"select2-loading": "Nalaganje več zadetkov ...",
 	"select2-max-chars": "Prosimo, izbriši $1 {{PLURAL:$1|znak|znaka|znake|znakov}}",
 	"select2-min-chars": "Prosimo, vnesite $1 ali več znakov",
 	"select2-no-results": "Ni zadetkov",
