@@ -181,7 +181,7 @@
 	"known-false-positives-text": "$1 {{PLURAL:$2|je bila avtomatsko izključena|sta bili avtomatsko izključeni|so bile avtomatsko izključene|jih je bilo avtomatsko izključenih}} iz Naj ogledov.",
 	"language": "Jezik",
 	"langviews": "Strani po jezikih",
-	"langviews-description": "Ogledi strani na vseh wikijih",
+	"langviews-description": "Ogledi strani v vseh jezikih",
 	"langviews-title": "Analiza strani po jeziku",
 	"last-month": "Zadnji mesec",
 	"last-week": "Prejšnji teden",
