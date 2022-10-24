@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Abbas dhothar"
+			"Abbas dhothar",
+			"Bgo eiu"
 		]
 	},
 	"active-users": "متحرک ورتن والے",
@@ -78,7 +79,7 @@
 	"hashtag-credits": "پاورڈ بائے $1",
 	"help": "مدد",
 	"help-translate": "ترجمہ کرن وچ مدد کرو",
-	"history": "ریکارڈ",
+	"history": "تریخ",
 	"images": "تصویراں",
 	"include-redirects": "مڑجوڑاں سمیت",
 	"include-subcategories": "ساریاں ذیلی گٹھاں سمیت",
