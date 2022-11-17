@@ -3,7 +3,8 @@
 		"authors": [
 			"Aram1985",
 			"Kareyac",
-			"Դավիթ Սարոյան"
+			"Դավիթ Սարոյան",
+			"Սերգեյ Սաֆարյան"
 		]
 	},
 	"active-users": "Ակտիվ մասնակիցներ",
@@ -94,7 +95,7 @@
 	"january": "Հունվար",
 	"july": "Հուլիս",
 	"june": "Հունիս",
-	"known-false-positives-link": "$1 {{PLURAL:$1|հոդված|հոդվածներ}}",
+	"known-false-positives-link": "$1 {{PLURAL:$1|էջ}}",
 	"language": "Լեզու",
 	"langviews": "Լեզուներ",
 	"langviews-description": "Հոդվածի դիտումները բոլոր լեզուներում",
