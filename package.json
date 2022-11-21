@@ -23,7 +23,7 @@
     "gulp-rename": "^1.4.0",
     "gulp-rev": "^9.0.0",
     "gulp-rev-delete-original": "^0.2.3",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.1.0",
     "gulp-shell": "^0.7.1",
     "gulp-stylelint": "^9.0.0",
     "gulp-uglify": "^2.0.0",
