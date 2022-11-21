@@ -9,6 +9,12 @@ const templates = {
     const dataList = (entity, multiEntity = false) => {
       let editsLink;
 
+      if (!$.isNumeric(entity.num_edits)) {
+        $('.legend-block--revisions .legend-block--body').html(
+          `<span class='text-muted'>${$.i18n('data-unavailable')}</span>`
+        );
+      }
+
       if (multiEntity) {
         editsLink = scope.formatNumber(entity.num_edits);
       } else {

@@ -469,7 +469,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       // But make sure we have editing totals first. We have to re-query to ensure an
       //   accurate number of "unique" editors.
       this.getEditData(Object.keys(this.entityInfo.entities)).done(editData => {
-        Object.assign(this.entityInfo.totals, editData.totals);
+        if (editData.totals) {
+          Object.assign(this.entityInfo.totals, editData.totals);
+        }
         this.updateChart();
       });
     } else if (this.initialQuery) {
