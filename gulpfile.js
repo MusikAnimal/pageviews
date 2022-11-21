@@ -10,6 +10,7 @@ const buffer = require('vinyl-buffer');
 const pump = require('pump');
 const revDelOriginal = require('gulp-rev-delete-original');
 const revDel = require('rev-del');
+const sass = require('gulp-sass')(require('sass'));
 const plugins = require('gulp-load-plugins')();
 
 const appDependencies = {
@@ -148,7 +149,7 @@ apps.concat(['']).forEach(app => {
   ];
   gulp.task(`css-sass-${app}`, () => {
     return gulp.src(`stylesheets/${path}${app}.scss`)
-      .pipe(plugins.sass().on('error', plugins.sass.logError))
+      .pipe(sass().on('error', sass.logError))
       .pipe(plugins.autoprefixer('last 2 version'))
       .pipe(plugins.rename('application.css'))
       .pipe(gulp.dest(`public_html/${path}`));

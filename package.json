@@ -13,8 +13,8 @@
     "chai": "4.2.0",
     "del": "^5.1.0",
     "eslint": "^6.5.1",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^7.0.1",
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.1.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.0",
     "gulp-eslint": "6.0.0",
@@ -23,14 +23,15 @@
     "gulp-rename": "^1.4.0",
     "gulp-rev": "^9.0.0",
     "gulp-rev-delete-original": "^0.2.3",
-    "gulp-sass": "^4.0.2",
+    "gulp-sass": "^5.1.0",
     "gulp-shell": "^0.7.1",
-    "gulp-stylelint": "^9.0.0",
+    "gulp-stylelint": "^13.0.0",
     "gulp-uglify": "^2.0.0",
     "jquery": "^3.5.0",
     "moment": "2.29.4",
     "pump": "^3.0.0",
-    "rev-del": "^2.0.0",
+    "rev-del": "^1.0.5",
+    "sass": "^1.56.1",
     "stylelint": "^13.9.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -39,5 +40,5 @@
   "scripts": {
     "test": "eslint -c .eslintrc javascripts/"
   },
-  "engine": "node >= 4.3.0"
+  "engine": "node >= 14.15.0"
 }
