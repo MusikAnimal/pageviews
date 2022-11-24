@@ -170,7 +170,7 @@
 	"files": "Label for the option in the Mediaviews app to query for individual files.\n{{Identical|File}}",
 	"format-numbers": "Label for option to format numerical data according to the user's language, for example, '1,234' instead of '1234'",
 	"fr": "Abbreviation for Friday, a day of the week.",
-	"good-article": "The name for the 'good' quality assessment of a page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17437798",
+	"good-article": "The name for the 'good' quality assessment of a page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q17437798\n{{Identical|Good}}",
 	"hashtag": "Label for the 'hashtag' input field on the Massviews tool. This is the same word you would use for tags like #example on social media sites such as Twitter and Instagram.\n{{Identical|Hashtag}}",
 	"hashtag-credits": "Message giving credit to the the Wikipedia Social Search tool that makes the hashtag functionality in the Massviews tool possible. $1 is a link to the tool with the non-translatable name of the tool.",
 	"help": "Label for the help button dropdown.\n{{Identical|Help}}",
