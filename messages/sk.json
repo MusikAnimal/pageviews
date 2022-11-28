@@ -3,6 +3,7 @@
 		"authors": [
 			"Dušan Kreheľ",
 			"Hromoslav",
+			"Teslaton",
 			"Vegetator",
 			"Yardom78"
 		]
@@ -348,7 +349,7 @@
 	"topviews-description": "Najviac zobrazení stránok projektu",
 	"topviews-false-positive": "Niektoré uvedené stránky môžu byť <a href='/topviews/faq#false_positive'>falošne pozitívne</a>.",
 	"topviews-remove-page": "Odstráňte túto stránku z rebríčka najviac zobrazených stránok",
-	"topviews-title": "Analýza najviac zobrazení",
+	"topviews-title": "Analýza najviac zobrazovaných stránok",
 	"total-pageviews": "Stránky podľa celkového počtu zobrazení",
 	"totals": "Celkom",
 	"transclusions": "Výluka",
