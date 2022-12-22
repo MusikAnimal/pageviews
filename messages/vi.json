@@ -7,6 +7,7 @@
 			"Macofe",
 			"Minh Nguyen",
 			"NguoiDungKhongDinhDanh",
+			"Nguyenphutrong2",
 			"Nguyên Lê",
 			"Tuanminh01",
 			"Yue Ling"
@@ -315,6 +316,7 @@
 	"url-structure-special-range-latest": "Dữ liệu cho 20 ngày cuối cùng",
 	"url-structure-special-range-latest-n": "với <i>N</i> là một số. Ví dụ <code>latest-30</code> sẽ hiển thị dữ liệu của 30 ngày gần nhất.",
 	"url-structure-start-date": "Ngày bắt đầu theo định dạng $1.<br/>Bỏ qua tham số này và $2 để hiển thị dữ liệu gần đây nhất.",
+	"url-structure-start-month": "Sử dụng định dạng $1 sẽ được coi là tháng bắt đầu và hiển thị dữ liệu hàng tháng thay vì hàng ngày.",
 	"user": "Người dùng",
 	"users": "Thành viên",
 	"userviews": "Lượt người dùng xem",
