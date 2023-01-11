@@ -30,7 +30,7 @@
     "jquery": "^3.5.0",
     "moment": "2.29.4",
     "pump": "^3.0.0",
-    "rev-del": "^1.0.5",
+    "rev-del": "^2.0.0",
     "sass": "^1.56.1",
     "stylelint": "^13.9.0",
     "vinyl-buffer": "^1.0.1",
