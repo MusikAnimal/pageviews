@@ -219,7 +219,7 @@
 	"massviews-quarry-description": "Verkrijg de paginaweergaven van pagina's die zijn geretourneerd door een $1-query",
 	"massviews-redirect": "U bent doorverwezen van $1 omdat u meer dan $2 {{PLURAL:$2|pagina|pagina's}} heeft aangevraagd.<br/>$3 is automatisch aangemaakt en zal worden verwerkt.",
 	"massviews-search-description": "Verkrijg de paginaweergaven van pagina's die zijn geretourneerd door een zoekopdracht, met behulp van $1",
-	"massviews-subpages-description": "Verkrijg de paginaweergaven van een pagina en al zijn $1",
+	"massviews-subpages-description": "Verkrijg de paginaweergaven van een pagina en alle $1 ervan",
 	"massviews-title": "Analyse verzamelde weergaven",
 	"massviews-transclusions-description": "Verkrijg de paginaweergaven van pagina's die een sjabloon <a href='$1'>transcluderen</a>",
 	"massviews-wikilinks-description": "Verkrijg de paginaweergaven van <a href='$1'>gelinkte pagina's</a> op een pagina",
