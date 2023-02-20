@@ -3,10 +3,12 @@
 		"authors": [
 			"Les Meloures",
 			"Robby",
-			"Soued031"
+			"Soued031",
+			"Volvox"
 		]
 	},
 	"active-users": "Aktiv Benotzer",
+	"adblock-error-title": "Et schéngt, wéi wann Dir een Ad-Blocker benotze géingt!",
 	"admins": "Administrateuren",
 	"agent": "Agent",
 	"all": "All",
