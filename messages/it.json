@@ -210,7 +210,7 @@
 	"new-article-warning": "Una o più delle pagine richieste sono state create recentemente, quindi i dati delle visite potrebbero non essere ancora disponibili ($1)",
 	"no-autocompletion": "Nessun autocompletamento",
 	"none": "Nessuno",
-	"note": "Note",
+	"note": "Nota",
 	"november": "novembre",
 	"num-bytes": "$1 {{PLURAL:$2|byte}}",
 	"num-files": "$1 {{PLURAL:$2|file}}",
