@@ -170,7 +170,7 @@
 	"include-redirects": "リダイレクトを含める",
 	"include-subcategories": "すべてのサブカテゴリを含める",
 	"info": "情報",
-	"invalid-category-url": "不正なカテゴリを検知しました。カテゴリページの完全なURLを入力してください。",
+	"invalid-category-url": "無効なカテゴリです。カテゴリの完全な URL を入力してください。",
 	"invalid-params": "パラメーターが正しくありません。",
 	"invalid-quarry-dataset": "不適切なQuarryデータセットです。<code>$1</code>列が必要ですが、見つかりませんでした。",
 	"january": "1月",
