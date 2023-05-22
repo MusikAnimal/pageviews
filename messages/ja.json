@@ -168,7 +168,7 @@
 	"hover-to-exclude": "ランキングから特定のページを取り除くには、ページ名の上にカーソルを移動させて「✖」をクリックします",
 	"images": "画像",
 	"include-redirects": "リダイレクトを含める",
-	"include-subcategories": "すべてのサブカテゴリを含める",
+	"include-subcategories": "すべての下位カテゴリを含める",
 	"info": "情報",
 	"invalid-category-url": "無効なカテゴリです。カテゴリの完全な URL を入力してください。",
 	"invalid-params": "パラメーターが正しくありません。",
