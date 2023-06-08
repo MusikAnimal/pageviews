@@ -251,7 +251,7 @@
 	"november": "十一月",
 	"num-bytes": "$1 {{PLURAL:$2| 位元組| 位元組}}",
 	"num-days-span": "$1-日期間",
-	"num-files": "$1 {{PLURAL:$2|個檔案}}",
+	"num-files": "$1 {{PLURAL:$2|份檔案}}",
 	"num-files-info": "可輸入 $1 {{PLURAL:$1|個檔案|個檔案}}",
 	"num-languages": "$1 {{PLURAL:$2|種語言|種語言}}",
 	"num-pagecounts": "$1 {{PLURAL:$2|次頁面計數|次頁面計數}}",
