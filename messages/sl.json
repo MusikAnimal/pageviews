@@ -117,7 +117,7 @@
 	"faq-massviews-sources-template": "Vnesite celotni URL strani predloge, na primer $1.",
 	"faq-massviews-sources-title": "Kaj so »viri«?",
 	"faq-massviews-sources-wikilinks": "Vnesite celotni URL strani, na primer $1.",
-	"faq-massviews-subject-page-body": "Ta možnost je namenjena uporabi kategorije kot vira. V nekaterih primerih lahko kategorija vsebuje pogovorne strani, čeprav dejansko želite vsebinske strani. Na primer <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City articles</a>, ki navaja pogovorne strani člankov kakovosti izbranega članka v vikiprojektu New York City.",
+	"faq-massviews-subject-page-body": "Ta možnost je namenjena uporabi kategorije kot vira. V nekaterih primerih lahko kategorija vsebuje pogovorne strani, čeprav dejansko želite vsebinske strani. Na primer <a href='https://sl.wikipedia.org/wiki/Kategorija:Medicinski_%C4%8Dlanki_razreda_izbrani_%C4%8Dlanek'>»Medicinski članki razreda izbrani članek«</a>, ki navaja pogovorne strani člankov kakovosti izbranega članka v vikiprojektu Medicina.",
 	"faq-massviews-subject-page-title": "Kaj je možnost »$1«?",
 	"faq-multi-lang-title": "Želim videti podatke za stran v vseh jezikih projekta",
 	"faq-old-data-body": "API za oglede strani Wikimedie je bil predstavljen avgusta 2015 in je zajel podatke do julija 2015. Za ogled starejših podatkov se boste morali zanesti na druga orodja, npr. <a href='http://stats.grok.se'>stats.grok.se</a>. Njihovo delovanje je žal zunaj dometa tega orodja in nadzora vzdrževalcev.",
