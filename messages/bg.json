@@ -191,15 +191,20 @@
 	"url-structure": "Структура на URL",
 	"url-structure-parameters": "Параметри",
 	"user": "Потребител",
+	"users": "Потребители",
 	"validated-page": "Одобрена",
 	"view-source": "Преглед на кода",
+	"views": "Преглеждания",
+	"watchers": "Наблюдаващи",
 	"we": "ср",
 	"wikibooks": "Уикикниги",
+	"wikilinks": "Уики връзки",
 	"wikinews": "Уикиновини",
 	"wikipedia": "Уикипедия",
 	"wikiquote": "Уикицитат",
 	"wikisource": "Уикиизточник",
 	"wikiversity": "Уикиверситет",
 	"wikivoyage": "Уикипътешественик",
-	"wiktionary": "Уикиречник"
+	"wiktionary": "Уикиречник",
+	"yearly": "Годишно"
 }
