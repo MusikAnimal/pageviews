@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"З. ӘЙЛЕ",
 			"Умар"
 		]
 	},
@@ -19,7 +20,7 @@
 	"april": "Апрель",
 	"article-placeholder": "АгӀонийн цӀерш йазйе...",
 	"articles": "Йаззамаш",
-	"august": "Август",
+	"august": "август",
 	"autocompletion": "АвтотӀеюзар",
 	"automated": "Авто",
 	"average": "Йукъара",
@@ -58,7 +59,7 @@
 	"faq-return-to": "ЙухагӀо агӀоне $1.",
 	"fatal-error": "Фаталан гӀалат",
 	"featured-article": "Хаьржина йаззам",
-	"february": "Февраль",
+	"february": "февраль",
 	"file": "Файл",
 	"file-type": "Тайпа",
 	"files": "Файлаш",
