@@ -285,13 +285,6 @@ gulp.task('stylelint', () => {
     }));
 });
 
-/** JSDOC */
-gulp.task('jsdoc', cb => {
-  const config = require('./jsdocs/jsdoc.json');
-  gulp.src(['README.md', 'javascripts/**/*.js'], {read: false})
-    .pipe(plugins.jsdoc3(config, cb));
-});
-
 const nonMetaApps = apps.filter(app => app !== 'metaviews');
 
 /** MAIN TASKS */
@@ -318,6 +311,6 @@ gulp.task('watch', () => {
   });
 });
 
-gulp.task('production', gulp.series('lint', gulp.parallel('styles', 'scripts', 'views'), 'jsdoc', 'compress'));
+gulp.task('production', gulp.series('lint', gulp.parallel('styles', 'scripts', 'views'), 'compress'));
 
 gulp.task('default', gulp.parallel('watch'));

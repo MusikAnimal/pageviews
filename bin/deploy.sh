@@ -29,8 +29,3 @@ fi
 composer install
 
 sh ./bin/symlinks.sh $app
-
-if [ $app = "pageviews" ]; then
-    cd public_html/jsdocs || exit
-    git pull origin master
-fi

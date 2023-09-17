@@ -142,7 +142,7 @@ foreach ($api_pages as $page) {
 
 // query for totals
 if ( count( $api_pages ) > 1 && isset( $_GET['totals'] ) ) {
-  $pages_sql = implode( $multipage_parts, ' OR ' );
+  $pages_sql = implode( ' OR ', $multipage_parts );
   $res = $client->query( "SELECT COUNT(DISTINCT(rev_actor)) AS num_users FROM $db.revision " .
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND (" . $pages_sql . ')' );
   $output['totals'] = $res->fetch_assoc();

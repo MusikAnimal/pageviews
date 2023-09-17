@@ -69,11 +69,6 @@ that lives within the directory for that app inside `public_html`. When you run 
 they will get versioned and the original `application.js` will be deleted.
 
 All JavaScript is documented using [JSDoc](http://usejsdoc.org/).
-The documentation is hosted at https://pageviews.toolforge.org/jsdocs.
-You can generate the docs locally by running:
-```
-./node_modules/.bin/gulp jsdoc && open jsdocs/gen/index.html
-```
 
 #### Styles
 Styles are written in [Sass](https://sass-lang.com/) (of the [SCSS](https://sass-lang.com/documentation/syntax#scss) variety) and [compiled to CSS](https://github.com/dlmanning/gulp-sass).
@@ -104,9 +99,7 @@ version in [_head.haml](views/_head.haml), looking for `application.js` and `app
 
 ### Production
 Before making a pull request or pushing to master, remember to run `./node_modules/.bin/gulp production`
-so the assets are minified, concatenated, and versioned. JSDocs are also generated, and placed in a
-dedicated sub-repo (not submodule) in `jsdocs/gen`. These can optionally be pull requested to
-the [JSDocs repo](https://github.com/MusikAnimal/pageviews-jsdocs).
+so the assets are minified, concatenated, and versioned.
 
 For deployment instructions, see [Tool:Pageviews](https://wikitech.wikimedia.org/wiki/Tool:Pageviews) on Wikitech.org.
 

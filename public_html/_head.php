@@ -38,7 +38,7 @@
      global $I18N;
      $comma = $I18N->msg( 'comma-character' ) . ' ';
      return $I18N->msg( 'list-values', [
-       'variables' => [ implode( $values, $comma ), count( $values ) ], 'parsemag' => true
+       'variables' => [ implode( $comma, $values ), count( $values ) ], 'parsemag' => true
      ] );
    }
   

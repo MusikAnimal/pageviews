@@ -9,7 +9,6 @@ Live tool: https://pageviews.toolforge.org (and [Langviews](https://pageviews.to
 * User documentation: https://meta.wikimedia.org/wiki/Pageviews_Analysis
 * Feedback forum: https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis
 * Bug tracker: https://phabricator.wikimedia.org/project/board/2045/
-* JavaScript documentation: https://pageviews.toolforge.org/jsdocs
 * Metaviews (pageviews of the Pageviews apps): https://pageviews.toolforge.org/metaviews
 * Toolforge maintainer documentation: https://wikitech.wikimedia.org/wiki/Tool:Pageviews
 
