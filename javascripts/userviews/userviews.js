@@ -329,7 +329,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
          <th>${$.i18n('num-days-span', this.outputData.datespan)}</th>
          <th>${this.formatNumber(this.outputData.size)}</th>
          <th>${this.formatNumber(this.outputData.sum)}</th>
-         <th>${this.formatNumber(Math.round(this.outputData.average))} / ${$.i18n('day')}</th>`
+         <th>${this.formatNumber(Math.round(this.outputData.average))}</th>`
       );
       $('#output_list').html('');
 

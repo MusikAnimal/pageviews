@@ -184,7 +184,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
            <th scope='row'>${index + 1}</th>
            <td>${this.getPageLink(item.label, item.project)}</td>
            <td><a target="_blank" href='${this.getPageviewsURL(item.project, item.label)}'>${this.formatNumber(item.sum)}</a></td>
-           <td>${this.formatNumber(Math.round(item.average))} / ${$.i18n('day')}</td>
+           <td>${this.formatNumber(Math.round(item.average))}</td>
            </tr>`
         );
       });
