@@ -35,7 +35,7 @@
           <dl class="dl-horizontal">
             <dt>sites</dt>
             <dd>
-              <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"; ?>
+              <?php $sitematrixLink = "<a href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>" . strtolower( $I18N->msg( 'projects' ) ) . "</a>"; ?>
               <?php echo $I18N->msg( 'url-structure-projects', [ 'variables' => [ $sitematrixLink, '<code>de.wikipedia.org|fr.wikipedia.org</code>' ], 'parsemag' => true ] ); ?>
             </dd>
             <?php $defaultRange = 'latest'; ?>

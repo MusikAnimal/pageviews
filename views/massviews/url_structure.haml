@@ -64,7 +64,7 @@
               = $I18N->msg( 'url-structure-subjectpage', [ 'variables' => [ $faqLink, '<code>1</code>', '<code>0</code>' ], 'parsemag' => true ] )
             %dt project
             %dd
-              - $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
+              - $sitematrixLink = "<a href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"
               = $I18N->msg( 'url-structure-massviews-project', [ 'variables' => [ $sitematrixLink ], 'parsemag' => true ] )
             - include "../../url_parts/_mute_validations.php"
 

@@ -150,6 +150,8 @@ if ( count( $api_pages ) > 1 && isset( $_GET['totals'] ) ) {
   $output['totals']['num_users'] = (int) $output['totals']['num_users'];
 }
 
+$client->close();
+
 $output['pages'] = (object) $output['pages'];
 
 $ttl = min(max((int)($_GET['ttl'] ?? 0), 10), 60);
