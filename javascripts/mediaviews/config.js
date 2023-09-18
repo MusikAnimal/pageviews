@@ -8,7 +8,6 @@ const templates = require('./templates');
 const config = {
   chartLegend: templates.chartLegend,
   defaults: {
-    dateRange: 'latest-20',
     referer: 'all-referers',
     project: 'commons.wikimedia.org'
   },

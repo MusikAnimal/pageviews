@@ -1,4 +1,4 @@
-F<?php
+<?php
 
 require_once __DIR__ . '/../config.php';
 
@@ -44,7 +44,7 @@ $rows = $stmt->get_result()->fetch_all( MYSQLI_ASSOC );
 $client->close();
 $projectsWithDbNames = [];
 foreach ( $rows as $row ) {
-    $domain = preg_replace( '/^https:\/\//', '', $row['url'] );
+    $domain = preg_replace( '/^https:\/\/(.*)\.org/', '\1', $row['url'] );
     $projectsWithDbNames[$domain] = $row['dbname'];
 }
 

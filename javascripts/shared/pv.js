@@ -389,7 +389,7 @@ class Pv extends PvConfig {
    * @return {String} database name
    */
   dbName(project) {
-    return this.siteMap[`${project.replace(/\.org$/,'')}.org`];
+    return this.siteMap[project.replace(/\.org$/,'')];
   }
 
   /**
@@ -1209,7 +1209,7 @@ class Pv extends PvConfig {
     let startDate, endDate, offset;
 
     if (type.includes('latest-')) {
-      offset = parseInt(type.replace('latest-', ''), 10) || 20; // fallback of 20
+      offset = parseInt(type.replace('latest-', ''), 10) || this.config.daysAgo;
       [startDate, endDate] = this.config.specialRanges.latest(offset);
     } else if (rangeIndex >= 0) {
       /** treat 'latest' as a function */
@@ -1619,7 +1619,7 @@ class Pv extends PvConfig {
         $.i18n('invalid-lang-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
-    } else if (!!this.siteMap[project]) {
+    } else if (!!this.siteMap[project.replace(/\.org$/, '')]) {
       this.updateInterAppLinks();
       valid = true;
     } else {

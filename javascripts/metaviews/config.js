@@ -5,9 +5,7 @@
  */
 const config = {
   chartLegend: $.noop,
-  defaults: {
-    dateRange: 'latest-20'
-  },
+  defaults: {},
   maxDate: moment().utc(), // overrides maxDate in pv_config.js
   select2Input: '.aqs-select2-selector',
   validateParams: ['tools'],

@@ -18,7 +18,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     super(config);
     this.app = 'pageviews';
 
-    this.entityInfo = false; /** let's us know if we've gotten the page info from API yet */
+    this.entityInfo = false; /** lets us know if we've gotten the page info from API yet */
     this.specialRange = null;
     this.initialQuery = false;
     this.sort = 'views';

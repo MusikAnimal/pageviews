@@ -5,8 +5,6 @@
  */
 const config = {
   defaults: {
-    dateRange: 'latest-20',
-    project: 'en.wikipedia.org',
     sort: 'views',
     source: 'category',
     sourceProject: '',

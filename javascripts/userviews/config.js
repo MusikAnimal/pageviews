@@ -35,7 +35,6 @@ const config = {
     }
   },
   defaults: {
-    dateRange: 'latest-20',
     sort: 'views',
     direction: 1,
     redirects: 0,

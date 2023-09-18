@@ -8,7 +8,6 @@ const templates = require('./templates');
 const config = {
   chartLegend: templates.chartLegend,
   defaults: {
-    dateRange: 'latest-20',
     projects: ['fr.wikipedia.org', 'de.wikipedia.org'],
     source: 'pageviews'
   },

@@ -189,7 +189,8 @@ class PvConfig {
         rememberChart: 'false',
         agent: 'user',
         platform: 'all-access',
-        project: 'en.wikipedia.org'
+        project: 'en.wikipedia.org',
+        dateRange: 'latest-30',
       },
       globalChartOpts: {
         animation: {
@@ -214,7 +215,7 @@ class PvConfig {
         },
         legendCallback: chart => this.config.chartLegend(chart.data.datasets, self)
       },
-      daysAgo: 20,
+      daysAgo: 30,
       minDate: moment('2015-07-01').startOf('day'),
       minDatePagecounts: moment('2007-12-09').startOf('day'),
       maxDate,
@@ -232,7 +233,7 @@ class PvConfig {
         'all-time': [moment('2015-07-01').startOf('day'), maxDate],
         latest(offset = self.config.daysAgo) {
           const target = self.isPagecounts() ? maxDatePagecounts : maxDate;
-          return [moment(target).subtract(offset, 'days').startOf('day'), target];
+          return [moment(target).subtract(offset - 1, 'days').startOf('day'), target];
         }
       },
       timestampFormat: 'YYYYMMDD00',

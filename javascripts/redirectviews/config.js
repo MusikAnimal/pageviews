@@ -9,7 +9,6 @@ const config = {
       (${scope.formatNumber(Math.round(scope.outputData.average))}/${$.i18n('day')})`;
   },
   defaults: {
-    dateRange: 'latest-20',
     sort: 'views',
     direction: 1,
     outputData: [],
