@@ -3,6 +3,7 @@
 		"authors": [
 			"Amaia",
 			"An13sa",
+			"Juele",
 			"Macofe",
 			"Sator",
 			"Subi",
@@ -11,6 +12,9 @@
 		]
 	},
 	"active-users": "Lankide aktiboak",
+	"adblock-error-title": "Badirudi iragarki blokeatzaile bat erabiltzen ari zarela !",
+	"adblock-error-body1": "Orrialde-ikustaldien analisiak ez du iragarkirik erakusten, baina baliteke iragarki-blokeatzaileak zenbait neurketa agertzea eragotzi, 'orriaren ikuspegia' hitza dutelako.",
+	"adblock-error-body2": "Tresna behar bezala ez badabil, desgaitu <b>pageviews.toolforge.org</b> iragarkien blokeatzailea.",
 	"admins": "Administratzaileak",
 	"agent": "Agentea",
 	"all": "Guztiak",
