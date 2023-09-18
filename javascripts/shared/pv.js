@@ -3,8 +3,6 @@ require('./core_extensions');
 require('./polyfills');
 
 const PvConfig = require('./pv_config');
-const siteMap = require('./site_map');
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 
 /** Pv class, contains code used by all apps. */
 class Pv extends PvConfig {
@@ -30,6 +28,7 @@ class Pv extends PvConfig {
     this.setupSettingsModal();
 
     this.params = null;
+    this.siteMap = null;
     this.siteInfo = {};
 
     /**
@@ -40,33 +39,6 @@ class Pv extends PvConfig {
 
     this.muteValidations = location.search.includes('mutevalidations=true');
     this.debug = location.search.includes('debug=true') || location.host.includes('localhost');
-
-    /** redirect to production if debug flag isn't given */
-    if (location.origin.includes('-test') && !location.search.includes('debug=true')) {
-      const actualPathName = location.pathname.replace(/-test\/?/, '');
-      $('body').html(`
-        <p class='tm text-center'>This is the staging environment!</p>
-        <p class='tm text-center'>To use the staging app, append <code>debug=true</code> to the URL</p>
-        <p class='tm text-center'>Otherwise, please update your links to use
-          <strong><a href='${actualPathName}'>https://${location.host}${actualPathName}</a></strong>
-        </p>
-        <p class='text-center' style='margin-top:50px; font-weight:bold'>
-          Redirecting you to the production ${document.title} in
-          <span class='countdown'>10</span>...
-        </p>
-      `);
-
-      let count = 10;
-
-      setInterval(() => {
-        if (--count === 0) {
-          return document.location = actualPathName;
-        }
-        $('.countdown').text(count);
-      }, 1000);
-
-      return;
-    }
 
     /** assign app instance to window for debugging on local environment */
     if (this.debug) {
@@ -79,40 +51,6 @@ class Pv extends PvConfig {
     if (/\/(faq|url_structure)\/?$/.test(document.location.pathname)) {
       return;
     }
-
-    this.loadTranslations().then(() => {
-      /** To be shown during the month of January of each year, after yearly stats have been imported */
-
-      // // Advertise most-viewed pages for the year.
-      //
-      // // Don't show when viewing the yearly results in Topviews.
-      // if ('topviews' === this.app && this.isYearly()) {
-      //   return;
-      // }
-      //
-      // // Don't show if seen over 3 times.
-      // const cacheKey = 'pageviews-yearly-topviews-add';
-      // const seenCount = parseInt(localStorage.getItem(cacheKey), 10) || 0;
-      // if (seenCount > 3) {
-      //   return;
-      // }
-      // localStorage.setItem(cacheKey, seenCount + 1);
-      //
-      // let project = this.project;
-      //
-      // // Grab the first project in the list if viewing Siteviews.
-      // if ('siteviews' === this.app) {
-      //   if (this.isAllProjects()) {
-      //     return;
-      //   }
-      //   project = this.getEntities()[0].replace(/\.org$/, '');
-      // }
-      //
-      // const year = 2019;
-      // this.toastInfo(
-      //   `<a href="/topviews?project=${project}.org&date=${year}"><strong>${$.i18n('notice-year-stats', year)}</strong></a>`
-      // );
-    });
 
     // extensions
     $.extend($.i18n.parser.emitter, {
@@ -149,12 +87,25 @@ class Pv extends PvConfig {
         warning: 'alert-warning'
       }
     };
+
+    // Load translations and supported projects, then initialize the app.
+    // Each app has its own initialize() method.
+    Promise.all([
+      this.loadTranslations(),
+      this.loadProjects()
+    ]).then(this.initialize.bind(this));
   }
 
   /**
-   * Load translations then initialize the app.
-   * Each app has it's own initialize method.
-   * Make sure we load 'en.json' as a fallback.
+   * Load the list of supported projects, storing them in the this.siteMap class property.
+   * @returns {jQuery.Promise}
+   */
+  loadProjects() {
+    return $.getJSON('/projects.php').then(siteMap => this.siteMap = siteMap);
+  }
+
+  /**
+   * Load translations from disk.
    * @returns {jQuery.Promise}
    */
   loadTranslations() {
@@ -168,11 +119,12 @@ class Pv extends PvConfig {
         });
       }
 
+      // Make sure we load 'en.json' as a fallback.
       messagesToLoad.en = '/messages/en.json';
     }
     return $.i18n({
       locale: i18nLang
-    }).load(messagesToLoad).then(this.initialize.bind(this));
+    }).load(messagesToLoad);
   }
 
   /**
@@ -432,12 +384,12 @@ class Pv extends PvConfig {
   }
 
   /**
-   * Get the database name of the given projet
+   * Get the database name of the given project
    * @param  {String} project - with or without .org
    * @return {String} database name
    */
   dbName(project) {
-    return Object.keys(siteMap).find(key => siteMap[key] === `${project.replace(/\.org$/,'')}.org`);
+    return this.siteMap[`${project.replace(/\.org$/,'')}.org`];
   }
 
   /**
@@ -1667,12 +1619,15 @@ class Pv extends PvConfig {
         $.i18n('invalid-lang-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
       );
       project = projectInput.dataset.value;
-    } else if (siteDomains.includes(project)) {
+    } else if (!!this.siteMap[project]) {
       this.updateInterAppLinks();
       valid = true;
     } else {
       this.toastWarn(
-        $.i18n('invalid-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
+        $.i18n('invalid-project',
+          `<a target="_blank" href='https://${project.escape()}'>${project.escape()}</a>`,
+          `<a target="_blank" href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>${$.i18n('invalid-project-link')}</a>`
+        )
       );
       project = projectInput.dataset.value;
     }

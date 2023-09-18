@@ -27,7 +27,7 @@
           <?php $mediaviewsLink = "<pre dir='ltr' class='url-structure-example'>https://pageviews.wmflabs.org/mediaviews?project=commons.wikimedia.org&files={{PAGENAMEE}}</pre>"; ?>
           <?php $fullpageNamee = "<code>{{PAGENAMEE}}</code>"; ?>
           <?php $project = "<code>commons.wikimedia.org</code>"; ?>
-          <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+          <?php $sitematrixLink = "<a href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php echo $I18N->msg( 'url-structure-example', [ 'variables' => [ $mediaviewsLink, $project, $sitematrixLink, $fullpageNamee ], 'parsemag' => true ] ); ?>
         </div>
         <div>

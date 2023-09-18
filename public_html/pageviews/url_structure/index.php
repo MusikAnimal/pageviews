@@ -25,7 +25,7 @@
         <div>
           <?php $pageviewsLink = "<pre dir='ltr' class='url-structure-example'>https://pageviews.toolforge.org/?project=en.wikipedia.org&amp;pages={{FULLPAGENAMEE}}</pre>"; ?>
           <?php $project = "<code>en.wikipedia.org</code>"; ?>
-          <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+          <?php $sitematrixLink = "<a href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
           <?php $fullpageNamee = "<code>{{FULLPAGENAMEE}}</code>"; ?>
           <?php echo $I18N->msg( 'url-structure-example', [ 'variables' => [ $pageviewsLink, $project, $sitematrixLink, $fullpageNamee ], 'parsemag' => true ] ); ?>
         </div>

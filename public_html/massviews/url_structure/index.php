@@ -76,7 +76,7 @@
             </dd>
             <dt>project</dt>
             <dd>
-              <?php $sitematrixLink = "<a href='https://meta.wikimedia.org/w/api.php?action=sitematrix&amp;formatversion=2'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
+              <?php $sitematrixLink = "<a href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>" . strtolower( $I18N->msg( 'project' ) ) . "</a>"; ?>
               <?php echo $I18N->msg( 'url-structure-massviews-project', [ 'variables' => [ $sitematrixLink ], 'parsemag' => true ] ); ?>
             </dd>
             <?php include "../../url_parts/_mute_validations.php"; ?>
