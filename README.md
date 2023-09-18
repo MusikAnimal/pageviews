@@ -12,9 +12,9 @@ Live tool: https://pageviews.toolforge.org (and [Langviews](https://pageviews.to
 * Metaviews (pageviews of the Pageviews apps): https://pageviews.toolforge.org/metaviews
 * Toolforge maintainer documentation: https://wikitech.wikimedia.org/wiki/Tool:Pageviews
 
-IE10 and Safari 8 and below are not supported.
+IE11 and Safari 8 and below are not supported.
 
-[![Build Status](https://travis-ci.org/MusikAnimal/pageviews.svg?branch=master)](https://travis-ci.org/MusikAnimal/pageviews)
+[![.github/workflows/ci.yml](https://github.com/MusikAnimal/pageviews/actions/workflows/ci.yml/badge.svg)](https://github.com/MusikAnimal/pageviews/actions/workflows/ci.yml)
 
 ## License
 The source code for Pageviews Analysis and it's sister applications is released under the

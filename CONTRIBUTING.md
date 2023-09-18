@@ -5,7 +5,7 @@ This guide mostly assumes you're using MacOS or Linux. The setup process may dif
 
 1. [Node](https://nodejs.org/en/) with the version specified by [.nvmrc](.nvmrc).
 
-1. [PHP](http://php.net/) 7.2+ – PHP is for rendering partials in the views and for the
+1. [PHP](http://php.net/) 7.4+ – PHP is for rendering partials in the views and for the
    [Intuition](https://github.com/Krinkle/intuition) i18n framework, and for some internal APIs that query the replicas.
 
 1. [Composer](https://getcomposer.org/)
