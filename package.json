@@ -37,7 +37,9 @@
     "watchify": "^4.0.0"
   },
   "scripts": {
-    "test": "eslint -c .eslintrc javascripts/"
+    "test": "eslint -c .eslintrc javascripts/",
+    "build": "gulp production",
+    "dev": "gulp"
   },
   "engine": "node >= 14.15.0"
 }
