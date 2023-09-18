@@ -25,7 +25,7 @@ This guide mostly assumes you're using MacOS or Linux. The setup process may dif
    [false positives](https://pageviews.toolforge.org/topviews/faq/#false_positive) for Topviews.
    Unless you're working on Topviews, you can skip this step.
 
-1. Run `./node_modules/.bin/gulp` to watch the javascripts, stylesheets and views and automatically
+1. Run `npm run dev` to watch the javascripts, stylesheets and views and automatically
    recompile when new changes are saved.
 
 1. Go to the public directory (`cd public_html`) and start the server with `php -S localhost:8000`.
@@ -88,9 +88,9 @@ The views within `/views` are written in [MtHaml](https://github.com/arnaud-lb/M
 and compiled to PHP files in `/public_html`.
 
 ### Local
-Run `./node_modules/.bin/gulp` to watch for changes and automatically compile as needed.
-You can also run tasks by app and function, such as `gulp massviews` for all Massviews-related files,
-or `gulp scripts` to compile only the JavaScripts, but `gulp` by itself should be all you need.
+Run `npm run dev` to watch for changes and automatically compile as needed.
+You can also run tasks by app and function, such as `npm run dev massviews` for all Massviews-related files,
+or `npm run dev scripts` to compile only the JavaScripts, but `npm run dev` by itself should be all you need.
 
 Do not pay much mind to all the redundant asset files generated in public_html. When you run the production
 build (see below), the assets are versioned and all unused files are removed. The HTML sources the correct
@@ -98,7 +98,7 @@ version in [_head.haml](views/_head.haml), looking for `application.js` and `app
 (development), and if it's not there it reads the `rev-manifest.json` to know what assets to source.
 
 ### Production
-Before making a pull request or pushing to master, remember to run `./node_modules/.bin/gulp production`
+Before making a pull request or pushing to master, remember to run `npm run build`
 so the assets are minified, concatenated, and versioned.
 
 For deployment instructions, see [Tool:Pageviews](https://wikitech.wikimedia.org/wiki/Tool:Pageviews) on Wikitech.org.
@@ -112,7 +112,7 @@ and general flakiness of the tests, they have been retired :(
 
 ### Linters
 The styling of all JavaScript and SCSS is enforced with linters. You can run these locally with
-`./node_modules/.bin/gulp lint`, and will also be ran when you run `gulp production`.
+`npm run test`, and will also be ran when you run `npm run build`.
 If you need a particular rule to be ignored, you can add exceptions
 (see [Scss-lint](https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md#disablelinterreason),
 [Eslint](http://eslint.org/docs/user-guide/configuring)).
