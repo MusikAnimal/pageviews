@@ -52,7 +52,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Link to /langviews for given page and chosen daterange
-   * @param {String} page - page title
+   * @param {String} page page title
    * @returns {String} URL
    */
   getLangviewsURL(page) {
@@ -61,7 +61,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Link to /redirectviews for given page and chosen daterange
-   * @param {String} page - page title
+   * @param {String} page page title
    * @returns {String} URL
    */
   getRedirectviewsURL(page) {
@@ -70,7 +70,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Construct query for API based on what type of search we're doing
-   * @param {Object} query - as returned from Select2 input
+   * @param {Object} query as returned from Select2 input
    * @returns {Object} query params to be handed off to API
    */
   getSearchParams(query) {
@@ -118,7 +118,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
     /**
      * Sets the Select2 defaults, which triggers the Select2 listener and calls this.processInput
-     * @param {Array} pages - pages to query
+     * @param {Array} pages pages to query
      */
     const getPageInfoAndSetDefaults = pages => {
       this.getPageAndEditInfo(pages).then(pageInfo => {
@@ -204,7 +204,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Processes Mediawiki API results into Select2 format based on settings
-   * @param {Object} data - data as received from the API
+   * @param {Object} data data as received from the API
    * @returns {Object} data ready to handed over to Select2
    */
   processSearchResults(data) {
@@ -376,8 +376,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Combine redirect views into the main set of pageviews.
-   * @param {Object} redirectsData - As retrieved by getRedirects()
-   * @param {Object} xhrData - As retrieved by getPageViewsData()
+   * @param {Object} redirectsData As retrieved by getRedirects()
+   * @param {Object} xhrData As retrieved by getPageViewsData()
    * @returns {Object}
    */
   consolidateRedirectData(redirectsData, xhrData) {
@@ -437,8 +437,8 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Query the API for each page, building up the datasets and then calling renderData
-   * @param {boolean} [force] - whether to force the chart to re-render, even if no params have changed
-   * @param {string} [removedPage] - page that was just removed via Select2, supplied by select2:unselect handler
+   * @param {boolean} [force] whether to force the chart to re-render, even if no params have changed
+   * @param {string} [removedPage] page that was just removed via Select2, supplied by select2:unselect handler
    * @return {void}
    */
   processInput(force, removedPage) {
@@ -451,7 +451,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
       this.getRedirects(entities).done(redirectsData => {
         // Fetch all the redirects and concat into `entities`.
         Object.keys(redirectsData).forEach(target => {
-          entities = entities.concat(redirectsData[target].map(rd => rd.title));
+          entities = entities.concat(redirectsData[target].map(rd => rd.title.score()));
         });
         this.getPageViewsData(entities.unique()).done(xhrData => {
           this.updateChart(
@@ -462,7 +462,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
     };
 
     if (removedPage) {
-      // we've got the data already, just removed a single page so we'll remove that data
+      // we've got the data already, just removed a single page, so we'll remove that data
       // and re-render the chart
       this.removeEntity(removedPage);
 
@@ -582,9 +582,9 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
 
   /**
    * Get value of given page for the purposes of column sorting in table view
-   * @param  {object} item - page name
-   * @param  {String} type - type of property to get
-   * @return {String|Number} - value
+   * @param  {object} item page name
+   * @param  {String} type type of property to get
+   * @return {String|Number} value
    */
   getSortProperty(item, type) {
     switch (type) {
@@ -610,7 +610,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Get page info and editing info of given pages.
    * Also sets this.entityInfo
-   * @param  {Array} pages - page names
+   * @param  {Array} pages page names
    * @return {Deferred} Promise resolving with this.entityInfo
    */
   getPageAndEditInfo(pages) {
@@ -661,7 +661,7 @@ class PageViews extends mix(Pv).with(ChartHelpers) {
   /**
    * Create a PagePile with given pages using the API and redirect to Massviews.
    * This is used when the user passes in more than 10 pages
-   * @param {Array} pages - pages to convert to a PagePile and open in Massviews
+   * @param {Array} pages pages to convert to a PagePile and open in Massviews
    * @returns {Deferred} promise resolved only if creation of PagePile failed
    */
   massviewsRedirectWithPagePile(pages) {

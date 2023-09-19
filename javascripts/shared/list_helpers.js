@@ -1,6 +1,6 @@
 /**
  * Shared list-specific logic (for Langviews and Massviews)
- * @param {class} superclass - base class
+ * @param {function} superclass base class
  * @returns {null} class extending superclass
  */
 const ListHelpers = superclass => class extends superclass {

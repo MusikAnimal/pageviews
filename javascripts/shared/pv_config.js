@@ -20,8 +20,8 @@ class PvConfig {
       }
     };
 
-    const maxDate = moment().subtract(1, 'day').startOf('day'),
-      maxMonth = moment().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
+    const maxDate = moment().utc().subtract(1, 'day').startOf('day'),
+      maxMonth = moment().utc().subtract(1, 'month').subtract(2, 'days').startOf('month').toDate();
 
     const maxDatePagecounts = moment('2016-08-05').endOf('day'),
       maxMonthPagecounts = moment('2016-07-01').toDate();

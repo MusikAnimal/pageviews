@@ -2,7 +2,7 @@ require('./zoom_plugin');
 
 /**
  * Shared chart-specific logic, used in all apps except Topviews
- * @param {class} superclass - base class
+ * @param {function} superclass base class
  * @returns {null} class extending superclass
  */
 const ChartHelpers = superclass => class extends superclass {
@@ -237,15 +237,15 @@ const ChartHelpers = superclass => class extends superclass {
    * Fills in zero values to a timeseries, see:
    * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
    *
-   * @param {object} data fetched from API
-   * @param {moment} startDate - start date of range to filter through
-   * @param {moment} endDate - end date of range
+   * @param {object} data fetched from API, or blank to generate a new set of data.
+   * @param {moment} startDate start date of range to filter through
+   * @param {moment} endDate end date of range
    * @returns {object} dataset with zeros where nulls where
    */
   fillInZeros(data, startDate, endDate) {
     /** Extract the dates that are already in the timeseries */
     let alreadyThere = {};
-    data.items.forEach(elem => {
+    (data.items || []).forEach(elem => {
       let date = moment(elem.timestamp, this.config.timestampFormat).format('YYYYMMDD');
       alreadyThere[date] = elem;
     });
@@ -269,11 +269,11 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Get data formatted for Chart.js and the legend templates
-   * @param {Array} datasets - as retrieved by getPageViewsData
-   * @param {Array} labels - corresponding labels for the datasets
-   * @param {String} [forceViewKey] - use this view key instead of going off of
+   * @param {Array} datasets as retrieved by getPageViewsData
+   * @param {Array} labels corresponding labels for the datasets
+   * @param {String} [forceViewKey] use this view key instead of going off of
    *   which app we are running or which options are set.
-   * @returns {object} - ready for chart rendering
+   * @returns {object} ready for chart rendering
    */
   buildChartData(datasets, labels, forceViewKey) {
     let viewKey;
@@ -356,7 +356,7 @@ const ChartHelpers = superclass => class extends superclass {
    *   thing that needs doing is to set the colors based on how many entities we have
    * This function also sets null where there are zeros if we're showing a log chart,
    *   and otherwise fills in zeros where there are nulls (due to API caveat)
-   * @param {Object} outputData - should be hte same as this.outputData
+   * @param {Object} outputData should be hte same as this.outputData
    * @returns {Object} transformed data
    */
   setColorsAndLogValues(outputData) {
@@ -400,9 +400,9 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Get url to query the API based on app and options
-   * @param {String} entity - name of entity we're querying for (page name or project name)
-   * @param {moment} startDate - start date
-   * @param {moment} endDate - end date
+   * @param {String} entity name of entity we're querying for (page name or project name)
+   * @param {moment} startDate start date
+   * @param {moment} endDate end date
    * @return {String} the URL
    */
   getApiUrl(entity, startDate, endDate) {
@@ -443,7 +443,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Should be called at the top of processInput() in chart-related apps.
-   * @param {boolean} force - Whether to force the chart to re-render, even if no params have changed.
+   * @param {boolean} force Whether to force the chart to re-render, even if no params have changed.
    * @return {array|boolean} False if there's nothing to be rendered (child function should also short-circuit),
    *   or the list of entities fetched from the Select2 input.
    */
@@ -480,7 +480,7 @@ const ChartHelpers = superclass => class extends superclass {
   /**
    * Remove an entity from this.outputData and this.entityInfo.entities.
    * This is called at some point within this.processInput() in chart-based apps.
-   * @param {String} removedEntity - Title of the page, file, site, etc.
+   * @param {String} removedEntity Title of the page, file, site, etc.
    */
   removeEntity(removedEntity) {
     // we've got the data already, just removed a single page so we'll remove that data
@@ -494,7 +494,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Mother function for querying the API and processing data
-   * @param {Array} entities - list of page names, or projects for Siteviews
+   * @param {Array} entities list of page names, or projects for Siteviews
    * @return {Deferred} Promise resolving with pageviews data and errors, if present
    */
   getPageViewsData(entities) {
@@ -548,6 +548,19 @@ const ChartHelpers = superclass => class extends superclass {
           return xhrData.fatalErrors.push(err);
         }
       }).fail(errorData => {
+        /**
+         * Fill in zeros for any page that exists, but pageviews API returns a 404.
+         * @see https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
+         */
+        if (errorData.status === 404 && this.entityInfo.entities[entity.descore()]) {
+          const entityIndex = xhrData.entities.indexOf(entity);
+          xhrData.datasets[entityIndex] = this.fillInZeros(
+            {},
+            moment(this.daterangepicker.startDate),
+            moment(this.daterangepicker.endDate)
+          ).items;
+          return;
+        }
         /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
@@ -575,39 +588,40 @@ const ChartHelpers = superclass => class extends superclass {
 
         if (cassandraError) {
           failedEntities.push(entity);
-        } else {
-          if (this.app === 'pageviews' && errorData.status === 404) {
-            // check if it is a new page, and if so show a message that the data isn't available yet
-            $.ajax({
-              url: `https://${this.project}.org/w/api.php?action=query&prop=revisions&rvprop=timestamp` +
-                `&rvdir=newer&rvlimit=1&formatversion=2&format=json&titles=${entity}`,
-              dataType: 'jsonp'
-            }).then(data => {
-              const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
-              if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
-                const faqLink = `<a href='/${this.app}/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
-                this.toastWarn($.i18n('new-article-warning', faqLink));
-              }
-            });
-          }
-
-          if (!shouldShowErrors(entity)) {
-            return;
-          }
-
-          let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
-
-          // user-friendly error messages
-          let endpoint = 'pageviews';
-          if (this.isUniqueDevices()) {
-            endpoint = 'unique-devices';
-          } else if (this.isPagecounts()) {
-            endpoint = 'pagecounts';
-          }
-          xhrData.errors.push(
-            `${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
-          );
+          return;
         }
+
+        if (this.app === 'pageviews' && errorData.status === 404) {
+          // check if it is a new page, and if so show a message that the data isn't available yet
+          $.ajax({
+            url: `https://${this.project}.org/w/api.php?action=query&prop=revisions&rvprop=timestamp` +
+              `&rvdir=newer&rvlimit=1&formatversion=2&format=json&titles=${entity}`,
+            dataType: 'jsonp'
+          }).then(data => {
+            const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
+            if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
+              const faqLink = `<a href='/${this.app}/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
+              this.toastWarn($.i18n('new-article-warning', faqLink));
+            }
+          });
+        }
+
+        if (!shouldShowErrors(entity)) {
+          return;
+        }
+
+        let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
+
+        // user-friendly error messages
+        let endpoint = 'pageviews';
+        if (this.isUniqueDevices()) {
+          endpoint = 'unique-devices';
+        } else if (this.isPagecounts()) {
+          endpoint = 'pagecounts';
+        }
+        xhrData.errors.push(
+          `${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
+        );
       }).always(() => {
         if (++count === totalRequestCount) {
           this.pageViewsData = xhrData;
@@ -716,7 +730,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
-   * @param  {Array} datasets - pageviews
+   * @param  {Array} datasets pageviews
    * @return {Boolean} yes or no
    */
   shouldBeLogarithmic(datasets) {
@@ -799,8 +813,8 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Set up month selector and listeners
-   * @param  {Date} start - date to set as the start month (should be 1st of the month)
-   * @param  {Date} end - date to set as the end month (should be 1st of the month)
+   * @param  {Date} start date to set as the start month (should be 1st of the month)
+   * @param  {Date} end date to set as the end month (should be 1st of the month)
    */
   setupMonthSelector(start, end) {
     // destroy old datepicker, if present
@@ -858,7 +872,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Get currently selected start and end dates as moment objects
-   * @param {Boolean} [format] - if true, will return YYYY-MM for months, YYYY-MM-DD for dates
+   * @param {Boolean} [format] if true, will return YYYY-MM for months, YYYY-MM-DD for dates
    * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
    */
   getDates(format = false) {
@@ -922,7 +936,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Update the chart with data provided by processInput()
-   * @param {Object} [xhrData] - data as constructed by processInput()
+   * @param {Object} [xhrData] data as constructed by processInput()
    *   data is omitted if we already have everything we need in this.outputData
    * @returns {null}
    */
@@ -1051,7 +1065,7 @@ const ChartHelpers = superclass => class extends superclass {
   /**
    * Show the values each point in the series
    * Courtesy of Hung Tran: http://stackoverflow.com/a/38797712/604142
-   * @param {Object} options - to be passed to Chart instantiation
+   * @param {Object} options to be passed to Chart instantiation
    * @returns {Object} modified options
    */
   showPointLabels(options) {
@@ -1099,7 +1113,7 @@ const ChartHelpers = superclass => class extends superclass {
 
   /**
    * Show errors built in this.processInput
-   * @param {object} xhrData - as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
+   * @param {object} xhrData as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
    * @returns {boolean} whether or not fatal errors occured
    */
   showErrors(xhrData) {

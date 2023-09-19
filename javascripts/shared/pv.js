@@ -961,9 +961,12 @@ class Pv extends PvConfig {
 
       let redirects = {};
       data.query.pages.forEach(page => {
-        redirects[page.title] = [{
-          title: page.title
-        }].concat(page.redirects || []);
+        const pageTitle = page.title.score();
+        if (!pages.includes(pageTitle)) {
+          redirects[pageTitle] = [{
+            title: pageTitle
+          }].concat(page.redirects || []);
+        }
       });
 
       return dfd.resolve(redirects);
@@ -1260,7 +1263,7 @@ class Pv extends PvConfig {
 
   /**
    * Cross-application listeners
-   * Each app has it's own setupListeners() that should call super.setupListeners()
+   * Each app has its own setupListeners() that should call super.setupListeners()
    */
   setupListeners() {
     /** prevent browser's default behaviour for any link with href="#" */
