@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"ANDROBETA",
+			"Alesaru",
 			"Lucdrei",
 			"MSClaudiu",
 			"Minisarm",
@@ -169,7 +170,7 @@
 	"invalid-media-file": "$1 nu este un fișier audio sau video valabil.",
 	"invalid-page-url": "Pagină incorectă! Vă rugăm să introduceți întreaga adresă URL a paginii wiki.",
 	"invalid-params": "Parametri incorecți!",
-	"invalid-project": "$1 nu este un $2 sau nu este suportat în prezent.",
+	"invalid-project": "$1 nu este un $2 sau nu este acceptat în prezent.",
 	"invalid-project-link": "proiect valid",
 	"invalid-quarry-dataset": "Set de date Quarry incorect! Coloana <code>$1</code> este necesară dar nu a fost găsită.",
 	"january": "ianuarie",

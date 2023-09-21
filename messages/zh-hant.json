@@ -179,7 +179,7 @@
 	"invalid-media-file": "$1 不是一個有效的音訊或影片檔案。",
 	"invalid-page-url": "無效頁面！請輸入頁面的完整 wiki URL。",
 	"invalid-params": "無效參數！",
-	"invalid-project": "$1不是一個$2，或目前尚不支持。",
+	"invalid-project": "$1不是一個$2，或目前尚未支援。",
 	"invalid-project-link": "有效的項目",
 	"invalid-quarry-dataset": "無效的查詢資料集！未找出必填的 <code>$1</code> 欄位。",
 	"january": "一月",

@@ -114,6 +114,7 @@
 	"invalid-media-file": "$1 na biþ riht nama audioan oþþe ƿideoan.",
 	"invalid-page-url": "Na riht tramet! Infar full URL trametes ƿikian",
 	"invalid-params": "Na rihta foreberunga!",
+	"invalid-project": "$1 ne biþ <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'> ƿikimedisc geƿeorc oþþe ne bireð.",
 	"invalid-quarry-dataset": "Na riht quarry! Stapol <code>$1</code> ofgan biþ ac he gefunden næs.",
 	"january": "Æfterra geola",
 	"july": "Æfterra liða",
