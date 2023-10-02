@@ -11,6 +11,7 @@
 			"Macofe",
 			"Mansil",
 			"Mansil alfalb",
+			"McDutchie",
 			"MokaAkashiyaPT",
 			"Vitorvicentevalente"
 		]
@@ -176,8 +177,8 @@
 	"invalid-media-file": "$1 não é um ficheiro válido de áudio nem de vídeo.",
 	"invalid-page-url": "Página inválida! Insira o URL completo da wiki para a página, por favor.",
 	"invalid-params": "Parâmetros inválidos!",
-	"invalid-project": "1projeto válido3",
-	"invalid-project-link": "2",
+	"invalid-project": "$1 não é um $2 ou não é suportado neste momento.",
+	"invalid-project-link": "projeto válido",
 	"invalid-quarry-dataset": "O conjunto de dados Quarry é inválido! A coluna <code>$1</code> é obrigatória, mas não foi encontrada.",
 	"january": "janeiro",
 	"json": "JSON",
