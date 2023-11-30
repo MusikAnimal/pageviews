@@ -212,7 +212,7 @@
 	"massviews-oversized-set-unknown": "$1 מכילה יותר {{PLURAL:$2|מדף אחד|מ־$2 דפים‎}}. מסיבות של ביצועים, רק {{PLURAL:$2|הדף הראשון יעובד|$2 הדפים הראשונים יעובדו}}.",
 	"massviews-pagepile-description": "קבלת צפיות בדפים בדפים ב$1",
 	"massviews-quarry-description": "קבלת צפיות בדפים של דפים בהחזירה שאילתת $1",
-	"massviews-redirect": "הופנית הנה מ$1 כי ביקשת יותר {{PLURAL:$2|מדף אחד|מ־$2 דפים}}.<br/>ערמת הדפים $3 יוצרה אוטומטית ותעובד.",
+	"massviews-redirect": "הופנית הנה מ־$1 כי ביקשת יותר {{PLURAL:$2|מדף אחד|מ־$2 דפים}}.<br/>ערמת הדפים $3 יוצרה אוטומטית ותעובד.",
 	"massviews-search-description": "קבלת צפיות בדפים שהוחזרו בחיפוש, באמצעות מנוע $1",
 	"massviews-subpages-description": "קבלת צפיות בדפים בדף ובכל $1 שלו",
 	"massviews-title": "ניתוח צפיות המוניות",
