@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Balajijagadesh",
-			"ElangoRamanujam"
+			"ElangoRamanujam",
+			"Fahimrazick"
 		]
 	},
 	"active-users": "தொடர் பங்களிப்பாளர்கள் (பயனர்கள்)",
@@ -135,7 +136,7 @@
 	"revisions": "திருத்தங்கள்",
 	"sa": "ச",
 	"save": "சேமிக்கவும்",
-	"search": "தேடுக",
+	"search": "தேடு",
 	"search-method": "தேடல் முறை:",
 	"section": "பிரிவுகள்",
 	"select2-no-results": "முடிவுகள் எதுவும் காணப்படவில்லை",
