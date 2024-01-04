@@ -20,7 +20,7 @@
 	"all-time": "Gjennom tidene",
 	"always-include-redirects": "Inkluder alltid omdirigeringer (muligens treg)",
 	"another-query": "Gjør en forespørsel til",
-	"api-error": "Mystisk feil oppstod da $1",
+	"api-error": "Feil oppsto under spørring mot $1",
 	"api-error-no-data": "Ingen data.",
 	"api-error-timeout": "På grunn av feil med API, kunne ikke følgende behandles:\n$1\nVennligst vent en stund og prøv igjen.",
 	"api-error-unknown": "En ukjent feil oppstod under spørring: $1",
