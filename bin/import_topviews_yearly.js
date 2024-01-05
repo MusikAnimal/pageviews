@@ -1,16 +1,12 @@
 const fs = require('fs');
 const [sourceFile, year] = process.argv.slice(2);
 
-fs.readFile(sourceFile, 'utf8', function(err, tsv) {
-  const lines = tsv.split('\n');
-  const headers = lines.slice(0, 1)[0].split('\t');
+fs.readFile(sourceFile, 'utf8', function(err, contents) {
+  const lines = contents.split('\n');
+  lines.splice(-1);
 
-  const json = lines.slice(1, lines.length).map(line => {
-    const data = line.split('\t');
-    return headers.reduce((obj, nextKey, index) => {
-      obj[nextKey] = data[index];
-      return obj;
-    }, {});
+  const json = lines.map(line => {
+    return JSON.parse(line);
   });
 
   // Group by project.
@@ -26,7 +22,7 @@ fs.readFile(sourceFile, 'utf8', function(err, tsv) {
     index++;
     jsonByProject[row.project].push({
       article: row.page,
-      views: parseInt(row.views),
+      views: parseInt(row.views, 10),
       mobile_percentage: parseFloat(row.mobile_percentage),
       rank: index,
     });
