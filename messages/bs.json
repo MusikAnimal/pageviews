@@ -384,6 +384,7 @@
 	"url-structure-special-range-latest": "Podaci od posljednjih 20 dana",
 	"url-structure-special-range-latest-n": "gdje je <i>N</i> broj. Naprimjer, <code>latest-30</code> prikazat će podatke od posljednjih 30 dana",
 	"url-structure-start-date": "Početni datum u formatu $1.<br/>Izostavite ovaj i parametar $2 da biste prikazali najnovije podatke.",
+	"url-structure-start-date-earliest": "Iskoristite $1 za najraniji dostupni dan.",
 	"url-structure-start-month": "Ako koristite format $1 računat će se kao početni mjesec i umjesto dnevnih podataka pokazat će se mjesečni podaci.",
 	"url-structure-subjectpage": "Postavlja opciju \"$1\" kad se za izvor koriste kategorije. Koristite $2 da biste je uključili ili $3 da biste je isključili (predodređena vrijednost).",
 	"url-structure-topviews-date": "Datum koji predstavlja konkretan dan, mjesec ili relativni opseg. Može imati jednu od sljedećih vrijednosti:",
