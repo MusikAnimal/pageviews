@@ -173,7 +173,7 @@
 	"invalid-media-file": "$1 bukan merupakan berkas audio atau video yang sah",
 	"invalid-page-url": "Halaman tidak sah! Silakan masukkan URL lengkap wiki dari halaman tersebut.",
 	"invalid-params": "Parameter tidak sah!",
-	"invalid-project": "$1 bukan merupakan $2 atau belum didukung saat ini.",
+	"invalid-project": "$1 bukanlah sebuah $2 atau belum didukung saat ini.",
 	"invalid-project-link": "proyek yang sah",
 	"invalid-quarry-dataset": "Kumpulan data Quarry tidak sah! Kolom <code>$1</code> diperlukan namun tidak ditemukan.",
 	"january": "Januari",
