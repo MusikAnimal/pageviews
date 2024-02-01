@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Cedric31"
+			"Cedric31",
+			"Lhanars"
 		]
 	},
 	"active-users": "Utilizaires actius",
@@ -182,9 +183,9 @@
 	"url-structure-example": "Per obténer las darrièras donadas sus una pagina recenta de vòstre wiki, amb las opcions per defaut, utilizatz : \n$1 \nen remplaçant $2 per un $3 valid. $4 resolverà cap a la pagina lo ligam qu'es plaçat dessús",
 	"url-structure-massviews-example": "Exemple d'URL per PagePile : $1 \n\nExemple d'URL per una categoria : $2 \n\nPer estacar Massviews a una pagina de categoria de vòstre wiki, utilizatz : \n\n$3",
 	"url-structure-parameters": "Paramètres",
-	"user": "Utilizaire",
+	"user": "Utilizator",
 	"users": "Utilizaires",
-	"userviews": "Vistas utilizaire",
+	"userviews": "Vistas utilizators",
 	"validated-page": "Validat",
 	"view-source": "Afichar la font",
 	"views": "Vistas",
