@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Bashkorttan",
 			"Ilmira",
 			"Lizalizaufa",
 			"MR973",
@@ -121,6 +122,6 @@
 	"url-structure-parameters": "Параметрҙар",
 	"url-structure-source": "Йәки $1 (битте ҡараусылар иҫәбе) йәки $2 (битте ҡараусы уникаль ҡоролмалар иҫәбе)",
 	"user": "Ҡулланыусы",
-	"view-source": "Сығанаҡты ҡарарға",
+	"view-source": "Сығанаҡты ҡарау",
 	"we": "Шарш"
 }
