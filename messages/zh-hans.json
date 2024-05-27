@@ -315,7 +315,7 @@
 	"redirects": "重定向",
 	"redirects-and-non-redirects": "重定向与非重定向",
 	"redirectviews": "重定向浏览",
-	"redirectviews-description": "所有至某一页面的重定向的页面浏览",
+	"redirectviews-description": "特定页面的所有重定向的页面访问量",
 	"redirectviews-title": "重定向浏览",
 	"referer": "推荐人",
 	"referer-all-referers": "所有推荐人",
