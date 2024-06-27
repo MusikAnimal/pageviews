@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Kapatych",
 			"Red Winged Duck",
 			"Renessaince"
 		]
@@ -223,7 +224,7 @@
 	"metric": "Мэтрычная",
 	"mo": "Пн",
 	"mobile": "Мабільны",
-	"mobile-app": "Мабільны дадатак",
+	"mobile-app": "Мабільна праграма",
 	"mobile-web": "Мабільны інтэрнэт",
 	"monthly": "Штомесячнае",
 	"monthly-average": "Сярэднемесячнае",
