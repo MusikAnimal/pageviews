@@ -119,6 +119,7 @@
 	"info": "Informatioun",
 	"invalid-category-url": "Net valabel Kategorie! Gitt wgl. déi komplett wiki URL vun der Kategorie an.",
 	"invalid-lang-project": "$1 ass entweder net valabel oder kee méisproochege Projet",
+	"invalid-media-file": "$1 ass kee valabelen Audio- oder Videofichier.",
 	"invalid-page-url": "Keng valabel Säit! Gitt wgl.déi komplett Wiki-URL vun der Säit an.",
 	"invalid-params": "Parametere sinn net valabel!",
 	"invalid-project": "$1 ass kee $2 oder gëtt momentan net ënnerstëtzt.",
@@ -268,12 +269,14 @@
 	"topviews-false-positive": "E puer vun de Säite vun der Lëscht kënne <a href='/topviews/faq#false_positive'>falsch Positiver</a> sinn.",
 	"total-pageviews": "Säiten nom Total vum Opruffe vun de Säiten",
 	"totals": "Totaler",
+	"transclusions": "Abannungen",
 	"translation-credits": "Iwwersetzungen erméiglecht duerch $1, $2 a(n) $3.",
 	"tu": "Dë",
+	"unique-devices": "Verschidden Apparater",
 	"unique-titles": "$1 verschidden {{PLURAL:$1|Titel|Titelen}}",
 	"unknown": "Onbekannt",
 	"url-structure": "URL-Struktur",
-	"url-structure-current": "De leschten disponibelen Dag.",
+	"url-structure-current": "De leschten disponibelen Dag",
 	"url-structure-onwiki-link": "Fir op déi aktuell Säit op der Wiki ze linken, benotzt $1",
 	"url-structure-parameters": "Parameteren",
 	"url-structure-parameters-order": "Kann an egal wat fir enger Reiefolleg benotzt ginn",
@@ -301,5 +304,6 @@
 	"wikisource": "Wikisource",
 	"wikiversity": "Wikiversity",
 	"wikivoyage": "Wikivoyage",
-	"wiktionary": "Wiktionnaire"
+	"wiktionary": "Wiktionnaire",
+	"yearly": "Pro Joer"
 }
