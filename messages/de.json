@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"1233qwer1234qwer4",
+			"Brettchenweber",
 			"DraconicDark",
 			"FF-11",
 			"FF11",
@@ -10,13 +11,14 @@
 			"Metalhead64",
 			"Mirzali",
 			"MusikAnimal",
+			"RucolaSpacecat",
 			"WikiBayer"
 		]
 	},
 	"active-users": "Aktive Benutzer",
-	"adblock-error-title": "Es sieht aus, als würden Sie einen Werbeblocker verwenden!",
-	"adblock-error-body1": "Die Analyse der Seitenaufrufe zeigt keine Anzeigen an, aber Ihr Werbeblocker kann die Anzeige einiger Metriken verhindern, weil sie das Wort 'Seitenaufruf' enthalten.",
-	"adblock-error-body2": "Wenn das Werkzeug nicht richtig funktioniert, deaktivieren Sie bitte den Werbeblocker für <b>pageviews.toolforge.org</b>",
+	"adblock-error-title": "Anscheinend nutzt du einen Werbeblocker!",
+	"adblock-error-body1": "Die Seitenaufrufstatistik spielt keine Werbeanzeigen aus. Es kann aber sein, dass dein Werbeblocker verhindert, dass einige Metriken angezeigt werden, weil sie das Wort 'pageview' enthalten.",
+	"adblock-error-body2": "Wenn das Tool nicht richtig funktioniert, deaktiviere bitte den Werbeblocker für <b>pageviews.toolforge.org</b>",
 	"admins": "Administratoren",
 	"agent": "Agent",
 	"all": "Alle",
