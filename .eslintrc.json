@@ -1,0 +1,9 @@
+{
+	"extends": [
+		"wikimedia/client/es6",
+		"wikimedia/jquery"
+	],
+	"parserOptions": {
+		"sourceType": "module"
+	}
+}

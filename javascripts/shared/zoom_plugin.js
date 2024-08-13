@@ -1,3 +1,5 @@
+const Chart = require( 'chart.js' );
+
 /**
  * Customized zoom plugin for Chart.js, based on https://github.com/chartjs/chartjs-plugin-zoom
  * @author MusikAnimal, Evert Timberg

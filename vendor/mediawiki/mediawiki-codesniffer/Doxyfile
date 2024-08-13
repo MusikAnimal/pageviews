@@ -1,0 +1,21 @@
+# Doxyfile <https://www.doxygen.nl/manual/config.html>
+PROJECT_NAME           = "MediaWiki-CodeSniffer"
+PROJECT_BRIEF          = "MediaWiki CodeSniffer Standards"
+
+OUTPUT_DIRECTORY       = doc
+JAVADOC_AUTOBRIEF      = YES
+QT_AUTOBRIEF           = YES
+QUIET                  = YES
+WARNINGS               = NO
+WARN_IF_UNDOCUMENTED   = NO
+WARN_IF_DOC_ERROR      = NO
+INPUT                  = README.md COPYRIGHT LICENSE MediaWiki/
+FILE_PATTERNS          = *.php
+RECURSIVE              = YES
+USE_MDFILE_AS_MAINPAGE = README.md
+HTML_COLORSTYLE        = LIGHT
+HTML_DYNAMIC_SECTIONS  = YES
+GENERATE_TREEVIEW      = YES
+TREEVIEW_WIDTH         = 250
+GENERATE_LATEX         = NO
+GENERATE_TAGFILE       = doc/html/tagfile.xml

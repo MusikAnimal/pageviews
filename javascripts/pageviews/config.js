@@ -1,15 +1,13 @@
-const templates = require('./templates');
+import templates from './templates.js';
 
 /**
  * Configuration for Pageviews application.
  * This includes selectors, defaults, and other constants specific to Pageviews
  * @type {Object}
  */
-const config = {
-  chartLegend: templates.chartLegend,
-  defaults: {},
-  templates,
-  validateParams: ['project', 'platform', 'agent']
+export default {
+	chartLegend: templates.chartLegend,
+	defaults: {},
+	templates,
+	validateParams: [ 'project', 'platform', 'agent' ]
 };
-
-module.exports = config;

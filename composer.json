@@ -1,11 +1,25 @@
 {
-    "require": {
-        "ext-curl": "*",
-        "ext-json": "*",
-        "ext-mysqli": "*",
-        "mthaml/mthaml": "1.8.0",
-        "krinkle/intuition": "^1.2.0",
-        "whichbrowser/parser": "^2.0",
-        "symfony/cache": "^5.0"
-    }
+	"name": "musikanimal/pageviews",
+	"description": "Pageviews Analysis",
+	"license": "MIT",
+	"config": {
+		"platform": {
+			"php": "7.4"
+		},
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"require": {
+		"php": "^7.4",
+		"ext-curl": "*",
+		"ext-json": "*",
+		"ext-mysqli": "*",
+		"krinkle/intuition": "^1.2.0",
+		"symfony/cache": "^5.0",
+		"twig/twig": "^3.0"
+	},
+	"require-dev": {
+		"mediawiki/mediawiki-codesniffer": "^44.0"
+	}
 }
