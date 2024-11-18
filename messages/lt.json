@@ -43,6 +43,7 @@
 	"basic-information": "Pagrindinė informacija",
 	"begin-at-zero": "Pradėti nuo nulio",
 	"begin-at-zero-option": "Visada rodyti y ašį, pradedant nuo nulio",
+	"bezier-curve-option": "Naudoti Bézier kreivę tiesinėse diagramose",
 	"building-dataset": "Duomenų rinkinys kuriamas...",
 	"cancel": "Atšaukti",
 	"category": "Kategorija",
