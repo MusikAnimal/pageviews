@@ -78,7 +78,7 @@
 	"editors": "ਸੰਪਾਦਕ",
 	"edits": "ਸੋਧਾਂ",
 	"elapsed-time": "ਬੀਤਿਆ ਸਮਾਂ: $1 {{PLURAL:$1|ਸੈਕਿੰਡ}}",
-	"error-please-report": "ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ <strong>ਪੰਨੇ ਨੂੰ ਤਾਜ਼ਾ ਕਰੋ</strong> ਜਾਂ <a target='_blank' href='$1'>ਇਸ ਸਮੱਸਿਆ ਦੀ ਰਿਪੋਰਟ ਕਰੋ</a>",
+	"error-please-report": "ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ <strong>ਸਫ਼ੇ ਨੂੰ ਤਾਜ਼ਾ ਕਰੋ</strong> ਜਾਂ <a target='_blank' href='$1'>ਇਸ ਸਮੱਸਿਆ ਦੀ ਇਤਲਾਹ ਦਿਓ</a>",
 	"error-timed-out": "ਓਪਰੇਸ਼ਨ ਦਾ ਸਮਾਂ ਸਮਾਪਤ ਹੋਇਆ।",
 	"exclude-redirects": "ਰੀਡਾਇਰੈਕਟ ਹਟਾਓ",
 	"excluded-pages": "ਬਾਹਰ ਕੱਢੇ ਸਫ਼ੇ",
