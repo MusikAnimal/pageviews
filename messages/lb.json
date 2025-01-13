@@ -172,7 +172,7 @@
 	"none": "Keng",
 	"note": "Notiz",
 	"november": "November",
-	"num-bytes": "$1 {{PLURAL:$2|Byte|Byten}}",
+	"num-bytes": "$1 {{PLURAL:$2|Byte}}",
 	"num-days-span": "Dauer vun $1 Deeg",
 	"num-files": "$1 {{PLURAL:$2|Fichier|Fichieren}}",
 	"num-languages": "{{PLURAL:$2|Eng Sprooch|$1 Sproochen}}",
