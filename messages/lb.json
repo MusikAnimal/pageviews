@@ -121,7 +121,7 @@
 	"invalid-lang-project": "$1 ass entweder net valabel oder kee méisproochege Projet",
 	"invalid-media-file": "$1 ass kee valabelen Audio- oder Videofichier.",
 	"invalid-page-url": "Keng valabel Säit! Gitt wgl.déi komplett Wiki-URL vun der Säit an.",
-	"invalid-params": "Parametere sinn net valabel!",
+	"invalid-params": "Parametere sinn ongülteg!",
 	"invalid-project": "$1 ass kee $2 oder gëtt momentan net ënnerstëtzt.",
 	"invalid-project-link": "valabele Projet",
 	"january": "Januar",
