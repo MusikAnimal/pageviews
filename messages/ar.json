@@ -17,6 +17,7 @@
 			"Shbib Al-Subaie",
 			"Sonic N800",
 			"Tala Ali",
+			"XIDME",
 			"ديفيد",
 			"محمد أحمد عبد الفتاح",
 			"يونس"
@@ -58,7 +59,7 @@
 	"begin-at-zero-option": "أظهر دائما المحور ص ابتداء من الصفر",
 	"bezier-curve-option": "استخدام منحنى بيزيه على المخطط البياني الخطي",
 	"building-dataset": "بناء مجموعة البيانات...",
-	"cancel": "ألغ",
+	"cancel": "إلغاء",
 	"category": "التصنيف",
 	"category-subject-toggle": "استخدام صفحة الموضوع بدلا من صفحة النقاش",
 	"change-chart": "نوع المخطط",
