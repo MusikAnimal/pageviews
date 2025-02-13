@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Danielyepezgarces",
 			"Dgstranz",
 			"Fitoschido",
 			"Fortega",
@@ -137,6 +138,7 @@
 	"faq-return-to": "Volver a $1",
 	"faq-source-title": "¿Qué son las opciones de \"Métrica\"?",
 	"faq-source-unique-devices": "Es el número de dispositivos únicos que visitó el sitio.",
+	"faq-todays-date-body": "La API de vistas de página de Wikimedia generalmente tarda 24 horas completas en actualizarse, a veces más. En algunas situaciones, es posible que falten datos para la fecha de ayer, los cuales aparecerán en blanco en lugar de mostrar un conteo de cero vistas.",
 	"faq-todays-date-title": "¿Por qué no puedo ver los datos de la fecha de hoy?",
 	"faq-top-viewed-title": "Quiero ver las páginas más vistas dentro de un rango de fechas",
 	"faq-topviews-false-positive-body2": "Se puede abrir cualquier página en la aplicación Pageviews pulsando el contador de vistas del lado derecho.",
@@ -213,6 +215,7 @@
 	"monthly-average": "Promedio mensual",
 	"more": "Más",
 	"most-viewed-pages": "Páginas más vistas",
+	"most-viewed-rank": "Puesto $1 de las $2 más vistas en $3",
 	"namespace": "Espacio de nombres",
 	"no-autocompletion": "Sin autocompletar",
 	"none": "Ninguno",
