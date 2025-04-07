@@ -273,7 +273,7 @@
 	"param-error-1": "Le API de visitas non contine datos de ante $1. Le datos le plus ancian disponibile es usate in vice.",
 	"param-error-2": "Le data initial debe preceder le data final.",
 	"param-error-3": "Parametro <code>$1</code> non valide. Es usate un valor predefinite in su loco.",
-	"param-error-4": "Le intervallo de datas excede le data maxime. Se usa le predefinitiones in vice.",
+	"param-error-4": "Le intervallo de datas excede le data maxime. Le valores predefinite se usa in su loco.",
 	"param-error-see-docs": "Vide le $1 pro plus information.",
 	"percent-mobile": "% mobile",
 	"permalink": "Permaligamine",
