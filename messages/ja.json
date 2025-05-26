@@ -178,7 +178,7 @@
 	"july": "7月",
 	"june": "6月",
 	"known-false-positives-link": "$1 {{PLURAL:$1|ページ}}",
-	"known-false-positives-text": "$1 {{PLURAL:$2|はすでに}}自動的に最多の閲覧件数 Topviews から除外してあります。",
+	"known-false-positives-text": "$1 {{PLURAL:$2|は既に}}自動的に最多の閲覧件数 Topviews から除外してあります。",
 	"language": "言語",
 	"langviews": "言語別ビュー",
 	"langviews-description": "全ての言語版におけるページビューを比較",
