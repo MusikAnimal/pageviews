@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Balyozxane",
 			"Bikarhêner",
 			"Biyolojiyabikurdi",
 			"George Animal",
@@ -34,11 +35,11 @@
 	"daily": "Rojane",
 	"daily-average": "Radena asasyî ya rojane",
 	"data-unavailable": "Dane ne li berdest e",
-	"date": "Dîrok",
+	"date": "Tarîx",
 	"date-created": "Dîroka çêkirinê",
 	"date-notice": "$1 daneyên ji tîrmeha 2015yê şûn ve dabîn dike.",
 	"date-type": "Cureya wextê",
-	"dates": "Dîrok",
+	"dates": "Tarîx",
 	"day": "roj",
 	"december": "Kanûna pêşîn",
 	"default": "Standart",
@@ -60,7 +61,7 @@
 	"hashtag-credits": "Ji aliyê $1 ve tê xebitandin",
 	"help": "Alîkarî",
 	"help-translate": "Bo tercûmekirinê alîkariyê bide",
-	"history": "Dîrok",
+	"history": "Tarîx",
 	"images": "Wêne",
 	"individual-projects": "projeya şexsî",
 	"info": "Agahî",
