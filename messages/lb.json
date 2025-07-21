@@ -283,7 +283,7 @@
 	"url-structure-project": "$1 oder aner valabel $2.",
 	"url-structure-projects": "Valabel $1 getrennt duerch d'Zeechen <code>|</code>. Zum Beispill $2",
 	"url-structure-siteviews-platform": "Wann de(n) $1 $2 ass",
-	"url-structure-sort": "D'Kolonn op déi zortéiert gi soll.",
+	"url-structure-sort": "D'Kolonn, op déi sortéiert gi soll.",
 	"url-structure-special-range-latest": "Déi lescht 20 Deeg vun den Daten",
 	"url-structure-start-date": "Ufanksdatum am Format $1.<br />Loosst dëse Parameter an de Parameter $2 ewech fir déi rezentst Donnéeë gewisen ze kréien.",
 	"url-structure-topviews-date-day": "E spezifeschen Dag am Format $1",
