@@ -124,6 +124,8 @@
 	"line": "کرښه",
 	"links": "تړوني",
 	"list": "لړليک",
+	"list-values": "يو له: $1",
+	"loading-cache": "له زېرمې څخه بارېږي...",
 	"localization": "ځايتابه:",
 	"localize-dates": "د نېټې بڼه ځايي‌کول",
 	"logarithmic-scale": "لوگاريتمي تله",
