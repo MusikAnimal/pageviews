@@ -403,7 +403,7 @@
 	"url-structure-start-date": "Tanggal mulai dalam format $1.<br>Abaikan parameter ini dan parameter $2 untuk menampilkan data paling terkini.",
 	"url-structure-start-date-earliest": "Gunakan $1 untuk tanggal terawal yang tersedia.",
 	"url-structure-start-month": "Menggunakan format $1 akan diperlakukan sebagai bulan mulai, dan akan ditampilkan data bulanan bukan harian.",
-	"url-structure-subjectpage": "Atur opsi \"$1\" ketika menggunakan kategori sebagai sumbernya. Gunakan $2 untuk mengaktifkan, atau $3 untuk menonaktifkan (baku).",
+	"url-structure-subjectpage": "Atur opsi \"$1\" ketika menggunakan kategori sebagai sumbernya. Gunakan $2 untuk menyalakan, atau $3 untuk mematikan (bawaan).",
 	"url-structure-topviews-date": "Tanggal yang merepresentasikan tanggal atau bulan spesifik, atau rentang relatif. Bisa berupa salah satu dari:",
 	"url-structure-topviews-date-day": "Satu tanggal spesifik dalam format $1",
 	"url-structure-topviews-date-month": "Satu bulan spesifik dalam format $1",
