@@ -10,12 +10,14 @@
 			"Macofe",
 			"Patsagorn Y.",
 			"Pon44695",
-			"Slentee"
+			"Slentee",
+			"Thailand2763"
 		]
 	},
 	"active-users": "ผู้ใช้ที่ยังมีความเคลื่อนไหว",
 	"adblock-error-title": "ดูเหมือนว่าคุณกำลังใช้โปรแกรมบล็อกโฆษณา",
 	"adblock-error-body1": "Pageviews Analysis มิได้ใช้โฆษณา แต่โปรแกรมบล็อกโฆษณาของคุณอาจขัดขวางการแสดงผลบางเมตริก เพราะมีคำว่า \"pageview\"",
+	"adblock-error-body2": "หากเครื่องมือนี้ทำงานอย่างถูกต้อง โปรดปิดตัวบล็อกโฆษณาสำหรับ <b>pageviews.toolforge.org</b>",
 	"admins": "ผู้ดูแลระบบ",
 	"agent": "ผู้กระทำ",
 	"all": "ทั้งหมด",
