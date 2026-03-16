@@ -103,7 +103,14 @@ if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
 }
 
 // get page IDs and build query
-$api_pages = file_get_contents( 'https://' . $project . "/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2" );
+$context = stream_context_create(
+    [
+        'http' => [
+            'user_agent' => 'PageviewsAnalysis/0.0 (https://pageviews.wmcloud.org/) PHP/' . PHP_VERSION
+        ]
+    ]
+);
+$api_pages = file_get_contents( 'https://' . $project . "/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2", false, $context );
 $api_pages = json_decode($api_pages)->query->pages;
 
 $db_start_date = $start_date->format( 'YmdHis' );
