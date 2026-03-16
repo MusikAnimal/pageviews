@@ -1,14 +1,14 @@
 /**
  * Langviews Analysis tool
- * @link https://pageviews.toolforge.org/langviews
+ * @link https://pageviews.wmcloud.org/langviews
  */
 
 const config = require('./config');
 const siteMap = require('../shared/site_map');
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
 const ChartHelpers = require('../shared/chart_helpers');
 const ListHelpers = require('../shared/list_helpers');
+const SequentialPromiseQueue = require('../shared/sequential_promise_queue');
 
 /** Main LangViews class */
 class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
@@ -326,23 +326,21 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day'),
       interWikiKeys = Object.keys(interWikiData);
+    const apiQueue = new SequentialPromiseQueue();
 
-    let dfd = $.Deferred(), promises = [], count = 0, failureRetries = {},
+    let dfd = $.Deferred(), count = 0,
       totalRequestCount = interWikiKeys.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = dbName => {
-      const data = interWikiData[dbName],
-        uriEncodedPageName = encodeURIComponent(data.title);
-
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${data.lang}.${this.baseProject}` +
-        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({ url, dataType: 'json' });
-      promises.push(promise);
-
-      promise.done(pvData => {
+      const data = interWikiData[dbName];
+      return $.ajax({ url: '/pageviews/pageviews.php', dataType: 'json', data: {
+        project: data.lang + '.' + this.baseProject,
+        platform: this.$platformSelector.val(),
+        agent: this.$agentSelector.val(),
+        page: encodeURIComponent(data.title),
+        start: startDate.format(this.config.timestampFormat),
+        end: endDate.format(this.config.timestampFormat)
+      }}).done(pvData => {
         pageViewsData.push({
           badges: data.badges,
           dbName,
@@ -352,36 +350,17 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
           items: pvData.items
         });
       }).fail(errorData => {
-        /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
           : $.i18n('unknown');
-        const cassandraError = errorMessage === 'Error in Cassandra table storage backend';
-        const failedPageLink = this.getPageLink(data.title, `${data.lang}.${this.baseProject}.org`);
 
-        if (cassandraError) {
-          if (failureRetries[dbName]) {
-            failureRetries[dbName]++;
-          } else {
-            failureRetries[dbName] = 1;
-          }
+        failedPages.push(page);
+        this.writeMessage(
+          `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
+        );
 
-          /** maximum of 3 retries */
-          if (failureRetries[dbName] < 3) {
-            totalRequestCount++;
-            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(dbName);
-          }
-
-          /** retries exceeded */
-          failedPages.push(failedPageLink);
-        } else {
-          this.writeMessage(
-            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
-          );
-        }
-
-        // unless it was a 404, don't cache this series of requests
-        if (errorData.status !== 404) this.hadFailure = true;
+        // Don't cache this series of requests.
+        this.hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 
@@ -390,7 +369,7 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${failedPage}</li>`).join('') +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, queryProject)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -400,11 +379,9 @@ class LangViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
-
-    interWikiKeys.forEach((dbName, index) => {
-      requestFn(dbName);
-    });
+    for (const dbName of interWikiKeys) {
+      apiQueue.enqueue(() => makeRequest(dbName));
+    }
 
     return dfd;
   }

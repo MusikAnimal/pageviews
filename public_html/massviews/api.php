@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../config.php';
+require_once ROOTDIR . '/vendor/autoload.php';
 
 // set header as JSON
 header('Content-type: application/json');
@@ -68,8 +69,10 @@ function recurseCategory( $client, $db, $searchCats, $allCats = [], $count = 0 )
 
   $sql = "SELECT page_title
           FROM $db.categorylinks
+          JOIN $db.linktarget ON cl_target_id = lt_id
           JOIN $db.page ON page_id = cl_from
-          WHERE cl_to IN ( $params )
+          WHERE lt_title IN ( $params )
+          AND lt_namespace = 14
           AND cl_type = 'subcat'";
 
   $stmt = $client->prepare( $sql );
@@ -106,16 +109,14 @@ function recurseCategory( $client, $db, $searchCats, $allCats = [], $count = 0 )
 }
 
 function getCategoryMembers( $client, $db, $categories, $limit ) {
-  $categoriesStr = implode( ',', array_map( function( $category ) {
-    return "'$category'";
-  }, $categories));
-
   $params = implode( ',', array_fill( 0, count( $categories ), '?') );
 
   $sql = "SELECT page_title AS title, page_namespace AS ns
           FROM $db.categorylinks
+          JOIN $db.linktarget ON cl_target_id = lt_id
           JOIN $db.page ON page_id = cl_from
-          WHERE cl_to IN ( $params )
+          WHERE lt_title IN ( $params )
+          AND lt_namespace = 14
           AND cl_type IN ('page', 'file')
           LIMIT $limit";
 

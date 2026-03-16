@@ -1,14 +1,14 @@
 /**
  * Userviews Analysis tool
- * @link https://pageviews.toolforge.org/userviews
+ * @link https://pageviews.wmcloud.org/userviews
  */
 
 const config = require('./config');
 const siteMap = require('../shared/site_map');
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
 const ChartHelpers = require('../shared/chart_helpers');
 const ListHelpers = require('../shared/list_helpers');
+const SequentialPromiseQueue = require('../shared/sequential_promise_queue');
 
 /** Main UserViews class */
 class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
@@ -448,56 +448,36 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   getPageViewsData(pages) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
+    const apiQueue = new SequentialPromiseQueue();
 
-    let dfd = $.Deferred(), promises = [], count = 0, failureRetries = {},
+    let dfd = $.Deferred(), count = 0,
       totalRequestCount = pages.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = pageObj => {
-      const pageTitle = pageObj.title,
-        uriEncodedPageName = encodeURIComponent(pageTitle);
+      const pageTitle = pageObj.title;
 
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({url, dataType: 'json'});
-      promises.push(promise);
-
-      promise.done(pvData => {
+      return $.ajax({ url: '/pageviews/pageviews.php', dataType: 'json', data: {
+        project: this.project,
+        platform: this.$platformSelector.val(),
+        agent: this.$agentSelector.val(),
+        page: encodeURIComponent(pageTitle),
+        start: startDate.format(this.config.timestampFormat),
+        end: endDate.format(this.config.timestampFormat)
+      }}).done(pvData => {
         pageObj.items = pvData.items;
         pageViewsData.push(pageObj);
       }).fail(errorData => {
-        /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
           : $.i18n('unknown');
-        const cassandraError = errorMessage === 'Error in Cassandra table storage backend',
-          failedPageLink = this.getPageLink(pageTitle, `${this.project}.org`);
 
-        if (cassandraError) {
-          if (failureRetries[pageTitle]) {
-            failureRetries[pageTitle]++;
-          } else {
-            failureRetries[pageTitle] = 1;
-          }
+        failedPages.push(pageTitle);
+        this.writeMessage(
+          `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
+        );
 
-          /** maximum of 3 retries */
-          if (failureRetries[pageTitle] < 3) {
-            totalRequestCount++;
-            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(pageTitle);
-          }
-
-          /** retries exceeded */
-          failedPages.push(failedPageLink);
-        } else {
-          this.writeMessage(
-            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
-          );
-        }
-
-        // unless it was a 404, don't cache this series of requests
-        if (errorData.status !== 404) this.hadFailure = true;
+        // Don't cache this series of requests.
+        this.hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 
@@ -506,7 +486,7 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${failedPage}</li>`).join('') +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, queryProject)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -516,11 +496,9 @@ class UserViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
-
-    pages.forEach(pageObj => {
-      requestFn(pageObj);
-    });
+    for (const pageObj of pages) {
+      apiQueue.enqueue(() => makeRequest(pageObj));
+    }
 
     return dfd;
   }

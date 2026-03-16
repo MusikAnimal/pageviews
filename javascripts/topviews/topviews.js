@@ -1,6 +1,6 @@
 /**
  * Topviews Analysis tool
- * @link https://pageviews.toolforge.org/topviews
+ * @link https://pageviews.wmcloud.org/topviews
  */
 
 const config = require('./config');

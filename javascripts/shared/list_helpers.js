@@ -55,19 +55,19 @@ const ListHelpers = superclass => class extends superclass {
     /** Extract the dates that are already in the timeseries */
     let alreadyThere = {};
     items.forEach(elem => {
-      let date = moment(elem.timestamp, this.config.timestampFormat);
-      alreadyThere[date] = elem;
+      alreadyThere[elem.timestamp] = elem;
     });
     let data = [], datesWithoutData = [];
 
     /** Reconstruct with zeros instead of nulls */
     for (let date = moment(startDate); date <= endDate; date.add(1, 'd')) {
-      if (alreadyThere[date]) {
-        data.push(alreadyThere[date]);
+      const dateIndex = date.format(this.config.timestampFormat);
+      if (alreadyThere[dateIndex]) {
+        data.push(alreadyThere[dateIndex]);
       } else {
         let edgeCase = date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'days'));
         data.push({
-          timestamp: date.format(this.config.timestampFormat),
+          timestamp: dateIndex,
           views: edgeCase ? null : 0
         });
         if (edgeCase) datesWithoutData.push(date.format());

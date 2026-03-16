@@ -3,9 +3,12 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mysqli": "*",
+        "ext-apcu": "*",
         "mthaml/mthaml": "1.8.0",
         "krinkle/intuition": "^1.2.0",
+        "php": ">=8.3.0",
         "whichbrowser/parser": "^2.0",
-        "symfony/cache": "^5.0"
+        "symfony/cache": "^5.0",
+        "symfony/http-client": "^7.4"
     }
 }

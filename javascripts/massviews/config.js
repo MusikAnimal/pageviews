@@ -21,14 +21,14 @@ const config = {
   },
   sources: {
     category: {
-      placeholder: 'https://en.wikipedia.org/wiki/Category:Hip_hop_groups_from_New_York_City',
+      placeholder: 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City',
       descriptionParams: () => [
         `<a target='_blank' href='https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Categories'>${$.i18n('category').toLowerCase()}</a>`
       ],
       type: 'text'
     },
     wikilinks: {
-      placeholder: 'https://en.wikipedia.org/wiki/Book:New_York_City',
+      placeholder: 'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List',
       descriptionParams: () => ['https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Wikilinks'],
       type: 'text'
     },
