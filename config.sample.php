@@ -1,12 +1,12 @@
 <?php
 // Define the root of the project directory so that the vendor and messages directories
 // can be accessed with non-relative paths.
-define( 'ROOTDIR', '/data/project/pageviews' );
+define( 'ROOTDIR', '/var/www' );
 
 // Whatever your localhost (or production) base path is set to.
 // On local, the following should work if you start the server with
 //   `php -S localhost:8000` within the public_html directory.
-// On Cloud Services, this should be 'https://pageviews.toolforge.org'
+// On Cloud Services, this should be 'https://pageviews.wmcloud.org'
 define( 'BASE_PATH', 'http://localhost:8000' );
 
 // Replica database credentials.
@@ -27,3 +27,6 @@ define( 'META_DB_USER', 'username' );
 define( 'META_DB_PASSWORD', 'password' );
 define( 'META_DB_PORT', 3006 );
 define( 'META_DB_NAME', 'database_name' );
+
+// User agent went making requests to Wikimedia APIs.
+define( 'USER_AGENT', 'Pageviews Analysis <https://pageviews.wmcloud.org>; contact pageviews@toolforge.org' );

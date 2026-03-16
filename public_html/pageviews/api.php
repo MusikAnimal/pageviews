@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../config.php';
 require_once ROOTDIR . '/vendor/autoload.php';
 
 use Symfony\Component\Cache\Adapter\ApcuAdapter;
+use Symfony\Component\HttpClient\HttpClient;
 
 date_default_timezone_set( 'UTC' );
 
@@ -82,14 +83,12 @@ $url_pages = urlencode( str_replace( ' ', '_', $_GET['pages'] ) );
 // Attempt to fetch assessments, first trying the disk cache.
 $assessmentsCache = json_decode( file_get_contents( ROOTDIR . '/disk_cache/assessments.json' ), true );
 
+$httpClient = HttpClient::create( [ 'headers' => [ 'User-Agent' => USER_AGENT ] ] );
+
 // Expires once every 24 hours.
 if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
   // Fetch from XTools.
-  $ch = curl_init();
-  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-  curl_setopt( $ch, CURLOPT_URL, 'https://xtools.wmcloud.org/api/project/assessments' );
-  $assessmentsConfig =json_decode( curl_exec( $ch ), true )['config'];
-  curl_close( $ch );
+  $assessmentsConfig = $httpClient->request( 'GET', 'https://xtools.wmcloud.org/api/project/assessments' )->toArray();
 
   // Save result back to disk cache.
   $fp = fopen( ROOTDIR . '/disk_cache/assessments.json', 'w' );
@@ -103,8 +102,8 @@ if( strtotime($assessmentsCache['fetched']) < time() - (60 * 60 * 24) ) {
 }
 
 // get page IDs and build query
-$api_pages = file_get_contents( 'https://' . $project . "/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2" );
-$api_pages = json_decode($api_pages)->query->pages;
+$api_pages = $httpClient->request( 'GET', "https://$project/w/api.php?action=query&titles=$url_pages&prop=info&format=json&formatversion=2" )
+    ->toArray()['query']['pages'];
 
 $db_start_date = $start_date->format( 'YmdHis' );
 $db_end_date = $end_date->format( 'Ymd235959' );
@@ -112,10 +111,10 @@ $db_end_date = $end_date->format( 'Ymd235959' );
 $multipage_parts = [];
 $total_edits = 0;
 foreach ($api_pages as $page) {
-  if ( !isset( $page->pageid ) ) {
+  if ( !isset( $page['pageid'] ) ) {
     continue;
   }
-  $page_id = $page->pageid;
+  $page_id = $page['pageid'];
   $multipage_parts[] = "rev_page = $page_id";
 
   // query for individual page
@@ -127,16 +126,16 @@ foreach ($api_pages as $page) {
     "WHERE rev_timestamp >= '$db_start_date' AND rev_timestamp <= '$db_end_date' AND ";
 
   $page_data = $client->query( $sql . " rev_page = $page_id" )->fetch_assoc();
-  $output['pages'][$page->title] = $page_data;
+  $output['pages'][$page['title']] = $page_data;
 
   // convert to ints
-  $output['pages'][$page->title]['num_edits'] = (int) $page_data['num_edits'];
-  $output['pages'][$page->title]['num_users'] = (int) $page_data['num_users'];
+  $output['pages'][$page['title']]['num_edits'] = (int) $page_data['num_edits'];
+  $output['pages'][$page['title']]['num_users'] = (int) $page_data['num_users'];
   $total_edits += (int) $page_data['num_edits'];
 
   // add assessment data, if available
   if ( isset( $page_data['assessment'] ) && isset( $assessmentsConfig[$project]['class'][$page_data['assessment']] ) ) {
-    $output['pages'][$page->title]['assessment_img'] = $assessmentsConfig[$project]['class'][$page_data['assessment']]['badge'];
+    $output['pages'][$page['title']]['assessment_img'] = $assessmentsConfig[$project]['class'][$page_data['assessment']]['badge'];
   }
 }
 

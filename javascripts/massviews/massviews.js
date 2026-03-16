@@ -1,6 +1,6 @@
 /**
  * Massviews Analysis tool
- * @link https://pageviews.toolforge.org/massviews
+ * @link https://pageviews.wmcloud.org/massviews
  */
 
 const config = require('./config');
@@ -9,6 +9,7 @@ const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
 const ChartHelpers = require('../shared/chart_helpers');
 const ListHelpers = require('../shared/list_helpers');
+const SequentialPromiseQueue = require('../shared/sequential_promise_queue');
 
 /** Main MassViews class */
 class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
@@ -219,8 +220,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   getPageViewsData(pages, project) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
+    const apiQueue = new SequentialPromiseQueue();
 
-    let dfd = $.Deferred(), count = 0, failureRetries = {},
+    let dfd = $.Deferred(), count = 0,
       totalRequestCount = pages.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = page => {
@@ -233,61 +235,28 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
         queryProject = project;
       }
 
-      const uriEncodedPageName = encodeURIComponent(page);
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${queryProject}` +
-        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({ url, dataType: 'json' });
-
-      promise.done(pvData => {
+      return $.ajax({ url: '/pageviews/pageviews.php', dataType: 'json', data: {
+        project: queryProject,
+        platform: this.$platformSelector.val(),
+        agent: this.$agentSelector.val(),
+        page: encodeURIComponent(page),
+        start: startDate.format(this.config.timestampFormat),
+        end: endDate.format(this.config.timestampFormat)
+      }}).done(pvData => {
         pageViewsData.push({
           title: page,
           project: queryProject,
           items: pvData.items
         });
       }).fail(errorData => {
-        /**
-         * 404s are treated as having zero pageviews
-         * See https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageviews#Gotchas
-         */
-        if (errorData.status === 404) {
-          pageViewsData.push({
-            title: page,
-            project: queryProject,
-            items: [],
-          });
-          return;
-        }
-
-        /** Schedule a re-try for Cassandra errors. */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
           : $.i18n('unknown');
-        const cassandraError = errorMessage === 'Error in Cassandra table storage backend';
 
-        if (cassandraError) {
-          if (failureRetries[page]) {
-            failureRetries[page]++;
-          } else {
-            failureRetries[page] = 1;
-          }
-
-          /** maximum of 3 retries */
-          if (failureRetries[page] < 3) {
-            totalRequestCount++;
-            return this.rateLimit(makeRequest, 100, this)(page);
-          }
-        }
-
-        if (cassandraError) {
-          failedPages.push(page);
-        } else {
-          this.writeMessage(
-            `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
-          );
-        }
+        failedPages.push(page);
+        this.writeMessage(
+          `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
+        );
 
         // Don't cache this series of requests.
         this.hadFailure = true;
@@ -309,9 +278,9 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
-
-    pages.forEach(page => requestFn(page));
+    for (const page of pages) {
+      apiQueue.enqueue(() => makeRequest(page));
+    }
 
     return dfd;
   }
@@ -380,7 +349,7 @@ class MassViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     datasets.forEach((dataset, index) => {
       /**
-       * Ensure we have data for each day, using null as the view count when data is actually not available yet
+       * Ensure we have data for each day, using null as the view count when data is actually not available yet.
        * See fillInZeros() comments for more info.
        */
       const [viewsSet, incompleteDates] = this.fillInZeros(dataset.items, startDate, endDate);

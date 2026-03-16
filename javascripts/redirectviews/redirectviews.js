@@ -1,14 +1,13 @@
 /**
  * Redirect Views Analysis tool
- * @link https://pageviews.toolforge.org/redirectviews
+ * @link https://pageviews.wmcloud.org/redirectviews
  */
 
 const config = require('./config');
-const siteMap = require('../shared/site_map');
-const siteDomains = Object.keys(siteMap).map(key => siteMap[key]);
 const Pv = require('../shared/pv');
 const ChartHelpers = require('../shared/chart_helpers');
 const ListHelpers = require('../shared/list_helpers');
+const SequentialPromiseQueue = require('../shared/sequential_promise_queue');
 
 /** Main RedirectViews class */
 class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
@@ -314,58 +313,37 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
   getPageViewsData(redirectData) {
     const startDate = this.daterangepicker.startDate.startOf('day'),
       endDate = this.daterangepicker.endDate.startOf('day');
+    const apiQueue = new SequentialPromiseQueue();
 
-    let dfd = $.Deferred(), promises = [], count = 0, failureRetries = {},
+    let dfd = $.Deferred(), count = 0,
       totalRequestCount = redirectData.length, failedPages = [], pageViewsData = [];
 
     const makeRequest = page => {
-      const uriEncodedPageName = encodeURIComponent(page.title);
-
-      const url = (
-        `https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-        `/${this.$platformSelector.val()}/${this.$agentSelector.val()}/${uriEncodedPageName}/daily` +
-        `/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
-      );
-      const promise = $.ajax({ url, dataType: 'json' });
-      promises.push(promise);
-
-      promise.done(pvData => {
+      return $.ajax({ url: '/pageviews/pageviews.php', dataType: 'json', data: {
+        project: this.project,
+        platform: this.$platformSelector.val(),
+        agent: this.$agentSelector.val(),
+        page: encodeURIComponent(page.title),
+        start: startDate.format(this.config.timestampFormat),
+        end: endDate.format(this.config.timestampFormat)
+      }}).done(pvData => {
         pageViewsData.push({
           title: page.title,
           section: page.fragment,
           items: pvData.items
         });
       }).fail(errorData => {
-        /** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
         const errorMessage = errorData.responseJSON && errorData.responseJSON.title
           ? errorData.responseJSON.title
           : $.i18n('unknown');
-        const cassandraError = errorMessage === 'Error in Cassandra table storage backend',
-          failedPageLink = this.getPageLink(page.title, `${this.project}.org`);
 
-        if (cassandraError) {
-          if (failureRetries[page.title]) {
-            failureRetries[page.title]++;
-          } else {
-            failureRetries[page.title] = 1;
-          }
+        failedPages.push(page);
+        this.writeMessage(
+          `${this.getPageLink(page, queryProject)}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
+        );
 
-          /** maximum of 3 retries */
-          if (failureRetries[page.title] < 3) {
-            totalRequestCount++;
-            return this.rateLimit(makeRequest, this.config.apiThrottle, this)(page);
-          }
-
-          /** retries exceeded */
-          failedPages.push(failedPageLink);
-        } else {
-          this.writeMessage(
-            `${failedPageLink}: ${$.i18n('api-error', 'Pageviews API')} - ${errorMessage}`
-          );
-        }
-
-        // unless it was a 404, don't cache this series of requests
-        if (errorData.status !== 404) this.hadFailure = true;
+        // Don't cache this series of requests.
+        this.hadFailure = true;
       }).always(() => {
         this.updateProgressBar(++count, totalRequestCount);
 
@@ -374,7 +352,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
             this.writeMessage($.i18n(
               'api-error-timeout',
               '<ul>' +
-              failedPages.map(failedPage => `<li>${failedPage}</li>`).join('') +
+              failedPages.map(failedPage => `<li>${this.getPageLink(failedPage, queryProject)}</li>`).join('') +
               '</ul>'
             ));
           }
@@ -384,11 +362,9 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
       });
     };
 
-    const requestFn = this.rateLimit(makeRequest, this.config.apiThrottle, this);
-
-    redirectData.forEach(page => {
-      requestFn(page);
-    });
+    for (const page of redirectData) {
+      apiQueue.enqueue(() => makeRequest(page));
+    }
 
     return dfd;
   }
@@ -509,7 +485,7 @@ class RedirectViews extends mix(Pv).with(ChartHelpers, ListHelpers) {
 
     $('.progress-counter').text($.i18n('fetching-data', 'Redirects API'));
     this.getRedirects(page).done(redirectData => {
-      this.getPageViewsData(redirectData[page.descore()]).done(pageViewsData => {
+      this.getPageViewsData(redirectData[page.score()]).done(pageViewsData => {
         $('.progress-bar').css('width', '100%');
         $('.progress-counter').text($.i18n('building-dataset'));
         const pageLink = this.getPageLink(page, this.project);

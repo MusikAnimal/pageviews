@@ -41,5 +41,5 @@
     "build": "gulp production",
     "dev": "gulp"
   },
-  "engine": "node >= 14.15.0"
+  "engine": "node >= 20.12.2"
 }

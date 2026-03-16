@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../config.php';
+require_once ROOTDIR . '/vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
 
 header( 'Content-type: application/json' );
 
@@ -13,14 +16,12 @@ if ( strtotime( $projectsCache['fetched'] ) > time() - ( 60 * 60 * 24 * 7 ) ) {
     return;
 }
 
-// Fetch the TSV file from GitHub.
-$ch = curl_init();
-curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-curl_setopt( $ch, CURLOPT_HTTPHEADER, ['Accept: application/json'] );
-curl_setopt( $ch, CURLOPT_URL, 'https://raw.githubusercontent.com/wikimedia/analytics-refinery/master/static_data/pageview/allowlist/allowlist.tsv' );
-$rows = explode( "\n", curl_exec( $ch ) );
-curl_close( $ch );
+$httpClient = HttpClient::create( [ 'headers' => [ 'User-Agent' => USER_AGENT ] ] );
 
+// Fetch the TSV file from GitHub.
+$tsvContent = $httpClient->request( 'GET', 'https://raw.githubusercontent.com/wikimedia/analytics-refinery/master/static_data/pageview/allowlist/allowlist.tsv' )
+    ->getContent();
+$rows = explode( "\n", trim( $tsvContent ) );
 // Collect the valid projects.
 $projects = [];
 foreach ( $rows as $row ) {
