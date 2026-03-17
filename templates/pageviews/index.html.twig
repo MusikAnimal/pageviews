@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+	{{ importmap( 'pageviews' ) }}
+{% endblock %}
+
+{% block body %}
+	<aside class="col-lg-2 col-md-2 options-container">
+		<header class="text-center">
+			<h4>{{ msg( 'options' ) }}</h4>
+		</header>
+
+		<div class="aside-options">
+			{% include '_date_selector.html.twig' %}
+
+			<!-- Project input -->
+			<div>
+				<label for="project-input">
+					{{ msg( 'project' ) }}
+				</label>
+				<input class="form-control aqs-project-input" id="project-input" placeholder="en.wikipedia.org" spellcheck="false" />
+			</div>
+
+			{% include '_platform_agent_selector.html.twig' %}
+
+			<!-- Redirects checkbox -->
+			<div>
+				<label>
+					<input type="checkbox" id="redirects-checkbox" />
+					{{ msg( 'include-redirects' ) }}
+					<a class="help-link" href="{{ path( 'pageviews/faq' ) }}#redirects">
+						<span class="glyphicon glyphicon-question-sign"></span>
+					</a>
+				</label>
+			</div>
+		</div>
+	</aside>
+
+	<main class="col-lg-8 col-md-10">
+		<div>
+			<label for="select2-input">
+				{{ msg( 'pages' ) }}
+				<small class="text-muted num-entities-info">
+					{{ msg( 'num-pages-info', [ 10 ] ) }}
+				</small>
+			</label>
+			<span class="clear-pages pull-right">
+				&#x2715;
+				{{ msg( 'clear' ) }}
+			</span>
+			<select class="col-lg-12 invisible" id="select2-input" multiple="multiple"></select>
+		</div>
+
+		{% include '_data_links.html.twig' %}
+
+		<!-- Chart -->
+		<div class="chart-container">
+			<canvas id="chart"></canvas>
+		</div>
+
+		<!-- Error messages -->
+		<div class="message-container col-lg-12"></div>
+	</main>
+
+	<!-- Converted HAML/PHP block to HTML + Twig -->
+	<aside class="col-lg-2 visible-lg-block summary-column">
+		<header class="text-center">
+			<h4>{{ msg('totals') }}</h4>
+		</header>
+		<div class="summary-column--container">
+			<div class="chart-legend col-lg-12 clearfix"></div>
+		</div>
+	</aside>
+
+	<div class="output col-lg-10 col-lg-offset-1">
+		<h4 class="single-page-stats text-center"></h4>
+		<h5 class="single-entity-ranking text-center"></h5>
+		<div class="single-page-legend hidden-lg col-md-4 col-md-offset-4 tm"></div>
+
+		{% set columns = {
+			'title': 'page-title',
+			'class': 'class',
+			'views': 'views',
+			'average': 'daily-average',
+			'edits': 'edits',
+			'editors': 'editors',
+			'size': 'size',
+			'protection': 'protection',
+			'watchers': 'watchers'
+		} %}
+
+		<div class="table-view--wrapper">
+			<table class="table table-hover table-view">
+				<thead class="table-view--header">
+				<tr>
+					<th></th>
+					{% for column, translation in columns %}
+						<th class="table-view--{{ column }}">
+							<span class="sort-link sort-link--{{ column }}" data-type="{{ column }}">
+								<span class="col-heading">{{ msg( translation ) }}</span>
+								<span class="glyphicon glyphicon-sort"></span>
+							</span>
+						</th>
+					{% endfor %}
+					<th>
+						<span>{{ msg('links') }}</span>
+					</th>
+				</tr>
+				</thead>
+				<tbody class="output-list"></tbody>
+			</table>
+		</div>
+	</div>
+
+	{% include '_modals.html.twig' %}
+
+{% endblock %}

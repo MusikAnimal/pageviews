@@ -1,0 +1,74 @@
+<div class="modal fade" id="chart-type-modal" role="dialog" tabindex="-1">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="close" aria-label="Close" data-dismiss="modal" type="button">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title">{{ msg( 'chart-types' ) }}</h4>
+			</div>
+
+			<div class="modal-body">
+				<div>
+					<strong class="multi-page-chart-node">{{ msg( 'daily-pageviews' ) }}</strong>
+
+					<span class="modal-chart-type">
+						<a class="js-test-line-chart" data-dismiss="modal" data-type="line" href="#">
+							<img src="{{ asset( 'images/line-chart-small.jpg' ) }}" alt="{{ msg( 'line' ) }}" />
+							{{ msg( 'line' ) }}
+						</a>
+					</span>
+
+					<span class="modal-chart-type">
+						<a class="js-test-bar-chart" data-dismiss="modal" data-type="bar" href="#">
+							<img src="{{ asset( 'images/bar-chart-small.jpg' ) }}" alt="{{ msg( 'bar' ) }}" />
+							{{ msg( 'bar' ) }}
+						</a>
+					</span>
+
+					<span class="modal-chart-type">
+						<a data-dismiss="modal" data-type="radar" href="#">
+							<img src="{{ asset( 'images/radar-chart-small.jpg' ) }}" alt="{{ msg( 'radar' ) }}" />
+							{{ msg( 'radar' ) }}
+						</a>
+					</span>
+
+				</div>
+
+				<div class="multi-page-chart-node">
+					<hr/>
+					<div>
+						<strong>{{ msg( 'total-pageviews' ) }}</strong>
+
+						<span class="modal-chart-type">
+							<a class="js-test-pie-chart" data-dismiss="modal" data-type="pie" href="#">
+								<img src="{{ asset( 'images/pie-chart-small.jpg' ) }}" alt="{{ msg( 'pie' ) }}" />
+								{{ msg( 'pie' ) }}
+							</a>
+						</span>
+
+						<span class="modal-chart-type">
+							<a data-dismiss="modal" data-type="doughnut" href="#">
+								<img src="{{ asset( 'images/doughnut-chart-small.jpg' ) }}" alt="{{ msg( 'doughnut' ) }}" />
+								{{ msg( 'doughnut' ) }}
+							</a>
+						</span>
+
+						<span class="modal-chart-type">
+							<a data-dismiss="modal" data-type="polarArea" href="#">
+								<img src="{{ asset( 'images/polararea-chart-small.jpg' ) }}" alt="{{ msg( 'polar-area' ) }}" />
+								{{ msg( 'polar-area' ) }}
+							</a>
+						</span>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-default" data-dismiss="modal" type="button">{{ msg( 'cancel' ) }}</button>
+			</div>
+		</div>
+	</div>
+</div>

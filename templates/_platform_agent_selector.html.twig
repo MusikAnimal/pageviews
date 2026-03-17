@@ -1,0 +1,44 @@
+<!-- Platform selector -->
+<div>
+	<label for="platform-select">
+		{{ msg( 'platform' ) }}
+	</label>
+	<select class="form-control" id="platform-select">
+		<option value="all-access">
+			{{ msg( 'all' ) }}
+		</option>
+		<option value="desktop">
+			{{ msg( 'desktop' ) }}
+		</option>
+		<option value="mobile-app">
+			{{ msg( 'mobile-app' ) }}
+		</option>
+		<option value="mobile-web">
+			{{ msg( 'mobile-web' ) }}
+		</option>
+	</select>
+</div>
+
+<!-- Agent selector -->
+<div>
+	<label for="agent-select">
+		{{ msg( 'agent' ) }}
+		<a class="help-link" href="{{ path( 'pageviews/faq' ) }}#agents">
+			<span class="glyphicon glyphicon-question-sign"></span>
+		</a>
+	</label>
+	<select class="form-control" id="agent-select">
+		<option value="all-agents">
+			{{ msg( 'all' ) }}
+		</option>
+		<option value="user">
+			{{ msg( 'user' ) }}
+		</option>
+		<option value="spider">
+			{{ msg( 'spider' ) }}
+		</option>
+		<option value="automated">
+			{{ msg( 'automated' ) }}
+		</option>
+	</select>
+</div>
