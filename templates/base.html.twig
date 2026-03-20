@@ -9,6 +9,11 @@
 
 	{% block javascripts %}
 		{% block importmap %}{{ importmap('app') }}{% endblock %}
+		<script>
+			window.i18nLang = "{{ lang() }}";
+			window.i18nPath = "{{ asset( 'i18n/' ~ lang() ~ '.json' ) }}";
+			window.i18nEnPath = "{{ asset( 'i18n/en.json' ) }}";
+		</script>
 	{% endblock %}
 </head>
 <body class="{% if is_rtl() %}rtl{% endif %} initial">

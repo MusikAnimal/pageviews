@@ -1,4 +1,5 @@
-import ChartHelpers from './chart_helpers.js';
+import ChartHelpers from '../chart_helpers.js';
+import appConfig from './config.js';
 
 /**
  * Pageviews Analysis tool.
@@ -7,7 +8,7 @@ import ChartHelpers from './chart_helpers.js';
 class Pageviews extends ChartHelpers {
 
 	constructor() {
-		super( 'pageviews' );
+		super( 'pageviews', appConfig );
 
 		this.entityInfo = false; /** lets us know if we've gotten the page info from API yet */
 		this.specialRange = null;
@@ -64,8 +65,8 @@ class Pageviews extends ChartHelpers {
 	 * @param {Object} query as returned from Select2 input
 	 * @returns {Object} query params to be handed off to API
 	 */
-	getSearchParams(query) {
-		if (this.autocomplete === 'autocomplete') {
+	getSearchParams( query ) {
+		if (this.config.autocomplete === 'autocomplete') {
 			return {
 				action: 'query',
 				list: 'prefixsearch',
@@ -73,7 +74,7 @@ class Pageviews extends ChartHelpers {
 				pssearch: query || '',
 				cirrusUseCompletionSuggester: 'yes'
 			};
-		} else if (this.autocomplete === 'autocomplete_redirects') {
+		} else if (this.config.autocomplete === 'autocomplete_redirects') {
 			return {
 				action: 'query',
 				generator: 'prefixsearch',
@@ -98,10 +99,10 @@ class Pageviews extends ChartHelpers {
 			this.parseQueryString('pages')
 		);
 
-		this.$projectInput.val(params.project);
-		this.$platformSelector.val(params.platform);
-		this.$agentSelector.val(params.agent);
-		this.$redirectsCheckbox.prop('checked', this.alwaysRedirects === 'true' || params.redirects === '1');
+		this.config.$projectInput.val(params.project);
+		this.config.$platformSelector.val(params.platform);
+		this.config.$agentSelector.val(params.agent);
+		this.config.$redirectsCheckbox.prop('checked', this.alwaysRedirects === 'true' || params.redirects === '1');
 
 		this.validateDateRange(params);
 
@@ -198,13 +199,13 @@ class Pageviews extends ChartHelpers {
 	 * @param {Object} data data as received from the API
 	 * @returns {Object} data ready to handed over to Select2
 	 */
-	processSearchResults(data) {
+	processSearchResults( data ) {
 		const query = data ? data.query : {};
 		let results = [];
 
 		if (!query) return {results};
 
-		if (this.autocomplete === 'autocomplete') {
+		if (this.config.autocomplete === 'autocomplete') {
 			if (query.prefixsearch.length) {
 				results = query.prefixsearch.map(function(elem) {
 					return {
@@ -213,7 +214,7 @@ class Pageviews extends ChartHelpers {
 					};
 				});
 			}
-		} else if (this.autocomplete === 'autocomplete_redirects') {
+		} else if (this.config.autocomplete === 'autocomplete_redirects') {
 			/** first merge in redirects */
 			if (query.redirects) {
 				results = query.redirects.map(red => {
@@ -243,9 +244,9 @@ class Pageviews extends ChartHelpers {
 	 */
 	getParams(specialRange = true) {
 		let params = {
-			project: this.$projectInput.val(),
-			platform: this.$platformSelector.val(),
-			agent: this.$agentSelector.val(),
+			project: this.config.$projectInput.val(),
+			platform: this.config.$platformSelector.val(),
+			agent: this.config.$agentSelector.val(),
 			redirects: this.includeRedirects() ? '1' : '0',
 		};
 
@@ -282,19 +283,19 @@ class Pageviews extends ChartHelpers {
 		let params = {
 			ajax: this.getArticleSelectorAjax(),
 			tags: this.autocomplete === 'no_autocomplete',
-			placeholder: $.i18n('article-placeholder'),
+			placeholder: this.i18n('article-placeholder'),
 			maximumSelectionLength: 10,
 			minimumInputLength: 1
 		};
 		super.setupSelect2(params);
 
-		this.$select2Input.off('select2:open').on('select2:open', e => {
+		this.config.$select2Input.off('select2:open').on('select2:open', e => {
 			if ($(e.target).val() && $(e.target).val().length === 10) {
 				$('.select2-search__field').one('keyup', () => {
-					const message = $.i18n(
+					const message = this.i18n(
 						'massviews-notice',
 						10,
-						`<strong><a href='/massviews/'>${$.i18n('massviews')}</a></strong>`
+						`<strong><a href='/massviews/'>${this.i18n('massviews')}</a></strong>`
 					);
 					this.toastInfo(message);
 				});
@@ -314,11 +315,10 @@ class Pageviews extends ChartHelpers {
 			 * We ultimately want to make the endpoint configurable based on whether they want redirects
 			 */
 			return {
-				url: `https://${this.project}.org/w/api.php`,
-				dataType: 'jsonp',
+				url: `https://${this.project}.org/w/api.php?origin=*`,
+				dataType: 'json',
 				delay: 200,
-				jsonpCallback: 'articleSuggestionCallback',
-				data: search => this.getSearchParams(search.term),
+				data: ( search ) => this.getSearchParams( search.term ),
 				processResults: this.processSearchResults.bind(this),
 				cache: true
 			};
@@ -359,9 +359,9 @@ class Pageviews extends ChartHelpers {
 	 */
 	setupListeners() {
 		super.setupListeners();
-		this.$platformSelector
-			.add(this.$agentSelector)
-			.add(this.$redirectsCheckbox)
+		this.config.$platformSelector
+			.add(this.config.$agentSelector)
+			.add(this.config.$redirectsCheckbox)
 			.on('change', this.processInput.bind(this));
 	}
 
@@ -489,7 +489,7 @@ class Pageviews extends ChartHelpers {
 
 		$.ajax({
 			url: `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${this.project}/` +
-				`${this.$platformSelector.val()}/${topviewsDate}`,
+				`${this.config.$platformSelector.val()}/${topviewsDate}`,
 			dataType: 'json'
 		}).done(data => {
 			// store pageData from API, removing underscores from the page name
@@ -497,30 +497,28 @@ class Pageviews extends ChartHelpers {
 			if (entry) {
 				const monthName = this.daterangepicker.locale.monthNames[topviewsMonth.month()];
 				const topviewsLink = `<a target='_blank' href='${this.getTopviewsMonthURL(this.project + '.org', topviewsMonth)}'>` +
-					$.i18n('most-viewed-pages').toLowerCase() + '</a>';
+					this.i18n('most-viewed-pages').toLowerCase() + '</a>';
 
 				$('.single-entity-ranking').html(
-					$.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
+					this.i18n('most-viewed-rank', entry.rank, topviewsLink, `${monthName} ${topviewsMonth.year()}`)
 				);
 			}
 		}).always(() => {
 			$('.table-view').hide();
 			$('.single-page-stats').html(`
-        ${this.getPageLink(page.label)}
-        ${page.assessment ? '&middot;\n' + this.getAssessmentBadge(page) : ''}
-        &middot;
-        <span class='text-muted'>
-          ${this.$dateRangeSelector.val()}
-        </span>
-        &middot;
-        ${$.i18n('num-pageviews', this.formatNumber(page.sum), page.sum)}
-        <span class='hidden-lg'>
-          (${this.formatNumber(page.average)}/${$.i18n(this.isMonthly() ? 'month' : 'day')})
-        </span>
-      `);
-			$('.single-page-legend').html(
-				this.config.templates.chartLegend(this)
+				${this.getPageLink(page.label)}
+				${page.assessment ? '&middot;\n' + this.getAssessmentBadge(page) : ''}
+				&middot;
+				<span class='text-muted'>
+					${this.config.$dateRangeSelector.val()}
+				</span>
+				&middot;
+				${this.i18n('num-pageviews', this.config.formatNumber(page.sum), page.sum)}
+				<span class='hidden-lg'>
+					(${this.config.formatNumber(page.average)}/${this.i18n(this.isMonthly() ? 'month' : 'day')})
+				</span>`
 			);
+			$('.single-page-legend').html( this.config.chartLegend() );
 		});
 	}
 
@@ -535,14 +533,14 @@ class Pageviews extends ChartHelpers {
 
 		if (!$.isNumeric(this.outputData[0].num_edits)) {
 			$('.legend-block--revisions .legend-block--body').html(
-				`<span class='text-muted'>${$.i18n('data-unavailable')}</span>`
+				`<span class='text-muted'>${this.i18n('data-unavailable')}</span>`
 			);
 		}
 
 		let hasProtection = false,
 			hasAssessment = false;
 		datasets.forEach(item => {
-			if (item.protection !== $.i18n('none').toLowerCase()) hasProtection = true;
+			if (item.protection !== this.i18n('none').toLowerCase()) hasProtection = true;
 			if (item.assessment && item.assessment.length) hasAssessment = true;
 
 			this.$outputList.append(this.config.templates.tableRow(this, item));
@@ -553,13 +551,13 @@ class Pageviews extends ChartHelpers {
 			numProtections = datasets.filter(page => page.protection !== 'none').length;
 
 		const totals = {
-			label: $.i18n('num-pages', this.formatNumber(datasets.length), datasets.length),
+			label: this.i18n('num-pages', this.config.formatNumber(datasets.length), datasets.length),
 			sum,
 			average: Math.round(sum / (datasets[0].data.filter(el => el !== null)).length),
 			num_edits: this.entityInfo.totals ? this.entityInfo.totals.num_edits : null,
 			num_users: this.entityInfo.totals ? this.entityInfo.totals.num_users : null,
 			length: datasets.reduce((a, b) => a + b.length, 0),
-			protection: $.i18n('num-protections', this.formatNumber(numProtections), numProtections),
+			protection: this.i18n('num-protections', this.config.formatNumber(numProtections), numProtections),
 			watchers: datasets.reduce((a, b) => a + (b.watchers || 0), 0)
 		};
 		this.$outputList.append(this.config.templates.tableRow(this, totals, true));
@@ -611,7 +609,7 @@ class Pageviews extends ChartHelpers {
 			// throw errors for missing pages and remove them from the list to be processed
 			for (let page in data) {
 				if (data[page].missing && !data[page].known) {
-					this.writeMessage(`${this.getPageLink(page)}: ${$.i18n('api-error-no-data')}`);
+					this.writeMessage(`${this.getPageLink(page)}: ${this.i18n('api-error-no-data')}`);
 					delete data[page];
 				}
 			}
@@ -633,7 +631,7 @@ class Pageviews extends ChartHelpers {
 					let protection = this.entityInfo.entities[page].protection || [];
 					if (Array.isArray(protection)) protection = protection.find(prot => prot.type === 'edit');
 
-					pageData.protection = protection ? protection.level : $.i18n('none').toLowerCase();
+					pageData.protection = protection ? protection.level : this.i18n('none').toLowerCase();
 
 					Object.assign(this.entityInfo.entities[page], pageData);
 				});
@@ -672,7 +670,7 @@ class Pageviews extends ChartHelpers {
 		}).fail(() => {
 			// just grab first 10 pages and throw an error
 			this.toastError(
-				$.i18n('auto-pagepile-error', 'PagePile', 10)
+				this.i18n('auto-pagepile-error', 'PagePile', 10)
 			);
 			dfd.resolve(pages.slice(0, 10));
 		});

@@ -4,11 +4,17 @@
  * Some properties may be overridden by app-specific configs.
  */
 class Config {
-	/** set instance variable (config), also defining any private methods */
-	constructor() {
-		console.log('Initializing config');
+	/**
+	 * Set instance variable (config), also defining any private methods
+	 *
+	 * @param {App} app Reference to the App instance.
+	 * @param {Object} [appConfig] App-specific config to override defaults.
+	 */
+	constructor( app, appConfig = {} ) {
+		this.i18n = app.i18n;
+		this.templates = appConfig.templates || {};
 		const formatXAxisTick = value => {
-			const dayOfWeek = moment(value, this.dateFormat).isoWeekday();
+			const dayOfWeek = moment(value, app.dateFormat).isoWeekday();
 			const monthly = $('#date-type-select').val() === 'monthly';
 			if (dayOfWeek === 1 && !monthly) {
 				return `• ${value}`;
@@ -31,6 +37,11 @@ class Config {
 			'pageviews', 'topviews', 'langviews', 'siteviews',
 			'massviews', 'redirectviews', 'userviews', 'mediaviews'
 		];
+		/**
+		 * @type {Function}
+		 */
+		this.chartLegend = appConfig.chartLegend.bind( app ) ||
+			( () => { throw new Error( 'No chart legend function defined in config!' ) } );
 		this.chartConfig = {
 			line: {
 				opts: {
@@ -48,7 +59,7 @@ class Config {
 							}
 						}]
 					},
-					legendCallback: () => this.chartLegend(),
+					legendCallback: () => this.chartLegend.bind( app ),
 					tooltips: this.linearTooltips()
 				},
 				dataset(color) {
@@ -59,7 +70,7 @@ class Config {
 						borderColor: color,
 						pointColor: color,
 						pointBackgroundColor: color,
-						pointBorderColor: this.rgba(color, 0.2),
+						pointBorderColor: app.rgba(color, 0.2),
 						pointHoverBackgroundColor: color,
 						pointHoverBorderColor: color,
 						pointHoverBorderWidth: 2,
@@ -86,16 +97,16 @@ class Config {
 							}
 						}]
 					},
-					legendCallback: () => this.chartLegend(this),
+					legendCallback: () => this.chartLegend.bind( app ),
 					tooltips: this.linearTooltips('label')
 				},
 				dataset(color) {
 					return {
 						color,
-						backgroundColor: this.rgba(color, 0.6),
-						borderColor: this.rgba(color, 0.9),
+						backgroundColor: app.rgba(color, 0.6),
+						borderColor: app.rgba(color, 0.9),
 						borderWidth: 2,
-						hoverBackgroundColor: this.rgba(color, 0.75),
+						hoverBackgroundColor: app.rgba(color, 0.75),
 						hoverBorderColor: color
 					};
 				}
@@ -107,17 +118,17 @@ class Config {
 							callback: value => this.formatNumber(value)
 						}
 					},
-					legendCallback: () => this.chartLegend(this),
+					legendCallback: () => this.chartLegend.bind( app ),
 					tooltips: this.linearTooltips()
 				},
 				dataset(color) {
 					return {
 						color,
-						backgroundColor: this.rgba(color, 0.1),
+						backgroundColor: app.rgba(color, 0.1),
 						borderColor: color,
 						borderWidth: 2,
 						pointBackgroundColor: color,
-						pointBorderColor: this.rgba(color, 0.8),
+						pointBorderColor: app.rgba(color, 0.8),
 						pointHoverBackgroundColor: color,
 						pointHoverBorderColor: color,
 						pointHoverRadius: 5
@@ -126,27 +137,27 @@ class Config {
 			},
 			pie: {
 				opts: {
-					legendCallback: () => this.config.chartLegend(this),
+					legendCallback: this.chartLegend.bind( app ),
 					tooltips: this.circularTooltips
 				},
 				dataset(color) {
 					return {
 						color,
 						backgroundColor: color,
-						hoverBackgroundColor: this.rgba(color, 0.8)
+						hoverBackgroundColor: app.rgba(color, 0.8)
 					};
 				}
 			},
 			doughnut: {
 				opts: {
-					legendCallback: () => this.config.chartLegend(this),
+					legendCallback: this.chartLegend.bind( app ),
 					tooltips: this.circularTooltips
 				},
 				dataset(color) {
 					return {
 						color: color,
 						backgroundColor: color,
-						hoverBackgroundColor: this.rgba(color, 0.8)
+						hoverBackgroundColor: app.rgba(color, 0.8)
 					};
 				}
 			},
@@ -158,14 +169,14 @@ class Config {
 							callback: value => this.formatNumber(value)
 						}
 					},
-					legendCallback: () => this.chartLegend(context),
+					legendCallback: this.chartLegend.bind( app ),
 					tooltips: this.circularTooltips
 				},
 				dataset(color) {
 					return {
 						color: color,
-						backgroundColor: this.rgba(color, 0.7),
-						hoverBackgroundColor: this.rgba(color, 0.9)
+						backgroundColor: app.rgba(color, 0.7),
+						hoverBackgroundColor: app.rgba(color, 0.9)
 					};
 				}
 			}
@@ -175,7 +186,6 @@ class Config {
 			alwaysRedirects: false,
 			autocomplete: 'autocomplete',
 			chartType: numDatasets => numDatasets > 1 ? 'line' : 'bar',
-			dateFormat: 'YYYY-MM-DD',
 			localizeDateFormat: 'true',
 			numericalFormatting: 'true',
 			bezierCurve: 'false',
@@ -208,7 +218,7 @@ class Config {
 					}
 				}]
 			},
-			legendCallback: chart => this.chartLegend(chart.data.datasets, context)
+			legendCallback: chart => this.chartLegend.bind( app, chart.data.datasets )
 		};
 		this.daysAgo = 30;
 		this.minDate = moment('2015-07-01').startOf('day');
@@ -226,8 +236,8 @@ class Config {
 			'this-year': [moment().startOf('year'), moment().startOf('year').isAfter(maxDate) ? moment().startOf('year') : maxDate],
 			'last-year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 			'all-time': [moment('2015-07-01').startOf('day'), maxDate],
-			latest(offset = context.config.daysAgo) {
-				const target = context.isPagecounts() ? maxDatePagecounts : maxDate;
+			latest(offset = this.daysAgo) {
+				const target = app.isPagecounts() ? maxDatePagecounts : maxDate;
 				return [moment(target).subtract(offset - 1, 'days').startOf('day'), target];
 			}
 		};
@@ -235,8 +245,13 @@ class Config {
 		this.validParams = {
 			agent: ['all-agents', 'user', 'spider', 'automated'],
 			platform: ['all-access', 'desktop', 'mobile-app', 'mobile-web'],
-			project: null
+			project: []
 		};
+		/**
+		 * Params to validate for this app.
+		 * @type {Array<String>}
+		 */
+		this.validateParams = appConfig.validateParams || [];
 		this.rtlLangs = ['ar', 'he', 'fa', 'ps', 'ur']
 	}
 
@@ -279,7 +294,7 @@ class Config {
 			callbacks: {
 				label: tooltipItem => {
 					if (Number.isNaN(tooltipItem.yLabel)) {
-						return ' ' + $.i18n('unknown');
+						return ' ' + this.i18n('unknown');
 					} else {
 						return ' ' + this.formatNumber(tooltipItem.yLabel);
 					}
@@ -304,7 +319,7 @@ class Config {
 						label = chartInstance.labels[tooltipItem.index];
 
 					if (Number.isNaN(value)) {
-						return `${label}: ${$.i18n('unknown')}`;
+						return `${label}: ${this.i18n('unknown')}`;
 					} else {
 						return `${label}: ${this.formatNumber(value)}`;
 					}
@@ -323,7 +338,7 @@ class Config {
 	 * @returns {string} formatted number
 	 */
 	formatNumber(num) {
-		const numericalFormatting = localStorage.getItem('pageviews-settings-numericalFormatting') || this.config.defaults.numericalFormatting;
+		const numericalFormatting = localStorage.getItem('pageviews-settings-numericalFormatting') || this.defaults.numericalFormatting;
 		if (numericalFormatting === 'true') {
 			return Number( num ).toLocaleString();
 		} else {

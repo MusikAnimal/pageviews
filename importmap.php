@@ -16,7 +16,7 @@ return [
 		'path' => './assets/app.js',
 	],
 	'pageviews' => [
-		'path' => './assets/pageviews.js',
+		'path' => './assets/pageviews/pageviews.js',
 		'entrypoint' => true,
 	],
 	'bootstrap' => [
@@ -70,5 +70,8 @@ return [
 	'toastr/build/toastr.min.css' => [
 		'version' => '2.1.4',
 		'type' => 'css',
+	],
+	'banana-i18n' => [
+		'version' => '2.4.0',
 	],
 ];

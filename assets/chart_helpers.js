@@ -1,5 +1,7 @@
 import './styles/chart_view.css';
 import App from './app.js';
+import select2 from 'select2';
+import Chart from 'chart.js';
 
 /**
  * Shared chart-specific logic, used in all apps except Topviews
@@ -8,7 +10,6 @@ class ChartHelpers extends App {
 
 	constructor( app, appConfig ) {
 		super( app, appConfig );
-		console.log(`Initializing ${app} with chart helpers` );
 
 		this.chartObj = null;
 		this.prevChartType = null;
@@ -39,7 +40,7 @@ class ChartHelpers extends App {
 			this.chartType = $(e.currentTarget).data('type');
 
 			$('.logarithmic-scale').toggle(this.isLogarithmicCapable());
-			$('.begin-at-zero').toggle(this.linearCharts.includes(this.chartType));
+			$('.begin-at-zero').toggle(this.config.linearCharts.includes(this.chartType));
 			$('.show-labels').toggle(['bar', 'line'].includes(this.chartType));
 
 			if (this.rememberChart === 'true') {
@@ -405,8 +406,8 @@ class ChartHelpers extends App {
 		}
 
 		// Use defaults if options aren't set
-		const platform = this.$platformSelector.val() || this.config.defaults.platform,
-			agent = this.$agentSelector.val() || this.config.defaults.agent;
+		const platform = this.config.$platformSelector.val() || this.config.defaults.platform,
+			agent = this.config.$agentSelector.val() || this.config.defaults.agent;
 
 		if (this.app === 'siteviews') {
 			if (this.isPageviews()) {
@@ -554,7 +555,7 @@ class ChartHelpers extends App {
 				/** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
 				const errorMessage = errorData.responseJSON && errorData.responseJSON.title
 					? errorData.responseJSON.title
-					: $.i18n('unknown');
+					: this.i18n('unknown');
 				const cassandraError = errorMessage === 'Error in Cassandra table storage backend';
 
 				if (cassandraError) {
@@ -590,8 +591,8 @@ class ChartHelpers extends App {
 					}).then(data => {
 						const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
 						if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
-							const faqLink = `<a href='/${this.app}/faq#todays_data'>${$.i18n('learn-more').toLowerCase()}</a>`;
-							this.toastWarn($.i18n('new-article-warning', faqLink));
+							const faqLink = `<a href='/${this.app}/faq#todays_data'>${this.i18n('learn-more').toLowerCase()}</a>`;
+							this.toastWarn(this.i18n('new-article-warning', faqLink));
 						}
 					});
 				}
@@ -610,7 +611,7 @@ class ChartHelpers extends App {
 					endpoint = 'pagecounts';
 				}
 				xhrData.errors.push(
-					`${link}: ${$.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
+					`${link}: ${this.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
 				);
 			}).always(() => {
 				if (++count === totalRequestCount) {
@@ -618,7 +619,7 @@ class ChartHelpers extends App {
 					dfd.resolve(xhrData);
 
 					if (failedEntities.length) {
-						this.writeMessage($.i18n(
+						this.writeMessage(this.i18n(
 							'api-error-timeout',
 							'<ul>' +
 							failedEntities.map(failedEntity => `<li>${this.getPageLink(failedEntity, this.project.escape())}</li>`).join('') +
@@ -694,7 +695,7 @@ class ChartHelpers extends App {
 		} finally {
 			this.stopSpinny();
 			$('body').addClass('initial');
-			this.$chart.hide();
+			this.config.$chart.hide();
 			if (clearMessages) this.clearMessages();
 		}
 	}
@@ -761,12 +762,13 @@ class ChartHelpers extends App {
 	 * Setup the Select2 input.
 	 * @param {Object} params that would be passed to the select2 library.
 	 */
-	setupSelect2(params) {
-		this.$select2Input.select2(params);
-		this.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-		this.$select2Input.off('select2:unselect').on('select2:unselect', e => {
+	setupSelect2( params ) {
+		select2();
+		this.config.$select2Input.select2(params);
+		this.config.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
+		this.config.$select2Input.off('select2:unselect').on('select2:unselect', e => {
 			this.processInput(false, e.params.data.text);
-			this.$select2Input.trigger('select2:close');
+			this.config.$select2Input.trigger('select2:close');
 		});
 	}
 
@@ -779,20 +781,20 @@ class ChartHelpers extends App {
 		/** prevent duplicate setup since the list view apps also use charts */
 		if (!this.isChartApp()) return;
 
-		const dateRangeSelector = this.$dateRangeSelector;
+		const dateRangeSelector = this.config.$dateRangeSelector;
 
 		/** the "Latest N days" links */
 		$('.date-latest a').on('click', e => {
 			const value = $(e.target).data('value');
 			this.setSpecialRange(`latest-${value}`);
 			$('.latest-text').text(
-				$.i18n('latest-days', value)
+				this.i18n('latest-days', value)
 			);
 		});
 
 		dateRangeSelector.on('change', e => {
 			this.processInput();
-			$('.latest-text').text($.i18n('latest'));
+			$('.latest-text').text(this.i18n('latest'));
 
 			/** clear out specialRange if it doesn't match our input */
 			if (this.specialRange && this.specialRange.value !== e.target.value) {
@@ -803,8 +805,8 @@ class ChartHelpers extends App {
 
 	/**
 	 * Set up month selector and listeners
-	 * @param  {Date} start date to set as the start month (should be 1st of the month)
-	 * @param  {Date} end date to set as the end month (should be 1st of the month)
+	 * @param {Date} [start] date to set as the start month (should be 1st of the month)
+	 * @param {Date} [end] date to set as the end month (should be 1st of the month)
 	 */
 	setupMonthSelector(start, end) {
 		// destroy old datepicker, if present
@@ -932,7 +934,7 @@ class ChartHelpers extends App {
 	 */
 	updateChart(xhrData) {
 		$('.chart-legend').html(''); // clear old chart legend
-		const entityNames = xhrData ? xhrData.entities : this.$select2Input.val();
+		const entityNames = xhrData ? xhrData.entities : this.config.$select2Input.val();
 
 		// show pending error messages if present, exiting if fatal
 		if (xhrData && this.showErrors(xhrData)) return;
@@ -974,7 +976,7 @@ class ChartHelpers extends App {
 							const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
 
 							if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-								return this.formatNumber(value);
+								return this.config.formatNumber(value);
 							} else {
 								return '';
 							}
@@ -989,10 +991,10 @@ class ChartHelpers extends App {
 		try {
 			$('.chart-container').html('').append("<canvas id='chart'>");
 			this.setChartPointDetectionRadius();
-			const context = this.$chart[0].getContext('2d');
+			const context = this.config.$chart[0].getContext('2d');
 			const grandMin = Math.min(...this.outputData.map(d => d.min));
 
-			if (this.linearCharts.includes(this.chartType)) {
+			if (this.config.linearCharts.includes(this.chartType)) {
 				const linearData = {
 					labels: this.getDateHeadings(),
 					datasets: this.outputData,
@@ -1083,7 +1085,7 @@ class ChartHelpers extends App {
 					ctx.fillStyle = `rgba(68,68,68,${step})`;
 					const scaleMax = dataset._meta[Object.keys(dataset._meta)[0]].data[index]._yScale.maxHeight;
 					const yPos = (scaleMax - bar._model.y) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
-					ctx.fillText(this.n(dataset.data[index]), bar._model.x, yPos);
+					ctx.fillText(this.config.formatNumber(dataset.data[index]), bar._model.x, yPos);
 				}), context);
 			}), context);
 		};
