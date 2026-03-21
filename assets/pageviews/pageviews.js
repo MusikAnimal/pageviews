@@ -480,6 +480,35 @@ class Pageviews extends ChartHelpers {
 	}
 
 	/**
+	 * Query API to get edit data about page within date range
+	 * @param {Array} pages - page names
+	 * @returns {Deferred} Promise resolving with editing data
+	 */
+	getEditData(pages) {
+		const dfd = $.Deferred();
+
+		$.ajax({
+			url: `/${this.app}/api`,
+			data: {
+				pages: pages.join('|'),
+				project: this.project + '.org',
+				start: this.daterangepicker.startDate.format('YYYY-MM-DD'),
+				end: this.daterangepicker.endDate.format('YYYY-MM-DD'),
+				totals: true,
+				ttl: this.config.cacheTime
+			},
+			timeout: 8000
+		}).done(data => dfd.resolve(data)).fail(() => {
+			// stable flag will be used to handle lack of data, so just resolve with empty data
+			let data = {};
+			pages.forEach(page => data[page] = {});
+			dfd.resolve({ pages: data });
+		});
+
+		return dfd;
+	}
+
+	/**
 	 * Show info below the chart when there is only one page being queried
 	 */
 	showSingleEntityLegend() {

@@ -20,11 +20,11 @@ class ProjectsRepository {
 	}
 
 	/**
-	 * Get all Pageviews-compatible projects from the TSV on GitHub.
+	 * Get all Pageviews-compatible projects from the source TSV on GitHub.
 	 *
 	 * @return array<string, string> Database name indexed by project URL domain.
 	 */
-	public function getProjects() {
+	public function getProjects(): array {
 		return $this->cache->get( 'projects', function ( ItemInterface $item ) {
 			$item->expiresAfter( 7 * 24 * 60 * 60 ); // 1 week
 
@@ -60,5 +60,20 @@ class ProjectsRepository {
 
 			return $projectsWithDbNames;
 		} );
+	}
+
+	/**
+	 * Fetch and cache PageAssessments configuration from XTools.
+	 *
+	 * @return array
+	 */
+	public function getAssessmentsConfig(): array {
+		return $this->cache->get( 'assessments_config', function ( ItemInterface $item ) {
+			$item->expiresAfter( 24 * 60 * 60 ); // 1 day
+
+			return $this->httpClient
+				->request( 'GET', 'https://xtools.wmcloud.org/api/project/assessments' )
+				->toArray();
+		 } );
 	}
 }
