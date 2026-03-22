@@ -28,12 +28,12 @@ class PageviewsController extends AbstractController {
 
 	#[Route( '/faq', name: 'pageviews/faq' )]
 	public function faq(): Response {
-		return $this->render( 'pageviews/faq.html.twig', [ 'current_app' => 'pageviews' ] );
+		return $this->render( 'pageviews/faq.html.twig', [ 'current_app' => 'pageviews', 'title' => 'faq' ] );
 	}
 
 	#[Route( '/url_structure', name: 'pageviews/url_structure' )]
 	public function urlStructure(): Response {
-		return $this->render( 'pageviews/url_structure.html.twig', [ 'current_app' => 'pageviews' ] );
+		return $this->render( 'pageviews/url_structure.html.twig', [ 'current_app' => 'pageviews', 'title' => 'url-structure' ] );
 	}
 
 	#[Route( '/pageviews/api', name: 'api_pageviews' )]

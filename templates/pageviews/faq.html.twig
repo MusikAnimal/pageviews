@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block settings %}{% endblock %}
+{% block importmap %}
+	{{ importmap( 'shared' ) }}
+{% endblock %}
+{% block title %}
+	{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }} - {{ msg( 'faq' ) }}
+{% endblock %}
+{% block subtitle %}
+	{{ msg( 'faq' ) }}
+{% endblock %}
+
+{% block body %}
+	{% set topviewsLink %}<a href="{{ path( 'topviews' ) }}">{{ msg('topviews-title') }}</a>{% endset %}
+	{% set langviewsLink %}<a href="{{ path( 'langviews' ) }}">{{ msg('langviews-title') }}</a>{% endset %}
+
+	<div class="container">
+		<main class="col-lg-10 col-lg-offset-1">
+			<ul class="list-group">
+				{% include 'faq_parts/_old_data.html.twig' %}
+				{% include 'faq_parts/_todays_date.html.twig' %}
+				{% include 'faq_parts/_anomaly.html.twig' %}
+				{% include 'faq_parts/_counts.html.twig' %}
+				{% include 'faq_parts/_search_redirects.html.twig' %}
+				{% include 'faq_parts/_redirects.html.twig' %}
+				{% include 'faq_parts/_location.html.twig' %}
+				{% include 'faq_parts/_referrals.html.twig' %}
+				{% include 'faq_parts/_date_dot.html.twig' %}
+				{% include 'faq_parts/_agents.html.twig' %}
+				{% include 'faq_parts/_chart_type.html.twig' %}
+				<li class="list-group-item">
+					<p>
+						<strong>{{ msg('faq-top-viewed-title') }}</strong>
+					</p>
+					<p>{{ msg('faq-try-tool', [topviewsLink]) }}</p>
+				</li>
+				<li class="list-group-item">
+					<p>
+						<strong>{{ msg('faq-multi-lang-title') }}</strong>
+					</p>
+					<p>{{ msg('faq-try-tool', [langviewsLink]) }}</p>
+				</li>
+				{% include 'faq_parts/_data_dumps.html.twig' %}
+				{% include 'faq_parts/_feedback.html.twig' %}
+			</ul>
+
+			<div class="col-lg-12 text-center tm">
+				<a href="/">{{ msg('faq-return-to', [msg('title')]) }}</a>
+			</div>
+		</main>
+	</div>
+{% endblock %}

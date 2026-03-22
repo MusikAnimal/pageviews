@@ -1,0 +1,9 @@
+{% set statsLink %}
+	<a href="https://stats.wikimedia.org/#/all-projects/reading/page-views-by-country/normal|map|last-month|~total|monthly">stats.wikimedia.org</a>
+{%- endset %}
+<li class="list-group-item" id="location">
+	<p>
+		<strong>{{ msg('faq-location-title') }}</strong>
+	</p>
+	<p>{{ msg('faq-location-body', [statsLink]) }}</p>
+</li>

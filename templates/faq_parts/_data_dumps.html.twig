@@ -1,0 +1,9 @@
+{% set statsLink %}
+	<a href="https://dumps.wikimedia.org/other/pageviews/">dumps.wikimedia.org</a>
+{%- endset %}
+<li class="list-group-item" id="data_dumps">
+	<p>
+		<strong>{{ msg('faq-data-dumps') }}</strong>
+	</p>
+	<p>{{ msg('faq-data-dumps-body', [statsLink]) }}</p>
+</li>

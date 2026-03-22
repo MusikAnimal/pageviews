@@ -114,7 +114,9 @@
 					{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }}
 				</strong>
 				<small class="app-description">
-					{{ msg( current_app ~ '-description' ) }}
+					{% block subtitle %}
+						{{ msg( current_app ~ '-description' ) }}
+					{% endblock %}
 				</small>
 			</h4>
 		</header>
@@ -130,13 +132,12 @@
 			{% set musikanimal %}
 				<a target="_blank" href="https://en.wikipedia.org/wiki/User:MusikAnimal">MusikAnimal</a>
 			{%- endset %}
-			{% set kaldari %}
-				<a target="_blank" href="https://en.wikipedia.org/wiki/User:Kaldari">Kaldari</a>
+			{% set others %}
+				<a target="_blank" href="https://github.com/wikimedia/pageviews/graphs/contributors">
+					{{ msg( 'credits-other-contributors' ) -}}
+				</a>
 			{%- endset %}
-			{% set marcel %}
-				<a target="_blank" href="https://en.wikipedia.org/wiki/User:Mforns_(WMF)">Marcel Ruiz Forns</a>
-			{%- endset %}
-			{{ msg( 'credits', [ musikanimal, kaldari, marcel ] ) }}
+			{{ msg( 'credits-msg', [ musikanimal, others ] ) }}
 		</span>
 
 		<div>
@@ -153,13 +154,13 @@
 				{% set translateWiki %}
 					<a href='https://translatewiki.net/'>translatewiki.net</a>
 				{%- endset %}
-				{% set jqueryI18n %}
-					<a href='https://github.com/wikimedia/jquery.i18n'>jQuery.i18n</a>
+				{% set bananaI18n %}
+					<a href='https://www.npmjs.com/package/banana-i18n'>banana-i18n</a>
 				{%- endset %}
 				{% set intuition %}
 					<a href='https://intuition.toolforge.org#tab-about'>Intuition</a>
 				{%- endset %}
-				{{ msg( 'translation-credits', [ translateWiki, jqueryI18n, intuition ] ) }}
+				{{ msg( 'translation-credits', [ translateWiki, bananaI18n, intuition ] ) }}
 			</span>
 		</div>
 
