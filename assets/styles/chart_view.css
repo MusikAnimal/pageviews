@@ -45,16 +45,15 @@ body.initial .clear-pages {
 	padding: 0 5px;
 }
 
-.page-selector {
-	border-right: solid 1px var( --gray );
+.options-container {
+	border-right: solid 1px var( --light-gray );
 }
-
-.page-selector .page-selector--container > div {
+.aside-options > div {
 	margin-bottom: 10px;
 }
 
 .summary-column {
-	border-left: solid 1px var( --gray );
+	border-left: solid 1px var( --light-gray );
 }
 
 .remove-page {
@@ -118,7 +117,7 @@ body.initial .clear-pages {
 	width: 100%;
 }
 
-.chart-legend,
+.chart-legend.col-lg-12,
 .single-page-legend {
 	padding: 0;
 }

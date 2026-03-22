@@ -2,6 +2,7 @@ import './styles/app.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'select2/dist/css/select2.min.css';
 import 'daterangepicker/daterangepicker.min.css';
+import 'toastr/build/toastr.min.css';
 
 import './core_extensions.js';
 import $ from 'jquery';
