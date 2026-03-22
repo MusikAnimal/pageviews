@@ -1,7 +1,10 @@
 import './styles/chart_view.css';
+import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
+
 import App from './app.js';
 import select2 from 'select2';
 import Chart from 'chart.js';
+import 'bootstrap-datepicker';
 
 /**
  * Shared chart-specific logic, used in all apps except Topviews
@@ -16,17 +19,18 @@ class ChartHelpers extends App {
 
 		/**
 		 * add ability to disable auto-log detection
-		 * @type {Boolean}
+		 *
+		 * @type {boolean}
 		 */
-		this.noLogScale = location.search.includes('autolog=false');
+		this.noLogScale = location.search.includes( 'autolog=false' );
 
 		/** copy over app-specific chart templates */
-		this.config.linearCharts.forEach(linearChart => {
-			this.config.chartConfig[linearChart].opts.legendTemplate = this.linearLegend;
-		});
-		this.config.circularCharts.forEach(circularChart => {
-			this.config.chartConfig[circularChart].opts.legendTemplate = this.circularLegend;
-		});
+		this.config.linearCharts.forEach( ( linearChart ) => {
+			this.config.chartConfig[ linearChart ].opts.legendTemplate = this.linearLegend;
+		} );
+		this.config.circularCharts.forEach( ( circularChart ) => {
+			this.config.chartConfig[ circularChart ].opts.legendTemplate = this.circularLegend;
+		} );
 
 		this.setupChartOptions();
 	}
@@ -36,112 +40,120 @@ class ChartHelpers extends App {
 	 */
 	setupChartOptions() {
 		/** changing of chart types */
-		$('.modal-chart-type a').on('click', e => {
-			this.chartType = $(e.currentTarget).data('type');
+		$( '.modal-chart-type a' ).on( 'click', ( e ) => {
+			this.chartType = $( e.currentTarget ).data( 'type' );
 
-			$('.logarithmic-scale').toggle(this.isLogarithmicCapable());
-			$('.begin-at-zero').toggle(this.config.linearCharts.includes(this.chartType));
-			$('.show-labels').toggle(['bar', 'line'].includes(this.chartType));
+			$( '.logarithmic-scale' ).toggle( this.isLogarithmicCapable() );
+			$( '.begin-at-zero' ).toggle( this.config.linearCharts.includes( this.chartType ) );
+			$( '.show-labels' ).toggle( [ 'bar', 'line' ].includes( this.chartType ) );
 
-			if (this.rememberChart === 'true') {
-				localStorage.setItem('pageviews-chart-preference', this.chartType);
+			if ( this.rememberChart === 'true' ) {
+				localStorage.setItem( 'pageviews-chart-preference', this.chartType );
 			}
 
 			this.triggerUpdate();
-		});
+		} );
 
-		this.$logarithmicCheckbox.on('click', () => {
+		this.$logarithmicCheckbox.on( 'click', () => {
 			this.autoLogDetection = 'false';
 			this.triggerUpdate();
-		});
+		} );
 
 		/**
 		 * Disabled/enable begin at zero checkbox accordingly, but don't update chart
 		 * since the log scale value can change pragmatically and not from user input.
 		 */
-		this.$logarithmicCheckbox.on('change', () => {
-			$('.begin-at-zero').toggleClass('disabled', this.checked);
-		});
+		this.$logarithmicCheckbox.on( 'change', () => {
+			$( '.begin-at-zero' ).toggleClass( 'disabled', this.checked );
+		} );
 
-		if (this.beginAtZero === 'true') {
-			$('.begin-at-zero-option').prop('checked', true);
+		if ( this.beginAtZero === 'true' ) {
+			$( '.begin-at-zero-option' ).prop( 'checked', true );
 		}
 
-		$.merge(this.$beginAtZeroCheckbox, this.$showLabelsCheckbox).on('click', () => {
+		$.merge( this.$beginAtZeroCheckbox, this.$showLabelsCheckbox ).on( 'click', () => {
 			this.triggerUpdate();
-		});
+		} );
 
 		/** chart download listeners */
-		$('.download-png').on('click', this.exportPNG.bind(this));
-		$('.print-chart').on('click', this.printChart.bind(this));
+		$( '.download-png' ).on( 'click', this.exportPNG.bind( this ) );
+		$( '.print-chart' ).on( 'click', this.printChart.bind( this ) );
 	}
 
 	/**
 	 * Get the datepicker (not daterangepicker) instance of the combined
 	 *   start and end month selectors, as provided by the library
+	 *
 	 * @return {Object} datepicker
 	 */
 	get monthDatepicker() {
-		return this.config.cachedElement('.month-selector').data('datepicker');
+		return this.config.cachedElement( '.month-selector' ).data( 'datepicker' );
 	}
 
 	/**
 	 * Get the datepicker (not daterangepicker) instance of the start month selector
+	 *
 	 * @return {Object} datepicker
 	 */
 	get monthStartDatepicker() {
-		return this.config.cachedElement('.month-selector-start').data('datepicker');
+		return this.config.cachedElement( '.month-selector-start' ).data( 'datepicker' );
 	}
 
 	/**
 	 * Get the datepicker (not daterangepicker) instance of the end month selector
+	 *
 	 * @return {Object} datepicker
 	 */
 	get monthEndDatepicker() {
-		return this.config.cachedElement('.month-selector-end').data('datepicker');
+		return this.config.cachedElement( '.month-selector-end' ).data( 'datepicker' );
 	}
 
 	/**
 	 * Get the output list (table shown the chart for when there are multiple entities).
-	 * @returns {jQuery}
+	 *
+	 * @return {jQuery}
 	 */
 	get $outputList() {
-		return this.config.cachedElement('.output-list');
+		return this.config.cachedElement( '.output-list' );
 	}
 
 	/**
 	 * Get the checkbox input that toggles logarithmic view.
-	 * @returns {jQuery}
+	 *
+	 * @return {jQuery}
 	 */
 	get $logarithmicCheckbox() {
-		return this.config.cachedElement('#logarithmic-checkbox');
+		return this.config.cachedElement( '#logarithmic-checkbox' );
 	}
 
 	/**
 	 * Get the "Begin at zero" checkbox.
+	 *
 	 * @return {jQuery}
 	 */
 	get $beginAtZeroCheckbox() {
-		return this.config.cachedElement('.begin-at-zero');
+		return this.config.cachedElement( '.begin-at-zero' );
 	}
 
 	/**
 	 * Get the "Show labels" checkbox.
+	 *
 	 * @return {jQuery}
 	 */
 	get $showLabelsCheckbox() {
-		return this.config.cachedElement('.show-labels-option');
+		return this.config.cachedElement( '.show-labels-option' );
 	}
 
 	/**
 	 * Set the default chart type or the one from localStorage, based on settings
-	 * @param {Number} [numDatasets] - number of datasets
+	 *
+	 * @param {number} [numDatasets] - number of datasets
 	 */
-	setInitialChartType(numDatasets = 1) {
-		if (this.rememberChart === 'true') {
-			this.chartType = localStorage.getItem('pageviews-chart-preference') || this.config.defaults.chartType(numDatasets);
+	setInitialChartType( numDatasets = 1 ) {
+		if ( this.rememberChart === 'true' ) {
+			this.chartType = localStorage.getItem( 'pageviews-chart-preference' ) || this.config.defaults.chartType( numDatasets );
 		} else {
-			this.chartType = this.config.defaults.chartType(numDatasets);
+			this.chartType = this.config.defaults.chartType( numDatasets );
 		}
 	}
 
@@ -149,9 +161,9 @@ class ChartHelpers extends App {
 	 * Destroy previous chart, if needed.
 	 */
 	destroyChart() {
-		if (this.chartObj) {
+		if ( this.chartObj ) {
 			this.chartObj.destroy();
-			$('.chart-legend').html('');
+			$( '.chart-legend' ).html( '' );
 		}
 	}
 
@@ -161,97 +173,97 @@ class ChartHelpers extends App {
 	 */
 	exportCSV() {
 		let csvContent = 'data:text/csv;charset=utf-8,Date,';
-		let titles = [];
-		let dataRows = [];
-		let dates = this.getDateHeadings(false);
+		const titles = [];
+		const dataRows = [];
+		const dates = this.getDateHeadings( false );
 
 		// Begin constructing the dataRows array by populating it with the dates
-		dates.forEach((date, index) => {
-			dataRows[index] = [date];
-		});
+		dates.forEach( ( date, index ) => {
+			dataRows[ index ] = [ date ];
+		} );
 
-		this.chartObj.data.datasets.forEach(site => {
+		this.chartObj.data.datasets.forEach( ( site ) => {
 			// Build an array of site titles for use in the CSV header
-			let siteTitle = '"' + site.label.replace(/"/g, '""') + '"';
-			titles.push(siteTitle);
+			const siteTitle = '"' + site.label.replace( /"/g, '""' ) + '"';
+			titles.push( siteTitle );
 
 			// Populate the dataRows array with the data for this site
-			dates.forEach((date, index) => {
-				dataRows[index].push(site.data[index]);
-			});
-		});
+			dates.forEach( ( date, index ) => {
+				dataRows[ index ].push( site.data[ index ] );
+			} );
+		} );
 
 		// Finish the CSV header
-		csvContent = csvContent + titles.join(',') + '\n';
+		csvContent = csvContent + titles.join( ',' ) + '\n';
 
 		// Add the rows to the CSV
-		dataRows.forEach(data => {
-			csvContent += data.join(',') + '\n';
-		});
+		dataRows.forEach( ( data ) => {
+			csvContent += data.join( ',' ) + '\n';
+		} );
 
-		this.downloadData(csvContent, 'csv');
+		this.downloadData( csvContent, 'csv' );
 	}
 
 	/**
 	 * Exports current chart data to JSON format and loads it in a new tab
 	 */
 	exportJSON() {
-		let data = [];
+		const data = [];
 
-		this.chartObj.data.datasets.forEach((page, index) => {
-			let entry = {
-				page: page.label.replace(/"/g, '\"').replace(/'/g, "\'"),
+		this.chartObj.data.datasets.forEach( ( page, index ) => {
+			const entry = {
+				page: page.label.replace( /"/g, '\"' ).replace( /'/g, "\'" ),
 				color: page.strokeColor,
 				sum: page.sum,
-				daily_average: Math.round(page.sum / this.numDaysInRange())
+				daily_average: Math.round( page.sum / this.numDaysInRange() )
 			};
 
-			this.getDateHeadings(false).forEach((heading, index) => {
-				entry[heading.replace(/\\/,'')] = page.data[index];
-			});
+			this.getDateHeadings( false ).forEach( ( heading, index ) => {
+				entry[ heading.replace( /\\/, '' ) ] = page.data[ index ];
+			} );
 
-			data.push(entry);
-		});
+			data.push( entry );
+		} );
 
-		const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify(data);
-		this.downloadData(jsonContent, 'json');
+		const jsonContent = 'data:text/json;charset=utf-8,' + JSON.stringify( data );
+		this.downloadData( jsonContent, 'json' );
 	}
 
 	/**
 	 * Exports current data as PNG image, opening it in a new tab
 	 */
 	exportPNG() {
-		this.downloadData(this.chartObj.toBase64Image(), 'png');
+		this.downloadData( this.chartObj.toBase64Image(), 'png' );
 	}
 
 	/**
 	 * Fills in zero values to a timeseries, see:
 	 * https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
 	 *
-	 * @param {object} data fetched from API, or blank to generate a new set of data.
+	 * @param {Object} data fetched from API, or blank to generate a new set of data.
 	 * @param {moment} startDate start date of range to filter through
 	 * @param {moment} endDate end date of range
-	 * @returns {object} dataset with zeros where nulls where
+	 * @return {Object} dataset with zeros where nulls where
 	 */
-	fillInZeros(data, startDate, endDate) {
+	fillInZeros( data, startDate, endDate ) {
 		/** Extract the dates that are already in the timeseries */
-		let alreadyThere = {};
-		(data.items || []).forEach(elem => {
-			let date = moment(elem.timestamp, this.config.timestampFormat).format('YYYYMMDD');
-			alreadyThere[date] = elem;
-		});
+		const alreadyThere = {};
+		( data.items || [] ).forEach( ( elem ) => {
+			const date = moment( elem.timestamp, this.config.timestampFormat ).format( 'YYYYMMDD' );
+			alreadyThere[ date ] = elem;
+		} );
 		data.items = [];
 
 		/** Reconstruct with zeros instead of nulls */
-		for (let date = moment(startDate); date <= endDate; date.add(1, 'day')) {
-			if (alreadyThere[date.format('YYYYMMDD')]) {
-				data.items.push(alreadyThere[date.format('YYYYMMDD')]);
+		for ( let date = moment( startDate ); date <= endDate; date.add( 1, 'day' ) ) {
+			if ( alreadyThere[ date.format( 'YYYYMMDD' ) ] ) {
+				data.items.push( alreadyThere[ date.format( 'YYYYMMDD' ) ] );
 			} else {
-				const edgeCase = date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'days'));
-				data.items.push({
-					timestamp: date.format(this.config.timestampFormat),
-					[this.isPageviews() ? 'views' : 'devices']: edgeCase ? null : 0
-				});
+				const edgeCase = date.isSame( this.maxDate ) || date.isSame( moment( this.maxDate ).subtract( 1, 'days' ) );
+				data.items.push( {
+					timestamp: date.format( this.config.timestampFormat ),
+					[ this.isPageviews() ? 'views' : 'devices' ]: edgeCase ? null : 0
+				} );
 			}
 		}
 
@@ -260,85 +272,91 @@ class ChartHelpers extends App {
 
 	/**
 	 * Get data formatted for Chart.js and the legend templates
+	 *
 	 * @param {Array} datasets as retrieved by getPageViewsData
 	 * @param {Array} labels corresponding labels for the datasets
-	 * @param {String} [forceViewKey] use this view key instead of going off of
+	 * @param {string} [forceViewKey] use this view key instead of going off of
 	 *   which app we are running or which options are set.
-	 * @returns {object} ready for chart rendering
+	 * @return {Object} ready for chart rendering
 	 */
-	buildChartData(datasets, labels, forceViewKey) {
+	buildChartData( datasets, labels, forceViewKey ) {
 		let viewKey;
 		const dateFormat = this.isMonthly() ? 'YYYY-MM' : 'YYYY-MM-DD',
-			dateHeadings = this.getDateHeadings(false); // false to be unlocalized
+			dateHeadings = this.getDateHeadings( false ); // false to be unlocalized
 
 		// key to use in dataseries varies based on app
-		if (forceViewKey) {
+		if ( forceViewKey ) {
 			viewKey = forceViewKey;
-		} else if (this.isPageviews()) {
+		} else if ( this.isPageviews() ) {
 			viewKey = 'views';
-		} else if (this.app === 'mediaviews') {
+		} else if ( this.app === 'mediaviews' ) {
 			viewKey = 'requests';
-		} else if (this.app === 'metaviews' || this.isPagecounts()) {
+		} else if ( this.app === 'metaviews' || this.isPagecounts() ) {
 			viewKey = 'count';
 		} else {
 			viewKey = 'devices';
 		}
 
-		return datasets.map((dataset, index) => {
+		return datasets.map( ( dataset, index ) => {
 			/** Build the article's dataset. */
-			let values = new Array(dateHeadings.length),
+			let values = new Array( dateHeadings.length ),
 				sum = 0, min, max = 0;
 
-			dataset.forEach(elem => {
+			dataset.forEach( ( elem ) => {
 				// Due to a GOTCHA, the API may only return data for certain dates in the requested date range,
 				//  so here we line them up with the requested date range and fill in zeros for the missing dates.
-				const value = elem[viewKey];
+				const value = elem[ viewKey ];
 				let date;
 
-				if (this.app === 'metaviews') {
+				if ( this.app === 'metaviews' ) {
 					date = elem.date;
 				} else {
-					date = moment(elem.timestamp, this.config.timestampFormat).format(dateFormat);
+					date = moment( elem.timestamp, this.config.timestampFormat ).format( dateFormat );
 				}
 
-				values[dateHeadings.indexOf(date)] = value;
+				values[ dateHeadings.indexOf( date ) ] = value;
 				sum += value || 0;
-				if (value > max) max = value;
-				if (min === undefined || value < min) min = value;
-			});
+				if ( value > max ) {
+					max = value;
+				}
+				if ( min === undefined || value < min ) {
+					min = value;
+				}
+			} );
 
-			const average = Math.round(sum / dateHeadings.length),
-				label = labels[index].descore();
+			const average = Math.round( sum / dateHeadings.length ),
+				label = labels[ index ].descore();
 
-			const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[label] : {};
+			const entityInfo = this.entityInfo && this.entityInfo.entities ? this.entityInfo.entities[ label ] : {};
 
-			dataset = Object.assign({
+			dataset = Object.assign( {
 				label,
 				data: values,
 				value: sum, // duplicated because Chart.js wants a single `value` for circular charts
 				sum,
 				average,
-				median: this.getMedian(values),
+				median: this.getMedian( values ),
 				max,
 				min
-			}, entityInfo);
+			}, entityInfo );
 
 			return dataset;
-		});
+		} );
 	}
 
 	/**
 	 * Get the median of the given dataset.
-	 * @param  {object|array} dataset If object, assumes the values are the pageviews.
+	 *
+	 * @param  {object | Array} dataset If object, assumes the values are the pageviews.
 	 * @return {integer}
 	 */
-	getMedian(dataset) {
-		const sortedValues = Object.values(dataset).sort((a, b) => a - b),
-			half = Math.floor(sortedValues.length / 2);
+	getMedian( dataset ) {
+		const sortedValues = Object.values( dataset ).sort( ( a, b ) => a - b ),
+			half = Math.floor( sortedValues.length / 2 );
 
-		return sortedValues.length % 2
-			? sortedValues[half]
-			: (sortedValues[half - 1] + sortedValues[half]) / 2.0;
+		return sortedValues.length % 2 ?
+			sortedValues[ half ] :
+			( sortedValues[ half - 1 ] + sortedValues[ half ] ) / 2.0;
 	}
 
 	/**
@@ -347,119 +365,124 @@ class ChartHelpers extends App {
 	 *   thing that needs doing is to set the colors based on how many entities we have
 	 * This function also sets null where there are zeros if we're showing a log chart,
 	 *   and otherwise fills in zeros where there are nulls (due to API caveat)
+	 *
 	 * @param {Object} outputData should be hte same as this.outputData
-	 * @returns {Object} transformed data
+	 * @return {Object} transformed data
 	 */
-	setColorsAndLogValues(outputData) {
+	setColorsAndLogValues( outputData ) {
 		// don't try to plot zeros on a logarithmic chart
-		const startDate = moment(this.daterangepicker.startDate),
-			endDate = moment(this.daterangepicker.endDate),
+		const startDate = moment( this.daterangepicker.startDate ),
+			endDate = moment( this.daterangepicker.endDate ),
 			dateType = this.isMonthly() ? 'month' : 'day',
 			// This is used to make sure Select2 colours match those in the chart and legend,
 			//   though in some cases (all-projects in Siteviews) the Select2 control may be empty
 			//   so we instead use an empty array
-			select2Values = this.getEntities().map(title => title.descore());
+			select2Values = this.getEntities().map( ( title ) => title.descore() );
 
-		return outputData.map((dataset, index) => {
+		return outputData.map( ( dataset, index ) => {
 			// Use zero instead of null for some data due to Gotcha in Pageviews API:
 			//   https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
 			// For today or yesterday, do use null as the data may not be available yet
 			let counter = 0;
-			for (let date = moment(startDate); date <= endDate; date.add(1, dateType)) {
-				if (!dataset.data[counter]) {
+			for ( let date = moment( startDate ); date <= endDate; date.add( 1, dateType ) ) {
+				if ( !dataset.data[ counter ] ) {
 					const edgeCase = !this.isMonthly() && (
-						date.isSame(this.maxDate) || date.isSame(moment(this.maxDate).subtract(1, 'day'))
+						date.isSame( this.maxDate ) || date.isSame( moment( this.maxDate ).subtract( 1, 'day' ) )
 					);
 					const zeroValue = this.isLogarithmic() ? null : 0;
-					dataset.data[counter] = edgeCase ? null : zeroValue;
+					dataset.data[ counter ] = edgeCase ? null : zeroValue;
 				}
 				counter++;
 			}
 
 			// Make sure Select2 colours match those in the chart and legend
-			const select2Index = select2Values.indexOf(dataset.label);
+			const select2Index = select2Values.indexOf( dataset.label );
 			// In some cases (when all-projects is selected in Siteviews)
 			//   the dataset name may not be in Select2, so just go off of the iteration index
-			const colorIndex = (select2Index === -1 ? index : select2Index) % 10;
-			const color = this.config.colors[colorIndex];
+			const colorIndex = ( select2Index === -1 ? index : select2Index ) % 10;
+			const color = this.config.colors[ colorIndex ];
 
-			return Object.assign(dataset, {
+			return Object.assign( dataset, {
 				color
-			}, this.config.chartConfig[this.chartType].dataset(color));
-		});
+			}, this.config.chartConfig[ this.chartType ].dataset( color ) );
+		} );
 	}
 
 	/**
 	 * Get url to query the API based on app and options
-	 * @param {String} entity name of entity we're querying for (page name or project name)
+	 *
+	 * @param {string} entity name of entity we're querying for (page name or project name)
 	 * @param {moment} startDate start date
 	 * @param {moment} endDate end date
-	 * @return {String} the URL
+	 * @return {string} the URL
 	 */
-	getApiUrl(entity, startDate, endDate) {
-		const uriEncodedEntityName = encodeURIComponent(entity);
+	getApiUrl( entity, startDate, endDate ) {
+		const uriEncodedEntityName = encodeURIComponent( entity );
 
-		const granularity = $('#date-type-select').val() || 'daily';
+		const granularity = $( '#date-type-select' ).val() || 'daily';
 
-		if (granularity === 'monthly') {
-			endDate = endDate.endOf('month');
+		if ( granularity === 'monthly' ) {
+			endDate = endDate.endOf( 'month' );
 		}
 
 		// Use defaults if options aren't set
 		const platform = this.config.$platformSelector.val() || this.config.defaults.platform,
 			agent = this.config.$agentSelector.val() || this.config.defaults.agent;
 
-		if (this.app === 'siteviews') {
-			if (this.isPageviews()) {
-				return `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${uriEncodedEntityName}` +
-					`/${platform}/${agent}/${granularity}` +
-					`/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`;
-			} else if (this.isUniqueDevices()) {
-				return `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${uriEncodedEntityName}/` +
-					`${platform}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
-					`/${endDate.format(this.config.timestampFormat)}`;
+		if ( this.app === 'siteviews' ) {
+			if ( this.isPageviews() ) {
+				return `https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/${ uriEncodedEntityName }` +
+					`/${ platform }/${ agent }/${ granularity }` +
+					`/${ startDate.format( this.config.timestampFormat ) }/${ endDate.format( this.config.timestampFormat ) }`;
+			} else if ( this.isUniqueDevices() ) {
+				return `https://wikimedia.org/api/rest_v1/metrics/unique-devices/${ uriEncodedEntityName }/` +
+					`${ platform }/${ granularity }/${ startDate.format( this.config.timestampFormat ) }` +
+					`/${ endDate.format( this.config.timestampFormat ) }`;
 			} else {
-				return `https://wikimedia.org/api/rest_v1/metrics/legacy/pagecounts/aggregate/${uriEncodedEntityName}/` +
-					`${platform}/${granularity}/${startDate.format(this.config.timestampFormat)}` +
-					`/${endDate.format(this.config.timestampFormat)}`;
+				return `https://wikimedia.org/api/rest_v1/metrics/legacy/pagecounts/aggregate/${ uriEncodedEntityName }/` +
+					`${ platform }/${ granularity }/${ startDate.format( this.config.timestampFormat ) }` +
+					`/${ endDate.format( this.config.timestampFormat ) }`;
 			}
 		} else {
 			return (
-				`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${this.project}` +
-				`/${platform}/${agent}/${uriEncodedEntityName}/${granularity}` +
-				`/${startDate.format(this.config.timestampFormat)}/${endDate.format(this.config.timestampFormat)}`
+				`https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/${ this.project }` +
+				`/${ platform }/${ agent }/${ uriEncodedEntityName }/${ granularity }` +
+				`/${ startDate.format( this.config.timestampFormat ) }/${ endDate.format( this.config.timestampFormat ) }`
 			);
 		}
 	}
 
 	/**
 	 * Should be called at the top of processInput() in chart-related apps.
+	 *
 	 * @param {boolean} force Whether to force the chart to re-render, even if no params have changed.
-	 * @return {array|boolean} False if there's nothing to be rendered (child function should also short-circuit),
+	 * @return {Array | boolean} False if there's nothing to be rendered (child function should also short-circuit),
 	 *   or the list of entities fetched from the Select2 input.
 	 */
-	beforeProcessInput(force) {
+	beforeProcessInput( force ) {
 		this.pushParams();
 
 		/** Prevent duplicate querying due to conflicting listeners. */
-		if (!force && (location.search === this.params && this.prevChartType === this.chartType)) {
+		if ( !force && ( location.search === this.params && this.prevChartType === this.chartType ) ) {
 			return false;
 		}
 
 		this.params = location.search;
 		const entities = this.getEntities();
 
-		if (!entities.length) {
+		if ( !entities.length ) {
 			this.resetView();
 			return false;
 		}
 
 		this.patchUsage();
 
-		this.setInitialChartType(entities.length);
+		this.setInitialChartType( entities.length );
 
 		// Clear out old error messages unless the is the first time rendering the chart.
-		if (this.prevChartType) this.clearMessages();
+		if ( this.prevChartType ) {
+			this.clearMessages();
+		}
 
 		this.prevChartType = this.chartType;
 		this.destroyChart();
@@ -471,211 +494,213 @@ class ChartHelpers extends App {
 	/**
 	 * Remove an entity from this.outputData and this.entityInfo.entities.
 	 * This is called at some point within this.processInput() in chart-based apps.
-	 * @param {String} removedEntity Title of the page, file, site, etc.
+	 *
+	 * @param {string} removedEntity Title of the page, file, site, etc.
 	 */
-	removeEntity(removedEntity) {
+	removeEntity( removedEntity ) {
 		// we've got the data already, just removed a single page so we'll remove that data
 		// and re-render the chart
-		this.outputData = this.outputData.filter(entry => entry.label !== removedEntity.descore());
-		this.outputData = this.outputData.map(entity => {
-			return Object.assign({}, entity, this.config.chartConfig[this.chartType].dataset(entity.color));
-		});
-		delete this.entityInfo.entities[removedEntity];
+		this.outputData = this.outputData.filter( ( entry ) => entry.label !== removedEntity.descore() );
+		this.outputData = this.outputData.map( ( entity ) => Object.assign( {}, entity, this.config.chartConfig[ this.chartType ].dataset( entity.color ) ) );
+		delete this.entityInfo.entities[ removedEntity ];
 	}
 
 	/**
 	 * Mother function for querying the API and processing data
+	 *
 	 * @param {Array} entities list of page names, or projects for Siteviews
 	 * @return {Deferred} Promise resolving with pageviews data and errors, if present
 	 */
-	getPageViewsData(entities) {
+	getPageViewsData( entities ) {
 		let dfd = $.Deferred(), count = 0, failureRetries = {},
 			totalRequestCount = entities.length, failedEntities = [];
 
-		const startDate = this.daterangepicker.startDate.startOf('day'),
-			endDate = this.daterangepicker.endDate.startOf('day');
+		const startDate = this.daterangepicker.startDate.startOf( 'day' ),
+			endDate = this.daterangepicker.endDate.startOf( 'day' );
 
 		/**
 		 * This bit determines whether we should show errors for a given entity.
 		 * This is only used to suppress errors when we're including redirects,
 		 * since this can be confusing to the user, and 404s are rather common for redirects.
 		 */
-		const targetEntities = this.getEntities(true);
-		const shouldShowErrors = entity => {
-			return targetEntities.includes(entity.score());
-		};
+		const targetEntities = this.getEntities( true );
+		const shouldShowErrors = ( entity ) => targetEntities.includes( entity.score() );
 
 		/**
 		 * Everything we need to keep track of for the promises.
+		 *
 		 * @type {Object}
 		 */
-		let xhrData = {
+		const xhrData = {
 			entities,
 			labels: [], // Labels (dates) for the x-axis.
-			datasets: new Array(totalRequestCount), // Data for each article timeseries
+			datasets: new Array( totalRequestCount ), // Data for each article timeseries
 			errors: [], // Queue up errors to show after all requests have been made
 			fatalErrors: [], // Unrecoverable JavaScript errors
 			promises: []
 		};
 
-		const makeRequest = entity => {
-			const url = this.getApiUrl(entity, startDate, endDate),
-				promise = $.ajax({ url, dataType: 'json' });
+		const makeRequest = ( entity ) => {
+			const url = this.getApiUrl( entity, startDate, endDate ),
+				promise = $.ajax( { url, dataType: 'json' } );
 
-			xhrData.promises.push(promise);
+			xhrData.promises.push( promise );
 
-			promise.done(successData => {
+			promise.done( ( successData ) => {
 				try {
-					const entityIndex = xhrData.entities.indexOf(entity);
-					xhrData.datasets[entityIndex] = successData.items;
+					const entityIndex = xhrData.entities.indexOf( entity );
+					xhrData.datasets[ entityIndex ] = successData.items;
 
 					/** fetch the labels for the x-axis on success if we haven't already */
-					if (successData.items && !xhrData.labels.length) {
-						xhrData.labels = successData.items.map(elem => {
-							return moment(elem.timestamp, this.config.timestampFormat).format(this.dateFormat);
-						});
+					if ( successData.items && !xhrData.labels.length ) {
+						xhrData.labels = successData.items.map( ( elem ) => moment( elem.timestamp, this.config.timestampFormat ).format( this.dateFormat ) );
 					}
-				} catch (err) {
-					return xhrData.fatalErrors.push(err);
+				} catch ( err ) {
+					return xhrData.fatalErrors.push( err );
 				}
-			}).fail(errorData => {
+			} ).fail( ( errorData ) => {
 				/**
 				 * Fill in zeros for any page that exists, but pageviews API returns a 404.
+				 *
 				 * @see https://wikitech.wikimedia.org/wiki/Analytics/AQS/Pageview_API#Gotchas
 				 */
-				if (errorData.status === 404 && this.entityInfo.entities[entity.descore()]) {
-					const entityIndex = xhrData.entities.indexOf(entity);
-					xhrData.datasets[entityIndex] = this.fillInZeros(
+				if ( errorData.status === 404 && this.entityInfo.entities[ entity.descore() ] ) {
+					const entityIndex = xhrData.entities.indexOf( entity );
+					xhrData.datasets[ entityIndex ] = this.fillInZeros(
 						{},
-						moment(this.daterangepicker.startDate),
-						moment(this.daterangepicker.endDate)
+						moment( this.daterangepicker.startDate ),
+						moment( this.daterangepicker.endDate )
 					).items;
 					return;
 				}
 				/** first detect if this was a Cassandra backend error, and if so, schedule a re-try */
-				const errorMessage = errorData.responseJSON && errorData.responseJSON.title
-					? errorData.responseJSON.title
-					: this.i18n('unknown');
+				const errorMessage = errorData.responseJSON && errorData.responseJSON.title ?
+					errorData.responseJSON.title :
+					this.i18n( 'unknown' );
 				const cassandraError = errorMessage === 'Error in Cassandra table storage backend';
 
-				if (cassandraError) {
-					if (failureRetries[entity]) {
-						failureRetries[entity]++;
+				if ( cassandraError ) {
+					if ( failureRetries[ entity ] ) {
+						failureRetries[ entity ]++;
 					} else {
-						failureRetries[entity] = 1;
+						failureRetries[ entity ] = 1;
 					}
 
 					/** maximum of 3 retries */
-					if (failureRetries[entity] < 3) {
+					if ( failureRetries[ entity ] < 3 ) {
 						totalRequestCount++;
-						return this.rateLimit(makeRequest, this.config.apiThrottle, this)(entity);
+						return this.rateLimit( makeRequest, this.config.apiThrottle, this )( entity );
 					}
 				}
 
 				// remove this article from the list of entities to analyze
-				const entityIndex = xhrData.entities.indexOf(entity);
-				xhrData.entities.splice(entityIndex, 1);
-				xhrData.datasets.splice(entityIndex, 1);
+				const entityIndex = xhrData.entities.indexOf( entity );
+				xhrData.entities.splice( entityIndex, 1 );
+				xhrData.datasets.splice( entityIndex, 1 );
 
-				if (cassandraError) {
-					failedEntities.push(entity);
+				if ( cassandraError ) {
+					failedEntities.push( entity );
 					return;
 				}
 
-				if (this.app === 'pageviews' && errorData.status === 404) {
+				if ( this.app === 'pageviews' && errorData.status === 404 ) {
 					// check if it is a new page, and if so show a message that the data isn't available yet
-					$.ajax({
-						url: `https://${this.project}.org/w/api.php?action=query&prop=revisions&rvprop=timestamp` +
-							`&rvdir=newer&rvlimit=1&formatversion=2&format=json&titles=${entity}`,
+					$.ajax( {
+						url: `https://${ this.project }.org/w/api.php?action=query&prop=revisions&rvprop=timestamp` +
+							`&rvdir=newer&rvlimit=1&formatversion=2&format=json&titles=${ entity }`,
 						dataType: 'jsonp'
-					}).then(data => {
-						const dateCreated = data.query.pages[0].revisions ? data.query.pages[0].revisions[0].timestamp : null;
-						if (dateCreated && moment(dateCreated).isAfter(this.maxDate) && shouldShowErrors(entity)) {
-							const faqLink = `<a href='/${this.app}/faq#todays_data'>${this.i18n('learn-more').toLowerCase()}</a>`;
-							this.toastWarn(this.i18n('new-article-warning', faqLink));
+					} ).then( ( data ) => {
+						const dateCreated = data.query.pages[ 0 ].revisions ? data.query.pages[ 0 ].revisions[ 0 ].timestamp : null;
+						if ( dateCreated && moment( dateCreated ).isAfter( this.maxDate ) && shouldShowErrors( entity ) ) {
+							const faqLink = `<a href='/${ this.app }/faq#todays_data'>${ this.i18n( 'learn-more' ).toLowerCase() }</a>`;
+							this.toastWarn( this.i18n( 'new-article-warning', faqLink ) );
 						}
-					});
+					} );
 				}
 
-				if (!shouldShowErrors(entity)) {
+				if ( !shouldShowErrors( entity ) ) {
 					return;
 				}
 
-				let link = this.app === 'siteviews' ? this.getSiteLink(entity) : this.getPageLink(entity, this.project);
+				const link = this.app === 'siteviews' ? this.getSiteLink( entity ) : this.getPageLink( entity, this.project );
 
 				// user-friendly error messages
 				let endpoint = 'pageviews';
-				if (this.isUniqueDevices()) {
+				if ( this.isUniqueDevices() ) {
 					endpoint = 'unique-devices';
-				} else if (this.isPagecounts()) {
+				} else if ( this.isPagecounts() ) {
 					endpoint = 'pagecounts';
 				}
 				xhrData.errors.push(
-					`${link}: ${this.i18n('api-error', `${endpoint.upcase()} API`)} - ${errorMessage}`
+					`${ link }: ${ this.i18n( 'api-error', `${ endpoint.upcase() } API` ) } - ${ errorMessage }`
 				);
-			}).always(() => {
-				if (++count === totalRequestCount) {
+			} ).always( () => {
+				if ( ++count === totalRequestCount ) {
 					this.pageViewsData = xhrData;
-					dfd.resolve(xhrData);
+					dfd.resolve( xhrData );
 
-					if (failedEntities.length) {
-						this.writeMessage(this.i18n(
+					if ( failedEntities.length ) {
+						this.writeMessage( this.i18n(
 							'api-error-timeout',
 							'<ul>' +
-							failedEntities.map(failedEntity => `<li>${this.getPageLink(failedEntity, this.project.escape())}</li>`).join('') +
+							failedEntities.map( ( failedEntity ) => `<li>${ this.getPageLink( failedEntity, this.project.escape() ) }</li>` ).join( '' ) +
 							'</ul>'
-						));
+						) );
 					}
 				}
-			});
+			} );
 		};
 
-		entities.forEach(entity => makeRequest(entity));
+		entities.forEach( ( entity ) => makeRequest( entity ) );
 
 		return dfd;
 	}
 
 	/**
 	 * Get params needed to create a permanent link of visible data
+	 *
 	 * @return {Object} hash of params
 	 */
 	getPermaLink() {
-		let params = this.getParams(false);
+		const params = this.getParams( false );
 		delete params.range;
 		return params;
 	}
 
 	/**
 	 * Is the date type set to monthly?
-	 * @return {Boolean} true or false
+	 *
+	 * @return {boolean} true or false
 	 */
 	isMonthly() {
-		return $('#date-type-select').val() === 'monthly';
+		return $( '#date-type-select' ).val() === 'monthly';
 	}
 
 	/**
 	 * Are we currently in logarithmic mode?
-	 * @returns {Boolean} true or false
+	 *
+	 * @return {boolean} true or false
 	 */
 	isLogarithmic() {
-		return this.$logarithmicCheckbox.is(':checked') && this.isLogarithmicCapable();
+		return this.$logarithmicCheckbox.is( ':checked' ) && this.isLogarithmicCapable();
 	}
 
 	/**
 	 * Test if the current chart type supports a logarithmic scale
-	 * @returns {Boolean} log-friendly or not
+	 *
+	 * @return {boolean} log-friendly or not
 	 */
 	isLogarithmicCapable() {
-		return ['line', 'bar'].includes(this.chartType);
+		return [ 'line', 'bar' ].includes( this.chartType );
 	}
 
 	/**
 	 * Print the chart!
 	 */
 	printChart() {
-		let tab = window.open();
+		const tab = window.open();
 		tab.document.write(
-			`<img src="${this.chartObj.toBase64Image()}" />`
+			`<img src="${ this.chartObj.toBase64Image() }" />`
 		);
 		tab.print();
 		tab.close();
@@ -683,20 +708,25 @@ class ChartHelpers extends App {
 
 	/**
 	 * Removes chart, messages, and resets site selections
+	 *
 	 * @param {boolean} [select2] whether or not to clear the Select2 input
 	 * @param {boolean} [clearMessages] whether or not to clear any existing errors from view
 	 */
-	resetView(select2 = false, clearMessages = true) {
+	resetView( select2 = false, clearMessages = true ) {
 		try {
 			/** these can fail sometimes */
 			this.destroyChart();
-			if (select2) this.resetSelect2();
-		} catch (e) { // nothing
+			if ( select2 ) {
+				this.resetSelect2();
+			}
+		} catch ( e ) { // nothing
 		} finally {
 			this.stopSpinny();
-			$('body').addClass('initial');
+			$( 'body' ).addClass( 'initial' );
 			this.config.$chart.hide();
-			if (clearMessages) this.clearMessages();
+			if ( clearMessages ) {
+				this.clearMessages();
+			}
 		}
 	}
 
@@ -704,15 +734,17 @@ class ChartHelpers extends App {
 	 * Attempt to fine-tune the pointer detection spacing based on how cluttered the chart is
 	 */
 	setChartPointDetectionRadius() {
-		if (this.chartType !== 'line') return;
+		if ( this.chartType !== 'line' ) {
+			return;
+		}
 
 		const numTicks = this.getDateHeadings().length;
 
-		if (numTicks > 50) {
+		if ( numTicks > 50 ) {
 			Chart.defaults.global.elements.point.hitRadius = 3;
-		} else if (numTicks > 30) {
+		} else if ( numTicks > 30 ) {
 			Chart.defaults.global.elements.point.hitRadius = 5;
-		} else if (numTicks > 20) {
+		} else if ( numTicks > 20 ) {
 			Chart.defaults.global.elements.point.hitRadius = 10;
 		} else {
 			Chart.defaults.global.elements.point.hitRadius = 30;
@@ -721,55 +753,59 @@ class ChartHelpers extends App {
 
 	/**
 	 * Determine if we should show a logarithmic chart for the given dataset, based on Theil index
+	 *
 	 * @param  {Array} datasets pageviews
-	 * @return {Boolean} yes or no
+	 * @return {boolean} yes or no
 	 */
-	shouldBeLogarithmic(datasets) {
-		if (!this.isLogarithmicCapable() || this.noLogScale) {
+	shouldBeLogarithmic( datasets ) {
+		if ( !this.isLogarithmicCapable() || this.noLogScale ) {
 			return false;
 		}
 
-		let sets = [];
+		const sets = [];
 		// convert NaNs and nulls to zeros
-		datasets.forEach(dataset => {
-			sets.push(dataset.map(val => val || 0));
-		});
+		datasets.forEach( ( dataset ) => {
+			sets.push( dataset.map( ( val ) => val || 0 ) );
+		} );
 
 		// overall max value
-		const maxValue = Math.max(...[].concat(...sets));
+		const maxValue = Math.max( ...[].concat( ...sets ) );
 
-		if (maxValue <= 10) return false;
+		if ( maxValue <= 10 ) {
+			return false;
+		}
 
 		let logarithmicNeeded = false;
 
-		sets.forEach(set => {
-			set.push(maxValue);
+		sets.forEach( ( set ) => {
+			set.push( maxValue );
 
-			const sum = set.reduce((a, b) => a + b),
+			const sum = set.reduce( ( a, b ) => a + b ),
 				average = sum / set.length;
 			let theil = 0;
-			set.forEach(v => theil += v ? v * Math.log(v / average) : 0);
+			set.forEach( ( v ) => theil += v ? v * Math.log( v / average ) : 0 );
 
-			if (theil / sum > 0.5) {
+			if ( theil / sum > 0.5 ) {
 				return logarithmicNeeded = true;
 			}
-		});
+		} );
 
 		return logarithmicNeeded;
 	}
 
 	/**
 	 * Setup the Select2 input.
+	 *
 	 * @param {Object} params that would be passed to the select2 library.
 	 */
 	setupSelect2( params ) {
 		select2();
-		this.config.$select2Input.select2(params);
-		this.config.$select2Input.off('select2:select').on('select2:select', this.processInput.bind(this));
-		this.config.$select2Input.off('select2:unselect').on('select2:unselect', e => {
-			this.processInput(false, e.params.data.text);
-			this.config.$select2Input.trigger('select2:close');
-		});
+		this.config.$select2Input.select2( params );
+		this.config.$select2Input.off( 'select2:select' ).on( 'select2:select', this.processInput.bind( this ) );
+		this.config.$select2Input.off( 'select2:unselect' ).on( 'select2:unselect', ( e ) => {
+			this.processInput( false, e.params.data.text );
+			this.config.$select2Input.trigger( 'select2:close' );
+		} );
 	}
 
 	/**
@@ -779,42 +815,45 @@ class ChartHelpers extends App {
 		super.setupDateRangeSelector();
 
 		/** prevent duplicate setup since the list view apps also use charts */
-		if (!this.isChartApp()) return;
+		if ( !this.isChartApp() ) {
+			return;
+		}
 
 		const dateRangeSelector = this.config.$dateRangeSelector;
 
 		/** the "Latest N days" links */
-		$('.date-latest a').on('click', e => {
-			const value = $(e.target).data('value');
-			this.setSpecialRange(`latest-${value}`);
-			$('.latest-text').text(
-				this.i18n('latest-days', value)
+		$( '.date-latest a' ).on( 'click', ( e ) => {
+			const value = $( e.target ).data( 'value' );
+			this.setSpecialRange( `latest-${ value }` );
+			$( '.latest-text' ).text(
+				this.i18n( 'latest-days', value )
 			);
-		});
+		} );
 
-		dateRangeSelector.on('change', e => {
+		dateRangeSelector.on( 'change', ( e ) => {
 			this.processInput();
-			$('.latest-text').text(this.i18n('latest'));
+			$( '.latest-text' ).text( this.i18n( 'latest' ) );
 
 			/** clear out specialRange if it doesn't match our input */
-			if (this.specialRange && this.specialRange.value !== e.target.value) {
+			if ( this.specialRange && this.specialRange.value !== e.target.value ) {
 				this.specialRange = null;
 			}
-		});
+		} );
 	}
 
 	/**
 	 * Set up month selector and listeners
+	 *
 	 * @param {Date} [start] date to set as the start month (should be 1st of the month)
 	 * @param {Date} [end] date to set as the end month (should be 1st of the month)
 	 */
-	setupMonthSelector(start, end) {
+	setupMonthSelector( start, end ) {
 		// destroy old datepicker, if present
-		if (this.monthDatepicker) {
+		if ( this.monthDatepicker ) {
 			this.monthDatepicker.destroy();
 		}
 
-		$('.month-selector').datepicker({
+		$( '.month-selector' ).datepicker( {
 			autoclose: true,
 			format: 'M yyyy',
 			viewMode: 'months',
@@ -822,234 +861,243 @@ class ChartHelpers extends App {
 			startDate: this.minDate.toDate(),
 			endDate: this.maxMonth,
 			disableTouchKeyboard: true
-		});
+		} );
 
 		start = start || this.initialMonthStart;
 		end = end || this.maxMonth;
 
-		const validateDates = (start, end) => {
-			if (start < this.minDate.toDate()) start = this.minDate;
-			if (end > this.maxMonth) end = this.maxMonth;
-			if (end < start || start > end) {
+		const validateDates = ( start, end ) => {
+			if ( start < this.minDate.toDate() ) {
+				start = this.minDate;
+			}
+			if ( end > this.maxMonth ) {
+				end = this.maxMonth;
+			}
+			if ( end < start || start > end ) {
 				start = end;
 			}
-			return [start, end];
+			return [ start, end ];
 		};
 
-		[start, end] = validateDates(start, end);
+		[ start, end ] = validateDates( start, end );
 
-		this.monthStartDatepicker.setDate(start);
-		this.monthEndDatepicker.setDate(end);
+		this.monthStartDatepicker.setDate( start );
+		this.monthEndDatepicker.setDate( end );
 
-		this.daterangepicker.startDate = moment(start).startOf('month');
+		this.daterangepicker.startDate = moment( start ).startOf( 'month' );
 		this.daterangepicker.setEndDate(
-			moment(end).endOf('month')
+			moment( end ).endOf( 'month' )
 		);
 
 		const setDates = () => {
-			const [start, end] = validateDates(
+			const [ start, end ] = validateDates(
 				this.monthStartDatepicker.getDate(),
 				this.monthEndDatepicker.getDate()
 			);
 
-			this.daterangepicker.startDate = moment(start).startOf('month');
+			this.daterangepicker.startDate = moment( start ).startOf( 'month' );
 			this.daterangepicker.setEndDate(
-				moment(end).endOf('month')
+				moment( end ).endOf( 'month' )
 			);
 		};
 
-		$('.month-selector-start').on('hide', setDates);
-		$('.month-selector-end').on('hide', setDates);
+		$( '.month-selector-start' ).on( 'hide', setDates );
+		$( '.month-selector-end' ).on( 'hide', setDates );
 	}
 
 	/**
 	 * Get currently selected start and end dates as moment objects
-	 * @param {Boolean} [format] if true, will return YYYY-MM for months, YYYY-MM-DD for dates
-	 * @returns {Array} array containing the start and end date as moment objects or strings if `format` is set
+	 *
+	 * @param {boolean} [format] if true, will return YYYY-MM for months, YYYY-MM-DD for dates
+	 * @return {Array} array containing the start and end date as moment objects or strings if `format` is set
 	 */
-	getDates(format = false) {
+	getDates( format = false ) {
 		let startDate, endDate, dateFormat = 'YYYY-MM-DD';
 
-		if (this.isMonthly()) {
-			startDate = moment(this.monthStartDatepicker.getDate());
-			endDate = moment(this.monthEndDatepicker.getDate());
+		if ( this.isMonthly() ) {
+			startDate = moment( this.monthStartDatepicker.getDate() );
+			endDate = moment( this.monthEndDatepicker.getDate() );
 			dateFormat = 'YYYY-MM';
 		} else {
 			startDate = this.daterangepicker.startDate;
 			endDate = this.daterangepicker.endDate;
 		}
 
-		if (format) {
-			startDate = startDate.format(dateFormat);
-			endDate = endDate.format(dateFormat);
+		if ( format ) {
+			startDate = startDate.format( dateFormat );
+			endDate = endDate.format( dateFormat );
 		}
 
-		return [startDate, endDate];
+		return [ startDate, endDate ];
 	}
 
 	/**
 	 * Called at the top of updateTable() in the chart-only apps.
-	 * @return {boolean|array} False if short-circuited, otherwise the sorted datasets.Z
+	 *
+	 * @return {boolean | Array} False if short-circuited, otherwise the sorted datasets.Z
 	 */
 	beforeUpdateTable() {
-		if (this.outputData.length === 1) {
+		if ( this.outputData.length === 1 ) {
 			this.showSingleEntityLegend();
 			return false;
 		} else {
-			$('.single-entity-stats').html('');
+			$( '.single-entity-stats' ).html( '' );
 
-			if (['pageviews', 'siteviews'].includes(this.app)) {
-				$('.single-entity-ranking').html('');
+			if ( [ 'pageviews', 'siteviews' ].includes( this.app ) ) {
+				$( '.single-entity-ranking' ).html( '' );
 			}
 		}
 
-		this.$outputList.html('');
+		this.$outputList.html( '' );
 
 		/** sort ascending by current sort setting, using slice() to clone the array */
-		const datasets = this.outputData.slice().sort((a, b) => {
-			const before = this.getSortProperty(a, this.sort),
-				after = this.getSortProperty(b, this.sort);
+		const datasets = this.outputData.slice().sort( ( a, b ) => {
+			const before = this.getSortProperty( a, this.sort ),
+				after = this.getSortProperty( b, this.sort );
 
-			if (before < after) {
+			if ( before < after ) {
 				return this.direction;
-			} else if (before > after) {
+			} else if ( before > after ) {
 				return -this.direction;
 			} else {
 				return 0;
 			}
-		});
+		} );
 
-		$('.sort-link .glyphicon').removeClass('glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet').addClass('glyphicon-sort');
-		const newSortClassName = parseInt(this.direction, 10) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
-		$(`.sort-link--${this.sort} .glyphicon`).addClass(newSortClassName).removeClass('glyphicon-sort');
+		$( '.sort-link .glyphicon' ).removeClass( 'glyphicon-sort-by-alphabet-alt glyphicon-sort-by-alphabet' ).addClass( 'glyphicon-sort' );
+		const newSortClassName = parseInt( this.direction, 10 ) === 1 ? 'glyphicon-sort-by-alphabet-alt' : 'glyphicon-sort-by-alphabet';
+		$( `.sort-link--${ this.sort } .glyphicon` ).addClass( newSortClassName ).removeClass( 'glyphicon-sort' );
 
 		return datasets;
 	}
 
 	/**
 	 * Update the chart with data provided by processInput()
+	 *
 	 * @param {Object} [xhrData] data as constructed by processInput()
 	 *   data is omitted if we already have everything we need in this.outputData
-	 * @returns {null}
+	 * @return {null}
 	 */
-	updateChart(xhrData) {
-		$('.chart-legend').html(''); // clear old chart legend
+	updateChart( xhrData ) {
+		$( '.chart-legend' ).html( '' ); // clear old chart legend
 		const entityNames = xhrData ? xhrData.entities : this.config.$select2Input.val();
 
 		// show pending error messages if present, exiting if fatal
-		if (xhrData && this.showErrors(xhrData)) return;
-
-		if (!entityNames.length) {
-			return this.stopSpinny();
-		} else if (entityNames.length === 1) {
-			$('.multi-page-chart-node').hide();
-		} else {
-			$('.multi-page-chart-node').show();
+		if ( xhrData && this.showErrors( xhrData ) ) {
+			return;
 		}
 
-		if (xhrData) {
-			this.outputData = this.buildChartData(xhrData.datasets, entityNames);
+		if ( !entityNames.length ) {
+			return this.stopSpinny();
+		} else if ( entityNames.length === 1 ) {
+			$( '.multi-page-chart-node' ).hide();
+		} else {
+			$( '.multi-page-chart-node' ).show();
+		}
+
+		if ( xhrData ) {
+			this.outputData = this.buildChartData( xhrData.datasets, entityNames );
 		}
 
 		// first figure out if we should use a log chart
-		if (this.autoLogDetection === 'true') {
-			const shouldBeLogarithmic = this.shouldBeLogarithmic(this.outputData.map(set => set.data));
-			this.$logarithmicCheckbox.prop('checked', shouldBeLogarithmic);
-			$('.begin-at-zero').toggleClass('disabled', shouldBeLogarithmic);
+		if ( this.autoLogDetection === 'true' ) {
+			const shouldBeLogarithmic = this.shouldBeLogarithmic( this.outputData.map( ( set ) => set.data ) );
+			this.$logarithmicCheckbox.prop( 'checked', shouldBeLogarithmic );
+			$( '.begin-at-zero' ).toggleClass( 'disabled', shouldBeLogarithmic );
 		}
 
 		// set colors for datasets, and fill in nulls where there are zeros if log chart
-		this.outputData = this.setColorsAndLogValues(this.outputData);
+		this.outputData = this.setColorsAndLogValues( this.outputData );
 
 		let options = Object.assign(
-			{scales: {}},
-			this.config.chartConfig[this.chartType].opts,
+			{ scales: {} },
+			this.config.chartConfig[ this.chartType ].opts,
 			this.config.globalChartOpts
 		);
 
-		if (this.isLogarithmic()) {
-			options.scales = Object.assign({}, options.scales, {
-				yAxes: [{
+		if ( this.isLogarithmic() ) {
+			options.scales = Object.assign( {}, options.scales, {
+				yAxes: [ {
 					type: 'logarithmic',
 					ticks: {
-						callback: (value, index, arr) => {
-							const remain = value / (Math.pow(10, Math.floor(Chart.helpers.log10(value))));
+						callback: ( value, index, arr ) => {
+							const remain = value / ( Math.pow( 10, Math.floor( Chart.helpers.log10( value ) ) ) );
 
-							if (remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1) {
-								return this.config.formatNumber(value);
+							if ( remain === 1 || remain === 2 || remain === 5 || index === 0 || index === arr.length - 1 ) {
+								return this.config.formatNumber( value );
 							} else {
 								return '';
 							}
 						}
 					}
-				}]
-			});
+				} ]
+			} );
 		}
 
 		this.stopSpinny();
 
 		try {
-			$('.chart-container').html('').append("<canvas id='chart'>");
+			$( '.chart-container' ).html( '' ).append( "<canvas id='chart'>" );
 			this.setChartPointDetectionRadius();
-			const context = this.config.$chart[0].getContext('2d');
-			const grandMin = Math.min(...this.outputData.map(d => d.min));
+			const context = this.config.$chart[ 0 ].getContext( '2d' );
+			const grandMin = Math.min( ...this.outputData.map( ( d ) => d.min ) );
 
-			if (this.config.linearCharts.includes(this.chartType)) {
+			if ( this.config.linearCharts.includes( this.chartType ) ) {
 				const linearData = {
 					labels: this.getDateHeadings(),
 					datasets: this.outputData,
 					dateFormat: this.dateFormat // so it will be accessible in zoom_plugin.js
 				};
 
-				if (this.chartType === 'radar') {
-					options.scale.ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
+				if ( this.chartType === 'radar' ) {
+					options.scale.ticks.beginAtZero = grandMin === 0 || $( '.begin-at-zero-option' ).is( ':checked' );
 				} else {
-					options.scales.yAxes[0].ticks.beginAtZero = grandMin === 0 || $('.begin-at-zero-option').is(':checked');
-					options.zoom = ['pageviews', 'siteviews', 'mediaviews'].includes(this.app) && this.numDaysInRange() > 1 && !this.isMonthly();
+					options.scales.yAxes[ 0 ].ticks.beginAtZero = grandMin === 0 || $( '.begin-at-zero-option' ).is( ':checked' );
+					options.zoom = [ 'pageviews', 'siteviews', 'mediaviews' ].includes( this.app ) && this.numDaysInRange() > 1 && !this.isMonthly();
 				}
 
 				// Show labels if option is checked (for linear charts only)
-				if ($('.show-labels-option').is(':checked')) {
-					options = this.showPointLabels(options);
+				if ( $( '.show-labels-option' ).is( ':checked' ) ) {
+					options = this.showPointLabels( options );
 				} else {
 					delete options.animation.onComplete;
 					delete options.animation.onProgress;
 				}
 
-				this.chartObj = new Chart(context, {
+				this.chartObj = new Chart( context, {
 					type: this.chartType,
 					data: linearData,
 					options
-				});
+				} );
 			} else {
 				// in case these were set when changing from linear chart type
 				delete options.animation.onComplete;
 				delete options.animation.onProgress;
-				this.chartObj = new Chart(context, {
+				this.chartObj = new Chart( context, {
 					type: this.chartType,
 					data: {
-						labels: this.outputData.map(d => d.label),
-						datasets: [{
-							data: this.outputData.map(d => d.value),
-							backgroundColor: this.outputData.map(d => d.backgroundColor),
-							hoverBackgroundColor: this.outputData.map(d => d.hoverBackgroundColor),
-							averages: this.outputData.map(d => d.average)
-						}]
+						labels: this.outputData.map( ( d ) => d.label ),
+						datasets: [ {
+							data: this.outputData.map( ( d ) => d.value ),
+							backgroundColor: this.outputData.map( ( d ) => d.backgroundColor ),
+							hoverBackgroundColor: this.outputData.map( ( d ) => d.hoverBackgroundColor ),
+							averages: this.outputData.map( ( d ) => d.average )
+						} ]
 					},
 					options
-				});
+				} );
 			}
-		} catch (err) {
-			return this.showErrors({
+		} catch ( err ) {
+			return this.showErrors( {
 				errors: [],
-				fatalErrors: [err]
-			});
+				fatalErrors: [ err ]
+			} );
 		}
 
-		$('.chart-legend').html(this.chartObj.generateLegend());
-		$('.data-links').removeClass('invisible');
+		$( '.chart-legend' ).html( this.chartObj.generateLegend() );
+		$( '.data-links' ).removeClass( 'invisible' );
 
-		if (['metaviews', 'pageviews', 'siteviews', 'mediaviews'].includes(this.app)) {
+		if ( [ 'metaviews', 'pageviews', 'siteviews', 'mediaviews' ].includes( this.app ) ) {
 			this.updateTable();
 		}
 	}
@@ -1057,13 +1105,16 @@ class ChartHelpers extends App {
 	/**
 	 * Show the values each point in the series
 	 * Courtesy of Hung Tran: http://stackoverflow.com/a/38797712/604142
+	 *
 	 * @param {Object} options to be passed to Chart instantiation
-	 * @returns {Object} modified options
+	 * @return {Object} modified options
 	 */
-	showPointLabels(options) {
-		if (!['bar', 'line'].includes(this.chartType)) return;
+	showPointLabels( options ) {
+		if ( ![ 'bar', 'line' ].includes( this.chartType ) ) {
+			return;
+		}
 
-		const modifyCtx = ctx => {
+		const modifyCtx = ( ctx ) => {
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'bottom';
 			ctx.fillStyle = '#444';
@@ -1075,55 +1126,55 @@ class ChartHelpers extends App {
 			return ctx;
 		};
 
-		const drawValue = (context, step) => {
+		const drawValue = ( context, step ) => {
 			const chartInstance = context.chart;
-			let ctx = modifyCtx(chartInstance.ctx);
+			const ctx = modifyCtx( chartInstance.ctx );
 
-			Chart.helpers.each(context.data.datasets.forEach((dataset, i) => {
-				const meta = chartInstance.controller.getDatasetMeta(i);
-				Chart.helpers.each(meta.data.forEach((bar, index) => {
-					ctx.fillStyle = `rgba(68,68,68,${step})`;
-					const scaleMax = dataset._meta[Object.keys(dataset._meta)[0]].data[index]._yScale.maxHeight;
-					const yPos = (scaleMax - bar._model.y) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
-					ctx.fillText(this.config.formatNumber(dataset.data[index]), bar._model.x, yPos);
-				}), context);
-			}), context);
+			Chart.helpers.each( context.data.datasets.forEach( ( dataset, i ) => {
+				const meta = chartInstance.controller.getDatasetMeta( i );
+				Chart.helpers.each( meta.data.forEach( ( bar, index ) => {
+					ctx.fillStyle = `rgba(68,68,68,${ step })`;
+					const scaleMax = dataset._meta[ Object.keys( dataset._meta )[ 0 ] ].data[ index ]._yScale.maxHeight;
+					const yPos = ( scaleMax - bar._model.y ) / scaleMax >= 0.93 ? bar._model.y + 5 : bar._model.y - 10;
+					ctx.fillText( this.config.formatNumber( dataset.data[ index ] ), bar._model.x, yPos );
+				} ), context );
+			} ), context );
 		};
 
-		options.animation.onComplete = function() {
-			drawValue(this, 1);
+		options.animation.onComplete = function () {
+			drawValue( this, 1 );
 		};
 
-		options.animation.onProgress = function(state) {
+		options.animation.onProgress = function ( state ) {
 			const animation = state.animationObject;
-			drawValue(this, animation.currentStep / animation.numSteps);
+			drawValue( this, animation.currentStep / animation.numSteps );
 		};
 
 		return options;
 	}
 
-
 	/**
 	 * Show errors built in this.processInput
-	 * @param {object} xhrData as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
-	 * @returns {boolean} whether or not fatal errors occured
+	 *
+	 * @param {Object} xhrData as built by this.processInput, like `{ errors: [], fatalErrors: [] }`
+	 * @return {boolean} whether or not fatal errors occured
 	 */
-	showErrors(xhrData) {
-		if (xhrData.fatalErrors.length) {
-			this.resetView(true);
+	showErrors( xhrData ) {
+		if ( xhrData.fatalErrors.length ) {
+			this.resetView( true );
 			const fatalErrors = xhrData.fatalErrors.unique();
-			this.showFatalErrors(fatalErrors);
+			this.showFatalErrors( fatalErrors );
 
 			return true;
 		}
 
-		if (xhrData.errors.length) {
+		if ( xhrData.errors.length ) {
 			// if everything failed, reset the view, clearing out space taken up by empty chart
-			if (xhrData.entities && (xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length)) {
+			if ( xhrData.entities && ( xhrData.errors.length === xhrData.entities.length || !xhrData.entities.length ) ) {
 				this.resetView();
 			}
 
-			xhrData.errors.unique().forEach(error => this.writeMessage(error));
+			xhrData.errors.unique().forEach( ( error ) => this.writeMessage( error ) );
 		}
 
 		return false;
@@ -1131,20 +1182,21 @@ class ChartHelpers extends App {
 
 	/**
 	 * Listeners specific to chart-based apps.
+	 *
 	 * @override
 	 */
 	setupListeners() {
 		super.setupListeners();
 
-		$('.clear-pages').on('click', () => {
-			this.resetView(true);
+		$( '.clear-pages' ).on( 'click', () => {
+			this.resetView( true );
 			this.focusSelect2();
-		});
+		} );
 
-		$('#date-type-select').on('change', e => {
-			$('.date-selector').toggle(e.target.value === 'daily');
-			$('.month-selector').toggle(e.target.value === 'monthly');
-			if (e.target.value === 'monthly') {
+		$( '#date-type-select' ).on( 'change', ( e ) => {
+			$( '.date-selector' ).toggle( e.target.value === 'daily' );
+			$( '.month-selector' ).toggle( e.target.value === 'monthly' );
+			if ( e.target.value === 'monthly' ) {
 				// no special ranges for month data type
 				this.specialRange = null;
 
@@ -1152,14 +1204,14 @@ class ChartHelpers extends App {
 
 				// Set values of normal daterangepicker, which is what is used when we query the API
 				// This will in turn call this.processInput()
-				this.daterangepicker.setStartDate(this.monthStartDatepicker.getDate());
+				this.daterangepicker.setStartDate( this.monthStartDatepicker.getDate() );
 				this.daterangepicker.setEndDate(
-					moment(this.monthEndDatepicker.getDate()).endOf('month')
+					moment( this.monthEndDatepicker.getDate() ).endOf( 'month' )
 				);
 			} else {
 				this.processInput();
 			}
-		});
+		} );
 	}
 }
 

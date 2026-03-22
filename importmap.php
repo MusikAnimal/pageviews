@@ -57,6 +57,10 @@ return [
 	'bootstrap-datepicker' => [
 		'version' => '1.7.0',
 	],
+	'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css' => [
+		'version' => '1.7.0',
+		'type' => 'css',
+	],
 	'daterangepicker' => [
 		'version' => '2.1.25',
 	],

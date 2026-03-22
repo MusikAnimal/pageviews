@@ -8,4 +8,4 @@
 #   bin/console debug:router
 
 controllers:
-    resource: routing.controllers
+  resource: routing.controllers

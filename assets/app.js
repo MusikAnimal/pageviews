@@ -8,7 +8,6 @@ import $ from 'jquery';
 import moment from 'moment';
 import toastr from 'toastr';
 import 'daterangepicker';
-import bootstrapDatepicker from 'bootstrap-datepicker';
 import Banana from 'banana-i18n';
 import Config from './config.js';
 import enMessagesPromise from '../i18n/en.json';
@@ -948,7 +947,7 @@ class App {
 	 * @param {string} [multiParam] - parameter whose values needs to split by pipe character
 	 * @returns {Object} key/value pairs representation of query string
 	 */
-	parseQueryString(multiParam) {
+	parseQueryString( multiParam ) {
 		const uri = location.search.slice(1).replace(/\+/g, '%20').replace(/%7C/g, '|'),
 			chunks = uri.split('&');
 		let params = {};
@@ -957,10 +956,10 @@ class App {
 			let chunk = chunks[i].split('=');
 
 			if (multiParam && chunk[0] === multiParam) {
-				params[multiParam] = [ ...new Set( chunk[1].split('|')
+				params[multiParam] = chunk[1].split('|')
 					.map(param => param.replace(/(?:%20|_| )+$/, ''))
 					.filter(param => !!param)
-				) ];
+					.unique();
 			} else {
 				params[chunk[0]] = (chunk[1] || '').replace(/(?:%20|_| )+$/, '');
 			}
@@ -1153,12 +1152,12 @@ class App {
 	 * @param {array} items - page titles
 	 * @returns {array} - untouched array of items
 	 */
-	setSelect2Defaults(items) {
-		items.forEach(item => {
+	setSelect2Defaults( items ) {
+		items.forEach( ( item ) => {
 			const escapedText = $('<div>').text(item).html();
 			$(`<option>${escapedText}</option>`).appendTo(this.config.$select2Input);
 		});
-		this.config.$select2Input.select2('val', items);
+		this.config.$select2Input.val( items );
 		this.config.$select2Input.trigger('select2:select');
 
 		return items;

@@ -1,167 +1,169 @@
 export default {
 	chartLegend() {
-		const dataList = (entity, multiEntity = false) => {
+		const dataList = ( entity, multiEntity = false ) => {
 			let editsLink;
 
-			if (!$.isNumeric(entity.num_edits)) {
-				$('.legend-block--revisions .legend-block--body').html(
-					`<span class='text-muted'>${this.i18n('data-unavailable')}</span>`
+			if ( !$.isNumeric( entity.num_edits ) ) {
+				$( '.legend-block--revisions .legend-block--body' ).html(
+					`<span class='text-muted'>${ this.i18n( 'data-unavailable' ) }</span>`
 				);
 			}
 
-			if (multiEntity) {
-				editsLink = this.config.formatNumber(entity.num_edits);
+			if ( multiEntity ) {
+				editsLink = this.config.formatNumber( entity.num_edits );
 			} else {
-				const [, endDate] = this.getDates();
+				const [ , endDate ] = this.getDates();
 
 				editsLink = this.getHistoryLink(
 					entity.label,
-					this.config.formatNumber(entity.num_edits),
-					this.isMonthly() ? endDate.endOf('month') : endDate,
+					this.config.formatNumber( entity.num_edits ),
+					this.isMonthly() ? endDate.endOf( 'month' ) : endDate,
 					entity.num_edits
 				);
 			}
 
 			// cache basic info message
-			const basicInfoMsg = this.i18n('basic-information');
+			const basicInfoMsg = this.i18n( 'basic-information' );
 
-			let pageviewsHash = {
-				[this.i18n('pageviews')]: this.config.formatNumber(entity.sum)
+			const pageviewsHash = {
+				[ this.i18n( 'pageviews' ) ]: this.config.formatNumber( entity.sum )
 			};
 
 			// If there's a spike in pageviews show the median.
-			if (this.shouldBeLogarithmic(this.outputData.map(set => set.data))) {
-				pageviewsHash[this.i18n('median')] = this.config.formatNumber(entity.median);
+			if ( this.shouldBeLogarithmic( this.outputData.map( ( set ) => set.data ) ) ) {
+				pageviewsHash[ this.i18n( 'median' ) ] = this.config.formatNumber( entity.median );
 			}
 
-			pageviewsHash[this.i18n(`${$('#date-type-select').val()}-average`)] = this.config.formatNumber(entity.average);
+			pageviewsHash[ this.i18n( `${ $( '#date-type-select' ).val() }-average` ) ] = this.config.formatNumber( entity.average );
 
-			let infoHash = {
-				[this.i18n('pageviews')]: pageviewsHash,
-				[this.i18n('revisions')]: {
-					[this.i18n('edits')]: editsLink,
-					[this.i18n('editors')]: this.config.formatNumber(entity.num_users)
+			const infoHash = {
+				[ this.i18n( 'pageviews' ) ]: pageviewsHash,
+				[ this.i18n( 'revisions' ) ]: {
+					[ this.i18n( 'edits' ) ]: editsLink,
+					[ this.i18n( 'editors' ) ]: this.config.formatNumber( entity.num_users )
 				},
-				[basicInfoMsg]: {
-					[this.i18n('watchers')]: entity.watchers ? this.config.formatNumber(entity.watchers) : this.i18n('unknown'),
-					[this.i18n('size')]: entity.length ? this.config.formatNumber(entity.length) : ''
+				[ basicInfoMsg ]: {
+					[ this.i18n( 'watchers' ) ]: entity.watchers ? this.config.formatNumber( entity.watchers ) : this.i18n( 'unknown' ),
+					[ this.i18n( 'size' ) ]: entity.length ? this.config.formatNumber( entity.length ) : ''
 				}
 			};
 
-			if (!multiEntity) {
-				const assessmentNode = entity.assessment ? `${this.getAssessmentBadge(entity)}  ${entity.assessment.upcase()}` : '';
-				Object.assign(infoHash[basicInfoMsg], {
-					[this.i18n('protection')]: entity.protection,
-					[this.i18n('class')]: assessmentNode
-				});
+			if ( !multiEntity ) {
+				const assessmentNode = entity.assessment ? `${ this.getAssessmentBadge( entity ) }  ${ entity.assessment.upcase() }` : '';
+				Object.assign( infoHash[ basicInfoMsg ], {
+					[ this.i18n( 'protection' ) ]: entity.protection,
+					[ this.i18n( 'class' ) ]: assessmentNode
+				} );
 			}
 
 			let markup = '';
 
-			for (let block in infoHash) {
+			for ( const block in infoHash ) {
 				const blockId = block.toLowerCase().score();
-				markup += `<div class='legend-block legend-block--${blockId}'>
-					<h5>${block}</h5><hr/>
+				markup += `<div class='legend-block legend-block--${ blockId }'>
+					<h5>${ block }</h5><hr/>
 					<div class='legend-block--body'>`;
-				for (let key in infoHash[block]) {
-					const value = infoHash[block][key];
-					if (!value) continue;
+				for ( const key in infoHash[ block ] ) {
+					const value = infoHash[ block ][ key ];
+					if ( !value ) {
+						continue;
+					}
 					markup += `
 						<div class="linear-legend--counts">
-							${key}:
+							${ key }:
 							<span class='pull-right'>
-								${value}
+								${ value }
 							</span>
 						</div>`;
 				}
 				markup += '</div></div>';
 			}
 
-			if (!multiEntity) {
+			if ( !multiEntity ) {
 				markup += `
 					<div class="linear-legend--links">
-						<a href="${this.getLangviewsURL(entity.label)}" target="_blank">${this.i18n('all-languages')}</a>
+						<a href="${ this.getLangviewsURL( entity.label ) }" target="_blank">${ this.i18n( 'all-languages' ) }</a>
 						&bullet;
-						<a href="${this.getRedirectviewsURL(entity.label)}" target="_blank">${this.i18n('redirects')}</a>
+						<a href="${ this.getRedirectviewsURL( entity.label ) }" target="_blank">${ this.i18n( 'redirects' ) }</a>
 					</div>`;
 			}
 
 			return markup;
 		};
 
-		if (this.outputData.length === 1) {
-			return dataList(this.outputData[0]);
+		if ( this.outputData.length === 1 ) {
+			return dataList( this.outputData[ 0 ] );
 		}
 
-		const sum = this.outputData.reduce((a,b) => a + b.sum, 0);
+		const sum = this.outputData.reduce( ( a, b ) => a + b.sum, 0 );
 
 		// Get overall median.
-		let summedDataset = new Array(this.outputData[0].data.length).fill(0);
-		this.outputData.forEach(dataset => {
-			dataset.data.forEach((val, index) => {
-				summedDataset[index] += val;
-			});
-		});
-		const median = this.getMedian(summedDataset);
+		const summedDataset = new Array( this.outputData[ 0 ].data.length ).fill( 0 );
+		this.outputData.forEach( ( dataset ) => {
+			dataset.data.forEach( ( val, index ) => {
+				summedDataset[ index ] += val;
+			} );
+		} );
+		const median = this.getMedian( summedDataset );
 
 		const totals = {
 			sum,
 			median,
-			average: Math.round(sum / (this.outputData[0].data.filter(el => el !== null)).length),
+			average: Math.round( sum / ( this.outputData[ 0 ].data.filter( ( el ) => el !== null ) ).length ),
 			num_edits: this.entityInfo.totals ? this.entityInfo.totals.num_edits : null,
 			num_users: this.entityInfo.totals ? this.entityInfo.totals.num_users : null,
-			watchers: this.outputData.reduce((a, b) => a + b.watchers || 0, 0),
-			length: this.outputData.reduce((a, b) => a + b.length, 0)
+			watchers: this.outputData.reduce( ( a, b ) => a + b.watchers || 0, 0 ),
+			length: this.outputData.reduce( ( a, b ) => a + b.length, 0 )
 		};
 
-		return dataList(totals, true);
+		return dataList( totals, true );
 	},
 
-	tableRow(scope, item, last = false) {
+	tableRow( scope, item, last = false ) {
 		const tag = last ? 'th' : 'td';
 		const linksRow = last ? '' : `
-			<a href="${scope.getLangviewsURL(item.label)}" target="_blank">${scope.i18n('all-languages')}</a>
+			<a href="${ scope.getLangviewsURL( item.label ) }" target="_blank">${ scope.i18n( 'all-languages' ) }</a>
 			&bull;
-			<a href="${scope.getRedirectviewsURL(item.label)}" target="_blank">${scope.i18n('redirects')}</a>`;
-		const numUsers = $.isNumeric(item.num_users) ? scope.config.formatNumber(item.num_users) : '?';
+			<a href="${ scope.getRedirectviewsURL( item.label ) }" target="_blank">${ scope.i18n( 'redirects' ) }</a>`;
+		const numUsers = $.isNumeric( item.num_users ) ? scope.config.formatNumber( item.num_users ) : '?';
 		let historyRow;
 
-		if ($.isNumeric(item.num_edits)) {
+		if ( $.isNumeric( item.num_edits ) ) {
 			const getHistoryLink = () => {
-				const [, endDate] = scope.getDates();
+				const [ , endDate ] = scope.getDates();
 
 				return scope.getHistoryLink(
 					item.label,
-					scope.config.formatNumber(item.num_edits),
-					scope.isMonthly() ? endDate.endOf('month') : endDate,
+					scope.config.formatNumber( item.num_edits ),
+					scope.isMonthly() ? endDate.endOf( 'month' ) : endDate,
 					item.num_edits
 				);
 			};
 
-			historyRow = last ? scope.config.formatNumber(item.num_edits) : getHistoryLink();
+			historyRow = last ? scope.config.formatNumber( item.num_edits ) : getHistoryLink();
 		} else {
 			historyRow = '?';
 		}
 
-		$('.table-view--average .col-heading').text(
-			scope.i18n(`${$('#date-type-select').val()}-average`)
+		$( '.table-view--average .col-heading' ).text(
+			scope.i18n( `${ $( '#date-type-select' ).val() }-average` )
 		);
 
 		return `
 			<tr>
-				<${tag} class='table-view--color-col'>
-					<span class='table-view--color-block' style="background:${item.color}"></span>
-				</${tag}>
-				<${tag} class='table-view--title'>${last ? item.label : scope.getPageLink(item.label)}</${tag}>
-				<${tag} class='table-view--class'>${scope.getAssessmentBadge(item)}</${tag}>
-				<${tag} class='table-view--views'>${scope.config.formatNumber(item.sum)}</${tag}>
-				<${tag} class='table-view--average'>${scope.config.formatNumber(item.average)}</${tag}>
-				<${tag} class='table-view-edits table-view--edit-data'>${historyRow}</${tag}>
-				<${tag} class='table-view-editors table-view--edit-data'>${numUsers}</${tag}>
-				<${tag} class='table-view--size'>${item.length ? scope.config.formatNumber(item.length) : '?'}</${tag}>
-				<${tag} class='table-view--protection'>${item.protection}</${tag}>
-				<${tag} class='table-view--watchers'>${item.watchers ? scope.config.formatNumber(item.watchers) : scope.i18n('unknown')}</${tag}>
-				<${tag}>${linksRow}</${tag}>
+				<${ tag } class='table-view--color-col'>
+					<span class='table-view--color-block' style="background:${ item.color }"></span>
+				</${ tag }>
+				<${ tag } class='table-view--title'>${ last ? item.label : scope.getPageLink( item.label ) }</${ tag }>
+				<${ tag } class='table-view--class'>${ scope.getAssessmentBadge( item ) }</${ tag }>
+				<${ tag } class='table-view--views'>${ scope.config.formatNumber( item.sum ) }</${ tag }>
+				<${ tag } class='table-view--average'>${ scope.config.formatNumber( item.average ) }</${ tag }>
+				<${ tag } class='table-view-edits table-view--edit-data'>${ historyRow }</${ tag }>
+				<${ tag } class='table-view-editors table-view--edit-data'>${ numUsers }</${ tag }>
+				<${ tag } class='table-view--size'>${ item.length ? scope.config.formatNumber( item.length ) : '?' }</${ tag }>
+				<${ tag } class='table-view--protection'>${ item.protection }</${ tag }>
+				<${ tag } class='table-view--watchers'>${ item.watchers ? scope.config.formatNumber( item.watchers ) : scope.i18n( 'unknown' ) }</${ tag }>
+				<${ tag }>${ linksRow }</${ tag }>
 			</tr>`;
 	}
 };
