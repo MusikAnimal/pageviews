@@ -31,7 +31,7 @@ class App {
 		const settings = [ 'alwaysRedirects', 'localizeDateFormat', 'numericalFormatting', 'bezierCurve',
 			'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart' ];
 		for ( const setting of settings ) {
-			this.config[ setting ] = localStorage.getItem(`pageviews-settings-${ setting }`) ||
+			this[ setting ] = localStorage.getItem(`pageviews-settings-${ setting }`) ||
 				this.config.defaults[ setting ];
 		}
 		this.setupSettingsModal();

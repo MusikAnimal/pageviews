@@ -157,6 +157,11 @@ a:focus {
 	box-shadow: inset 0 1px 1px var( --select2-dropdown );
 }
 
+.select2-selection__choice__remove {
+	bottom: 1px;
+	position: relative;
+}
+
 header {
 	margin-bottom: 12px;
 	margin-top: 10px;

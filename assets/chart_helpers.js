@@ -4,6 +4,7 @@ import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
 import App from './app.js';
 import select2 from 'select2';
 import Chart from 'chart.js';
+import './zoom_plugin.js';
 import 'bootstrap-datepicker';
 
 /**
