@@ -1,0 +1,54 @@
+{% extends 'url_structure.html.twig' %}
+{% set fullpage_namee -%}
+	{{ '{{' }}FULLPAGENAMEE}}
+{% endset %}
+
+{% block body %}
+	<div class="container">
+		<main class="col-lg-10 col-lg-offset-1">
+			<div>
+				{% set pageviews_link %}
+					<pre dir="ltr" class="url-structure-example">https://pageviews.wmcloud.org/?project={{ '{{' }}SERVERNAME}}&amp;pages={{ fullpage_namee }}</pre>
+				{%- endset %}
+				{% set project %}
+					<code>en.wikipedia.org</code>
+				{%- endset %}
+				{% set sitematrix_link %}
+					<a href="https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv">{{ msg( 'project' )|lower }}</a>
+				{%- endset %}
+				{% set fullpage_namee %}
+					<code>{{ '{{FULLPAGENAMEE}}' }}</code>
+				{% endset %}
+				{{ msg( 'url-structure-example', [ pageviews_link, project, sitematrix_link, fullpage_namee ] )|raw }}
+			</div>
+			<div>
+				<h3>
+					{{ msg('url-structure-parameters') }}
+					<small>
+						{{ msg( 'url-structure-parameters-order' ) }}
+					</small>
+				</h3>
+				<hr/>
+				<dl class="dl-horizontal">
+					{% include 'url_parts/_project.html.twig' %}
+					<dt>pages</dt>
+					<dd>
+						{{ msg( 'url-structure-pages' ) }}
+						<br/>
+						{{ msg( 'url-structure-onwiki-link', [ fullpage_namee ] ) }}
+					</dd>
+					{% include 'url_parts/_date_ranges.html.twig' with { 'default_range': 'latest' } %}
+					{% include 'url_parts/_platform.html.twig' %}
+					{% include 'url_parts/_agent.html.twig' %}
+					{% include 'url_parts/_redirects.html.twig' %}
+					{% include 'url_parts/_autolog.html.twig' %}
+					{% include 'url_parts/_mute_validations.html.twig' %}
+				</dl>
+			</div>
+
+			<div class="col-lg-12 text-center tm">
+				<a href="{{ msg( 'pageviews' ) }}">{{ msg( 'faq-return-to', [ msg( 'title' ) ] ) }}</a>
+			</div>
+		</main>
+	</div>
+{% endblock %}

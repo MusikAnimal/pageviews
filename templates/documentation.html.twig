@@ -1,5 +1,9 @@
-{% extends 'documentation.html.twig' %}
+{% extends 'base.html.twig' %}
 
+{% block settings %}{% endblock %}
+{% block importmap %}
+	{{ importmap( 'shared' ) }}
+{% endblock %}
 {% block title %}
 	{{ msg( 'title' ) }} - {{ msg( 'faq' ) }}
 {% endblock %}

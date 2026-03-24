@@ -1,15 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block settings %}{% endblock %}
-{% block importmap %}
-	{{ importmap( 'shared' ) }}
-{% endblock %}
-{% block title %}
-	{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }} - {{ msg( 'faq' ) }}
-{% endblock %}
-{% block subtitle %}
-	{{ msg( 'faq' ) }}
-{% endblock %}
+{% extends 'faq.html.twig' %}
 
 {% block body %}
 	{% set topviewsLink %}<a href="{{ path( 'topviews' ) }}">{{ msg('topviews-title') }}</a>{% endset %}
@@ -46,7 +35,7 @@
 			</ul>
 
 			<div class="col-lg-12 text-center tm">
-				<a href="/">{{ msg('faq-return-to', [msg('title')]) }}</a>
+				<a href="{{ msg( 'pageviews' ) }}">{{ msg( 'faq-return-to', [ msg( 'title' ) ] ) }}</a>
 			</div>
 		</main>
 	</div>
