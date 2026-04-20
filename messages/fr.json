@@ -270,7 +270,7 @@
 	"num-pagecounts": "$1 nombre{{PLURAL:$2||s}} de pages vues",
 	"num-pages": "$1 page{{PLURAL:$2||s}}",
 	"num-pages-info": "Saisir jusqu’à $1 page{{PLURAL:$1||s}}",
-	"num-pageviews": "$1 {{PLURAL:$2|page vue|pages vues}}",
+	"num-pageviews": "$1 {{PLURAL:$2|consultation|consultations}}",
 	"num-projects": "$1 projet{{PLURAL:$2||s}}",
 	"num-projects-info": "Saisir jusqu’à $1 projet{{PLURAL:$1||s}}",
 	"num-protections": "$1 protection{{PLURAL:$2||s}}",
