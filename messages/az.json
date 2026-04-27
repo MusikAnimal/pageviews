@@ -7,7 +7,8 @@
 			"Nemoralis",
 			"Serkanland",
 			"Toghrul Rahimli",
-			"Şeyx Şamil"
+			"Şeyx Şamil",
+			"Əkrəm"
 		]
 	},
 	"active-users": "Aktiv istifadəçilər",
@@ -144,7 +145,7 @@
 	"num-sections": "$1 {{PLURAL:$2|bölmə|bölmələr}}",
 	"num-wikilinks": "$1 {{PLURAL:$2|vikilink|vikilinklər}}",
 	"october": "Oktyabr",
-	"ok": "TAMAM",
+	"ok": "Oldu",
 	"only-redirects": "Yalnız yönləndirmələri daxil edin",
 	"options": "Nizamlamalar",
 	"other": "Digər",
