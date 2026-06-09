@@ -126,9 +126,7 @@ class Pageviews extends ChartHelpers {
 					return this.resetView( false, false );
 				}
 
-				this.setSelect2Defaults(
-					this.underscorePageNames( normalizedPageNames )
-				);
+				this.setSelect2Defaults( normalizedPageNames );
 			} );
 		};
 
@@ -216,7 +214,7 @@ class Pageviews extends ChartHelpers {
 		if ( this.autocomplete === 'autocomplete' ) {
 			if ( query.prefixsearch.length ) {
 				results = query.prefixsearch.map( ( elem ) => ( {
-					id: elem.title.score(),
+					id: elem.title,
 					text: elem.title
 				} ) );
 			}
@@ -224,7 +222,7 @@ class Pageviews extends ChartHelpers {
 			/** first merge in redirects */
 			if ( query.redirects ) {
 				results = query.redirects.map( ( red ) => ( {
-					id: red.from.score(),
+					id: red.from,
 					text: red.from
 				} ) );
 			}
@@ -232,13 +230,13 @@ class Pageviews extends ChartHelpers {
 			Object.keys( query.pages ).forEach( ( pageId ) => {
 				const pageData = query.pages[ pageId ];
 				results.push( {
-					id: pageData.title.score(),
+					id: pageData.title,
 					text: pageData.title
 				} );
 			} );
 		}
 
-		return { results: results };
+		return { results };
 	}
 
 	/**

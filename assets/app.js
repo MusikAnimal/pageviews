@@ -955,28 +955,19 @@ class App {
 
 	/**
 	 * Generate key/value pairs of URL query string
-	 * @param {string} [multiParam] - parameter whose values needs to split by pipe character
-	 * @returns {Object} key/value pairs representation of query string
+	 * @param {string} [multiParam] Parameter whose values needs to split by pipe character
+	 * @returns {Object} Key/value pairs representation of query string
 	 */
 	parseQueryString( multiParam ) {
-		const uri = location.search.slice(1).replace(/\+/g, '%20').replace(/%7C/g, '|'),
-			chunks = uri.split('&');
-		let params = {};
-
-		for (let i = 0; i < chunks.length; i++) {
-			let chunk = chunks[i].split('=');
-
-			if (multiParam && chunk[0] === multiParam) {
-				params[multiParam] = chunk[1].split('|')
-					.map(param => param.replace(/(?:%20|_| )+$/, ''))
-					.filter(param => !!param)
-					.unique();
+		const urlParams = new URLSearchParams( location.search );
+		return [ ...urlParams.entries() ].reduce( ( params, [ key, value ] ) => {
+			if ( multiParam && key === multiParam ) {
+				params[ key ] = value.split( '|' );
 			} else {
-				params[chunk[0]] = (chunk[1] || '').replace(/(?:%20|_| )+$/, '');
+				params[ key ] = value;
 			}
-		}
-
-		return params;
+			return params;
+		}, {} );
 	}
 
 	/**
@@ -1080,13 +1071,11 @@ class App {
 	 * @param {boolean} [setup] Whether to re-setup the selector.
 	 */
 	resetSelect2( setup = true ) {
-		if (this.config.$select2Input.data('select2')) {
-			this.config.$select2Input.off('change');
-			this.config.$select2Input.select2('val', null);
-			this.config.$select2Input.select2('data', null);
-			this.config.$select2Input.select2('destroy');
+		if ( this.config.$select2Input.data( 'select2' ) ) {
+			this.config.$select2Input.val( null ).trigger( 'change' );
+			this.pushParams();
 		}
-		if (setup) {
+		if ( setup ) {
 			this.setupSelect2();
 		}
 	}
@@ -1157,19 +1146,17 @@ class App {
 	}
 
 	/**
-	 * Directly set items in Select2
-	 * Currently is not able to remove underscores from page names
+	 * Directly set items in Select2.
 	 *
-	 * @param {array} items - page titles
-	 * @returns {array} - untouched array of items
+	 * @param {array} items Page titles
+	 * @returns {array} Untouched array of items
 	 */
 	setSelect2Defaults( items ) {
 		items.forEach( ( item ) => {
-			const escapedText = $('<div>').text(item).html();
-			$(`<option>${escapedText}</option>`).appendTo(this.config.$select2Input);
+			const option = new Option( item, item, true, true );
+			this.config.$select2Input.append( option );
 		});
-		this.config.$select2Input.val( items );
-		this.config.$select2Input.trigger('select2:select');
+		this.config.$select2Input.val( items ).trigger('select2:select');
 
 		return items;
 	}
@@ -1515,21 +1502,30 @@ class App {
 	 *   All other params such as 'project' and 'agent' are fetched with getParams() and getPermaLink().
 	 * @param {Boolean} [clear] - whether to clear the query string entirely.
 	 */
-	pushParams(paramName, clear) {
-		if (clear) {
-			history.replaceState(null, document.title, location.href.split('?')[0]);
+	pushParams( paramName, clear ) {
+		if ( clear ) {
+			window.history.replaceState(null, document.title, location.href.split('?')[0]);
 			return;
 		}
 
-		const entities = this.getEntities().join('|').replace(/[&%?+]/g, encodeURIComponent);
+		const entities = this.getEntities( true )
+			.join( '|' )
+			.replace( /[&%?+]/g, encodeURIComponent );
 
-		if (window.history && window.history.replaceState) {
-			window.history.replaceState({}, document.title,
-				`?${$.param(this.getParams())}&${paramName}=${entities}`
-			);
-		}
+		window.history.replaceState( {}, document.title,
+			`?${ $.param( this.getParams() ) }&${ paramName }=${ entities }`
+		);
 
 		$('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace(/\|/g, escape)}`);
+	}
+
+	/**
+	 * Get params needed to create a permanent link of visible data
+	 *
+	 * @return {Object} hash of params
+	 */
+	getPermaLink() {
+		throw new Error( 'getPermaLink not implemeted!' );
 	}
 
 	/**

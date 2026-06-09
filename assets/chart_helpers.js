@@ -33,6 +33,8 @@ class ChartHelpers extends App {
 			this.config.chartConfig[ circularChart ].opts.legendTemplate = this.circularLegend;
 		} );
 
+		select2();
+
 		this.setupChartOptions();
 	}
 
@@ -457,7 +459,7 @@ class ChartHelpers extends App {
 	 * Should be called at the top of processInput() in chart-related apps.
 	 *
 	 * @param {boolean} force Whether to force the chart to re-render, even if no params have changed.
-	 * @return {Array | boolean} False if there's nothing to be rendered (child function should also short-circuit),
+	 * @return {Array|boolean} False if there's nothing to be rendered (child function should also short-circuit),
 	 *   or the list of entities fetched from the Select2 input.
 	 */
 	beforeProcessInput( force ) {
@@ -657,11 +659,7 @@ class ChartHelpers extends App {
 		return dfd;
 	}
 
-	/**
-	 * Get params needed to create a permanent link of visible data
-	 *
-	 * @return {Object} hash of params
-	 */
+	/** @inheritDoc */
 	getPermaLink() {
 		const params = this.getParams( false );
 		delete params.range;
@@ -800,12 +798,11 @@ class ChartHelpers extends App {
 	 * @param {Object} params that would be passed to the select2 library.
 	 */
 	setupSelect2( params ) {
-		select2();
 		this.config.$select2Input.select2( params );
 		this.config.$select2Input.off( 'select2:select' ).on( 'select2:select', this.processInput.bind( this ) );
 		this.config.$select2Input.off( 'select2:unselect' ).on( 'select2:unselect', ( e ) => {
 			this.processInput( false, e.params.data.text );
-			this.config.$select2Input.trigger( 'select2:close' );
+			this.config.$select2Input.select2( 'close' );
 		} );
 	}
 
