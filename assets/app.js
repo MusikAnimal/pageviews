@@ -90,28 +90,24 @@ class App {
 				warning: 'alert-warning'
 			}
 		};
+	}
 
+	/**
+	 * Each app must implement this method and call super.initialize() first.
+	 */
+	async initialize() {
 		// Load translations and supported projects, then initialize the app.
 		// Each app has its own initialize() method.
-		Promise.all( [
+		await Promise.all( [
 			// Relies on jQuery global, so we have to load Bootstrap async here :(
 			import( 'bootstrap' ),
 			this.loadTranslations(),
 			this.loadProjects()
-		] ).then( () => {
-			// Set valid project domains.
-			this.config.validParams.project = Object.keys( this.siteMap )
-				.map( ( project ) => `${ project }.org` );
-			this.initialize();
-		} );
-	}
+		] );
 
-	/**
-	 * Each app must implement this method, which is called after the constructor
-	 * finishes and translations and projects are loaded.
-	 */
-	initialize() {
-		throw new Error( 'The app class must implement an initialize() method' );
+		// Set valid project domains.
+		this.config.validParams.project = Object.keys( this.siteMap )
+			.map( ( project ) => `${ project }.org` );
 	}
 
 	/**

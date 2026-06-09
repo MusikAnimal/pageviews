@@ -34,7 +34,8 @@ class Pageviews extends ChartHelpers {
 	 * Initialize the application.
 	 * Called in `app.js` after translations have loaded
 	 */
-	initialize() {
+	async initialize() {
+		await super.initialize();
 		this.setupDateRangeSelector();
 		this.setupSelect2();
 		this.setupSelect2Colors();
@@ -730,4 +731,5 @@ class Pageviews extends ChartHelpers {
 	}
 }
 
-new Pageviews();
+const pageviews = new Pageviews();
+pageviews.initialize();
