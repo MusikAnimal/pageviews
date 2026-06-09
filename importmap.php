@@ -25,6 +25,10 @@ return [
 		'path' => './assets/pageviews/pageviews.js',
 		'entrypoint' => true,
 	],
+	'langviews' => [
+		'path' => './assets/langviews/langviews.js',
+		'entrypoint' => true,
+	],
 	'bootstrap' => [
 		'version' => '3.3.5',
 	],

@@ -16,22 +16,26 @@ import enMessagesPromise from '../i18n/en.json';
 window.$ = window.jQuery = $;
 window.moment = moment;
 
+/**
+ * Abstract class for all apps in the suite of tools.
+ *
+ * @abstract
+ */
 class App {
 	constructor( app, appConfig = {} ) {
 		this.app = app;
 		this.config = new Config( this, appConfig );
 
 		/** assign initial class properties */
-		const defaults = this.config.defaults,
-			validParams = this.config.validParams;
-		this.config.defaults = Object.assign({}, defaults, appConfig.defaults);
-		this.config.validParams = Object.assign({}, validParams, appConfig.validParams);
+		const { defaults, validParams } = this.config;
+		this.config.defaults = Object.assign( {}, defaults, appConfig.defaults );
+		this.config.validParams = Object.assign( {}, validParams, appConfig.validParams );
 		this.colorsStyleEl = undefined;
 
 		const settings = [ 'alwaysRedirects', 'localizeDateFormat', 'numericalFormatting', 'bezierCurve',
 			'autocomplete', 'autoLogDetection', 'beginAtZero', 'rememberChart' ];
 		for ( const setting of settings ) {
-			this[ setting ] = localStorage.getItem(`pageviews-settings-${ setting }`) ||
+			this[ setting ] = localStorage.getItem( `pageviews-settings-${ setting }` ) ||
 				this.config.defaults[ setting ];
 		}
 		this.setupSettingsModal();
@@ -46,16 +50,16 @@ class App {
 		 */
 		this.processStart = null;
 
-		this.muteValidations = location.search.includes('mutevalidations=true');
-		this.debug = location.search.includes('debug=true') || location.host.includes('localhost');
+		this.muteValidations = location.search.includes( 'mutevalidations=true' );
+		this.debug = location.search.includes( 'debug=true' ) || location.host.includes( 'localhost' );
 
 		/** assign app instance to window for debugging on local environment */
-		if (this.debug) {
+		if ( this.debug ) {
 			window.app = this;
 		}
 
 		/** Exit out if we're on a FAQ or URL Structure page, since no further JS is needed */
-		if (/\/(faq|url_structure)\/?$/.test(document.location.pathname)) {
+		if ( /\/(faq|url_structure)\/?$/.test( document.location.pathname ) ) {
 			return;
 		}
 
@@ -64,7 +68,7 @@ class App {
 		/** set up toastr config. The duration may be overriden later */
 		toastr.options = {
 			closeButton: true,
-			debug: location.host.includes('localhost'),
+			debug: this.debug,
 			newestOnTop: false,
 			progressBar: false,
 			positionClass: 'toast-top-center',
@@ -91,19 +95,23 @@ class App {
 		// Each app has its own initialize() method.
 		Promise.all( [
 			// Relies on jQuery global, so we have to load Bootstrap async here :(
-			import('bootstrap'),
+			import( 'bootstrap' ),
 			this.loadTranslations(),
 			this.loadProjects()
 		] ).then( () => {
 			// Set valid project domains.
 			this.config.validParams.project = Object.keys( this.siteMap )
-				.map( ( project ) => `${project}.org` );
+				.map( ( project ) => `${ project }.org` );
 			this.initialize();
 		} );
 	}
 
+	/**
+	 * Each app must implement this method, which is called after the constructor
+	 * finishes and translations and projects are loaded.
+	 */
 	initialize() {
-		throw new Error('The app class must implement an initialize() method');
+		throw new Error( 'The app class must implement an initialize() method' );
 	}
 
 	/**
@@ -151,13 +159,13 @@ class App {
 
 		// Don't loop more than there are links in the nav.
 		// This more just a safeguard against an infinite loop should something go wrong.
-		let numLinks = $('.interapp-links--entry').length;
-		while (numLinks > 0 && toolNavWidth + navRightWidth + homeLinkWidth > windowWidth) {
+		let numLinks = $( '.interapp-links--entry' ).length;
+		while ( numLinks > 0 && toolNavWidth + navRightWidth + homeLinkWidth > windowWidth ) {
 			// Remove the last tool link that is not the current tool being used
-			let $link = $('.interapp-links > .interapp-links--entry:not(.active)').last().remove();
-			$link.addClass('interapp-links--more-entry');
-			$('.interapp-links--more .dropdown-menu').append($link);
-			toolNavWidth = $('.interapp-links').outerWidth() + homeLinkWidth;
+			let $link = $( '.interapp-links > .interapp-links--entry:not(.active)' ).last().remove();
+			$link.addClass( 'interapp-links--more-entry' );
+			$( '.interapp-links--more .dropdown-menu' ).append($link);
+			toolNavWidth = $( '.interapp-links' ).outerWidth() + homeLinkWidth;
 			numLinks--;
 		}
 	}
@@ -171,7 +179,7 @@ class App {
 	 * @param {String} [opts.title] Will appear in bold and in front of the message.
 	 */
 	toast( opts ) {
-		const title = opts.title ? `<strong>${opts.title}</strong> ` : '';
+		const title = opts.title ? `<strong>${ opts.title }</strong> ` : '';
 		opts.message = title + opts.message;
 		opts = Object.assign({
 			level: 'warning',
@@ -179,7 +187,7 @@ class App {
 		}, opts);
 
 		toastr.options.timeOut = opts.timeout * 1000;
-		toastr[opts.level](opts.message);
+		toastr[ opts.level ]( opts.message );
 	}
 
 	/**
@@ -187,8 +195,8 @@ class App {
 	 * @param {String} message
 	 * @param {Number} [timeout] - in seconds
 	 */
-	toastSuccess(message, timeout = 10) {
-		this.toast({ message, level: 'success', timeout });
+	toastSuccess( message, timeout = 10 ) {
+		this.toast( { message, level: 'success', timeout } );
 	}
 
 	/**
@@ -196,8 +204,8 @@ class App {
 	 * @param {String} message
 	 * @param {Number} [timeout] - in seconds
 	 */
-	toastInfo(message, timeout = 10) {
-		this.toast({ message, level: 'info', timeout });
+	toastInfo( message, timeout = 10 ) {
+		this.toast( { message, level: 'info', timeout } );
 	}
 
 	/**
@@ -205,8 +213,8 @@ class App {
 	 * @param {String} message
 	 * @param {Number} [timeout] - in seconds
 	 */
-	toastWarn(message, timeout = 10) {
-		this.toast({ message, level: 'warning', timeout });
+	toastWarn( message, timeout = 10 ) {
+		this.toast( { message, level: 'warning', timeout } );
 	}
 
 	/**
@@ -214,8 +222,8 @@ class App {
 	 * @param {String} message
 	 * @param {Number} [timeout] - in seconds
 	 */
-	toastError(message, timeout = 10) {
-		this.toast({ message, level: 'error', timeout });
+	toastError( message, timeout = 10 ) {
+		this.toast( { message, level: 'error', timeout } );
 	}
 
 	/**
@@ -226,20 +234,22 @@ class App {
 	 * @param {String} [docPath] Relative path to docs.
 	 *   Defaults to /url_structure, but you may want to link to an FAQ entry.
 	 */
-	addInvalidParamNotice(msg, level = 'error', docPath = '/url_structure') {
-		if (this.muteValidations) {
+	addInvalidParamNotice( msg, level = 'error', docPath = '/url_structure' ) {
+		if ( this.muteValidations ) {
 			return;
 		}
 
 		// Remove extraneous full stops.
-		msg = msg.replace(/\.+$/, '') + '.';
-		const docLink = `<a href='/${this.app}${docPath}'>${this.i18n('documentation').toLowerCase()}</a>`;
+		msg = msg.replace( /\.+$/, '' ) + '.';
+		const docLink = document.createElement( 'a' );
+		docLink.href = `/${ this.app }${ docPath }`;
+		docLink.innerText = this.i18n( 'documentation' ).toLowerCase();
 
-		this.toast({
-			message: `${msg} ${this.i18n('param-error-see-docs', docLink)}`,
+		this.toast( {
+			message: `${ msg } ${ this.i18n( 'param-error-see-docs', docLink ) }`,
 			level,
-			title: this.i18n('invalid-params'),
-		});
+			title: this.i18n( 'invalid-params' ),
+		} );
 	}
 
 	/**
@@ -248,22 +258,22 @@ class App {
 	 * @param {Object} params - as returned by this.parseQueryString()
 	 * @returns {Boolean} true if there were no errors, false otherwise
 	 */
-	validateDateRange(params) {
-		if (params.range) {
-			if (!this.setSpecialRange(params.range)) {
-				this.addInvalidParamNotice(this.i18n('param-error-3', 'range'));
-				this.setSpecialRange(this.config.defaults.dateRange);
+	validateDateRange( params ) {
+		if ( params.range ) {
+			if ( !this.setSpecialRange( params.range ) ) {
+				this.addInvalidParamNotice( this.i18n( 'param-error-3', 'range' ) );
+				this.setSpecialRange( this.config.defaults.dateRange );
 			}
-		} else if (params.start) {
+		} else if ( params.start ) {
 			const dateRegex = /\d{4}-\d{2}-\d{2}$/;
 
 			// convert year/month for monthly date types to valid date string
-			if (params.start && /^\d{4}-\d{2}$/.test(params.start)) {
-				params.start = `${params.start}-01`;
+			if (params.start && /^\d{4}-\d{2}$/.test( params.start ) ) {
+				params.start = `${ params.start }-01`;
 				params.monthly = true;
 			}
-			if (params.end && /^\d{4}-\d{2}$/.test(params.end)) {
-				params.end = moment(`${params.end}-01`).endOf('month').format('YYYY-MM-DD');
+			if ( params.end && /^\d{4}-\d{2}$/.test( params.end ) ) {
+				params.end = moment( `${ params.end }-01` ).endOf( 'month' ).format( 'YYYY-MM-DD' );
 			} else {
 				params.monthly = false;
 			}
@@ -272,58 +282,58 @@ class App {
 			let startDate, endDate;
 
 			// then check format of start and end date
-			if (params.start && dateRegex.test(params.start)) {
-				startDate = moment(params.start);
-			} else if ('earliest' === params.start) {
+			if ( params.start && dateRegex.test( params.start ) ) {
+				startDate = moment( params.start );
+			} else if ( 'earliest' === params.start ) {
 				startDate = this.minDate;
 			} else {
-				this.addInvalidParamNotice(this.i18n('param-error-3', 'start'));
+				this.addInvalidParamNotice( this.i18n( 'param-error-3', 'start' ) );
 				return false;
 			}
-			if (params.end && dateRegex.test(params.end)) {
-				endDate = moment(params.end);
-			} else if ('latest' === params.end) {
+			if ( params.end && dateRegex.test( params.end ) ) {
+				endDate = moment( params.end );
+			} else if ( 'latest' === params.end ) {
 				endDate = this.config.maxDate;
 			} else {
-				this.addInvalidParamNotice(this.i18n('param-error-3', 'end'));
+				this.addInvalidParamNotice( this.i18n( 'param-error-3', 'end' ) );
 				return false;
 			}
 
 			// check if they are outside the valid range or if in the wrong order
-			if (startDate > endDate) {
-				this.addInvalidParamNotice(this.i18n('param-error-2'));
+			if ( startDate > endDate ) {
+				this.addInvalidParamNotice( this.i18n( 'param-error-2' ) );
 				return false;
-			} else if (startDate < this.minDate) {
+			} else if ( startDate < this.minDate ) {
 				this.addInvalidParamNotice(
-					this.i18n('param-error-1', moment(this.minDate).format(this.dateFormat)),
+					this.i18n( 'param-error-1', moment( this.minDate ).format( this.dateFormat ) ),
 					'warning',
-					`/${this.app}/faq#old_data`
+					`/${ this.app }/faq#old_data`
 				);
 				startDate = this.minDate;
 				params.start = this.minDate;
-			} else if (endDate > this.maxDate) {
-				this.addInvalidParamNotice(this.i18n('param-error-4'), 'warning');
+			} else if ( endDate > this.maxDate ) {
+				this.addInvalidParamNotice( this.i18n( 'param-error-4' ), 'warning' );
 				endDate = this.maxDate;
 			}
 
-			if (params.monthly && ['pageviews', 'siteviews'].includes(this.app)) {
-				$('#date-type-select').val('monthly');
-				$('.date-selector').hide();
-				$('.month-selector').show();
+			if ( params.monthly && [ 'pageviews', 'siteviews' ].includes( this.app ) ) {
+				$( '#date-type-select' ).val( 'monthly' );
+				$( '.date-selector' ).hide();
+				$( '.month-selector' ).show();
 
 				// set initial values
-				this.monthStart = moment(params.start).toDate();
-				this.monthEnd = moment(params.end).startOf('month').toDate();
+				this.monthStart = moment( params.start ).toDate();
+				this.monthEnd = moment( params.end ).startOf( 'month' ).toDate();
 
 				// initialize and update month selector
-				this.setupMonthSelector(this.monthStart, this.monthEnd);
+				this.setupMonthSelector( this.monthStart, this.monthEnd );
 			} else {
 				/** directly assign startDate before calling setEndDate so events will be fired once */
 				this.daterangepicker.startDate = startDate;
-				this.daterangepicker.setEndDate(endDate);
+				this.daterangepicker.setEndDate( endDate );
 			}
 		} else {
-			this.setSpecialRange(this.config.defaults.dateRange);
+			this.setSpecialRange( this.config.defaults.dateRange );
 		}
 
 		return true;
@@ -1061,7 +1071,7 @@ class App {
 	}
 
 	setupSelect2() {
-		throw new Error( 'setupSelect2 should be overriden in the app-specific class' );
+		throw new Error( 'setupSelect2 should be overridden in the app-specific class' );
 	}
 
 	/**

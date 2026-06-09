@@ -32,7 +32,7 @@ class Pageviews extends ChartHelpers {
 
 	/**
 	 * Initialize the application.
-	 * Called in `pv.js` after translations have loaded
+	 * Called in `app.js` after translations have loaded
 	 */
 	initialize() {
 		this.setupDateRangeSelector();
@@ -70,23 +70,21 @@ class Pageviews extends ChartHelpers {
 	 * @return {Object} query params to be handed off to API
 	 */
 	getSearchParams( query ) {
-		if ( this.config.autocomplete === 'autocomplete' ) {
+		if ( this.autocomplete === 'autocomplete' ) {
 			return {
 				action: 'query',
 				list: 'prefixsearch',
 				format: 'json',
-				pssearch: query || '',
-				cirrusUseCompletionSuggester: 'yes'
+				pssearch: query || ''
 			};
-		} else if ( this.config.autocomplete === 'autocomplete_redirects' ) {
+		} else if ( this.autocomplete === 'autocomplete_redirects' ) {
 			return {
 				action: 'query',
 				generator: 'prefixsearch',
 				format: 'json',
 				gpssearch: query || '',
 				gpslimit: '10',
-				redirects: 'true',
-				cirrusUseCompletionSuggester: 'no'
+				redirects: 'true'
 			};
 		}
 	}
@@ -215,14 +213,14 @@ class Pageviews extends ChartHelpers {
 			return { results };
 		}
 
-		if ( this.config.autocomplete === 'autocomplete' ) {
+		if ( this.autocomplete === 'autocomplete' ) {
 			if ( query.prefixsearch.length ) {
 				results = query.prefixsearch.map( ( elem ) => ( {
 					id: elem.title.score(),
 					text: elem.title
 				} ) );
 			}
-		} else if ( this.config.autocomplete === 'autocomplete_redirects' ) {
+		} else if ( this.autocomplete === 'autocomplete_redirects' ) {
 			/** first merge in redirects */
 			if ( query.redirects ) {
 				results = query.redirects.map( ( red ) => ( {
