@@ -87,7 +87,7 @@ class ChartHelpers extends App {
 	 * Get the datepicker (not daterangepicker) instance of the combined
 	 *   start and end month selectors, as provided by the library
 	 *
-	 * @return {Object} datepicker
+	 * @type {Object} datepicker
 	 */
 	get monthDatepicker() {
 		return this.config.cachedElement( '.month-selector' ).data( 'datepicker' );
@@ -96,7 +96,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the datepicker (not daterangepicker) instance of the start month selector
 	 *
-	 * @return {Object} datepicker
+	 * @type {Object} datepicker
 	 */
 	get monthStartDatepicker() {
 		return this.config.cachedElement( '.month-selector-start' ).data( 'datepicker' );
@@ -105,7 +105,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the datepicker (not daterangepicker) instance of the end month selector
 	 *
-	 * @return {Object} datepicker
+	 * @type {Object} datepicker
 	 */
 	get monthEndDatepicker() {
 		return this.config.cachedElement( '.month-selector-end' ).data( 'datepicker' );
@@ -114,7 +114,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the output list (table shown the chart for when there are multiple entities).
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $outputList() {
 		return this.config.cachedElement( '.output-list' );
@@ -123,7 +123,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the checkbox input that toggles logarithmic view.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $logarithmicCheckbox() {
 		return this.config.cachedElement( '#logarithmic-checkbox' );
@@ -132,7 +132,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the "Begin at zero" checkbox.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $beginAtZeroCheckbox() {
 		return this.config.cachedElement( '.begin-at-zero' );
@@ -141,7 +141,7 @@ class ChartHelpers extends App {
 	/**
 	 * Get the "Show labels" checkbox.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $showLabelsCheckbox() {
 		return this.config.cachedElement( '.show-labels-option' );

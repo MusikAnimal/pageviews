@@ -397,12 +397,15 @@ footer {
 	margin-right: 4px;
 }
 
+.btn .glyphicon {
+	top: 2px;
+}
+
 .sort-link {
 	cursor: pointer;
 	user-select: none;
 }
 .sort-link .glyphicon {
-	top: 2px;
 	visibility: hidden;
 }
 .sort-link .glyphicon-sort-by-alphabet,

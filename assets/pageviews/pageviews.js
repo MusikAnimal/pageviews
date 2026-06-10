@@ -37,6 +37,11 @@ class Pageviews extends ChartHelpers {
 		this.updateInterAppLinks();
 	}
 
+	/** @inheritDoc */
+	get entityParamName() {
+		return 'pages';
+	}
+
 	/**
 	 * Link to /langviews for given page and chosen daterange
 	 *
@@ -254,16 +259,6 @@ class Pageviews extends ChartHelpers {
 		}
 
 		return params;
-	}
-
-	/**
-	 * Replaces history state with new URL query string representing current user input.
-	 * Called whenever we go to update the chart.
-	 *
-	 * @override
-	 */
-	pushParams() {
-		super.pushParams( 'pages' );
 	}
 
 	/**
@@ -486,8 +481,7 @@ class Pageviews extends ChartHelpers {
 					project: this.project + '.org',
 					start: this.daterangepicker.startDate.format( 'YYYY-MM-DD' ),
 					end: this.daterangepicker.endDate.format( 'YYYY-MM-DD' ),
-					totals: true,
-					ttl: this.config.cacheTime
+					totals: true
 				},
 				timeout: 8000
 			} );

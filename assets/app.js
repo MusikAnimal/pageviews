@@ -844,19 +844,19 @@ class App {
 
 	/**
 	 * Get all redirects of a page
-	 * @param {String|Array} pages - name of page(s) we want to get data about
-	 * @return {Deferred} - Promise resolving with redirect data
+	 *
+	 * @param {String|Array} pages Name of page(s) we want to get data about
+	 * @return {Object|Promise<Object>} Promise resolving with redirect data
 	 */
-	getRedirects(pages) {
-		const dfd = $.Deferred();
-		const titles = (Array.isArray(pages) ? pages : [pages]).join('|');
+	async getRedirects( pages ) {
+		const titles = ( Array.isArray( pages ) ? pages : [ pages ] ).join( '|' );
 
-		if (!this.includeRedirects() || !titles.length) {
-			return dfd.resolve({});
+		if ( !this.includeRedirects() || !titles.length ) {
+			return {};
 		}
 
-		const promise = $.ajax({
-			url: `https://${this.project}.org/w/api.php`,
+		const data = await $.ajax( {
+			url: `https://${ this.project }.org/w/api.php`,
 			jsonp: 'callback',
 			dataType: 'jsonp',
 			data: {
@@ -868,32 +868,35 @@ class App {
 				rdlimit: 500,
 				titles
 			}
-		});
+		} );
 
-		promise.done(data => {
-			if (data.error) {
-				return this.setState('initial', () => {
-					this.writeMessage(
-						`${this.i18n('api-error', 'Redirect API')}: ${data.error.info.escape()}`
-					);
-				});
+		if ( data.error ) {
+			this.setState( 'initial' );
+			this.writeMessage(
+				`${ this.i18n( 'api-error', 'Redirect API' ) }: ${ data.error.info.escape() }`
+			);
+		}
+
+		let redirects = {};
+		data.query.pages.forEach( ( page ) => {
+			const pageTitle = page.title.score();
+			if ( !pages.includes( pageTitle ) ) {
+				redirects[ pageTitle ] = [ {
+					title: pageTitle
+				} ].concat( page.redirects || [] );
 			}
+		} );
 
-			let redirects = {};
-			data.query.pages.forEach(page => {
-				const pageTitle = page.title.score();
-				if (!pages.includes(pageTitle)) {
-					redirects[pageTitle] = [{
-						title: pageTitle
-					}].concat(page.redirects || []);
-				}
-			});
-
-			return dfd.resolve(redirects);
-		});
-
-		return dfd;
+		return redirects;
 	}
+
+	/**
+	 * Helper to set a CSS class on the `main` node, styling the document based on a 'state'.
+	 * Each subclass should implement this, if needed.
+	 *
+	 * @param {String} state class to be added; should be one of this.config.formStates
+	 */
+	setState( state ) {}
 
 	/**
 	 * Compute how many days are in the selected date range
@@ -912,7 +915,7 @@ class App {
 		const urlParams = new URLSearchParams( location.search );
 		return [ ...urlParams.entries() ].reduce( ( params, [ key, value ] ) => {
 			if ( multiParam && key === multiParam ) {
-				params[ key ] = value.split( '|' )
+				params[ key ] = decodeURIComponent( value ).split( '|' )
 					.filter( ( param ) => !!param );
 			} else {
 				params[ key ] = value;
@@ -925,29 +928,31 @@ class App {
 	 * Simple metric to see how many use it (pageviews of the pageviews app, a meta-pageview, if you will :)
 	 */
 	patchUsage() {
-		if (location.host.includes('localhost') && (localStorage.getItem('pageviews-no-usage') || this.debug)) {
+		if ( location.host.includes( 'localhost' ) &&
+			( localStorage.getItem( 'pageviews-no-usage' ) || this.debug )
+		) {
 			return;
 		}
 
-		const langApps = ['siteviews', 'massviews', 'mediaviews'];
+		const langApps = [ 'siteviews', 'massviews', 'mediaviews' ];
 		let project = this.project || 'unknown';
 
 		if (langApps.includes(this.app)) project = i18nLang;
 
 		let data =  {
-			app: this.app + (location.pathname.includes('-test') ? '-test' : ''),
+			app: this.app + ( location.pathname.includes( '-test' ) ? '-test' : '' ),
 			project
 		};
 
-		if (this.app === 'massviews' && !!this.source) {
+		if ( this.app === 'massviews' && !!this.source ) {
 			data.source = this.source;
 		}
 
-		$.ajax({
-			url: `${appPath}/metaviews/api.php`,
+		$.ajax( {
+			url: `${ appPath }/metaviews/api.php`,
 			data,
 			method: 'POST'
-		});
+		} );
 	}
 
 	/**
@@ -1426,11 +1431,21 @@ class App {
 	}
 
 	/**
+	 * The param name of the entity for the app (i.e. 'pages', 'sites', 'user').
+	 * Each app must implement this getter.
+	 *
+	 * @type {string}
+	 */
+	get entityParamName() {
+		throw new Error( 'Not implemented!' );
+	}
+
+	/**
 	 * Get the entity names from the Select2 input (chart-based apps) or the source input (list-based apps).
 	 * @param {Boolean} [score] Whether to convert spaces into underscores.
 	 * @return {array}
 	 */
-	getEntities(score = false) {
+	getEntities( score = false ) {
 		let entities = [];
 		if (this.config.$select2Input.length) {
 			entities = this.config.$select2Input.select2('val') || [];
@@ -1449,11 +1464,9 @@ class App {
 
 	/**
 	 * Push relevant class properties to the URL query string.
-	 * @param {String} paramName - URL param name for the entity/entities, e.g. 'pages', 'sites', 'user'.
-	 *   All other params such as 'project' and 'agent' are fetched with getParams() and getPermaLink().
-	 * @param {Boolean} [clear] - whether to clear the query string entirely.
+	 * @param {Boolean} [clear] Whether to clear the query string entirely.
 	 */
-	pushParams( paramName, clear ) {
+	pushParams( clear ) {
 		if ( clear ) {
 			window.history.replaceState(null, document.title, location.href.split('?')[0]);
 			return;
@@ -1464,10 +1477,14 @@ class App {
 			.replace( /[&%?+]/g, encodeURIComponent );
 
 		window.history.replaceState( {}, document.title,
-			`?${ $.param( this.getParams() ) }&${ paramName }=${ entities }`
+			`?${ $.param( this.getParams() ) }&${ this.entityParamName }=${ entities }`
 		);
 
-		$('.permalink').prop('href', `?${$.param(this.getPermaLink())}&${paramName}=${entities.replace(/\|/g, escape)}`);
+		const searchParams = new URLSearchParams( {
+			...this.getPermaLink(),
+			[ this.entityParamName ]: entities.replace( /\|/g, escape )
+		} );
+		document.querySelector( '.permalink' ).href = `${ location.pathname }?${ searchParams }`;
 	}
 
 	/**
