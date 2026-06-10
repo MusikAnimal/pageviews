@@ -855,20 +855,18 @@ class App {
 			return {};
 		}
 
-		const data = await $.ajax( {
-			url: `https://${ this.project }.org/w/api.php`,
-			jsonp: 'callback',
-			dataType: 'jsonp',
-			data: {
-				action: 'query',
-				format: 'json',
-				formatversion: 2,
-				prop: 'redirects',
-				rdprop: 'title|fragment',
-				rdlimit: 500,
-				titles
-			}
+		const urlParams = new URLSearchParams( {
+			action: 'query',
+			format: 'json',
+			formatversion: 2,
+			prop: 'redirects',
+			rdprop: 'title|fragment',
+			rdlimit: 500,
+			titles,
+			origin: '*'
 		} );
+		const response = await fetch( `https://${ this.project }.org/w/api.php?${ urlParams }` );
+		const data = await response.json();
 
 		if ( data.error ) {
 			this.setState( 'initial' );
@@ -878,14 +876,12 @@ class App {
 		}
 
 		let redirects = {};
-		data.query.pages.forEach( ( page ) => {
+		for ( const page of data.query.pages ) {
 			const pageTitle = page.title.score();
-			if ( !pages.includes( pageTitle ) ) {
-				redirects[ pageTitle ] = [ {
-					title: pageTitle
-				} ].concat( page.redirects || [] );
-			}
-		} );
+			redirects[ pageTitle ] = [ {
+				title: pageTitle
+			} ].concat( page.redirects || [] );
+		}
 
 		return redirects;
 	}
