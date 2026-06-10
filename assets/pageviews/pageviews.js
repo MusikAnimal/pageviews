@@ -21,13 +21,6 @@ class Pageviews extends ChartHelpers {
 		// This is because the bootstrap datepicker library does not handle this natively
 		this.monthStart = this.initialMonthStart;
 		this.monthEnd = this.maxMonth;
-
-		/**
-		 * Select2 library prints "Uncaught TypeError: XYZ is not a function" errors
-		 * caused by race conditions between consecutive ajax calls. They are actually
-		 * not critical and can be avoided with this empty function.
-		 */
-		window.articleSuggestionCallback = $.noop;
 	}
 
 	/**
@@ -39,7 +32,7 @@ class Pageviews extends ChartHelpers {
 		this.setupDateRangeSelector();
 		this.setupSelect2();
 		this.setupSelect2Colors();
-		this.popParams();
+		await this.popParams();
 		this.setupListeners();
 		this.updateInterAppLinks();
 	}
@@ -94,7 +87,7 @@ class Pageviews extends ChartHelpers {
 	 * Parses the URL query string and sets all the inputs accordingly
 	 * Should only be called on initial page load, until we decide to support pop states (probably never)
 	 */
-	popParams() {
+	async popParams() {
 		/** show loading indicator and add error handling for timeouts */
 		// FIXME: This gets stuck sometimes when changing tabs. Ancient bug that should be fixed!
 		setTimeout( this.startSpinny.bind( this ) ); // use setTimeout to force rendering threads to catch up
@@ -117,85 +110,75 @@ class Pageviews extends ChartHelpers {
 		 *
 		 * @param {Array} pages pages to query
 		 */
-		const getPageInfoAndSetDefaults = ( pages ) => {
-			this.getPageAndEditInfo( pages ).then( ( pageInfo ) => {
-				this.initialQuery = true;
-				const normalizedPageNames = Object.keys( pageInfo.entities );
+		const getPageInfoAndSetDefaults = async ( pages ) => {
+			const pageInfo = await this.getPageAndEditInfo( pages );
+			this.initialQuery = true;
+			const normalizedPageNames = Object.keys( pageInfo.entities );
 
-				// all given pages were invalid, reset view without clearing the error message
-				if ( !normalizedPageNames.length ) {
-					return this.resetView( false, false );
-				}
+			// all given pages were invalid, reset view without clearing the error message
+			if ( !normalizedPageNames.length ) {
+				return this.resetView( false, false );
+			}
 
-				this.setSelect2Defaults( normalizedPageNames );
-			} );
+			this.setSelect2Defaults( normalizedPageNames );
 		};
 
 		// set up default pages if none were passed in
 		if ( !params.pages || !params.pages.length ) {
-			this.getDefaultPages().done( ( pages ) => {
-				this.setInitialChartType( pages.length );
-				getPageInfoAndSetDefaults( pages );
-			} ).fail( () => {
-				this.resetView();
-				this.setInitialChartType();
-				// leave Select2 empty and put focus on it so they can type in pages
-				this.focusSelect2();
-			} );
+			const pages = await this.getDefaultPages();
+			this.setInitialChartType( pages.length );
+			await getPageInfoAndSetDefaults( pages );
 			// If there's more than 10 articles attempt to create a PagePile and open it in Massviews
 		} else if ( params.pages.length > 10 ) {
 			// If a PagePile is successfully created we are redirected to Massviews and the promise is never resolved,
 			//   otherwise we just take the first 10 and process as we would normally
-			this.massviewsRedirectWithPagePile( params.pages ).then( getPageInfoAndSetDefaults );
+			const pages = await this.massviewsRedirectWithPagePile( params.pages );
+			await getPageInfoAndSetDefaults( pages );
 		} else {
 			this.setInitialChartType( params.pages.length );
-			getPageInfoAndSetDefaults( params.pages );
+			await getPageInfoAndSetDefaults( params.pages );
 		}
 	}
 
 	/**
 	 * Get the pages that should be shown if none were requested in the URL
 	 *
-	 * @return {Deferred} promise resolving with the array of pages to be shown, based on project
+	 * @return {Promise<array>} Promise resolving with the array of pages to be shown, based on project
 	 */
-	getDefaultPages() {
-		const dfd = $.Deferred();
-
-		const getMainPage = () => {
-			this.fetchSiteInfo( this.project ).done( ( siteInfo ) => {
-				dfd.resolve( [ siteInfo[ this.project ].general.mainpage ] );
-			} ).fail( dfd.reject );
+	async getDefaultPages() {
+		const getMainPage = async () => {
+			const siteInfo = await this.fetchSiteInfo( this.project );
+			return [ siteInfo[ this.project ].general.mainpage ];
 		};
 
 		// only set default of Cat and Dog for enwiki
 		if ( this.project === 'en.wikipedia' ) {
-			dfd.resolve( [ 'Cat', 'Dog' ] );
+			return [ 'Cat', 'Dog' ];
 		} else if ( this.project.includes( 'wikipedia' ) ) {
 			// get local title for Cat and Dog
 			const url = 'https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki' +
-				'&titles=Cat|Dog&props=sitelinks/urls|datatype&format=json&callback=?';
+				'&titles=Cat|Dog&props=sitelinks/urls|datatype&format=json&origin=*';
 
-			$.getJSON( url ).done( ( data ) => {
-				if ( data.error ) {
-					return dfd.resolve();
-				}
+			const response = await fetch( url );
+			const data = await response.json();
 
-				const dbName = Object.keys( siteMap ).find( ( key ) => siteMap[ key ] === `${ this.project }.org` );
-				const pages = Object.keys( data.entities ).map( ( key ) => data.entities[ key ].sitelinks[ dbName ] ? data.entities[ key ].sitelinks[ dbName ].title : null ).filter( Boolean );
+			const dbName = this.siteMap[ this.project ];
+			const pages = Object.keys( data.entities ).map(
+				( qid ) => data.entities[ qid ].sitelinks[ dbName ] ?
+					data.entities[ qid ].sitelinks[ dbName ].title :
+					null
+				).filter( Boolean );
 
-				// 'Cat' and 'Dog' do not exist, so use the Main Page.
-				if ( !pages.length ) {
-					return getMainPage();
-				}
+			// 'Cat' and 'Dog' do not exist, so use the Main Page.
+			if ( !pages.length ) {
+				return await getMainPage();
+			}
 
-				dfd.resolve( pages );
-			} );
+			return pages;
 		} else {
 			// get mainpage from siteinfo
-			getMainPage();
+			return await getMainPage();
 		}
-
-		return dfd;
 	}
 
 	/**
@@ -288,7 +271,7 @@ class Pageviews extends ChartHelpers {
 	 */
 	setupSelect2() {
 		const params = {
-			ajax: this.getArticleSelectorAjax(),
+			ajax: this.getSelect2AjaxParams(),
 			tags: this.autocomplete === 'no_autocomplete',
 			placeholder: this.i18n( 'article-placeholder' ),
 			maximumSelectionLength: 10,
@@ -315,7 +298,7 @@ class Pageviews extends ChartHelpers {
 	 *
 	 * @return {object|null} to be passed in as the value for `ajax` in setupSelect2
 	 */
-	getArticleSelectorAjax() {
+	getSelect2AjaxParams() {
 		if ( this.autocomplete !== 'no_autocomplete' ) {
 			/**
 			 * This ajax call queries the Mediawiki API for article name
@@ -445,24 +428,22 @@ class Pageviews extends ChartHelpers {
 	 * @param {string} [removedPage] page that was just removed via Select2, supplied by select2:unselect handler
 	 * @return {void}
 	 */
-	processInput( force, removedPage ) {
+	async processInput( force, removedPage ) {
 		const entities = this.beforeProcessInput( force );
 		if ( !entities ) {
 			return;
 		}
 
-		const getPageViewsAndAssessments = ( entities ) => {
-			this.getRedirects( entities ).done( ( redirectsData ) => {
-				// Fetch all the redirects and concat into `entities`.
-				Object.keys( redirectsData ).forEach( ( target ) => {
-					entities = entities.concat( redirectsData[ target ].map( ( rd ) => rd.title.score() ) );
-				} );
-				this.getPageViewsData( entities.unique() ).done( ( xhrData ) => {
-					this.updateChart(
-						this.consolidateRedirectData( redirectsData, xhrData )
-					);
-				} );
+		const getPageViewsAndAssessments = async ( entities ) => {
+			const redirectsData = await this.getRedirects( entities );
+			// Fetch all the redirects and concat into `entities`.
+			Object.keys( redirectsData ).forEach( ( target ) => {
+				entities = entities.concat( redirectsData[ target ].map( ( rd ) => rd.title.score() ) );
 			} );
+			const xhrData = await this.getPageViewsData( entities.unique() );
+			this.updateChart(
+				this.consolidateRedirectData( redirectsData, xhrData )
+			);
 		};
 
 		if ( removedPage ) {
@@ -470,25 +451,23 @@ class Pageviews extends ChartHelpers {
 			// and re-render the chart
 			this.removeEntity( removedPage );
 
-			// But make sure we have editing totals first. We have to re-query to ensure an
-			//   accurate number of "unique" editors.
-			this.getEditData( Object.keys( this.entityInfo.entities ) ).done( ( editData ) => {
-				if ( editData.totals ) {
-					Object.assign( this.entityInfo.totals, editData.totals );
-				}
-				this.updateChart();
-			} );
+			// But make sure we have editing totals first. We have to re-query to
+			// ensure an accurate number of "unique" editors.
+			const editData = await this.getEditData( Object.keys( this.entityInfo.entities ) );
+			if ( editData.totals ) {
+				Object.assign( this.entityInfo.totals, editData.totals );
+			}
+			this.updateChart();
 		} else if ( this.initialQuery ) {
 			// We've already gotten data about the initial set of pages.
 			// This is because we need any page names given to be normalized when the app first loads.
-			getPageViewsAndAssessments( entities );
+			await getPageViewsAndAssessments( entities );
 
 			// Set back to false so we get page and edit info for any newly entered pages.
 			this.initialQuery = false;
 		} else {
-			this.getPageAndEditInfo( entities.map( ( entity ) => encodeURIComponent( entity ) ) ).then( () => {
-				getPageViewsAndAssessments( entities );
-			} );
+			await this.getPageAndEditInfo( entities.map( ( entity ) => encodeURIComponent( entity ) ) );
+			await getPageViewsAndAssessments( entities );
 		}
 	}
 
@@ -498,34 +477,32 @@ class Pageviews extends ChartHelpers {
 	 * @param {Array} pages - page names
 	 * @return {Deferred} Promise resolving with editing data
 	 */
-	getEditData( pages ) {
-		const dfd = $.Deferred();
-
-		$.ajax( {
-			url: `/${ this.app }/api`,
-			data: {
-				pages: pages.join( '|' ),
-				project: this.project + '.org',
-				start: this.daterangepicker.startDate.format( 'YYYY-MM-DD' ),
-				end: this.daterangepicker.endDate.format( 'YYYY-MM-DD' ),
-				totals: true,
-				ttl: this.config.cacheTime
-			},
-			timeout: 8000
-		} ).done( ( data ) => dfd.resolve( data ) ).fail( () => {
+	async getEditData( pages ) {
+		try {
+			return await $.ajax( {
+				url: `/${ this.app }/api`,
+				data: {
+					pages: pages.join( '|' ),
+					project: this.project + '.org',
+					start: this.daterangepicker.startDate.format( 'YYYY-MM-DD' ),
+					end: this.daterangepicker.endDate.format( 'YYYY-MM-DD' ),
+					totals: true,
+					ttl: this.config.cacheTime
+				},
+				timeout: 8000
+			} );
+		} catch {
 			// stable flag will be used to handle lack of data, so just resolve with empty data
 			const data = {};
 			pages.forEach( ( page ) => data[ page ] = {} );
-			dfd.resolve( { pages: data } );
-		} );
-
-		return dfd;
+			return { pages: data };
+		}
 	}
 
 	/**
 	 * Show info below the chart when there is only one page being queried
 	 */
-	showSingleEntityLegend() {
+	async showSingleEntityLegend() {
 		const page = this.outputData[ 0 ];
 		const topviewsMonth = this.getTopviewsMonth( false ); // 'false' to go off of endDate
 		const topviewsDate = `${ topviewsMonth.format( 'YYYY' ) }/${ topviewsMonth.format( 'MM' ) }/all-days`;
@@ -648,54 +625,44 @@ class Pageviews extends ChartHelpers {
 	 * Get page info and editing info of given pages.
 	 * Also sets this.entityInfo
 	 *
-	 * @param  {Array} pages page names
+	 * @param {Array} pages page names
 	 * @return {Deferred} Promise resolving with this.entityInfo
 	 */
-	getPageAndEditInfo( pages ) {
-		const dfd = $.Deferred();
+	async getPageAndEditInfo( pages ) {
+		const data = await this.getPageInfo( pages );
+		// throw errors for missing pages and remove them from the list to be processed
+		for ( const page in data ) {
+			if ( data[ page ].missing && !data[ page ].known ) {
+				this.writeMessage( `${ this.getPageLink( page ) }: ${ this.i18n( 'api-error-no-data' ) }` );
+				delete data[ page ];
+			}
+		}
 
-		this.getPageInfo( pages ).done( ( data ) => {
-			// throw errors for missing pages and remove them from the list to be processed
-			for ( const page in data ) {
-				if ( data[ page ].missing && !data[ page ].known ) {
-					this.writeMessage( `${ this.getPageLink( page ) }: ${ this.i18n( 'api-error-no-data' ) }` );
-					delete data[ page ];
-				}
+		this.entityInfo = { entities: data };
+
+		const dataKeys = Object.keys( data );
+
+		if ( !dataKeys.length ) {
+			return this.entityInfo;
+		}
+
+		// use Object.keys(data) to get normalized page names
+		const editData = await this.getEditData( dataKeys );
+		dataKeys.forEach( ( page ) => {
+			const pageData = editData.pages[ page ] || {};
+
+			// find the edit protection within API response, or use the already fetched one if present
+			let protection = this.entityInfo.entities[ page ].protection || [];
+			if ( Array.isArray( protection ) ) {
+				protection = protection.find( ( prot ) => prot.type === 'edit' );
 			}
 
-			this.entityInfo = { entities: data };
+			pageData.protection = protection ? protection.level : this.i18n( 'none' ).toLowerCase();
 
-			const dataKeys = Object.keys( data );
-
-			if ( !dataKeys.length ) {
-				return dfd.resolve( this.entityInfo );
-			}
-
-			// use Object.keys(data) to get normalized page names
-			this.getEditData( dataKeys ).done( ( editData ) => {
-				dataKeys.forEach( ( page ) => {
-					const pageData = editData.pages[ page ] || {};
-
-					// find the edit protection within API response, or use the already fetched one if present
-					let protection = this.entityInfo.entities[ page ].protection || [];
-					if ( Array.isArray( protection ) ) {
-						protection = protection.find( ( prot ) => prot.type === 'edit' );
-					}
-
-					pageData.protection = protection ? protection.level : this.i18n( 'none' ).toLowerCase();
-
-					Object.assign( this.entityInfo.entities[ page ], pageData );
-				} );
-				this.entityInfo.totals = editData.totals;
-				dfd.resolve( this.entityInfo );
-			} ).fail( () => {
-				dfd.resolve( this.entityInfo ); // treat as if successful, simply won't show the data
-			} );
-		} ).fail( () => {
-			dfd.resolve( {} ); // same, simply won't show the data if it failed
+			Object.assign( this.entityInfo.entities[ page ], pageData );
 		} );
-
-		return dfd;
+		this.entityInfo.totals = editData.totals;
+		return this.entityInfo;
 	}
 
 	/**

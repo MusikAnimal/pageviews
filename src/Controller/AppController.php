@@ -22,6 +22,13 @@ class AppController extends AbstractController {
 		return new JsonResponse( $projectsRepo->getProjects() );
 	}
 
+	#[Route('/siteinfo/{project}', name: 'api_siteinfo')]
+	#[Cache(maxage: 7 * 24 * 60 * 60 /* 1 week */, public: true, vary: [ 'Accept-Encoding' ])]
+	public function siteInfoApi( ProjectsRepository $projectsRepo, string $project ): JsonResponse {
+		$project = preg_replace( '/\.org$/', '', $project );
+		return new JsonResponse( $projectsRepo->getSiteInfo( $project ) );
+	}
+
 	#[Route( '/set_language', name: 'set_language' )]
 	public function setLanguage(): Response {
 

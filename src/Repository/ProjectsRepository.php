@@ -65,6 +65,29 @@ class ProjectsRepository {
 	}
 
 	/**
+	 * Fetch and cache siteinfo for a given project from the MediaWiki API.
+	 *
+	 * @param string $project
+	 * @return array
+	 */
+	public function getSiteInfo( string $project ) {
+		return $this->cache->get( "siteinfo-$project", function ( ItemInterface $item ) use ( $project ) {
+			$item->expiresAfter( 7 * 24 * 60 * 60 ); // 1 week
+
+			return $this->httpClient
+				->request( 'GET', "https://$project.org/w/api.php", [
+					'query' => [
+						'action' => 'query',
+						'meta' => 'siteinfo',
+						'siprop' => 'general|namespaces',
+						'format' => 'json',
+					],
+				] )
+				->toArray()['query'];
+		} );
+	}
+
+	/**
 	 * Fetch and cache PageAssessments configuration from XTools.
 	 *
 	 * @return array

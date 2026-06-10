@@ -570,81 +570,48 @@ class App {
 	 * @return {String} URL
 	 */
 	getBugReportURL(errors) {
-		const reportURL = 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
+		return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
 			`&section=new&preloadtitle=${this.app.upcase() + ' bug report'}`;
-
-		return reportURL;
 	}
 
 	/**
 	 * Get general information about a project, such as namespaces, title of the main page, etc.
 	 * Data returned by the api is also stored in this.siteInfo
-	 * @param {String} project - project such as en.wikipedia (with or without .org)
-	 * @returns {Deferred} promise resolving with siteinfo,
-	 *   along with any other cached siteinfo for other projects
+	 *
+	 * @param {String} project project such as en.wikipedia (with or without .org)
+	 * @returns {Promise<Array>} promise resolving with siteinfo.
 	 */
-	fetchSiteInfo(project) {
-		project = project.replace(/\.org$/, '');
-		const dfd = $.Deferred(),
-			cacheKey = `pageviews-siteinfo-${project}`;
-
-		if (this.siteInfo[project]) return dfd.resolve(this.siteInfo);
-
-		// use cached site info if present
-		if (simpleStorage.hasKey(cacheKey)) {
-			this.siteInfo[project] = simpleStorage.get(cacheKey);
-			dfd.resolve(this.siteInfo);
-		} else {
-			// otherwise fetch siteinfo and store in cache
-			$.ajax({
-				url: `https://${project}.org/w/api.php`,
-				data: {
-					action: 'query',
-					meta: 'siteinfo',
-					siprop: 'general|namespaces',
-					format: 'json'
-				},
-				dataType: 'jsonp'
-			}).done(data => {
-				this.siteInfo[project] = data.query;
-
-				// cache for one week (TTL is in milliseconds)
-				simpleStorage.set(cacheKey, this.siteInfo[project], {TTL: 1000 * 60 * 60 * 24 * 7});
-
-				dfd.resolve(this.siteInfo);
-			}).fail(data => {
-				dfd.reject(data);
-			});
+	async fetchSiteInfo( project ) {
+		if ( this.siteInfo[ project ] ) {
+			return this.siteInfo;
 		}
-
-		return dfd;
+		this.siteInfo[ project ] = await ( await fetch( `/siteinfo/${ project }` ) ).json();
+		return this.siteInfo;
 	}
 
 	/**
 	 * Get the markup to show the assessment badge for the given item.
+	 *
 	 * @param {Object} item
-	 * @return {string}
+	 * @return {HTMLElement}
 	 */
-	getAssessmentBadge(item) {
-		if (!item.assessment) {
-			return '';
+	getAssessmentBadge( item ) {
+		const span = document.createElement( 'span' );
+		if ( !item.assessment ) {
+			return span;
 		}
 
-		if (item.assessment_img) {
-			return `<img class='article-badge' src='https://upload.wikimedia.org/wikipedia/commons/${item.assessment_img}' ` +
-				`alt='${item.assessment}' title='${item.assessment}' />`;
+		if ( item.assessment_img ) {
+			const img = document.createElement( 'img' );
+			img.className = 'article-badge';
+			img.src = `https://upload.wikimedia.org/wikipedia/commons/${item.assessment_img}`;
+			img.alt = item.assessment;
+			img.title = item.assessment;
+			return img;
 		} else {
-			return item.assessment;
+			span.innerText = item.assessment;
+			return span;
 		}
-	}
-
-	/**
-	 * Helper to get siteinfo from this.siteInfo for given project, with or without .org
-	 * @param {String} project - project name, with or without .org
-	 * @returns {Object|undefined} site information if present
-	 */
-	getSiteInfo(project) {
-		return this.siteInfo[project.replace(/\.org$/, '')];
 	}
 
 	/**
@@ -679,16 +646,6 @@ class App {
 		};
 
 		return `/topviews?${$.param(params)}`;
-	}
-
-	/**
-	 * Generate a unique hash code from given string
-	 * @param {String} str - to be hashed
-	 * @return {String} the hash
-	 */
-	hashCode(str) {
-		return str.split('').reduce((prevHash, currVal) =>
-			((prevHash << 5) - prevHash) + currVal.charCodeAt(0), 0);
 	}
 
 	/**
@@ -849,43 +806,40 @@ class App {
 	 * @param {array} pages - array of page names
 	 * @returns {Deferred} promise with data fetched from API
 	 */
-	getPageInfo(pages) {
-		let dfd = $.Deferred();
-
+	async getPageInfo(pages) {
 		// First make array of pages *fully* URI-encoded so we can easily reference them
 		// The issue is the API only returns encoded page names, so we have to reliably be
 		//   able to encode that and reference the original array
 		try {
-			pages = pages.map(page => encodeURIComponent(decodeURIComponent(page)));
+			pages = pages.map( ( page ) => encodeURIComponent( decodeURIComponent( page ) ) );
 		} catch (e) {
 			// nothing, this happens when they use an unencoded title like %
 			//   that JavaScript gets confused about when decoding
 		}
 
-		return $.ajax({
-			url: `https://${this.project}.org/w/api.php?action=query&prop=info&inprop=protection|watchers` +
-				`&formatversion=2&format=json&titles=${pages.join('|')}`,
-			dataType: 'jsonp'
-		}).then(data => {
-			// restore original order of pages, taking into account out any page names that were normalized
-			if (data.query.normalized) {
-				data.query.normalized.forEach(n => {
-					// API returns decoded page name, so encode and compare against original array
-					pages[pages.indexOf(encodeURIComponent(n.from))] = encodeURIComponent(n.to);
-				});
-			}
-			let pageData = {};
-			pages.forEach(page => {
-				// decode once more so the return pageData object is human-readable
-				try {
-					page = decodeURIComponent(page);
-				} catch (e) {
-					// same as above, catch error when JavaScript is unable to decode
-				}
-				pageData[page] = data.query.pages.find(p => p.title === page);
+		const response = await fetch(
+			`https://${ this.project }.org/w/api.php?action=query&prop=info&inprop=protection|watchers` +
+				`&formatversion=2&format=json&titles=${ pages.join( '|' ) }&origin=*`
+		);
+		const data = await response.json();
+		// restore original order of pages, taking into account out any page names that were normalized
+		if (data.query.normalized) {
+			data.query.normalized.forEach(n => {
+				// API returns decoded page name, so encode and compare against original array
+				pages[pages.indexOf(encodeURIComponent(n.from))] = encodeURIComponent(n.to);
 			});
-			return dfd.resolve(pageData);
+		}
+		let pageData = {};
+		pages.forEach(page => {
+			// decode once more so the return pageData object is human-readable
+			try {
+				page = decodeURIComponent(page);
+			} catch (e) {
+				// same as above, catch error when JavaScript is unable to decode
+			}
+			pageData[page] = data.query.pages.find(p => p.title === page);
 		});
+		return pageData;
 	}
 
 	/**
@@ -958,7 +912,8 @@ class App {
 		const urlParams = new URLSearchParams( location.search );
 		return [ ...urlParams.entries() ].reduce( ( params, [ key, value ] ) => {
 			if ( multiParam && key === multiParam ) {
-				params[ key ] = value.split( '|' );
+				params[ key ] = value.split( '|' )
+					.filter( ( param ) => !!param );
 			} else {
 				params[ key ] = value;
 			}
@@ -1536,16 +1491,16 @@ class App {
 				params.project = params.project.replace(/^www\./, '');
 			}
 
-			const defaultValue = this.config.defaults[paramKey],
-				paramValue = params[paramKey];
+			const defaultValue = this.config.defaults[ paramKey ],
+				paramValue = params[ paramKey ];
 
-			if (defaultValue !== undefined && !this.config.validParams[paramKey].includes(paramValue)) {
+			if ( defaultValue !== undefined && !this.config.validParams[ paramKey ].includes( paramValue ) ) {
 				// only throw error if they tried to provide an invalid value
-				if (!!paramValue) {
-					this.addInvalidParamNotice(this.i18n('param-error-3', paramKey));
+				if ( !!paramValue ) {
+					this.addInvalidParamNotice( this.i18n( 'param-error-3', paramKey ) );
 				}
 
-				params[paramKey] = defaultValue;
+				params[ paramKey ] = defaultValue;
 			}
 		});
 

@@ -793,7 +793,7 @@ class ChartHelpers extends App {
 	}
 
 	/**
-	 * Setup the Select2 input.
+	 * Set up the Select2 input.
 	 *
 	 * @param {Object} params that would be passed to the select2 library.
 	 */
