@@ -3,6 +3,7 @@
 		"authors": [
 			"Danielyepezgarces",
 			"Dgstranz",
+			"Entychologist",
 			"Fitoschido",
 			"Fortega",
 			"GamemOfAnime",
@@ -108,6 +109,7 @@
 	"faq-agents-title": "¿Qué son los «agentes»?",
 	"faq-agents-user": "incluye a todas las personas que ven una página. Editores, editores anónimos y a nuestros lectores.",
 	"faq-anomaly-body1": "Si ves un aumento inexplicable en las páginas vistas, especialmente si es solamente en ciertos días, puede ser tráfico falso de un programa automatizado. Una táctica para identificar el tráfico inflado por bots es comparar las visitas de escritorio con las visitas en móviles. Primero, vea qué agentes son más populares en su proyecto para todos los artículos y utilícelo como base para comparar. Por ejemplo, en la Wikipedia en inglés, las visitas en el sitio web móvil deberían ser comparables, si no superiores, que las de escritorio, por lo que si las visitas en el sitio web móvil son muy bajas, podría tratarse de tráfico falso.",
+	"faq-anomaly-body2": "Si no puede concluir que es tráfico falso, puede solicitar una investigación mediante la presentación de un boleto de $1. Estas anomalías de visualización de páginas son comunes y tediosas de investigar, así que no esperes una respuesta oportuna.",
 	"faq-anomaly-title": "¿Por qué algunas páginas tienen un número de vistas inusualmente alto?",
 	"faq-bug-report-body": "Si te gustaría utilizar una wiki para proporcionar retroalimentación, usa el <a href=\"https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis\">foro de retroalimentación</a> en Meta. También puedes informar de incidencias en <a href=\"https://phabricator.wikimedia.org/project/profile/2045/\">Phabricator</a>.",
 	"faq-bug-report-title": "Quiero solicitar una funcionalidad o reportar un problema",
