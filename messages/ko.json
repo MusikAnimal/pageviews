@@ -165,7 +165,7 @@
 	"help": "도움말",
 	"help-translate": "변역 돕기",
 	"history": "역사",
-	"hosted": "$2의 $1(으)로 호스팅됨.",
+	"hosted": "$2에 $1(으)로 호스팅됨.",
 	"hover-to-exclude": "뷰에서 문서를 제외하려면, 문서 이름 위를 가리킨 다음 ✖를 클릭하십시오",
 	"images": "그림",
 	"include-redirects": "넘겨주기 포함",
