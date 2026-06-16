@@ -517,3 +517,127 @@ footer {
     margin-top: 6px;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+    body,
+    .list-group-item {
+        background-color: #000;
+        color: #aaa;
+    }
+
+    .home-link {
+        filter: invert(1) brightness(5);
+    }
+
+    .btn-default,
+    .input-group-addon {
+        background-color: #555;
+        color: #fff;
+        border: none;
+    }
+
+    .select2-selection {
+        background: #333 !important;
+    }
+    .select2-container--default .select2-selection--multiple {
+        border: none;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        color: #000;
+        border: none;
+    }
+
+    .top-nav {
+        border-bottom: none;
+    }
+
+    .top-nav a {
+        color: #acf;
+    }
+
+    .top-nav li.active a.interapp-link {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    hr,
+    .page-selector,
+    .summary-column,
+    .linear-legend--links {
+        border-color: #666;
+    }
+
+    select.form-control,
+    input:not([type='radio']) {
+        background: #333 !important;
+        color: #fff;
+        border: none;
+    }
+    select.form-control {
+        appearance: none
+    }
+
+    .table > thead > tr > th,
+    .table > tbody > tr > th,
+    .table > tbody > tr > td,
+    .list-group-item {
+        border-color: #444;
+    }
+    .table-hover > tbody > tr:hover {
+        background: #444;
+    }
+
+    .topview-entry--rank-wrapper,
+    .month {
+        color: #000;
+    }
+    .topview-entry--label a,
+    .topview-entry--editors {
+        font-weight: bold;
+        color: #eee;
+        text-shadow: 2px 2px 5px #000;
+    }
+    .topview-entry--edits a,
+    .topview-entry--views {
+        background: #000;
+        padding: 10px;
+        border-radius: 20px
+    }
+    .topview-entry--edits,
+    .topview-entry--editors,
+    .topview-entry--views {
+        font-weight: bold;
+    }
+    .topview-entry a:hover {
+        color: lightblue;
+    }
+
+    .select2-dropdown {
+        background: #333;
+        border: none;
+    }
+    .select2-container--default .select2-results__option[aria-selected='true'] {
+        background: #000;
+    }
+
+    footer hr {
+        display: none;
+    }
+
+    .modal-content {
+        background: #333;
+    }
+    .modal-header,
+    .modal-footer {
+        border-color: #444;
+    }
+
+    .daterangepicker .input-mini {
+        color: #fff;
+    }
+
+    :root {
+        scrollbar-color: #777 #000;
+    }
+
+}
