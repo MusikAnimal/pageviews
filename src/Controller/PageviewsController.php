@@ -13,11 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PageviewsController extends AbstractController {
 
-	public function __construct(
-		private readonly PageviewsRepository $pageviewsRepository
-	) {
-	}
-
 	#[Route( '/', name: 'pageviews' )]
 	public function index(): Response {
 		return $this->render( 'pageviews/index.html.twig', [

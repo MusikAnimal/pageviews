@@ -7,7 +7,7 @@
 	"author": "MusikAnimal",
 	"license": "MIT",
 	"devDependencies": {
-		"node": ">=20.19.5",
-		"eslint-config-wikimedia": "^0.32.3"
+		"eslint-config-wikimedia": "^0.32.3",
+		"node": ">=20.19.5"
 	}
 }
