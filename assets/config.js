@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Configuration for all Pageviews applications, along with some formatting methods,
  * cached jQuery getters, and logic used only in this file.
@@ -363,9 +365,18 @@ class Config {
 	}
 
 	/**
+	 * Get the container for the inter-app links.
+	 *
+	 * @type {jQuery}
+	 */
+	get $interAppLinks() {
+		return this.cachedElement( '.interapp-links' );
+	}
+
+	/**
 	 * Get the initial month to show (when they switch from daily to monthly view)
 	 *
-	 * @return {Date}
+	 * @type {Date}
 	 */
 	get initialMonthStart() {
 		return moment( this.maxMonth ).subtract( 11, 'months' ).toDate();
@@ -374,7 +385,7 @@ class Config {
 	/**
 	 * Get the date range selector.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $dateRangeSelector() {
 		return this.cachedElement( '.date-range-selector' );
@@ -383,7 +394,7 @@ class Config {
 	/**
 	 * Get the agent selector.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $agentSelector() {
 		return this.cachedElement( '#agent-select' );
@@ -392,7 +403,7 @@ class Config {
 	/**
 	 * Get the platform selector.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $platformSelector() {
 		return this.cachedElement( '#platform-select' );
@@ -401,7 +412,7 @@ class Config {
 	/**
 	 * Get the project input.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $projectInput() {
 		return this.cachedElement( '#project-input' );
@@ -410,7 +421,7 @@ class Config {
 	/**
 	 * Get the chart canvas element. This jQuery object cannot be cached.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $chart() {
 		return $( '#chart' );
@@ -419,7 +430,7 @@ class Config {
 	/**
 	 * Get the select2 input.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $select2Input() {
 		return this.cachedElement( '#select2-input' );
@@ -428,7 +439,7 @@ class Config {
 	/**
 	 * Get the 'Data source' selector.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $dataSourceSelector() {
 		return this.cachedElement( '#data-source-select' );
@@ -437,10 +448,19 @@ class Config {
 	/**
 	 * Get the 'Include redirects' checkbox.
 	 *
-	 * @return {jQuery}
+	 * @type {jQuery}
 	 */
 	get $redirectsCheckbox() {
 		return this.cachedElement( '#redirects-checkbox' );
+	}
+
+	/**
+	 * Get the 'Source' input, if applicable.
+	 *
+	 * @type {jQuery}
+	 */
+	get $sourceInput() {
+		throw new Error( 'Not implemented!' );
 	}
 }
 

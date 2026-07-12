@@ -141,16 +141,16 @@ class App {
 		const windowWidth = $(window).width(),
 			navRightWidth = $('.nav-buttons').outerWidth(),
 			homeLinkWidth = $('.home-link').outerWidth();
-		let toolNavWidth = $('.interapp-links').outerWidth();
+		let toolNavWidth = this.config.$interAppLinks.outerWidth();
 
 		// Ignore if in mobile responsive view
-		if (windowWidth < 768) {
+		if ( windowWidth < 768 ) {
 			return;
 		}
 
 		// Do this first so we account for the space the More menu takes up
-		if (toolNavWidth + navRightWidth + homeLinkWidth > windowWidth) {
-			$('.interapp-links--more').removeClass('hidden');
+		if ( toolNavWidth + navRightWidth + homeLinkWidth > windowWidth ) {
+			$('.interapp-links--more').removeClass( 'hidden' );
 		}
 
 		// Don't loop more than there are links in the nav.
@@ -161,7 +161,7 @@ class App {
 			let $link = $( '.interapp-links > .interapp-links--entry:not(.active)' ).last().remove();
 			$link.addClass( 'interapp-links--more-entry' );
 			$( '.interapp-links--more .dropdown-menu' ).append($link);
-			toolNavWidth = $( '.interapp-links' ).outerWidth() + homeLinkWidth;
+			toolNavWidth = this.config.$interAppLinks.outerWidth() + homeLinkWidth;
 			numLinks--;
 		}
 	}
@@ -566,10 +566,9 @@ class App {
 
 	/**
 	 * Get URL to file a report on Meta, preloaded with permalink
-	 * @param {Array} [errors] To be automatically pasted in with the bug report.
 	 * @return {String} URL
 	 */
-	getBugReportURL(errors) {
+	getBugReportURL() {
 		return 'https://meta.wikimedia.org/w/index.php?title=Talk:Pageviews_Analysis&action=edit' +
 			`&section=new&preloadtitle=${this.app.upcase() + ' bug report'}`;
 	}
@@ -1395,16 +1394,6 @@ class App {
 	}
 
 	/**
-	 * Replace spaces with underscores
-	 *
-	 * @param {array} pages - array of page names
-	 * @returns {array} page names with underscores
-	 */
-	underscorePageNames(pages) {
-		return pages.map(page => page.score());
-	}
-
-	/**
 	 * Update hrefs of inter-app links to load currently selected project
 	 */
 	updateInterAppLinks() {
@@ -1443,9 +1432,9 @@ class App {
 	 */
 	getEntities( score = false ) {
 		let entities = [];
-		if (this.config.$select2Input.length) {
+		if ( this.config.$select2Input.length ) {
 			entities = this.config.$select2Input.select2('val') || [];
-		} else if (this.config.$sourceInput && this.config.$sourceInput.length) {
+		} else if ( this.config.$sourceInput && this.config.$sourceInput.length ) {
 			entities = [this.config.$sourceInput.val()];
 		} else {
 			console.warn(`[${this.app}] No select2 or source input found.`);
@@ -1526,12 +1515,12 @@ class App {
 	 * @param {Boolean} [multilingual] - whether we should check if it is a multilingual project
 	 * @returns {Boolean} whether or not validations passed
 	 */
-	validateProject(multilingual = false) {
-		const projectInput = this.$projectInput[0];
+	validateProject( multilingual = false ) {
+		const projectInput = this.config.$projectInput[ 0 ];
 		let project = projectInput.value.replace(/^www\./, ''),
 			valid = false;
 
-		if (multilingual && !this.isMultilangProject()) {
+		if ( multilingual && !this.isMultilangProject() ) {
 			this.toastWarn(
 				this.i18n('invalid-lang-project', `<a href='https://${project.escape()}'>${project.escape()}</a>`)
 			);
@@ -1540,18 +1529,22 @@ class App {
 			this.updateInterAppLinks();
 			valid = true;
 		} else {
+			const projectLink = document.createElement( 'a' );
+			projectLink.href = `https://${project.escape()}`;
+			projectLink.innerText = project;
+			const allowListLink = document.createElement( 'a' );
+			allowListLink.href = 'https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv';
+			allowListLink.target = '_blank';
+			allowListLink.innerText = this.i18n( 'invalid-project-link' );
 			this.toastWarn(
-				this.i18n('invalid-project',
-					`<a target="_blank" href='https://${project.escape()}'>${project.escape()}</a>`,
-					`<a target="_blank" href='https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv'>${this.i18n('invalid-project-link')}</a>`
-				)
+				this.i18n('invalid-project', projectLink.outerHTML, allowListLink.outerHTML )
 			);
 			project = projectInput.dataset.value;
 		}
 
 		// fire custom event that the project has changed
-		if (valid) {
-			this.$projectInput.trigger('updated');
+		if ( valid ) {
+			this.config.$projectInput.trigger( 'updated' );
 		}
 
 		projectInput.value = project;
