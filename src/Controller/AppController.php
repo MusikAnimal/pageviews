@@ -29,8 +29,8 @@ class AppController extends AbstractController {
 		return new JsonResponse( $projectsRepo->getSiteInfo( $project ) );
 	}
 
-	#[Route( '/set_language', name: 'set_language' )]
-	public function setLanguage(): Response {
+	#[Route( '/set_language/:language', name: 'set_language' )]
+	public function setLanguage( string $lang ): Response {
 
 	}
 }
