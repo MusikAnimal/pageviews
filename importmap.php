@@ -13,7 +13,7 @@
  */
 return [
     'pageviews' => [
-        'path' => './assets/pageviews/pageviews.js',
+        'path' => './assets/pageviews/init.js',
         'entrypoint' => true,
     ],
     'chart.js' => [
@@ -55,5 +55,18 @@ return [
     ],
     '@wikimedia/codex-icons' => [
         'version' => '2.6.0',
+    ],
+    '@wikimedia/codex-design-tokens/theme-wikimedia-ui.css' => [
+        'version' => '2.6.0',
+        'type' => 'css',
+    ],
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
+    '@symfony/stimulus-bundle' => [
+        'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
+    ],
+    '@symfony/ux-vue' => [
+        'path' => './vendor/symfony/ux-vue/assets/dist/loader.js',
     ],
 ];

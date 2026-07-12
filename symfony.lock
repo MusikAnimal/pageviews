@@ -122,6 +122,21 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/stimulus-bundle": {
+        "version": "2.36",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.25",
+            "ref": "9b51a69079f3629061dfe0e5d7e20f5a9b20752c"
+        },
+        "files": [
+            "assets/controllers.json",
+            "assets/controllers/csrf_protection_controller.js",
+            "assets/controllers/hello_controller.js",
+            "assets/stimulus_bootstrap.js"
+        ]
+    },
     "symfony/twig-bundle": {
         "version": "7.4",
         "recipe": {
@@ -133,6 +148,18 @@
         "files": [
             "config/packages/twig.yaml",
             "templates/base.html.twig"
+        ]
+    },
+    "symfony/ux-vue": {
+        "version": "2.36",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.9",
+            "ref": "8b87f5866b5af6728a58aaf7f5ba77e3816e35ed"
+        },
+        "files": [
+            "assets/vue/controllers/Hello.vue"
         ]
     },
     "symfony/web-profiler-bundle": {

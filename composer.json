@@ -20,9 +20,11 @@
 		"symfony/http-client": "7.4.*",
 		"symfony/runtime": "7.4.*",
 		"symfony/twig-bundle": "7.4.*",
+		"symfony/ux-vue": "^2.36",
 		"symfony/yaml": "7.4.*",
 		"twig/extra-bundle": "^2.12|^3.0",
 		"twig/twig": "^2.12|^3.0",
+		"wikimedia/codex": "^0.8.0",
 		"wikimedia/toolforge-bundle": "^1.7.2"
 	},
 	"config": {

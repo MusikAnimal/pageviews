@@ -1,0 +1,76 @@
+html {
+	height: 100%;
+}
+
+body {
+	color: var( --color-base );
+	font-family: var( --font-family-base );
+	font-size: var( --font-size-medium );
+	margin: 0;
+	min-height: 100%;
+	overflow-x: hidden;
+	position: relative;
+}
+
+body::after {
+	background: url('../images/gradient.png');
+	content: '';
+	display: block !important;
+	height: 100%;
+	left: 0;
+	opacity: 0.5;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+.app-header {
+	margin-top: 0;
+	padding: var( --spacing-50 );
+	text-align: center;
+}
+
+.app-description {
+	display: block;
+	font-weight: var( --font-weight-normal );
+	margin-top: var( --spacing-50 );
+}
+
+.app-container {
+	position: relative;
+}
+
+.app-progress-bar {
+	left: 0;
+	margin: auto;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: var( --spacing-400 );
+	width: 40vw;
+}
+
+.app-progress-bar .cdx-progress-bar {
+	margin-top: var( --spacing-100 );
+}
+
+.app-footer {
+	border-top: var( --border-subtle );
+	bottom: 0;
+	display: block;
+	left: 0;
+	padding: var( --spacing-100 );
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
+
+a {
+	color: var( --color-progressive );
+	text-decoration: var( --text-decoration-none );
+}
+
+a:hover {
+	text-decoration: var( --text-decoration-underline );
+}

@@ -8,6 +8,10 @@
 	"license": "MIT",
 	"devDependencies": {
 		"eslint-config-wikimedia": "^0.32.3",
-		"node": ">=20.19.5"
+		"node": ">=20.19.5",
+		"vue-loader": "^17.4.2"
+	},
+	"dependencies": {
+		"@wikimedia/codex-design-tokens": "^2.4.0"
 	}
 }

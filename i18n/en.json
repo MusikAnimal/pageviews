@@ -194,6 +194,7 @@
 	"list-false-positives-heading": "Known false positives",
 	"list-false-positives-text": "The following pages are known false positives and have been automatically excluded from Topviews ($1):",
 	"list-values": "One of: $1",
+	"loading": "Loading...",
 	"loading-cache": "Loading from cache...",
 	"localization": "Localization:",
 	"localize-dates": "Localize date format",
