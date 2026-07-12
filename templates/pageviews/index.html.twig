@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<main class="app-container" {{ vue_component( 'Pageviews' ) }}>
+		<div class="app-progress-bar">
+			<div>{{ msg( 'loading' ) }}</div>
+			<div class="cdx-progress-bar" role="progressbar">
+				<div class="cdx-progress-bar__bar"></div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"devDependencies": {
+		"@hotwired/stimulus": "^3.0.0",
+		"@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+		"@symfony/ux-vue": "file:vendor/symfony/ux-vue/assets",
+		"@wikimedia/codex": "^2.4.0",
+		"@wikimedia/codex-design-tokens": "^2.4.0",
+		"@wikimedia/codex-icons": "^2.4.0",
+		"eslint-config-wikimedia": "^0.32.4",
+		"vite": "^8.0",
+		"vite-plugin-symfony": "^8.2",
+		"vue": "^3.0",
+		"vue-loader": "^17.4.2"
+	}
+}
