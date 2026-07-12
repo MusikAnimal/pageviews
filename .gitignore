@@ -21,7 +21,7 @@ package-lock.json
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 
-###> symfony/asset-mapper ###
-/public/assets/
-/assets/vendor/
-###< symfony/asset-mapper ###
+###> pentatrion/vite-bundle ###
+/node_modules/
+/public/build/
+###< pentatrion/vite-bundle ###

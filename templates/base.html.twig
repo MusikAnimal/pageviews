@@ -5,10 +5,11 @@
 	<title>{% block title %}{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }}{% endblock %}</title>
 	<link rel="icon" href="{{ asset( 'images/favicon.ico' ) }}">
 	{% block stylesheets %}
+		{{ vite_entry_link_tags('app') }}
 	{% endblock %}
 
 	{% block javascripts %}
-		{% block importmap %}{{ importmap('app') }}{% endblock %}
+		{{ vite_entry_script_tags('app') }}
 		<script>
 			window.i18nLang = "{{ lang() }}";
 			window.i18nPath = "{{ asset( 'i18n/' ~ lang() ~ '.json' ) }}";

@@ -10,8 +10,8 @@
 		"ext-iconv": "*",
 		"ext-mysqli": "*",
 		"krinkle/intuition": "^2.3.6",
+		"pentatrion/vite-bundle": "^8.2",
 		"symfony/asset": "7.4.*",
-		"symfony/asset-mapper": "7.4.*",
 		"symfony/cache": "7.4.*",
 		"symfony/console": "7.4.*",
 		"symfony/dotenv": "7.4.*",
@@ -19,6 +19,7 @@
 		"symfony/framework-bundle": "7.4.*",
 		"symfony/http-client": "7.4.*",
 		"symfony/runtime": "7.4.*",
+		"symfony/stimulus-bundle": "^2.36",
 		"symfony/twig-bundle": "7.4.*",
 		"symfony/ux-vue": "^2.36",
 		"symfony/yaml": "7.4.*",
@@ -75,8 +76,7 @@
 		],
 		"auto-scripts": {
 			"cache:clear": "symfony-cmd",
-			"assets:install %PUBLIC_DIR%": "symfony-cmd",
-			"importmap:install": "symfony-cmd"
+			"assets:install %PUBLIC_DIR%": "symfony-cmd"
 		},
 		"post-install-cmd": [
 			"@auto-scripts"

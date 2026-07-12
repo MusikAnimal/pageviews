@@ -7,11 +7,17 @@
 	"author": "MusikAnimal",
 	"license": "MIT",
 	"devDependencies": {
+		"@hotwired/stimulus": "^3.0.0",
+		"@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+		"@symfony/ux-vue": "file:vendor/symfony/ux-vue/assets",
+		"@wikimedia/codex": "^2.4.0",
+		"@wikimedia/codex-design-tokens": "^2.4.0",
 		"eslint-config-wikimedia": "^0.32.3",
 		"node": ">=20.19.5",
+		"vue": "^3.5.39",
 		"vue-loader": "^17.4.2"
 	},
 	"dependencies": {
-		"@wikimedia/codex-design-tokens": "^2.4.0"
+		"@wikimedia/codex-icons": "^2.4.0"
 	}
 }

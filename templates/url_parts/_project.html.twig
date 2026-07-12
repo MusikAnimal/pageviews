@@ -1,7 +1,0 @@
-{% set default_project = defaultProject|default( 'en.wikipedia.org' ) %}
-{% set default_project_msg %}<code>{{ default_project }}</code> ({{ msg( 'default' )|lower }}){% endset %}
-{% set projects_allow_list %}
-	<a target="_blank" href="https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv">{{ msg( 'project' )|lower }}</a>
-{%- endset %}
-<dt>project</dt>
-<dd>{{ msg( 'url-structure-project', [ default_project_msg, projects_allow_list ] )|raw }}</dd>

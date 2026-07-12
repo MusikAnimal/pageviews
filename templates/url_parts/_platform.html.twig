@@ -1,6 +1,0 @@
-<dt>platform</dt>
-<dd>
-	{% set default_msg = '(' ~ msg( 'default' )|lower ~ ')' %}
-	{% set values = [ '<code>all-access</code> ' ~ default_msg, '<code>desktop</code>', '<code>mobile-app</code>', '<code>mobile-web</code>' ] %}
-	{{ msg( 'list-values', [ values|join( msg( 'comma-character' ) ~ ' ' ) ] ) }}
-</dd>

@@ -22,6 +22,15 @@
             "src/Repository/.gitignore"
         ]
     },
+    "pentatrion/vite-bundle": {
+        "version": "8.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "6.5",
+            "ref": "3a6673f248f8fc1dd364dadfef4c5b381d1efab6"
+        }
+    },
     "phpunit/phpunit": {
         "version": "12.5",
         "recipe": {
@@ -47,21 +56,6 @@
         },
         "files": [
             "phpcs.xml.dist"
-        ]
-    },
-    "symfony/asset-mapper": {
-        "version": "7.4",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "6.4",
-            "ref": "5ad1308aa756d58f999ffbe1540d1189f5d7d14a"
-        },
-        "files": [
-            "assets/app.js",
-            "assets/styles/app.css",
-            "config/packages/asset_mapper.yaml",
-            "importmap.php"
         ]
     },
     "symfony/console": {

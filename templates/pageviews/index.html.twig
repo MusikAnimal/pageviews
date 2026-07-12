@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block importmap %}
-	{{ importmap( 'pageviews' ) }}
-{% endblock %}
-
 {% block body %}
-	<main class="app-container">
+	<main class="app-container" {{ vue_component( 'Pageviews' ) }}>
 		<div class="app-progress-bar">
 			<div>{{ msg( 'loading' ) }}</div>
 			<div class="cdx-progress-bar" role="progressbar">
