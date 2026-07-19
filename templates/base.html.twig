@@ -20,14 +20,14 @@
 <body {%- if is_rtl() %}class="rtl"{% endif %}>
 {% block header %}
 	<header class="app-header">
-		<h4>
+		<h3>
 			{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }}
-			<small class="app-description">
-				{% block subtitle %}
-					{{ msg( current_app ~ '-description' ) }}
-				{% endblock %}
-			</small>
-		</h4>
+		</h3>
+		<small class="app-description">
+			{% block subtitle %}
+				{{ msg( current_app ~ '-description' ) }}
+			{% endblock %}
+		</small>
 	</header>
 {% endblock %}
 

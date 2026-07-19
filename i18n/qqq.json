@@ -444,6 +444,7 @@
 	"validated-page": "The name for the 'validated' quality assessment of a page. The name may differ project to project, see Wikidata for possible translations: https://www.wikidata.org/wiki/Q20748093",
 	"view-source": "Link to the source code for the tool\n{{Identical|View source}}",
 	"views": "Label for the value showing the number of views that viewed to the pages during the timeframe.\n{{Identical|View}}",
+	"visualization": "Aria label for the chart visualization of the data. This is used for accessibility purposes.",
 	"watchers": "Label for the value showing the number of watchers (i.e. users who added the page to watchlist) a page has. Should use a word that is related to {{msg-mw|watchlist}}.\n{{Identical|Watcher}}",
 	"we": "Abbreviation for Wednesday, a day of the week.",
 	"wikibooks": "{{Optional}}\nName for the Wikibooks project.\n{{Identical|Wikibooks}}",

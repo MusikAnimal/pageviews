@@ -1,12 +1,30 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<main class="app-container" {{ vue_component( 'Pageviews', { 'name': 'Foo' } ) }}>
+	<main class="app-container" {{ vue_component( 'Pageviews' ) }}>
 		<div class="app-progress-bar">
 			<div>{{ msg( 'loading' ) }}</div>
 			<div class="cdx-progress-bar" role="progressbar">
 				<div class="cdx-progress-bar__bar"></div>
 			</div>
 		</div>
+
+		<div class="app-workspace">
+			<form class="app-settings" aria-label="{{ msg( 'options' ) }}">
+				<header class="app-workspace__heading">
+					<h3>{{ msg( 'options' ) }}</h3>
+				</header>
+			</form>
+
+			<figure class="app-visualization" aria-label="{{ msg( 'visualization' ) }}"></figure>
+
+			<figure class="app-totals" aria-labelledby="app-totals__caption">
+				<figcaption id="app-totals__caption" class="app-totals__caption app-workspace__heading">
+					{{ msg( 'totals' ) }}
+				</figcaption>
+			</figure>
+		</div>
+
+		<section class="app-breakdown" aria-labelledby="app-totals__caption"></section>
 	</main>
 {% endblock %}
