@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
-export const useSettingsStore = defineStore( 'main', () => {
+export const useSettingsStore = defineStore( 'settings', () => {
 	const project = ref( 'en.wikipedia.org' );
 
 	function setFromQuery( query ) {

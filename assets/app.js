@@ -4,7 +4,6 @@ import { startStimulusApp } from 'vite-plugin-symfony/stimulus/helpers';
 import { createRouter, createWebHistory } from 'vue-router';
 import { registerVueControllerComponents } from 'vite-plugin-symfony/stimulus/helpers/vue';
 import { createPinia } from 'pinia';
-import { useSettingsStore } from './vue/stores/settings.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
 import { usePageviewsStore } from "./vue/stores/pageviews.js";
 
@@ -21,11 +20,6 @@ registerVueControllerComponents(
 );
 
 const pinia = createPinia();
-
-router.beforeEach( ( to ) => {
-	useSettingsStore( pinia ).setFromQuery( to.query );
-	to.meta.store?.( pinia ).setFromQuery( to.query );
-} );
 
 document.addEventListener( 'vue:before-mount', ( event ) => {
 	const { app } = event.detail;

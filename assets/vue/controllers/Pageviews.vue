@@ -3,6 +3,12 @@
 </template>
 
 <script setup>
+import { usePageviewsStore } from "../stores/pageviews.js";
+import { useQuerySync } from "../composables/useQuerySync.js";
+
+const store = usePageviewsStore();
+useQuerySync( store );
+
 defineProps( {
 	name: String
 } );
