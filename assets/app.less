@@ -1,0 +1,60 @@
+@import url( '../node_modules/@wikimedia/codex-design-tokens/theme-wikimedia-ui-root.css' );
+@import url( '../node_modules/@wikimedia/codex-design-tokens/theme-wikimedia-ui-mode-dark.css' ) only screen and ( prefers-color-scheme: dark );
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+@import ( reference ) '@wikimedia/codex/mixins/link.less';
+
+html {
+	height: 100%;
+}
+
+// Wikimedia theme styles.
+
+html,
+body {
+	background: @background-color-base;
+	color: @color-base;
+	font-family: @font-family-base;
+	font-size: @font-size-medium;
+	margin: 0;
+	min-height: 100%;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	.cdx-mixin-link();
+}
+
+// App-wide shared styles.
+
+.app-header {
+	padding: @spacing-50;
+	text-align: center;
+}
+
+.app-description {
+	display: block;
+	font-weight: @font-weight-normal;
+	margin-top: @spacing-50;
+}
+
+.app-progress-bar {
+	left: @size-half;
+	margin: auto;
+	position: absolute;
+	text-align: center;
+	top: @size-half;
+	transform: translate( -@size-half, -@size-half );
+	width: @size-half;
+}
+
+.app-footer {
+	border-top: @border-width-base solid @border-color-muted;
+	bottom: 0;
+	display: block;
+	font-family: sans-serif;
+	left: 0;
+	padding: @spacing-100 0;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
