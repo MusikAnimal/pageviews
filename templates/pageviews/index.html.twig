@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<main class="app-container" {{ vue_component( 'Pageviews' ) }}>
+	<main {{ vue_component( 'Pageviews', { 'name': 'Foo' } ) }}>
 		<div class="app-progress-bar">
 			<div>{{ msg( 'loading' ) }}</div>
 			<div class="cdx-progress-bar" role="progressbar">

@@ -1,19 +1,18 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import symfonyPlugin from "vite-plugin-symfony";
-
-/* if you're using React */
-// import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import symfonyPlugin from 'vite-plugin-symfony';
 
 export default defineConfig({
 	plugins: [
 		vue(),
-		symfonyPlugin(),
+		symfonyPlugin( {
+			stimulus: true
+		} ),
 	],
 	build: {
 		rollupOptions: {
 			input: {
-				app: "./assets/app.js"
+				app: './assets/app.js'
 			},
 		}
 	},
