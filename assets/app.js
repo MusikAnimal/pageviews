@@ -4,21 +4,9 @@ import { startStimulusApp } from 'vite-plugin-symfony/stimulus/helpers';
 import { createRouter, createWebHistory } from 'vue-router';
 import { registerVueControllerComponents } from 'vite-plugin-symfony/stimulus/helpers/vue';
 import { createPinia } from 'pinia';
-import { createI18n } from 'vue-banana-i18n';
-import en from '../i18n/en.json';
+import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
-import { usePageviewsStore } from "./vue/stores/pageviews.js";
-
-async function i18nPlugin() {
-	const locale = document.documentElement.lang || 'en';
-	const messages = { en };
-	if ( locale !== 'en' ) {
-		// Lazy-load the locale messages for the current language. Vite code-splits each JSON.
-		const loaders = import.meta.glob('../i18n/*.json' );
-		messages[locale] = ( await loaders[ `../i18n/${ locale }.json` ]?.() ) ?? {};
-	}
-	return createI18n({ locale, finalFallback: 'en', messages } );
-}
+import { usePageviewsStore } from './vue/stores/pageviews.js';
 
 const router = createRouter( {
 	history: createWebHistory(),
@@ -34,11 +22,22 @@ registerVueControllerComponents(
 
 const pinia = createPinia();
 
-document.addEventListener( 'vue:before-mount', async ( event ) => {
+// This listener must stay synchronous: the UX Vue controller mounts the app
+// immediately after dispatching the event, so anything after an `await` here
+// would run too late.
+document.addEventListener( 'vue:before-mount', ( event ) => {
 	const { app } = event.detail;
+	app.config.globalProperties.$i18n = ( key, ...params ) => banana.i18n( key, ...params );
+	app.provide( 'CdxI18nFunction', ( key, ...params ) => {
+		const message = banana.i18n( key, ...params );
+		// banana returns the key itself when no message exists; returning
+		// undefined instead lets Codex fall back to its built-in defaults.
+		return message === key ? undefined : message;
+	} );
+	app.directive( 'i18n-html', i18nHtml );
 	app.use( router );
 	app.use( pinia );
-	app.use( await i18nPlugin() );
 } );
 
+await loadMessages();
 startStimulusApp();

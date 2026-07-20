@@ -10,12 +10,12 @@
 		<cdx-field class='app-settings__date-inputs'>
 			<cdx-text-input
 				v-model='startDate'
-				aria-label='Start date'
+				:aria-label="$i18n( 'start-date' )"
 				input-type='date'
 			></cdx-text-input>
 			<cdx-text-input
 				v-model='endDate'
-				aria-label='End date'
+				:aria-label="$i18n( 'end-date' )"
 				input-type='date'
 			></cdx-text-input>
 		</cdx-field>
@@ -35,6 +35,7 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { CdxField, CdxSelect, CdxTextInput } from '@wikimedia/codex';
+import { banana } from '../i18n.js';
 import { useSettingsStore } from "../stores/settings.js";
 
 const store = useSettingsStore();
