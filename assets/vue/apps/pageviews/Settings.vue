@@ -7,14 +7,28 @@
 		<project-input></project-input>
 		<platform-input></platform-input>
 		<agent-input></agent-input>
+		<cdx-field class="app-settings__redirects">
+			<cdx-checkbox v-model="redirects">
+				{{ $i18n( 'include-redirects' ) }}
+			</cdx-checkbox>
+		</cdx-field>
 	</form>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from "../../components/ProjectInput.vue";
 import PlatformInput from "../../components/PlatformInput.vue";
 import AgentInput from "../../components/AgentInput.vue";
+import { CdxCheckbox, CdxField } from "@wikimedia/codex";
+
+/**
+ * Whether to include all redirects of
+ *
+ * @type {import( 'vue' ).Ref<boolean>}
+ */
+const redirects = ref( false );
 </script>
 
 <style lang="less">

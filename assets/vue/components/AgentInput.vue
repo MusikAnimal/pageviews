@@ -18,7 +18,6 @@ import { useSettingsStore } from "../stores/settings.js";
 import { banana } from "../i18n.js";
 
 const store = useSettingsStore();
-
 const { agent } = storeToRefs( store );
 
 const agentOptions = [
