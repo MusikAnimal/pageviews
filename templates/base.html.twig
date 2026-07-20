@@ -10,14 +10,14 @@
 
 	{% block javascripts %}
 		{{ vite_entry_script_tags( 'app' ) }}
-		<script>
-			window.i18nLang = "{{ lang() }}";
-			window.i18nPath = "{{ asset( 'i18n/' ~ lang() ~ '.json' ) }}";
-			window.i18nEnPath = "{{ asset( 'i18n/en.json' ) }}";
-		</script>
 	{% endblock %}
+
+	<link rel="preload" href="{{ path( 'api_projects' ) }}" as="fetch" crossorigin>
 </head>
-<body {%- if is_rtl() %}class="rtl"{% endif %}>
+<body {%- if is_rtl() %}class="rtl"{% endif %} data-app-config="{{ {
+	'i18nPath': asset( 'i18n/' ~ lang() ~ '.json' ),
+	'i18nEnPath': asset( 'i18n/en.json' ),
+}|json_encode }}">
 {% block header %}
 	<header class="app-header">
 		<h3>

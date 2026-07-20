@@ -32,6 +32,12 @@ export async function loadMessages() {
 	}
 }
 
+/**
+ * Render the i18n message into the element's innerHTML. Used by the v-i18n-html directive.
+ *
+ * @param {HTMLElement} el
+ * @param {import('vue').DirectiveBinding} binding
+ */
 function renderI18nHtml( el, binding ) {
 	let key, params;
 	if ( binding.arg ) {
