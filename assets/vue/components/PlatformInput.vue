@@ -15,7 +15,7 @@
 import { CdxField, CdxSelect } from "@wikimedia/codex";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings.js";
-import {banana} from "../i18n.js";
+import { banana } from "../i18n.js";
 
 const store = useSettingsStore();
 

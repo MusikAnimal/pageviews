@@ -29,11 +29,17 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 */
 	const dateType = ref( 'daily' );
 	/**
-	 * The platform to query for data, either 'all', 'desktop', 'mobile app' or 'mobile web'.
+	 * The platform to query for.
 	 *
 	 * @type {import( 'vue' ).Ref<'all'|'desktop'|'mobile app'|'mobile web'>}
 	 */
 	const platform = ref( 'all' );
+	/**
+	 * The agent to query for.
+	 *
+	 * @type {import( 'vue' ).Ref<'all'|'user'|'spider'|'automated'>}
+	 */
+	const agent = ref( 'user' );
 
 	function setFromQuery( query ) {
 		if ( query.project ) {
@@ -50,6 +56,7 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		end,
 		dateType,
 		platform,
+		agent,
 		setFromQuery
 	};
 } );
