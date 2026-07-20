@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"ArticleEditor404",
+			"Hogweard",
 			"Rocioun"
 		]
 	},
@@ -121,8 +122,8 @@
 	"invalid-project": "$1 ne biþ <a href='//meta.wikipedia.org/w/api.php?action=sitematrix&formatversion=2'> ƿikimedisc geƿeorc oþþe ne bireð.",
 	"invalid-quarry-dataset": "Na riht quarry! Stapol <code>$1</code> ofgan biþ ac he gefunden næs.",
 	"january": "Æfterra geola",
-	"july": "Æfterra liða",
-	"june": "Ærra liða",
+	"july": "Mædmonað",
+	"june": "Searmonað",
 	"known-false-positives-link": "$1 {{PLURAL:$1|tramet|trametas}}",
 	"known-false-positives-text": "$1 asceaden {{PLURAL:$2|ƿearð|ƿurdon}}.",
 	"language": "Geþeode",
