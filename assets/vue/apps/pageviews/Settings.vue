@@ -5,12 +5,14 @@
 		</header>
 		<date-range-input></date-range-input>
 		<project-input></project-input>
+		<platform-input></platform-input>
 	</form>
 </template>
 
 <script setup>
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from "../../components/ProjectInput.vue";
+import PlatformInput from "../../components/PlatformInput.vue";
 </script>
 
 <style lang="less">

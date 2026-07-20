@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import {computed, nextTick, onMounted, ref} from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings.js";
 import { CdxField, CdxLookup } from "@wikimedia/codex";
@@ -35,6 +35,7 @@ import { banana } from "../i18n.js";
 import { getProjects } from "../projects.js";
 
 const store = useSettingsStore();
+
 const { project } = storeToRefs( store );
 
 /**
