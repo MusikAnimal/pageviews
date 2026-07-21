@@ -24,14 +24,18 @@
 				<CdxTextInput
 					v-model="start"
 					:aria-label="$i18n( 'start-date' )"
-					input-type="date"
+					:input-type="inputType"
+					:min="minDate"
+					:max="maxDate"
 				/>
 			</CdxField>
 			<CdxField class="app-settings__dates-inputs__end">
 				<CdxTextInput
 					v-model="end"
 					:aria-label="$i18n( 'end-date' )"
-					input-type="date"
+					:input-type="inputType"
+					:min="minDate"
+					:max="maxDate"
 				/>
 			</CdxField>
 		</div>
@@ -49,6 +53,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import {
 	CdxField,
@@ -60,9 +65,27 @@ import {
 import { cdxIconDownTriangle } from '@wikimedia/codex-icons';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from '../stores/settings.js';
+import {
+	formatYm,
+	formatYmd,
+	lastCompleteMonthUtc,
+	PAGEVIEWS_MIN_DATE,
+	yesterdayUtc
+} from '../lib/dates.js';
 
 const store = useSettingsStore();
 const { start, end, dateType, specialRange } = storeToRefs( store );
+
+const monthly = computed( () => dateType.value === 'monthly' );
+const inputType = computed( () => monthly.value ? 'month' : 'date' );
+// Data exists from July 2015 up to yesterday (or, in monthly mode,
+// the last complete month).
+const minDate = computed(
+	() => monthly.value ? PAGEVIEWS_MIN_DATE.slice( 0, 7 ) : PAGEVIEWS_MIN_DATE
+);
+const maxDate = computed(
+	() => monthly.value ? formatYm( lastCompleteMonthUtc() ) : formatYmd( yesterdayUtc() )
+);
 
 const dateTypeOptions = [
 	{ value: 'daily', label: banana.i18n( 'daily' ) },

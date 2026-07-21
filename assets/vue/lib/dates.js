@@ -107,6 +107,19 @@ export function yesterdayUtc() {
 }
 
 /**
+ * The latest month with complete data. AQS monthly data for a month
+ * only lands a couple of days after it ends, so at the start of a
+ * month the previous one doesn't count yet (legacy semantics).
+ *
+ * @return {Date} The first day of that month (UTC).
+ */
+export function lastCompleteMonthUtc() {
+	const today = todayUtc();
+	const monthsBack = today.getUTCDate() > 2 ? 1 : 2;
+	return new Date( Date.UTC( today.getUTCFullYear(), today.getUTCMonth() - monthsBack, 1 ) );
+}
+
+/**
  * @param {Date} date
  * @return {Date} The first day of the date's month (UTC).
  */

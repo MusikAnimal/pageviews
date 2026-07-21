@@ -7,6 +7,7 @@ import {
 	formatYmd,
 	isYm,
 	isYmd,
+	lastCompleteMonthUtc,
 	parseDate,
 	resolveSpecialRange,
 	startOfWeek,
@@ -41,6 +42,17 @@ describe( 'dates', () => {
 		expect( formatYmd( addDays( parseDate( '2026-01-01' ), -1 ) ) ).toBe( '2025-12-31' );
 		expect( formatYm( addMonths( parseDate( '2026-01-15' ), -2 ) ) ).toBe( '2025-11' );
 		expect( formatYmd( endOfMonth( parseDate( '2024-02-10' ) ) ) ).toBe( '2024-02-29' );
+	} );
+
+	it( 'computes the last complete month, lagging two days', () => {
+		// July 21: June data has long landed.
+		expect( formatYm( lastCompleteMonthUtc() ) ).toBe( '2026-06' );
+		// July 2: June's monthly total isn't published yet.
+		vi.setSystemTime( new Date( '2026-07-02T12:00:00Z' ) );
+		expect( formatYm( lastCompleteMonthUtc() ) ).toBe( '2026-05' );
+		// Year boundary.
+		vi.setSystemTime( new Date( '2026-01-15T12:00:00Z' ) );
+		expect( formatYm( lastCompleteMonthUtc() ) ).toBe( '2025-12' );
 	} );
 
 	it( 'computes ISO week starts', () => {

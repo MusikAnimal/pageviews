@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { useSettingsStore } from './settings.js';
 
@@ -28,6 +29,37 @@ describe( 'settings store', () => {
 		const store = useSettingsStore();
 		store.setFromQuery( { start: '2026-01', end: '2026-06' } );
 		expect( store.dateType ).toBe( 'monthly' );
+	} );
+
+	it( 'converts dates to YYYY-MM when switching to monthly', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-05-10', end: '2026-07-15' } );
+		store.dateType = 'monthly';
+		await nextTick();
+		expect( store.start ).toBe( '2026-05' );
+		// Clamped: July isn't a complete month yet.
+		expect( store.end ).toBe( '2026-06' );
+		expect( store.query.start ).toBe( '2026-05' );
+
+		vi.useRealTimers();
+	} );
+
+	it( 'converts months back to full dates when switching to daily', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-05', end: '2026-07' } );
+		store.dateType = 'daily';
+		await nextTick();
+		expect( store.start ).toBe( '2026-05-01' );
+		// End of month, clamped to yesterday.
+		expect( store.end ).toBe( '2026-07-20' );
+
+		vi.useRealTimers();
 	} );
 
 	it( 'ignores invalid values, keeping defaults', () => {

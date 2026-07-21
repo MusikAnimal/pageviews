@@ -1,6 +1,16 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
-import { formatYmd, resolveSpecialRange } from '../lib/dates.js';
+import {
+	endOfMonth,
+	formatYm,
+	formatYmd,
+	isYm,
+	isYmd,
+	lastCompleteMonthUtc,
+	parseDate,
+	resolveSpecialRange,
+	yesterdayUtc
+} from '../lib/dates.js';
 
 // AQS vocabulary, also used verbatim in URLs (legacy-compatible).
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
@@ -62,6 +72,33 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	watch( [ start, end ], () => {
 		if ( !applyingRange ) {
 			specialRange.value = null;
+		}
+	}, { flush: 'sync' } );
+
+	// Monthly ranges are expressed as YYYY-MM everywhere, including the
+	// URL (legacy-compatible). Switching the date type converts the
+	// dates in place; values already in the target format are left
+	// alone, keeping setFromQuery (which derives dateType from the date
+	// format) idempotent. Synchronous so the dates are never observed
+	// in the wrong format for the type.
+	watch( dateType, ( type ) => {
+		if ( type === 'monthly' ) {
+			const max = lastCompleteMonthUtc();
+			for ( const date of [ start, end ] ) {
+				if ( isYmd( date.value ) ) {
+					const parsed = parseDate( date.value );
+					date.value = formatYm( parsed > max ? max : parsed );
+				}
+			}
+		} else {
+			if ( isYm( start.value ) ) {
+				start.value = formatYmd( parseDate( start.value ) );
+			}
+			if ( isYm( end.value ) ) {
+				const last = endOfMonth( parseDate( end.value ) );
+				const max = yesterdayUtc();
+				end.value = formatYmd( last > max ? max : last );
+			}
 		}
 	}, { flush: 'sync' } );
 
