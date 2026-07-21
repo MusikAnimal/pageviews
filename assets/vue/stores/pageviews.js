@@ -29,13 +29,13 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	/**
 	 * Populate the store from URL query params.
 	 *
-	 * @param {Object} query Parsed query string (from vue-router route.query).
+	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
-	function setFromQuery( query ) {
-		if ( query.pages ) {
-			pages.value = query.pages.split( '|' ).filter( ( page ) => page !== '' );
+	function setFromQuery( params ) {
+		if ( params.pages ) {
+			pages.value = params.pages.split( '|' ).filter( ( page ) => page !== '' );
 		}
-		redirects.value = query.redirects === '1';
+		redirects.value = params.redirects === '1';
 	}
 
 	return {

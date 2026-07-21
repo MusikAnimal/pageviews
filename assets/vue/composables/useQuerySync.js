@@ -1,5 +1,5 @@
 import { watch } from 'vue';
-import {useRoute, useRouter} from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useSettingsStore } from '../stores/settings.js';
 
 /**

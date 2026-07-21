@@ -1,5 +1,5 @@
 <template>
-	<cdx-field
+	<CdxField
 		class="app-settings__project"
 		:status="status ? 'error' : 'default'"
 	>
@@ -7,10 +7,12 @@
 			{{ $i18n( 'project' ) }}
 		</template>
 		<template #error>
-			<span v-html="status"></span>
+			<!-- The status message can contain anchors built from i18n messages. -->
+			<!-- eslint-disable-next-line vue/no-v-html -->
+			<span v-html="status" />
 		</template>
 
-		<cdx-lookup
+		<CdxLookup
 			v-model:selected="project"
 			v-model:input-value="currentSearchTerm"
 			required
@@ -22,17 +24,17 @@
 			@change="checkValidity"
 			@clear="checkValidity"
 			@update:selected="onSelect"
-		></cdx-lookup>
-	</cdx-field>
+		/>
+	</CdxField>
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useSettingsStore } from "../stores/settings.js";
-import { CdxField, CdxLookup } from "@wikimedia/codex";
-import { banana } from "../i18n.js";
-import { getProjects } from "../projects.js";
+import { nextTick, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from '../stores/settings.js';
+import { CdxField, CdxLookup } from '@wikimedia/codex';
+import { banana } from '../i18n.js';
+import { getProjects } from '../projects.js';
 
 const store = useSettingsStore();
 
@@ -95,9 +97,11 @@ async function checkValidity() {
 	const input = document.querySelector( '.app-settings__project input' );
 	const valid = input.checkValidity();
 
+	const unsupported = supportedProjects.value.length &&
+		!supportedProjects.value.includes( project.value );
 	if ( !valid ) {
 		status.value = input.validationMessage;
-	} else if ( supportedProjects.value.length && !supportedProjects.value.includes( project.value ) ) {
+	} else if ( unsupported ) {
 		const projectLink = document.createElement( 'a' );
 		projectLink.href = `https://${ currentSearchTerm.value }`;
 		projectLink.target = '_blank';
@@ -131,6 +135,5 @@ onMounted( async () => {
 
 <style scoped lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
-
 
 </style>

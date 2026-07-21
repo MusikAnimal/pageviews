@@ -62,27 +62,27 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * Populate the store from URL query params. Invalid values are ignored,
 	 * leaving the current (or default) values in place.
 	 *
-	 * @param {Object} query Parsed query string (from vue-router route.query).
+	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
-	function setFromQuery( query ) {
-		if ( query.project ) {
-			project.value = query.project;
+	function setFromQuery( params ) {
+		if ( params.project ) {
+			project.value = params.project;
 		}
-		if ( query.start && DATE_PATTERN.test( query.start ) ) {
-			start.value = query.start;
+		if ( params.start && DATE_PATTERN.test( params.start ) ) {
+			start.value = params.start;
 		}
-		if ( query.end && DATE_PATTERN.test( query.end ) ) {
-			end.value = query.end;
+		if ( params.end && DATE_PATTERN.test( params.end ) ) {
+			end.value = params.end;
 		}
 		if ( start.value ) {
 			// Monthly ranges are expressed as YYYY-MM dates.
 			dateType.value = start.value.length === 7 ? 'monthly' : 'daily';
 		}
-		if ( PLATFORMS.includes( query.platform ) ) {
-			platform.value = query.platform;
+		if ( PLATFORMS.includes( params.platform ) ) {
+			platform.value = params.platform;
 		}
-		if ( AGENTS.includes( query.agent ) ) {
-			agent.value = query.agent;
+		if ( AGENTS.includes( params.agent ) ) {
+			agent.value = params.agent;
 		}
 	}
 

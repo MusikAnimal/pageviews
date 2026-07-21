@@ -65,5 +65,5 @@ function renderI18nHtml( el, binding ) {
  */
 export const i18nHtml = {
 	mounted: renderI18nHtml,
-	updated: renderI18nHtml,
+	updated: renderI18nHtml
 };

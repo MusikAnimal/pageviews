@@ -1,21 +1,21 @@
 <template>
-	<cdx-field class="app-settings__platform">
+	<CdxField class="app-settings__platform">
 		<template #label>
 			{{ $i18n( 'platform' ) }}
 		</template>
-		<cdx-select
-			v-model:selected='platform'
+		<CdxSelect
+			v-model:selected="platform"
 			:menu-items="platformOptions"
 			:aria-label="$i18n( 'platform' )"
 		/>
-	</cdx-field>
+	</CdxField>
 </template>
 
 <script setup>
-import { CdxField, CdxSelect } from "@wikimedia/codex";
-import { storeToRefs } from "pinia";
-import { useSettingsStore } from "../stores/settings.js";
-import { banana } from "../i18n.js";
+import { CdxField, CdxSelect } from '@wikimedia/codex';
+import { storeToRefs } from 'pinia';
+import { useSettingsStore } from '../stores/settings.js';
+import { banana } from '../i18n.js';
 
 const store = useSettingsStore();
 
@@ -25,6 +25,6 @@ const platformOptions = [
 	{ value: 'all', label: banana.i18n( 'all' ) },
 	{ value: 'desktop', label: banana.i18n( 'desktop' ) },
 	{ value: 'mobile-app', label: banana.i18n( 'mobile-app' ) },
-	{ value: 'mobile-web', label: banana.i18n( 'mobile-web' ) },
+	{ value: 'mobile-web', label: banana.i18n( 'mobile-web' ) }
 ];
 </script>

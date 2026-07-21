@@ -1,20 +1,18 @@
 <template>
 	<div class="app-workspace">
-		<pageviews-settings></pageviews-settings>
-		<chart></chart>
-		<totals></totals>
+		<PageviewsSettings />
+		<Chart />
+		<Totals />
 	</div>
-	<section class="app-breakdown">
-
-	</section>
+	<section class="app-breakdown" />
 </template>
 
 <script setup>
-import { usePageviewsStore } from "../stores/pageviews.js";
-import { useQuerySync } from "../composables/useQuerySync.js";
-import PageviewsSettings from "../apps/pageviews/Settings.vue";
-import Chart from "../components/Chart.vue";
-import Totals from "../apps/pageviews/Totals.vue";
+import { usePageviewsStore } from '../stores/pageviews.js';
+import { useQuerySync } from '../composables/useQuerySync.js';
+import PageviewsSettings from '../apps/pageviews/Settings.vue';
+import Chart from '../components/Chart.vue';
+import Totals from '../apps/pageviews/Totals.vue';
 
 const store = usePageviewsStore();
 useQuerySync( store );

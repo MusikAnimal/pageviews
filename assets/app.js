@@ -12,8 +12,8 @@ const router = createRouter( {
 	history: createWebHistory(),
 	routes: [
 		{ path: '/', component: Pageviews, meta: { store: usePageviewsStore } },
-		{ path: '/pageviews', component: Pageviews, meta: { store: usePageviewsStore } },
-	],
+		{ path: '/pageviews', component: Pageviews, meta: { store: usePageviewsStore } }
+	]
 } );
 
 registerVueControllerComponents(

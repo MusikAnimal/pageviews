@@ -1,5 +1,5 @@
 <template>
-	<cdx-field
+	<CdxField
 		class="app-settings__dates"
 		:is-fieldset="true"
 	>
@@ -8,46 +8,46 @@
 		</template>
 
 		<div class="app-settings__dates-inputs">
-			<cdx-field class="app-settings__dates-inputs__start">
-				<cdx-text-input
-					v-model='start'
+			<CdxField class="app-settings__dates-inputs__start">
+				<CdxTextInput
+					v-model="start"
 					:aria-label="$i18n( 'start-date' )"
-					input-type='date'
-				></cdx-text-input>
-			</cdx-field>
-			<cdx-field class="app-settings__dates-inputs__end">
-				<cdx-text-input
-					v-model='end'
+					input-type="date"
+				/>
+			</CdxField>
+			<CdxField class="app-settings__dates-inputs__end">
+				<CdxTextInput
+					v-model="end"
 					:aria-label="$i18n( 'end-date' )"
-					input-type='date'
-				></cdx-text-input>
-			</cdx-field>
+					input-type="date"
+				/>
+			</CdxField>
 		</div>
-	</cdx-field>
-	<cdx-field class="app-setting__dates-type">
+	</CdxField>
+	<CdxField class="app-setting__dates-type">
 		<template #label>
 			{{ $i18n( 'date-type' ) }}
 		</template>
-		<cdx-select
-			v-model:selected='dateType'
+		<CdxSelect
+			v-model:selected="dateType"
 			:menu-items="dateTypeOptions"
 			:aria-label="$i18n( 'date-type' )"
 		/>
-	</cdx-field>
+	</CdxField>
 </template>
 
 <script setup>
-import { storeToRefs } from "pinia";
+import { storeToRefs } from 'pinia';
 import { CdxField, CdxSelect, CdxTextInput } from '@wikimedia/codex';
 import { banana } from '../i18n.js';
-import { useSettingsStore } from "../stores/settings.js";
+import { useSettingsStore } from '../stores/settings.js';
 
 const store = useSettingsStore();
 const { start, end, dateType } = storeToRefs( store );
 
 const dateTypeOptions = [
 	{ value: 'daily', label: banana.i18n( 'daily' ) },
-	{ value: 'monthly', label: banana.i18n( 'monthly' ) },
+	{ value: 'monthly', label: banana.i18n( 'monthly' ) }
 ];
 </script>
 
