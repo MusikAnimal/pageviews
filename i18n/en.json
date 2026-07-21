@@ -309,6 +309,7 @@
 	"referer-internal": "Internal",
 	"referer-search-engine": "Search engine",
 	"remember-chart-option": "Remember chart preference",
+	"reset-zoom": "Reset zoom",
 	"report-false-positive": "Report false positive",
 	"report-false-positive-submitted": "Your false positive report has been submitted. Thanks for improving $1 data!",
 	"report-false-positive-text": "Use this form to choose which excluded pages you want to report as false positive ($1)",

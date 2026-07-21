@@ -25,8 +25,14 @@
 						:filename="exportFilename"
 						:get-png="() => chartRef?.getPngDataUrl()"
 					/>
+					<CdxButton
+						v-if="linearType"
+						@click="chartRef?.resetZoom()"
+					>
+						{{ $i18n( 'reset-zoom' ) }}
+					</CdxButton>
 					<CdxCheckbox
-						v-if="logCapable"
+						v-if="linearType"
 						v-model="logScale"
 						class="app-chart__log"
 					>
@@ -49,7 +55,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { CdxCheckbox, CdxMessage, CdxProgressBar } from '@wikimedia/codex';
+import { CdxButton, CdxCheckbox, CdxMessage, CdxProgressBar } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -101,8 +107,8 @@ const selectedChartType = computed( {
 	}
 } );
 
-// Only the linear chart types can plot on a log axis.
-const logCapable = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
+// Only the linear chart types can plot on a log axis or be zoomed.
+const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
 
 const logScale = ref( false );
 

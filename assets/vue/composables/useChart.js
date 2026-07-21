@@ -14,16 +14,29 @@ export function useChart( containerRef, optionRef ) {
 	let chart = null;
 	let resizeObserver = null;
 
+	// Make drag-select zoom always active — no toolbox button needed.
+	// A no-op for options without the (hidden) toolbox dataZoom feature.
+	function activateDragZoom() {
+		chart.dispatchAction( {
+			type: 'takeGlobalCursor',
+			key: 'dataZoomSelect',
+			dataZoomSelectActive: true
+		} );
+	}
+
 	onMounted( () => {
 		chart = echarts.init( containerRef.value );
 		chart.setOption( optionRef.value, { notMerge: true } );
+		activateDragZoom();
 		resizeObserver = new ResizeObserver( () => chart && chart.resize() );
 		resizeObserver.observe( containerRef.value );
 	} );
 
 	watch( optionRef, ( option ) => {
 		if ( chart ) {
+			// notMerge resets interaction state, so re-activate.
 			chart.setOption( option, { notMerge: true } );
+			activateDragZoom();
 		}
 	}, { deep: true } );
 
@@ -46,6 +59,15 @@ export function useChart( containerRef, optionRef ) {
 			return chart ?
 				chart.getDataURL( { type: 'png', pixelRatio: 2, ...options } ) :
 				undefined;
+		},
+
+		/**
+		 * Zoom back out to the full date range.
+		 */
+		resetZoom() {
+			if ( chart ) {
+				chart.dispatchAction( { type: 'dataZoom', start: 0, end: 100 } );
+			}
 		}
 	};
 }

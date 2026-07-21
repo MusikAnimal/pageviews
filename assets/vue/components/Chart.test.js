@@ -8,6 +8,7 @@ const mockChart = vi.hoisted( () => ( {
 	setOption: vi.fn(),
 	resize: vi.fn(),
 	dispose: vi.fn(),
+	dispatchAction: vi.fn(),
 	getDataURL: vi.fn( () => 'data:image/png;base64,mock' )
 } ) );
 
@@ -59,6 +60,26 @@ describe( 'Chart', () => {
 		expect( wrapper.vm.getPngDataUrl() ).toBe( 'data:image/png;base64,mock' );
 		expect( mockChart.getDataURL ).toHaveBeenCalledWith(
 			{ type: 'png', pixelRatio: 2 }
+		);
+	} );
+
+	it( 'keeps drag-select zoom active across option changes', async () => {
+		const wrapper = mount( Chart, { props: { option: { a: 1 } } } );
+		const activation = { type: 'takeGlobalCursor', key: 'dataZoomSelect', dataZoomSelectActive: true };
+		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( activation );
+
+		mockChart.dispatchAction.mockClear();
+		await wrapper.setProps( { option: { a: 2 } } );
+		await nextTick();
+		// notMerge resets interaction state; it must be re-activated.
+		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( activation );
+	} );
+
+	it( 'exposes zoom reset', () => {
+		const wrapper = mount( Chart, { props: { option: {} } } );
+		wrapper.vm.resetZoom();
+		expect( mockChart.dispatchAction ).toHaveBeenCalledWith(
+			{ type: 'dataZoom', start: 0, end: 100 }
 		);
 	} );
 

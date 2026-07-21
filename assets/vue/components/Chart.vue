@@ -27,9 +27,9 @@ const props = defineProps( {
 } );
 
 const container = ref( null );
-const { getPngDataUrl } = useChart( container, toRef( props, 'option' ) );
+const { getPngDataUrl, resetZoom } = useChart( container, toRef( props, 'option' ) );
 
-defineExpose( { getPngDataUrl } );
+defineExpose( { getPngDataUrl, resetZoom } );
 </script>
 
 <style lang="less">

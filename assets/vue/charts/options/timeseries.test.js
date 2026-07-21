@@ -53,6 +53,15 @@ describe( 'buildTimeseriesOption', () => {
 		expect( option.xAxis.data ).toEqual( [ '2026-06', '2026-07' ] );
 	} );
 
+	it( 'keeps the toolbox dataZoom feature registered but off-canvas', () => {
+		const option = buildTimeseriesOption( base );
+		// show: false would make ECharts skip feature creation, which
+		// silently breaks the always-on drag-zoom (takeGlobalCursor).
+		expect( option.toolbox.show ).toBe( true );
+		expect( option.toolbox.top ).toBeLessThan( 0 );
+		expect( option.toolbox.feature.dataZoom ).toBeTruthy();
+	} );
+
 	it( 'hides the legend unless explicitly requested', () => {
 		const comparison = {
 			...base,

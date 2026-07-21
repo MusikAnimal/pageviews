@@ -63,10 +63,16 @@ export function buildTimeseriesOption( {
 			textStyle: { color: theme.text }
 		},
 		grid: { containLabel: true, left: 8, right: 8, bottom: 40 },
+		// The toolbox dataZoom feature must exist for the always-on
+		// drag-to-zoom that useChart() activates via takeGlobalCursor,
+		// but ECharts skips feature creation entirely under
+		// `show: false` — so it renders off-canvas instead, invisible
+		// and unclickable. Zoom is reset from our own toolbar.
 		toolbox: {
+			show: true,
+			top: -9999,
 			feature: {
-				dataZoom: { yAxisIndex: false },
-				restore: {}
+				dataZoom: { yAxisIndex: false }
 			}
 		},
 		dataZoom: [ { type: 'inside' } ],
