@@ -8,7 +8,8 @@ import { fetchPageviews } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 
 vi.mock( '../lib/metricsApi.js', () => ( {
-	fetchPageviews: vi.fn()
+	fetchPageviews: vi.fn(),
+	fetchEditData: vi.fn( () => Promise.resolve( { pages: {} } ) )
 } ) );
 vi.mock( '../lib/redirects.js', async ( importOriginal ) => ( {
 	// consolidateSeries stays real (pure, tested separately).

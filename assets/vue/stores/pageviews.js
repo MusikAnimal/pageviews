@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchPageviews } from '../lib/metricsApi.js';
+import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
@@ -40,6 +40,14 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * @type {import('vue').Ref<?{counts: number[], total: number, average: number}>}
 	 */
 	const totals = ref( null );
+	/**
+	 * Per-page edit stats keyed by title: { num_edits, num_users,
+	 * assessment }. null until (and unless) the replica-backed fetch
+	 * succeeds — the table omits those columns when unavailable.
+	 *
+	 * @type {import('vue').Ref<?Object>}
+	 */
+	const editData = ref( null );
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
@@ -82,12 +90,27 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			dates.value = [];
 			series.value = [];
 			totals.value = null;
+			editData.value = null;
 			return;
 		}
 
 		settings.ensureDefaultDates();
 		status.value = 'loading';
 		ui.clearMessages();
+
+		// Supplementary and non-fatal: without it the stats table just
+		// omits the edit columns (e.g. replicas unreachable locally).
+		editData.value = null;
+		fetchEditData( {
+			project: settings.project,
+			pages: pages.value,
+			start: settings.start,
+			end: settings.end
+		} ).then( ( result ) => {
+			if ( id === loadId ) {
+				editData.value = result.pages;
+			}
+		} ).catch( () => {} );
 
 		try {
 			let redirectMap = null;
@@ -147,6 +170,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		dates,
 		series,
 		totals,
+		editData,
 		query,
 		setFromQuery,
 		load

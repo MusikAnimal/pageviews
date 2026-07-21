@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchPageviews } from './metricsApi.js';
+import { fetchEditData, fetchPageviews } from './metricsApi.js';
 
 function chunkResponse( titles ) {
 	return {
@@ -87,6 +87,27 @@ describe( 'fetchPageviews', () => {
 			code: 'too_many_pages',
 			i18n: [ 'param-error-3', 'pages' ]
 		} );
+	} );
+
+	it( 'fetches edit data from the pages endpoint', async () => {
+		const impl = vi.fn( () => Promise.resolve( {
+			ok: true,
+			json: () => Promise.resolve( { pages: { Cat: { num_edits: '1' } } } )
+		} ) );
+		vi.stubGlobal( 'fetch', impl );
+
+		const result = await fetchEditData( {
+			project: 'en.wikipedia.org',
+			pages: [ 'Cat', 'Dog' ],
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} );
+
+		const url = new URL( impl.mock.calls[ 0 ][ 0 ], 'http://localhost' );
+		expect( url.pathname ).toBe( '/api/pages/en.wikipedia.org/edits' );
+		expect( url.searchParams.get( 'pages' ) ).toBe( 'Cat|Dog' );
+		expect( url.searchParams.get( 'totals' ) ).toBe( '1' );
+		expect( result.pages.Cat.num_edits ).toBe( '1' );
 	} );
 
 	it( 'copes with non-JSON error responses', async () => {

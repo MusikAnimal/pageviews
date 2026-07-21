@@ -33,7 +33,9 @@
 		</figure>
 		<Totals />
 	</div>
-	<section class="app-breakdown" />
+	<section class="app-breakdown">
+		<StatsTable v-if="chartReady" />
+	</section>
 </template>
 
 <script setup>
@@ -52,6 +54,7 @@ import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import Chart from '../components/Chart.vue';
 import ExportMenu from '../components/ExportMenu.vue';
 import Totals from '../apps/pageviews/Totals.vue';
+import StatsTable from '../apps/pageviews/StatsTable.vue';
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();

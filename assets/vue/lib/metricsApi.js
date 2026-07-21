@@ -52,11 +52,16 @@ export async function fetchPageviews( {
 	return mergeResults( results );
 }
 
-async function fetchChunk( { project, pages, ...rest } ) {
-	const query = new URLSearchParams( { ...rest, pages: pages.join( '|' ) } );
-	const response = await fetch(
-		`/api/metrics/pageviews/${ encodeURIComponent( project ) }?${ query }`
-	);
+/**
+ * GET one of our /api/* endpoints, surfacing the error envelope as
+ * ApiError.
+ *
+ * @param {string} path
+ * @param {Object} params
+ * @return {Promise<Object>}
+ */
+async function apiGet( path, params ) {
+	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }` );
 
 	if ( !response.ok ) {
 		let envelope = null;
@@ -67,12 +72,40 @@ async function fetchChunk( { project, pages, ...rest } ) {
 		}
 		throw new ApiError( envelope || {
 			code: 'upstream_error',
-			message: `Metrics API returned ${ response.status }`,
+			message: `API returned ${ response.status }`,
 			i18n: [ 'api-error', 'Pageviews API' ],
 			retryable: response.status >= 500
 		} );
 	}
 	return response.json();
+}
+
+function fetchChunk( { project, pages, ...rest } ) {
+	return apiGet(
+		`/api/metrics/pageviews/${ encodeURIComponent( project ) }`,
+		{ ...rest, pages: pages.join( '|' ) }
+	);
+}
+
+/**
+ * Edit statistics (edit/editor counts, assessment class) from the
+ * replica-backed endpoint.
+ *
+ * @param {Object} params
+ * @param {string} params.project
+ * @param {string[]} params.pages
+ * @param {string} params.start
+ * @param {string} params.end
+ * @return {Promise<Object>} { pages: { title: { num_edits, num_users,
+ *   assessment } }, totals? }
+ */
+export function fetchEditData( { project, pages, start, end } ) {
+	return apiGet( `/api/pages/${ encodeURIComponent( project ) }/edits`, {
+		pages: pages.join( '|' ),
+		start,
+		end,
+		totals: '1'
+	} );
 }
 
 function mergeResults( results ) {
