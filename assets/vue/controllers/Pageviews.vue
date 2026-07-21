@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import {
 	CdxButton,
 	CdxCheckbox,
@@ -81,6 +81,7 @@ import { buildCircularOption } from '../charts/options/circular.js';
 import { buildRadarOption } from '../charts/options/radar.js';
 import { chartTheme } from '../charts/theme.js';
 import { shouldUseLogScale } from '../charts/logScale.js';
+import { getDefaultPages } from '../lib/defaultPages.js';
 import { banana } from '../i18n.js';
 import { useRoute, useRouter } from 'vue-router';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
@@ -102,6 +103,21 @@ useQuerySync( store );
 
 // The /faq and /url_structure routes open dialogs over the app.
 const activeDialog = computed( () => route.meta.dialog ?? null );
+
+// A bare visit to / or /pageviews shows Cat|Dog (localized via
+// Wikidata) rather than an empty app, like the legacy tool. Dialog
+// routes are excluded.
+onMounted( applyDefaultPages );
+async function applyDefaultPages() {
+	if ( store.pages.length || activeDialog.value ) {
+		return;
+	}
+	const defaults = await getDefaultPages( settings.project );
+	// The user may have picked pages while the lookups ran.
+	if ( !store.pages.length && defaults.length ) {
+		store.pages = defaults;
+	}
+}
 
 function onDialogToggle( open ) {
 	if ( !open ) {
