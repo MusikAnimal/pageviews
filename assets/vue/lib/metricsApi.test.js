@@ -1,0 +1,106 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { fetchPageviews } from './metricsApi.js';
+
+function chunkResponse( titles ) {
+	return {
+		project: 'en.wikipedia',
+		dates: [ '2026-07-01', '2026-07-02' ],
+		pages: titles.map( ( title ) => ( {
+			title, counts: [ 1, 2 ], total: 3, average: 1.5
+		} ) ),
+		totals: { counts: [ titles.length, 2 * titles.length ], total: 3 * titles.length }
+	};
+}
+
+afterEach( () => {
+	vi.unstubAllGlobals();
+} );
+
+describe( 'fetchPageviews', () => {
+	it( 'fetches a single chunk directly', async () => {
+		const impl = vi.fn( () => Promise.resolve( {
+			ok: true,
+			json: () => Promise.resolve( chunkResponse( [ 'Cat' ] ) )
+		} ) );
+		vi.stubGlobal( 'fetch', impl );
+
+		const result = await fetchPageviews( {
+			project: 'en.wikipedia',
+			pages: [ 'Cat' ],
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} );
+
+		expect( impl ).toHaveBeenCalledOnce();
+		const url = new URL( impl.mock.calls[ 0 ][ 0 ], 'http://localhost' );
+		expect( url.pathname ).toBe( '/api/metrics/pageviews/en.wikipedia' );
+		expect( url.searchParams.get( 'pages' ) ).toBe( 'Cat' );
+		expect( result.pages ).toHaveLength( 1 );
+	} );
+
+	it( 'chunks large lists, reports progress, and merges results', async () => {
+		const progress = [];
+		const impl = vi.fn( ( url ) => {
+			const requested = new URL( url, 'http://localhost' )
+				.searchParams.get( 'pages' ).split( '|' );
+			return Promise.resolve( {
+				ok: true,
+				json: () => Promise.resolve( chunkResponse( requested ) )
+			} );
+		} );
+		vi.stubGlobal( 'fetch', impl );
+
+		const pages = Array.from( { length: 120 }, ( _, i ) => `Page ${ i }` );
+		const result = await fetchPageviews( {
+			project: 'en.wikipedia',
+			pages,
+			start: '2026-07-01',
+			end: '2026-07-02',
+			onProgress: ( done, total ) => progress.push( [ done, total ] )
+		} );
+
+		// 120 pages => chunks of 50 + 50 + 20.
+		expect( impl ).toHaveBeenCalledTimes( 3 );
+		expect( progress ).toContainEqual( [ 3, 3 ] );
+		expect( result.pages ).toHaveLength( 120 );
+		// Totals are recomputed across all chunks: 120 * [1, 2].
+		expect( result.totals.counts ).toEqual( [ 120, 240 ] );
+		expect( result.totals.total ).toBe( 360 );
+	} );
+
+	it( 'surfaces the error envelope as ApiError', async () => {
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( {
+			ok: false,
+			status: 400,
+			json: () => Promise.resolve( {
+				error: { code: 'too_many_pages', message: 'Too many.', i18n: [ 'param-error-3', 'pages' ] }
+			} )
+		} ) ) );
+
+		await expect( fetchPageviews( {
+			project: 'en.wikipedia',
+			pages: [ 'Cat' ],
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} ) ).rejects.toMatchObject( {
+			name: 'ApiError',
+			code: 'too_many_pages',
+			i18n: [ 'param-error-3', 'pages' ]
+		} );
+	} );
+
+	it( 'copes with non-JSON error responses', async () => {
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( {
+			ok: false,
+			status: 502,
+			json: () => Promise.reject( new SyntaxError( 'not json' ) )
+		} ) ) );
+
+		await expect( fetchPageviews( {
+			project: 'en.wikipedia',
+			pages: [ 'Cat' ],
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} ) ).rejects.toMatchObject( { name: 'ApiError', retryable: true } );
+	} );
+} );
