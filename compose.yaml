@@ -1,25 +1,41 @@
-
+# Local development environment. Production runs on Toolforge, not Docker.
+#
+# The app needs the Toolforge replica tunnels running on the HOST, e.g.:
+#   ssh -N -L 3306:enwiki.web.db.svc.wikimedia.cloud:3306 login.toolforge.org
+# Containers reach them via host.docker.internal (see REPLICAS_HOST_* below).
+#
+# Usage:
+#   docker compose up          # app on http://localhost:8091, Vite HMR on :5173
+#   HTTP_PORT=9000 docker compose up   # override the app port
+#   docker compose exec php composer install
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+  php:
+    build: .
+    ports:
+      - "${HTTP_PORT:-8091}:80"
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      - .:/app
+    environment:
+      REPLICAS_HOST_S1: host.docker.internal
+      REPLICAS_HOST_S2: host.docker.internal
+      REPLICAS_HOST_S3: host.docker.internal
+      REPLICAS_HOST_S4: host.docker.internal
+      REPLICAS_HOST_S5: host.docker.internal
+      REPLICAS_HOST_S6: host.docker.internal
+      REPLICAS_HOST_S7: host.docker.internal
+      REPLICAS_HOST_S8: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    tty: true
 
-volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+  node:
+    # Debian-based (glibc) on purpose: node_modules/ is bind-mounted and shared
+    # with the host, and esbuild/rollup ship platform-specific native binaries
+    # that an Alpine (musl) image could not run. Version matches .nvmrc.
+    image: node:20.19.5-slim
+    working_dir: /app
+    command: npm run dev -- --host 0.0.0.0
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
