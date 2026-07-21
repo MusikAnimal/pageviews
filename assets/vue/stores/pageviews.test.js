@@ -145,6 +145,33 @@ describe( 'pageviews store', () => {
 			} );
 		} );
 
+		it( 'drops missing pages with an error, keeping zero-view ones', async () => {
+			const { getPageInfo } = await import( '../lib/mwApi.js' );
+			const store = usePageviewsStore();
+			const ui = useUiStore();
+			store.pages = [ 'Cat', 'No_such_page', 'Zero_views' ];
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 },
+				{ title: 'No_such_page', counts: [ 0, 0 ], total: 0, average: 0, no_data: true },
+				{ title: 'Zero_views', counts: [ 0, 0 ], total: 0, average: 0, no_data: true }
+			] ) );
+			getPageInfo.mockResolvedValue( {
+				Cat: { title: 'Cat' },
+				'No such page': { title: 'No such page', missing: true },
+				'Zero views': { title: 'Zero views' }
+			} );
+
+			await store.load();
+
+			// The AQS 404 for the existing page means zero pageviews and
+			// is kept; the nonexistent page is dropped with a message.
+			expect( store.series.map( ( page ) => page.title ) )
+				.toEqual( [ 'Cat', 'Zero_views' ] );
+			expect( ui.messages ).toHaveLength( 1 );
+			expect( ui.messages[ 0 ].type ).toBe( 'error' );
+			expect( ui.messages[ 0 ].text ).toContain( 'No such page' );
+		} );
+
 		it( 'notifies with a localized message on ApiError', async () => {
 			const store = usePageviewsStore();
 			const ui = useUiStore();

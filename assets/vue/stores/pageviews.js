@@ -139,9 +139,48 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			if ( id === loadId ) {
 				pageInfo.value = result;
 			}
+			return result;
 		} catch {
 			// Non-fatal; the affected fields simply don't render.
+			return null;
 		}
+	}
+
+	/**
+	 * Drop series for pages that don't exist, with an error message per
+	 * page. An AQS 404 alone can simply mean no pageviews (zeros are
+	 * legitimate); only the Action API knows whether the page exists.
+	 *
+	 * @param {Array} seriesData
+	 * @param {?Object} info From getPageInfo(); keyed by normalized title.
+	 * @param {Object} ui
+	 * @return {Array}
+	 */
+	function dropMissingPages( seriesData, info, ui ) {
+		if ( !info ) {
+			return seriesData;
+		}
+		const missing = new Set(
+			Object.values( info )
+				.filter( ( page ) => page.missing && !page.known )
+				.map( ( page ) => page.title )
+		);
+		if ( !missing.size ) {
+			return seriesData;
+		}
+		return seriesData.filter( ( page ) => {
+			const title = page.title.replace( /_/g, ' ' );
+			// Consolidated redirect counts mean there is real data even
+			// if the target itself 404'd on AQS.
+			if ( page.no_data && page.total === 0 && missing.has( title ) ) {
+				ui.notify( {
+					type: 'error',
+					text: `${ title }: ${ banana.i18n( 'api-error-no-data' ) }`
+				} );
+				return false;
+			}
+			return true;
+		} );
 	}
 
 	/**
@@ -170,10 +209,11 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 
 		// Supplementary and non-fatal: without these the stats table
 		// and totals panel just omit the affected fields (e.g. replicas
-		// unreachable locally). Deliberately not awaited, so they run
-		// concurrently with the metrics fetch.
+		// unreachable locally). Deliberately not awaited here, so they
+		// run concurrently with the metrics fetch. Page info is awaited
+		// later to tell missing pages apart from zero-pageview ones.
 		loadEditData( settings, id );
-		loadPageInfo( settings, id );
+		const pageInfoPromise = loadPageInfo( settings, id );
 
 		try {
 			let redirectMap = null;
@@ -205,9 +245,10 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			dates.value = result.dates;
 			// Consolidation does not change the grand totals: redirect
 			// counts are moved into their targets, not duplicated.
-			series.value = redirectMap ?
+			const consolidated = redirectMap ?
 				consolidateSeries( pages.value, redirectMap, result.pages ) :
 				result.pages;
+			series.value = dropMissingPages( consolidated, await pageInfoPromise, ui );
 			totals.value = result.totals;
 			status.value = 'complete';
 		} catch ( error ) {
