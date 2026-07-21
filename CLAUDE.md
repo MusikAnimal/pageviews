@@ -18,8 +18,10 @@ reference. Canonical legacy files: `javascripts/shared/{pv,pv_config,chart_helpe
 
 Everything runs in Docker (`docker compose up`): app at `http://localhost:8091`
 (override with `HTTP_PORT`), Vite dev server with HMR on `:5173`. Replica DB
-access requires SSH tunnels running on the HOST (containers reach them via
-`host.docker.internal`).
+access requires SSH tunnels running on the HOST, bound to the Docker bridge —
+`symfony console toolforge:ssh -b 172.17.0.1` (see DEVELOPERS.md). If replica
+endpoints 500 with "Connection refused", the tunnels are down or bound to
+127.0.0.1 — that's a user-side fix; surface it, don't debug the app.
 
 Run all tooling through the containers:
 

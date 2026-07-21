@@ -1,8 +1,8 @@
 # Local development environment. Production runs on Toolforge, not Docker.
 #
-# The app needs the Toolforge replica tunnels running on the HOST, e.g.:
-#   ssh -N -L 3306:enwiki.web.db.svc.wikimedia.cloud:3306 login.toolforge.org
-# Containers reach them via host.docker.internal (see REPLICAS_HOST_* below).
+# The app needs the Toolforge replica tunnels running on the HOST, bound
+# to the Docker bridge so containers can reach them (see DEVELOPERS.md):
+#   symfony console toolforge:ssh -b 172.17.0.1
 #
 # Usage:
 #   docker compose up          # app on http://localhost:8091, Vite HMR on :5173
