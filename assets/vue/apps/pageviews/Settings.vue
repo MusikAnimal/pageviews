@@ -5,6 +5,7 @@
 		</header>
 		<DateRangeInput />
 		<ProjectInput />
+		<PageInput />
 		<PlatformInput />
 		<AgentInput />
 		<CdxField class="app-settings__redirects">
@@ -19,6 +20,7 @@
 import { storeToRefs } from 'pinia';
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from '../../components/ProjectInput.vue';
+import PageInput from '../../components/PageInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { CdxCheckbox, CdxField } from '@wikimedia/codex';
