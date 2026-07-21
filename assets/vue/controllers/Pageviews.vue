@@ -43,7 +43,7 @@ useQuerySync( store );
 	padding: @spacing-50;
 }
 
-.app-visualization {
+.app-chart {
 	flex: 999 1 @size-3200;
 	min-height: 100px;
 	min-width: 0;
