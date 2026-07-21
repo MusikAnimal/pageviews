@@ -19,7 +19,7 @@ class MetricsRepositoryTest extends TestCase {
 	/**
 	 * @param array $routes Substring => MockResponse factory or body array.
 	 */
-	private function makeRepo( array $routes = [] ): MetricsRepository {
+	private function makeRepo( array $routes = [], string $excludesPath = '' ): MetricsRepository {
 		$client = new MockHttpClient( function ( string $method, string $url ) use ( $routes ) {
 			$this->requestedUrls[] = $url;
 			foreach ( $routes as $needle => $response ) {
@@ -35,7 +35,7 @@ class MetricsRepositoryTest extends TestCase {
 			);
 		}, 'https://wikimedia.org/api/rest_v1/metrics/' );
 
-		return new MetricsRepository( $client, new ArrayAdapter() );
+		return new MetricsRepository( $client, new ArrayAdapter(), $excludesPath );
 	}
 
 	private static function aqsItems( string $article, array $viewsByTimestamp ): array {
@@ -159,6 +159,81 @@ class MetricsRepositoryTest extends TestCase {
 				static::assertSame( $expectedCode, $e->errorCode );
 				static::assertSame( 400, $e->status );
 			}
+		}
+	}
+
+	private const EXCLUDES_FIXTURE = __DIR__ . '/../../Fixtures/topviews_excludes.yaml';
+
+	private static function aqsTop( array $articlesToViews ): array {
+		$rank = 0;
+		$articles = [];
+		foreach ( $articlesToViews as $article => $views ) {
+			$articles[] = [ 'article' => $article, 'views' => $views, 'rank' => ++$rank ];
+		}
+		return [ 'items' => [ [ 'articles' => $articles ] ] ];
+	}
+
+	public function testTopPageviewsExcludesAndReranks(): void {
+		$repo = $this->makeRepo( [
+			'pageviews/top/en.wikipedia/all-access/2026/06/all-days' => self::aqsTop( [
+				'Cat' => 500,
+				// Excluded via '*' (stored with a space, served with an
+				// underscore) and via the project list respectively:
+				// following ranks shift up.
+				'Global_Spam' => 400,
+				'Bot_Magnet' => 300,
+				'Dog' => 200,
+			] ),
+		], self::EXCLUDES_FIXTURE );
+
+		$result = $repo->getTopPageviews( 'en.wikipedia.org', '2026-06' );
+
+		static::assertSame( [
+			'project' => 'en.wikipedia',
+			'platform' => 'all-access',
+			'date' => '2026-06',
+			'articles' => [
+				[ 'article' => 'Cat', 'views' => 500, 'rank' => 1 ],
+				[ 'article' => 'Dog', 'views' => 200, 'rank' => 2 ],
+			],
+		], $result );
+	}
+
+	public function testTopPageviewsDailyAndOtherProjectExcludes(): void {
+		$repo = $this->makeRepo( [
+			'pageviews/top/de.wikipedia/desktop/2026/06/15' => self::aqsTop( [
+				'Katze' => 300,
+				'Hund' => 200,
+			] ),
+		], self::EXCLUDES_FIXTURE );
+
+		$result = $repo->getTopPageviews( 'de.wikipedia', '2026-06-15', 'desktop' );
+
+		static::assertSame(
+			[ [ 'article' => 'Hund', 'views' => 200, 'rank' => 1 ] ],
+			$result['articles']
+		);
+	}
+
+	public function testTopPageviewsNoData(): void {
+		// No mocked route: the mock client 404s.
+		$repo = $this->makeRepo();
+
+		$result = $repo->getTopPageviews( 'en.wikipedia', '2026-06' );
+
+		static::assertSame( [], $result['articles'] );
+		static::assertTrue( $result['no_data'] );
+	}
+
+	public function testTopPageviewsInvalidDate(): void {
+		$repo = $this->makeRepo();
+
+		try {
+			$repo->getTopPageviews( 'en.wikipedia', 'June 2026' );
+			static::fail( 'Expected ApiException (invalid_date)' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'invalid_date', $e->errorCode );
+			static::assertSame( 400, $e->status );
 		}
 	}
 

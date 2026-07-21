@@ -1,0 +1,14 @@
+# Curated Topviews false positives, replacing the legacy tool's
+# meta-database-backed reporting feature. These pages are dropped from
+# /api/metrics/top responses (and ranks recomputed) — typically pages
+# whose view counts are known to be inflated by bots or embedded
+# widgets rather than genuine readership.
+#
+# Keys are project domains ('en.wikipedia.org'); the special key '*'
+# applies to every project. Values are lists of page titles (spaces
+# and underscores are equivalent).
+#
+# Example:
+# en.wikipedia.org:
+#   - XHamster
+"*": []

@@ -4,12 +4,13 @@ import { usePageviewsStore } from './pageviews.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 import { ApiError } from '../lib/errors.js';
-import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
+import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 
 vi.mock( '../lib/metricsApi.js', () => ( {
 	fetchPageviews: vi.fn(),
-	fetchEditData: vi.fn( () => Promise.resolve( { pages: {} } ) )
+	fetchEditData: vi.fn( () => Promise.resolve( { pages: {} } ) ),
+	fetchTopviews: vi.fn( () => Promise.resolve( { articles: [] } ) )
 } ) );
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
@@ -170,6 +171,45 @@ describe( 'pageviews store', () => {
 			expect( ui.messages ).toHaveLength( 1 );
 			expect( ui.messages[ 0 ].type ).toBe( 'error' );
 			expect( ui.messages[ 0 ].text ).toContain( 'No such page' );
+		} );
+
+		it( 'looks up the Topviews rank for single-page queries', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+			const store = usePageviewsStore();
+			const settings = useSettingsStore();
+			store.pages = [ 'Cat' ];
+			settings.setFromQuery( { start: '2026-07-01', end: '2026-07-15' } );
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+			fetchTopviews.mockResolvedValue( {
+				articles: [
+					{ article: 'Dog', views: 500, rank: 1 },
+					{ article: 'Cat', views: 400, rank: 2 }
+				]
+			} );
+
+			await store.load();
+
+			// July is incomplete: clamped to the last complete month.
+			expect( fetchTopviews ).toHaveBeenCalledWith( expect.objectContaining( {
+				project: 'en.wikipedia.org',
+				date: '2026-06'
+			} ) );
+			expect( store.topRank ).toEqual( { rank: 2, date: '2026-06' } );
+
+			// Multi-page queries don't get a rank.
+			store.pages = [ 'Cat', 'Dog' ];
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 },
+				{ title: 'Dog', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+			await store.load();
+			expect( store.topRank ).toBeNull();
+
+			vi.useRealTimers();
 		} );
 
 		it( 'notifies with a localized message on ApiError', async () => {

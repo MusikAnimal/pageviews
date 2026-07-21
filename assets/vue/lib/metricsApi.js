@@ -110,6 +110,25 @@ export function fetchEditData( { project, pages, start, end } ) {
 	} );
 }
 
+/**
+ * The most-viewed pages of a month (YYYY-MM) or day (YYYY-MM-DD), with
+ * the curated false positives already removed and ranks recomputed
+ * server-side.
+ *
+ * @param {Object} params
+ * @param {string} params.project
+ * @param {string} params.date
+ * @param {string} [params.platform]
+ * @return {Promise<Object>} { project, platform, date, articles:
+ *   [ { article, views, rank } ] }
+ */
+export function fetchTopviews( { project, date, platform = 'all-access' } ) {
+	return apiGet(
+		`/api/metrics/top/${ encodeURIComponent( project ) }`,
+		{ date, platform }
+	);
+}
+
 function mergeResults( results ) {
 	if ( results.length === 1 ) {
 		return results[ 0 ];

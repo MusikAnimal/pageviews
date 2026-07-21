@@ -206,4 +206,18 @@ describe( 'StatsTable', () => {
 		// Pageviews in bold, via the num-pageviews message.
 		expect( summary.find( 'strong' ).text() ).toBe( '1,030 pageviews' );
 	} );
+
+	it( 'shows the Topviews rank line when the page made the top list', () => {
+		const store = seedStore();
+		const settings = useSettingsStore();
+		settings.setFromQuery( { start: '2026-06-01', end: '2026-06-30' } );
+		store.series = [ store.series[ 1 ] ]; // Cat only
+		store.topRank = { rank: 5, date: '2026-06' };
+
+		const rank = mountTable().find( '.app-page-summary__rank' );
+		expect( rank.text() ).toContain( '5' );
+		expect( rank.text() ).toContain( 'June 2026' );
+		expect( rank.find( 'a' ).attributes( 'href' ) )
+			.toBe( '/topviews?project=en.wikipedia.org&platform=all-access&date=2026-06' );
+	} );
 } );

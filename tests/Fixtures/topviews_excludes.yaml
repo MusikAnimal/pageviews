@@ -1,0 +1,8 @@
+# Test fixture for MetricsRepositoryTest::testTopPageviews*.
+"*":
+  - Global Spam
+en.wikipedia.org:
+  # Underscores are equivalent to spaces.
+  - Bot_Magnet
+de.wikipedia.org:
+  - Katze

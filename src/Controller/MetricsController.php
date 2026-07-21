@@ -34,4 +34,15 @@ class MetricsController extends AbstractController {
 			$project, $pages, $start, $end, $platform, $agent, $granularity
 		) );
 	}
+
+	#[Route( '/api/metrics/top/{project}', name: 'api_metrics_top', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function top(
+		MetricsRepository $metricsRepo,
+		string $project,
+		#[MapQueryParameter] string $date = '',
+		#[MapQueryParameter] string $platform = 'all-access',
+	): JsonResponse {
+		return new JsonResponse( $metricsRepo->getTopPageviews( $project, $date, $platform ) );
+	}
 }

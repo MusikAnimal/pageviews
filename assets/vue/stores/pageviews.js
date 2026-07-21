@@ -1,8 +1,9 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
+import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
 import { getPageInfo } from '../lib/mwApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
+import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import { usePreferencesStore } from './preferences.js';
 import { useSettingsStore } from './settings.js';
@@ -68,6 +69,14 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * @type {import('vue').Ref<?Object>}
 	 */
 	const pageInfo = ref( null );
+	/**
+	 * Single-page queries only: the page's rank among the most-viewed
+	 * pages of the month ({ rank, date: YYYY-MM }), or null when it
+	 * isn't in the (excludes-filtered) top list.
+	 *
+	 * @type {import('vue').Ref<?{rank: number, date: string}>}
+	 */
+	const topRank = ref( null );
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
@@ -147,6 +156,39 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	}
 
 	/**
+	 * Single-page queries: look up the page in the excludes-filtered
+	 * most-viewed list for the month of the end date (clamped to the
+	 * last complete month, since recent data lags).
+	 *
+	 * @param {Object} settings The settings store.
+	 * @param {number} id Load id, to discard superseded responses.
+	 */
+	async function loadTopviewsRank( settings, id ) {
+		topRank.value = null;
+		if ( pages.value.length !== 1 ) {
+			return;
+		}
+		try {
+			const endMonth = startOfMonth( parseDate( settings.end ) );
+			const max = lastCompleteMonthUtc();
+			const date = formatYm( endMonth > max ? max : endMonth );
+			const result = await fetchTopviews( {
+				project: settings.project,
+				date,
+				platform: settings.platform
+			} );
+			if ( id !== loadId ) {
+				return;
+			}
+			const title = pages.value[ 0 ].replace( /_/g, ' ' );
+			const entry = result.articles.find( ( article ) => article.article === title );
+			topRank.value = entry ? { rank: entry.rank, date } : null;
+		} catch {
+			// Non-fatal; the rank line simply doesn't render.
+		}
+	}
+
+	/**
 	 * Drop series for pages that don't exist, with an error message per
 	 * page. An AQS 404 alone can simply mean no pageviews (zeros are
 	 * legitimate); only the Action API knows whether the page exists.
@@ -200,6 +242,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			totals.value = null;
 			editData.value = null;
 			pageInfo.value = null;
+			topRank.value = null;
 			return;
 		}
 
@@ -213,6 +256,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		// run concurrently with the metrics fetch. Page info is awaited
 		// later to tell missing pages apart from zero-pageview ones.
 		loadEditData( settings, id );
+		loadTopviewsRank( settings, id );
 		const pageInfoPromise = loadPageInfo( settings, id );
 
 		try {
@@ -277,6 +321,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		totals,
 		editData,
 		pageInfo,
+		topRank,
 		query,
 		setFromQuery,
 		load

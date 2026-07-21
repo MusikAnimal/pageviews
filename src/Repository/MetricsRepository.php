@@ -9,10 +9,12 @@ use App\Trait\DateParserTrait;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -43,6 +45,8 @@ class MetricsRepository extends Repository {
 	public function __construct(
 		private readonly HttpClientInterface $aqsClient,
 		private readonly CacheInterface $cacheMetrics,
+		#[Autowire( '%kernel.project_dir%/config/topviews_excludes.yaml' )]
+		private readonly string $topviewsExcludesPath = '',
 	) {
 	}
 
@@ -167,6 +171,121 @@ class MetricsRepository extends Repository {
 				'average' => round( array_sum( $totals ) / count( $dates ), 2 ),
 			],
 		];
+	}
+
+	/**
+	 * The most-viewed pages of a month or day, with the curated
+	 * false positives (config/topviews_excludes.yaml) removed and ranks
+	 * recomputed — the legacy tool showed raw AQS ranks in the
+	 * single-page summary, which ignored excludes.
+	 *
+	 * @param string $date YYYY-MM (whole month) or YYYY-MM-DD.
+	 */
+	public function getTopPageviews(
+		string $project,
+		string $date,
+		string $platform = 'all-access',
+	): array {
+		$project = $this->normalizeProject( $project );
+		$platform = $this->validated( 'platform', $platform === 'all' ? 'all-access' : $platform, self::PLATFORMS );
+
+		if ( preg_match( '/^\d{4}-(\d{2})$/', $date, $matches ) ) {
+			$day = 'all-days';
+			$end = ( new DateTime( "$date-01" ) )->modify( 'last day of this month' );
+		} elseif ( preg_match( '/^\d{4}-\d{2}-(\d{2})$/', $date, $matches ) ) {
+			$day = $matches[1];
+			$end = new DateTime( $date );
+		} else {
+			$this->invalidParameter(
+				'invalid_date',
+				"Date $date is not in a valid format (YYYY-MM or YYYY-MM-DD).",
+				[ 'param-error-3', 'date' ]
+			);
+		}
+
+		$cacheKey = sprintf( 'top.%s.%s.%s', $project, $platform, $date );
+
+		return $this->cacheMetrics->get(
+			$cacheKey,
+			function ( ItemInterface $item ) use ( $project, $platform, $date, $day, $end ): array {
+				$item->expiresAfter( $this->ttlForRange( $end ) );
+				return $this->fetchTopPageviews( $project, $platform, $date, $day );
+			}
+		);
+	}
+
+	private function fetchTopPageviews(
+		string $project,
+		string $platform,
+		string $date,
+		string $day,
+	): array {
+		[ $year, $month ] = explode( '-', $date );
+		$response = $this->aqsClient->request(
+			'GET',
+			"pageviews/top/$project/$platform/$year/$month/$day"
+		);
+
+		$noData = false;
+		try {
+			$entries = $response->toArray()['items'][0]['articles'] ?? [];
+		} catch ( HttpClientExceptionInterface $e ) {
+			if (
+				$e instanceof ClientExceptionInterface &&
+				$response->getStatusCode() === Response::HTTP_NOT_FOUND
+			) {
+				// No data for this period (e.g. too recent).
+				$noData = true;
+				$entries = [];
+			} else {
+				throw new ApiException(
+					'upstream_error',
+					'The Pageviews API returned an error.',
+					[ 'api-error', 'Pageviews API' ],
+					Response::HTTP_BAD_GATEWAY,
+					'aqs',
+					true,
+				);
+			}
+		}
+
+		$excludes = $this->topviewsExcludes( $project );
+		$articles = [];
+		$rank = 0;
+		foreach ( $entries as $entry ) {
+			$title = str_replace( '_', ' ', $entry['article'] );
+			if ( in_array( $title, $excludes, true ) ) {
+				continue;
+			}
+			$articles[] = [
+				'article' => $title,
+				'views' => $entry['views'],
+				'rank' => ++$rank,
+			];
+		}
+
+		return [
+			'project' => $project,
+			'platform' => $platform,
+			'date' => $date,
+			'articles' => $articles,
+		] + ( $noData ? [ 'no_data' => true ] : [] );
+	}
+
+	/**
+	 * @return string[] Excluded titles (spaces normalized) for the
+	 *   project: the '*' list plus the project's own.
+	 */
+	private function topviewsExcludes( string $project ): array {
+		if ( !$this->topviewsExcludesPath || !is_file( $this->topviewsExcludesPath ) ) {
+			return [];
+		}
+		$config = Yaml::parseFile( $this->topviewsExcludesPath ) ?: [];
+		$titles = array_merge( $config['*'] ?? [], $config["$project.org"] ?? [] );
+		return array_map(
+			static fn ( string $title ): string => str_replace( '_', ' ', $title ),
+			$titles
+		);
 	}
 
 	/**
