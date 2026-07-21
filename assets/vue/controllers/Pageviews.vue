@@ -25,6 +25,13 @@
 						:filename="exportFilename"
 						:get-png="() => chartRef?.getPngDataUrl()"
 					/>
+					<CdxCheckbox
+						v-if="logCapable"
+						v-model="logScale"
+						class="app-chart__log"
+					>
+						{{ $i18n( 'logarithmic-scale' ) }}
+					</CdxCheckbox>
 				</div>
 				<Chart
 					ref="chartRef"
@@ -42,7 +49,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { CdxMessage, CdxProgressBar } from '@wikimedia/codex';
+import { CdxCheckbox, CdxMessage, CdxProgressBar } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -94,6 +101,18 @@ const selectedChartType = computed( {
 	}
 } );
 
+// Only the linear chart types can plot on a log axis.
+const logCapable = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
+
+const logScale = ref( false );
+
+// Auto-enable on spiky data (the legacy Theil-index heuristic). The
+// user can always override via the checkbox; a localStorage preference
+// gating the auto-detection comes with the preferences dialog.
+watch( () => store.series, ( series ) => {
+	logScale.value = shouldUseLogScale( series.map( ( page ) => page.counts ) );
+} );
+
 const chartOption = computed( () => {
 	const type = selectedChartType.value;
 	const common = { locale: banana.locale, theme: theme.value };
@@ -120,7 +139,7 @@ const chartOption = computed( () => {
 		dates: store.dates,
 		series: timeseries,
 		chartType: type,
-		logScale: shouldUseLogScale( store.series.map( ( page ) => page.counts ) ),
+		logScale: logScale.value,
 		monthly: settings.dateType === 'monthly',
 		...common
 	} );
@@ -183,6 +202,10 @@ watch(
 		flex-wrap: wrap;
 		gap: @spacing-50;
 		margin-bottom: @spacing-50;
+	}
+
+	&__log {
+		margin-left: auto;
 	}
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
