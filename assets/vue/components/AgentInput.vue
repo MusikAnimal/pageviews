@@ -56,6 +56,6 @@ function openFaq() {
 .app-settings__agent-help {
 	position: absolute;
 	right: 0;
-	top: -34px;
+	top: -5px;
 }
 </style>
