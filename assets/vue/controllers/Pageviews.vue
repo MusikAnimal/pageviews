@@ -33,8 +33,14 @@
 					</CdxButton>
 					<CdxCheckbox
 						v-if="linearType"
+						v-model="showValues"
+						class="app-chart__show-values"
+					>
+						{{ $i18n( 'show-values' ) }}
+					</CdxCheckbox>
+					<CdxCheckbox
+						v-if="linearType"
 						v-model="logScale"
-						class="app-chart__log"
 					>
 						{{ $i18n( 'logarithmic-scale' ) }}
 					</CdxCheckbox>
@@ -166,6 +172,7 @@ const selectedChartType = computed( {
 const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
 
 const logScale = ref( false );
+const showValues = ref( false );
 
 // Auto-enable on spiky data (the legacy Theil-index heuristic), when
 // the preference allows and the URL doesn't carry autolog=false; the
@@ -208,6 +215,7 @@ const chartOption = computed( () => {
 		series: timeseries,
 		chartType: type,
 		logScale: logScale.value,
+		showValues: showValues.value,
 		beginAtZero: preferences.beginAtZero,
 		smooth: preferences.bezierCurve,
 		monthly: settings.dateType === 'monthly',
@@ -274,7 +282,7 @@ watch(
 		margin-bottom: @spacing-50;
 	}
 
-	&__log {
+	&__show-values {
 		margin-left: auto;
 	}
 

@@ -13,7 +13,7 @@ describe( 'preferences store', () => {
 		expect( preferences.numericalFormatting ).toBe( true );
 		expect( preferences.localizeDateFormat ).toBe( true );
 		expect( preferences.autoLogDetection ).toBe( true );
-		expect( preferences.beginAtZero ).toBe( false );
+		expect( preferences.beginAtZero ).toBe( true );
 		expect( preferences.rememberChart ).toBe( false );
 		expect( preferences.bezierCurve ).toBe( false );
 		expect( preferences.alwaysRedirects ).toBe( false );
@@ -24,11 +24,11 @@ describe( 'preferences store', () => {
 		// Legacy stored raw 'true'/'false' strings, which JSON-parse
 		// into the intended booleans.
 		localStorage.setItem( 'pageviews-settings-numericalFormatting', 'false' );
-		localStorage.setItem( 'pageviews-settings-beginAtZero', 'true' );
+		localStorage.setItem( 'pageviews-settings-beginAtZero', 'false' );
 
 		const preferences = usePreferencesStore();
 		expect( preferences.numericalFormatting ).toBe( false );
-		expect( preferences.beginAtZero ).toBe( true );
+		expect( preferences.beginAtZero ).toBe( false );
 	} );
 
 	it( 'persists changes to localStorage', async () => {
