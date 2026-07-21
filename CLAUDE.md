@@ -5,8 +5,9 @@ Wikimedia pageview analysis apps (Pageviews, Topviews, Langviews, Siteviews,
 Massviews, Redirect Views, Mediaviews, Userviews). Goal: feature parity with the
 legacy tool, fundamentally reorganized for maintainability.
 
-**Stack**: Symfony 7.4 (PHP 8.4) — an upgrade to Symfony 8.1 is planned (user runs
-the composer side; expect follow-up code fixes) · Symfony UX Vue + Stimulus via vite-plugin-symfony ·
+**Stack**: Symfony 7.4 (PHP 8.4) — a Symfony 8.1 upgrade is wanted but currently
+blocked: wikimedia/toolforge-bundle (1.7.2) caps at Symfony ^7. Revisit when
+upstream allows ^8 · Symfony UX Vue + Stimulus via vite-plugin-symfony ·
 Vue 3 + Pinia + vue-router · Wikimedia Codex + design tokens · LESS · banana-i18n ·
 Apache ECharts 6 · Vitest · PHPUnit 12 (+ Panther) · eslint/stylelint-config-wikimedia
 
