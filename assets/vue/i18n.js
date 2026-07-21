@@ -33,6 +33,24 @@ export async function loadMessages() {
 }
 
 /**
+ * The raw message with simple $N parameter substitution, skipping
+ * banana's parser — whose HTML sanitizer escapes anchor elements.
+ * Several legacy messages embed raw <a> markup (they were rendered
+ * server-side by Intuition, unsanitized). Only for trusted v-html
+ * contexts; no PLURAL/GENDER support.
+ *
+ * @param {string} key
+ * @param {...string} params
+ * @return {string}
+ */
+export function rawI18n( key, ...params ) {
+	return banana.getMessage( key ).replace(
+		/\$(\d+)/g,
+		( match, index ) => params[ index - 1 ] ?? match
+	);
+}
+
+/**
  * Render the i18n message into the element's innerHTML. Used by the v-i18n-html directive.
  *
  * @param {HTMLElement} el

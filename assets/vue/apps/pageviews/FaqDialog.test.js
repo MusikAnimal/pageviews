@@ -28,6 +28,15 @@ describe( 'FaqDialog', () => {
 		expect( wrapper.find( '#anomaly a[href*="phabricator"]' ).exists() ).toBe( true );
 	} );
 
+	it( 'renders anchors embedded in message text', () => {
+		const wrapper = mountDialog( FaqDialog );
+		// banana's sanitizer escapes <a> in message content; these
+		// entries go through rawI18n instead.
+		expect( wrapper.find( '#agents a[href*="Web_crawler"]' ).exists() ).toBe( true );
+		expect( wrapper.find( '#feedback a[href*="meta.wikimedia.org"]' ).exists() ).toBe( true );
+		expect( wrapper.find( '#agents' ).html() ).not.toContain( '&lt;a' );
+	} );
+
 	it( 'emits update:open on close', () => {
 		const wrapper = mountDialog( FaqDialog );
 		wrapper.findComponent( { name: 'CdxDialog' } ).vm.$emit( 'update:open', false );

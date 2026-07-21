@@ -27,7 +27,7 @@
 
 <script setup>
 import { CdxDialog } from '@wikimedia/codex';
-import { banana } from '../../i18n.js';
+import { banana, rawI18n } from '../../i18n.js';
 
 defineProps( {
 	open: {
@@ -119,11 +119,13 @@ const entries = [
 		id: 'agents',
 		title: banana.i18n( 'faq-agents-title' ),
 		paragraphs: [
+			// rawI18n: these messages embed anchor markup, which
+			// banana's sanitizer would escape.
 			'<ul>' + [
 				[ 'user', 'faq-agents-user' ],
 				[ 'spider', 'faq-agents-spider' ],
 				[ 'automated', 'faq-agents-automated' ]
-			].map( ( [ label, body ] ) => `<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
+			].map( ( [ label, body ] ) => `<li><i>${ banana.i18n( label ) }</i> ${ rawI18n( body ) }</li>`
 			).join( '' ) + '</ul>'
 		]
 	},
@@ -159,7 +161,8 @@ const entries = [
 	{
 		id: 'feedback',
 		title: banana.i18n( 'faq-bug-report-title' ),
-		paragraphs: [ banana.i18n( 'faq-bug-report-body' ) ]
+		// rawI18n: the message embeds anchor markup.
+		paragraphs: [ rawI18n( 'faq-bug-report-body' ) ]
 	}
 ];
 </script>
