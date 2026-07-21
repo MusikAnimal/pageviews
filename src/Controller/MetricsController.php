@@ -1,0 +1,37 @@
+<?php
+
+declare( strict_types = 1 );
+
+namespace App\Controller;
+
+use App\Repository\MetricsRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\Cache;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\Routing\Attribute\Route;
+
+/**
+ * JSON proxies for the Wikimedia AQS metrics REST API. Pairs with
+ * MetricsRepository. Errors render as the /api/* envelope (see
+ * ApiExceptionListener).
+ */
+class MetricsController extends AbstractController {
+
+	#[Route( '/api/metrics/pageviews/{project}', name: 'api_metrics_pageviews', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function pageviews(
+		MetricsRepository $metricsRepo,
+		string $project,
+		#[MapQueryParameter] string $pages = '',
+		#[MapQueryParameter] string $start = '',
+		#[MapQueryParameter] string $end = '',
+		#[MapQueryParameter] string $platform = 'all-access',
+		#[MapQueryParameter] string $agent = 'user',
+		#[MapQueryParameter] string $granularity = 'daily',
+	): JsonResponse {
+		return new JsonResponse( $metricsRepo->getPageviews(
+			$project, $pages, $start, $end, $platform, $agent, $granularity
+		) );
+	}
+}
