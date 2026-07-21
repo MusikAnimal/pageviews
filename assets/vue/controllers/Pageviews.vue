@@ -15,11 +15,21 @@
 				v-if="store.status === 'loading'"
 				:aria-label="$i18n( 'loading' )"
 			/>
-			<Chart
-				v-if="chartReady"
-				:option="chartOption"
-				:aria-label="$i18n( 'pageviews' )"
-			/>
+			<template v-if="chartReady">
+				<div class="app-chart__toolbar">
+					<ExportMenu
+						:dates="store.dates"
+						:series="store.series"
+						:filename="exportFilename"
+						:get-png="() => chartRef?.getPngDataUrl()"
+					/>
+				</div>
+				<Chart
+					ref="chartRef"
+					:option="chartOption"
+					:aria-label="$i18n( 'pageviews' )"
+				/>
+			</template>
 		</figure>
 		<Totals />
 	</div>
@@ -27,7 +37,7 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { CdxMessage, CdxProgressBar } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
@@ -40,6 +50,7 @@ import { shouldUseLogScale } from '../charts/logScale.js';
 import { banana } from '../i18n.js';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import Chart from '../components/Chart.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 import Totals from '../apps/pageviews/Totals.vue';
 
 const store = usePageviewsStore();
@@ -49,8 +60,14 @@ useQuerySync( store );
 
 const dark = usePrefersDark();
 
+const chartRef = ref( null );
+
 const chartReady = computed(
 	() => store.status === 'complete' && store.dates.length > 0
+);
+
+const exportFilename = computed(
+	() => `pageviews-${ settings.start }-${ settings.end }`
 );
 
 // Reading dark.value makes the theme (CSS custom properties change with
