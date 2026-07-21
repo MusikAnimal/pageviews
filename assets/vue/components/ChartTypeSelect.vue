@@ -14,12 +14,14 @@
 
 <script setup>
 import { CdxIcon, CdxMenuButton } from '@wikimedia/codex';
-import { cdxIconChart } from '@wikimedia/codex-icons';
 import {
-	iconChartBar,
+	cdxIconChart,
+	cdxIconChartBar,
+	cdxIconChartLine,
+	cdxIconChartPie
+} from '@wikimedia/codex-icons';
+import {
 	iconChartDoughnut,
-	iconChartLine,
-	iconChartPie,
 	iconChartPolarArea,
 	iconChartRadar
 } from '../charts/icons.js';
@@ -38,10 +40,10 @@ defineProps( {
 const emit = defineEmits( [ 'update:modelValue' ] );
 
 const menuItems = [
-	{ value: 'line', label: banana.i18n( 'line' ), icon: iconChartLine },
-	{ value: 'bar', label: banana.i18n( 'bar' ), icon: iconChartBar },
+	{ value: 'line', label: banana.i18n( 'line' ), icon: cdxIconChartLine },
+	{ value: 'bar', label: banana.i18n( 'bar' ), icon: cdxIconChartBar },
 	{ value: 'radar', label: banana.i18n( 'radar' ), icon: iconChartRadar },
-	{ value: 'pie', label: banana.i18n( 'pie' ), icon: iconChartPie },
+	{ value: 'pie', label: banana.i18n( 'pie' ), icon: cdxIconChartPie },
 	{ value: 'doughnut', label: banana.i18n( 'doughnut' ), icon: iconChartDoughnut },
 	{ value: 'polarArea', label: banana.i18n( 'polar-area' ), icon: iconChartPolarArea }
 ];

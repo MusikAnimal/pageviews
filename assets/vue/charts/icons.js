@@ -1,25 +1,9 @@
 /**
  * Local chart-type icons, drawn on the Codex 20x20 icon grid. Codex
  * string icons are SVG markup (path elements), same format as the
- * @wikimedia/codex-icons exports; codex-icons only ships the generic
- * cdxIconChart, so the individual chart types live here.
+ * @wikimedia/codex-icons exports; codex-icons (as of 2.6) ships bar,
+ * line and pie chart icons, so only the remaining types live here.
  */
-
-/**
- * Three vertical bars.
- */
-export const iconChartBar = '<path d="M3 9h4v9H3zm5.5-6h4v15h-4zM14 6h4v12h-4z"/>';
-
-/**
- * A rising zigzag line.
- */
-export const iconChartLine =
-	'<path d="M18 4.5 11.5 12l-3-3L3 15.4l1.5 1.4 4-4.7 3 3L19.5 6z"/>';
-
-/**
- * A disc with a separated quarter wedge.
- */
-export const iconChartPie = '<path d="M9 4a8 8 0 108 8H9zm2-2a8 8 0 018 8h-8z"/>';
 
 /**
  * A ring (pie with the center removed).
