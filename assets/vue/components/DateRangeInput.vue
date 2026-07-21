@@ -10,14 +10,14 @@
 		<div class="app-settings__dates-inputs">
 			<cdx-field class="app-settings__dates-inputs__start">
 				<cdx-text-input
-					v-model='startDate'
+					v-model='start'
 					:aria-label="$i18n( 'start-date' )"
 					input-type='date'
 				></cdx-text-input>
 			</cdx-field>
 			<cdx-field class="app-settings__dates-inputs__end">
 				<cdx-text-input
-					v-model='endDate'
+					v-model='end'
 					:aria-label="$i18n( 'end-date' )"
 					input-type='date'
 				></cdx-text-input>
@@ -43,7 +43,7 @@ import { banana } from '../i18n.js';
 import { useSettingsStore } from "../stores/settings.js";
 
 const store = useSettingsStore();
-const { startDate, endDate, dateType } = storeToRefs( store );
+const { start, end, dateType } = storeToRefs( store );
 
 const dateTypeOptions = [
 	{ value: 'daily', label: banana.i18n( 'daily' ) },

@@ -28,7 +28,7 @@ trait DateParserTrait {
 		}
 		$datetime = new DateTime( $date );
 		if ( $isMonthly && $isEndDate ) {
-			$datetime->format( 'Y-m-t' );
+			$datetime->modify( 'last day of this month' );
 		}
 		return $datetime;
 	}

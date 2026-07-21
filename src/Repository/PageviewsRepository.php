@@ -16,8 +16,8 @@ class PageviewsRepository {
 
 	use DateParserTrait;
 
-	protected array $projects;
-	protected array $assessmentsConfig;
+	protected ?array $projects = null;
+	protected ?array $assessmentsConfig = null;
 
 	public function __construct(
 		readonly ProjectsRepository $projectsRepo,
@@ -25,8 +25,18 @@ class PageviewsRepository {
 		private readonly CacheInterface $cache,
 		private readonly ReplicasClient $replicasClient,
 	) {
-		$this->projects = $projectsRepo->getProjects();
-		$this->assessmentsConfig = $projectsRepo->getAssessmentsConfig();
+	}
+
+	/**
+	 * Lazily fetched so that instantiating the service (e.g. in tests or
+	 * container warmup) makes no HTTP or database calls.
+	 */
+	private function getProjects(): array {
+		return $this->projects ??= $this->projectsRepo->getProjects();
+	}
+
+	private function getAssessmentsConfig(): array {
+		return $this->assessmentsConfig ??= $this->projectsRepo->getAssessmentsConfig();
 	}
 
 	public function getEditData(
@@ -37,9 +47,9 @@ class PageviewsRepository {
 		bool $totals = false,
 	): array {
 		$project = preg_replace( '/\.org$/', '', $project );
-		$dbName = $this->projects[ $project ] ?? null;
+		$dbName = $this->getProjects()[ $project ] ?? null;
 		if ( !$dbName ) {
-			throw new InvalidArgumentException( "Project $dbName is not a valid database name or is unsupported." );
+			throw new InvalidArgumentException( "Project $project is not a valid project or is unsupported." );
 		}
 		$start = $this->parseDate( $start )->format( 'YmdHis' );
 		$end = $this->parseDate( $end, true )->format( 'Ymd235959' );
@@ -94,7 +104,7 @@ class PageviewsRepository {
 			->setParameter( 'pages', $pageIds, ArrayParameterType::INTEGER )
 			->setParameter( 'start', $start )
 			->setParameter( 'end', $end );
-		if ( $this->assessmentsConfig[$project] ?? false ) {
+		if ( $this->getAssessmentsConfig()[$project] ?? false ) {
 			$qb->addSelect( '(' . $conn->createQueryBuilder()
 					->select( 'pa_class' )
 					->from( 'page_assessments')

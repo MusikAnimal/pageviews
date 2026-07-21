@@ -16,19 +16,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { storeToRefs } from "pinia";
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from "../../components/ProjectInput.vue";
 import PlatformInput from "../../components/PlatformInput.vue";
 import AgentInput from "../../components/AgentInput.vue";
 import { CdxCheckbox, CdxField } from "@wikimedia/codex";
+import { usePageviewsStore } from "../../stores/pageviews.js";
 
-/**
- * Whether to include all redirects of
- *
- * @type {import( 'vue' ).Ref<boolean>}
- */
-const redirects = ref( false );
+const { redirects } = storeToRefs( usePageviewsStore() );
 </script>
 
 <style lang="less">

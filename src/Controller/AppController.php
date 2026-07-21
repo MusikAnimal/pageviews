@@ -7,7 +7,8 @@ namespace App\Controller;
 use App\Repository\ProjectsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -29,8 +30,16 @@ class AppController extends AbstractController {
 		return new JsonResponse( $projectsRepo->getSiteInfo( $project ) );
 	}
 
-	#[Route( '/set_language/:language', name: 'set_language' )]
-	public function setLanguage( string $lang ): Response {
-
+	#[Route( '/set_language/{language}', name: 'set_language' )]
+	public function setLanguage( Request $request, string $language ): RedirectResponse {
+		// Return to the page the user came from, but only if it's ours —
+		// a foreign Referer must not turn this into an open redirect.
+		$referer = $request->headers->get( 'referer' );
+		$url = $this->generateUrl( 'default' );
+		if ( $referer && parse_url( $referer, PHP_URL_HOST ) === $request->getHost() ) {
+			$url = $referer;
+		}
+		$separator = str_contains( $url, '?' ) ? '&' : '?';
+		return $this->redirect( $url . $separator . 'uselang=' . urlencode( $language ) );
 	}
 }

@@ -1,5 +1,9 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+
+const PLATFORMS = [ 'all', 'desktop', 'mobile-app', 'mobile-web' ];
+const AGENTS = [ 'all', 'user', 'spider', 'automated' ];
+const DATE_PATTERN = /^\d{4}-\d{2}(-\d{2})?$/;
 
 export const useSettingsStore = defineStore( 'settings', () => {
 	/**
@@ -31,7 +35,7 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	/**
 	 * The platform to query for.
 	 *
-	 * @type {import( 'vue' ).Ref<'all'|'desktop'|'mobile app'|'mobile web'>}
+	 * @type {import( 'vue' ).Ref<'all'|'desktop'|'mobile-app'|'mobile-web'>}
 	 */
 	const platform = ref( 'all' );
 	/**
@@ -41,12 +45,44 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 */
 	const agent = ref( 'user' );
 
+	/**
+	 * The canonical serialized form of the shared params, for the URL query string.
+	 *
+	 * @type {import( 'vue' ).ComputedRef<Object>}
+	 */
+	const query = computed( () => ( {
+		project: project.value,
+		start: start.value || undefined,
+		end: end.value || undefined,
+		platform: platform.value,
+		agent: agent.value
+	} ) );
+
+	/**
+	 * Populate the store from URL query params. Invalid values are ignored,
+	 * leaving the current (or default) values in place.
+	 *
+	 * @param {Object} query Parsed query string (from vue-router route.query).
+	 */
 	function setFromQuery( query ) {
 		if ( query.project ) {
 			project.value = query.project;
 		}
-		if ( query.start ) {
-
+		if ( query.start && DATE_PATTERN.test( query.start ) ) {
+			start.value = query.start;
+		}
+		if ( query.end && DATE_PATTERN.test( query.end ) ) {
+			end.value = query.end;
+		}
+		if ( start.value ) {
+			// Monthly ranges are expressed as YYYY-MM dates.
+			dateType.value = start.value.length === 7 ? 'monthly' : 'daily';
+		}
+		if ( PLATFORMS.includes( query.platform ) ) {
+			platform.value = query.platform;
+		}
+		if ( AGENTS.includes( query.agent ) ) {
+			agent.value = query.agent;
 		}
 	}
 
@@ -57,6 +93,7 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		dateType,
 		platform,
 		agent,
+		query,
 		setFromQuery
 	};
 } );
