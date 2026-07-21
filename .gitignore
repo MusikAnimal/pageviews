@@ -13,3 +13,8 @@
 /node_modules/
 /public/build/
 ###< pentatrion/vite-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
