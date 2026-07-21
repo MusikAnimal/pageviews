@@ -92,15 +92,22 @@ const dateTypeOptions = [
 	{ value: 'monthly', label: banana.i18n( 'monthly' ) }
 ];
 
-// Same range names as the legacy tool's ?range= URL param.
-const presetItems = [
-	...[ 7, 30, 60, 90 ].map( ( days ) => ( {
-		value: `latest-${ days }`,
-		label: banana.i18n( 'latest-days', String( days ) )
-	} ) ),
-	...[ 'this-week', 'this-month', 'last-month', 'this-year', 'last-year', 'all-time' ]
-		.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) )
-];
+// Same range names as the legacy tool's ?range= URL param. Ranges
+// shorter than a month make no sense in monthly mode.
+const presetItems = computed( () => {
+	if ( monthly.value ) {
+		return [ 'last-month', 'this-year', 'last-year', 'all-time' ]
+			.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) );
+	}
+	return [
+		...[ 7, 30, 60, 90 ].map( ( days ) => ( {
+			value: `latest-${ days }`,
+			label: banana.i18n( 'latest-days', String( days ) )
+		} ) ),
+		...[ 'this-week', 'this-month', 'last-month', 'this-year', 'last-year', 'all-time' ]
+			.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) )
+	];
+} );
 </script>
 
 <style scoped lang="less">

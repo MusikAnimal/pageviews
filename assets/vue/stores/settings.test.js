@@ -47,6 +47,39 @@ describe( 'settings store', () => {
 		vi.useRealTimers();
 	} );
 
+	it( 'defaults to the past six months when switching to monthly without dates', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.dateType = 'monthly';
+		expect( store.start ).toBe( '2026-01' );
+		expect( store.end ).toBe( '2026-06' );
+
+		vi.useRealTimers();
+	} );
+
+	it( 'applies presets as months in monthly mode', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-01', end: '2026-03' } );
+		expect( store.dateType ).toBe( 'monthly' );
+
+		store.setSpecialRange( 'last-year' );
+		expect( store.start ).toBe( '2025-01' );
+		expect( store.end ).toBe( '2025-12' );
+		expect( store.dateType ).toBe( 'monthly' );
+
+		// Clamped to the last complete month.
+		store.setSpecialRange( 'all-time' );
+		expect( store.start ).toBe( '2015-07' );
+		expect( store.end ).toBe( '2026-06' );
+
+		vi.useRealTimers();
+	} );
+
 	it( 'converts months back to full dates when switching to daily', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );

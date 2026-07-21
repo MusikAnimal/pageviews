@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import {
+	addMonths,
 	endOfMonth,
 	formatYm,
 	formatYmd,
@@ -90,6 +91,12 @@ export const useSettingsStore = defineStore( 'settings', () => {
 					date.value = formatYm( parsed > max ? max : parsed );
 				}
 			}
+			// Without daily dates to carry over, default to the past
+			// six complete months.
+			if ( !isYm( start.value ) || !isYm( end.value ) ) {
+				start.value = formatYm( addMonths( max, -5 ) );
+				end.value = formatYm( max );
+			}
 		} else {
 			if ( isYm( start.value ) ) {
 				start.value = formatYmd( parseDate( start.value ) );
@@ -118,7 +125,8 @@ export const useSettingsStore = defineStore( 'settings', () => {
 
 	/**
 	 * Apply a special range name (latest-N, last-month, ...): resolves
-	 * it to concrete dates and remembers the name for the URL.
+	 * it to concrete dates — YYYY-MM in monthly mode, clamped to the
+	 * last complete month — and remembers the name for the URL.
 	 *
 	 * @param {string} range
 	 * @return {boolean} Whether the name was recognized.
@@ -129,10 +137,16 @@ export const useSettingsStore = defineStore( 'settings', () => {
 			return false;
 		}
 		applyingRange = true;
-		start.value = formatYmd( resolved.start );
-		end.value = formatYmd( resolved.end );
+		if ( dateType.value === 'monthly' ) {
+			const max = lastCompleteMonthUtc();
+			const clamp = ( date ) => formatYm( date > max ? max : date );
+			start.value = clamp( resolved.start );
+			end.value = clamp( resolved.end );
+		} else {
+			start.value = formatYmd( resolved.start );
+			end.value = formatYmd( resolved.end );
+		}
 		applyingRange = false;
-		dateType.value = 'daily';
 		specialRange.value = range;
 		return true;
 	}
