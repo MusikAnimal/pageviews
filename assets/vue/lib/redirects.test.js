@@ -68,7 +68,7 @@ describe( 'consolidateSeries', () => {
 			{ Cat: [ { title: 'Ghost', fragment: null } ] },
 			[
 				{ title: 'Cat', counts: [ 10 ], total: 10, average: 10 },
-				// eslint-disable-next-line camelcase -- field name from the API contract
+
 				{ title: 'Ghost', counts: [ 0 ], total: 0, average: 0, no_data: true }
 			]
 		);

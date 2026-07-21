@@ -81,7 +81,13 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 */
 	function setFromQuery( params ) {
 		if ( params.pages ) {
-			pages.value = params.pages.split( '|' ).filter( ( page ) => page !== '' );
+			const titles = params.pages.split( '|' ).filter( ( page ) => page !== '' );
+			// Keep the array identity when unchanged: replacing it
+			// retriggers the load watcher (e.g. when the FAQ dialog
+			// route reuses the same query), flickering the chart.
+			if ( titles.join( '|' ) !== pages.value.join( '|' ) ) {
+				pages.value = titles;
+			}
 		}
 		redirects.value = params.redirects === '1';
 	}

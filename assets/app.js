@@ -12,13 +12,35 @@ const router = createRouter( {
 	history: createWebHistory(),
 	routes: [
 		{ path: '/', component: Pageviews, meta: { store: usePageviewsStore } },
-		{ path: '/pageviews', component: Pageviews, meta: { store: usePageviewsStore } }
+		{ path: '/pageviews', component: Pageviews, meta: { store: usePageviewsStore } },
+		// FAQ and URL structure open as dialogs over the app.
+		{ path: '/faq', component: Pageviews, meta: { store: usePageviewsStore, dialog: 'faq' } },
+		{
+			path: '/url_structure',
+			component: Pageviews,
+			meta: { store: usePageviewsStore, dialog: 'url-structure' }
+		}
 	]
 } );
 
 registerVueControllerComponents(
 	import.meta.glob( './vue/controllers/**/*.vue' )
 );
+
+// The footer's FAQ / URL structure links live in the Twig shell,
+// outside the Vue app. Route them client-side so the dialogs open
+// without a page reload (which would drop the query string, clearing
+// the form).
+document.addEventListener( 'click', ( event ) => {
+	const link = event.target.closest( 'a[href="/faq"], a[href="/url_structure"]' );
+	if ( link ) {
+		event.preventDefault();
+		router.push( {
+			path: link.getAttribute( 'href' ),
+			query: router.currentRoute.value.query
+		} );
+	}
+} );
 
 const pinia = createPinia();
 

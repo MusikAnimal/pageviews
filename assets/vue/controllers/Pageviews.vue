@@ -52,6 +52,14 @@
 		<StatsTable v-if="chartReady" />
 	</section>
 	<CdxToastContainer />
+	<FaqDialog
+		:open="activeDialog === 'faq'"
+		@update:open="onDialogToggle"
+	/>
+	<UrlStructureDialog
+		:open="activeDialog === 'url-structure'"
+		@update:open="onDialogToggle"
+	/>
 </template>
 
 <script setup>
@@ -74,7 +82,10 @@ import { buildRadarOption } from '../charts/options/radar.js';
 import { chartTheme } from '../charts/theme.js';
 import { shouldUseLogScale } from '../charts/logScale.js';
 import { banana } from '../i18n.js';
+import { useRoute, useRouter } from 'vue-router';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
+import FaqDialog from '../apps/pageviews/FaqDialog.vue';
+import UrlStructureDialog from '../apps/pageviews/UrlStructureDialog.vue';
 import PageInput from '../components/PageInput.vue';
 import Chart from '../components/Chart.vue';
 import ChartTypeSelect from '../components/ChartTypeSelect.vue';
@@ -85,7 +96,18 @@ import StatsTable from '../apps/pageviews/StatsTable.vue';
 const store = usePageviewsStore();
 const settings = useSettingsStore();
 const ui = useUiStore();
+const route = useRoute();
+const router = useRouter();
 useQuerySync( store );
+
+// The /faq and /url_structure routes open dialogs over the app.
+const activeDialog = computed( () => route.meta.dialog ?? null );
+
+function onDialogToggle( open ) {
+	if ( !open ) {
+		router.replace( { path: '/', query: route.query } );
+	}
+}
 
 const dark = usePrefersDark();
 

@@ -21,14 +21,16 @@ final class PageviewsController extends AbstractController {
 		] );
 	}
 
+	/**
+	 * FAQ and URL structure render as dialogs within the Vue app; the
+	 * vue-router matches these paths and opens the appropriate dialog.
+	 */
 	#[Route( '/faq', name: 'pageviews/faq' )]
-	public function faq(): Response {
-		return $this->render( 'pageviews/faq.html.twig', [ 'current_app' => 'pageviews', 'title' => 'faq' ] );
-	}
-
 	#[Route( '/url_structure', name: 'pageviews/url_structure' )]
-	public function urlStructure(): Response {
-		return $this->render( 'pageviews/url_structure.html.twig', [ 'current_app' => 'pageviews', 'title' => 'url-structure' ] );
+	public function dialogs(): Response {
+		return $this->render( 'pageviews/index.html.twig', [
+			'current_app' => 'pageviews',
+		] );
 	}
 
 	/**

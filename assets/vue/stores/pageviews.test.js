@@ -77,6 +77,16 @@ describe( 'pageviews store', () => {
 		expect( store.pages ).toEqual( [ 'Cat', 'Dog' ] );
 	} );
 
+	it( 'keeps the pages array identity when the query is unchanged', () => {
+		const store = usePageviewsStore();
+		store.setFromQuery( { pages: 'Cat|Dog' } );
+		const before = store.pages;
+		// Same params again (e.g. navigating to the FAQ dialog route)
+		// must not replace the array, or the load watcher re-fires.
+		store.setFromQuery( { pages: 'Cat|Dog' } );
+		expect( store.pages ).toBe( before );
+	} );
+
 	describe( 'load', () => {
 		it( 'fetches series and applies default dates', async () => {
 			const store = usePageviewsStore();
