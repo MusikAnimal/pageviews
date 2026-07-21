@@ -46,7 +46,7 @@ describe( 'buildTimeseriesOption', () => {
 	} );
 
 	it( 'marks Mondays on the x-axis in daily mode', () => {
-		const option = buildTimeseriesOption( { ...base, localizeFormats: false } );
+		const option = buildTimeseriesOption( { ...base, localizeDates: false } );
 		expect( option.xAxis.data ).toEqual( [ '2026-07-19', '• 2026-07-20', '2026-07-21' ] );
 	} );
 
@@ -55,9 +55,20 @@ describe( 'buildTimeseriesOption', () => {
 			dates: [ '2026-06', '2026-07' ],
 			series: base.series,
 			monthly: true,
-			localizeFormats: false
+			localizeDates: false
 		} );
 		expect( option.xAxis.data ).toEqual( [ '2026-06', '2026-07' ] );
+	} );
+
+	it( 'honors the separate number and date localization preferences', () => {
+		const option = buildTimeseriesOption( {
+			...base,
+			showValues: true,
+			localizeDates: false,
+			localizeNumbers: false
+		} );
+		expect( option.xAxis.data[ 0 ] ).toBe( '2026-07-19' );
+		expect( option.series[ 0 ].label.formatter( { value: 1234 } ) ).toBe( '1234' );
 	} );
 
 	it( 'keeps the toolbox dataZoom feature registered but off-canvas', () => {

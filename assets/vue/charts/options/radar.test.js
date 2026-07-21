@@ -7,7 +7,7 @@ const input = {
 		{ label: 'Cat', data: [ 10, null, 30 ] },
 		{ label: 'Dog', data: [ 1, 2, 3 ] }
 	],
-	localizeFormats: false
+	localizeDates: false
 };
 
 describe( 'buildRadarOption', () => {

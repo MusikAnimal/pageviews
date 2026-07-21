@@ -6,8 +6,16 @@
 		:aria-label="$i18n( 'options' )"
 		@submit.prevent
 	>
-		<header class="app-workspace__heading">
+		<header class="app-workspace__heading app-settings__heading">
 			<h3>{{ $i18n( 'options' ) }}</h3>
+			<CdxButton
+				class="app-settings__preferences"
+				weight="quiet"
+				:aria-label="$i18n( 'settings' )"
+				@click="preferencesOpen = true"
+			>
+				<CdxIcon :icon="cdxIconSettings" />
+			</CdxButton>
 		</header>
 		<DateRangeInput />
 		<ProjectInput />
@@ -25,19 +33,24 @@
 			</div>
 		</CdxField>
 	</form>
+	<PreferencesDialog v-model:open="preferencesOpen" />
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
-import { CdxCheckbox, CdxField } from '@wikimedia/codex';
+import { CdxButton, CdxCheckbox, CdxField, CdxIcon } from '@wikimedia/codex';
+import { cdxIconSettings } from '@wikimedia/codex-icons';
 import FaqHelpButton from '../../components/FaqHelpButton.vue';
+import PreferencesDialog from '../../components/PreferencesDialog.vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 
 const { redirects } = storeToRefs( usePageviewsStore() );
+const preferencesOpen = ref( false );
 </script>
 
 <style lang="less">
@@ -51,5 +64,17 @@ const { redirects } = storeToRefs( usePageviewsStore() );
 	align-items: center;
 	display: flex;
 	gap: @spacing-25;
+}
+
+.app-settings__heading {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	position: relative;
+}
+
+.app-settings__preferences {
+	position: absolute;
+	right: 0;
 }
 </style>

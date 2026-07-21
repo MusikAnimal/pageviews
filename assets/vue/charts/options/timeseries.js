@@ -19,8 +19,9 @@ import { parseDate } from '../../lib/dates.js';
  * @param {boolean} [input.smooth] Bezier curves (line only).
  * @param {boolean} [input.monthly]
  * @param {string} [input.locale]
- * @param {boolean} [input.localizeFormats] User preference; false = ISO
- *   dates and unformatted numbers.
+ * @param {boolean} [input.localizeDates] User preference; false = ISO dates.
+ * @param {boolean} [input.localizeNumbers] User preference; false =
+ *   unformatted numbers.
  * @param {boolean} [input.showLegend] Off by default: the colored page
  *   chips above the chart act as the legend.
  * @param {Object} [input.theme] From chartTheme().
@@ -36,15 +37,16 @@ export function buildTimeseriesOption( {
 	smooth = false,
 	monthly = false,
 	locale = 'en',
-	localizeFormats = true,
+	localizeDates = true,
+	localizeNumbers = true,
 	showLegend = false,
 	theme = {}
 } ) {
-	const number = ( value ) => formatNumber( value, locale, localizeFormats );
+	const number = ( value ) => formatNumber( value, locale, localizeNumbers );
 
 	const xLabels = dates.map( ( dateStr ) => {
 		const date = parseDate( dateStr );
-		const label = formatDate( date, { locale, monthly, localize: localizeFormats } );
+		const label = formatDate( date, { locale, monthly, localize: localizeDates } );
 		// Match the legacy tool: mark Mondays in daily mode for orientation.
 		return !monthly && date.getUTCDay() === 1 ? `• ${ label }` : label;
 	} );

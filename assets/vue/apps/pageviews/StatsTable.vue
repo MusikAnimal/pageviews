@@ -103,6 +103,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
+import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatDate, formatNumber } from '../../lib/format.js';
 import { parseDate } from '../../lib/dates.js';
@@ -111,11 +112,12 @@ import { banana } from '../../i18n.js';
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
+const preferences = usePreferencesStore();
 
 const sortKey = ref( 'views' );
 const sortDescending = ref( true );
 
-const number = ( value ) => formatNumber( value, banana.locale );
+const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
 const columns = computed( () => [
 	{ key: 'title', label: banana.i18n( 'page-title' ), sortable: true },
@@ -145,7 +147,8 @@ const summary = computed( () => {
 	const monthly = settings.dateType === 'monthly';
 	const range = [ settings.start, settings.end ]
 		.map( ( date ) => formatDate(
-			parseDate( date ), { locale: banana.locale, monthly }
+			parseDate( date ),
+			{ locale: banana.locale, monthly, localize: preferences.localizeDateFormat }
 		) )
 		.join( ' – ' );
 

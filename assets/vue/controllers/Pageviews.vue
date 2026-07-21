@@ -72,6 +72,7 @@ import {
 	CdxToastContainer
 } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
+import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
@@ -82,6 +83,7 @@ import { buildRadarOption } from '../charts/options/radar.js';
 import { chartTheme } from '../charts/theme.js';
 import { shouldUseLogScale } from '../charts/logScale.js';
 import { getDefaultPages } from '../lib/defaultPages.js';
+import { persistentRef } from '../lib/storage.js';
 import { banana } from '../i18n.js';
 import { useRoute, useRouter } from 'vue-router';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
@@ -96,6 +98,7 @@ import StatsTable from '../apps/pageviews/StatsTable.vue';
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
+const preferences = usePreferencesStore();
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
@@ -142,13 +145,20 @@ const exportFilename = computed(
 const theme = computed( () => ( { dark: dark.value, ...chartTheme() } ) );
 
 // null = automatic (the legacy default: bar for a single page, line
-// for comparisons); set once the user picks a type explicitly.
+// for comparisons); set once the user picks a type explicitly. With
+// the remember-chart preference on, the pick persists across sessions.
 const userChartType = ref( null );
+const rememberedChartType = persistentRef( 'pageviews-chart-preference', null );
 
 const selectedChartType = computed( {
-	get: () => userChartType.value ?? ( store.series.length > 1 ? 'line' : 'bar' ),
+	get: () => userChartType.value ??
+		( preferences.rememberChart ? rememberedChartType.value : null ) ??
+		( store.series.length > 1 ? 'line' : 'bar' ),
 	set: ( value ) => {
 		userChartType.value = value;
+		if ( preferences.rememberChart ) {
+			rememberedChartType.value = value;
+		}
 	}
 } );
 
@@ -157,16 +167,22 @@ const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType
 
 const logScale = ref( false );
 
-// Auto-enable on spiky data (the legacy Theil-index heuristic). The
-// user can always override via the checkbox; a localStorage preference
-// gating the auto-detection comes with the preferences dialog.
+// Auto-enable on spiky data (the legacy Theil-index heuristic), when
+// the preference allows; the user can always override via the checkbox.
 watch( () => store.series, ( series ) => {
-	logScale.value = shouldUseLogScale( series.map( ( page ) => page.counts ) );
+	if ( preferences.autoLogDetection ) {
+		logScale.value = shouldUseLogScale( series.map( ( page ) => page.counts ) );
+	}
 } );
 
 const chartOption = computed( () => {
 	const type = selectedChartType.value;
-	const common = { locale: banana.locale, theme: theme.value };
+	const common = {
+		locale: banana.locale,
+		localizeDates: preferences.localizeDateFormat,
+		localizeNumbers: preferences.numericalFormatting,
+		theme: theme.value
+	};
 	const timeseries = store.series.map(
 		( page ) => ( { label: page.title, data: page.counts } )
 	);
@@ -191,6 +207,8 @@ const chartOption = computed( () => {
 		series: timeseries,
 		chartType: type,
 		logScale: logScale.value,
+		beginAtZero: preferences.beginAtZero,
+		smooth: preferences.bezierCurve,
 		monthly: settings.dateType === 'monthly',
 		...common
 	} );

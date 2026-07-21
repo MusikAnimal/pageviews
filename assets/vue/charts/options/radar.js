@@ -13,7 +13,8 @@ import { parseDate } from '../../lib/dates.js';
  * @param {Array<{label: string, data: Array<?number>}>} input.series
  * @param {boolean} [input.monthly]
  * @param {string} [input.locale]
- * @param {boolean} [input.localizeFormats]
+ * @param {boolean} [input.localizeDates]
+ * @param {boolean} [input.localizeNumbers]
  * @param {Object} [input.theme] From chartTheme().
  * @return {Object} An ECharts option object.
  */
@@ -22,10 +23,11 @@ export function buildRadarOption( {
 	series,
 	monthly = false,
 	locale = 'en',
-	localizeFormats = true,
+	localizeDates = true,
+	localizeNumbers = true,
 	theme = {}
 } ) {
-	const number = ( value ) => formatNumber( value, locale, localizeFormats );
+	const number = ( value ) => formatNumber( value, locale, localizeNumbers );
 	const max = Math.max( 1, ...series.flatMap( ( { data } ) => data.map( ( v ) => v || 0 ) ) );
 
 	return {
@@ -42,7 +44,7 @@ export function buildRadarOption( {
 				name: formatDate( parseDate( dateStr ), {
 					locale,
 					monthly,
-					localize: localizeFormats
+					localize: localizeDates
 				} ),
 				max
 			} ) ),

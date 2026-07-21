@@ -63,6 +63,7 @@
 <script setup>
 import { computed } from 'vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
+import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
 import { editProtectionLevel } from '../../lib/mwApi.js';
@@ -70,8 +71,9 @@ import { banana } from '../../i18n.js';
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
+const preferences = usePreferencesStore();
 
-const number = ( value ) => formatNumber( value, banana.locale );
+const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
 const averageLabel = computed( () => banana.i18n(
 	settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average'

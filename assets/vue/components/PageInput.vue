@@ -36,6 +36,7 @@ import { storeToRefs } from 'pinia';
 import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
 import { cdxIconClear } from '@wikimedia/codex-icons';
 import { usePageviewsStore } from '../stores/pageviews.js';
+import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
@@ -53,6 +54,7 @@ const paletteVars = Object.fromEntries(
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
+const preferences = usePreferencesStore();
 const ui = useUiStore();
 const { pages } = storeToRefs( store );
 
@@ -130,14 +132,30 @@ function onInput( value ) {
 	}
 	debounceTimer = setTimeout( async () => {
 		try {
-			const response = await mwApiGet( settings.project, {
-				action: 'query',
-				list: 'prefixsearch',
-				pssearch: value,
-				pslimit: 10,
-				cirrusUseCompletionSuggester: 'yes'
-			} );
-			menuItems.value = ( response.query?.prefixsearch || [] )
+			// The redirects mode surfaces redirect titles among the
+			// suggestions (slower; a user preference, like legacy).
+			const withRedirects = preferences.autocomplete === 'autocomplete_redirects';
+			const response = await mwApiGet( settings.project, withRedirects ?
+				{
+					action: 'query',
+					generator: 'prefixsearch',
+					gpssearch: value,
+					gpslimit: 10,
+					redirects: true,
+					cirrusUseCompletionSuggester: 'no'
+				} :
+				{
+					action: 'query',
+					list: 'prefixsearch',
+					pssearch: value,
+					pslimit: 10,
+					cirrusUseCompletionSuggester: 'yes'
+				}
+			);
+			const results = withRedirects ?
+				response.query?.pages || [] :
+				response.query?.prefixsearch || [];
+			menuItems.value = results
 				.map( ( { title } ) => ( { value: title, label: title } ) );
 		} catch {
 			// Autocomplete failures are non-fatal; just show no matches.

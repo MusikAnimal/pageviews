@@ -13,7 +13,7 @@ import { formatNumber } from '../../lib/format.js';
  * @param {Array<{label: string, total: number}>} input.series
  * @param {'pie'|'doughnut'|'polarArea'} [input.chartType]
  * @param {string} [input.locale]
- * @param {boolean} [input.localizeFormats]
+ * @param {boolean} [input.localizeNumbers]
  * @param {Object} [input.theme] From chartTheme().
  * @return {Object} An ECharts option object.
  */
@@ -21,10 +21,10 @@ export function buildCircularOption( {
 	series,
 	chartType = 'pie',
 	locale = 'en',
-	localizeFormats = true,
+	localizeNumbers = true,
 	theme = {}
 } ) {
-	const number = ( value ) => formatNumber( value, locale, localizeFormats );
+	const number = ( value ) => formatNumber( value, locale, localizeNumbers );
 
 	return {
 		aria: { enabled: true },

@@ -4,6 +4,7 @@ import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
 import { getPageInfo } from '../lib/mwApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { banana } from '../i18n.js';
+import { usePreferencesStore } from './preferences.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -89,7 +90,11 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 				pages.value = titles;
 			}
 		}
-		redirects.value = params.redirects === '1';
+		// When the URL doesn't say, the always-redirects preference
+		// provides the default.
+		redirects.value = params.redirects !== undefined ?
+			params.redirects === '1' :
+			usePreferencesStore().alwaysRedirects;
 	}
 
 	async function loadEditData( settings, id ) {
