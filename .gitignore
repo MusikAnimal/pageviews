@@ -20,3 +20,5 @@
 ###< phpunit/phpunit ###
 
 /.eslintcache
+
+/.claude/settings.local.json
