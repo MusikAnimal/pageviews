@@ -22,8 +22,16 @@ function seedStore() {
 	];
 	store.totals = { counts: [ 11, 22 ], total: 1033, average: 516.5 };
 	store.editData = {
-		Cat: { num_edits: '42', num_users: '7', assessment: 'GA' },
-		Dog: { num_edits: '5', num_users: '2', assessment: 'B' },
+		Cat: {
+			num_edits: '42',
+			num_users: '7',
+			assessment: {
+				class: 'GA',
+				badge: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+				color: '#66ff66'
+			}
+		},
+		Dog: { num_edits: '5', num_users: '2', assessment: null },
 		totals: { num_edits: 47, num_users: 9 }
 	};
 	return store;
@@ -47,6 +55,20 @@ describe( 'StatsTable', () => {
 		expect( cells[ 0 ] ).toContain( '1,030' );
 		expect( cells[ 0 ] ).toContain( '42' );
 		expect( cells[ 1 ] ).toContain( 'Dog' );
+	} );
+
+	it( 'renders the assessment badge and class', () => {
+		seedStore();
+		const wrapper = mountTable();
+		const catRow = wrapper.findAll( 'tbody tr' )[ 0 ];
+
+		const badge = catRow.find( '.app-stats__badge' );
+		expect( badge.attributes( 'src' ) ).toContain( 'Symbol_support_vote.svg' );
+		expect( badge.attributes( 'alt' ) ).toBe( 'GA' );
+		expect( catRow.text() ).toContain( 'GA' );
+		// Dog has no assessment: cell stays empty, no broken image.
+		expect( wrapper.findAll( 'tbody tr' )[ 1 ].find( '.app-stats__badge' ).exists() )
+			.toBe( false );
 	} );
 
 	it( 'links titles to the article on the selected project', () => {

@@ -77,14 +77,50 @@ class PageviewsRepository extends Repository {
 				continue;
 			}
 			$pageIds[] = $page['pageid'];
-			$output['pages'][$page['title']] = $this->doEditDataQuery( $conn, $project, $page['pageid'], $start, $end )[0];
+			$row = $this->doEditDataQuery( $conn, $project, $page['pageid'], $start, $end )[0];
+			if ( array_key_exists( 'assessment', $row ) ) {
+				$row['assessment'] = $this->formatAssessment( $project, $row['assessment'] );
+			}
+			$output['pages'][$page['title']] = $row;
 		}
 
 		if ( count( $pageIds ) > 1 && $totals ) {
-			$output['totals'] = $this->doEditDataQuery( $conn, $project, $pageIds, $start, $end )[0];
+			$totalsRow = $this->doEditDataQuery( $conn, $project, $pageIds, $start, $end )[0];
+			// An assessment is per-page; meaningless on the aggregate row.
+			unset( $totalsRow['assessment'] );
+			$output['totals'] = $totalsRow;
 		}
 
 		return $output;
+	}
+
+	/**
+	 * The PageAssessments class config for a project, or null if the
+	 * project doesn't use assessments. The XTools response is keyed by
+	 * the full domain including .org, under a 'config' wrapper.
+	 */
+	private function getProjectAssessmentsConfig( string $project ): ?array {
+		return $this->getAssessmentsConfig()['config'][ "$project.org" ] ?? null;
+	}
+
+	/**
+	 * Expand a raw pa_class value into a display-ready structure with
+	 * the badge image URL and color from the project's config.
+	 *
+	 * @return array{class: string, badge: ?string, color: ?string}|null
+	 */
+	private function formatAssessment( string $project, ?string $class ): ?array {
+		if ( $class === null || $class === '' ) {
+			return null;
+		}
+		$classConfig = $this->getProjectAssessmentsConfig( $project )['class'][ $class ] ?? [];
+		return [
+			'class' => $class,
+			'badge' => isset( $classConfig['badge'] ) ?
+				'https://upload.wikimedia.org/wikipedia/commons/' . $classConfig['badge'] :
+				null,
+			'color' => $classConfig['color'] ?? null,
+		];
 	}
 
 	private function doEditDataQuery(
@@ -104,7 +140,7 @@ class PageviewsRepository extends Repository {
 			->setParameter( 'pages', $pageIds, ArrayParameterType::INTEGER )
 			->setParameter( 'start', $start )
 			->setParameter( 'end', $end );
-		if ( $this->getAssessmentsConfig()[$project] ?? false ) {
+		if ( $this->getProjectAssessmentsConfig( $project ) ) {
 			$qb->addSelect( '(' . $conn->createQueryBuilder()
 					->select( 'pa_class' )
 					->from( 'page_assessments')

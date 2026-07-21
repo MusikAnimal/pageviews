@@ -25,7 +25,17 @@
 				<td>
 					<a :href="pageUrl( row.title )" target="_blank">{{ row.title }}</a>
 				</td>
-				<td>{{ row.assessment ?? '' }}</td>
+				<td>
+					<template v-if="row.assessment">
+						<img
+							v-if="row.assessment.badge"
+							class="app-stats__badge"
+							:src="row.assessment.badge"
+							:alt="row.assessment.class"
+						>
+						{{ row.assessment.class }}
+					</template>
+				</td>
 				<td class="app-stats__number">
 					{{ number( row.views ) }}
 				</td>
@@ -111,8 +121,12 @@ const rows = computed( () => {
 
 	const key = sortKey.value;
 	const direction = sortDescending.value ? -1 : 1;
+	// Assessments sort by their class name.
+	const accessor = ( row ) => key === 'assessment' ?
+		row.assessment?.class ?? '' :
+		row[ key ];
 	return unsorted.sort( ( a, b ) => {
-		const [ x, y ] = [ a[ key ], b[ key ] ];
+		const [ x, y ] = [ accessor( a ), accessor( b ) ];
 		if ( typeof x === 'string' || typeof y === 'string' ) {
 			return direction * String( x ?? '' ).localeCompare( String( y ?? '' ) );
 		}
@@ -167,6 +181,13 @@ function historyUrl( title ) {
 	&__number {
 		font-variant-numeric: tabular-nums;
 		text-align: right;
+	}
+
+	&__badge {
+		height: @size-100;
+		margin-right: @spacing-25;
+		vertical-align: text-bottom;
+		width: @size-100;
 	}
 
 	&__sort {
