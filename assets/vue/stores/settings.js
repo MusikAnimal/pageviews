@@ -1,9 +1,11 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { formatYmd, resolveSpecialRange } from '../lib/dates.js';
 
 const PLATFORMS = [ 'all', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all', 'user', 'spider', 'automated' ];
 const DATE_PATTERN = /^\d{4}-\d{2}(-\d{2})?$/;
+const DEFAULT_RANGE = 'latest-30';
 
 export const useSettingsStore = defineStore( 'settings', () => {
 	/**
@@ -64,9 +66,42 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 *
 	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
+	/**
+	 * Resolve a legacy special range name (latest-N, last-month, ...)
+	 * into concrete start/end dates.
+	 *
+	 * @param {string} range
+	 * @return {boolean} Whether the name was recognized.
+	 */
+	function setSpecialRange( range ) {
+		const resolved = resolveSpecialRange( range );
+		if ( !resolved ) {
+			return false;
+		}
+		start.value = formatYmd( resolved.start );
+		end.value = formatYmd( resolved.end );
+		dateType.value = 'daily';
+		return true;
+	}
+
+	/**
+	 * Apply the default date range if none is set yet. Called before
+	 * the first data load.
+	 */
+	function ensureDefaultDates() {
+		if ( !start.value || !end.value ) {
+			setSpecialRange( DEFAULT_RANGE );
+		}
+	}
+
 	function setFromQuery( params ) {
 		if ( params.project ) {
 			project.value = params.project;
+		}
+		if ( params.range ) {
+			// Legacy URLs use e.g. ?range=latest-20. Resolved to
+			// concrete dates; permalinks re-serialize as start/end.
+			setSpecialRange( params.range );
 		}
 		if ( params.start && DATE_PATTERN.test( params.start ) ) {
 			start.value = params.start;
@@ -94,6 +129,8 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		platform,
 		agent,
 		query,
-		setFromQuery
+		setFromQuery,
+		setSpecialRange,
+		ensureDefaultDates
 	};
 } );

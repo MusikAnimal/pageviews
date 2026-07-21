@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useSettingsStore } from './settings.js';
 
@@ -51,6 +51,30 @@ describe( 'settings store', () => {
 			platform: 'all',
 			agent: 'user'
 		} );
+	} );
+
+	it( 'resolves legacy range params to concrete dates', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { range: 'latest-20' } );
+		expect( store.start ).toBe( '2026-07-01' );
+		expect( store.end ).toBe( '2026-07-20' );
+		// The query getter re-serializes as start/end, not range.
+		expect( store.query.start ).toBe( '2026-07-01' );
+
+		vi.useRealTimers();
+	} );
+
+	it( 'applies default dates only when unset', () => {
+		const store = useSettingsStore();
+		store.ensureDefaultDates();
+		expect( store.start ).toMatch( /^\d{4}-\d{2}-\d{2}$/ );
+
+		store.setFromQuery( { start: '2026-01-01', end: '2026-01-31' } );
+		store.ensureDefaultDates();
+		expect( store.start ).toBe( '2026-01-01' );
 	} );
 
 	it( 'round-trips its own query serialization', () => {

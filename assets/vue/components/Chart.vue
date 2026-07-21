@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="container"
-		class="app-chart"
+		class="app-chart__canvas"
 		role="img"
 		:aria-label="ariaLabel"
 	/>
@@ -33,7 +33,7 @@ defineExpose( { getPngDataUrl } );
 </script>
 
 <style lang="less">
-.app-chart {
+.app-chart__canvas {
 	min-height: 400px;
 	width: 100%;
 }

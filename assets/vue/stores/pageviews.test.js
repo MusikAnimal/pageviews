@@ -1,10 +1,37 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { usePageviewsStore } from './pageviews.js';
+import { useSettingsStore } from './settings.js';
+import { useUiStore } from './ui.js';
+import { ApiError } from '../lib/errors.js';
+import { fetchPageviews } from '../lib/metricsApi.js';
+import { getRedirects } from '../lib/redirects.js';
+
+vi.mock( '../lib/metricsApi.js', () => ( {
+	fetchPageviews: vi.fn()
+} ) );
+vi.mock( '../lib/redirects.js', async ( importOriginal ) => ( {
+	// consolidateSeries stays real (pure, tested separately).
+	...await importOriginal(),
+	getRedirects: vi.fn()
+} ) );
+
+function metricsResult( pages ) {
+	const dates = [ '2026-07-01', '2026-07-02' ];
+	const totals = { counts: [ 0, 0 ], total: 0, average: 0 };
+	for ( const page of pages ) {
+		page.counts.forEach( ( count, i ) => {
+			totals.counts[ i ] += count;
+		} );
+		totals.total += page.total;
+	}
+	return { dates, pages, totals };
+}
 
 describe( 'pageviews store', () => {
 	beforeEach( () => {
 		setActivePinia( createPinia() );
+		vi.clearAllMocks();
 	} );
 
 	it( 'parses pipe-delimited pages from the query string', () => {
@@ -43,5 +70,84 @@ describe( 'pageviews store', () => {
 		const store = usePageviewsStore();
 		store.setFromQuery( { pages: 'Cat||Dog|' } );
 		expect( store.pages ).toEqual( [ 'Cat', 'Dog' ] );
+	} );
+
+	describe( 'load', () => {
+		it( 'fetches series and applies default dates', async () => {
+			const store = usePageviewsStore();
+			const settings = useSettingsStore();
+			store.pages = [ 'Cat' ];
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+
+			await store.load();
+
+			// ensureDefaultDates kicked in (latest-30).
+			expect( settings.start ).toMatch( /^\d{4}-\d{2}-\d{2}$/ );
+			expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+				project: 'en.wikipedia.org',
+				pages: [ 'Cat' ],
+				granularity: 'daily'
+			} ) );
+			expect( getRedirects ).not.toHaveBeenCalled();
+			expect( store.status ).toBe( 'complete' );
+			expect( store.dates ).toEqual( [ '2026-07-01', '2026-07-02' ] );
+			expect( store.series ).toHaveLength( 1 );
+			expect( store.totals.total ).toBe( 3 );
+		} );
+
+		it( 'expands and consolidates redirects when enabled', async () => {
+			const store = usePageviewsStore();
+			store.setFromQuery( { pages: 'Cat', redirects: '1' } );
+			getRedirects.mockResolvedValue( { Cat: [ { title: 'Cats', fragment: null } ] } );
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 10, 20 ], total: 30, average: 15 },
+				{ title: 'Cats', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+
+			await store.load();
+
+			expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+				pages: [ 'Cat', 'Cats' ]
+			} ) );
+			expect( store.series ).toHaveLength( 1 );
+			expect( store.series[ 0 ] ).toMatchObject( {
+				title: 'Cat',
+				counts: [ 11, 22 ],
+				total: 33,
+				consolidatedFrom: [ 'Cats' ]
+			} );
+		} );
+
+		it( 'notifies with a localized message on ApiError', async () => {
+			const store = usePageviewsStore();
+			const ui = useUiStore();
+			store.pages = [ 'Cat' ];
+			fetchPageviews.mockRejectedValue( new ApiError( {
+				code: 'upstream_error',
+				message: 'AQS is down',
+				i18n: [ 'api-error', 'Pageviews API' ]
+			} ) );
+
+			await store.load();
+
+			expect( store.status ).toBe( 'error' );
+			expect( ui.messages ).toHaveLength( 1 );
+			expect( ui.messages[ 0 ].type ).toBe( 'error' );
+			// The banana message 'api-error' is "Error querying $1".
+			expect( ui.messages[ 0 ].text ).toBe( 'Error querying Pageviews API' );
+		} );
+
+		it( 'resets to initial with no pages', async () => {
+			const store = usePageviewsStore();
+			store.pages = [];
+			store.status = 'complete';
+
+			await store.load();
+
+			expect( store.status ).toBe( 'initial' );
+			expect( fetchPageviews ).not.toHaveBeenCalled();
+		} );
 	} );
 } );
