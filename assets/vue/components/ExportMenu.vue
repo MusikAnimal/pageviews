@@ -118,3 +118,12 @@ function onSelect( value ) {
 	selection.value = null;
 }
 </script>
+
+<style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.app-export {
+	display: flex;
+	gap: @spacing-50;
+}
+</style>

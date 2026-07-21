@@ -18,6 +18,7 @@
 			/>
 			<template v-if="chartReady">
 				<div class="app-chart__toolbar">
+					<ChartTypeSelect v-model="selectedChartType" />
 					<ExportMenu
 						:dates="store.dates"
 						:series="store.series"
@@ -48,12 +49,15 @@ import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { usePrefersDark } from '../composables/useChart.js';
 import { buildTimeseriesOption } from '../charts/options/timeseries.js';
+import { buildCircularOption } from '../charts/options/circular.js';
+import { buildRadarOption } from '../charts/options/radar.js';
 import { chartTheme } from '../charts/theme.js';
 import { shouldUseLogScale } from '../charts/logScale.js';
 import { banana } from '../i18n.js';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import PageInput from '../components/PageInput.vue';
 import Chart from '../components/Chart.vue';
+import ChartTypeSelect from '../components/ChartTypeSelect.vue';
 import ExportMenu from '../components/ExportMenu.vue';
 import Totals from '../apps/pageviews/Totals.vue';
 import StatsTable from '../apps/pageviews/StatsTable.vue';
@@ -79,16 +83,48 @@ const exportFilename = computed(
 // the mode) and thus the chart option rebuild when the mode flips.
 const theme = computed( () => ( { dark: dark.value, ...chartTheme() } ) );
 
-const chartOption = computed( () => buildTimeseriesOption( {
-	dates: store.dates,
-	series: store.series.map( ( page ) => ( { label: page.title, data: page.counts } ) ),
-	// Legacy default: bar for a single page, line for comparisons.
-	chartType: store.series.length > 1 ? 'line' : 'bar',
-	logScale: shouldUseLogScale( store.series.map( ( page ) => page.counts ) ),
-	monthly: settings.dateType === 'monthly',
-	locale: banana.locale,
-	theme: theme.value
-} ) );
+// null = automatic (the legacy default: bar for a single page, line
+// for comparisons); set once the user picks a type explicitly.
+const userChartType = ref( null );
+
+const selectedChartType = computed( {
+	get: () => userChartType.value ?? ( store.series.length > 1 ? 'line' : 'bar' ),
+	set: ( value ) => {
+		userChartType.value = value;
+	}
+} );
+
+const chartOption = computed( () => {
+	const type = selectedChartType.value;
+	const common = { locale: banana.locale, theme: theme.value };
+	const timeseries = store.series.map(
+		( page ) => ( { label: page.title, data: page.counts } )
+	);
+
+	if ( [ 'pie', 'doughnut', 'polarArea' ].includes( type ) ) {
+		return buildCircularOption( {
+			series: store.series.map( ( page ) => ( { label: page.title, total: page.total } ) ),
+			chartType: type,
+			...common
+		} );
+	}
+	if ( type === 'radar' ) {
+		return buildRadarOption( {
+			dates: store.dates,
+			series: timeseries,
+			monthly: settings.dateType === 'monthly',
+			...common
+		} );
+	}
+	return buildTimeseriesOption( {
+		dates: store.dates,
+		series: timeseries,
+		chartType: type,
+		logScale: shouldUseLogScale( store.series.map( ( page ) => page.counts ) ),
+		monthly: settings.dateType === 'monthly',
+		...common
+	} );
+} );
 
 watch(
 	() => [
@@ -131,6 +167,9 @@ watch(
 	padding: @spacing-50;
 }
 
+// The column separators live on the chart itself: its left edge when
+// sharing a row with the settings form, and its right edge when the
+// totals sidebar also fits.
 .app-chart {
 	flex: 999 1 @size-3200;
 	margin: 0;
@@ -138,9 +177,23 @@ watch(
 	min-width: 0;
 	padding: @spacing-50;
 
+	&__toolbar {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: @spacing-50;
+		margin-bottom: @spacing-50;
+	}
+
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
 			border-left: @border-width-base solid @border-color-base;
+		}
+	}
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
+		& {
+			border-right: @border-width-base solid @border-color-base;
 		}
 	}
 }
@@ -148,11 +201,5 @@ watch(
 .app-totals {
 	flex: 1 1 @size-1600;
 	padding: @spacing-50;
-
-	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
-		& {
-			border-left: @border-width-base solid @border-color-base;
-		}
-	}
 }
 </style>
