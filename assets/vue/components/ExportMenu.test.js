@@ -3,11 +3,16 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { CdxMenuButton } from '@wikimedia/codex';
 import ExportMenu from './ExportMenu.vue';
-import { useUiStore } from '../stores/ui.js';
 import { downloadFile } from '../lib/download.js';
 
 vi.mock( '../lib/download.js', () => ( {
 	downloadFile: vi.fn()
+} ) );
+
+const toastSuccess = vi.hoisted( () => vi.fn() );
+vi.mock( '@wikimedia/codex', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	useToast: () => ( { success: toastSuccess } )
 } ) );
 
 const props = {
@@ -78,21 +83,23 @@ describe( 'ExportMenu', () => {
 			.map( ( item ) => item.value ) ).toContain( 'png' );
 	} );
 
-	it( 'has a dedicated permalink button that copies and confirms', async () => {
+	it( 'has a dedicated permalink button that copies and toasts', async () => {
 		const writeText = vi.fn( () => Promise.resolve() );
 		vi.stubGlobal( 'navigator', { clipboard: { writeText } } );
 
 		const wrapper = mount( ExportMenu, { props, global: globalConfig } );
-		const ui = useUiStore();
 
 		// Permalink is not a download menu entry.
 		expect( wrapper.findComponent( CdxMenuButton ).props( 'menuItems' )
 			.map( ( item ) => item.value ) ).not.toContain( 'permalink' );
 
 		await wrapper.find( '.app-export__permalink' ).trigger( 'click' );
-		await vi.waitFor( () => expect( ui.messages ).toHaveLength( 1 ) );
+		await vi.waitFor( () => expect( toastSuccess ).toHaveBeenCalled() );
 
 		expect( writeText ).toHaveBeenCalledWith( location.href );
-		expect( ui.messages[ 0 ].type ).toBe( 'success' );
+		expect( toastSuccess ).toHaveBeenCalledWith(
+			'Permalink copied to clipboard',
+			{ autoDismiss: true }
+		);
 	} );
 } );

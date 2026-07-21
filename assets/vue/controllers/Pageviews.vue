@@ -51,11 +51,18 @@
 	<section class="app-breakdown">
 		<StatsTable v-if="chartReady" />
 	</section>
+	<CdxToastContainer />
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { CdxButton, CdxCheckbox, CdxMessage, CdxProgressBar } from '@wikimedia/codex';
+import {
+	CdxButton,
+	CdxCheckbox,
+	CdxMessage,
+	CdxProgressBar,
+	CdxToastContainer
+} from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';

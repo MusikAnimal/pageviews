@@ -24,9 +24,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { CdxButton, CdxIcon, CdxMenuButton } from '@wikimedia/codex';
+import { CdxButton, CdxIcon, CdxMenuButton, useToast } from '@wikimedia/codex';
 import { cdxIconDownload, cdxIconLink } from '@wikimedia/codex-icons';
-import { useUiStore } from '../stores/ui.js';
 import { buildCsv } from '../lib/csv.js';
 import { downloadFile } from '../lib/download.js';
 import { banana } from '../i18n.js';
@@ -63,7 +62,7 @@ const props = defineProps( {
 	}
 } );
 
-const ui = useUiStore();
+const toast = useToast();
 const selection = ref( null );
 
 const menuItems = [
@@ -107,7 +106,7 @@ const actions = {
 
 async function copyPermalink() {
 	await navigator.clipboard.writeText( location.href );
-	ui.notify( { type: 'success', text: banana.i18n( 'permalink' ) } );
+	toast.success( banana.i18n( 'permalink-copied' ), { autoDismiss: true } );
 }
 
 function onSelect( value ) {
