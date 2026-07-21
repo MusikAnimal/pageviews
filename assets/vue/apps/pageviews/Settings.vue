@@ -1,5 +1,11 @@
 <template>
-	<form class="app-settings" :aria-label="$i18n( 'options' )">
+	<!-- Codex buttons default to type=submit; nothing here should
+		trigger a native form submission. -->
+	<form
+		class="app-settings"
+		:aria-label="$i18n( 'options' )"
+		@submit.prevent
+	>
 		<header class="app-workspace__heading">
 			<h3>{{ $i18n( 'options' ) }}</h3>
 		</header>

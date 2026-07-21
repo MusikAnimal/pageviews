@@ -7,6 +7,18 @@
 			{{ $i18n( 'dates' ) }}
 		</template>
 
+		<CdxMenuButton
+			:selected="specialRange"
+			class="app-settings__dates-presets"
+			weight="quiet"
+			:menu-items="presetItems"
+			:aria-label="$i18n( 'presets' )"
+			@update:selected="( value ) => value && store.setSpecialRange( value )"
+		>
+			<CdxIcon :icon="cdxIconDownTriangle" />
+			{{ $i18n( 'presets' ) }}
+		</CdxMenuButton>
+
 		<div class="app-settings__dates-inputs">
 			<CdxField class="app-settings__dates-inputs__start">
 				<CdxTextInput
@@ -38,21 +50,50 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { CdxField, CdxSelect, CdxTextInput } from '@wikimedia/codex';
+import {
+	CdxField,
+	CdxIcon,
+	CdxMenuButton,
+	CdxSelect,
+	CdxTextInput
+} from '@wikimedia/codex';
+import { cdxIconDownTriangle } from '@wikimedia/codex-icons';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from '../stores/settings.js';
 
 const store = useSettingsStore();
-const { start, end, dateType } = storeToRefs( store );
+const { start, end, dateType, specialRange } = storeToRefs( store );
 
 const dateTypeOptions = [
 	{ value: 'daily', label: banana.i18n( 'daily' ) },
 	{ value: 'monthly', label: banana.i18n( 'monthly' ) }
 ];
+
+// Same range names as the legacy tool's ?range= URL param.
+const presetItems = [
+	...[ 7, 30, 60, 90 ].map( ( days ) => ( {
+		value: `latest-${ days }`,
+		label: banana.i18n( 'latest-days', String( days ) )
+	} ) ),
+	...[ 'this-week', 'this-month', 'last-month', 'this-year', 'last-year', 'all-time' ]
+		.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) )
+];
 </script>
 
 <style scoped lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+// Inline with the "Dates" legend, floated to the right of the field.
+.app-settings__dates {
+	position: relative;
+}
+
+.app-settings__dates-presets {
+	position: absolute;
+	right: 0;
+	// Vertically aligns the quiet button with the field's legend.
+	top: -30px;
+}
 
 .app-settings__dates-inputs {
 	display: flex;

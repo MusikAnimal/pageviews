@@ -329,6 +329,7 @@
 	"referer-external": "Label for option to view statistics for external [[Wikipedia:HTTP referer|referers]].\n{{Identical|External}}",
 	"referer-internal": "Label for option to view statistics for internal [[Wikipedia:HTTP referer|referers]].",
 	"referer-search-engine": "Label for option to view statistics for search engine [[Wikipedia:HTTP referer|referers]].",
+	"presets": "Label for the dropdown offering preset date ranges (e.g. latest 30 days, last month) in the date selection form.",
 	"remember-chart-option": "Label for option to remember chart preference across sessions.",
 	"reset-zoom": "Label for the button that resets the chart's zoom level, after the user has zoomed in on part of the data.",
 	"report-false-positive": "Link to report pages as false positives in the Topviews app.",

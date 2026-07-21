@@ -53,7 +53,7 @@ describe( 'settings store', () => {
 		} );
 	} );
 
-	it( 'resolves legacy range params to concrete dates', () => {
+	it( 'resolves range params to concrete dates, keeping range in the URL', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
 
@@ -61,10 +61,29 @@ describe( 'settings store', () => {
 		store.setFromQuery( { range: 'latest-20' } );
 		expect( store.start ).toBe( '2026-07-01' );
 		expect( store.end ).toBe( '2026-07-20' );
-		// The query getter re-serializes as start/end, not range.
-		expect( store.query.start ).toBe( '2026-07-01' );
+		// Like the legacy tool, the URL carries range, not start/end.
+		expect( store.query.range ).toBe( 'latest-20' );
+		expect( store.query.start ).toBeUndefined();
+		expect( store.query.end ).toBeUndefined();
 
 		vi.useRealTimers();
+	} );
+
+	it( 'drops the range once dates are edited manually', () => {
+		const store = useSettingsStore();
+		store.setSpecialRange( 'last-month' );
+		expect( store.query.range ).toBe( 'last-month' );
+
+		store.start = '2026-01-01';
+		expect( store.specialRange ).toBeNull();
+		expect( store.query.range ).toBeUndefined();
+		expect( store.query.start ).toBe( '2026-01-01' );
+	} );
+
+	it( 'rejects unknown range names', () => {
+		const store = useSettingsStore();
+		expect( store.setSpecialRange( 'fortnight' ) ).toBe( false );
+		expect( store.specialRange ).toBeNull();
 	} );
 
 	it( 'applies default dates only when unset', () => {

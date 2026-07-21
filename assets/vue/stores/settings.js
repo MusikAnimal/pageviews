@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { formatYmd, resolveSpecialRange } from '../lib/dates.js';
 
@@ -46,6 +46,23 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * @type {import( 'vue' ).Ref<'all'|'user'|'spider'|'automated'>}
 	 */
 	const agent = ref( 'user' );
+	/**
+	 * The active special range name (e.g. 'latest-30', 'last-month'),
+	 * or null when concrete dates were chosen. When set, permalinks
+	 * carry `range` instead of start/end, like the legacy tool.
+	 *
+	 * @type {import( 'vue' ).Ref<?string>}
+	 */
+	const specialRange = ref( null );
+
+	// Editing the dates directly makes the range no longer "special".
+	// Synchronous so the applyingRange guard in setSpecialRange() works.
+	let applyingRange = false;
+	watch( [ start, end ], () => {
+		if ( !applyingRange ) {
+			specialRange.value = null;
+		}
+	}, { flush: 'sync' } );
 
 	/**
 	 * The canonical serialized form of the shared params, for the URL query string.
@@ -54,21 +71,16 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 */
 	const query = computed( () => ( {
 		project: project.value,
-		start: start.value || undefined,
-		end: end.value || undefined,
+		range: specialRange.value ?? undefined,
+		start: specialRange.value ? undefined : start.value || undefined,
+		end: specialRange.value ? undefined : end.value || undefined,
 		platform: platform.value,
 		agent: agent.value
 	} ) );
 
 	/**
-	 * Populate the store from URL query params. Invalid values are ignored,
-	 * leaving the current (or default) values in place.
-	 *
-	 * @param {Object} params Parsed query string (from vue-router route.query).
-	 */
-	/**
-	 * Resolve a legacy special range name (latest-N, last-month, ...)
-	 * into concrete start/end dates.
+	 * Apply a special range name (latest-N, last-month, ...): resolves
+	 * it to concrete dates and remembers the name for the URL.
 	 *
 	 * @param {string} range
 	 * @return {boolean} Whether the name was recognized.
@@ -78,9 +90,12 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		if ( !resolved ) {
 			return false;
 		}
+		applyingRange = true;
 		start.value = formatYmd( resolved.start );
 		end.value = formatYmd( resolved.end );
+		applyingRange = false;
 		dateType.value = 'daily';
+		specialRange.value = range;
 		return true;
 	}
 
@@ -94,13 +109,19 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		}
 	}
 
+	/**
+	 * Populate the store from URL query params. Invalid values are ignored,
+	 * leaving the current (or default) values in place.
+	 *
+	 * @param {Object} params Parsed query string (from vue-router route.query).
+	 */
 	function setFromQuery( params ) {
 		if ( params.project ) {
 			project.value = params.project;
 		}
 		if ( params.range ) {
-			// Legacy URLs use e.g. ?range=latest-20. Resolved to
-			// concrete dates; permalinks re-serialize as start/end.
+			// e.g. ?range=latest-20, kept in permalinks (like the
+			// legacy tool) and resolved to concrete dates on load.
 			setSpecialRange( params.range );
 		}
 		if ( params.start && DATE_PATTERN.test( params.start ) ) {
@@ -128,6 +149,7 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		dateType,
 		platform,
 		agent,
+		specialRange,
 		query,
 		setFromQuery,
 		setSpecialRange,
