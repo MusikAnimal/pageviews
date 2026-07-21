@@ -21,7 +21,11 @@
 
 		<div class="app-settings__dates-inputs">
 			<CdxField class="app-settings__dates-inputs__start">
+				<!-- Keyed on the type: switching a native input between
+					date and month sanitizes the value against the old
+					type (blanking it), so remount instead. -->
 				<CdxTextInput
+					:key="inputType"
 					v-model="start"
 					:aria-label="$i18n( 'start-date' )"
 					:input-type="inputType"
@@ -31,6 +35,7 @@
 			</CdxField>
 			<CdxField class="app-settings__dates-inputs__end">
 				<CdxTextInput
+					:key="inputType"
 					v-model="end"
 					:aria-label="$i18n( 'end-date' )"
 					:input-type="inputType"
