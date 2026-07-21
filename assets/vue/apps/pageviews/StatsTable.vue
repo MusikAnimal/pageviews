@@ -43,15 +43,17 @@
 					{{ number( Math.round( row.average ) ) }}
 				</td>
 				<td class="app-stats__number">
-					{{ row.edits === null ? '' : number( row.edits ) }}
+					<a
+						v-if="row.edits !== null"
+						:href="historyUrl( row.title )"
+						target="_blank"
+					>{{ number( row.edits ) }}</a>
 				</td>
 				<td class="app-stats__number">
 					{{ row.editors === null ? '' : number( row.editors ) }}
 				</td>
 				<td>
-					<a :href="historyUrl( row.title )" target="_blank">
-						{{ $i18n( 'revisions' ) }}
-					</a>
+					<!-- Cross-app links land here later. -->
 				</td>
 			</tr>
 		</tbody>
@@ -108,7 +110,7 @@ const columns = computed( () => [
 
 const rows = computed( () => {
 	const unsorted = store.series.map( ( page ) => {
-		const edits = store.editData?.[ page.title ] ?? null;
+		const edits = store.editData?.pages?.[ page.title ] ?? null;
 		return {
 			title: page.title,
 			assessment: edits?.assessment ?? null,

@@ -11,6 +11,10 @@ vi.mock( '../lib/metricsApi.js', () => ( {
 	fetchPageviews: vi.fn(),
 	fetchEditData: vi.fn( () => Promise.resolve( { pages: {} } ) )
 } ) );
+vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getPageInfo: vi.fn( () => Promise.resolve( {} ) )
+} ) );
 vi.mock( '../lib/redirects.js', async ( importOriginal ) => ( {
 	// consolidateSeries stays real (pure, tested separately).
 	...await importOriginal(),

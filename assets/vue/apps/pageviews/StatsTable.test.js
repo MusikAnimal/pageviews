@@ -22,16 +22,18 @@ function seedStore() {
 	];
 	store.totals = { counts: [ 11, 22 ], total: 1033, average: 516.5 };
 	store.editData = {
-		Cat: {
-			num_edits: '42',
-			num_users: '7',
-			assessment: {
-				class: 'GA',
-				badge: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
-				color: '#66ff66'
-			}
+		pages: {
+			Cat: {
+				num_edits: '42',
+				num_users: '7',
+				assessment: {
+					class: 'GA',
+					badge: 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+					color: '#66ff66'
+				}
+			},
+			Dog: { num_edits: '5', num_users: '2', assessment: null }
 		},
-		Dog: { num_edits: '5', num_users: '2', assessment: null },
 		totals: { num_edits: 47, num_users: 9 }
 	};
 	return store;
@@ -76,6 +78,17 @@ describe( 'StatsTable', () => {
 		const link = mountTable().find( 'tbody a' );
 		expect( link.attributes( 'href' ) )
 			.toBe( 'https://en.wikipedia.org/wiki/Cat' );
+	} );
+
+	it( 'links the edit count to the revision history', () => {
+		seedStore();
+		const catRow = mountTable().findAll( 'tbody tr' )[ 0 ];
+		const editsLink = catRow.findAll( 'a' )
+			.find( ( a ) => a.attributes( 'href' ).includes( 'action=history' ) );
+
+		expect( editsLink.text() ).toBe( '42' );
+		expect( editsLink.attributes( 'href' ) )
+			.toBe( 'https://en.wikipedia.org/w/index.php?title=Cat&action=history' );
 	} );
 
 	it( 'toggles sort direction and column on header clicks', async () => {

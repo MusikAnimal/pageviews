@@ -57,6 +57,27 @@ export async function mwApiGet( project, params ) {
 }
 
 /**
+ * Basic page information (length, watcher count) for the given titles.
+ * The watchers field is only present when the wiki exposes it (above
+ * the unwatched-pages threshold, as on Wikimedia wikis).
+ *
+ * @param {string} project
+ * @param {string[]} titles
+ * @return {Promise<Object>} Info objects keyed by (normalized) title.
+ */
+export async function getPageInfo( project, titles ) {
+	const response = await mwApiGet( project, {
+		action: 'query',
+		prop: 'info',
+		inprop: 'watchers',
+		titles
+	} );
+	return Object.fromEntries(
+		( response.query?.pages || [] ).map( ( page ) => [ page.title, page ] )
+	);
+}
+
+/**
  * A GET request following API continuation until exhausted — the
  * equivalent of the legacy massApi() helper.
  *

@@ -91,6 +91,8 @@ toolforge-bundle (`ReplicasClient`).
   legacy tool computed dates in browser-local time, a long-standing bug (10 PM
   in New York is already the next UTC day). Use `assets/vue/lib/dates.js`;
   never `new Date()` local-time getters for anything user-facing.
+- Prefer async/await over .then() chains. Fire-and-forget work goes in a
+  named async function called without await (with a comment saying why).
 - i18n: `$i18n( 'key' )` in templates, `import { banana }` from `vue/i18n.js` in
   JS, `v-i18n-html` for markup messages. Keys live in `i18n/*.json` (banana
   format, synced with translatewiki — never invent keys without adding them to

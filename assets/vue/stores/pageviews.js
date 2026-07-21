@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
+import { getPageInfo } from '../lib/mwApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
@@ -41,13 +42,22 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 */
 	const totals = ref( null );
 	/**
-	 * Per-page edit stats keyed by title: { num_edits, num_users,
-	 * assessment }. null until (and unless) the replica-backed fetch
-	 * succeeds — the table omits those columns when unavailable.
+	 * Edit stats from the replica-backed endpoint: { pages: { title:
+	 * { num_edits, num_users, assessment } }, totals: ?{ num_edits,
+	 * num_users } } — totals is the exact combined row for multi-page
+	 * queries. null until (and unless) the fetch succeeds; the table
+	 * omits those columns when unavailable.
 	 *
 	 * @type {import('vue').Ref<?Object>}
 	 */
 	const editData = ref( null );
+	/**
+	 * Basic page info (length, watchers) keyed by title, from the
+	 * Action API. null until the non-fatal fetch succeeds.
+	 *
+	 * @type {import('vue').Ref<?Object>}
+	 */
+	const pageInfo = ref( null );
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
@@ -75,6 +85,38 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		redirects.value = params.redirects === '1';
 	}
 
+	async function loadEditData( settings, id ) {
+		editData.value = null;
+		try {
+			const result = await fetchEditData( {
+				project: settings.project,
+				pages: pages.value,
+				start: settings.start,
+				end: settings.end
+			} );
+			if ( id === loadId ) {
+				editData.value = {
+					pages: result.pages,
+					totals: result.totals ?? null
+				};
+			}
+		} catch {
+			// Non-fatal; the affected fields simply don't render.
+		}
+	}
+
+	async function loadPageInfo( settings, id ) {
+		pageInfo.value = null;
+		try {
+			const result = await getPageInfo( settings.project, pages.value );
+			if ( id === loadId ) {
+				pageInfo.value = result;
+			}
+		} catch {
+			// Non-fatal; the affected fields simply don't render.
+		}
+	}
+
 	/**
 	 * Fetch the pageview data for the current params: expands redirects
 	 * when enabled, fetches through the batch metrics endpoint, and
@@ -91,6 +133,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			series.value = [];
 			totals.value = null;
 			editData.value = null;
+			pageInfo.value = null;
 			return;
 		}
 
@@ -98,19 +141,12 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		status.value = 'loading';
 		ui.clearMessages();
 
-		// Supplementary and non-fatal: without it the stats table just
-		// omits the edit columns (e.g. replicas unreachable locally).
-		editData.value = null;
-		fetchEditData( {
-			project: settings.project,
-			pages: pages.value,
-			start: settings.start,
-			end: settings.end
-		} ).then( ( result ) => {
-			if ( id === loadId ) {
-				editData.value = result.pages;
-			}
-		} ).catch( () => {} );
+		// Supplementary and non-fatal: without these the stats table
+		// and totals panel just omit the affected fields (e.g. replicas
+		// unreachable locally). Deliberately not awaited, so they run
+		// concurrently with the metrics fetch.
+		loadEditData( settings, id );
+		loadPageInfo( settings, id );
 
 		try {
 			let redirectMap = null;
@@ -171,6 +207,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		series,
 		totals,
 		editData,
+		pageInfo,
 		query,
 		setFromQuery,
 		load
