@@ -9,7 +9,8 @@
 		"lint": "npm run lint:js && npm run lint:css",
 		"lint:js": "eslint --cache .",
 		"lint:css": "stylelint \"assets/**/*.{less,vue}\"",
-		"lint:fix": "eslint --cache --fix . && stylelint --fix \"assets/**/*.{less,vue}\""
+		"lint:fix": "eslint --cache --fix . && stylelint --fix \"assets/**/*.{less,vue}\"",
+		"i18n:sweep": "node scripts/i18n-sweep.mjs"
 	},
 	"devDependencies": {
 		"@hotwired/stimulus": "^3.0.0",
