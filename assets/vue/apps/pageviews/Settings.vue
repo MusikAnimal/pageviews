@@ -14,9 +14,15 @@
 		<PlatformInput />
 		<AgentInput />
 		<CdxField class="app-settings__redirects">
-			<CdxCheckbox v-model="redirects">
-				{{ $i18n( 'include-redirects' ) }}
-			</CdxCheckbox>
+			<div class="app-settings__redirects-row">
+				<CdxCheckbox v-model="redirects">
+					{{ $i18n( 'include-redirects' ) }}
+				</CdxCheckbox>
+				<FaqHelpButton
+					section="redirects"
+					:aria-label="$i18n( 'faq-redirects-title' )"
+				/>
+			</div>
 		</CdxField>
 	</form>
 </template>
@@ -28,6 +34,7 @@ import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { CdxCheckbox, CdxField } from '@wikimedia/codex';
+import FaqHelpButton from '../../components/FaqHelpButton.vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 
 const { redirects } = storeToRefs( usePageviewsStore() );
@@ -38,5 +45,11 @@ const { redirects } = storeToRefs( usePageviewsStore() );
 
 .cdx-select-vue {
 	width: 100%;
+}
+
+.app-settings__redirects-row {
+	align-items: center;
+	display: flex;
+	gap: @spacing-25;
 }
 </style>
