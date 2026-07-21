@@ -18,3 +18,5 @@
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+
+/.eslintcache

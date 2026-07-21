@@ -1,0 +1,31 @@
+{
+	"extends": "stylelint-config-wikimedia/support-modern",
+	"rules": {
+		"plugin/no-unsupported-browser-features": [ true, {
+			"severity": "warning",
+			"ignore": [
+				"css-container-queries",
+				"css-nesting",
+				"mdn-text-decoration-shorthand",
+				"text-decoration"
+			],
+			"ignorePartialSupport": true
+		} ]
+	},
+	"ignoreFiles": [
+		"node_modules/**",
+		"public/build/**",
+		"var/**",
+		"vendor/**"
+	],
+	"overrides": [
+		{
+			"files": [ "**/*.less" ],
+			"customSyntax": "postcss-less"
+		},
+		{
+			"files": [ "**/*.vue" ],
+			"customSyntax": "postcss-html"
+		}
+	]
+}

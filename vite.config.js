@@ -7,13 +7,13 @@ export default defineConfig( {
 		vue(),
 		symfonyPlugin( {
 			stimulus: true
-		} ),
+		} )
 	],
 	build: {
 		rollupOptions: {
 			input: {
 				app: './assets/app.js'
-			},
+			}
 		}
 	},
 	css: {
@@ -29,5 +29,8 @@ export default defineConfig( {
 		origin: 'http://localhost:5173',
 		port: 5173,
 		strictPort: true
+	},
+	test: {
+		environment: 'jsdom'
 	}
 } );

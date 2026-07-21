@@ -1,0 +1,6 @@
+# Aligned with Vite's default "baseline-widely-available" build target.
+# Used by stylelint's plugin/no-unsupported-browser-features.
+chrome >= 107
+edge >= 107
+firefox >= 104
+safari >= 16

@@ -3,7 +3,13 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build"
+		"build": "vite build",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"lint": "npm run lint:js && npm run lint:css",
+		"lint:js": "eslint --cache .",
+		"lint:css": "stylelint \"assets/**/*.{less,vue}\"",
+		"lint:fix": "eslint --cache --fix . && stylelint --fix \"assets/**/*.{less,vue}\""
 	},
 	"devDependencies": {
 		"@hotwired/stimulus": "^3.0.0",

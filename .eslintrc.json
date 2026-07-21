@@ -1,0 +1,43 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client/common",
+		"wikimedia/language/es2024",
+		"wikimedia/vue3/common"
+	],
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"settings": {
+		"jsdoc": {
+			"mode": "typescript"
+		}
+	},
+	"rules": {
+		"vue/multi-word-component-names": "off"
+	},
+	"ignorePatterns": [
+		"config/",
+		"node_modules/",
+		"public/build/",
+		"var/",
+		"vendor/"
+	],
+	"overrides": [
+		{
+			"files": [ "**/*.vue" ],
+			"extends": [ "wikimedia/language/es2024" ]
+		},
+		{
+			"files": [ "vite.config.js" ],
+			"env": { "node": true }
+		},
+		{
+			"files": [ "assets/controllers/*.js" ],
+			"rules": {
+				"array-callback-return": "off",
+				"max-len": "off"
+			}
+		}
+	]
+}
