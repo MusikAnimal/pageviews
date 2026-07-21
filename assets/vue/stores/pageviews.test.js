@@ -4,7 +4,7 @@ import { usePageviewsStore } from './pageviews.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 import { ApiError } from '../lib/errors.js';
-import { fetchPageviews } from '../lib/metricsApi.js';
+import { fetchEditData, fetchPageviews } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 
 vi.mock( '../lib/metricsApi.js', () => ( {
@@ -142,6 +142,20 @@ describe( 'pageviews store', () => {
 			expect( ui.messages[ 0 ].type ).toBe( 'error' );
 			// The banana message 'api-error' is "Error querying $1".
 			expect( ui.messages[ 0 ].text ).toBe( 'Error querying Pageviews API' );
+		} );
+
+		it( 'flags edit data as failed without failing the load', async () => {
+			const store = usePageviewsStore();
+			store.pages = [ 'Cat' ];
+			fetchPageviews.mockResolvedValue( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+			fetchEditData.mockRejectedValueOnce( new Error( 'tunnels down' ) );
+
+			await store.load();
+
+			expect( store.status ).toBe( 'complete' );
+			expect( store.editData ).toEqual( { pages: {}, totals: null, failed: true } );
 		} );
 
 		it( 'resets to initial with no pages', async () => {

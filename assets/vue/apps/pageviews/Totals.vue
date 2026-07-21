@@ -18,11 +18,11 @@
 				</div>
 			</dl>
 		</template>
-		<template v-if="editTotals">
+		<template v-if="editTotals || editDataFailed">
 			<h4 class="app-totals__subheading">
 				{{ $i18n( 'revisions' ) }}
 			</h4>
-			<dl class="app-totals__stats">
+			<dl v-if="editTotals" class="app-totals__stats">
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'edits' ) }}</dt>
 					<dd>{{ number( Number( editTotals.num_edits ) ) }}</dd>
@@ -32,6 +32,9 @@
 					<dd>{{ number( Number( editTotals.num_users ) ) }}</dd>
 				</div>
 			</dl>
+			<p v-else class="app-totals__unavailable">
+				{{ $i18n( 'data-unavailable' ) }}
+			</p>
 		</template>
 		<template v-if="basicInfo">
 			<h4 class="app-totals__subheading">
@@ -72,6 +75,8 @@ const averageLabel = computed( () => banana.i18n(
  * multi-page queries (distinct editors overlap, so summing per-page
  * numbers would overcount); a single page is its own total.
  */
+const editDataFailed = computed( () => store.editData?.failed ?? false );
+
 const editTotals = computed( () => {
 	if ( !store.editData ) {
 		return null;
@@ -144,6 +149,12 @@ const basicInfo = computed( () => {
 			margin-top: 0;
 			padding-top: 0;
 		}
+	}
+
+	&__unavailable {
+		color: @color-subtle;
+		font-size: @font-size-small;
+		margin: 0;
 	}
 }
 </style>

@@ -44,9 +44,10 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	/**
 	 * Edit stats from the replica-backed endpoint: { pages: { title:
 	 * { num_edits, num_users, assessment } }, totals: ?{ num_edits,
-	 * num_users } } — totals is the exact combined row for multi-page
-	 * queries. null until (and unless) the fetch succeeds; the table
-	 * omits those columns when unavailable.
+	 * num_users }, failed: boolean } — totals is the exact combined row
+	 * for multi-page queries. null while pending; failed is set when
+	 * the endpoint errors (e.g. replicas unreachable) so the UI can
+	 * show "data unavailable" rather than nothing.
 	 *
 	 * @type {import('vue').Ref<?Object>}
 	 */
@@ -97,11 +98,16 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			if ( id === loadId ) {
 				editData.value = {
 					pages: result.pages,
-					totals: result.totals ?? null
+					totals: result.totals ?? null,
+					failed: false
 				};
 			}
 		} catch {
-			// Non-fatal; the affected fields simply don't render.
+			// Non-fatal, but flagged: the totals sidebar shows a muted
+			// "data unavailable" note instead of hiding the section.
+			if ( id === loadId ) {
+				editData.value = { pages: {}, totals: null, failed: true };
+			}
 		}
 	}
 

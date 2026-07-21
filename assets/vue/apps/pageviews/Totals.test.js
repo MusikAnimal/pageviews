@@ -73,6 +73,21 @@ describe( 'Totals', () => {
 		expect( text ).toContain( '7' );
 	} );
 
+	it( 'shows a muted note when edit data is unavailable', () => {
+		const store = usePageviewsStore();
+		store.totals = { counts: [], total: 10, average: 5 };
+		store.editData = { pages: {}, totals: null, failed: true };
+
+		const wrapper = mountTotals();
+
+		// The Revisions section still renders, with the note instead
+		// of numbers.
+		expect( wrapper.text() ).toContain( 'revisions' );
+		expect( wrapper.find( '.app-totals__unavailable' ).text() )
+			.toBe( 'data-unavailable' );
+		expect( wrapper.text() ).not.toContain( 'edits' );
+	} );
+
 	it( 'sums watchers and size in basic information', () => {
 		const store = usePageviewsStore();
 		store.totals = { counts: [], total: 10, average: 5 };
