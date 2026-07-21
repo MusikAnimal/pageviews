@@ -80,6 +80,20 @@ describe( 'PageInput', () => {
 			.toEqual( [ 'Apple', 'Banana' ] );
 	} );
 
+	it( 'clears all selections via the clear button', async () => {
+		const wrapper = mountInput();
+		const store = usePageviewsStore();
+
+		store.setFromQuery( { pages: 'Cat|Dog' } );
+		await nextTick();
+		await wrapper.find( '.app-pages__clear' ).trigger( 'click' );
+		await nextTick();
+
+		expect( store.pages ).toEqual( [] );
+		// Nothing selected: the clear button hides itself.
+		expect( wrapper.find( '.app-pages__clear' ).exists() ).toBe( false );
+	} );
+
 	it( 'caps the selection at 10 pages with a Massviews hint', async () => {
 		const wrapper = mountInput();
 		const store = usePageviewsStore();

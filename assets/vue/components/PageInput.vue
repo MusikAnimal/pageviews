@@ -6,21 +6,34 @@
 		<template #help-text>
 			{{ $i18n( 'num-pages-info', String( MAX_PAGES ) ) }}
 		</template>
-		<CdxMultiselectLookup
-			v-model:input-chips="chips"
-			v-model:selected="selected"
-			:menu-items="menuItems"
-			:aria-label="$i18n( 'pages' )"
-			:placeholder="$i18n( 'article-placeholder' )"
-			@input="onInput"
-		/>
+		<div class="app-pages__controls">
+			<CdxMultiselectLookup
+				v-model:input-chips="chips"
+				v-model:selected="selected"
+				class="app-pages__lookup"
+				:menu-items="menuItems"
+				:aria-label="$i18n( 'pages' )"
+				:placeholder="$i18n( 'article-placeholder' )"
+				@input="onInput"
+			/>
+			<CdxButton
+				v-if="chips.length"
+				class="app-pages__clear"
+				weight="quiet"
+				:aria-label="$i18n( 'clear' )"
+				@click="clear"
+			>
+				<CdxIcon :icon="cdxIconClear" />
+			</CdxButton>
+		</div>
 	</CdxField>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { CdxField, CdxMultiselectLookup } from '@wikimedia/codex';
+import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
+import { cdxIconClear } from '@wikimedia/codex-icons';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -81,6 +94,16 @@ watch( chips, ( chipList ) => {
 } );
 
 /**
+ * Remove all selected pages (CdxMultiselectLookup has no clearable
+ * prop, unlike CdxLookup).
+ */
+function clear() {
+	chips.value = [];
+	selected.value = [];
+	menuItems.value = [];
+}
+
+/**
  * Debounced prefixsearch autocomplete against the current project.
  *
  * @param {string} value
@@ -111,6 +134,20 @@ function onInput( value ) {
 </script>
 
 <style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.app-pages {
+	&__controls {
+		align-items: flex-start;
+		display: flex;
+		gap: @spacing-25;
+	}
+
+	&__lookup {
+		flex: 1;
+	}
+}
+
 // Tint each chip with its series color (chips precede the text input
 // inside the Codex chip container, so nth-child indexes the chips).
 each( range( 10 ), {
