@@ -43,6 +43,16 @@ Verify the tunnels are listening with `ss -tln | grep 471`, and note the
 match the ports the command opens (compose overrides the hosts to
 `host.docker.internal` automatically).
 
+## Local AQS rate limiting
+
+The Wikimedia metrics REST API (AQS) throttles external IPs to small
+per-IP bursts. Cloud Services production is not subject to the same
+limits, but locally, large fan-outs (e.g. "Include redirects" on pages
+with many redirects) will be slow: the server waits out AQS's
+`Retry-After` between waves, and the dev PHP container allows up to
+5 minutes per request (`docker/php/app.dev.ini`) to accommodate that.
+This is expected — grab a coffee, or test with fewer pages.
+
 ## Tests and linting
 
 Run all tooling through the containers — the JS and PHP toolchains live

@@ -8,7 +8,9 @@ import { promisePool } from './queue.js';
  */
 
 const CHUNK_SIZE = 50;
-const CONCURRENCY = 3;
+// Kept low: the server already fans each chunk out to AQS in waves,
+// and AQS rate-limits aggressive bursts per IP.
+const CONCURRENCY = 2;
 
 /**
  * Fetch per-article pageview timeseries for any number of pages.

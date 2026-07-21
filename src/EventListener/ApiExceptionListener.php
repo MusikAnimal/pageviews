@@ -46,7 +46,7 @@ class ApiExceptionListener {
 			$event->setResponse( $this->envelope(
 				'upstream_timeout',
 				'An upstream service could not be reached.',
-				[ 'api-error-timeout' ],
+				[ 'api-error', 'Pageviews API' ],
 				Response::HTTP_GATEWAY_TIMEOUT,
 				null,
 				true,
@@ -56,7 +56,7 @@ class ApiExceptionListener {
 			$event->setResponse( $this->envelope(
 				'upstream_error',
 				'An upstream service returned an error.',
-				[ 'api-error-unknown' ],
+				[ 'api-error', 'Pageviews API' ],
 				Response::HTTP_BAD_GATEWAY,
 				null,
 				true,
@@ -80,11 +80,13 @@ class ApiExceptionListener {
 				$status,
 			) );
 		} else {
-			// Anything else: keep JSON shape, leak nothing.
+			// Anything else: keep JSON shape, leak nothing. The i18n
+			// message needs an upstream name for its $1 — "Pageviews
+			// API" is what every /api/* consumer here is querying.
 			$event->setResponse( $this->envelope(
 				'internal_error',
 				'An internal error occurred.',
-				[ 'api-error-unknown' ],
+				[ 'api-error-unknown', 'Pageviews API' ],
 				Response::HTTP_INTERNAL_SERVER_ERROR,
 			) );
 		}

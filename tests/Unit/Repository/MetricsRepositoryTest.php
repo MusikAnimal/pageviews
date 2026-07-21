@@ -163,18 +163,24 @@ class MetricsRepositoryTest extends TestCase {
 	}
 
 	public function testUpstreamServerErrorBecomesApiException(): void {
-		$repo = $this->makeRepo( [
-			'/Cat/' => new MockResponse( 'no', [ 'http_code' => 400 ] ),
-		] );
+		// Both 4xx and 5xx (e.g. exhausted 429 retries, Cassandra
+		// errors) must surface as a labeled Pageviews API error, never
+		// the generic unknown-error envelope.
+		foreach ( [ 400, 503 ] as $statusCode ) {
+			$repo = $this->makeRepo( [
+				'/Cat/' => new MockResponse( 'no', [ 'http_code' => $statusCode ] ),
+			] );
 
-		try {
-			$repo->getPageviews( 'en.wikipedia', 'Cat', '2026-07-01', '2026-07-01' );
-			static::fail( 'Expected ApiException' );
-		} catch ( ApiException $e ) {
-			static::assertSame( 'upstream_error', $e->errorCode );
-			static::assertSame( 502, $e->status );
-			static::assertSame( 'aqs', $e->upstream );
-			static::assertTrue( $e->retryable );
+			try {
+				$repo->getPageviews( 'en.wikipedia', 'Cat', '2026-07-01', '2026-07-01' );
+				static::fail( "Expected ApiException for HTTP $statusCode" );
+			} catch ( ApiException $e ) {
+				static::assertSame( 'upstream_error', $e->errorCode );
+				static::assertSame( 502, $e->status );
+				static::assertSame( 'aqs', $e->upstream );
+				static::assertSame( [ 'api-error', 'Pageviews API' ], $e->i18n );
+				static::assertTrue( $e->retryable );
+			}
 		}
 	}
 }

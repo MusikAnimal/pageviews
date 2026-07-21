@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -25,6 +26,16 @@ class MetricsRepository extends Repository {
 	use DateParserTrait;
 
 	public const MAX_PAGES = 50;
+
+	/**
+	 * How many AQS requests to run concurrently, with a short pause
+	 * between waves. AQS rate-limits per-IP bursts far below our
+	 * 50-page batch size (instant 429s at ~25 parallel; the legacy
+	 * tool fetched strictly one at a time per client), so a batch is
+	 * processed in small paced waves.
+	 */
+	private const AQS_CONCURRENCY = 5;
+	private const AQS_WAVE_PAUSE_US = 100000;
 
 	private const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 	private const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
@@ -105,31 +116,40 @@ class MetricsRepository extends Repository {
 		$startTs = $startDate->format( 'Ymd' ) . '00';
 		$endTs = $endDate->format( 'Ymd' ) . '00';
 
-		// Issue every request up front; HttpClient multiplexes them
-		// concurrently and blocks only when a response body is read.
-		$responses = [];
-		foreach ( $pages as $page ) {
-			$article = rawurlencode( str_replace( ' ', '_', $page ) );
-			$responses[ $page ] = $this->aqsClient->request(
-				'GET',
-				"pageviews/per-article/$project/$platform/$agent/$article/$granularity/$startTs/$endTs"
-			);
-		}
-
 		$pageData = [];
 		$totals = array_fill( 0, count( $dates ), 0 );
-		foreach ( $responses as $title => $response ) {
-			$counts = $this->extractCounts( $response, $dates, $granularity, $noData );
-			foreach ( $counts as $i => $count ) {
-				$totals[ $i ] += $count;
+
+		foreach ( array_chunk( $pages, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
+			if ( $waveIndex > 0 ) {
+				usleep( self::AQS_WAVE_PAUSE_US );
 			}
-			$total = array_sum( $counts );
-			$pageData[] = [
-				'title' => $title,
-				'counts' => $counts,
-				'total' => $total,
-				'average' => round( $total / count( $dates ), 2 ),
-			] + ( $noData ? [ 'no_data' => true ] : [] );
+			// Issue the wave up front; HttpClient runs them all
+			// concurrently, and blocking on responses one-by-one below
+			// is safe because the wave size stays under
+			// max_host_connections — a request that had to queue for a
+			// connection would deadlock sequential consumption.
+			$responses = [];
+			foreach ( $wave as $page ) {
+				$article = rawurlencode( str_replace( ' ', '_', $page ) );
+				$responses[ $page ] = $this->aqsClient->request(
+					'GET',
+					"pageviews/per-article/$project/$platform/$agent/$article/$granularity/$startTs/$endTs"
+				);
+			}
+
+			foreach ( $responses as $title => $response ) {
+				$counts = $this->extractCounts( $response, $dates, $granularity, $noData );
+				foreach ( $counts as $i => $count ) {
+					$totals[ $i ] += $count;
+				}
+				$total = array_sum( $counts );
+				$pageData[] = [
+					'title' => $title,
+					'counts' => $counts,
+					'total' => $total,
+					'average' => round( $total / count( $dates ), 2 ),
+				] + ( $noData ? [ 'no_data' => true ] : [] );
+			}
 		}
 
 		return [
@@ -160,8 +180,15 @@ class MetricsRepository extends Repository {
 		$noData = false;
 		try {
 			$items = $response->toArray()['items'] ?? [];
-		} catch ( ClientExceptionInterface $e ) {
-			if ( $response->getStatusCode() === Response::HTTP_NOT_FOUND ) {
+		} catch ( HttpClientExceptionInterface $e ) {
+			// Covers 4xx/5xx, transport failures and undecodable
+			// bodies alike, so every AQS failure surfaces to the user
+			// as "Error querying Pageviews API" rather than a generic
+			// unknown error.
+			if (
+				$e instanceof ClientExceptionInterface &&
+				$response->getStatusCode() === Response::HTTP_NOT_FOUND
+			) {
 				$noData = true;
 				return array_fill( 0, count( $dates ), 0 );
 			}

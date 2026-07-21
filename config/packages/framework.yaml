@@ -9,6 +9,10 @@ framework:
     #fragments: true
 
     http_client:
+        # The metrics fan-out issues up to 50 concurrent AQS requests;
+        # the default cap of 6 leaves the rest queued (and sequential
+        # consumption then deadlocks — see MetricsRepository).
+        max_host_connections: 25
         default_options:
             headers:
                 User-Agent: '%env(APP_USER_AGENT)%'
@@ -23,9 +27,15 @@ framework:
                     # Replaces the legacy tool's x3 immediate retry on
                     # Cassandra errors, with jittered backoff. 404 is
                     # semantic ("no data") and must never be retried.
-                    max_retries: 3
-                    delay: 200
+                    # 429s only occur on local dev (per-IP throttling
+                    # that Cloud Services is not subject to); max_delay
+                    # allows honoring one full Retry-After cycle (~11s)
+                    # so throttled batches eventually complete within
+                    # the raised local execution budget.
+                    max_retries: 2
+                    delay: 300
                     multiplier: 2
+                    max_delay: 15000
                     http_codes: [429, 500, 502, 503, 504]
 
 when@test:
