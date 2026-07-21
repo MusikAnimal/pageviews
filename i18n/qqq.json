@@ -209,6 +209,7 @@
 	"last-year": "Link to set the date range to the last year\n{{Identical|Last year}}",
 	"latest": "Label for the 'latest' dropdown next to the date selector.\n{{Identical|Latest}}",
 	"latest-days": "Label for the 'latest' dropdown next to the date selector, when a number of days has been specified. $1 is the number of days. The word 'days' should not be included, in order to keep the wording brief.",
+	"fewer-than": "Shown in place of an exact number when only an upper bound is known, e.g. when the wiki hides the number of watchers of pages watched by fewer than $1 users. $1 - the upper bound",
 	"learn-more": "Link to bring the user to the FAQ.\n{{Identical|Learn more}}",
 	"line": "Label for line chart option (https://en.wikipedia.org/wiki/Line_chart)\n{{Identical|Line}}",
 	"links": "Label for the column that has links to other applications for the page.\n{{Identical|Link}}",

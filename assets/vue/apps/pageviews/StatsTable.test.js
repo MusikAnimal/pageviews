@@ -107,14 +107,56 @@ describe( 'StatsTable', () => {
 		expect( wrapper.find( 'tbody tr' ).text() ).toContain( 'Cat' );
 	} );
 
-	it( 'omits edit columns gracefully when edit data is unavailable', () => {
+	it( 'shows ? in edit columns when edit data is unavailable', () => {
 		const store = seedStore();
 		store.editData = null;
 		const wrapper = mountTable();
 
 		expect( wrapper.find( 'table' ).exists() ).toBe( true );
-		// Rows render; edit cells are simply empty.
-		expect( wrapper.findAll( 'tbody tr' )[ 0 ].findAll( 'td' )[ 4 ].text() ).toBe( '' );
+		// No assessments without edit data, so the Class column is
+		// hidden: color, title, views, average, then edits.
+		expect( wrapper.findAll( 'tbody tr' )[ 0 ].findAll( 'td' )[ 4 ].text() ).toBe( '?' );
+	} );
+
+	it( 'shows a color swatch matching each series position', () => {
+		seedStore();
+		const rows = mountTable().findAll( 'tbody tr' );
+		// Sorted by views desc: Cat (series index 1) first.
+		// jsdom normalizes rgba(…, 1) to rgb(…).
+		expect( rows[ 0 ].find( '.app-stats__color' ).attributes( 'style' ) )
+			.toContain( 'rgb(178, 223, 138)' );
+		expect( rows[ 1 ].find( '.app-stats__color' ).attributes( 'style' ) )
+			.toContain( 'rgb(171, 212, 235)' );
+	} );
+
+	it( 'shows size and watchers, marking hidden watcher counts', () => {
+		const store = seedStore();
+		store.pageInfo = {
+			Cat: { title: 'Cat', length: 154321, watchers: 512, protection: [] },
+			// Watchers hidden by the wiki: below the threshold.
+			Dog: { title: 'Dog', length: 2048, protection: [] }
+		};
+		const wrapper = mountTable();
+		const [ catRow, dogRow ] = wrapper.findAll( 'tbody tr' );
+
+		expect( catRow.text() ).toContain( '154,321' );
+		expect( catRow.text() ).toContain( '512' );
+		expect( dogRow.text() ).toContain( 'Fewer than 30' );
+		// Totals: sizes summed; hidden watcher counts contribute 0.
+		expect( wrapper.find( 'tfoot' ).text() ).toContain( '156,369' );
+	} );
+
+	it( 'hides the Protection column when no page is protected', () => {
+		const store = seedStore();
+		store.pageInfo = {
+			Cat: { title: 'Cat', length: 1, protection: [] },
+			Dog: { title: 'Dog', length: 1, protection: [] }
+		};
+		const wrapper = mountTable();
+		expect( wrapper.text() ).not.toContain( 'protection' );
+
+		store.pageInfo.Cat.protection = [ { type: 'edit', level: 'sysop' } ];
+		expect( mountTable().text() ).toContain( 'sysop' );
 	} );
 
 	it( 'shows a totals row for comparisons', () => {
