@@ -102,6 +102,34 @@ describe( 'Totals', () => {
 		expect( text ).toContain( '250,000' );
 	} );
 
+	it( 'shows protection for a single page, None when unprotected', () => {
+		const store = usePageviewsStore();
+		store.totals = { counts: [], total: 10, average: 5 };
+		store.pageInfo = {
+			Cat: {
+				title: 'Cat',
+				length: 100,
+				protection: [ { type: 'edit', level: 'autoconfirmed' } ]
+			}
+		};
+		expect( mountTotals().text() ).toContain( 'autoconfirmed' );
+
+		store.pageInfo = { Cat: { title: 'Cat', length: 100, protection: [] } };
+		expect( mountTotals().find( '.app-totals__protection' ).text() ).toBe( 'none' );
+	} );
+
+	it( 'omits protection for multi-page queries', () => {
+		const store = usePageviewsStore();
+		store.totals = { counts: [], total: 10, average: 5 };
+		store.pageInfo = {
+			Cat: { title: 'Cat', length: 1, protection: [ { type: 'edit', level: 'sysop' } ] },
+			Dog: { title: 'Dog', length: 1, protection: [] }
+		};
+
+		const wrapper = mountTotals();
+		expect( wrapper.find( '.app-totals__protection' ).exists() ).toBe( false );
+	} );
+
 	it( 'omits watchers when the API withholds them', () => {
 		const store = usePageviewsStore();
 		store.totals = { counts: [], total: 10, average: 5 };

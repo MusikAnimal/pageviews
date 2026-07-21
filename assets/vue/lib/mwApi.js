@@ -57,9 +57,10 @@ export async function mwApiGet( project, params ) {
 }
 
 /**
- * Basic page information (length, watcher count) for the given titles.
- * The watchers field is only present when the wiki exposes it (above
- * the unwatched-pages threshold, as on Wikimedia wikis).
+ * Basic page information (length, watcher count, protection) for the
+ * given titles. The watchers field is only present when the wiki
+ * exposes it (above the unwatched-pages threshold, as on Wikimedia
+ * wikis).
  *
  * @param {string} project
  * @param {string[]} titles
@@ -69,12 +70,23 @@ export async function getPageInfo( project, titles ) {
 	const response = await mwApiGet( project, {
 		action: 'query',
 		prop: 'info',
-		inprop: 'watchers',
+		inprop: [ 'watchers', 'protection' ],
 		titles
 	} );
 	return Object.fromEntries(
 		( response.query?.pages || [] ).map( ( page ) => [ page.title, page ] )
 	);
+}
+
+/**
+ * The edit-protection level of a page, from getPageInfo() data.
+ *
+ * @param {Object} info A single page's info object.
+ * @return {?string} e.g. 'autoconfirmed', 'sysop'; null when the page
+ *   is not edit-protected (or no info is available).
+ */
+export function editProtectionLevel( info ) {
+	return info?.protection?.find( ( entry ) => entry.type === 'edit' )?.level ?? null;
 }
 
 /**

@@ -1,5 +1,22 @@
 <template>
-	<table v-if="rows.length" class="app-stats">
+	<p v-if="summary" class="app-page-summary">
+		<template v-if="summary.assessment">
+			<img
+				v-if="summary.assessment.badge"
+				class="app-page-summary__badge"
+				:src="summary.assessment.badge"
+				:alt="summary.assessment.class"
+			>
+			{{ summary.assessment.class }}
+			·
+		</template>
+		<a :href="pageUrl( summary.title )" target="_blank">{{ summary.title }}</a>
+		·
+		<span class="app-page-summary__dates">{{ summary.dates }}</span>
+		·
+		<strong>{{ summary.views }}</strong>
+	</p>
+	<table v-else-if="rows.length" class="app-stats">
 		<thead>
 			<tr>
 				<th
@@ -53,6 +70,9 @@
 					{{ row.editors === null ? '' : number( row.editors ) }}
 				</td>
 				<td>
+					{{ row.protection === null ? '' : ( row.protection || $i18n( 'none' ) ) }}
+				</td>
+				<td>
 					<!-- Cross-app links land here later. -->
 				</td>
 			</tr>
@@ -74,6 +94,7 @@
 					{{ editTotals ? number( editTotals.num_users ) : '' }}
 				</td>
 				<td />
+				<td />
 			</tr>
 		</tfoot>
 	</table>
@@ -83,7 +104,9 @@
 import { computed, ref } from 'vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 import { useSettingsStore } from '../../stores/settings.js';
-import { formatNumber } from '../../lib/format.js';
+import { formatDate, formatNumber } from '../../lib/format.js';
+import { parseDate } from '../../lib/dates.js';
+import { editProtectionLevel } from '../../lib/mwApi.js';
 import { banana } from '../../i18n.js';
 
 const store = usePageviewsStore();
@@ -105,19 +128,48 @@ const columns = computed( () => [
 	},
 	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
 	{ key: 'editors', label: banana.i18n( 'editors' ), sortable: true },
+	{ key: 'protection', label: banana.i18n( 'protection' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
+
+/**
+ * The legacy-style single-page summary line, replacing the table when
+ * only one page is queried:
+ * [assessment] · Title · start – end · N pageviews
+ */
+const summary = computed( () => {
+	if ( store.series.length !== 1 ) {
+		return null;
+	}
+	const [ page ] = store.series;
+	const monthly = settings.dateType === 'monthly';
+	const range = [ settings.start, settings.end ]
+		.map( ( date ) => formatDate(
+			parseDate( date ), { locale: banana.locale, monthly }
+		) )
+		.join( ' – ' );
+
+	return {
+		title: page.title,
+		assessment: store.editData?.pages?.[ page.title ]?.assessment ?? null,
+		dates: range,
+		views: banana.i18n( 'num-pageviews', number( page.total ), page.total )
+	};
+} );
 
 const rows = computed( () => {
 	const unsorted = store.series.map( ( page ) => {
 		const edits = store.editData?.pages?.[ page.title ] ?? null;
+		const info = store.pageInfo?.[ page.title ] ?? null;
 		return {
 			title: page.title,
 			assessment: edits?.assessment ?? null,
 			views: page.total,
 			average: page.average,
 			edits: edits ? Number( edits.num_edits ) : null,
-			editors: edits ? Number( edits.num_users ) : null
+			editors: edits ? Number( edits.num_users ) : null,
+			// null = info unavailable; '' = loaded but unprotected.
+			protection: info ? ( editProtectionLevel( info ) ?? '' ) : null
 		};
 	} );
 
@@ -204,6 +256,22 @@ function historyUrl( title ) {
 
 	tfoot {
 		font-weight: @font-weight-bold;
+	}
+}
+
+.app-page-summary {
+	margin: @spacing-100 0 0;
+	text-align: center;
+
+	&__badge {
+		height: @size-100;
+		margin-right: @spacing-25;
+		vertical-align: text-bottom;
+		width: @size-100;
+	}
+
+	&__dates {
+		color: @color-subtle;
 	}
 }
 </style>

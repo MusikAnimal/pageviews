@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import StatsTable from './StatsTable.vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
+import { useSettingsStore } from '../../stores/settings.js';
 
 function mountTable() {
 	return mount( StatsTable, {
@@ -121,5 +122,46 @@ describe( 'StatsTable', () => {
 		const footer = mountTable().find( 'tfoot' );
 		expect( footer.text() ).toContain( '1,033' );
 		expect( footer.text() ).toContain( '47' );
+	} );
+
+	it( 'shows edit-protection levels once page info arrives', () => {
+		const store = seedStore();
+		store.pageInfo = {
+			Cat: {
+				title: 'Cat',
+				length: 1,
+				protection: [ { type: 'edit', level: 'autoconfirmed' }, { type: 'move', level: 'sysop' } ]
+			},
+			Dog: { title: 'Dog', length: 1, protection: [] }
+		};
+
+		const rows = mountTable().findAll( 'tbody tr' );
+		// Sorted by views desc: Cat first.
+		expect( rows[ 0 ].text() ).toContain( 'autoconfirmed' );
+		// Loaded but unprotected renders the localized "none".
+		expect( rows[ 1 ].text() ).toContain( 'none' );
+	} );
+
+	it( 'replaces the table with a summary line for a single page', () => {
+		const store = seedStore();
+		const settings = useSettingsStore();
+		settings.setFromQuery( { start: '2026-07-01', end: '2026-07-20' } );
+		store.series = [ store.series[ 1 ] ]; // Cat only
+		store.totals = { counts: [], total: 1030, average: 515 };
+
+		const wrapper = mountTable();
+
+		expect( wrapper.find( 'table' ).exists() ).toBe( false );
+		const summary = wrapper.find( '.app-page-summary' );
+		// Assessment badge and class come first.
+		expect( summary.find( '.app-page-summary__badge' ).attributes( 'alt' ) ).toBe( 'GA' );
+		// Linked title.
+		expect( summary.find( 'a' ).attributes( 'href' ) )
+			.toBe( 'https://en.wikipedia.org/wiki/Cat' );
+		// Localized date range.
+		expect( summary.find( '.app-page-summary__dates' ).text() )
+			.toBe( 'Jul 1, 2026 – Jul 20, 2026' );
+		// Pageviews in bold, via the num-pageviews message.
+		expect( summary.find( 'strong' ).text() ).toBe( '1,030 pageviews' );
 	} );
 } );

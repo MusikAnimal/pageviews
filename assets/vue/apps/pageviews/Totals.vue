@@ -49,6 +49,12 @@
 					<dt>{{ $i18n( 'size' ) }}</dt>
 					<dd>{{ number( basicInfo.size ) }}</dd>
 				</div>
+				<div v-if="basicInfo.protection !== undefined" class="app-totals__stat">
+					<dt>{{ $i18n( 'protection' ) }}</dt>
+					<dd class="app-totals__protection">
+						{{ basicInfo.protection ?? $i18n( 'none' ) }}
+					</dd>
+				</div>
 			</dl>
 		</template>
 	</figure>
@@ -59,6 +65,7 @@ import { computed } from 'vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
+import { editProtectionLevel } from '../../lib/mwApi.js';
 import { banana } from '../../i18n.js';
 
 const store = usePageviewsStore();
@@ -110,7 +117,13 @@ const basicInfo = computed( () => {
 		watchers: watcherCounts.length ?
 			watcherCounts.reduce( ( a, b ) => a + b, 0 ) :
 			null,
-		size: pages.reduce( ( sum, page ) => sum + ( page.length || 0 ), 0 )
+		size: pages.reduce( ( sum, page ) => sum + ( page.length || 0 ), 0 ),
+		// Protection is per-page, so only shown for single-page queries
+		// (the stats table has a column for comparisons).
+		...( pages.length === 1 ?
+			{ protection: editProtectionLevel( pages[ 0 ] ) } :
+			{}
+		)
 	};
 } );
 </script>

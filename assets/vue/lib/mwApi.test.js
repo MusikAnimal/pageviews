@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from './errors.js';
-import { apiUrl, mwApiGet, mwApiQueryAll } from './mwApi.js';
+import {
+	apiUrl,
+	editProtectionLevel,
+	getPageInfo,
+	mwApiGet,
+	mwApiQueryAll
+} from './mwApi.js';
 
 function stubFetch( responses ) {
 	let call = 0;
@@ -49,6 +55,39 @@ describe( 'mwApiGet', () => {
 		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( { ok: false, status: 503 } ) ) );
 		await expect( mwApiGet( 'en.wikipedia.org', {} ) )
 			.rejects.toSatisfy( ( e ) => e instanceof ApiError && e.retryable );
+	} );
+} );
+
+describe( 'getPageInfo', () => {
+	it( 'requests watchers and protection, keyed by title', async () => {
+		const impl = stubFetch( [ {
+			query: { pages: [ { title: 'Cat', length: 5, watchers: 10, protection: [] } ] }
+		} ] );
+
+		const info = await getPageInfo( 'en.wikipedia.org', [ 'Cat' ] );
+
+		const url = new URL( impl.mock.calls[ 0 ][ 0 ] );
+		expect( url.searchParams.get( 'prop' ) ).toBe( 'info' );
+		expect( url.searchParams.get( 'inprop' ) ).toBe( 'watchers|protection' );
+		expect( info.Cat.length ).toBe( 5 );
+	} );
+} );
+
+describe( 'editProtectionLevel', () => {
+	it( 'extracts the edit-protection level', () => {
+		expect( editProtectionLevel( {
+			protection: [
+				{ type: 'move', level: 'sysop' },
+				{ type: 'edit', level: 'autoconfirmed' }
+			]
+		} ) ).toBe( 'autoconfirmed' );
+	} );
+
+	it( 'returns null when unprotected or unknown', () => {
+		expect( editProtectionLevel( { protection: [] } ) ).toBeNull();
+		expect( editProtectionLevel( { protection: [ { type: 'move', level: 'sysop' } ] } ) )
+			.toBeNull();
+		expect( editProtectionLevel( undefined ) ).toBeNull();
 	} );
 } );
 
