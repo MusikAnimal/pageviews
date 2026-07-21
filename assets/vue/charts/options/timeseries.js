@@ -84,6 +84,9 @@ export function buildTimeseriesOption( {
 		},
 		yAxis: {
 			type: logScale ? 'log' : 'value',
+			// Pageviews are integers; never show fractional ticks
+			// (minInterval only applies to value axes).
+			...( logScale ? {} : { minInterval: 1 } ),
 			...( beginAtZero && !logScale ? { min: 0 } : {} ),
 			axisLabel: {
 				color: theme.subtleText,

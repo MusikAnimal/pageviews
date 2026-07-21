@@ -22,6 +22,13 @@ describe( 'buildTimeseriesOption', () => {
 		expect( option.series[ 0 ].data ).toEqual( [ 5, null, 12 ] );
 	} );
 
+	it( 'never shows fractional ticks (pageviews are integers)', () => {
+		expect( buildTimeseriesOption( base ).yAxis.minInterval ).toBe( 1 );
+		// minInterval does not apply to log axes.
+		expect( buildTimeseriesOption( { ...base, logScale: true } ).yAxis.minInterval )
+			.toBeUndefined();
+	} );
+
 	it( 'pins the axis to zero only when compatible', () => {
 		expect( buildTimeseriesOption( { ...base, beginAtZero: true } ).yAxis.min ).toBe( 0 );
 		expect(
