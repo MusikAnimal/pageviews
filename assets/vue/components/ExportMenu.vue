@@ -25,7 +25,7 @@
 <script setup>
 import { ref } from 'vue';
 import { CdxButton, CdxIcon, CdxMenuButton, useToast } from '@wikimedia/codex';
-import { cdxIconDownload, cdxIconLink } from '@wikimedia/codex-icons';
+import { cdxIconDownload, cdxIconLink, cdxIconPrinter } from '@wikimedia/codex-icons';
 import { buildCsv } from '../lib/csv.js';
 import { downloadFile } from '../lib/download.js';
 import { banana } from '../i18n.js';
@@ -68,7 +68,10 @@ const selection = ref( null );
 const menuItems = [
 	{ value: 'csv', label: banana.i18n( 'csv' ) },
 	{ value: 'json', label: banana.i18n( 'json' ) },
-	...( props.getPng ? [ { value: 'png', label: banana.i18n( 'png' ) } ] : [] )
+	...( props.getPng ? [
+		{ value: 'png', label: banana.i18n( 'png' ) },
+		{ value: 'print', label: banana.i18n( 'print' ), icon: cdxIconPrinter }
+	] : [] )
 ];
 
 const actions = {
@@ -101,6 +104,18 @@ const actions = {
 			link.download = `${ props.filename }.png`;
 			link.click();
 		}
+	},
+	// Like the legacy tool: print the chart image from a throwaway tab.
+	print() {
+		const dataUrl = props.getPng();
+		if ( !dataUrl ) {
+			return;
+		}
+		const tab = window.open( '' );
+		tab.document.write( `<img src="${ dataUrl }" style="max-width: 100%;">` );
+		tab.document.close();
+		tab.print();
+		tab.close();
 	}
 };
 
