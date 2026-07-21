@@ -61,6 +61,22 @@ a {
 	width: 100%;
 }
 
+// Attention flash for elements scrolled into view (e.g. /faq#agents).
+
+@keyframes app-flash {
+	from {
+		background-color: @background-color-progressive-subtle;
+	}
+
+	to {
+		background-color: transparent;
+	}
+}
+
+.app-flash {
+	animation: app-flash 2s ease-out;
+}
+
 // Vendor resets.
 
 figure {
