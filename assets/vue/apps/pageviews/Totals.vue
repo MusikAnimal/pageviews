@@ -12,6 +12,10 @@
 					<dt>{{ $i18n( 'views' ) }}</dt>
 					<dd>{{ number( store.totals.total ) }}</dd>
 				</div>
+				<div v-if="median !== null" class="app-totals__stat">
+					<dt>{{ $i18n( 'median' ) }}</dt>
+					<dd>{{ number( median ) }}</dd>
+				</div>
 				<div class="app-totals__stat">
 					<dt>{{ averageLabel }}</dt>
 					<dd>{{ number( Math.round( store.totals.average ) ) }}</dd>
@@ -25,7 +29,16 @@
 			<dl v-if="editTotals" class="app-totals__stats">
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'edits' ) }}</dt>
-					<dd>{{ number( Number( editTotals.num_edits ) ) }}</dd>
+					<dd>
+						<a
+							v-if="historyUrl"
+							:href="historyUrl"
+							target="_blank"
+						>{{ number( Number( editTotals.num_edits ) ) }}</a>
+						<template v-else>
+							{{ number( Number( editTotals.num_edits ) ) }}
+						</template>
+					</dd>
 				</div>
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'editors' ) }}</dt>
@@ -41,9 +54,13 @@
 				{{ $i18n( 'basic-information' ) }}
 			</h4>
 			<dl class="app-totals__stats">
-				<div v-if="basicInfo.watchers !== null" class="app-totals__stat">
+				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'watchers' ) }}</dt>
-					<dd>{{ number( basicInfo.watchers ) }}</dd>
+					<dd>
+						{{ basicInfo.watchers === null ?
+							$i18n( 'fewer-than', number( WATCHER_THRESHOLD ) ) :
+							number( basicInfo.watchers ) }}
+					</dd>
 				</div>
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'size' ) }}</dt>
@@ -67,7 +84,12 @@ import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
 import { editProtectionLevel } from '../../lib/mwApi.js';
+import { shouldUseLogScale } from '../../charts/logScale.js';
 import { banana } from '../../i18n.js';
+
+// WMF wikis hide the watcher count of pages watched by fewer than
+// this many users ($wgUnwatchedPageThreshold).
+const WATCHER_THRESHOLD = 30;
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
@@ -78,6 +100,35 @@ const number = ( value ) => formatNumber( value, banana.locale, preferences.nume
 const averageLabel = computed( () => banana.i18n(
 	settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average'
 ) );
+
+/**
+ * The median of the combined daily counts, shown only when there is a
+ * spike in pageviews (the same heuristic that flips on the log scale)
+ * — the average is misleading then, like the legacy tool noted.
+ */
+const median = computed( () => {
+	const counts = store.totals?.counts;
+	if ( !counts?.length ||
+		!shouldUseLogScale( store.series.map( ( page ) => page.counts ) )
+	) {
+		return null;
+	}
+	const sorted = counts.map( ( value ) => value || 0 ).sort( ( a, b ) => a - b );
+	const half = Math.floor( sorted.length / 2 );
+	return sorted.length % 2 ? sorted[ half ] : ( sorted[ half - 1 ] + sorted[ half ] ) / 2;
+} );
+
+/**
+ * For a single page the edit count links to the revision history;
+ * multi-page numbers are combined and link nowhere.
+ */
+const historyUrl = computed( () => {
+	if ( store.series.length !== 1 ) {
+		return null;
+	}
+	const title = encodeURIComponent( store.series[ 0 ].title.replace( / /g, '_' ) );
+	return `https://${ settings.project }/w/index.php?title=${ title }&action=history`;
+} );
 
 /**
  * Combined edit stats: the endpoint provides an exact combined row for

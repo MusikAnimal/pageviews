@@ -130,7 +130,7 @@ describe( 'Totals', () => {
 		expect( wrapper.find( '.app-totals__protection' ).exists() ).toBe( false );
 	} );
 
-	it( 'omits watchers when the API withholds them', () => {
+	it( 'shows "fewer than 30" when the API withholds watcher counts', () => {
 		const store = usePageviewsStore();
 		store.totals = { counts: [], total: 10, average: 5 };
 		store.pageInfo = {
@@ -138,7 +138,50 @@ describe( 'Totals', () => {
 		};
 
 		const wrapper = mountTotals();
-		expect( wrapper.text() ).not.toContain( 'watchers' );
+		expect( wrapper.text() ).toContain( 'watchers' );
+		expect( wrapper.text() ).toContain( 'fewer-than' );
 		expect( wrapper.text() ).toContain( '5,000' );
+	} );
+
+	it( 'shows the median only for spiky data', () => {
+		const store = usePageviewsStore();
+		// Flat series: no median.
+		store.series = [ { title: 'Cat', counts: [ 100, 100, 100 ] } ];
+		store.totals = { counts: [ 100, 100, 100 ], total: 300, average: 100 };
+		expect( mountTotals().text() ).not.toContain( 'median' );
+
+		// A big spike trips the log-scale heuristic.
+		const spiky = [ 2, 3, 2, 90000, 3, 2, 4 ];
+		store.series = [ { title: 'Cat', counts: spiky } ];
+		store.totals = {
+			counts: spiky,
+			total: 90016,
+			average: 12859.43
+		};
+		const wrapper = mountTotals();
+		expect( wrapper.text() ).toContain( 'median' );
+		expect( wrapper.text() ).toContain( '3' );
+	} );
+
+	it( 'links the edit count to the history for a single page only', () => {
+		const store = usePageviewsStore();
+		store.totals = { counts: [], total: 10, average: 5 };
+		store.series = [ { title: 'Cat', counts: [ 10 ] } ];
+		store.editData = {
+			pages: { Cat: { num_edits: '42', num_users: '7', assessment: null } },
+			totals: null
+		};
+
+		const link = mountTotals().find( 'a' );
+		expect( link.attributes( 'href' ) )
+			.toBe( 'https://en.wikipedia.org/w/index.php?title=Cat&action=history' );
+		expect( link.text() ).toBe( '42' );
+
+		store.series = [
+			{ title: 'Cat', counts: [ 10 ] },
+			{ title: 'Dog', counts: [ 5 ] }
+		];
+		store.editData.totals = { num_edits: 47, num_users: 8 };
+		expect( mountTotals().find( 'a' ).exists() ).toBe( false );
 	} );
 } );
