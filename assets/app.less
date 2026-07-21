@@ -28,6 +28,129 @@ a {
 
 // App-wide shared styles.
 
+// The top navigation bar (Twig-rendered, so it paints before the Vue
+// app mounts).
+.app-nav {
+	align-items: center;
+	border-bottom: @border-width-base solid @border-color-subtle;
+	display: flex;
+	flex-wrap: wrap;
+	gap: @spacing-50;
+	padding: @spacing-25 @spacing-75;
+
+	&__home {
+		display: flex;
+	}
+
+	&__logo {
+		height: @size-150;
+		width: @size-150;
+	}
+
+	&__apps {
+		display: flex;
+		flex: 1;
+		flex-wrap: wrap;
+		gap: @spacing-35;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	&__link {
+		border-radius: @border-radius-base;
+		color: @color-base;
+		display: block;
+		padding: @spacing-25 @spacing-35;
+		text-decoration: none;
+
+		&--active {
+			font-weight: @font-weight-bold;
+		}
+
+		&:hover {
+			background: @background-color-interactive-subtle;
+			text-decoration: none;
+		}
+	}
+
+	&__buttons {
+		align-items: center;
+		display: flex;
+		gap: @spacing-25;
+	}
+
+	&__button {
+		align-items: center;
+		background: none;
+		border: 0;
+		border-radius: @border-radius-base;
+		color: @color-base;
+		cursor: pointer;
+		display: flex;
+		font: inherit;
+		gap: @spacing-25;
+		list-style: none; // Hides the details marker on summaries.
+		padding: @spacing-25 @spacing-35;
+
+		&::-webkit-details-marker {
+			display: none;
+		}
+
+		&:hover {
+			background: @background-color-interactive-subtle;
+		}
+	}
+
+	&__icon {
+		fill: currentcolor;
+	}
+
+	&__dropdown {
+		position: relative;
+
+		&[ open ] > .app-nav__button {
+			background: @background-color-interactive-subtle;
+		}
+	}
+
+	&__menu {
+		background: @background-color-base;
+		border: @border-width-base solid @border-color-base;
+		border-radius: @border-radius-base;
+		box-shadow: @box-shadow-drop-medium;
+		list-style: none;
+		margin: @spacing-25 0 0;
+		min-width: @size-1200;
+		padding: @spacing-25 0;
+		position: absolute;
+		right: 0;
+		z-index: @z-index-dropdown;
+
+		a {
+			color: @color-base;
+			display: block;
+			padding: @spacing-25 @spacing-75;
+			text-decoration: none;
+			white-space: nowrap;
+
+			&:hover {
+				background: @background-color-interactive-subtle;
+			}
+		}
+
+		&--scroll {
+			max-height: @size-2400;
+			overflow-y: auto;
+		}
+	}
+
+	&__menu-divider {
+		border-top: @border-width-base solid @border-color-subtle;
+		margin: @spacing-25 0;
+	}
+}
+
 .app-header {
 	padding: @spacing-50;
 	text-align: center;

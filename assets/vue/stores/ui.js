@@ -16,6 +16,13 @@ export const useUiStore = defineStore( 'ui', () => {
 	 * @type {import('vue').Ref<?{done: number, total: number}>}
 	 */
 	const progress = ref( null );
+	/**
+	 * Whether the preferences (Settings) dialog is open. Set from the
+	 * Twig-rendered nav bar via the bridge in app.js.
+	 *
+	 * @type {import('vue').Ref<boolean>}
+	 */
+	const preferencesOpen = ref( false );
 
 	let nextId = 1;
 
@@ -50,6 +57,7 @@ export const useUiStore = defineStore( 'ui', () => {
 	return {
 		messages,
 		progress,
+		preferencesOpen,
 		notify,
 		dismiss,
 		clearMessages,

@@ -18,6 +18,56 @@
 	'i18nPath': asset( 'i18n/' ~ lang() ~ '.json' ),
 	'i18nEnPath': asset( 'i18n/en.json' ),
 }|json_encode }}">
+<nav class="app-nav">
+	<a class="app-nav__home" href="/">
+		<img class="app-nav__logo" src="{{ asset( 'images/logo.svg' ) }}" alt="{{ msg( 'title' ) }}">
+	</a>
+	<ol class="app-nav__apps">
+		{% for app in [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ] %}
+			<li>
+				<a
+					class="app-nav__link{{ app == current_app ? ' app-nav__link--active' }}"
+					href="/{{ app }}"
+				>{{ msg( app ) }}</a>
+			</li>
+		{% endfor %}
+	</ol>
+	<div class="app-nav__buttons">
+		<button type="button" class="app-nav__button app-nav__settings">
+			<svg class="app-nav__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3"/><path d="M11.74 3.218a7 7 0 011.822.757l2.095-1.046 1.414 1.414-1.047 2.094c.334.562.591 1.174.757 1.823L19 9v2l-2.219.74a7 7 0 01-.757 1.822l1.047 2.095-1.414 1.414-2.095-1.047a7 7 0 01-1.823.757L11 19H9l-.74-2.219a7 7 0 01-1.823-.757l-2.094 1.047-1.414-1.414 1.046-2.095a7 7 0 01-.757-1.823L1 11V9l2.218-.74a7 7 0 01.757-1.823L2.929 4.343l1.414-1.414 2.094 1.046a7 7 0 011.823-.757L9 1h2zM10 5a5 5 0 100 10 5 5 0 000-10"/></svg>
+			{{ msg( 'settings' ) }}
+		</button>
+		<details class="app-nav__dropdown">
+			<summary class="app-nav__button">
+				<svg class="app-nav__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M11 15.5H9v-2h2zm-1-11c1.015 0 1.787.469 2.283 1.074.473.576.717 1.299.717 1.926 0 .68-.174 1.242-.467 1.706-.283.448-.646.753-.933.969-.136.101-.29.208-.385.276a3 3 0 00-.215.166v.883H9v-1c0-.645.346-1.08.637-1.347a4 4 0 01.414-.327c.139-.1.235-.165.35-.25.212-.16.349-.293.44-.438.083-.13.159-.319.159-.638 0-.152-.076-.43-.264-.658A.9.9 0 0010 6.5c-.282 0-.518.133-.714.375C9.066 7.146 9 7.43 9 7.5H7c0-.611.28-1.327.733-1.886C8.211 5.026 8.975 4.5 10 4.5"/><path d="M10 1a9 9 0 110 18 9 9 0 010-18m0 2a7 7 0 100 14 7 7 0 000-14"/></svg>
+				{{ msg( 'help' ) }}
+			</summary>
+			<ul class="app-nav__menu">
+				<li><a href="/faq">{{ msg( 'faq' ) }}</a></li>
+				<li><a href="/url_structure">{{ msg( 'url-structure' ) }}</a></li>
+				<li><a href="https://meta.wikimedia.org/wiki/Pageviews_Analysis">{{ msg( 'documentation' ) }}</a></li>
+				<li class="app-nav__menu-divider" role="separator"></li>
+				<li><a href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a></li>
+			</ul>
+		</details>
+		<details class="app-nav__dropdown">
+			<summary class="app-nav__button">
+				<svg class="app-nav__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+				{{ all_langs()[ lang() ]|default( lang() ) }}
+			</summary>
+			<ul class="app-nav__menu app-nav__menu--scroll">
+				<li><a href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">{{ msg( 'help-translate' ) }}</a></li>
+				<li class="app-nav__menu-divider" role="separator"></li>
+				{% for code, name in all_langs() %}
+					{% if code != 'qqq' %}
+						<li><a href="{{ path( 'set_language', { language: code } ) }}">{{ name }}</a></li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</details>
+	</div>
+</nav>
+
 {% block header %}
 	<header class="app-header">
 		<h3>

@@ -7,6 +7,7 @@ import { createPinia } from 'pinia';
 import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
+import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
 	history: createWebHistory(),
@@ -27,14 +28,34 @@ registerVueControllerComponents(
 	import.meta.glob( './vue/controllers/**/*.vue' )
 );
 
-// The footer's FAQ / URL structure links live in the Twig shell,
-// outside the Vue app. Route them client-side so the dialogs open
-// without a page reload (which would drop the query string, clearing
-// the form).
+const pinia = createPinia();
+
+// Bridge for the Twig shell (nav bar and footer), which lives outside
+// the Vue app: FAQ / URL structure links route client-side so the
+// dialogs open without a page reload (which would drop the query
+// string, clearing the form), and the nav Settings button opens the
+// preferences dialog.
 document.addEventListener( 'click', ( event ) => {
+	// Close any open nav dropdown when clicking outside of it. Clicks
+	// inside are left to the native details toggle / the link handling
+	// below.
+	document.querySelectorAll( '.app-nav__dropdown[open]' ).forEach( ( dropdown ) => {
+		if ( !dropdown.contains( event.target ) ) {
+			dropdown.removeAttribute( 'open' );
+		}
+	} );
+	if ( event.target.closest( '.app-nav__settings' ) ) {
+		useUiStore( pinia ).preferencesOpen = true;
+		return;
+	}
 	const link = event.target.closest( 'a[href="/faq"], a[href="/url_structure"]' );
 	if ( link ) {
 		event.preventDefault();
+		// Close the nav dropdown the link was picked from.
+		const dropdown = link.closest( 'details' );
+		if ( dropdown ) {
+			dropdown.removeAttribute( 'open' );
+		}
 		router.push( {
 			path: link.getAttribute( 'href' ),
 			query: router.currentRoute.value.query
@@ -42,7 +63,18 @@ document.addEventListener( 'click', ( event ) => {
 	}
 } );
 
-const pinia = createPinia();
+// Keep at most one nav dropdown open at a time. The toggle event
+// doesn't bubble, so listen in the capture phase.
+document.addEventListener( 'toggle', ( event ) => {
+	if ( !( event.target instanceof Element ) || !event.target.matches( '.app-nav__dropdown[open]' ) ) {
+		return;
+	}
+	document.querySelectorAll( '.app-nav__dropdown[open]' ).forEach( ( dropdown ) => {
+		if ( dropdown !== event.target ) {
+			dropdown.removeAttribute( 'open' );
+		}
+	} );
+}, true );
 
 // This listener must stay synchronous: the UX Vue controller mounts the app
 // immediately after dispatching the event, so anything after an `await` here
