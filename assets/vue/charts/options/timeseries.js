@@ -21,6 +21,8 @@ import { parseDate } from '../../lib/dates.js';
  * @param {string} [input.locale]
  * @param {boolean} [input.localizeFormats] User preference; false = ISO
  *   dates and unformatted numbers.
+ * @param {boolean} [input.showLegend] Off by default: the colored page
+ *   chips above the chart act as the legend.
  * @param {Object} [input.theme] From chartTheme().
  * @return {Object} An ECharts option object.
  */
@@ -35,6 +37,7 @@ export function buildTimeseriesOption( {
 	monthly = false,
 	locale = 'en',
 	localizeFormats = true,
+	showLegend = false,
 	theme = {}
 } ) {
 	const number = ( value ) => formatNumber( value, locale, localizeFormats );
@@ -55,7 +58,7 @@ export function buildTimeseriesOption( {
 			valueFormatter: number
 		},
 		legend: {
-			show: series.length > 1,
+			show: showLegend && series.length > 1,
 			top: 0,
 			textStyle: { color: theme.text }
 		},

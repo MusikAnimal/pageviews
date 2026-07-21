@@ -2,6 +2,7 @@
 	<div class="app-workspace">
 		<PageviewsSettings />
 		<figure class="app-chart">
+			<PageInput />
 			<CdxMessage
 				v-for="message in ui.messages"
 				:key="message.id"
@@ -51,6 +52,7 @@ import { chartTheme } from '../charts/theme.js';
 import { shouldUseLogScale } from '../charts/logScale.js';
 import { banana } from '../i18n.js';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
+import PageInput from '../components/PageInput.vue';
 import Chart from '../components/Chart.vue';
 import ExportMenu from '../components/ExportMenu.vue';
 import Totals from '../apps/pageviews/Totals.vue';

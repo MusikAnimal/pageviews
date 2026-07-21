@@ -53,12 +53,18 @@ describe( 'buildTimeseriesOption', () => {
 		expect( option.xAxis.data ).toEqual( [ '2026-06', '2026-07' ] );
 	} );
 
-	it( 'hides the legend for a single series', () => {
-		expect( buildTimeseriesOption( base ).legend.show ).toBe( false );
-		expect( buildTimeseriesOption( {
+	it( 'hides the legend unless explicitly requested', () => {
+		const comparison = {
 			...base,
 			series: [ ...base.series, { label: 'Dog', data: [ 1, 2, 3 ] } ]
-		} ).legend.show ).toBe( true );
+		};
+		// Off by default: the colored page chips act as the legend.
+		expect( buildTimeseriesOption( comparison ).legend.show ).toBe( false );
+		expect( buildTimeseriesOption( { ...comparison, showLegend: true } ).legend.show )
+			.toBe( true );
+		// Even when requested, a single series needs no legend.
+		expect( buildTimeseriesOption( { ...base, showLegend: true } ).legend.show )
+			.toBe( false );
 	} );
 
 	it( 'styles bars with translucent fill and solid border', () => {

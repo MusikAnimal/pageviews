@@ -1,5 +1,5 @@
 <template>
-	<CdxField class="app-settings__pages">
+	<CdxField class="app-pages" :style="paletteVars">
 		<template #label>
 			{{ $i18n( 'pages' ) }}
 		</template>
@@ -25,10 +25,17 @@ import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
+import { PALETTE, seriesColor } from '../charts/palette.js';
 import { banana } from '../i18n.js';
 
 const MAX_PAGES = 10;
 const DEBOUNCE_MS = 200;
+
+// Each chip is tinted with its series color, making the chips double as
+// the chart legend (the ECharts legend is disabled).
+const paletteVars = Object.fromEntries(
+	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesColor( i ) ] )
+);
 
 const store = usePageviewsStore();
 const settings = useSettingsStore();
@@ -102,3 +109,18 @@ function onInput( value ) {
 	}, DEBOUNCE_MS );
 }
 </script>
+
+<style scoped lang="less">
+// Tint each chip with its series color (chips precede the text input
+// inside the Codex chip container, so nth-child indexes the chips).
+each( range( 10 ), {
+	@index: ( @value - 1 );
+
+	:deep( .cdx-input-chip:nth-child( @{value} ) ) {
+		background-color: ~'var( --pv-series-@{index} )';
+		// The palette backgrounds are fixed light pastels; keep dark
+		// text in both color modes.
+		color: #202122;
+	}
+} );
+</style>
