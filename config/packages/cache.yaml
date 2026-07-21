@@ -22,3 +22,18 @@ framework:
       cache.replicas:
         adapter: cache.app
         default_lifetime: 600
+      # AQS timeseries responses. Effective TTL is set per item: ranges
+      # touching today/yesterday get a short TTL (AQS lags ~24h), fully
+      # past ranges cache long.
+      cache.metrics:
+        adapter: cache.app
+        default_lifetime: 600
+      # Topviews day/month lists.
+      cache.toplists:
+        adapter: cache.app
+        default_lifetime: 3600
+      # Resolved page lists (categories etc.); matches the legacy
+      # client-side 10-minute request cache.
+      cache.lists:
+        adapter: cache.app
+        default_lifetime: 600

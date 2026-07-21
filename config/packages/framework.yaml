@@ -8,6 +8,26 @@ framework:
     #esi: true
     #fragments: true
 
+    http_client:
+        default_options:
+            headers:
+                User-Agent: '%env(APP_USER_AGENT)%'
+        scoped_clients:
+            # Wikimedia AQS (pageviews/mediarequests metrics) proxy client.
+            aqs.client:
+                base_uri: 'https://wikimedia.org/api/rest_v1/metrics/'
+                timeout: 10
+                headers:
+                    User-Agent: '%env(APP_USER_AGENT_WIKIMEDIA)%'
+                retry_failed:
+                    # Replaces the legacy tool's x3 immediate retry on
+                    # Cassandra errors, with jittered backoff. 404 is
+                    # semantic ("no data") and must never be retried.
+                    max_retries: 3
+                    delay: 200
+                    multiplier: 2
+                    http_codes: [429, 500, 502, 503, 504]
+
 when@test:
     framework:
         test: true

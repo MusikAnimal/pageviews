@@ -12,7 +12,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
-class PageviewsRepository {
+class PageviewsRepository extends Repository {
 
 	use DateParserTrait;
 
@@ -46,7 +46,7 @@ class PageviewsRepository {
 		string $end,
 		bool $totals = false,
 	): array {
-		$project = preg_replace( '/\.org$/', '', $project );
+		$project = $this->normalizeProject( $project );
 		$dbName = $this->getProjects()[ $project ] ?? null;
 		if ( !$dbName ) {
 			throw new InvalidArgumentException( "Project $project is not a valid project or is unsupported." );
