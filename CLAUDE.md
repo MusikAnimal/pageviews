@@ -85,6 +85,10 @@ toolforge-bundle (`ReplicasClient`).
   idempotent and side-effect-free.
 - **Param tiers**: report definition → URL query string (legacy-compatible names,
   pipe-delimited lists); user preferences → localStorage; runtime state → Pinia.
+- **All date handling is UTC** — pageviews data is bucketed by UTC day. The
+  legacy tool computed dates in browser-local time, a long-standing bug (10 PM
+  in New York is already the next UTC day). Use `assets/vue/lib/dates.js`;
+  never `new Date()` local-time getters for anything user-facing.
 - i18n: `$i18n( 'key' )` in templates, `import { banana }` from `vue/i18n.js` in
   JS, `v-i18n-html` for markup messages. Keys live in `i18n/*.json` (banana
   format, synced with translatewiki — never invent keys without adding them to
