@@ -33,7 +33,7 @@ export async function fetchPageviews( {
 	pages,
 	start,
 	end,
-	platform = 'all',
+	platform = 'all-access',
 	agent = 'user',
 	granularity = 'daily',
 	onProgress

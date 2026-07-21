@@ -38,8 +38,15 @@ describe( 'settings store', () => {
 			agent: 'alien'
 		} );
 		expect( store.start ).toBe( '' );
-		expect( store.platform ).toBe( 'all' );
+		expect( store.platform ).toBe( 'all-access' );
 		expect( store.agent ).toBe( 'user' );
+	} );
+
+	it( 'accepts the interim all alias for platform and agent', () => {
+		const store = useSettingsStore();
+		store.setFromQuery( { platform: 'all', agent: 'all' } );
+		expect( store.platform ).toBe( 'all-access' );
+		expect( store.agent ).toBe( 'all-agents' );
 	} );
 
 	it( 'serializes params for the URL, omitting empty dates', () => {
@@ -48,7 +55,7 @@ describe( 'settings store', () => {
 			project: 'en.wikipedia.org',
 			start: undefined,
 			end: undefined,
-			platform: 'all',
+			platform: 'all-access',
 			agent: 'user'
 		} );
 	} );
@@ -103,7 +110,7 @@ describe( 'settings store', () => {
 			start: '2026-05',
 			end: '2026-06',
 			platform: 'mobile-web',
-			agent: 'all'
+			agent: 'all-agents'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

@@ -2,8 +2,9 @@ import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { formatYmd, resolveSpecialRange } from '../lib/dates.js';
 
-const PLATFORMS = [ 'all', 'desktop', 'mobile-app', 'mobile-web' ];
-const AGENTS = [ 'all', 'user', 'spider', 'automated' ];
+// AQS vocabulary, also used verbatim in URLs (legacy-compatible).
+const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
+const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
 const DATE_PATTERN = /^\d{4}-\d{2}(-\d{2})?$/;
 const DEFAULT_RANGE = 'latest-30';
 
@@ -37,13 +38,13 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	/**
 	 * The platform to query for.
 	 *
-	 * @type {import( 'vue' ).Ref<'all'|'desktop'|'mobile-app'|'mobile-web'>}
+	 * @type {import( 'vue' ).Ref<'all-access'|'desktop'|'mobile-app'|'mobile-web'>}
 	 */
-	const platform = ref( 'all' );
+	const platform = ref( 'all-access' );
 	/**
 	 * The agent to query for.
 	 *
-	 * @type {import( 'vue' ).Ref<'all'|'user'|'spider'|'automated'>}
+	 * @type {import( 'vue' ).Ref<'all-agents'|'user'|'spider'|'automated'>}
 	 */
 	const agent = ref( 'user' );
 	/**
@@ -139,6 +140,13 @@ export const useSettingsStore = defineStore( 'settings', () => {
 		}
 		if ( AGENTS.includes( params.agent ) ) {
 			agent.value = params.agent;
+		}
+		// Alias from early rewrite URLs.
+		if ( params.platform === 'all' ) {
+			platform.value = 'all-access';
+		}
+		if ( params.agent === 'all' ) {
+			agent.value = 'all-agents';
 		}
 	}
 

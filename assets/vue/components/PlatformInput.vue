@@ -22,7 +22,7 @@ const store = useSettingsStore();
 const { platform } = storeToRefs( store );
 
 const platformOptions = [
-	{ value: 'all', label: banana.i18n( 'all' ) },
+	{ value: 'all-access', label: banana.i18n( 'all' ) },
 	{ value: 'desktop', label: banana.i18n( 'desktop' ) },
 	{ value: 'mobile-app', label: banana.i18n( 'mobile-app' ) },
 	{ value: 'mobile-web', label: banana.i18n( 'mobile-web' ) }

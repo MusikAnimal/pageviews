@@ -27,7 +27,7 @@ const store = useSettingsStore();
 const { agent } = storeToRefs( store );
 
 const agentOptions = [
-	{ value: 'all', label: banana.i18n( 'all' ) },
+	{ value: 'all-agents', label: banana.i18n( 'all' ) },
 	{ value: 'user', label: banana.i18n( 'user' ) },
 	{ value: 'spider', label: banana.i18n( 'spider' ) },
 	{ value: 'automated', label: banana.i18n( 'automated' ) }
