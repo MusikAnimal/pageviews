@@ -13,6 +13,7 @@
 		</template>
 
 		<CdxLookup
+			ref="lookup"
 			v-model:selected="project"
 			v-model:input-value="currentSearchTerm"
 			required
@@ -22,7 +23,7 @@
 			:clearable="true"
 			@input="onInput"
 			@change="checkValidity"
-			@clear="checkValidity"
+			@clear="onClear"
 			@update:selected="onSelect"
 		/>
 	</CdxField>
@@ -39,6 +40,17 @@ import { getProjects } from '../projects.js';
 const store = useSettingsStore();
 
 const { project } = storeToRefs( store );
+
+const lookup = ref( null );
+
+/**
+ * The project is required: when cleared, keep focus here so the user
+ * fills it in (the pages input clears itself but must not steal focus).
+ */
+function onClear() {
+	checkValidity();
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
+}
 
 /**
  * List of supported projects for the lookup component.

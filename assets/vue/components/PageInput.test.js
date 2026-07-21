@@ -5,6 +5,7 @@ import { nextTick } from 'vue';
 import { CdxMultiselectLookup } from '@wikimedia/codex';
 import PageInput from './PageInput.vue';
 import { usePageviewsStore } from '../stores/pageviews.js';
+import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
 
@@ -78,6 +79,59 @@ describe( 'PageInput', () => {
 
 		expect( wrapper.findComponent( CdxMultiselectLookup ).props( 'selected' ) )
 			.toEqual( [ 'Apple', 'Banana' ] );
+	} );
+
+	it( 'clears the selection and focuses the input on project change', async () => {
+		const wrapper = mount( PageInput, {
+			attachTo: document.body,
+			global: {
+				config: {
+					globalProperties: { $i18n: ( key ) => key }
+				}
+			}
+		} );
+		const store = usePageviewsStore();
+		const settings = useSettingsStore();
+
+		store.setFromQuery( { pages: 'Cat|Dog' } );
+		await nextTick();
+
+		settings.project = 'de.wikipedia.org';
+		await nextTick();
+		await nextTick();
+
+		expect( store.pages ).toEqual( [] );
+		expect( document.activeElement.tagName ).toBe( 'INPUT' );
+
+		wrapper.unmount();
+	} );
+
+	it( 'clears without stealing focus when the project is cleared', async () => {
+		const wrapper = mount( PageInput, {
+			attachTo: document.body,
+			global: {
+				config: {
+					globalProperties: { $i18n: ( key ) => key }
+				}
+			}
+		} );
+		const store = usePageviewsStore();
+		const settings = useSettingsStore();
+
+		store.setFromQuery( { pages: 'Cat' } );
+		await nextTick();
+		document.body.focus();
+
+		// A cleared (empty) project is invalid: the required project
+		// field keeps focus, handled by ProjectInput.
+		settings.project = null;
+		await nextTick();
+		await nextTick();
+
+		expect( store.pages ).toEqual( [] );
+		expect( document.activeElement ).toBe( document.body );
+
+		wrapper.unmount();
 	} );
 
 	it( 'clears all selections via the clear button', async () => {

@@ -8,6 +8,7 @@
 		</template>
 		<div class="app-pages__controls">
 			<CdxMultiselectLookup
+				ref="lookup"
 				v-model:input-chips="chips"
 				v-model:selected="selected"
 				class="app-pages__lookup"
@@ -58,6 +59,7 @@ const { pages } = storeToRefs( store );
 const chips = ref( pages.value.map( ( title ) => ( { value: title } ) ) );
 const selected = ref( [ ...pages.value ] );
 const menuItems = ref( [] );
+const lookup = ref( null );
 
 let debounceTimer = null;
 let warnedAboutMax = false;
@@ -102,6 +104,18 @@ function clear() {
 	selected.value = [];
 	menuItems.value = [];
 }
+
+// Pages belong to a project: switching projects clears the selection
+// and focuses the input for a fresh search (Codex exposes no focus
+// API, so reach for the input element directly). When the project was
+// cleared rather than changed, focus belongs to the required project
+// field instead (ProjectInput handles that).
+watch( () => settings.project, ( project ) => {
+	clear();
+	if ( project ) {
+		lookup.value?.$el?.querySelector( 'input' )?.focus();
+	}
+} );
 
 /**
  * Debounced prefixsearch autocomplete against the current project.
