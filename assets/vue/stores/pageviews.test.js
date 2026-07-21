@@ -57,10 +57,20 @@ describe( 'pageviews store', () => {
 
 	it( 'round-trips its own query serialization', () => {
 		const store = usePageviewsStore();
-		store.setFromQuery( { pages: 'Cat|Dog', redirects: '1' } );
+		store.setFromQuery( { pages: 'Cat|Dog', redirects: '1', autolog: 'false' } );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );
 		expect( store.query ).toEqual( serialized );
+	} );
+
+	it( 'carries autolog in the URL only when disabled', () => {
+		const store = usePageviewsStore();
+		expect( store.autolog ).toBe( true );
+		expect( store.query.autolog ).toBeUndefined();
+
+		store.setFromQuery( { autolog: 'false' } );
+		expect( store.autolog ).toBe( false );
+		expect( store.query.autolog ).toBe( 'false' );
 	} );
 
 	it( 'parses the redirects param', () => {

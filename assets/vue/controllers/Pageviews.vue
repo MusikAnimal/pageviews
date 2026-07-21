@@ -168,9 +168,10 @@ const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType
 const logScale = ref( false );
 
 // Auto-enable on spiky data (the legacy Theil-index heuristic), when
-// the preference allows; the user can always override via the checkbox.
+// the preference allows and the URL doesn't carry autolog=false; the
+// user can always override via the checkbox.
 watch( () => store.series, ( series ) => {
-	if ( preferences.autoLogDetection ) {
+	if ( preferences.autoLogDetection && store.autolog ) {
 		logScale.value = shouldUseLogScale( series.map( ( page ) => page.counts ) );
 	}
 } );

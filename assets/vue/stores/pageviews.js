@@ -22,6 +22,14 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 */
 	const redirects = ref( false );
 	/**
+	 * Whether automatic log-scale detection is allowed. Legacy URL
+	 * param: only ever serialized as autolog=false (true is the
+	 * default, subject to the user's autoLogDetection preference).
+	 *
+	 * @type {import('vue').Ref<boolean>}
+	 */
+	const autolog = ref( true );
+	/**
 	 * @type {import('vue').Ref<'initial'|'loading'|'complete'|'error'>}
 	 */
 	const status = ref( 'initial' );
@@ -72,7 +80,8 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 */
 	const query = computed( () => ( {
 		pages: pages.value.join( '|' ) || undefined,
-		redirects: redirects.value ? '1' : undefined
+		redirects: redirects.value ? '1' : undefined,
+		autolog: autolog.value ? undefined : 'false'
 	} ) );
 
 	/**
@@ -95,6 +104,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		redirects.value = params.redirects !== undefined ?
 			params.redirects === '1' :
 			usePreferencesStore().alwaysRedirects;
+		autolog.value = params.autolog !== 'false';
 	}
 
 	async function loadEditData( settings, id ) {
@@ -219,6 +229,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	return {
 		pages,
 		redirects,
+		autolog,
 		status,
 		dates,
 		series,
