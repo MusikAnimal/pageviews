@@ -267,9 +267,13 @@ watch(
 // exactly midway between a sidebar and the chart.
 @column-space: calc( @spacing-50 + ( @layout-gap / 2 ) );
 
+// A generous ceiling on the stretched workspace, for portrait
+// monitors — past this the leftover space stays empty above the
+// footer instead.
+@workspace-max-height: 64rem;
+
 .app-workspace {
 	align-items: flex-start;
-	container-type: inline-size;
 	display: flex;
 	// Stretches to the bottom of .app-container (which fills the
 	// viewport below the header, above the footer) — until the stats
@@ -286,6 +290,9 @@ watch(
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
 			column-gap: 0;
+			// Only capped in the column layout: stacked layouts are
+			// content-driven and must never clip.
+			max-height: @workspace-max-height;
 		}
 	}
 }

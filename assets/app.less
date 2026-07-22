@@ -170,8 +170,11 @@ a {
 }
 
 // The Vue mount point (and Twig FOUC skeleton). Positioned so the
-// progress bar centers within it, not the page.
+// progress bar centers within it, not the page. Also the @container
+// query root for the workspace column layout — the queries must live
+// on an ancestor, not on .app-workspace itself, to match.
 .app-container {
+	container-type: inline-size;
 	display: flex;
 	flex: 1;
 	flex-direction: column;
