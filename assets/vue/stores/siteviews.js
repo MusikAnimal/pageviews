@@ -2,6 +2,11 @@ import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { fetchSiteviews } from '../lib/metricsApi.js';
 import { getSiteStatistics } from '../lib/mwApi.js';
+import {
+	PAGECOUNTS_MAX_DATE,
+	PAGECOUNTS_MIN_DATE,
+	parseDate
+} from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
@@ -91,6 +96,46 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	const isAllProjects = computed(
 		() => isPageviews.value && sites.value[ 0 ] === 'all-projects'
 	);
+
+	const settings = useSettingsStore();
+
+	/**
+	 * The legacy pagecounts dataset only spans 2007-12-09 through
+	 * 2016-08-05: the source is unavailable when the selected range
+	 * doesn't intersect it.
+	 *
+	 * @type {import('vue').ComputedRef<boolean>}
+	 */
+	const pagecountsAvailable = computed( () => {
+		const start = parseDate( settings.start );
+		const end = parseDate( settings.end );
+		if ( !start || !end ) {
+			// No dates chosen yet; nothing to rule out.
+			return true;
+		}
+		return start <= parseDate( PAGECOUNTS_MAX_DATE ) &&
+			end >= parseDate( PAGECOUNTS_MIN_DATE );
+	} );
+
+	/**
+	 * One-shot signal: set when a requested source had to be dropped
+	 * (e.g. ?source=pagecounts outside the dataset's range). The
+	 * controller shows a toast and clears it.
+	 *
+	 * @type {import('vue').Ref<?string>}
+	 */
+	const unsupportedSource = ref( null );
+
+	// Fall back to pageviews whenever pagecounts stops applying —
+	// whether requested via URL (setFromQuery runs after the settings
+	// store parsed the dates) or by the dates moving out of range.
+	// Sync so a load never fires with the unsupported source.
+	watch( [ pagecountsAvailable, source ], ( [ available, src ] ) => {
+		if ( !available && src === 'pagecounts' ) {
+			source.value = 'pageviews';
+			unsupportedSource.value = 'pagecounts';
+		}
+	}, { flush: 'sync' } );
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
@@ -182,7 +227,6 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 * Fetch the aggregate data for the current params.
 	 */
 	async function load() {
-		const settings = useSettingsStore();
 		const ui = useUiStore();
 		const id = ++loadId;
 
@@ -255,6 +299,8 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		siteStats,
 		isPageviews,
 		isAllProjects,
+		pagecountsAvailable,
+		unsupportedSource,
 		query,
 		setFromQuery,
 		load

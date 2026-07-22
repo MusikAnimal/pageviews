@@ -364,6 +364,7 @@
 	"size": "Label for the value showing the size of the page.\n{{Identical|Size}}",
 	"source": "Label for the 'source' input field in the Massviews tool.\n{{Identical|Source}}",
 	"source-project": "The label for the source project to query from on the Langviews application",
+	"source-unavailable": "Warning shown when the requested metric source doesn't cover the selected dates and the app falls back to another. $1 - name of the requested source (e.g. 'Pagecounts (legacy)'), $2 - the first date the source has data for, $3 - the last date it has data for, $4 - name of the source shown instead (e.g. 'Pageviews')",
 	"spider": "Label for option to view statistics for [[wikipedia:Web crawler|spider]] (web crawler) agents only (not users or automated programs)\n{{Identical|Spider}}",
 	"start-date": "Label for the input holding the start of the date range.\n{{Identical|Start date}}",
 	"statistics": "Link to show a project's statistics page\n{{Identical|Statistics}}",

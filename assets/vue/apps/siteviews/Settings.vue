@@ -52,11 +52,17 @@ import { banana } from '../../i18n.js';
 const store = useSiteviewsStore();
 const { source, platform, agent, sites } = storeToRefs( store );
 
-const sourceOptions = [
+const sourceOptions = computed( () => [
 	{ value: 'pageviews', label: banana.i18n( 'pageviews' ) },
 	{ value: 'unique-devices', label: banana.i18n( 'unique-devices' ) },
-	{ value: 'pagecounts', label: banana.i18n( 'pagecounts-legacy' ) }
-];
+	{
+		value: 'pagecounts',
+		label: banana.i18n( 'pagecounts-legacy' ),
+		// Grayed out when the selected dates fall outside the legacy
+		// dataset's span.
+		disabled: !store.pagecountsAvailable
+	}
+] );
 
 const platformOptions = computed( () => store.isPageviews ?
 	[

@@ -341,6 +341,7 @@
 	"size": "Size",
 	"source": "Source",
 	"source-project": "Source project",
+	"source-unavailable": "$1 data is only available between $2 and $3. Showing $4 instead.",
 	"spider": "Spider",
 	"start-date": "Start date",
 	"statistics": "Statistics",

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { DEFAULT_SITES, useSiteviewsStore } from './siteviews.js';
+import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 import { fetchSiteviews } from '../lib/metricsApi.js';
 import { getSiteStatistics } from '../lib/mwApi.js';
@@ -88,6 +89,38 @@ describe( 'siteviews store', () => {
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );
 		expect( store.query ).toEqual( serialized );
+	} );
+
+	it( 'falls back from pagecounts when the dates rule it out', () => {
+		const store = useSiteviewsStore();
+		const settings = useSettingsStore();
+
+		// Within the legacy dataset's span: pagecounts is honored.
+		settings.setFromQuery( { start: '2015-01-01', end: '2015-01-31' } );
+		store.setFromQuery( { source: 'pagecounts', platform: 'desktop-site' } );
+		expect( store.pagecountsAvailable ).toBe( true );
+		expect( store.source ).toBe( 'pagecounts' );
+		expect( store.unsupportedSource ).toBeNull();
+
+		// Dates move past 2016-08-05: fall back, one-shot signal set.
+		settings.setFromQuery( { start: '2026-06-01', end: '2026-06-30' } );
+		expect( store.pagecountsAvailable ).toBe( false );
+		expect( store.source ).toBe( 'pageviews' );
+		// The source watch also remapped the platform vocabulary.
+		expect( store.platform ).toBe( 'desktop' );
+		expect( store.unsupportedSource ).toBe( 'pagecounts' );
+	} );
+
+	it( 'rejects a pagecounts URL request outside the dataset span', () => {
+		const store = useSiteviewsStore();
+		const settings = useSettingsStore();
+
+		// useQuerySync parses settings (dates) before the app store.
+		settings.setFromQuery( { start: '2026-06-01', end: '2026-06-30' } );
+		store.setFromQuery( { sites: 'fr.wikipedia.org', source: 'pagecounts' } );
+
+		expect( store.source ).toBe( 'pageviews' );
+		expect( store.unsupportedSource ).toBe( 'pagecounts' );
 	} );
 
 	it( 'treats all-projects as a pageviews-only mode', () => {
