@@ -34,6 +34,9 @@ defineExpose( { getPngDataUrl, resetZoom } );
 
 <style lang="less">
 .app-chart__canvas {
+	// Fills the chart column's leftover height (see .app-chart, a flex
+	// column); the min keeps it usable in cramped viewports.
+	flex: 1;
 	min-height: 400px;
 	width: 100%;
 }

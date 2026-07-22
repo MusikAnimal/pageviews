@@ -306,7 +306,13 @@ watch(
 }
 
 .app-chart {
+	// Stretch to the workspace's full height (the sidebars stay
+	// top-aligned) and lay out as a column, so the chart canvas can
+	// grow into the leftover space.
+	align-self: stretch;
+	display: flex;
 	flex: 999 1 @size-3200;
+	flex-direction: column;
 	margin: 0;
 	min-height: 100px;
 	min-width: 0;
