@@ -253,7 +253,11 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		// Dev aid: freeze the app in its loading state (progress bar
 		// mid-way, nothing fetched) so the CSS can be styled without it
 		// disappearing. Set VITE_SIMULATE_LOADING=1 in .env.local.
-		if ( import.meta.env.VITE_SIMULATE_LOADING === '1' ) {
+		// Vitest loads the same env files, hence the mode guard.
+		if (
+			import.meta.env.MODE !== 'test' &&
+			import.meta.env.VITE_SIMULATE_LOADING === '1'
+		) {
 			ui.setProgress( 2, 5 );
 			return;
 		}

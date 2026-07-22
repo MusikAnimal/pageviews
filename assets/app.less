@@ -22,6 +22,13 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+// Full-height column: nav, header and footer take their natural room,
+// the app container stretches to fill the rest.
+body {
+	display: flex;
+	flex-direction: column;
+}
+
 a {
 	.cdx-mixin-link();
 }
@@ -162,9 +169,18 @@ a {
 	margin-top: @spacing-50;
 }
 
+// The Vue mount point (and Twig FOUC skeleton). Positioned so the
+// progress bar centers within it, not the page.
+.app-container {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	position: relative;
+}
+
+// Centered (both axes) within .app-container.
 .app-progress-bar {
 	left: @size-half;
-	margin: auto;
 	position: absolute;
 	text-align: center;
 	top: @size-half;
@@ -174,14 +190,10 @@ a {
 
 .app-footer {
 	border-top: @border-width-base solid @border-color-muted;
-	bottom: 0;
 	display: block;
 	font-family: sans-serif;
-	left: 0;
 	padding: @spacing-100 0;
-	position: absolute;
 	text-align: center;
-	width: 100%;
 }
 
 // Attention flash for elements scrolled into view (e.g. /faq#agents).

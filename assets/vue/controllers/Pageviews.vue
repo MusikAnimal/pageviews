@@ -1,4 +1,10 @@
 <template>
+	<!-- Same markup as the Twig FOUC skeleton: centered in the
+		.app-container both ways. -->
+	<div v-if="store.status === 'loading'" class="app-progress-bar">
+		<div>{{ $i18n( 'loading' ) }}</div>
+		<CdxProgressBar :aria-label="$i18n( 'loading' )" />
+	</div>
 	<div class="app-workspace">
 		<PageviewsSettings />
 		<figure class="app-chart">
@@ -12,10 +18,6 @@
 			>
 				{{ message.text }}
 			</CdxMessage>
-			<CdxProgressBar
-				v-if="store.status === 'loading'"
-				:aria-label="$i18n( 'loading' )"
-			/>
 			<template v-if="chartReady">
 				<div class="app-chart__toolbar">
 					<ChartTypeSelect v-model="selectedChartType" />
@@ -251,6 +253,9 @@ watch(
 	align-items: flex-start;
 	container-type: inline-size;
 	display: flex;
+	// Stretches to the bottom of .app-container (which fills the
+	// viewport below the header, above the footer).
+	flex: 1;
 	flex-wrap: wrap;
 	gap: @layout-gap;
 
