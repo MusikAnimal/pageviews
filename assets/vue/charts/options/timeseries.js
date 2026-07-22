@@ -82,7 +82,11 @@ export function buildTimeseriesOption( {
 			type: 'category',
 			data: xLabels,
 			axisLine: { lineStyle: { color: theme.border } },
-			axisLabel: { color: theme.subtleText }
+			// Rotated like the legacy tool, so more dates fit before
+			// ECharts starts dropping labels.
+			axisLabel: { color: theme.subtleText, rotate: 45 },
+			// Vertical grid lines (off by default on category axes).
+			splitLine: { show: true, lineStyle: { color: theme.grid } }
 		},
 		yAxis: {
 			type: logScale ? 'log' : 'value',

@@ -45,6 +45,13 @@ describe( 'buildTimeseriesOption', () => {
 		expect( labeled.series[ 0 ].label.formatter( { value: 1234 } ) ).toBe( '1,234' );
 	} );
 
+	it( 'rotates date labels and draws vertical grid lines', () => {
+		const option = buildTimeseriesOption( base );
+		expect( option.xAxis.axisLabel.rotate ).toBe( 45 );
+		// Off by default on category axes; must be explicitly on.
+		expect( option.xAxis.splitLine.show ).toBe( true );
+	} );
+
 	it( 'marks Mondays on the x-axis in daily mode', () => {
 		const option = buildTimeseriesOption( { ...base, localizeDates: false } );
 		expect( option.xAxis.data ).toEqual( [ '2026-07-19', '• 2026-07-20', '2026-07-21' ] );
