@@ -275,10 +275,9 @@ watch(
 .app-workspace {
 	align-items: flex-start;
 	display: flex;
-	// Stretches to the bottom of .app-container (which fills the
-	// viewport below the header, above the footer) — until the stats
-	// table renders, at which point .app-breakdown takes over the free
-	// space so the table sits right below the columns.
+	// Stretches to fill .app-container (which fills the viewport below
+	// the header, above the footer), leaving the stats table its
+	// natural room directly below the columns.
 	flex: 1;
 	flex-wrap: wrap;
 	gap: @layout-gap;
@@ -368,11 +367,4 @@ watch(
 	}
 }
 
-// With content shown, out-grow the workspace (999:1) so the leftover
-// space lands below the table, not between the columns and the table.
-// While empty (loading/initial — Vue leaves only a comment node, which
-// :empty ignores), the workspace keeps stretching instead.
-.app-breakdown:not( :empty ) {
-	flex-grow: 999;
-}
 </style>
