@@ -12,20 +12,13 @@
 				v-model:input-chips="chips"
 				v-model:selected="selected"
 				class="app-pages__lookup"
+				:clearable="true"
 				:menu-items="menuItems"
 				:aria-label="$i18n( 'pages' )"
 				:placeholder="$i18n( 'article-placeholder' )"
+				@clear="clear"
 				@input="onInput"
 			/>
-			<CdxButton
-				v-if="chips.length"
-				class="app-pages__clear"
-				weight="quiet"
-				:aria-label="$i18n( 'clear' )"
-				@click="clear"
-			>
-				<CdxIcon :icon="cdxIconClear" />
-			</CdxButton>
 		</div>
 	</CdxField>
 </template>
@@ -33,8 +26,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
-import { cdxIconClear } from '@wikimedia/codex-icons';
+import { CdxField, CdxMultiselectLookup } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
