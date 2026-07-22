@@ -111,6 +111,43 @@ export function fetchEditData( { project, pages, start, end } ) {
 }
 
 /**
+ * Per-site aggregate timeseries for Siteviews (max 10 sites, so no
+ * chunking): pageviews, unique devices or legacy pagecounts.
+ *
+ * @param {Object} params
+ * @param {string[]} params.sites Site domains, or [ 'all-projects' ].
+ * @param {string} params.source pageviews | unique-devices | pagecounts.
+ * @param {string} params.start YYYY-MM-DD or YYYY-MM.
+ * @param {string} params.end
+ * @param {string} [params.platform] Per-source vocabulary.
+ * @param {string} [params.agent] Pageviews source only.
+ * @param {string} [params.granularity]
+ * @return {Promise<Object>} { source, platform, agent?, granularity,
+ *   start, end, dates, sites: [ { site, counts, total, average,
+ *   no_data? } ], totals }
+ * @throws {ApiError}
+ */
+export function fetchSiteviews( {
+	sites,
+	source,
+	start,
+	end,
+	platform,
+	agent = 'user',
+	granularity = 'daily'
+} ) {
+	return apiGet( '/api/metrics/siteviews', {
+		sites: sites.join( '|' ),
+		source,
+		start,
+		end,
+		platform,
+		agent,
+		granularity
+	} );
+}
+
+/**
  * The most-viewed pages of a month (YYYY-MM) or day (YYYY-MM-DD), with
  * the curated false positives already removed and ranks recomputed
  * server-side.
