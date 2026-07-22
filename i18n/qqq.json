@@ -386,6 +386,7 @@
 	"totals": "Label for the total number of pageviews\n{{Identical|Total}}",
 	"transclusions": "Label for the 'Transclusions' input field on the Massviews tool. See the wikidata item for 'transclusion' for possible translations: https://www.wikidata.org/wiki/Q1207412\n{{Identical|Transclusion}}",
 	"translation-credits": "Footer message crediting translation tools translatewiki.net ($1) and Intuition ($2)",
+	"try-again": "Link shown after an error message that retries the failed query.\n{{Identical|Try again}}",
 	"tu": "Abbreviation for Tuesday, a day of the week.",
 	"unique-devices": "Label for option to view statistics for unique devices only (as opposed to all page views)",
 	"unique-titles": "Indicates the number of unique titles a Langviews query returned. $1 is the actual number.",

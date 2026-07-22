@@ -30,11 +30,13 @@ export const useUiStore = defineStore( 'ui', () => {
 	 * @param {Object} message
 	 * @param {'error'|'warning'|'notice'|'success'} [message.type]
 	 * @param {string} message.text Localized, ready to display.
+	 * @param {Function} [message.onRetry] When given, the message is
+	 *   rendered with a "try again" link invoking this callback.
 	 * @return {number} Message id, usable with dismiss().
 	 */
-	function notify( { type = 'notice', text } ) {
+	function notify( { type = 'notice', text, onRetry } ) {
 		const id = nextId++;
-		messages.value.push( { id, type, text } );
+		messages.value.push( { id, type, text, onRetry } );
 		return id;
 	}
 

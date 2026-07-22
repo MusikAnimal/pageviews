@@ -17,6 +17,11 @@
 				@user-dismissed="ui.dismiss( message.id )"
 			>
 				{{ message.text }}
+				<a
+					v-if="message.onRetry"
+					href="#"
+					@click.prevent="retry( message )"
+				>{{ $i18n( 'try-again' ) }}</a>
 			</CdxMessage>
 			<template v-if="chartReady">
 				<div class="app-chart__toolbar">
@@ -134,6 +139,11 @@ function onDialogToggle( open ) {
 	if ( !open ) {
 		router.replace( { path: '/', query: route.query } );
 	}
+}
+
+function retry( message ) {
+	ui.dismiss( message.id );
+	message.onRetry();
 }
 
 const dark = usePrefersDark();

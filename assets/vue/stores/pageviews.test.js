@@ -231,6 +231,42 @@ describe( 'pageviews store', () => {
 			expect( ui.messages[ 0 ].text ).toBe( 'Error querying Pageviews API' );
 		} );
 
+		it( 'offers a retry on retryable errors only', async () => {
+			const store = usePageviewsStore();
+			const ui = useUiStore();
+			store.pages = [ 'Cat' ];
+
+			// Retryable (e.g. an AQS timeout): the message carries a
+			// callback that reruns the load.
+			fetchPageviews.mockRejectedValueOnce( new ApiError( {
+				code: 'upstream_error',
+				message: 'AQS timed out',
+				retryable: true
+			} ) );
+			await store.load();
+			expect( ui.messages[ 0 ].onRetry ).toBeTypeOf( 'function' );
+
+			fetchPageviews.mockResolvedValueOnce( metricsResult( [
+				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			] ) );
+			await ui.messages[ 0 ].onRetry();
+			expect( store.status ).toBe( 'complete' );
+
+			// Not retryable (e.g. invalid params): no callback.
+			fetchPageviews.mockRejectedValueOnce( new ApiError( {
+				code: 'invalid_date_range',
+				message: 'Bad range',
+				retryable: false
+			} ) );
+			await store.load();
+			expect( ui.messages[ 0 ].onRetry ).toBeUndefined();
+
+			// Errors without the flag (network failures) are retryable.
+			fetchPageviews.mockRejectedValueOnce( new TypeError( 'Failed to fetch' ) );
+			await store.load();
+			expect( ui.messages[ 0 ].onRetry ).toBeTypeOf( 'function' );
+		} );
+
 		it( 'flags edit data as failed without failing the load', async () => {
 			const store = usePageviewsStore();
 			store.pages = [ 'Cat' ];

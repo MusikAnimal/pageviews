@@ -314,7 +314,11 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message
+				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				// Offer "try again" unless the envelope says retrying is
+				// pointless (e.g. invalid params). Errors without the
+				// flag (network failures) count as retryable.
+				onRetry: error.retryable === false ? undefined : load
 			} );
 		} finally {
 			if ( id === loadId ) {
