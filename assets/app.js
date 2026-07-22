@@ -24,10 +24,16 @@ const router = createRouter( {
 			meta: { store: usePageviewsStore, dialog: 'url-structure' }
 		},
 		{ path: '/siteviews', component: Siteviews, meta: { store: useSiteviewsStore } },
-		// Dialog content for these is still to come; the routes exist
-		// so the footer links resolve without a router warning.
-		{ path: '/siteviews/faq', component: Siteviews, meta: { store: useSiteviewsStore } },
-		{ path: '/siteviews/url_structure', component: Siteviews, meta: { store: useSiteviewsStore } }
+		{
+			path: '/siteviews/faq',
+			component: Siteviews,
+			meta: { store: useSiteviewsStore, dialog: 'faq' }
+		},
+		{
+			path: '/siteviews/url_structure',
+			component: Siteviews,
+			meta: { store: useSiteviewsStore, dialog: 'url-structure' }
+		}
 	]
 } );
 
@@ -55,7 +61,7 @@ document.addEventListener( 'click', ( event ) => {
 		useUiStore( pinia ).preferencesOpen = true;
 		return;
 	}
-	const link = event.target.closest( 'a[href="/faq"], a[href="/url_structure"]' );
+	const link = event.target.closest( 'a[href$="/faq"], a[href$="/url_structure"]' );
 	if ( link ) {
 		event.preventDefault();
 		// Close the nav dropdown the link was picked from.

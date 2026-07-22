@@ -22,9 +22,10 @@ const emit = defineEmits( [ 'update:open' ] );
 const link = ( href, text ) => `<a target="_blank" href="${ href }">${ text }</a>`;
 
 const backfillDate = `${ banana.i18n( 'july' ) } 2015`;
-const redirectviewsLink = `<a href="/redirectviews">${ banana.i18n( 'redirectviews' ) }</a>`;
 
-// Ported from the legacy FAQ (views/faq_parts/), same order.
+// Ported from the legacy Siteviews FAQ (views/siteviews/faq.haml),
+// same order — plus the agents section, which legacy linked to from
+// the Agent field but never actually included.
 const entries = [
 	{
 		id: 'old_data',
@@ -48,47 +49,24 @@ const entries = [
 		]
 	},
 	{
+		id: 'metric',
+		title: banana.i18n( 'faq-source-title' ),
+		paragraphs: [
+			'<ul>' + [
+				[ 'pageviews', 'faq-source-pageviews' ],
+				[ 'unique-devices', 'faq-source-unique-devices' ],
+				[ 'pagecounts-legacy', 'faq-source-pagecounts' ]
+			].map( ( [ label, body ] ) =>
+				`<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
+			).join( '' ) + '</ul>'
+		]
+	},
+	{
 		id: 'counts',
 		title: banana.i18n( 'faq-counts-title' ),
 		paragraphs: [ banana.i18n( 'faq-counts-body', link(
 			'https://meta.wikimedia.org/wiki/Research:Page_view',
 			'meta:Research:Page view'
-		) ) ]
-	},
-	{
-		id: 'search_redirects',
-		title: banana.i18n( 'faq-search-redirects-title' ),
-		paragraphs: [ banana.i18n(
-			'faq-search-redirects-body',
-			banana.i18n( 'autocompletion-redirects' ),
-			banana.i18n( 'settings' ),
-			redirectviewsLink
-		) ]
-	},
-	{
-		id: 'redirects',
-		title: banana.i18n( 'faq-redirects-title' ),
-		paragraphs: [
-			banana.i18n(
-				'faq-redirects-body', redirectviewsLink, banana.i18n( 'include-redirects' )
-			),
-			banana.i18n( 'faq-redirects-body2', banana.i18n( 'include-redirects' ) )
-		]
-	},
-	{
-		id: 'location',
-		title: banana.i18n( 'faq-location-title' ),
-		paragraphs: [ banana.i18n( 'faq-location-body', link(
-			'https://stats.wikimedia.org/wikimedia/squids/SquidReportPageViewsPerCountryBreakdown.htm',
-			'stats.wikimedia.org'
-		) ) ]
-	},
-	{
-		id: 'referrals',
-		title: banana.i18n( 'faq-referrals-title' ),
-		paragraphs: [ banana.i18n( 'faq-referrals-body', link(
-			'http://discovery.wmflabs.org/external/',
-			'discovery.wmflabs.org'
 		) ) ]
 	},
 	{
@@ -122,22 +100,6 @@ const entries = [
 			'faq-try-tool',
 			`<a href="/topviews">${ banana.i18n( 'topviews-title' ) }</a>`
 		) ]
-	},
-	{
-		id: 'multi_lang',
-		title: banana.i18n( 'faq-multi-lang-title' ),
-		paragraphs: [ banana.i18n(
-			'faq-try-tool',
-			`<a href="/langviews">${ banana.i18n( 'langviews-title' ) }</a>`
-		) ]
-	},
-	{
-		id: 'data_dumps',
-		title: banana.i18n( 'faq-data-dumps' ),
-		paragraphs: [ banana.i18n( 'faq-data-dumps-body', link(
-			'https://dumps.wikimedia.org/other/pageviews/',
-			'dumps.wikimedia.org'
-		) ) ]
 	},
 	{
 		id: 'feedback',

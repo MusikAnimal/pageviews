@@ -14,6 +14,11 @@
 			<template #label>
 				{{ $i18n( 'metric' ) }}
 			</template>
+			<FaqHelpButton
+				class="app-settings__metric-help"
+				section="metric"
+				:aria-label="$i18n( 'faq-source-title' )"
+			/>
 			<CdxSelect
 				v-model:selected="source"
 				:menu-items="sourceOptions"
@@ -46,6 +51,7 @@ import { CdxField, CdxRadio, CdxSelect } from '@wikimedia/codex';
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
+import FaqHelpButton from '../../components/FaqHelpButton.vue';
 import { DEFAULT_SITES, useSiteviewsStore } from '../../stores/siteviews.js';
 import { banana } from '../../i18n.js';
 
@@ -96,3 +102,16 @@ const allProjects = computed( {
 	}
 } );
 </script>
+
+<style scoped lang="less">
+// Flush right, inline with the field's label.
+.app-settings__metric {
+	position: relative;
+}
+
+.app-settings__metric-help {
+	position: absolute;
+	right: 0;
+	top: -5px;
+}
+</style>

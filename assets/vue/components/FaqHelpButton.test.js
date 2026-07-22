@@ -3,9 +3,13 @@ import { mount } from '@vue/test-utils';
 import FaqHelpButton from './FaqHelpButton.vue';
 
 const push = vi.hoisted( () => vi.fn() );
+const routeMock = vi.hoisted( () => ( {
+	path: '/pageviews',
+	query: { project: 'de.wikipedia.org', pages: 'Katze' }
+} ) );
 vi.mock( 'vue-router', () => ( {
 	useRouter: () => ( { push } ),
-	useRoute: () => ( { query: { project: 'de.wikipedia.org', pages: 'Katze' } } )
+	useRoute: () => routeMock
 } ) );
 
 describe( 'FaqHelpButton', () => {
@@ -26,5 +30,13 @@ describe( 'FaqHelpButton', () => {
 			query: { project: 'de.wikipedia.org', pages: 'Katze' }
 		} );
 		expect( wrapper.attributes( 'aria-label' ) ).toBe( 'How are redirects counted?' );
+
+		// Other apps own a prefixed FAQ route.
+		routeMock.path = '/siteviews';
+		await wrapper.trigger( 'click' );
+		expect( push ).toHaveBeenLastCalledWith( expect.objectContaining( {
+			path: '/siteviews/faq'
+		} ) );
+		routeMock.path = '/pageviews';
 	} );
 } );

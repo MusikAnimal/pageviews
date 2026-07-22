@@ -39,6 +39,14 @@
 		<StatsTable v-if="chartReady" />
 	</section>
 	<CdxToastContainer />
+	<FaqDialog
+		:open="activeDialog === 'faq'"
+		@update:open="onDialogToggle"
+	/>
+	<UrlStructureDialog
+		:open="activeDialog === 'url-structure'"
+		@update:open="onDialogToggle"
+	/>
 </template>
 
 <script setup>
@@ -56,7 +64,10 @@ import { useQuerySync } from '../composables/useQuerySync.js';
 import { formatDate } from '../lib/format.js';
 import { PAGECOUNTS_MAX_DATE, PAGECOUNTS_MIN_DATE, parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
+import { useRoute, useRouter } from 'vue-router';
 import SiteviewsSettings from '../apps/siteviews/Settings.vue';
+import FaqDialog from '../apps/siteviews/FaqDialog.vue';
+import UrlStructureDialog from '../apps/siteviews/UrlStructureDialog.vue';
 import SiteInput from '../components/SiteInput.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import Totals from '../apps/siteviews/Totals.vue';
@@ -65,7 +76,19 @@ import StatsTable from '../apps/siteviews/StatsTable.vue';
 const store = useSiteviewsStore();
 const settings = useSettingsStore();
 const ui = useUiStore();
+const route = useRoute();
+const router = useRouter();
 useQuerySync( store );
+
+// The /siteviews/faq and /siteviews/url_structure routes open dialogs
+// over the app.
+const activeDialog = computed( () => route.meta.dialog ?? null );
+
+function onDialogToggle( open ) {
+	if ( !open ) {
+		router.replace( { path: '/siteviews', query: route.query } );
+	}
+}
 
 // Like the legacy tool, a bare visit compares two sizable Wikipedias.
 onMounted( () => {

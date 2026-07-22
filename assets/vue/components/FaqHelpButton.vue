@@ -32,10 +32,15 @@ const route = useRoute();
 const router = useRouter();
 
 /**
- * Open the FAQ dialog scrolled to the given section, keeping the
- * current report params.
+ * Open the current app's FAQ dialog scrolled to the given section,
+ * keeping the current report params. Pageviews owns the bare /faq;
+ * other apps prefix theirs (/siteviews/faq, ...).
  */
 function openFaq() {
-	router.push( { path: '/faq', hash: `#${ props.section }`, query: route.query } );
+	const base = ( route.path || '' ).split( '/' )[ 1 ];
+	const path = [ '', 'pageviews', 'faq', 'url_structure' ].includes( base ) ?
+		'/faq' :
+		`/${ base }/faq`;
+	router.push( { path, hash: `#${ props.section }`, query: route.query } );
 }
 </script>

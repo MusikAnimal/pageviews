@@ -43,8 +43,8 @@
 				{{ msg( 'help' ) }}
 			</summary>
 			<ul class="app-nav__menu">
-				<li><a href="/faq">{{ msg( 'faq' ) }}</a></li>
-				<li><a href="/url_structure">{{ msg( 'url-structure' ) }}</a></li>
+				<li><a href="{{ path( current_app ~ '/faq' ) }}">{{ msg( 'faq' ) }}</a></li>
+				<li><a href="{{ path( current_app ~ '/url_structure' ) }}">{{ msg( 'url-structure' ) }}</a></li>
 				<li><a href="https://meta.wikimedia.org/wiki/Pageviews_Analysis">{{ msg( 'documentation' ) }}</a></li>
 				<li class="app-nav__menu-divider" role="separator"></li>
 				<li><a href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a></li>
