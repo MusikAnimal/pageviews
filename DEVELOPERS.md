@@ -53,6 +53,20 @@ with many redirects) will be slow: the server waits out AQS's
 5 minutes per request (`docker/php/app.dev.ini`) to accommodate that.
 This is expected — grab a coffee, or test with fewer pages.
 
+## Simulating the loading state
+
+To style the loading UI without it disappearing when data arrives, add
+to `.env.local`:
+
+```
+VITE_SIMULATE_LOADING=1
+```
+
+Every data load then freezes in the loading state (progress bar shown
+mid-way, no requests fired). The Vite dev server picks up `.env.local`
+changes automatically; remove the line (or set anything other than `1`)
+to restore normal behavior.
+
 ## Tests and linting
 
 Run all tooling through the containers — the JS and PHP toolchains live

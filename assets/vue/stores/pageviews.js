@@ -250,6 +250,14 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		status.value = 'loading';
 		ui.clearMessages();
 
+		// Dev aid: freeze the app in its loading state (progress bar
+		// mid-way, nothing fetched) so the CSS can be styled without it
+		// disappearing. Set VITE_SIMULATE_LOADING=1 in .env.local.
+		if ( import.meta.env.VITE_SIMULATE_LOADING === '1' ) {
+			ui.setProgress( 2, 5 );
+			return;
+		}
+
 		// Supplementary and non-fatal: without these the stats table
 		// and totals panel just omit the affected fields (e.g. replicas
 		// unreachable locally). Deliberately not awaited here, so they
