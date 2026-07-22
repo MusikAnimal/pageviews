@@ -227,8 +227,8 @@ describe( 'pageviews store', () => {
 			expect( store.status ).toBe( 'error' );
 			expect( ui.messages ).toHaveLength( 1 );
 			expect( ui.messages[ 0 ].type ).toBe( 'error' );
-			// The banana message 'api-error' is "Error querying $1".
-			expect( ui.messages[ 0 ].text ).toBe( 'Error querying Pageviews API' );
+			// The banana message 'api-error' is "Error querying $1."
+			expect( ui.messages[ 0 ].text ).toBe( 'Error querying Pageviews API.' );
 		} );
 
 		it( 'offers a retry on retryable errors only', async () => {
