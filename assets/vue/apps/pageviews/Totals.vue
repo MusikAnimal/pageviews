@@ -8,15 +8,15 @@
 				{{ $i18n( 'pageviews' ) }}
 			</h4>
 			<dl class="app-totals__stats">
-				<div class="app-totals__stat">
+				<div class="app-totals__stat app-totals__stat--strong">
 					<dt>{{ $i18n( 'views' ) }}</dt>
 					<dd>{{ number( store.totals.total ) }}</dd>
 				</div>
-				<div v-if="median !== null" class="app-totals__stat">
+				<div v-if="median !== null" class="app-totals__stat app-totals__stat--strong">
 					<dt>{{ $i18n( 'median' ) }}</dt>
 					<dd>{{ number( median ) }}</dd>
 				</div>
-				<div class="app-totals__stat">
+				<div class="app-totals__stat app-totals__stat--strong">
 					<dt>{{ averageLabel }}</dt>
 					<dd>{{ number( Math.round( store.totals.average ) ) }}</dd>
 				</div>
@@ -186,22 +186,28 @@ const basicInfo = computed( () => {
 
 .app-totals {
 	&__stats {
-		display: flex;
-		flex-wrap: wrap;
-		gap: @spacing-75;
 		margin: 0;
 	}
 
+	// One line per stat, label left and value flush right, like the
+	// legacy tool's legend.
 	&__stat {
+		display: flex;
+		gap: @spacing-50;
+		justify-content: space-between;
+
 		dt {
 			color: @color-subtle;
-			font-size: @font-size-small;
 		}
 
 		dd {
-			font-size: @font-size-x-large;
-			font-weight: @font-weight-bold;
 			margin: 0;
+			text-align: right;
+		}
+
+		// The headline pageview numbers (views, median, average).
+		&--strong dd {
+			font-weight: @font-weight-bold;
 		}
 	}
 
