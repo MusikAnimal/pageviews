@@ -38,16 +38,20 @@
 					>
 						{{ $i18n( 'reset-zoom' ) }}
 					</CdxButton>
+					<!-- Inline: block checkboxes carry a bottom margin
+						that throws off the toolbar's vertical centering. -->
 					<CdxCheckbox
 						v-if="linearType"
 						v-model="showValues"
 						class="app-chart__show-values"
+						:inline="true"
 					>
 						{{ $i18n( 'show-values' ) }}
 					</CdxCheckbox>
 					<CdxCheckbox
 						v-if="linearType"
 						v-model="logScale"
+						:inline="true"
 					>
 						{{ $i18n( 'logarithmic-scale' ) }}
 					</CdxCheckbox>
@@ -258,6 +262,10 @@ watch(
 @viz-basis: @size-3200;
 @totals-basis: @size-1600;
 @layout-gap: @size-100;
+// In column layouts the inter-column spacing comes from the columns'
+// own padding rather than the flex gap, so the separator borders sit
+// exactly midway between a sidebar and the chart.
+@column-space: calc( @spacing-50 + ( @layout-gap / 2 ) );
 
 .app-workspace {
 	align-items: flex-start;
@@ -274,17 +282,25 @@ watch(
 	&__heading {
 		text-align: center;
 	}
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			column-gap: 0;
+		}
+	}
 }
 
-// The borders go around the side columns (not the chart), and only
-// once the layout is wide enough for them to render as columns.
+// The sidebars carry a single separator edge toward the chart (no
+// top/bottom borders), and only once the layout is wide enough for
+// them to render as columns.
 .app-settings {
 	flex: 1 1 @size-1600;
 	padding: @spacing-50;
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
-			border: @border-width-base solid @border-color-base;
+			border-right: @border-width-base solid @border-color-base;
+			padding-right: @column-space;
 		}
 	}
 }
@@ -296,12 +312,30 @@ watch(
 	min-width: 0;
 	padding: @spacing-50;
 
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			padding-left: @column-space;
+		}
+	}
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
+		& {
+			padding-right: @column-space;
+		}
+	}
+
 	&__toolbar {
 		align-items: center;
 		display: flex;
 		flex-wrap: wrap;
 		gap: @spacing-50;
 		margin-bottom: @spacing-50;
+
+		// The flex gap provides the spacing; the inline checkboxes'
+		// own trailing margin would double it up.
+		.cdx-checkbox--inline {
+			margin-right: 0;
+		}
 	}
 
 	&__show-values {
@@ -315,7 +349,8 @@ watch(
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
 		& {
-			border: @border-width-base solid @border-color-base;
+			border-left: @border-width-base solid @border-color-base;
+			padding-left: @column-space;
 		}
 	}
 }
