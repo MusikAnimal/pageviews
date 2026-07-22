@@ -276,14 +276,19 @@ watch(
 	}
 }
 
+// The borders go around the side columns (not the chart), and only
+// once the layout is wide enough for them to render as columns.
 .app-settings {
 	flex: 1 1 @size-1600;
 	padding: @spacing-50;
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			border: @border-width-base solid @border-color-base;
+		}
+	}
 }
 
-// The column separators live on the chart itself: its left edge when
-// sharing a row with the settings form, and its right edge when the
-// totals sidebar also fits.
 .app-chart {
 	flex: 999 1 @size-3200;
 	margin: 0;
@@ -302,23 +307,17 @@ watch(
 	&__show-values {
 		margin-left: auto;
 	}
-
-	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
-		& {
-			border-left: @border-width-base solid @border-color-base;
-		}
-	}
-
-	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
-		& {
-			border-right: @border-width-base solid @border-color-base;
-		}
-	}
 }
 
 .app-totals {
 	flex: 1 1 @size-1600;
 	padding: @spacing-50;
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
+		& {
+			border: @border-width-base solid @border-color-base;
+		}
+	}
 }
 
 // With content shown, out-grow the workspace (999:1) so the leftover
