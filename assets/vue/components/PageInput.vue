@@ -182,11 +182,13 @@ function onInput( value ) {
 
 // Tint each chip with its series color (chips precede the text input
 // inside the Codex chip container, so nth-child indexes the chips).
+// NOTE: each() provides a built-in 1-based @index that shadows any
+// custom @index — hence @series for the 0-based palette position.
 each( range( 10 ), {
-	@index: ( @value - 1 );
+	@series: ( @value - 1 );
 
 	:deep( .cdx-input-chip:nth-child( @{value} ) ) {
-		background-color: ~'var( --pv-series-@{index} )';
+		background-color: ~'var( --pv-series-@{series} )';
 		// The palette backgrounds are fixed light pastels; keep dark
 		// text in both color modes.
 		color: #202122;
