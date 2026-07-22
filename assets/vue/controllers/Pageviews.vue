@@ -132,7 +132,7 @@ async function applyDefaultPages() {
 	if ( store.pages.length || activeDialog.value ) {
 		return;
 	}
-	const defaults = await getDefaultPages( settings.project );
+	const defaults = await getDefaultPages( store.project );
 	// The user may have picked pages while the lookups ran.
 	if ( !store.pages.length && defaults.length ) {
 		store.pages = defaults;
@@ -241,11 +241,11 @@ const chartOption = computed( () => {
 
 watch(
 	() => [
-		settings.project,
+		store.project,
 		settings.start,
 		settings.end,
-		settings.platform,
-		settings.agent,
+		store.platform,
+		store.agent,
 		settings.dateType,
 		store.pages,
 		store.redirects

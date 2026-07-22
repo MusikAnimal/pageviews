@@ -127,7 +127,7 @@ const historyUrl = computed( () => {
 		return null;
 	}
 	const title = encodeURIComponent( store.series[ 0 ].title.replace( / /g, '_' ) );
-	return `https://${ settings.project }/w/index.php?title=${ title }&action=history`;
+	return `https://${ store.project }/w/index.php?title=${ title }&action=history`;
 } );
 
 /**

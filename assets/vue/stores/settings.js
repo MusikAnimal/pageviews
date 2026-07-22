@@ -13,19 +13,15 @@ import {
 	yesterdayUtc
 } from '../lib/dates.js';
 
-// AQS vocabulary, also used verbatim in URLs (legacy-compatible).
-const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
-const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
 const DATE_PATTERN = /^\d{4}-\d{2}(-\d{2})?$/;
 const DEFAULT_RANGE = 'latest-30';
 
+/**
+ * The date-range params every app shares. App-specific report params
+ * (project, platform, agent, pages, sites, ...) live in each app's own
+ * store; both serialize into the URL via useQuerySync.
+ */
 export const useSettingsStore = defineStore( 'settings', () => {
-	/**
-	 * The Wikimedia project to query for data.
-	 *
-	 * @type {import( 'vue' ).Ref<string>}
-	 */
-	const project = ref( 'en.wikipedia.org' );
 	/**
 	 * The start date for the data query, either in YYYY-MM-DD format (daily)
 	 * or in YYYY-MM format (monthly).
@@ -46,18 +42,6 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * @type {import( 'vue' ).Ref<'daily'|'monthly'>}
 	 */
 	const dateType = ref( 'daily' );
-	/**
-	 * The platform to query for.
-	 *
-	 * @type {import( 'vue' ).Ref<'all-access'|'desktop'|'mobile-app'|'mobile-web'>}
-	 */
-	const platform = ref( 'all-access' );
-	/**
-	 * The agent to query for.
-	 *
-	 * @type {import( 'vue' ).Ref<'all-agents'|'user'|'spider'|'automated'>}
-	 */
-	const agent = ref( 'user' );
 	/**
 	 * The active special range name (e.g. 'latest-30', 'last-month'),
 	 * or null when concrete dates were chosen. When set, permalinks
@@ -115,12 +99,9 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * @type {import( 'vue' ).ComputedRef<Object>}
 	 */
 	const query = computed( () => ( {
-		project: project.value,
 		range: specialRange.value ?? undefined,
 		start: specialRange.value ? undefined : start.value || undefined,
-		end: specialRange.value ? undefined : end.value || undefined,
-		platform: platform.value,
-		agent: agent.value
+		end: specialRange.value ? undefined : end.value || undefined
 	} ) );
 
 	/**
@@ -168,9 +149,6 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
 	function setFromQuery( params ) {
-		if ( params.project ) {
-			project.value = params.project;
-		}
 		if ( params.range ) {
 			// e.g. ?range=latest-20, kept in permalinks (like the
 			// legacy tool) and resolved to concrete dates on load.
@@ -186,28 +164,12 @@ export const useSettingsStore = defineStore( 'settings', () => {
 			// Monthly ranges are expressed as YYYY-MM dates.
 			dateType.value = start.value.length === 7 ? 'monthly' : 'daily';
 		}
-		if ( PLATFORMS.includes( params.platform ) ) {
-			platform.value = params.platform;
-		}
-		if ( AGENTS.includes( params.agent ) ) {
-			agent.value = params.agent;
-		}
-		// Alias from early rewrite URLs.
-		if ( params.platform === 'all' ) {
-			platform.value = 'all-access';
-		}
-		if ( params.agent === 'all' ) {
-			agent.value = 'all-agents';
-		}
 	}
 
 	return {
-		project,
 		start,
 		end,
 		dateType,
-		platform,
-		agent,
 		specialRange,
 		query,
 		setFromQuery,

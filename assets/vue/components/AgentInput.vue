@@ -1,5 +1,5 @@
 <template>
-	<CdxField class="app-settings__agent">
+	<CdxField class="app-settings__agent" :disabled="disabled">
 		<template #label>
 			{{ $i18n( 'agent' ) }}
 		</template>
@@ -11,6 +11,7 @@
 		<CdxSelect
 			v-model:selected="agent"
 			:menu-items="agentOptions"
+			:disabled="disabled"
 			:aria-label="$i18n( 'agent' )"
 		/>
 	</CdxField>
@@ -18,13 +19,25 @@
 
 <script setup>
 import { CdxField, CdxSelect } from '@wikimedia/codex';
-import { storeToRefs } from 'pinia';
-import { useSettingsStore } from '../stores/settings.js';
 import { banana } from '../i18n.js';
 import FaqHelpButton from './FaqHelpButton.vue';
 
-const store = useSettingsStore();
-const { agent } = storeToRefs( store );
+/**
+ * Prop-driven: apps bind their own store's agent ref.
+ */
+const agent = defineModel( {
+	type: String,
+	required: true
+} );
+
+defineProps( {
+	// Some metrics have no agent breakdown (e.g. Siteviews' unique
+	// devices); the field disables rather than hides, like legacy.
+	disabled: {
+		type: Boolean,
+		default: false
+	}
+} );
 
 const agentOptions = [
 	{ value: 'all-agents', label: banana.i18n( 'all' ) },

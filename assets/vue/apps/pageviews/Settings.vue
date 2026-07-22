@@ -10,9 +10,9 @@
 			<h3>{{ $i18n( 'options' ) }}</h3>
 		</header>
 		<DateRangeInput />
-		<ProjectInput />
-		<PlatformInput />
-		<AgentInput />
+		<ProjectInput v-model="project" />
+		<PlatformInput v-model="platform" />
+		<AgentInput v-model="agent" />
 		<CdxField class="app-settings__redirects">
 			<div class="app-settings__redirects-row">
 				<CdxCheckbox v-model="redirects">
@@ -40,7 +40,7 @@ import PreferencesDialog from '../../components/PreferencesDialog.vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 import { useUiStore } from '../../stores/ui.js';
 
-const { redirects } = storeToRefs( usePageviewsStore() );
+const { project, platform, agent, redirects } = storeToRefs( usePageviewsStore() );
 const ui = useUiStore();
 </script>
 

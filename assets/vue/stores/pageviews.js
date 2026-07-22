@@ -9,7 +9,25 @@ import { usePreferencesStore } from './preferences.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
+// AQS vocabulary, used verbatim in URLs (legacy-compatible).
+const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
+const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
+
 export const usePageviewsStore = defineStore( 'pageviews', () => {
+	/**
+	 * The Wikimedia project to query for data.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const project = ref( 'en.wikipedia.org' );
+	/**
+	 * @type {import('vue').Ref<'all-access'|'desktop'|'mobile-app'|'mobile-web'>}
+	 */
+	const platform = ref( 'all-access' );
+	/**
+	 * @type {import('vue').Ref<'all-agents'|'user'|'spider'|'automated'>}
+	 */
+	const agent = ref( 'user' );
 	/**
 	 * The pages to query for.
 	 *
@@ -88,6 +106,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * @type {import('vue').ComputedRef<Object>}
 	 */
 	const query = computed( () => ( {
+		project: project.value,
+		platform: platform.value,
+		agent: agent.value,
 		pages: pages.value.join( '|' ) || undefined,
 		redirects: redirects.value ? '1' : undefined,
 		autolog: autolog.value ? undefined : 'false'
@@ -99,6 +120,22 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
 	function setFromQuery( params ) {
+		if ( params.project ) {
+			project.value = params.project;
+		}
+		if ( PLATFORMS.includes( params.platform ) ) {
+			platform.value = params.platform;
+		}
+		if ( AGENTS.includes( params.agent ) ) {
+			agent.value = params.agent;
+		}
+		// Alias from early rewrite URLs.
+		if ( params.platform === 'all' ) {
+			platform.value = 'all-access';
+		}
+		if ( params.agent === 'all' ) {
+			agent.value = 'all-agents';
+		}
 		if ( params.pages ) {
 			const titles = params.pages.split( '|' ).filter( ( page ) => page !== '' );
 			// Keep the array identity when unchanged: replacing it
@@ -120,7 +157,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		editData.value = null;
 		try {
 			const result = await fetchEditData( {
-				project: settings.project,
+				project: project.value,
 				pages: pages.value,
 				start: settings.start,
 				end: settings.end
@@ -144,7 +181,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	async function loadPageInfo( settings, id ) {
 		pageInfo.value = null;
 		try {
-			const result = await getPageInfo( settings.project, pages.value );
+			const result = await getPageInfo( project.value, pages.value );
 			if ( id === loadId ) {
 				pageInfo.value = result;
 			}
@@ -173,9 +210,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			const max = lastCompleteMonthUtc();
 			const date = formatYm( endMonth > max ? max : endMonth );
 			const result = await fetchTopviews( {
-				project: settings.project,
+				project: project.value,
 				date,
-				platform: settings.platform
+				platform: platform.value
 			} );
 			if ( id !== loadId ) {
 				return;
@@ -275,7 +312,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			let redirectMap = null;
 			let titles = pages.value;
 			if ( redirects.value ) {
-				redirectMap = await getRedirects( settings.project, pages.value );
+				redirectMap = await getRedirects( project.value, pages.value );
 				titles = [ ...new Set( [
 					...pages.value,
 					...Object.values( redirectMap ).flat().map( ( r ) => r.title )
@@ -283,12 +320,12 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			}
 
 			const result = await fetchPageviews( {
-				project: settings.project,
+				project: project.value,
 				pages: titles,
 				start: settings.start,
 				end: settings.end,
-				platform: settings.platform,
-				agent: settings.agent,
+				platform: platform.value,
+				agent: agent.value,
 				granularity: settings.dateType,
 				onProgress: ui.setProgress
 			} );
@@ -328,6 +365,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	}
 
 	return {
+		project,
+		platform,
+		agent,
 		pages,
 		redirects,
 		autolog,

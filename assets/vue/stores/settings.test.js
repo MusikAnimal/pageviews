@@ -8,21 +8,15 @@ describe( 'settings store', () => {
 		setActivePinia( createPinia() );
 	} );
 
-	it( 'populates all params from the query string', () => {
+	it( 'populates the date params from the query string', () => {
 		const store = useSettingsStore();
 		store.setFromQuery( {
-			project: 'de.wikipedia.org',
 			start: '2026-06-01',
-			end: '2026-06-30',
-			platform: 'desktop',
-			agent: 'spider'
+			end: '2026-06-30'
 		} );
-		expect( store.project ).toBe( 'de.wikipedia.org' );
 		expect( store.start ).toBe( '2026-06-01' );
 		expect( store.end ).toBe( '2026-06-30' );
 		expect( store.dateType ).toBe( 'daily' );
-		expect( store.platform ).toBe( 'desktop' );
-		expect( store.agent ).toBe( 'spider' );
 	} );
 
 	it( 'detects monthly ranges from YYYY-MM dates', () => {
@@ -97,31 +91,16 @@ describe( 'settings store', () => {
 
 	it( 'ignores invalid values, keeping defaults', () => {
 		const store = useSettingsStore();
-		store.setFromQuery( {
-			start: 'yesterday',
-			platform: 'gopher',
-			agent: 'alien'
-		} );
+		store.setFromQuery( { start: 'yesterday' } );
 		expect( store.start ).toBe( '' );
-		expect( store.platform ).toBe( 'all-access' );
-		expect( store.agent ).toBe( 'user' );
-	} );
-
-	it( 'accepts the interim all alias for platform and agent', () => {
-		const store = useSettingsStore();
-		store.setFromQuery( { platform: 'all', agent: 'all' } );
-		expect( store.platform ).toBe( 'all-access' );
-		expect( store.agent ).toBe( 'all-agents' );
 	} );
 
 	it( 'serializes params for the URL, omitting empty dates', () => {
 		const store = useSettingsStore();
 		expect( store.query ).toEqual( {
-			project: 'en.wikipedia.org',
+			range: undefined,
 			start: undefined,
-			end: undefined,
-			platform: 'all-access',
-			agent: 'user'
+			end: undefined
 		} );
 	} );
 
@@ -171,11 +150,8 @@ describe( 'settings store', () => {
 	it( 'round-trips its own query serialization', () => {
 		const store = useSettingsStore();
 		store.setFromQuery( {
-			project: 'commons.wikimedia.org',
 			start: '2026-05',
-			end: '2026-06',
-			platform: 'mobile-web',
-			agent: 'all-agents'
+			end: '2026-06'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

@@ -197,8 +197,8 @@ const rankHtml = computed( () => {
 		banana.locale,
 		{ month: 'long', year: 'numeric', timeZone: 'UTC' }
 	).format( parseDate( date ) );
-	const url = `/topviews?project=${ encodeURIComponent( settings.project ) }` +
-		`&platform=${ settings.platform }&date=${ date }`;
+	const url = `/topviews?project=${ encodeURIComponent( store.project ) }` +
+		`&platform=${ store.platform }&date=${ date }`;
 	const link = `<a target="_blank" href="${ url }">` +
 		`${ banana.i18n( 'most-viewed-pages' ).toLowerCase() }</a>`;
 	return rawI18n( 'most-viewed-rank', number( rank ), link, monthLabel );
@@ -313,11 +313,11 @@ function ariaSort( key ) {
 }
 
 function pageUrl( title ) {
-	return `https://${ settings.project }/wiki/${ encodeURIComponent( title.replace( / /g, '_' ) ) }`;
+	return `https://${ store.project }/wiki/${ encodeURIComponent( title.replace( / /g, '_' ) ) }`;
 }
 
 function historyUrl( title ) {
-	return `https://${ settings.project }/w/index.php?title=` +
+	return `https://${ store.project }/w/index.php?title=` +
 		`${ encodeURIComponent( title.replace( / /g, '_' ) ) }&action=history`;
 }
 </script>

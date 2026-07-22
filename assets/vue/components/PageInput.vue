@@ -39,7 +39,6 @@ import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/c
 import { cdxIconClear } from '@wikimedia/codex-icons';
 import { usePageviewsStore } from '../stores/pageviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
-import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
 import { PALETTE, seriesColor } from '../charts/palette.js';
@@ -55,7 +54,6 @@ const paletteVars = Object.fromEntries(
 );
 
 const store = usePageviewsStore();
-const settings = useSettingsStore();
 const preferences = usePreferencesStore();
 const ui = useUiStore();
 const { pages } = storeToRefs( store );
@@ -114,7 +112,7 @@ function clear() {
 // API, so reach for the input element directly). When the project was
 // cleared rather than changed, focus belongs to the required project
 // field instead (ProjectInput handles that).
-watch( () => settings.project, ( project ) => {
+watch( () => store.project, ( project ) => {
 	clear();
 	if ( project ) {
 		lookup.value?.$el?.querySelector( 'input' )?.focus();
@@ -137,7 +135,7 @@ function onInput( value ) {
 			// The redirects mode surfaces redirect titles among the
 			// suggestions (slower; a user preference, like legacy).
 			const withRedirects = preferences.autocomplete === 'autocomplete_redirects';
-			const response = await mwApiGet( settings.project, withRedirects ?
+			const response = await mwApiGet( store.project, withRedirects ?
 				{
 					action: 'query',
 					generator: 'prefixsearch',

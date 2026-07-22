@@ -46,6 +46,29 @@ describe( 'pageviews store', () => {
 		expect( store.pages ).toEqual( [ 'Cat', 'Dog' ] );
 	} );
 
+	it( 'parses project, platform and agent, ignoring invalid values', () => {
+		const store = usePageviewsStore();
+		store.setFromQuery( {
+			project: 'de.wikipedia.org',
+			platform: 'desktop',
+			agent: 'spider'
+		} );
+		expect( store.project ).toBe( 'de.wikipedia.org' );
+		expect( store.platform ).toBe( 'desktop' );
+		expect( store.agent ).toBe( 'spider' );
+
+		store.setFromQuery( { platform: 'gopher', agent: 'alien' } );
+		expect( store.platform ).toBe( 'desktop' );
+		expect( store.agent ).toBe( 'spider' );
+	} );
+
+	it( 'accepts the interim all alias for platform and agent', () => {
+		const store = usePageviewsStore();
+		store.setFromQuery( { platform: 'all', agent: 'all' } );
+		expect( store.platform ).toBe( 'all-access' );
+		expect( store.agent ).toBe( 'all-agents' );
+	} );
+
 	it( 'serializes pages pipe-delimited and omits empty params', () => {
 		const store = usePageviewsStore();
 		store.pages = [ 'Cat', 'Dog' ];
