@@ -2,9 +2,9 @@
 	<CdxField class="app-pages" :style="paletteVars">
 		<template #label>
 			{{ $i18n( 'pages' ) }}
-		</template>
-		<template #help-text>
-			{{ $i18n( 'num-pages-info', String( MAX_PAGES ) ) }}
+			<span class="app-pages__hint">
+				{{ $i18n( 'num-pages-info', String( MAX_PAGES ) ) }}
+			</span>
 		</template>
 		<div class="app-pages__controls">
 			<CdxMultiselectLookup
@@ -161,6 +161,14 @@ function onInput( value ) {
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-pages {
+	// Inline with the bold "Pages" label, like the legacy tool's
+	// muted num-entities-info hint.
+	&__hint {
+		color: @color-subtle;
+		font-weight: @font-weight-normal;
+		margin-left: @spacing-25;
+	}
+
 	&__controls {
 		align-items: flex-start;
 		display: flex;
