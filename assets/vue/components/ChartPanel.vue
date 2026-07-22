@@ -85,12 +85,12 @@ const props = defineProps( {
 		required: true
 	},
 	/**
-	 * Whether automatic log-scale detection is allowed (the app
-	 * store's autolog URL param).
+	 * Set when the app store's autolog URL param disallows automatic
+	 * log-scale detection.
 	 */
-	autolog: {
+	noAutolog: {
 		type: Boolean,
-		default: true
+		default: false
 	},
 	ariaLabel: {
 		type: String,
@@ -135,7 +135,7 @@ const showValues = ref( false );
 // the preference allows and the URL doesn't carry autolog=false; the
 // user can always override via the checkbox.
 watch( () => props.series, ( series ) => {
-	if ( preferences.autoLogDetection && props.autolog ) {
+	if ( preferences.autoLogDetection && !props.noAutolog ) {
 		logScale.value = shouldUseLogScale( series.map( ( entry ) => entry.counts ) );
 	}
 } );

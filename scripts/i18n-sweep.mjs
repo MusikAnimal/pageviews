@@ -71,9 +71,15 @@ const APPS = [ 'pageviews', 'langviews', 'topviews', 'siteviews',
 for ( const app of APPS ) {
 	record( app, 'templates/base.html.twig (nav loop)' );
 }
-// base.html.twig title/description (only pageviews is live so far).
+// base.html.twig title/description for the apps ported so far
+// (pageviews' title key is special-cased to 'title').
 record( 'title', 'templates/base.html.twig' );
-record( 'pageviews-description', 'templates/base.html.twig' );
+for ( const app of [ 'pageviews', 'siteviews' ] ) {
+	if ( app !== 'pageviews' ) {
+		record( `${ app }-title`, 'templates/base.html.twig' );
+	}
+	record( `${ app }-description`, 'templates/base.html.twig' );
+}
 // Date presets: banana.i18n( range ) over these names.
 for ( const range of [ 'this-week', 'this-month', 'last-month', 'this-year', 'last-year', 'all-time' ] ) {
 	record( range, 'assets/vue/components/DateRangeInput.vue (presets)' );

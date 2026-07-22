@@ -215,6 +215,232 @@ a {
 	animation: app-flash 2s ease-out;
 }
 
+// The app workspace layout and the shared per-app blocks (Totals
+// sidebar, stats table, single-entity summary). Shared by every app,
+// hence here rather than in a component.
+
+@form-basis: @size-1600;
+@viz-basis: @size-3200;
+@totals-basis: @size-1600;
+@layout-gap: @size-100;
+// In column layouts the inter-column spacing comes from the columns'
+// own padding rather than the flex gap, so the separator borders sit
+// exactly midway between a sidebar and the chart.
+@column-space: calc( @spacing-50 + ( @layout-gap / 2 ) );
+
+// A generous ceiling on the stretched workspace, for portrait
+// monitors — past this the leftover space stays empty above the
+// footer instead.
+@workspace-max-height: 64rem;
+
+.app-workspace {
+	align-items: flex-start;
+	display: flex;
+	// Stretches to fill .app-container (which fills the viewport below
+	// the header, above the footer), leaving the stats table its
+	// natural room directly below the columns.
+	flex: 1;
+	flex-wrap: wrap;
+	gap: @layout-gap;
+
+	&__heading {
+		text-align: center;
+	}
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			column-gap: 0;
+			// Only capped in the column layout: stacked layouts are
+			// content-driven and must never clip.
+			max-height: @workspace-max-height;
+		}
+	}
+}
+
+// The sidebars carry a single separator edge toward the chart (no
+// top/bottom borders), and only once the layout is wide enough for
+// them to render as columns.
+.app-settings {
+	flex: 1 1 @size-1600;
+	padding: @spacing-50;
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			border-right: @border-width-base solid @border-color-base;
+			padding-right: @column-space;
+		}
+	}
+}
+
+.app-chart {
+	// Stretch to the workspace's full height (the sidebars stay
+	// top-aligned) and lay out as a column, so the chart canvas can
+	// grow into the leftover space.
+	align-self: stretch;
+	display: flex;
+	flex: 999 1 @size-3200;
+	flex-direction: column;
+	margin: 0;
+	min-height: 100px;
+	min-width: 0;
+	padding: @spacing-50;
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
+		& {
+			padding-left: @column-space;
+		}
+	}
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
+		& {
+			padding-right: @column-space;
+		}
+	}
+
+	&__toolbar {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: @spacing-50;
+		margin-bottom: @spacing-50;
+
+		// The flex gap provides the spacing; the inline checkboxes'
+		// own trailing margin would double it up.
+		.cdx-checkbox--inline {
+			margin-right: 0;
+		}
+	}
+
+	&__show-values {
+		margin-left: auto;
+	}
+}
+
+.app-totals {
+	flex: 1 1 @size-1600;
+	padding: @spacing-50;
+
+	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
+		& {
+			border-left: @border-width-base solid @border-color-base;
+			padding-left: @column-space;
+		}
+	}
+
+	&__stats {
+		margin: 0;
+	}
+
+	// One line per stat, label left and value flush right, like the
+	// legacy tool's legend.
+	&__stat {
+		display: flex;
+		gap: @spacing-50;
+		justify-content: space-between;
+
+		dt {
+			color: @color-subtle;
+		}
+
+		dd {
+			margin: 0;
+			text-align: right;
+		}
+
+		// The headline pageview numbers (views, median, average).
+		&--strong dd {
+			font-weight: @font-weight-bold;
+		}
+	}
+
+	&__subheading {
+		border-top: @border-width-base solid @border-color-subtle;
+		margin: @spacing-100 0 @spacing-50;
+		padding-top: @spacing-75;
+
+		&--first {
+			border-top: 0;
+			margin-top: 0;
+			padding-top: 0;
+		}
+	}
+
+	&__unavailable {
+		color: @color-subtle;
+		font-size: @font-size-small;
+		margin: 0;
+	}
+}
+
+.app-stats {
+	border-collapse: collapse;
+	margin-top: @spacing-100;
+	width: 100%;
+
+	th,
+	td {
+		border-bottom: @border-width-base solid @border-color-subtle;
+		padding: @spacing-35 @spacing-50;
+		text-align: left;
+	}
+
+	&__number {
+		font-variant-numeric: tabular-nums;
+		text-align: right;
+	}
+
+	&__color {
+		border-radius: @border-radius-base;
+		display: inline-block;
+		height: @size-100;
+		vertical-align: middle;
+		width: @size-100;
+	}
+
+	&__badge {
+		height: @size-100;
+		margin-right: @spacing-25;
+		vertical-align: text-bottom;
+		width: @size-100;
+	}
+
+	&__sort {
+		background: none;
+		border: 0;
+		color: inherit;
+		cursor: pointer;
+		font: inherit;
+		font-weight: @font-weight-bold;
+		padding: 0;
+	}
+
+	tfoot {
+		font-weight: @font-weight-bold;
+	}
+}
+
+.app-page-summary {
+	margin: @spacing-100 0 0;
+	text-align: center;
+
+	&__badge {
+		height: @size-100;
+		margin-right: @spacing-25;
+		vertical-align: text-bottom;
+		width: @size-100;
+	}
+
+	&__dates {
+		color: @color-subtle;
+	}
+
+	&__rank {
+		font-size: @font-size-small;
+		margin: @spacing-25 0 0;
+		text-align: center;
+	}
+}
+
 // Vendor resets.
 
 figure {

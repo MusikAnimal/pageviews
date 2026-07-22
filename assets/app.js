@@ -6,7 +6,9 @@ import { registerVueControllerComponents } from 'vite-plugin-symfony/stimulus/he
 import { createPinia } from 'pinia';
 import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
+import Siteviews from './vue/controllers/Siteviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
+import { useSiteviewsStore } from './vue/stores/siteviews.js';
 import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
@@ -20,7 +22,12 @@ const router = createRouter( {
 			path: '/url_structure',
 			component: Pageviews,
 			meta: { store: usePageviewsStore, dialog: 'url-structure' }
-		}
+		},
+		{ path: '/siteviews', component: Siteviews, meta: { store: useSiteviewsStore } },
+		// Dialog content for these is still to come; the routes exist
+		// so the footer links resolve without a router warning.
+		{ path: '/siteviews/faq', component: Siteviews, meta: { store: useSiteviewsStore } },
+		{ path: '/siteviews/url_structure', component: Siteviews, meta: { store: useSiteviewsStore } }
 	]
 } );
 
