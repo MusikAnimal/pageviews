@@ -35,6 +35,23 @@ class MetricsController extends AbstractController {
 		) );
 	}
 
+	#[Route( '/api/metrics/siteviews', name: 'api_metrics_siteviews', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function siteviews(
+		MetricsRepository $metricsRepo,
+		#[MapQueryParameter] string $sites = '',
+		#[MapQueryParameter] string $source = 'pageviews',
+		#[MapQueryParameter] string $start = '',
+		#[MapQueryParameter] string $end = '',
+		#[MapQueryParameter] string $platform = '',
+		#[MapQueryParameter] string $agent = 'user',
+		#[MapQueryParameter] string $granularity = 'daily',
+	): JsonResponse {
+		return new JsonResponse( $metricsRepo->getSiteviews(
+			$sites, $source, $start, $end, $platform, $agent, $granularity
+		) );
+	}
+
 	#[Route( '/api/metrics/top/{project}', name: 'api_metrics_top', methods: [ 'GET' ] )]
 	#[Cache( maxage: 600, public: true )]
 	public function top(

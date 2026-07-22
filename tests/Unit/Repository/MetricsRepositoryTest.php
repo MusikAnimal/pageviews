@@ -162,6 +162,123 @@ class MetricsRepositoryTest extends TestCase {
 		}
 	}
 
+	private static function aqsAggregate( string $valueKey, array $valuesByTimestamp ): array {
+		$items = [];
+		foreach ( $valuesByTimestamp as $timestamp => $value ) {
+			$items[] = [ 'timestamp' => (string)$timestamp, $valueKey => $value ];
+		}
+		return [ 'items' => $items ];
+	}
+
+	public function testSiteviewsContractShape(): void {
+		$repo = $this->makeRepo( [
+			'pageviews/aggregate/fr.wikipedia/all-access/user/daily' =>
+				self::aqsAggregate( 'views', [ '2026070100' => 100, '2026070300' => 300 ] ),
+			'pageviews/aggregate/de.wikipedia/all-access/user/daily' =>
+				self::aqsAggregate( 'views', [ '2026070100' => 10, '2026070200' => 20, '2026070300' => 30 ] ),
+		] );
+
+		$result = $repo->getSiteviews(
+			'fr.wikipedia.org|de.wikipedia.org', 'pageviews', '2026-07-01', '2026-07-03'
+		);
+
+		static::assertSame( [
+			'source' => 'pageviews',
+			'platform' => 'all-access',
+			'granularity' => 'daily',
+			'start' => '2026-07-01',
+			'end' => '2026-07-03',
+			'dates' => [ '2026-07-01', '2026-07-02', '2026-07-03' ],
+			'sites' => [
+				[ 'site' => 'fr.wikipedia.org', 'counts' => [ 100, 0, 300 ], 'total' => 400, 'average' => 133.33 ],
+				[ 'site' => 'de.wikipedia.org', 'counts' => [ 10, 20, 30 ], 'total' => 60, 'average' => 20.0 ],
+			],
+			'totals' => [
+				'counts' => [ 110, 20, 330 ],
+				'total' => 460,
+				'average' => 153.33,
+			],
+			'agent' => 'user',
+		], $result );
+	}
+
+	public function testSiteviewsUniqueDevices(): void {
+		$repo = $this->makeRepo( [
+			'unique-devices/fr.wikipedia/all-sites/daily' =>
+				self::aqsAggregate( 'devices', [ '20260701' => 5, '20260702' => 7 ] ),
+		] );
+
+		$result = $repo->getSiteviews(
+			'fr.wikipedia', 'unique-devices', '2026-07-01', '2026-07-02'
+		);
+
+		static::assertSame( [ 5, 7 ], $result['sites'][0]['counts'] );
+		// No agent breakdown for unique devices.
+		static::assertArrayNotHasKey( 'agent', $result );
+		static::assertStringNotContainsString( '/user/', $this->requestedUrls[0] );
+	}
+
+	public function testSiteviewsPagecounts(): void {
+		$repo = $this->makeRepo( [
+			'legacy/pagecounts/aggregate/fr.wikipedia/desktop-site/monthly' =>
+				self::aqsAggregate( 'count', [ '2015010100' => 1000, '2015020100' => 2000 ] ),
+		] );
+
+		$result = $repo->getSiteviews(
+			'fr.wikipedia', 'pagecounts', '2015-01', '2015-02', 'desktop-site', 'user', 'monthly'
+		);
+
+		static::assertSame( [ '2015-01', '2015-02' ], $result['dates'] );
+		static::assertSame( [ 1000, 2000 ], $result['sites'][0]['counts'] );
+	}
+
+	public function testSiteviewsAllProjects(): void {
+		$repo = $this->makeRepo( [
+			'pageviews/aggregate/all-projects/all-access/user/daily' =>
+				self::aqsAggregate( 'views', [ '2026070100' => 12345 ] ),
+		] );
+
+		$result = $repo->getSiteviews( 'all-projects', 'pageviews', '2026-07-01', '2026-07-01' );
+		static::assertSame( 'all-projects', $result['sites'][0]['site'] );
+
+		// ... but only alone, and only for pageviews.
+		foreach ( [
+			[ 'all-projects|fr.wikipedia', 'pageviews' ],
+			[ 'all-projects', 'unique-devices' ],
+		] as [ $sites, $source ] ) {
+			try {
+				$repo->getSiteviews( $sites, $source, '2026-07-01', '2026-07-01' );
+				static::fail( 'Expected ApiException (invalid_sites)' );
+			} catch ( ApiException $e ) {
+				static::assertSame( 'invalid_sites', $e->errorCode );
+			}
+		}
+	}
+
+	public function testSiteviewsValidation(): void {
+		$repo = $this->makeRepo();
+
+		$cases = [
+			[ [ 'fr.wikipedia', 'metaviews', '2026-07-01', '2026-07-02' ], 'invalid_source' ],
+			[ [ '', 'pageviews', '2026-07-01', '2026-07-02' ], 'missing_param' ],
+			[ [ implode( '|', range( 1, 11 ) ), 'pageviews', '2026-07-01', '2026-07-02' ], 'too_many_sites' ],
+			// Vocabularies must match the source.
+			[ [ 'fr.wikipedia', 'pageviews', '2026-07-01', '2026-07-02', 'all-sites' ], 'invalid_platform' ],
+			[ [ 'fr.wikipedia', 'unique-devices', '2026-07-01', '2026-07-02', 'desktop' ], 'invalid_platform' ],
+			[ [ 'fr.wikipedia', 'pageviews', '2026-07-02', '2026-07-01' ], 'invalid_date_range' ],
+		];
+
+		foreach ( $cases as [ $args, $expectedCode ] ) {
+			try {
+				$repo->getSiteviews( ...$args );
+				static::fail( "Expected ApiException ($expectedCode)" );
+			} catch ( ApiException $e ) {
+				static::assertSame( $expectedCode, $e->errorCode );
+				static::assertSame( 400, $e->status );
+			}
+		}
+	}
+
 	private const EXCLUDES_FIXTURE = __DIR__ . '/../../Fixtures/topviews_excludes.yaml';
 
 	private static function aqsTop( array $articlesToViews ): array {

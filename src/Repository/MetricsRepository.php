@@ -42,6 +42,27 @@ class MetricsRepository extends Repository {
 	private const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 	private const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
 
+	public const MAX_SITES = 10;
+
+	/**
+	 * Siteviews metric sources and their AQS particulars: URL template
+	 * pieces, platform vocabulary and the per-item value key.
+	 */
+	private const SITEVIEWS_SOURCES = [
+		'pageviews' => [
+			'platforms' => self::PLATFORMS,
+			'valueKey' => 'views',
+		],
+		'unique-devices' => [
+			'platforms' => [ 'all-sites', 'desktop-site', 'mobile-site' ],
+			'valueKey' => 'devices',
+		],
+		'pagecounts' => [
+			'platforms' => [ 'all-sites', 'desktop-site', 'mobile-site' ],
+			'valueKey' => 'count',
+		],
+	];
+
 	public function __construct(
 		private readonly HttpClientInterface $aqsClient,
 		private readonly CacheInterface $cacheMetrics,
@@ -174,6 +195,174 @@ class MetricsRepository extends Repository {
 	}
 
 	/**
+	 * Batched per-site aggregate timeseries for Siteviews: pageviews
+	 * (AQS aggregate, optionally the special site 'all-projects'),
+	 * unique devices, or the legacy pagecounts. Same contract shape as
+	 * getPageviews(), with `sites` in place of `pages`.
+	 *
+	 * @param string $sitesParam Pipe-delimited site domains (max 10).
+	 */
+	public function getSiteviews(
+		string $sitesParam,
+		string $source,
+		string $start,
+		string $end,
+		string $platform = '',
+		string $agent = 'user',
+		string $granularity = 'daily',
+	): array {
+		$source = $this->validated( 'source', $source, array_keys( self::SITEVIEWS_SOURCES ) );
+		$isPageviews = $source === 'pageviews';
+		$platforms = self::SITEVIEWS_SOURCES[ $source ]['platforms'];
+		$platform = $this->validated(
+			'platform',
+			match ( $platform ) {
+				// Per-source default and the interim 'all' alias.
+				'', 'all' => $platforms[0],
+				default => $platform,
+			},
+			$platforms
+		);
+		// Only the pageviews source has an agent breakdown.
+		$agent = $isPageviews ?
+			$this->validated( 'agent', $agent === 'all' ? 'all-agents' : $agent, self::AGENTS ) :
+			null;
+		$granularity = $this->validated( 'granularity', $granularity, [ 'daily', 'monthly' ] );
+		$sites = $this->parseSites( $sitesParam, $isPageviews );
+
+		$startDate = $this->parseDate( $start );
+		$endDate = $this->parseDate( $end, true );
+		if ( $startDate > $endDate ) {
+			$this->invalidParameter(
+				'invalid_date_range',
+				'The start date must not be after the end date.',
+				[ 'param-error-2' ]
+			);
+		}
+
+		$cacheKey = sprintf(
+			'sv.%s.%s.%s.%s.%s.%s.%s',
+			$source,
+			$platform,
+			$agent ?? '-',
+			$granularity,
+			$startDate->format( 'Ymd' ),
+			$endDate->format( 'Ymd' ),
+			sha1( implode( '|', $sites ) )
+		);
+
+		return $this->cacheMetrics->get(
+			$cacheKey,
+			function ( ItemInterface $item ) use (
+				$source, $sites, $startDate, $endDate, $platform, $agent, $granularity
+			): array {
+				$item->expiresAfter( $this->ttlForRange( $endDate ) );
+				return $this->fetchSiteviews(
+					$source, $sites, $startDate, $endDate, $platform, $agent, $granularity
+				);
+			}
+		);
+	}
+
+	private function fetchSiteviews(
+		string $source,
+		array $sites,
+		DateTime $startDate,
+		DateTime $endDate,
+		string $platform,
+		?string $agent,
+		string $granularity,
+	): array {
+		$dates = $this->dateAxis( $startDate, $endDate, $granularity );
+		$startTs = $startDate->format( 'Ymd' ) . '00';
+		$endTs = $endDate->format( 'Ymd' ) . '00';
+		$valueKey = self::SITEVIEWS_SOURCES[ $source ]['valueKey'];
+
+		$siteData = [];
+		$totals = array_fill( 0, count( $dates ), 0 );
+
+		foreach ( array_chunk( $sites, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
+			if ( $waveIndex > 0 ) {
+				usleep( self::AQS_WAVE_PAUSE_US );
+			}
+			$responses = [];
+			foreach ( $wave as $site ) {
+				$domain = rawurlencode( $this->normalizeProject( $site ) );
+				$responses[ $site ] = $this->aqsClient->request( 'GET', match ( $source ) {
+					'pageviews' => "pageviews/aggregate/$domain/$platform/$agent/$granularity/$startTs/$endTs",
+					'unique-devices' => "unique-devices/$domain/$platform/$granularity/$startTs/$endTs",
+					'pagecounts' => "legacy/pagecounts/aggregate/$domain/$platform/$granularity/$startTs/$endTs",
+				} );
+			}
+
+			foreach ( $responses as $site => $response ) {
+				$counts = $this->extractCounts( $response, $dates, $granularity, $noData, $valueKey );
+				foreach ( $counts as $i => $count ) {
+					$totals[ $i ] += $count;
+				}
+				$total = array_sum( $counts );
+				$domain = $this->normalizeProject( $site );
+				$siteData[] = [
+					'site' => $domain === 'all-projects' ? $domain : "$domain.org",
+					'counts' => $counts,
+					'total' => $total,
+					'average' => round( $total / count( $dates ), 2 ),
+				] + ( $noData ? [ 'no_data' => true ] : [] );
+			}
+		}
+
+		return [
+			'source' => $source,
+			'platform' => $platform,
+			'granularity' => $granularity,
+			'start' => $startDate->format( 'Y-m-d' ),
+			'end' => $endDate->format( 'Y-m-d' ),
+			'dates' => $dates,
+			'sites' => $siteData,
+			'totals' => [
+				'counts' => $totals,
+				'total' => array_sum( $totals ),
+				'average' => round( array_sum( $totals ) / count( $dates ), 2 ),
+			],
+		] + ( $agent === null ? [] : [ 'agent' => $agent ] );
+	}
+
+	/**
+	 * @return string[] Trimmed, deduplicated site domains.
+	 */
+	private function parseSites( string $sitesParam, bool $allProjectsAllowed ): array {
+		$sites = array_values( array_unique( array_filter(
+			array_map( 'trim', explode( '|', $sitesParam ) ),
+			static fn ( string $site ): bool => $site !== ''
+		) ) );
+
+		if ( !$sites ) {
+			$this->invalidParameter(
+				'missing_param',
+				'The sites parameter is required.',
+				[ 'param-error-3', 'sites' ]
+			);
+		}
+		if ( count( $sites ) > self::MAX_SITES ) {
+			$this->invalidParameter(
+				'too_many_sites',
+				sprintf( 'A maximum of %d sites may be requested at once.', self::MAX_SITES ),
+				[ 'param-error-3', 'sites' ]
+			);
+		}
+		// The special all-projects site only exists for the pageviews
+		// aggregate endpoint, and only by itself.
+		if ( in_array( 'all-projects', $sites, true ) && ( !$allProjectsAllowed || count( $sites ) > 1 ) ) {
+			$this->invalidParameter(
+				'invalid_sites',
+				'all-projects is only valid alone, with the pageviews source.',
+				[ 'param-error-3', 'sites' ]
+			);
+		}
+		return $sites;
+	}
+
+	/**
 	 * The most-viewed pages of a month or day, with the curated
 	 * false positives (config/topviews_excludes.yaml) removed and ranks
 	 * recomputed — the legacy tool showed raw AQS ranks in the
@@ -293,9 +482,17 @@ class MetricsRepository extends Repository {
 	 *
 	 * @param string[] $dates
 	 * @param bool|null $noData Set to whether AQS had no data at all (404).
+	 * @param string $valueKey Per-item count key; varies by AQS endpoint
+	 *   (views, devices, count).
 	 * @return int[]
 	 */
-	private function extractCounts( object $response, array $dates, string $granularity, ?bool &$noData ): array {
+	private function extractCounts(
+		object $response,
+		array $dates,
+		string $granularity,
+		?bool &$noData,
+		string $valueKey = 'views',
+	): array {
 		$noData = false;
 		try {
 			$items = $response->toArray()['items'] ?? [];
@@ -328,7 +525,7 @@ class MetricsRepository extends Repository {
 			$key = $granularity === 'monthly' ?
 				substr( $item['timestamp'], 0, 6 ) :
 				substr( $item['timestamp'], 0, 8 );
-			$byDate[ $key ] = $item['views'];
+			$byDate[ $key ] = $item[ $valueKey ];
 		}
 
 		return array_map( static function ( string $date ) use ( $byDate ): int {
