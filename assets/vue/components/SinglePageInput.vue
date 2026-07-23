@@ -48,11 +48,17 @@ const inputValue = ref( page.value ? displayName( page.value ) : '' );
 const menuItems = ref( [] );
 
 let debounceTimer = null;
+// Bumped to invalidate in-flight autocomplete responses (e.g. after
+// Enter): a late response must not repopulate the menu.
+let searchId = 0;
 
-// Store → component, e.g. after URL-driven changes.
+// Store → component, e.g. after URL-driven changes. When the input
+// already shows the page (e.g. it was just submitted via Enter),
+// leave the lookup alone — setting `selected` to a value that isn't
+// among the menu items makes Codex clear the field.
 watch( page, ( value ) => {
 	const display = value ? displayName( value ) : '';
-	if ( display !== ( selected.value ?? '' ) ) {
+	if ( display !== inputValue.value ) {
 		selected.value = display || null;
 		inputValue.value = display;
 	}
@@ -74,13 +80,15 @@ watch( () => props.project, () => {
  */
 async function onEnter() {
 	clearTimeout( debounceTimer );
+	searchId++;
 	// Let a Codex highlight-selection land first.
 	await nextTick();
 	if ( selected.value || !inputValue.value ) {
 		return;
 	}
+	// Submit without touching `selected`: a selection that isn't among
+	// the menu items gets cleared by Codex once the menu changes.
 	menuItems.value = [];
-	selected.value = inputValue.value;
 	page.value = inputValue.value;
 }
 
@@ -106,6 +114,7 @@ function onInput( value ) {
 		page.value = '';
 		return;
 	}
+	const id = ++searchId;
 	debounceTimer = setTimeout( async () => {
 		try {
 			const response = await mwApiGet( props.project, {
@@ -115,11 +124,17 @@ function onInput( value ) {
 				pslimit: 10,
 				cirrusUseCompletionSuggester: 'yes'
 			} );
+			if ( id !== searchId ) {
+				// Superseded (newer keystroke or an Enter submission).
+				return;
+			}
 			menuItems.value = ( response.query?.prefixsearch || [] )
 				.map( ( { title } ) => ( { value: title, label: title } ) );
 		} catch {
 			// Autocomplete failures are non-fatal; just show no matches.
-			menuItems.value = [];
+			if ( id === searchId ) {
+				menuItems.value = [];
+			}
 		}
 	}, DEBOUNCE_MS );
 }
