@@ -56,7 +56,7 @@
 			<!-- Edit data lands in AQS monthly; hint when the range
 				outruns the coverage. -->
 			<p v-if="editsCutoff" class="app-totals__note">
-				{{ $i18n( 'data-through', editsCutoff ) }}
+				{{ $i18n( 'edits-data-through', editsCutoff ) }}
 			</p>
 		</template>
 		<p v-if="topviewsUrl" class="app-totals__links">
