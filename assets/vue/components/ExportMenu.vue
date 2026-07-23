@@ -106,25 +106,35 @@ const actions = {
 			link.click();
 		}
 	},
-	// Like the legacy tool: print the chart image from a throwaway
-	// tab. The tab prints itself once the image has loaded — printing
-	// from the opener races the (large) data-URL render in Chrome and
-	// comes out blank — and closes when the dialog is dismissed.
+	// Print the chart image from a hidden same-page iframe. A
+	// throwaway tab (the legacy approach) is unreliable in Chrome,
+	// which doesn't consistently honor scripted print() in about:blank
+	// popups; an iframe avoids popup blockers entirely.
 	print() {
 		const dataUrl = props.getPng();
 		if ( !dataUrl ) {
 			return;
 		}
-		const tab = window.open( '' );
-		if ( !tab ) {
-			// Popup blocked.
-			return;
-		}
-		tab.document.write(
-			`<img src="${ dataUrl }" style="max-width: 100%;" ` +
-				'onload="window.print(); window.close();">'
+		// One print frame at a time.
+		document.querySelector( '.app-export__print-frame' )?.remove();
+
+		const iframe = document.createElement( 'iframe' );
+		iframe.className = 'app-export__print-frame';
+		iframe.style.position = 'fixed';
+		iframe.style.right = '100%';
+		document.body.appendChild( iframe );
+
+		const img = iframe.contentDocument.createElement( 'img' );
+		img.style.maxWidth = '100%';
+		img.onload = () => {
+			iframe.contentWindow.focus();
+			iframe.contentWindow.print();
+		};
+		iframe.contentWindow.addEventListener(
+			'afterprint', () => iframe.remove()
 		);
-		tab.document.close();
+		iframe.contentDocument.body.appendChild( img );
+		img.src = dataUrl;
 	}
 };
 
