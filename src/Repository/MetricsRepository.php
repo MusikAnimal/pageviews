@@ -368,10 +368,17 @@ class MetricsRepository extends Repository {
 	/**
 	 * The editing metrics served by getSiteEdits(), all sharing the
 	 * editor-type/page-type breakdowns and the "wikistats 2" response
-	 * shape.
+	 * shape. `extra` is a fixed path segment between page-type and
+	 * granularity (edited-pages/aggregate has an activity-level we
+	 * don't break down by).
 	 */
 	private const EDIT_METRICS = [
 		'edits' => [ 'path' => 'edits/aggregate', 'valueKey' => 'edits' ],
+		'editedPages' => [
+			'path' => 'edited-pages/aggregate',
+			'valueKey' => 'edited_pages',
+			'extra' => 'all-activity-levels',
+		],
 		'newPages' => [ 'path' => 'edited-pages/new', 'valueKey' => 'new_pages' ],
 	];
 
@@ -474,9 +481,12 @@ class MetricsRepository extends Repository {
 			foreach ( $wave as [ $metric, $site ] ) {
 				$domain = rawurlencode( $this->normalizeProject( $site ) );
 				$path = self::EDIT_METRICS[ $metric ]['path'];
+				$extra = isset( self::EDIT_METRICS[ $metric ]['extra'] ) ?
+					self::EDIT_METRICS[ $metric ]['extra'] . '/' :
+					'';
 				$responses[] = [ $metric, $site, $this->aqsClient->request(
 					'GET',
-					"$path/$domain/$editorType/$pageType/$granularity/$startTs/$endTs"
+					"$path/$domain/$editorType/$pageType/$extra$granularity/$startTs/$endTs"
 				) ];
 			}
 

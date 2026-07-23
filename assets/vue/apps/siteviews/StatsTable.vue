@@ -53,6 +53,9 @@
 					{{ row.edits === null ? '?' : number( row.edits ) }}
 				</td>
 				<td class="app-stats__number">
+					{{ row.editedPages === null ? '?' : number( row.editedPages ) }}
+				</td>
+				<td class="app-stats__number">
 					{{ row.newPages === null ? '?' : number( row.newPages ) }}
 				</td>
 				<td>
@@ -74,6 +77,10 @@
 				</td>
 				<td class="app-stats__number">
 					{{ editsTotal( 'edits' ) === null ? '?' : number( editsTotal( 'edits' ) ) }}
+				</td>
+				<td class="app-stats__number">
+					{{ editsTotal( 'editedPages' ) === null ?
+						'?' : number( editsTotal( 'editedPages' ) ) }}
 				</td>
 				<td class="app-stats__number">
 					{{ editsTotal( 'newPages' ) === null ?
@@ -123,6 +130,7 @@ const columns = computed( () => [
 		sortable: true
 	},
 	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
+	{ key: 'editedPages', label: banana.i18n( 'pages-edited' ), sortable: true },
 	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
@@ -166,6 +174,9 @@ const rows = computed( () => {
 		// null = the edits fetch is pending, failed or had no data.
 		edits: store.editsData && !store.editsData.noData ?
 			store.editsData.sites[ site.site ]?.edits ?? null :
+			null,
+		editedPages: store.editsData && !store.editsData.noData ?
+			store.editsData.sites[ site.site ]?.editedPages ?? null :
 			null,
 		newPages: store.editsData && !store.editsData.noData ?
 			store.editsData.sites[ site.site ]?.newPages ?? null :

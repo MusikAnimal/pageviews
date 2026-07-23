@@ -50,6 +50,10 @@
 					<dd>{{ number( store.editsData.totals.edits ) }}</dd>
 				</div>
 				<div class="app-totals__stat">
+					<dt>{{ $i18n( 'pages-edited' ) }}</dt>
+					<dd>{{ number( store.editsData.totals.editedPages ) }}</dd>
+				</div>
+				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'pages-created' ) }}</dt>
 					<dd>{{ number( store.editsData.totals.newPages ) }}</dd>
 				</div>

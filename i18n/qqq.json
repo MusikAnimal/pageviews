@@ -306,6 +306,7 @@
 	"pagecounts-legacy": "Label in the option to show legacy pagecounts data, as opposed to pageviews or unique devices.",
 	"pages": "Header for the part of the interface that lets the user enter which pages they want to view statistics for\n{{Identical|Page}}",
 	"pages-created": "Label for the number of pages created during the selected date range.\n{{Identical|Pages created}}",
+	"pages-edited": "Label for the number of distinct pages edited during the selected date range.",
 	"pageviews": "The word 'pageviews'. Used as the link for the Pageviews application in the header, and as the label of the column for the view counts in Langviews\n{{Identical|Pageview}}",
 	"pageviews-description": "Brief description of the Pageviews tool. Shown directly under the header.",
 	"param-error-1": "Error message for when older data is requested that is not available.",
