@@ -8,7 +8,7 @@
 	>
 		<!-- Trusted content: our own i18n messages and link markup. -->
 		<!-- eslint-disable vue/no-v-html -->
-		<p v-html="intro" />
+		<p v-if="intro" v-html="intro" />
 
 		<h3>
 			{{ $i18n( 'url-structure-parameters' ) }}
@@ -40,7 +40,7 @@ defineProps( {
 	},
 	intro: {
 		type: String,
-		required: true
+		default: ''
 	},
 	params: {
 		type: Array,

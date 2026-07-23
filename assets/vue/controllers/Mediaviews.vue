@@ -39,6 +39,14 @@
 		<StatsTable v-if="chartReady" />
 	</section>
 	<CdxToastContainer />
+	<FaqDialog
+		:open="activeDialog === 'faq'"
+		@update:open="onDialogToggle"
+	/>
+	<UrlStructureDialog
+		:open="activeDialog === 'url-structure'"
+		@update:open="onDialogToggle"
+	/>
 </template>
 
 <script setup>
@@ -53,7 +61,10 @@ import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { useIncompleteDataToast } from '../composables/useIncompleteDataToast.js';
+import { useRoute, useRouter } from 'vue-router';
 import MediaviewsSettings from '../apps/mediaviews/Settings.vue';
+import FaqDialog from '../apps/mediaviews/FaqDialog.vue';
+import UrlStructureDialog from '../apps/mediaviews/UrlStructureDialog.vue';
 import FileInput from '../components/FileInput.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import Totals from '../apps/mediaviews/Totals.vue';
@@ -62,8 +73,20 @@ import StatsTable from '../apps/mediaviews/StatsTable.vue';
 const store = useMediaviewsStore();
 const settings = useSettingsStore();
 const ui = useUiStore();
+const route = useRoute();
+const router = useRouter();
 useQuerySync( store );
 useIncompleteDataToast( store );
+
+// The /mediaviews/faq and /mediaviews/url_structure routes open
+// dialogs over the app.
+const activeDialog = computed( () => route.meta.dialog ?? null );
+
+function onDialogToggle( open ) {
+	if ( !open ) {
+		router.replace( { path: '/mediaviews', query: route.query } );
+	}
+}
 
 // A bare visit shows a couple of well-known example files rather than
 // an empty app (the default dates come from ensureDefaultDates).

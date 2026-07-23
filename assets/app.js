@@ -37,13 +37,15 @@ const router = createRouter( {
 			meta: { store: useSiteviewsStore, dialog: 'url-structure' }
 		},
 		{ path: '/mediaviews', component: Mediaviews, meta: { store: useMediaviewsStore } },
-		// Dialog content for these is still to come; the routes exist
-		// so the footer/nav links resolve.
-		{ path: '/mediaviews/faq', component: Mediaviews, meta: { store: useMediaviewsStore } },
+		{
+			path: '/mediaviews/faq',
+			component: Mediaviews,
+			meta: { store: useMediaviewsStore, dialog: 'faq' }
+		},
 		{
 			path: '/mediaviews/url_structure',
 			component: Mediaviews,
-			meta: { store: useMediaviewsStore }
+			meta: { store: useMediaviewsStore, dialog: 'url-structure' }
 		}
 	]
 } );
