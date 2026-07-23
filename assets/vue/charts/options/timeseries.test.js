@@ -52,6 +52,12 @@ describe( 'buildTimeseriesOption', () => {
 		expect( option.xAxis.splitLine.show ).toBe( true );
 	} );
 
+	it( 'places line points on the grid lines, bars in bands', () => {
+		expect( buildTimeseriesOption( base ).xAxis.boundaryGap ).toBe( false );
+		expect( buildTimeseriesOption( { ...base, chartType: 'bar' } ).xAxis.boundaryGap )
+			.toBe( true );
+	} );
+
 	it( 'marks Mondays on the x-axis in daily mode', () => {
 		const option = buildTimeseriesOption( { ...base, localizeDates: false } );
 		expect( option.xAxis.data ).toEqual( [ '2026-07-19', '• 2026-07-20', '2026-07-21' ] );

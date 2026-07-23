@@ -81,6 +81,9 @@ export function buildTimeseriesOption( {
 		xAxis: {
 			type: 'category',
 			data: xLabels,
+			// Line points sit on the ticks (and thus the vertical grid
+			// lines); bars keep the banded layout they need.
+			boundaryGap: chartType === 'bar',
 			axisLine: { lineStyle: { color: theme.border } },
 			// Rotated like the legacy tool, so more dates fit before
 			// ECharts starts dropping labels.
