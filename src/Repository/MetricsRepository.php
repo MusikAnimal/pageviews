@@ -374,6 +374,11 @@ class MetricsRepository extends Repository {
 	 */
 	private const EDIT_METRICS = [
 		'edits' => [ 'path' => 'edits/aggregate', 'valueKey' => 'edits' ],
+		'editors' => [
+			'path' => 'editors/aggregate',
+			'valueKey' => 'editors',
+			'extra' => 'all-activity-levels',
+		],
 		'editedPages' => [
 			'path' => 'edited-pages/aggregate',
 			'valueKey' => 'edited_pages',

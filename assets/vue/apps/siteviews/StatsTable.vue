@@ -53,6 +53,9 @@
 					{{ row.edits === null ? '?' : number( row.edits ) }}
 				</td>
 				<td class="app-stats__number">
+					{{ row.editors === null ? '?' : number( Math.round( row.editors ) ) }}
+				</td>
+				<td class="app-stats__number">
 					{{ row.editedPages === null ? '?' : number( row.editedPages ) }}
 				</td>
 				<td class="app-stats__number">
@@ -77,6 +80,10 @@
 				</td>
 				<td class="app-stats__number">
 					{{ editsTotal( 'edits' ) === null ? '?' : number( editsTotal( 'edits' ) ) }}
+				</td>
+				<td class="app-stats__number">
+					{{ editsTotal( 'editors' ) === null ?
+						'?' : number( Math.round( editsTotal( 'editors' ) ) ) }}
 				</td>
 				<td class="app-stats__number">
 					{{ editsTotal( 'editedPages' ) === null ?
@@ -130,6 +137,13 @@ const columns = computed( () => [
 		sortable: true
 	},
 	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
+	{
+		key: 'editors',
+		label: `${ banana.i18n( 'editors' ) } (${ banana.i18n(
+			settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average'
+		).toLowerCase() })`,
+		sortable: true
+	},
 	{ key: 'editedPages', label: banana.i18n( 'pages-edited' ), sortable: true },
 	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
@@ -172,15 +186,12 @@ const rows = computed( () => {
 		views: site.total,
 		average: site.average,
 		// null = the edits fetch is pending, failed or had no data.
-		edits: store.editsData && !store.editsData.noData ?
-			store.editsData.sites[ site.site ]?.edits ?? null :
-			null,
-		editedPages: store.editsData && !store.editsData.noData ?
-			store.editsData.sites[ site.site ]?.editedPages ?? null :
-			null,
-		newPages: store.editsData && !store.editsData.noData ?
-			store.editsData.sites[ site.site ]?.newPages ?? null :
-			null
+		// Distinct editors are not additive across days: their
+		// per-day/month average is shown instead of a total.
+		edits: editStat( site.site, 'edits' ),
+		editors: editStat( site.site, 'editors', 'average' ),
+		editedPages: editStat( site.site, 'editedPages' ),
+		newPages: editStat( site.site, 'newPages' )
 	} ) );
 
 	const key = sortKey.value;
@@ -194,10 +205,18 @@ const rows = computed( () => {
 	} );
 } );
 
-function editsTotal( metric ) {
+function editStat( site, metric, field = 'total' ) {
 	return store.editsData && !store.editsData.noData ?
-		store.editsData.totals[ metric ] ?? null :
+		store.editsData.sites[ site ]?.[ metric ]?.[ field ] ?? null :
 		null;
+}
+
+function editsTotal( metric ) {
+	if ( !store.editsData || store.editsData.noData ) {
+		return null;
+	}
+	const totals = store.editsData.totals[ metric ];
+	return totals ? ( metric === 'editors' ? totals.average : totals.total ) : null;
 }
 
 function sortBy( key ) {

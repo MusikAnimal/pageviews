@@ -98,9 +98,12 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	const pageType = ref( 'content' );
 	/**
 	 * Ranged editing statistics from the AQS editing data (non-fatal
-	 * side fetch): { sites: { domain: { edits, newPages } }, totals:
-	 * { edits, newPages }, dataThrough, noData, failed }. Edit data is
-	 * loaded into AQS monthly — dataThrough is the last date covered
+	 * side fetch): { sites: { domain: { <metric>: { total, average } } },
+	 * totals: { <metric>: { total, average } }, dataThrough, noData,
+	 * failed } for the metrics edits, editors, editedPages and
+	 * newPages. Editors are distinct per day/month and not additive —
+	 * consumers show their average, the others their total. Edit data
+	 * is loaded into AQS monthly — dataThrough is the last date covered
 	 * (the UI hints when it falls short of the range) and noData means
 	 * the range has none at all. null while pending.
 	 *
@@ -260,10 +263,13 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 			const perSite = {};
 			const totals = {};
 			for ( const [ metric, data ] of Object.entries( result.metrics ) ) {
-				totals[ metric ] = data.totals.total;
+				totals[ metric ] = { total: data.totals.total, average: data.totals.average };
 				for ( const site of data.sites ) {
 					perSite[ site.site ] = perSite[ site.site ] ?? {};
-					perSite[ site.site ][ metric ] = site.total;
+					perSite[ site.site ][ metric ] = {
+						total: site.total,
+						average: site.average
+					};
 				}
 			}
 			editsData.value = {

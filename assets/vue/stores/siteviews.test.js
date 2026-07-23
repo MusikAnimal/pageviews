@@ -16,6 +16,10 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 				sites: [ { site: 'fr.wikipedia.org', counts: [], total: 1234, average: 0 } ],
 				totals: { counts: [], total: 1234, average: 0 }
 			},
+			editors: {
+				sites: [ { site: 'fr.wikipedia.org', counts: [], total: 90, average: 30 } ],
+				totals: { counts: [], total: 90, average: 30 }
+			},
 			editedPages: {
 				sites: [ { site: 'fr.wikipedia.org', counts: [], total: 789, average: 0 } ],
 				totals: { counts: [], total: 789, average: 0 }
@@ -189,8 +193,13 @@ describe( 'siteviews store', () => {
 				pageType: 'content'
 			} ) );
 			expect( store.editsData ).toMatchObject( {
-				sites: { 'fr.wikipedia.org': { edits: 1234, editedPages: 789, newPages: 56 } },
-				totals: { edits: 1234, editedPages: 789, newPages: 56 },
+				sites: { 'fr.wikipedia.org': {
+					edits: { total: 1234 },
+					editors: { average: 30 },
+					editedPages: { total: 789 },
+					newPages: { total: 56 }
+				} },
+				totals: { edits: { total: 1234 }, editors: { average: 30 } },
 				dataThrough: '2026-06-30',
 				noData: false,
 				failed: false

@@ -47,15 +47,21 @@
 			<dl v-if="!store.editsData.noData" class="app-totals__stats">
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'edits' ) }}</dt>
-					<dd>{{ number( store.editsData.totals.edits ) }}</dd>
+					<dd>{{ number( store.editsData.totals.edits.total ) }}</dd>
+				</div>
+				<!-- Distinct editors are not additive across days, so
+					the per-day/month average is shown. -->
+				<div class="app-totals__stat">
+					<dt>{{ $i18n( 'editors' ) }} ({{ averageLabel.toLowerCase() }})</dt>
+					<dd>{{ number( Math.round( store.editsData.totals.editors.average ) ) }}</dd>
 				</div>
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'pages-edited' ) }}</dt>
-					<dd>{{ number( store.editsData.totals.editedPages ) }}</dd>
+					<dd>{{ number( store.editsData.totals.editedPages.total ) }}</dd>
 				</div>
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'pages-created' ) }}</dt>
-					<dd>{{ number( store.editsData.totals.newPages ) }}</dd>
+					<dd>{{ number( store.editsData.totals.newPages.total ) }}</dd>
 				</div>
 			</dl>
 			<p v-else class="app-totals__unavailable">

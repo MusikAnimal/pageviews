@@ -297,6 +297,8 @@ class MetricsRepositoryTest extends TestCase {
 			// dataThrough reports the coverage for the client's hint.
 			'edits/aggregate/fr.wikipedia/user/content/daily/20260701/20260704' =>
 				self::aqsEdits( [ '2026-07-01' => 100, '2026-07-02' => 200 ] ),
+			'editors/aggregate/fr.wikipedia/user/content/all-activity-levels/daily/20260701/20260704' =>
+				self::aqsResults( 'editors', [ '2026-07-01' => 10, '2026-07-02' => 30 ] ),
 			'edited-pages/aggregate/fr.wikipedia/user/content/all-activity-levels/daily/20260701/20260704' =>
 				self::aqsResults( 'edited_pages', [ '2026-07-01' => 50, '2026-07-02' => 70 ] ),
 			'edited-pages/new/fr.wikipedia/user/content/daily/20260701/20260704' =>
@@ -322,6 +324,16 @@ class MetricsRepositoryTest extends TestCase {
 						'counts' => [ 100, 200, 0 ],
 						'total' => 300,
 						'average' => 100.0,
+					],
+				],
+				'editors' => [
+					'sites' => [
+						[ 'site' => 'fr.wikipedia.org', 'counts' => [ 10, 30, 0 ], 'total' => 40, 'average' => 13.33 ],
+					],
+					'totals' => [
+						'counts' => [ 10, 30, 0 ],
+						'total' => 40,
+						'average' => 13.33,
 					],
 				],
 				'editedPages' => [
