@@ -123,6 +123,8 @@ function clear() {
 	chips.value = [];
 	selected.value = [];
 	menuItems.value = [];
+	// Ready for a fresh search (Codex exposes no focus API).
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
 }
 
 function onInput( value ) {

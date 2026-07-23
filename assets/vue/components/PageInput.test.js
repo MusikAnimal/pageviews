@@ -131,8 +131,15 @@ describe( 'PageInput', () => {
 		wrapper.unmount();
 	} );
 
-	it( 'clears all selections via the clear button', async () => {
-		const wrapper = mountInput();
+	it( 'clears all selections via the clear button, focusing the input', async () => {
+		const wrapper = mount( PageInput, {
+			attachTo: document.body,
+			global: {
+				config: {
+					globalProperties: { $i18n: ( key ) => key }
+				}
+			}
+		} );
 		const store = usePageviewsStore();
 
 		store.setFromQuery( { pages: 'Cat|Dog' } );
@@ -141,8 +148,12 @@ describe( 'PageInput', () => {
 		await nextTick();
 
 		expect( store.pages ).toEqual( [] );
-		// Nothing selected: the clear button hides itself.
+		// Nothing selected: the clear button hides itself, and the
+		// input is focused for a fresh search.
 		expect( wrapper.find( '.app-pages__clear' ).exists() ).toBe( false );
+		expect( document.activeElement.tagName ).toBe( 'INPUT' );
+
+		wrapper.unmount();
 	} );
 
 	it( 'caps the selection at 10 pages with a Massviews hint', async () => {

@@ -24,7 +24,7 @@
 				class="app-pages__clear"
 				weight="quiet"
 				:aria-label="$i18n( 'clear' )"
-				@click="clear"
+				@click="onClearClick"
 			>
 				<CdxIcon :icon="cdxIconClear" />
 			</CdxButton>
@@ -107,6 +107,20 @@ function clear() {
 	menuItems.value = [];
 }
 
+function focusInput() {
+	// Codex exposes no focus API; reach for the input element directly.
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
+}
+
+/**
+ * The clear button empties the selection and readies the input for a
+ * fresh search.
+ */
+function onClearClick() {
+	clear();
+	focusInput();
+}
+
 // Pages belong to a project: switching projects clears the selection
 // and focuses the input for a fresh search (Codex exposes no focus
 // API, so reach for the input element directly). When the project was
@@ -115,7 +129,7 @@ function clear() {
 watch( () => store.project, ( project ) => {
 	clear();
 	if ( project ) {
-		lookup.value?.$el?.querySelector( 'input' )?.focus();
+		focusInput();
 	}
 } );
 

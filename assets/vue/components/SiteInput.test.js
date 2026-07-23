@@ -57,4 +57,26 @@ describe( 'SiteInput', () => {
 
 		expect( store.sites ).toEqual( [ 'fr.wikipedia.org' ] );
 	} );
+
+	it( 'clears via the clear button, focusing the input', async () => {
+		const wrapper = mount( SiteInput, {
+			attachTo: document.body,
+			global: {
+				config: {
+					globalProperties: { $i18n: ( key ) => key }
+				}
+			}
+		} );
+		const store = useSiteviewsStore();
+		store.sites = [ 'fr.wikipedia.org' ];
+		await nextTick();
+
+		await wrapper.find( '.app-pages__clear' ).trigger( 'click' );
+		await nextTick();
+
+		expect( store.sites ).toEqual( [] );
+		expect( document.activeElement.tagName ).toBe( 'INPUT' );
+
+		wrapper.unmount();
+	} );
 } );
