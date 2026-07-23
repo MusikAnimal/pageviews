@@ -42,6 +42,7 @@
 			</CdxRadio>
 		</CdxField>
 	</form>
+	<PreferencesDialog v-model:open="ui.preferencesOpen" />
 </template>
 
 <script setup>
@@ -52,10 +53,13 @@ import DateRangeInput from '../../components/DateRangeInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import FaqHelpButton from '../../components/FaqHelpButton.vue';
+import PreferencesDialog from '../../components/PreferencesDialog.vue';
 import { DEFAULT_SITES, useSiteviewsStore } from '../../stores/siteviews.js';
+import { useUiStore } from '../../stores/ui.js';
 import { banana } from '../../i18n.js';
 
 const store = useSiteviewsStore();
+const ui = useUiStore();
 const { source, platform, agent, sites } = storeToRefs( store );
 
 const sourceOptions = computed( () => [
