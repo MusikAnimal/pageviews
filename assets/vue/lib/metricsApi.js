@@ -148,6 +148,42 @@ export function fetchSiteviews( {
 }
 
 /**
+ * Per-site edit counts from the AQS edits data (max 10 sites, so no
+ * chunking). Edit data is only loaded into AQS monthly: `dataThrough`
+ * reports the last covered date (null when the range has none) so
+ * the UI can hint at partial coverage.
+ *
+ * @param {Object} params
+ * @param {string[]} params.sites Site domains, or [ 'all-projects' ].
+ * @param {string} params.start YYYY-MM-DD or YYYY-MM.
+ * @param {string} params.end
+ * @param {string} [params.editorType]
+ * @param {string} [params.pageType]
+ * @param {string} [params.granularity]
+ * @return {Promise<Object>} { editorType, pageType, granularity,
+ *   start, end, dataThrough, dates, sites: [ { site, counts, total,
+ *   average, no_data? } ], totals }
+ * @throws {ApiError}
+ */
+export function fetchSiteEdits( {
+	sites,
+	start,
+	end,
+	editorType = 'user',
+	pageType = 'content',
+	granularity = 'daily'
+} ) {
+	return apiGet( '/api/metrics/edits', {
+		sites: sites.join( '|' ),
+		start,
+		end,
+		'editor-type': editorType,
+		'page-type': pageType,
+		granularity
+	} );
+}
+
+/**
  * The most-viewed pages of a month (YYYY-MM) or day (YYYY-MM-DD), with
  * the curated false positives already removed and ranks recomputed
  * server-side.

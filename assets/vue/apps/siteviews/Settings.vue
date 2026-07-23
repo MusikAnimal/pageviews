@@ -27,6 +27,26 @@
 		</CdxField>
 		<PlatformInput v-model="platform" :options="platformOptions" />
 		<AgentInput v-model="agent" :disabled="!store.isPageviews" />
+		<CdxField class="app-settings__editor-type">
+			<template #label>
+				{{ $i18n( 'editor-type' ) }}
+			</template>
+			<CdxSelect
+				v-model:selected="editorType"
+				:menu-items="editorTypeOptions"
+				:aria-label="$i18n( 'editor-type' )"
+			/>
+		</CdxField>
+		<CdxField class="app-settings__page-type">
+			<template #label>
+				{{ $i18n( 'page-type' ) }}
+			</template>
+			<CdxSelect
+				v-model:selected="pageType"
+				:menu-items="pageTypeOptions"
+				:aria-label="$i18n( 'page-type' )"
+			/>
+		</CdxField>
 		<CdxField v-if="store.isPageviews" :is-fieldset="true">
 			<template #label>
 				{{ $i18n( 'query-for' ) }}
@@ -63,7 +83,7 @@ import { banana } from '../../i18n.js';
 
 const store = useSiteviewsStore();
 const ui = useUiStore();
-const { source, platform, agent, sites } = storeToRefs( store );
+const { source, platform, agent, editorType, pageType, sites } = storeToRefs( store );
 
 const sourceOptions = computed( () => [
 	{ value: 'pageviews', label: banana.i18n( 'pageviews' ) },
@@ -90,6 +110,21 @@ const platformOptions = computed( () => store.isPageviews ?
 		{ value: 'mobile-site', label: banana.i18n( 'mobile' ) }
 	]
 );
+
+// Vocabularies of the AQS edits data, feeding the Revisions figures.
+const editorTypeOptions = [
+	{ value: 'all-editor-types', label: banana.i18n( 'all' ) },
+	{ value: 'anonymous', label: banana.i18n( 'anonymous' ) },
+	{ value: 'group-bot', label: banana.i18n( 'group-bot' ) },
+	{ value: 'name-bot', label: banana.i18n( 'name-bot' ) },
+	{ value: 'user', label: banana.i18n( 'user' ) }
+];
+
+const pageTypeOptions = [
+	{ value: 'all-page-types', label: banana.i18n( 'all' ) },
+	{ value: 'content', label: banana.i18n( 'content' ) },
+	{ value: 'non-content', label: banana.i18n( 'non-content' ) }
+];
 
 const queryForOptions = [
 	{ value: 'individual', label: banana.i18n( 'individual-projects' ) },

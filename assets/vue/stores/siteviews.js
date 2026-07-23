@@ -1,7 +1,6 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchSiteviews, trimIncompleteTail } from '../lib/metricsApi.js';
-import { getSiteStatistics } from '../lib/mwApi.js';
+import { fetchSiteEdits, fetchSiteviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import {
 	PAGECOUNTS_MAX_DATE,
 	PAGECOUNTS_MIN_DATE,
@@ -20,6 +19,8 @@ const PLATFORMS = {
 	pagecounts: [ 'all-sites', 'desktop-site', 'mobile-site' ]
 };
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
+const EDITOR_TYPES = [ 'all-editor-types', 'anonymous', 'group-bot', 'name-bot', 'user' ];
+const PAGE_TYPES = [ 'all-page-types', 'content', 'non-content' ];
 // When the source changes, keep the closest equivalent platform.
 const PLATFORM_EQUIVALENTS = {
 	'all-access': 'all-sites',
@@ -84,13 +85,28 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 */
 	const totals = ref( null );
 	/**
-	 * All-time siteinfo statistics keyed by site domain, from the
-	 * Action API (client-side, non-fatal). Accumulates across loads —
-	 * the numbers are all-time, so there is nothing to refresh.
+	 * Which editors' edits to count (AQS edits API vocabulary).
 	 *
-	 * @type {import('vue').Ref<Object>}
+	 * @type {import('vue').Ref<string>}
 	 */
-	const siteStats = ref( {} );
+	const editorType = ref( 'user' );
+	/**
+	 * Which pages' edits to count (AQS edits API vocabulary).
+	 *
+	 * @type {import('vue').Ref<'all-page-types'|'content'|'non-content'>}
+	 */
+	const pageType = ref( 'content' );
+	/**
+	 * Ranged edit counts from the AQS edits data (non-fatal side
+	 * fetch): { sites: { domain: total }, total, dataThrough, noData,
+	 * failed }. Edit data is loaded into AQS monthly — dataThrough is
+	 * the last date covered (the UI hints when it falls short of the
+	 * range) and noData means the range has none at all. null while
+	 * pending.
+	 *
+	 * @type {import('vue').Ref<?Object>}
+	 */
+	const editsData = ref( null );
 
 	const isPageviews = computed( () => source.value === 'pageviews' );
 	const isAllProjects = computed(
@@ -171,6 +187,8 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		source: source.value,
 		platform: platform.value,
 		agent: isPageviews.value ? agent.value : undefined,
+		'editor-type': editorType.value,
+		'page-type': pageType.value,
 		autolog: autolog.value ? undefined : 'false'
 	} ) );
 
@@ -193,6 +211,12 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		} else if ( params.agent === 'all' ) {
 			agent.value = 'all-agents';
 		}
+		if ( EDITOR_TYPES.includes( params[ 'editor-type' ] ) ) {
+			editorType.value = params[ 'editor-type' ];
+		}
+		if ( PAGE_TYPES.includes( params[ 'page-type' ] ) ) {
+			pageType.value = params[ 'page-type' ];
+		}
 		if ( params.sites ) {
 			const domains = params.sites.split( '|' )
 				.filter( ( site ) => site !== '' )
@@ -206,29 +230,49 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		autolog.value = params.autolog !== 'false';
 	}
 
+	// Guards against out-of-order edits responses; independent of the
+	// main loadId so editor/page-type changes refetch only the edits.
+	let editsLoadId = 0;
+
 	/**
-	 * All-time statistics per site, from siteinfo. Non-fatal and
-	 * cached across loads; skipped in all-projects mode (there is no
-	 * such aggregate).
-	 *
-	 * @param {number} id Load id, to discard superseded responses.
+	 * Ranged edit counts per site. Non-fatal and supplementary: the
+	 * Revisions section and Edits column simply show "unavailable"
+	 * when this fails.
 	 */
-	async function loadSiteStats( id ) {
-		if ( isAllProjects.value ) {
+	async function loadEdits() {
+		const id = ++editsLoadId;
+		editsData.value = null;
+		if ( !sites.value.length ) {
 			return;
 		}
-		const missing = sites.value.filter( ( site ) => !siteStats.value[ site ] );
-		const results = await Promise.allSettled(
-			missing.map( ( site ) => getSiteStatistics( site ) )
-		);
-		if ( id !== loadId ) {
-			return;
-		}
-		missing.forEach( ( site, i ) => {
-			if ( results[ i ].status === 'fulfilled' ) {
-				siteStats.value[ site ] = results[ i ].value;
+		try {
+			const result = await fetchSiteEdits( {
+				sites: sites.value,
+				start: settings.start,
+				end: settings.end,
+				editorType: editorType.value,
+				pageType: pageType.value,
+				granularity: settings.dateType
+			} );
+			if ( id !== editsLoadId ) {
+				return;
 			}
-		} );
+			editsData.value = {
+				sites: Object.fromEntries(
+					result.sites.map( ( site ) => [ site.site, site.total ] )
+				),
+				total: result.totals.total,
+				dataThrough: result.dataThrough,
+				noData: result.dataThrough === null,
+				failed: false
+			};
+		} catch {
+			if ( id === editsLoadId ) {
+				editsData.value = {
+					sites: {}, total: 0, dataThrough: null, noData: true, failed: true
+				};
+			}
+		}
 	}
 
 	/**
@@ -243,6 +287,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 			dates.value = [];
 			series.value = [];
 			totals.value = null;
+			editsData.value = null;
 			return;
 		}
 
@@ -260,7 +305,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		}
 
 		// Supplementary and non-fatal (deliberately not awaited).
-		loadSiteStats( id );
+		loadEdits();
 
 		try {
 			const result = await fetchSiteviews( {
@@ -311,7 +356,9 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		dates,
 		series,
 		totals,
-		siteStats,
+		editorType,
+		pageType,
+		editsData,
 		isPageviews,
 		isAllProjects,
 		pagecountsAvailable,
@@ -319,6 +366,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		incompleteDate,
 		query,
 		setFromQuery,
-		load
+		load,
+		loadEdits
 	};
 } );

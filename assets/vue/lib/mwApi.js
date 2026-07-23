@@ -57,22 +57,6 @@ export async function mwApiGet( project, params ) {
 }
 
 /**
- * A site's all-time statistics (pages, articles, edits, images, users,
- * activeusers, admins), from meta=siteinfo.
- *
- * @param {string} site Site domain, e.g. 'fr.wikipedia.org'.
- * @return {Promise<Object>} The statistics object.
- */
-export async function getSiteStatistics( site ) {
-	const response = await mwApiGet( site, {
-		action: 'query',
-		meta: 'siteinfo',
-		siprop: 'statistics'
-	} );
-	return response.query.statistics;
-}
-
-/**
  * Basic page information (length, watcher count, protection) for the
  * given titles. The watchers field is only present when the wiki
  * exposes it (above the unwatched-pages threshold, as on Wikimedia

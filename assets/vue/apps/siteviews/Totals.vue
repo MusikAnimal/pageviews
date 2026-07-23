@@ -40,25 +40,28 @@
 				</div>
 			</dl>
 		</template>
-		<template v-else-if="statistics">
+		<template v-if="store.editsData">
 			<h4 class="app-totals__subheading">
-				{{ $i18n( 'statistics' ) }}
-				<span class="app-totals__note">({{ $i18n( 'all-time' ).toLowerCase() }})</span>
+				{{ $i18n( 'revisions' ) }}
 			</h4>
-			<dl class="app-totals__stats">
-				<div
-					v-for="stat in statistics"
-					:key="stat.key"
-					class="app-totals__stat"
-				>
-					<dt>{{ stat.label }}</dt>
-					<dd>{{ number( stat.value ) }}</dd>
+			<dl v-if="!store.editsData.noData" class="app-totals__stats">
+				<div class="app-totals__stat">
+					<dt>{{ $i18n( 'edits' ) }}</dt>
+					<dd>{{ number( store.editsData.total ) }}</dd>
 				</div>
 			</dl>
-			<p v-if="topviewsUrl" class="app-totals__links">
-				<a :href="topviewsUrl" target="_blank">{{ $i18n( 'most-viewed-pages' ) }}</a>
+			<p v-else class="app-totals__unavailable">
+				{{ $i18n( 'data-unavailable' ) }}
+			</p>
+			<!-- Edit data lands in AQS monthly; hint when the range
+				outruns the coverage. -->
+			<p v-if="editsCutoff" class="app-totals__note">
+				{{ $i18n( 'data-through', editsCutoff ) }}
 			</p>
 		</template>
+		<p v-if="topviewsUrl" class="app-totals__links">
+			<a :href="topviewsUrl" target="_blank">{{ $i18n( 'most-viewed-pages' ) }}</a>
+		</p>
 	</figure>
 </template>
 
@@ -67,20 +70,11 @@ import { computed, onMounted, ref } from 'vue';
 import { useSiteviewsStore } from '../../stores/siteviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
-import { formatNumber } from '../../lib/format.js';
+import { formatDate, formatNumber } from '../../lib/format.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../../lib/dates.js';
 import { getProjects } from '../../projects.js';
 import { banana } from '../../i18n.js';
 
-const STAT_KEYS = [
-	[ 'pages', 'pages' ],
-	[ 'articles', 'articles' ],
-	[ 'edits', 'edits' ],
-	[ 'images', 'images' ],
-	[ 'users', 'users' ],
-	[ 'activeusers', 'active-users' ],
-	[ 'admins', 'admins' ]
-];
 const FAMILIES = [ 'wikipedia', 'wiktionary', 'wikiquote', 'wikibooks',
 	'wikisource', 'wikinews', 'wikiversity', 'wikispecies', 'wikivoyage' ];
 
@@ -101,22 +95,19 @@ const averageLabel = computed( () => banana.i18n(
 ) );
 
 /**
- * All-time siteinfo statistics: a single site's own numbers, or the
- * sums across the compared sites (legacy behavior). null while the
- * non-fatal fetches are pending or in all-projects mode.
+ * The localized coverage cutoff for the edit counts, when the range
+ * asks for more than AQS has loaded (it only updates monthly).
  */
-const statistics = computed( () => {
-	const stats = store.sites
-		.map( ( site ) => store.siteStats[ site ] )
-		.filter( Boolean );
-	if ( !stats.length || store.isAllProjects ) {
+const editsCutoff = computed( () => {
+	const through = store.editsData?.dataThrough;
+	if ( !through || store.editsData.noData || through >= settings.end ) {
 		return null;
 	}
-	return STAT_KEYS.map( ( [ key, message ] ) => ( {
-		key,
-		label: banana.i18n( message ),
-		value: stats.reduce( ( sum, stat ) => sum + ( stat[ key ] || 0 ), 0 )
-	} ) );
+	return formatDate( parseDate( through ), {
+		locale: banana.locale,
+		monthly: through.length === 7,
+		localize: preferences.localizeDateFormat
+	} );
 } );
 
 // All-projects mode: no per-site statistics exist; show how many

@@ -49,12 +49,8 @@
 				<td class="app-stats__number">
 					{{ number( Math.round( row.average ) ) }}
 				</td>
-				<td
-					v-for="key in STAT_KEYS"
-					:key="key"
-					class="app-stats__number"
-				>
-					{{ row.stats ? number( row.stats[ key ] || 0 ) : '?' }}
+				<td class="app-stats__number">
+					{{ row.edits === null ? '?' : number( row.edits ) }}
 				</td>
 				<td>
 					<a :href="topviewsUrl( row.site )" target="_blank">
@@ -73,12 +69,8 @@
 				<td class="app-stats__number">
 					{{ number( Math.round( store.totals.average ) ) }}
 				</td>
-				<td
-					v-for="key in STAT_KEYS"
-					:key="key"
-					class="app-stats__number"
-				>
-					{{ statTotal( key ) === null ? '?' : number( statTotal( key ) ) }}
+				<td class="app-stats__number">
+					{{ editsTotal === null ? '?' : number( editsTotal ) }}
 				</td>
 				<td />
 			</tr>
@@ -95,17 +87,6 @@ import { formatDate, formatNumber } from '../../lib/format.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../../lib/dates.js';
 import { seriesColor } from '../../charts/palette.js';
 import { banana } from '../../i18n.js';
-
-// Column order matches the legacy table.
-const STAT_KEYS = [ 'pages', 'edits', 'images', 'users', 'activeusers', 'admins' ];
-const STAT_MESSAGES = {
-	pages: 'pages',
-	edits: 'edits',
-	images: 'images',
-	users: 'users',
-	activeusers: 'active-users',
-	admins: 'admins'
-};
 
 const store = useSiteviewsStore();
 const settings = useSettingsStore();
@@ -134,11 +115,7 @@ const columns = computed( () => [
 		label: banana.i18n( settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average' ),
 		sortable: true
 	},
-	...STAT_KEYS.map( ( key ) => ( {
-		key,
-		label: banana.i18n( STAT_MESSAGES[ key ] ),
-		sortable: true
-	} ) ),
+	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
 
@@ -173,18 +150,16 @@ const summary = computed( () => {
 } );
 
 const rows = computed( () => {
-	const unsorted = store.series.map( ( site, index ) => {
-		const stats = store.siteStats[ site.site ] ?? null;
-		return {
-			site: site.site,
-			color: seriesColor( index ),
-			views: site.total,
-			average: site.average,
-			stats,
-			// Spread for sorting on the statistic columns.
-			...stats
-		};
-	} );
+	const unsorted = store.series.map( ( site, index ) => ( {
+		site: site.site,
+		color: seriesColor( index ),
+		views: site.total,
+		average: site.average,
+		// null = the edits fetch is pending, failed or had no data.
+		edits: store.editsData && !store.editsData.noData ?
+			store.editsData.sites[ site.site ] ?? null :
+			null
+	} ) );
 
 	const key = sortKey.value;
 	const direction = sortDescending.value ? -1 : 1;
@@ -197,12 +172,10 @@ const rows = computed( () => {
 	} );
 } );
 
-function statTotal( key ) {
-	if ( rows.value.some( ( row ) => !row.stats ) ) {
-		return null;
-	}
-	return rows.value.reduce( ( sum, row ) => sum + ( row.stats[ key ] || 0 ), 0 );
-}
+const editsTotal = computed( () => store.editsData && !store.editsData.noData ?
+	store.editsData.total :
+	null
+);
 
 function sortBy( key ) {
 	if ( sortKey.value === key ) {

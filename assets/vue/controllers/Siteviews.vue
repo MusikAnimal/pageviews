@@ -159,4 +159,8 @@ watch(
 	() => store.load(),
 	{ immediate: true, deep: true }
 );
+
+// The editor/page type only feed the edits figures: refetch those
+// alone, not the whole report.
+watch( () => [ store.editorType, store.pageType ], () => store.loadEdits() );
 </script>

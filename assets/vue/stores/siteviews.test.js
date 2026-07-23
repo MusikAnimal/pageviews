@@ -3,17 +3,17 @@ import { createPinia, setActivePinia } from 'pinia';
 import { DEFAULT_SITES, useSiteviewsStore } from './siteviews.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
-import { fetchSiteviews } from '../lib/metricsApi.js';
-import { getSiteStatistics } from '../lib/mwApi.js';
+import { fetchSiteEdits, fetchSiteviews } from '../lib/metricsApi.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	// trimIncompleteTail stays real (pure, tested separately).
 	...await importOriginal(),
-	fetchSiteviews: vi.fn()
-} ) );
-vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
-	...await importOriginal(),
-	getSiteStatistics: vi.fn( () => Promise.resolve( { pages: 1, edits: 2 } ) )
+	fetchSiteviews: vi.fn(),
+	fetchSiteEdits: vi.fn( () => Promise.resolve( {
+		dataThrough: '2026-06-30',
+		sites: [ { site: 'fr.wikipedia.org', counts: [], total: 1234, average: 0 } ],
+		totals: { counts: [], total: 1234, average: 0 }
+	} ) )
 } ) );
 
 function siteviewsResult( sites ) {
@@ -86,6 +86,8 @@ describe( 'siteviews store', () => {
 			sites: 'fr.wikipedia.org',
 			source: 'pagecounts',
 			platform: 'desktop-site',
+			'editor-type': 'group-bot',
+			'page-type': 'all-page-types',
 			autolog: 'false'
 		} );
 		const serialized = { ...store.query };
@@ -125,6 +127,17 @@ describe( 'siteviews store', () => {
 		expect( store.unsupportedSource ).toBe( 'pagecounts' );
 	} );
 
+	it( 'parses and validates the editor and page types', () => {
+		const store = useSiteviewsStore();
+		store.setFromQuery( { 'editor-type': 'anonymous', 'page-type': 'non-content' } );
+		expect( store.editorType ).toBe( 'anonymous' );
+		expect( store.pageType ).toBe( 'non-content' );
+
+		store.setFromQuery( { 'editor-type': 'vandals', 'page-type': 'talk' } );
+		expect( store.editorType ).toBe( 'anonymous' );
+		expect( store.pageType ).toBe( 'non-content' );
+	} );
+
 	it( 'treats all-projects as a pageviews-only mode', () => {
 		const store = useSiteviewsStore();
 		store.setFromQuery( { sites: 'all-projects' } );
@@ -137,7 +150,7 @@ describe( 'siteviews store', () => {
 	} );
 
 	describe( 'load', () => {
-		it( 'fetches series and site statistics', async () => {
+		it( 'fetches series and edit counts', async () => {
 			const store = useSiteviewsStore();
 			store.sites = [ 'fr.wikipedia.org' ];
 			fetchSiteviews.mockResolvedValue( siteviewsResult( [
@@ -156,23 +169,35 @@ describe( 'siteviews store', () => {
 			expect( store.series ).toHaveLength( 1 );
 			expect( store.totals.total ).toBe( 3 );
 
-			// Site statistics land keyed by domain (non-fatal side fetch).
+			// Edit counts land as a non-fatal side fetch.
 			await Promise.resolve();
-			expect( getSiteStatistics ).toHaveBeenCalledWith( 'fr.wikipedia.org' );
-			expect( store.siteStats[ 'fr.wikipedia.org' ] ).toEqual( { pages: 1, edits: 2 } );
+			expect( fetchSiteEdits ).toHaveBeenCalledWith( expect.objectContaining( {
+				sites: [ 'fr.wikipedia.org' ],
+				editorType: 'user',
+				pageType: 'content'
+			} ) );
+			expect( store.editsData ).toMatchObject( {
+				sites: { 'fr.wikipedia.org': 1234 },
+				total: 1234,
+				dataThrough: '2026-06-30',
+				noData: false,
+				failed: false
+			} );
 		} );
 
-		it( 'skips site statistics in all-projects mode', async () => {
+		it( 'flags edits data as unavailable without failing the load', async () => {
 			const store = useSiteviewsStore();
-			store.sites = [ 'all-projects' ];
+			store.sites = [ 'fr.wikipedia.org' ];
 			fetchSiteviews.mockResolvedValue( siteviewsResult( [
-				{ site: 'all-projects', counts: [ 10, 20 ], total: 30, average: 15 }
+				{ site: 'fr.wikipedia.org', counts: [ 1, 2 ], total: 3, average: 1.5 }
 			] ) );
+			fetchSiteEdits.mockRejectedValueOnce( new TypeError( 'Failed to fetch' ) );
 
 			await store.load();
+			await Promise.resolve();
 
-			expect( getSiteStatistics ).not.toHaveBeenCalled();
-			expect( store.series[ 0 ].site ).toBe( 'all-projects' );
+			expect( store.status ).toBe( 'complete' );
+			expect( store.editsData ).toMatchObject( { noData: true, failed: true } );
 		} );
 
 		it( 'drops a not-yet-published trailing date with a signal', async () => {
