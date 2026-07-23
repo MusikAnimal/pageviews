@@ -57,6 +57,7 @@ import {
 	CdxToastContainer
 } from '@wikimedia/codex';
 import { DEFAULT_SITES, useSiteviewsStore } from '../stores/siteviews.js';
+import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
@@ -76,6 +77,7 @@ import StatsTable from '../apps/siteviews/StatsTable.vue';
 
 const store = useSiteviewsStore();
 const settings = useSettingsStore();
+const preferences = usePreferencesStore();
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
@@ -113,7 +115,10 @@ watch( () => store.unsupportedSource, ( value ) => {
 	if ( !value ) {
 		return;
 	}
-	const bound = ( date ) => formatDate( parseDate( date ), { locale: banana.locale } );
+	const bound = ( date ) => formatDate( parseDate( date ), {
+		locale: banana.locale,
+		localize: preferences.localizeDateFormat
+	} );
 	toast.warning( banana.i18n(
 		'source-unavailable',
 		banana.i18n( 'pagecounts-legacy' ),

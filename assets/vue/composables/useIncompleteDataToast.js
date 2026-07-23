@@ -1,5 +1,6 @@
 import { watch } from 'vue';
 import { useAppToast } from './useAppToast.js';
+import { usePreferencesStore } from '../stores/preferences.js';
 import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
@@ -13,6 +14,7 @@ import { banana } from '../i18n.js';
  */
 export function useIncompleteDataToast( store ) {
 	const toast = useAppToast();
+	const preferences = usePreferencesStore();
 	watch( () => store.incompleteDate, ( date ) => {
 		if ( !date ) {
 			return;
@@ -21,7 +23,8 @@ export function useIncompleteDataToast( store ) {
 			'api-incomplete-data',
 			formatDate( parseDate( date ), {
 				locale: banana.locale,
-				monthly: date.length === 7
+				monthly: date.length === 7,
+				localize: preferences.localizeDateFormat
 			} )
 		) );
 		store.incompleteDate = null;
