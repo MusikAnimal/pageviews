@@ -9,6 +9,8 @@ const mockChart = vi.hoisted( () => ( {
 	resize: vi.fn(),
 	dispose: vi.fn(),
 	dispatchAction: vi.fn(),
+	on: vi.fn(),
+	getOption: vi.fn( () => ( {} ) ),
 	getDataURL: vi.fn( () => 'data:image/png;base64,mock' )
 } ) );
 
@@ -75,12 +77,18 @@ describe( 'Chart', () => {
 		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( activation );
 	} );
 
-	it( 'exposes zoom reset', () => {
+	it( 'emits range-select with the drag-selected axis indices', () => {
 		const wrapper = mount( Chart, { props: { option: {} } } );
-		wrapper.vm.resetZoom();
-		expect( mockChart.dispatchAction ).toHaveBeenCalledWith(
-			{ type: 'dataZoom', start: 0, end: 100 }
-		);
+		const onDataZoom = mockChart.on.mock.calls
+			.find( ( [ event ] ) => event === 'datazoom' )[ 1 ];
+
+		// Toolbox select-zoom reports through a batch entry.
+		onDataZoom( { batch: [ { startValue: 3, endValue: 11 } ] } );
+		expect( wrapper.emitted( 'range-select' ) ).toEqual( [ [ 3, 11 ] ] );
+
+		// Events without a usable range are ignored.
+		onDataZoom( { batch: [ {} ] } );
+		expect( wrapper.emitted( 'range-select' ) ).toHaveLength( 1 );
 	} );
 
 	it( 'labels the chart for assistive tech', () => {

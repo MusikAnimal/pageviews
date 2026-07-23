@@ -7,12 +7,6 @@
 			:filename="filename"
 			:get-png="() => chartRef?.getPngDataUrl()"
 		/>
-		<CdxButton
-			v-if="linearType"
-			@click="chartRef?.resetZoom()"
-		>
-			{{ $i18n( 'reset-zoom' ) }}
-		</CdxButton>
 		<!-- Inline: block checkboxes carry a bottom margin that throws
 			off the toolbar's vertical centering. -->
 		<CdxCheckbox
@@ -35,13 +29,15 @@
 		ref="chartRef"
 		:option="chartOption"
 		:aria-label="ariaLabel"
+		@range-select="onRangeSelect"
 	/>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { CdxButton, CdxCheckbox } from '@wikimedia/codex';
+import { CdxCheckbox } from '@wikimedia/codex';
 import { usePreferencesStore } from '../stores/preferences.js';
+import { useSettingsStore } from '../stores/settings.js';
 import { usePrefersDark } from '../composables/useChart.js';
 import { buildTimeseriesOption } from '../charts/options/timeseries.js';
 import { buildCircularOption } from '../charts/options/circular.js';
@@ -99,7 +95,25 @@ const props = defineProps( {
 } );
 
 const preferences = usePreferencesStore();
+const settings = useSettingsStore();
 const dark = usePrefersDark();
+
+/**
+ * Drag-selecting a range narrows the shared date params instead of
+ * zooming client-side: the load watchers then re-query everything for
+ * the new range — pageviews and the revision data alike.
+ *
+ * @param {number} startIndex
+ * @param {number} endIndex
+ */
+function onRangeSelect( startIndex, endIndex ) {
+	const start = props.dates[ startIndex ];
+	const end = props.dates[ endIndex ];
+	if ( start && end && start <= end ) {
+		settings.start = start;
+		settings.end = end;
+	}
+}
 const chartRef = ref( null );
 
 // Reading dark.value makes the theme (CSS custom properties change with

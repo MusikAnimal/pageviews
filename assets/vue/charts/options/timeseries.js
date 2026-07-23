@@ -66,10 +66,11 @@ export function buildTimeseriesOption( {
 		},
 		grid: { containLabel: true, left: 8, right: 8, bottom: 40 },
 		// The toolbox dataZoom feature must exist for the always-on
-		// drag-to-zoom that useChart() activates via takeGlobalCursor,
+		// drag-select that useChart() activates via takeGlobalCursor,
 		// but ECharts skips feature creation entirely under
 		// `show: false` — so it renders off-canvas instead, invisible
-		// and unclickable. Zoom is reset from our own toolbar.
+		// and unclickable. The selection is not kept as a client-side
+		// zoom: it narrows the date params and re-queries.
 		toolbox: {
 			show: true,
 			top: -9999,
@@ -77,7 +78,6 @@ export function buildTimeseriesOption( {
 				dataZoom: { yAxisIndex: false }
 			}
 		},
-		dataZoom: [ { type: 'inside' } ],
 		xAxis: {
 			type: 'category',
 			data: xLabels,

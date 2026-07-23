@@ -26,10 +26,20 @@ const props = defineProps( {
 	}
 } );
 
-const container = ref( null );
-const { getPngDataUrl, resetZoom } = useChart( container, toRef( props, 'option' ) );
+/**
+ * range-select: the user drag-selected a slice of the category axis;
+ * payload is its ( startIndex, endIndex ).
+ */
+const emit = defineEmits( [ 'range-select' ] );
 
-defineExpose( { getPngDataUrl, resetZoom } );
+const container = ref( null );
+const { getPngDataUrl } = useChart(
+	container,
+	toRef( props, 'option' ),
+	( startIndex, endIndex ) => emit( 'range-select', startIndex, endIndex )
+);
+
+defineExpose( { getPngDataUrl } );
 </script>
 
 <style lang="less">

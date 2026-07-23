@@ -8,9 +8,13 @@ import { echarts } from '../charts/echarts.js';
  *
  * @param {import('vue').Ref<HTMLElement>} containerRef
  * @param {import('vue').Ref<Object>} optionRef
+ * @param {Function} [onRangeSelect] Called with the ( startIndex,
+ *   endIndex ) of the category axis when the user drag-selects a
+ *   range. The selection is not kept as a client-side zoom — the
+ *   caller is expected to narrow the query instead.
  * @return {{ getPngDataUrl: Function }}
  */
-export function useChart( containerRef, optionRef ) {
+export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 	let chart = null;
 	let resizeObserver = null;
 
@@ -30,6 +34,20 @@ export function useChart( containerRef, optionRef ) {
 		activateDragZoom();
 		resizeObserver = new ResizeObserver( () => chart && chart.resize() );
 		resizeObserver.observe( containerRef.value );
+
+		if ( onRangeSelect ) {
+			chart.on( 'datazoom', ( params ) => {
+				// Toolbox select-zoom reports through a batch entry.
+				let { startValue, endValue } = params.batch?.[ 0 ] ?? params;
+				if ( startValue === undefined ) {
+					( { startValue, endValue } = chart.getOption().dataZoom?.[ 0 ] ?? {} );
+				}
+				if ( startValue === undefined || endValue === undefined ) {
+					return;
+				}
+				onRangeSelect( Math.round( startValue ), Math.round( endValue ) );
+			} );
+		}
 	} );
 
 	watch( optionRef, ( option ) => {
@@ -59,15 +77,6 @@ export function useChart( containerRef, optionRef ) {
 			return chart ?
 				chart.getDataURL( { type: 'png', pixelRatio: 2, ...options } ) :
 				undefined;
-		},
-
-		/**
-		 * Zoom back out to the full date range.
-		 */
-		resetZoom() {
-			if ( chart ) {
-				chart.dispatchAction( { type: 'dataZoom', start: 0, end: 100 } );
-			}
 		}
 	};
 }
