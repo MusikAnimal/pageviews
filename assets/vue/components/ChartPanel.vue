@@ -29,6 +29,7 @@
 		ref="chartRef"
 		:option="chartOption"
 		:aria-label="ariaLabel"
+		:no-range-select="noRangeSelect"
 		@range-select="onRangeSelect"
 	/>
 </template>
@@ -91,6 +92,14 @@ const props = defineProps( {
 	ariaLabel: {
 		type: String,
 		default: ''
+	},
+	/**
+	 * Disables drag-select-to-requery (list apps: their fan-out is
+	 * expensive and only re-fires on explicit submission).
+	 */
+	noRangeSelect: {
+		type: Boolean,
+		default: false
 	}
 } );
 

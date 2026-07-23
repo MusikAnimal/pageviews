@@ -23,6 +23,14 @@ const props = defineProps( {
 	ariaLabel: {
 		type: String,
 		default: ''
+	},
+	/**
+	 * Disables drag-select entirely (list apps: a selection would
+	 * re-fire their expensive fan-out).
+	 */
+	noRangeSelect: {
+		type: Boolean,
+		default: false
 	}
 } );
 
@@ -36,7 +44,9 @@ const container = ref( null );
 const { getPngDataUrl } = useChart(
 	container,
 	toRef( props, 'option' ),
-	( startIndex, endIndex ) => emit( 'range-select', startIndex, endIndex )
+	props.noRangeSelect ?
+		null :
+		( startIndex, endIndex ) => emit( 'range-select', startIndex, endIndex )
 );
 
 defineExpose( { getPngDataUrl } );

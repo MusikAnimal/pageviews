@@ -9,9 +9,49 @@
 		</div>
 	</div>
 	<div class="app-workspace">
-		<LangviewsSettings />
-		<figure class="app-chart">
-			<SinglePageInput v-model="page" :project="store.project" />
+		<!-- List apps fan out many queries, so nothing fires reactively:
+			the form submits explicitly, and the results state replaces
+			it until "Do another query". -->
+		<template v-if="!ready">
+			<LangviewsSettings />
+			<figure class="app-chart">
+				<SinglePageInput v-model="page" :project="store.project" />
+				<CdxMessage
+					v-for="message in ui.messages"
+					:key="message.id"
+					:type="message.type"
+					allow-user-dismiss
+					@user-dismissed="ui.dismiss( message.id )"
+				>
+					{{ message.text }}
+					<a
+						v-if="message.onRetry"
+						href="#"
+						@click.prevent="retry( message )"
+					>{{ $i18n( 'try-again' ) }}</a>
+				</CdxMessage>
+				<CdxButton
+					action="progressive"
+					weight="primary"
+					:disabled="!store.page || store.status === 'loading'"
+					@click="store.load()"
+				>
+					{{ $i18n( 'submit' ) }}
+				</CdxButton>
+			</figure>
+		</template>
+		<figure v-else class="app-chart">
+			<div class="app-chart__toolbar">
+				<CdxToggleButtonGroup
+					v-model="viewModel"
+					:buttons="viewButtons"
+				/>
+				<a
+					class="app-chart__another-query"
+					href="#"
+					@click.prevent="anotherQuery"
+				>{{ $i18n( 'another-query' ) }}</a>
+			</div>
 			<CdxMessage
 				v-for="message in ui.messages"
 				:key="message.id"
@@ -20,30 +60,18 @@
 				@user-dismissed="ui.dismiss( message.id )"
 			>
 				{{ message.text }}
-				<a
-					v-if="message.onRetry"
-					href="#"
-					@click.prevent="retry( message )"
-				>{{ $i18n( 'try-again' ) }}</a>
 			</CdxMessage>
-			<template v-if="ready">
-				<div class="app-chart__toolbar">
-					<CdxToggleButtonGroup
-						v-model="viewModel"
-						:buttons="viewButtons"
-					/>
-				</div>
-				<ChartPanel
-					v-if="store.view === 'chart'"
-					:dates="store.dates"
-					:series="chartSeries"
-					:monthly="settings.dateType === 'monthly'"
-					:filename="exportFilename"
-					:no-autolog="!store.autolog"
-					:aria-label="$i18n( 'langviews-title' )"
-				/>
-				<ResultsTable v-else />
-			</template>
+			<ChartPanel
+				v-if="store.view === 'chart'"
+				:dates="store.dates"
+				:series="chartSeries"
+				:monthly="settings.dateType === 'monthly'"
+				:filename="exportFilename"
+				:no-autolog="!store.autolog"
+				:no-range-select="true"
+				:aria-label="$i18n( 'langviews-title' )"
+			/>
+			<ResultsTable v-else />
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -58,8 +86,9 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, onMounted } from 'vue';
 import {
+	CdxButton,
 	CdxMessage,
 	CdxProgressBar,
 	CdxToastContainer,
@@ -106,6 +135,14 @@ const ready = computed(
 	() => store.status === 'complete' && store.dates.length > 0
 );
 
+/**
+ * Back to the form, keeping all the parameters — nothing re-fires
+ * until the next explicit submission.
+ */
+function anotherQuery() {
+	store.status = 'initial';
+}
+
 const viewButtons = [
 	{ value: 'list', label: banana.i18n( 'list' ) },
 	{ value: 'chart', label: banana.i18n( 'chart' ) }
@@ -131,17 +168,17 @@ const chartSeries = computed( () => store.totals ? [ {
 	average: store.totals.average
 } ] : [] );
 
-watch(
-	() => [
-		store.page,
-		store.project,
-		store.platform,
-		store.agent,
-		settings.start,
-		settings.end,
-		settings.dateType
-	],
-	() => store.load(),
-	{ immediate: true, deep: true }
-);
+// Unlike the chart apps, params never fire reactively (the fan-out is
+// expensive): only the initial URL-provided page loads automatically.
+onMounted( () => {
+	if ( store.page ) {
+		store.load();
+	}
+} );
 </script>
+
+<style lang="less">
+.app-chart__another-query {
+	margin-left: auto;
+}
+</style>

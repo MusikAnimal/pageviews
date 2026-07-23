@@ -31,7 +31,9 @@ export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 	onMounted( () => {
 		chart = echarts.init( containerRef.value );
 		chart.setOption( optionRef.value, { notMerge: true } );
-		activateDragZoom();
+		if ( onRangeSelect ) {
+			activateDragZoom();
+		}
 		resizeObserver = new ResizeObserver( () => chart && chart.resize() );
 		resizeObserver.observe( containerRef.value );
 
@@ -54,7 +56,9 @@ export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 		if ( chart ) {
 			// notMerge resets interaction state, so re-activate.
 			chart.setOption( option, { notMerge: true } );
-			activateDragZoom();
+			if ( onRangeSelect ) {
+				activateDragZoom();
+			}
 		}
 	}, { deep: true } );
 
