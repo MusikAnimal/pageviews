@@ -106,17 +106,25 @@ const actions = {
 			link.click();
 		}
 	},
-	// Like the legacy tool: print the chart image from a throwaway tab.
+	// Like the legacy tool: print the chart image from a throwaway
+	// tab. The tab prints itself once the image has loaded — printing
+	// from the opener races the (large) data-URL render in Chrome and
+	// comes out blank — and closes when the dialog is dismissed.
 	print() {
 		const dataUrl = props.getPng();
 		if ( !dataUrl ) {
 			return;
 		}
 		const tab = window.open( '' );
-		tab.document.write( `<img src="${ dataUrl }" style="max-width: 100%;">` );
+		if ( !tab ) {
+			// Popup blocked.
+			return;
+		}
+		tab.document.write(
+			`<img src="${ dataUrl }" style="max-width: 100%;" ` +
+				'onload="window.print(); window.close();">'
+		);
 		tab.document.close();
-		tab.print();
-		tab.close();
 	}
 };
 
