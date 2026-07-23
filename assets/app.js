@@ -7,8 +7,10 @@ import { createPinia } from 'pinia';
 import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
 import Siteviews from './vue/controllers/Siteviews.vue';
+import Mediaviews from './vue/controllers/Mediaviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
 import { useSiteviewsStore } from './vue/stores/siteviews.js';
+import { useMediaviewsStore } from './vue/stores/mediaviews.js';
 import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
@@ -33,6 +35,15 @@ const router = createRouter( {
 			path: '/siteviews/url_structure',
 			component: Siteviews,
 			meta: { store: useSiteviewsStore, dialog: 'url-structure' }
+		},
+		{ path: '/mediaviews', component: Mediaviews, meta: { store: useMediaviewsStore } },
+		// Dialog content for these is still to come; the routes exist
+		// so the footer/nav links resolve.
+		{ path: '/mediaviews/faq', component: Mediaviews, meta: { store: useMediaviewsStore } },
+		{
+			path: '/mediaviews/url_structure',
+			component: Mediaviews,
+			meta: { store: useMediaviewsStore }
 		}
 	]
 } );

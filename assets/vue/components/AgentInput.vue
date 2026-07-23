@@ -10,7 +10,7 @@
 		/>
 		<CdxSelect
 			v-model:selected="agent"
-			:menu-items="agentOptions"
+			:menu-items="options"
 			:disabled="disabled"
 			:aria-label="$i18n( 'agent' )"
 		/>
@@ -36,15 +36,18 @@ defineProps( {
 	disabled: {
 		type: Boolean,
 		default: false
+	},
+	// Apps may override (e.g. mediarequests has no 'automated').
+	options: {
+		type: Array,
+		default: () => [
+			{ value: 'all-agents', label: banana.i18n( 'all' ) },
+			{ value: 'user', label: banana.i18n( 'user' ) },
+			{ value: 'spider', label: banana.i18n( 'spider' ) },
+			{ value: 'automated', label: banana.i18n( 'automated' ) }
+		]
 	}
 } );
-
-const agentOptions = [
-	{ value: 'all-agents', label: banana.i18n( 'all' ) },
-	{ value: 'user', label: banana.i18n( 'user' ) },
-	{ value: 'spider', label: banana.i18n( 'spider' ) },
-	{ value: 'automated', label: banana.i18n( 'automated' ) }
-];
 </script>
 
 <style scoped lang="less">

@@ -261,9 +261,9 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 				return;
 			}
 			const perSite = {};
-			const totals = {};
+			const metricTotals = {};
 			for ( const [ metric, data ] of Object.entries( result.metrics ) ) {
-				totals[ metric ] = { total: data.totals.total, average: data.totals.average };
+				metricTotals[ metric ] = { total: data.totals.total, average: data.totals.average };
 				for ( const site of data.sites ) {
 					perSite[ site.site ] = perSite[ site.site ] ?? {};
 					perSite[ site.site ][ metric ] = {
@@ -274,7 +274,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 			}
 			editsData.value = {
 				sites: perSite,
-				totals,
+				totals: metricTotals,
 				dataThrough: result.dataThrough,
 				noData: result.dataThrough === null,
 				failed: false

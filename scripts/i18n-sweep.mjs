@@ -74,7 +74,7 @@ for ( const app of APPS ) {
 // base.html.twig title/description for the apps ported so far
 // (pageviews' title key is special-cased to 'title').
 record( 'title', 'templates/base.html.twig' );
-for ( const app of [ 'pageviews', 'siteviews' ] ) {
+for ( const app of [ 'pageviews', 'siteviews', 'mediaviews' ] ) {
 	if ( app !== 'pageviews' ) {
 		record( `${ app }-title`, 'templates/base.html.twig' );
 	}

@@ -148,6 +148,40 @@ export function fetchSiteviews( {
 }
 
 /**
+ * Per-file mediarequest counts for Mediaviews (max 10 files, so no
+ * chunking).
+ *
+ * @param {Object} params
+ * @param {string[]} params.files upload.wikimedia file paths.
+ * @param {string} params.start YYYY-MM-DD or YYYY-MM.
+ * @param {string} params.end
+ * @param {string} [params.referer]
+ * @param {string} [params.agent]
+ * @param {string} [params.granularity]
+ * @return {Promise<Object>} { referer, agent, granularity, start, end,
+ *   dates, files: [ { path, counts, total, average, no_data? } ],
+ *   totals }
+ * @throws {ApiError}
+ */
+export function fetchMediarequests( {
+	files,
+	start,
+	end,
+	referer = 'all-referers',
+	agent = 'user',
+	granularity = 'daily'
+} ) {
+	return apiGet( '/api/metrics/mediarequests', {
+		files: files.join( '|' ),
+		start,
+		end,
+		referer,
+		agent,
+		granularity
+	} );
+}
+
+/**
  * Per-site edit counts from the AQS edits data (max 10 sites, so no
  * chunking). Edit data is only loaded into AQS monthly: `dataThrough`
  * reports the last covered date (null when the range has none) so

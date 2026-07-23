@@ -57,6 +57,42 @@ export async function mwApiGet( project, params ) {
 }
 
 /**
+ * File metadata from prop=imageinfo, keyed by the file name without
+ * the File: prefix (spaces, not underscores): { title, path,
+ * mediatype, size, width, height, duration?, timestamp, missing? }.
+ * `path` is the upload.wikimedia path the mediarequests API wants.
+ *
+ * @param {string} project e.g. 'commons.wikimedia.org'.
+ * @param {string[]} names File names without the File: prefix.
+ * @return {Promise<Object>}
+ */
+export async function getFileInfo( project, names ) {
+	const response = await mwApiGet( project, {
+		action: 'query',
+		prop: 'imageinfo',
+		iiprop: [ 'mediatype', 'size', 'timestamp', 'url' ],
+		titles: names.map( ( name ) => `File:${ name.replace( /_/g, ' ' ) }` )
+	} );
+	const info = {};
+	for ( const page of response.query?.pages || [] ) {
+		const name = page.title.replace( /^[^:]+:/, '' );
+		if ( page.missing ) {
+			info[ name ] = { title: page.title, missing: true };
+			continue;
+		}
+		const imageinfo = page.imageinfo?.[ 0 ] ?? {};
+		info[ name ] = {
+			title: page.title,
+			path: imageinfo.url ?
+				decodeURIComponent( new URL( imageinfo.url ).pathname ) :
+				null,
+			...imageinfo
+		};
+	}
+	return info;
+}
+
+/**
  * Basic page information (length, watcher count, protection) for the
  * given titles. The watchers field is only present when the wiki
  * exposes it (above the unwatched-pages threshold, as on Wikimedia
