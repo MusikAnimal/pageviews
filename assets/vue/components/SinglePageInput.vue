@@ -12,12 +12,13 @@
 			:placeholder="$i18n( 'article-placeholder' )"
 			@input="onInput"
 			@update:selected="onSelect"
+			@keydown.enter="onEnter"
 		/>
 	</CdxField>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { CdxField, CdxLookup } from '@wikimedia/codex';
 import { mwApiGet } from '../lib/mwApi.js';
 
@@ -64,6 +65,28 @@ watch( () => props.project, () => {
 	menuItems.value = [];
 	page.value = '';
 } );
+
+/**
+ * Enter selects the matching suggestion (exact match first, else the
+ * top prefixsearch hit) — Codex only selects on Enter when a menu
+ * item is highlighted.
+ */
+async function onEnter() {
+	// Let a Codex highlight-selection land first.
+	await nextTick();
+	if ( selected.value || !inputValue.value ) {
+		return;
+	}
+	const typed = inputValue.value.toLowerCase();
+	const match = menuItems.value.find(
+		( item ) => item.value.toLowerCase() === typed
+	) ?? menuItems.value[ 0 ];
+	if ( match ) {
+		selected.value = match.value;
+		inputValue.value = match.value;
+		page.value = match.value;
+	}
+}
 
 function onSelect( value ) {
 	if ( value ) {

@@ -152,6 +152,9 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 			dates.value = [];
 			langData.value = [];
 			totals.value = null;
+			// A cleared input also clears lingering errors (e.g.
+			// "No data found" for the previous page).
+			ui.clearMessages();
 			return;
 		}
 
