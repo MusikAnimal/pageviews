@@ -27,6 +27,7 @@ import { ref } from 'vue';
 import { CdxButton, CdxIcon, CdxMenuButton } from '@wikimedia/codex';
 import { useAppToast } from '../composables/useAppToast.js';
 import { cdxIconDownload, cdxIconLink, cdxIconPrinter } from '@wikimedia/codex-icons';
+import { useSettingsStore } from '../stores/settings.js';
 import { buildCsv } from '../lib/csv.js';
 import { downloadFile } from '../lib/download.js';
 import { banana } from '../i18n.js';
@@ -64,6 +65,7 @@ const props = defineProps( {
 } );
 
 const toast = useAppToast();
+const settings = useSettingsStore();
 const selection = ref( null );
 
 const menuItems = [
@@ -139,7 +141,15 @@ const actions = {
 };
 
 async function copyPermalink() {
-	await navigator.clipboard.writeText( location.href );
+	const url = new URL( location.href );
+	// Permalinks pin the exact resolved dates: a relative range like
+	// latest-30 would show different data later (legacy behavior).
+	if ( url.searchParams.has( 'range' ) ) {
+		url.searchParams.delete( 'range' );
+		url.searchParams.set( 'start', settings.start );
+		url.searchParams.set( 'end', settings.end );
+	}
+	await navigator.clipboard.writeText( url.toString() );
 	toast.success( banana.i18n( 'permalink-copied' ), { autoDismiss: true } );
 }
 

@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { CdxMenuButton } from '@wikimedia/codex';
 import ExportMenu from './ExportMenu.vue';
+import { useSettingsStore } from '../stores/settings.js';
 import { downloadFile } from '../lib/download.js';
 
 vi.mock( '../lib/download.js', () => ( {
@@ -112,5 +113,18 @@ describe( 'ExportMenu', () => {
 		toastSuccess.mock.calls[ 0 ][ 1 ].onAutoDismissed();
 		await wrapper.find( '.app-export__permalink' ).trigger( 'click' );
 		await vi.waitFor( () => expect( toastSuccess ).toHaveBeenCalledTimes( 2 ) );
+
+		// A relative range in the URL is pinned to the resolved dates:
+		// latest-30 would show different data later.
+		const settings = useSettingsStore();
+		settings.setFromQuery( { range: 'latest-20' } );
+		window.history.replaceState( {}, '', '/?project=en.wikipedia.org&range=latest-20' );
+		await wrapper.find( '.app-export__permalink' ).trigger( 'click' );
+		await vi.waitFor( () => expect( writeText ).toHaveBeenCalledTimes( 4 ) );
+		const copied = new URL( writeText.mock.calls[ 3 ][ 0 ] );
+		expect( copied.searchParams.get( 'range' ) ).toBeNull();
+		expect( copied.searchParams.get( 'start' ) ).toBe( settings.start );
+		expect( copied.searchParams.get( 'end' ) ).toBe( settings.end );
+		window.history.replaceState( {}, '', '/' );
 	} );
 } );
