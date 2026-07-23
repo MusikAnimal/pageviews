@@ -385,6 +385,8 @@ class MetricsRepository extends Repository {
 			'extra' => 'all-activity-levels',
 		],
 		'newPages' => [ 'path' => 'edited-pages/new', 'valueKey' => 'new_pages' ],
+		// Can be negative: deletions and blanking count down.
+		'netBytes' => [ 'path' => 'bytes-difference/net/aggregate', 'valueKey' => 'net_bytes_diff' ],
 	];
 
 	/**

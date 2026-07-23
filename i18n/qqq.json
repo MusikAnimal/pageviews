@@ -266,6 +266,7 @@
 	"most-viewed-rank": "Text saying that a page ranked as one of the top most-viewed pages for a month. $1 is the number of the ranking, $2 is a link to the Topviews app with the message for \"most-viewed-pages\" as the link text, and $3 is the month name and year.",
 	"name-bot": "Editor type option: accounts identified as bots by their username. See https://meta.wikimedia.org/wiki/Research:Bot_user",
 	"namespace": "Label for the dropdown to pick a namespace in the Userviews tool.\n{{Identical|Namespace}}",
+	"net-bytes": "Label for the net number of bytes added minus removed during the selected date range. Can be negative.",
 	"new-article-warning": "Warning that data of new pages may not be available yet. $1 is a link to the FAQ with the message 'learn-more' as the text.",
 	"no-autocompletion": "Label for option to disable autocompletion when searching",
 	"non-content": "Page type option: pages outside content namespaces (e.g. talk pages).",

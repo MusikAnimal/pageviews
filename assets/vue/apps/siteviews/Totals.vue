@@ -63,6 +63,10 @@
 					<dt>{{ $i18n( 'pages-created' ) }}</dt>
 					<dd>{{ number( store.editsData.totals.newPages.total ) }}</dd>
 				</div>
+				<div class="app-totals__stat">
+					<dt>{{ $i18n( 'net-bytes' ) }}</dt>
+					<dd>{{ number( store.editsData.totals.netBytes.total ) }}</dd>
+				</div>
 			</dl>
 			<p v-else class="app-totals__unavailable">
 				{{ $i18n( 'data-unavailable' ) }}

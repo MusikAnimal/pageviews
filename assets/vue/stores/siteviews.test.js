@@ -27,6 +27,10 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 			newPages: {
 				sites: [ { site: 'fr.wikipedia.org', counts: [], total: 56, average: 0 } ],
 				totals: { counts: [], total: 56, average: 0 }
+			},
+			netBytes: {
+				sites: [ { site: 'fr.wikipedia.org', counts: [], total: -420, average: 0 } ],
+				totals: { counts: [], total: -420, average: 0 }
 			}
 		}
 	} ) )
@@ -197,7 +201,8 @@ describe( 'siteviews store', () => {
 					edits: { total: 1234 },
 					editors: { average: 30 },
 					editedPages: { total: 789 },
-					newPages: { total: 56 }
+					newPages: { total: 56 },
+					netBytes: { total: -420 }
 				} },
 				totals: { edits: { total: 1234 }, editors: { average: 30 } },
 				dataThrough: '2026-06-30',

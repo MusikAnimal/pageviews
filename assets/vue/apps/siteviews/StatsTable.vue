@@ -61,6 +61,9 @@
 				<td class="app-stats__number">
 					{{ row.newPages === null ? '?' : number( row.newPages ) }}
 				</td>
+				<td class="app-stats__number">
+					{{ row.netBytes === null ? '?' : number( row.netBytes ) }}
+				</td>
 				<td>
 					<a :href="topviewsUrl( row.site )" target="_blank">
 						{{ $i18n( 'most-viewed-pages' ) }}
@@ -92,6 +95,10 @@
 				<td class="app-stats__number">
 					{{ editsTotal( 'newPages' ) === null ?
 						'?' : number( editsTotal( 'newPages' ) ) }}
+				</td>
+				<td class="app-stats__number">
+					{{ editsTotal( 'netBytes' ) === null ?
+						'?' : number( editsTotal( 'netBytes' ) ) }}
 				</td>
 				<td />
 			</tr>
@@ -146,6 +153,7 @@ const columns = computed( () => [
 	},
 	{ key: 'editedPages', label: banana.i18n( 'pages-edited' ), sortable: true },
 	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true },
+	{ key: 'netBytes', label: banana.i18n( 'net-bytes' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
 
@@ -191,7 +199,8 @@ const rows = computed( () => {
 		edits: editStat( site.site, 'edits' ),
 		editors: editStat( site.site, 'editors', 'average' ),
 		editedPages: editStat( site.site, 'editedPages' ),
-		newPages: editStat( site.site, 'newPages' )
+		newPages: editStat( site.site, 'newPages' ),
+		netBytes: editStat( site.site, 'netBytes' )
 	} ) );
 
 	const key = sortKey.value;

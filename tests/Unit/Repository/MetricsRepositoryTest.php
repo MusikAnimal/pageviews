@@ -303,6 +303,8 @@ class MetricsRepositoryTest extends TestCase {
 				self::aqsResults( 'edited_pages', [ '2026-07-01' => 50, '2026-07-02' => 70 ] ),
 			'edited-pages/new/fr.wikipedia/user/content/daily/20260701/20260704' =>
 				self::aqsResults( 'new_pages', [ '2026-07-01' => 5, '2026-07-02' => 7 ] ),
+			'bytes-difference/net/aggregate/fr.wikipedia/user/content/daily/20260701/20260704' =>
+				self::aqsResults( 'net_bytes_diff', [ '2026-07-01' => 1000, '2026-07-02' => -300 ] ),
 		] );
 
 		$result = $repo->getSiteEdits( 'fr.wikipedia.org', '2026-07-01', '2026-07-03' );
@@ -354,6 +356,18 @@ class MetricsRepositoryTest extends TestCase {
 						'counts' => [ 5, 7, 0 ],
 						'total' => 12,
 						'average' => 4.0,
+					],
+				],
+				// Negative values (deletions outweighing additions) pass
+				// through the whole pipeline.
+				'netBytes' => [
+					'sites' => [
+						[ 'site' => 'fr.wikipedia.org', 'counts' => [ 1000, -300, 0 ], 'total' => 700, 'average' => 233.33 ],
+					],
+					'totals' => [
+						'counts' => [ 1000, -300, 0 ],
+						'total' => 700,
+						'average' => 233.33,
 					],
 				],
 			],
