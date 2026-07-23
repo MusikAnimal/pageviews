@@ -282,6 +282,7 @@
 	"pagecounts": "Pagecounts",
 	"pagecounts-legacy": "Pagecounts (legacy)",
 	"pages": "Pages",
+	"pages-created": "Pages created",
 	"pageviews": "Pageviews",
 	"pageviews-description": "Comparison of pageviews across multiple pages",
 	"param-error-1": "Pageviews API does not contain data older than $1, using earliest available data instead.",

@@ -279,12 +279,16 @@ class MetricsRepositoryTest extends TestCase {
 		}
 	}
 
-	private static function aqsEdits( array $editsByIsoDate ): array {
+	private static function aqsResults( string $valueKey, array $valuesByIsoDate ): array {
 		$results = [];
-		foreach ( $editsByIsoDate as $date => $edits ) {
-			$results[] = [ 'timestamp' => "{$date}T00:00:00.000Z", 'edits' => $edits ];
+		foreach ( $valuesByIsoDate as $date => $value ) {
+			$results[] = [ 'timestamp' => "{$date}T00:00:00.000Z", $valueKey => $value ];
 		}
 		return [ 'items' => [ [ 'results' => $results ] ] ];
+	}
+
+	private static function aqsEdits( array $editsByIsoDate ): array {
+		return self::aqsResults( 'edits', $editsByIsoDate );
 	}
 
 	public function testSiteEditsContractShape(): void {
@@ -293,6 +297,8 @@ class MetricsRepositoryTest extends TestCase {
 			// dataThrough reports the coverage for the client's hint.
 			'edits/aggregate/fr.wikipedia/user/content/daily/20260701/20260704' =>
 				self::aqsEdits( [ '2026-07-01' => 100, '2026-07-02' => 200 ] ),
+			'edited-pages/new/fr.wikipedia/user/content/daily/20260701/20260704' =>
+				self::aqsResults( 'new_pages', [ '2026-07-01' => 5, '2026-07-02' => 7 ] ),
 		] );
 
 		$result = $repo->getSiteEdits( 'fr.wikipedia.org', '2026-07-01', '2026-07-03' );
@@ -305,13 +311,27 @@ class MetricsRepositoryTest extends TestCase {
 			'end' => '2026-07-03',
 			'dataThrough' => '2026-07-02',
 			'dates' => [ '2026-07-01', '2026-07-02', '2026-07-03' ],
-			'sites' => [
-				[ 'site' => 'fr.wikipedia.org', 'counts' => [ 100, 200, 0 ], 'total' => 300, 'average' => 100.0 ],
-			],
-			'totals' => [
-				'counts' => [ 100, 200, 0 ],
-				'total' => 300,
-				'average' => 100.0,
+			'metrics' => [
+				'edits' => [
+					'sites' => [
+						[ 'site' => 'fr.wikipedia.org', 'counts' => [ 100, 200, 0 ], 'total' => 300, 'average' => 100.0 ],
+					],
+					'totals' => [
+						'counts' => [ 100, 200, 0 ],
+						'total' => 300,
+						'average' => 100.0,
+					],
+				],
+				'newPages' => [
+					'sites' => [
+						[ 'site' => 'fr.wikipedia.org', 'counts' => [ 5, 7, 0 ], 'total' => 12, 'average' => 4.0 ],
+					],
+					'totals' => [
+						'counts' => [ 5, 7, 0 ],
+						'total' => 12,
+						'average' => 4.0,
+					],
+				],
 			],
 		], $result );
 	}
@@ -329,8 +349,11 @@ class MetricsRepositoryTest extends TestCase {
 		);
 
 		static::assertSame( [ '2026-04', '2026-05' ], $result['dates'] );
-		static::assertSame( [ 1000, 2000 ], $result['sites'][0]['counts'] );
+		static::assertSame( [ 1000, 2000 ], $result['metrics']['edits']['sites'][0]['counts'] );
 		static::assertSame( '2026-05', $result['dataThrough'] );
+		// The pages-created route wasn't mocked: 404 -> no_data zeros,
+		// without affecting the edits metric or dataThrough.
+		static::assertTrue( $result['metrics']['newPages']['sites'][0]['no_data'] );
 	}
 
 	public function testSiteEditsNoData(): void {
@@ -339,8 +362,9 @@ class MetricsRepositoryTest extends TestCase {
 
 		$result = $repo->getSiteEdits( 'fr.wikipedia', '2026-07-01', '2026-07-02' );
 
-		static::assertTrue( $result['sites'][0]['no_data'] );
-		static::assertSame( [ 0, 0 ], $result['sites'][0]['counts'] );
+		static::assertTrue( $result['metrics']['edits']['sites'][0]['no_data'] );
+		static::assertTrue( $result['metrics']['newPages']['sites'][0]['no_data'] );
+		static::assertSame( [ 0, 0 ], $result['metrics']['edits']['sites'][0]['counts'] );
 		static::assertNull( $result['dataThrough'] );
 	}
 

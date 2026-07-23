@@ -52,6 +52,9 @@
 				<td class="app-stats__number">
 					{{ row.edits === null ? '?' : number( row.edits ) }}
 				</td>
+				<td class="app-stats__number">
+					{{ row.newPages === null ? '?' : number( row.newPages ) }}
+				</td>
 				<td>
 					<a :href="topviewsUrl( row.site )" target="_blank">
 						{{ $i18n( 'most-viewed-pages' ) }}
@@ -70,7 +73,11 @@
 					{{ number( Math.round( store.totals.average ) ) }}
 				</td>
 				<td class="app-stats__number">
-					{{ editsTotal === null ? '?' : number( editsTotal ) }}
+					{{ editsTotal( 'edits' ) === null ? '?' : number( editsTotal( 'edits' ) ) }}
+				</td>
+				<td class="app-stats__number">
+					{{ editsTotal( 'newPages' ) === null ?
+						'?' : number( editsTotal( 'newPages' ) ) }}
 				</td>
 				<td />
 			</tr>
@@ -116,6 +123,7 @@ const columns = computed( () => [
 		sortable: true
 	},
 	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
+	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
 
@@ -157,7 +165,10 @@ const rows = computed( () => {
 		average: site.average,
 		// null = the edits fetch is pending, failed or had no data.
 		edits: store.editsData && !store.editsData.noData ?
-			store.editsData.sites[ site.site ] ?? null :
+			store.editsData.sites[ site.site ]?.edits ?? null :
+			null,
+		newPages: store.editsData && !store.editsData.noData ?
+			store.editsData.sites[ site.site ]?.newPages ?? null :
 			null
 	} ) );
 
@@ -172,10 +183,11 @@ const rows = computed( () => {
 	} );
 } );
 
-const editsTotal = computed( () => store.editsData && !store.editsData.noData ?
-	store.editsData.total :
-	null
-);
+function editsTotal( metric ) {
+	return store.editsData && !store.editsData.noData ?
+		store.editsData.totals[ metric ] ?? null :
+		null;
+}
 
 function sortBy( key ) {
 	if ( sortKey.value === key ) {

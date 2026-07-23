@@ -97,12 +97,12 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 */
 	const pageType = ref( 'content' );
 	/**
-	 * Ranged edit counts from the AQS edits data (non-fatal side
-	 * fetch): { sites: { domain: total }, total, dataThrough, noData,
-	 * failed }. Edit data is loaded into AQS monthly — dataThrough is
-	 * the last date covered (the UI hints when it falls short of the
-	 * range) and noData means the range has none at all. null while
-	 * pending.
+	 * Ranged editing statistics from the AQS editing data (non-fatal
+	 * side fetch): { sites: { domain: { edits, newPages } }, totals:
+	 * { edits, newPages }, dataThrough, noData, failed }. Edit data is
+	 * loaded into AQS monthly — dataThrough is the last date covered
+	 * (the UI hints when it falls short of the range) and noData means
+	 * the range has none at all. null while pending.
 	 *
 	 * @type {import('vue').Ref<?Object>}
 	 */
@@ -257,11 +257,18 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 			if ( id !== editsLoadId ) {
 				return;
 			}
+			const perSite = {};
+			const totals = {};
+			for ( const [ metric, data ] of Object.entries( result.metrics ) ) {
+				totals[ metric ] = data.totals.total;
+				for ( const site of data.sites ) {
+					perSite[ site.site ] = perSite[ site.site ] ?? {};
+					perSite[ site.site ][ metric ] = site.total;
+				}
+			}
 			editsData.value = {
-				sites: Object.fromEntries(
-					result.sites.map( ( site ) => [ site.site, site.total ] )
-				),
-				total: result.totals.total,
+				sites: perSite,
+				totals,
 				dataThrough: result.dataThrough,
 				noData: result.dataThrough === null,
 				failed: false
@@ -269,7 +276,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		} catch {
 			if ( id === editsLoadId ) {
 				editsData.value = {
-					sites: {}, total: 0, dataThrough: null, noData: true, failed: true
+					sites: {}, totals: {}, dataThrough: null, noData: true, failed: true
 				};
 			}
 		}

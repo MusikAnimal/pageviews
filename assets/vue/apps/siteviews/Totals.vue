@@ -47,7 +47,11 @@
 			<dl v-if="!store.editsData.noData" class="app-totals__stats">
 				<div class="app-totals__stat">
 					<dt>{{ $i18n( 'edits' ) }}</dt>
-					<dd>{{ number( store.editsData.total ) }}</dd>
+					<dd>{{ number( store.editsData.totals.edits ) }}</dd>
+				</div>
+				<div class="app-totals__stat">
+					<dt>{{ $i18n( 'pages-created' ) }}</dt>
+					<dd>{{ number( store.editsData.totals.newPages ) }}</dd>
 				</div>
 			</dl>
 			<p v-else class="app-totals__unavailable">

@@ -366,8 +366,19 @@ class MetricsRepository extends Repository {
 	private const PAGE_TYPES = [ 'all-page-types', 'content', 'non-content' ];
 
 	/**
-	 * Batched per-site edit counts from the AQS edits/aggregate
-	 * endpoint, same contract shape as getSiteviews() plus
+	 * The editing metrics served by getSiteEdits(), all sharing the
+	 * editor-type/page-type breakdowns and the "wikistats 2" response
+	 * shape.
+	 */
+	private const EDIT_METRICS = [
+		'edits' => [ 'path' => 'edits/aggregate', 'valueKey' => 'edits' ],
+		'newPages' => [ 'path' => 'edited-pages/new', 'valueKey' => 'new_pages' ],
+	];
+
+	/**
+	 * Batched per-site editing statistics (edit counts and pages
+	 * created) from the AQS editing metrics, keyed under `metrics`
+	 * with the getSiteviews() sites/totals shape each, plus
 	 * `dataThrough`: the last date any site actually has data for
 	 * (null when none). Edit data is only loaded into AQS monthly, so
 	 * a daily range reaching into the current month gets zero-filled
@@ -435,45 +446,69 @@ class MetricsRepository extends Repository {
 	): array {
 		$dates = $this->dateAxis( $startDate, $endDate, $granularity );
 		$startTs = $startDate->format( 'Ymd' );
-		// The edits API's end timestamp is exclusive.
+		// The editing APIs' end timestamp is exclusive.
 		$endTs = ( clone $endDate )->modify( '+1 day' )->format( 'Ymd' );
 
-		$siteData = [];
-		$totals = array_fill( 0, count( $dates ), 0 );
+		$metrics = [];
 		$dataThrough = null;
+		foreach ( self::EDIT_METRICS as $metric => $unused ) {
+			$metrics[ $metric ] = [
+				'sites' => [],
+				'totals' => array_fill( 0, count( $dates ), 0 ),
+			];
+		}
 
-		foreach ( array_chunk( $sites, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
+		// One request per site and metric, in the usual paced waves.
+		$requests = [];
+		foreach ( array_keys( self::EDIT_METRICS ) as $metric ) {
+			foreach ( $sites as $site ) {
+				$requests[] = [ $metric, $site ];
+			}
+		}
+
+		foreach ( array_chunk( $requests, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
 			if ( $waveIndex > 0 ) {
 				usleep( self::AQS_WAVE_PAUSE_US );
 			}
 			$responses = [];
-			foreach ( $wave as $site ) {
+			foreach ( $wave as [ $metric, $site ] ) {
 				$domain = rawurlencode( $this->normalizeProject( $site ) );
-				$responses[ $site ] = $this->aqsClient->request(
+				$path = self::EDIT_METRICS[ $metric ]['path'];
+				$responses[] = [ $metric, $site, $this->aqsClient->request(
 					'GET',
-					"edits/aggregate/$domain/$editorType/$pageType/$granularity/$startTs/$endTs"
-				);
+					"$path/$domain/$editorType/$pageType/$granularity/$startTs/$endTs"
+				) ];
 			}
 
-			foreach ( $responses as $site => $response ) {
+			foreach ( $responses as [ $metric, $site, $response ] ) {
 				$counts = $this->extractAggregateResults(
-					$response, $dates, $granularity, $noData, $lastDate, 'edits'
+					$response, $dates, $granularity, $noData, $lastDate,
+					self::EDIT_METRICS[ $metric ]['valueKey']
 				);
 				foreach ( $counts as $i => $count ) {
-					$totals[ $i ] += $count;
+					$metrics[ $metric ]['totals'][ $i ] += $count;
 				}
 				if ( $lastDate !== null && $lastDate > $dataThrough ) {
 					$dataThrough = $lastDate;
 				}
 				$total = array_sum( $counts );
 				$domain = $this->normalizeProject( $site );
-				$siteData[] = [
+				$metrics[ $metric ]['sites'][] = [
 					'site' => $domain === 'all-projects' ? $domain : "$domain.org",
 					'counts' => $counts,
 					'total' => $total,
 					'average' => round( $total / count( $dates ), 2 ),
 				] + ( $noData ? [ 'no_data' => true ] : [] );
 			}
+		}
+
+		foreach ( $metrics as &$data ) {
+			$counts = $data['totals'];
+			$data['totals'] = [
+				'counts' => $counts,
+				'total' => array_sum( $counts ),
+				'average' => round( array_sum( $counts ) / count( $dates ), 2 ),
+			];
 		}
 
 		return [
@@ -484,12 +519,7 @@ class MetricsRepository extends Repository {
 			'end' => $endDate->format( 'Y-m-d' ),
 			'dataThrough' => $dataThrough,
 			'dates' => $dates,
-			'sites' => $siteData,
-			'totals' => [
-				'counts' => $totals,
-				'total' => array_sum( $totals ),
-				'average' => round( array_sum( $totals ) / count( $dates ), 2 ),
-			],
+			'metrics' => $metrics,
 		];
 	}
 
