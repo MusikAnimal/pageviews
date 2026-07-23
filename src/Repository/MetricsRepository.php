@@ -362,6 +362,194 @@ class MetricsRepository extends Repository {
 		return $sites;
 	}
 
+	private const EDITOR_TYPES = [ 'all-editor-types', 'anonymous', 'group-bot', 'name-bot', 'user' ];
+	private const PAGE_TYPES = [ 'all-page-types', 'content', 'non-content' ];
+
+	/**
+	 * Batched per-site edit counts from the AQS edits/aggregate
+	 * endpoint, same contract shape as getSiteviews() plus
+	 * `dataThrough`: the last date any site actually has data for
+	 * (null when none). Edit data is only loaded into AQS monthly, so
+	 * a daily range reaching into the current month gets zero-filled
+	 * past the coverage — the client hints at the cutoff. Unlike the
+	 * pageviews endpoints, the end timestamp is exclusive and result
+	 * timestamps are ISO-8601.
+	 *
+	 * @param string $sitesParam Pipe-delimited site domains (max 10),
+	 *   or the special all-projects.
+	 */
+	public function getSiteEdits(
+		string $sitesParam,
+		string $start,
+		string $end,
+		string $editorType = 'user',
+		string $pageType = 'content',
+		string $granularity = 'daily',
+	): array {
+		$editorType = $this->validated( 'editor-type', $editorType, self::EDITOR_TYPES );
+		$pageType = $this->validated( 'page-type', $pageType, self::PAGE_TYPES );
+		$granularity = $this->validated( 'granularity', $granularity, [ 'daily', 'monthly' ] );
+		// all-projects is valid for edits too (same alone-only rule).
+		$sites = $this->parseSites( $sitesParam, true );
+
+		$startDate = $this->parseDate( $start );
+		$endDate = $this->parseDate( $end, true );
+		if ( $startDate > $endDate ) {
+			$this->invalidParameter(
+				'invalid_date_range',
+				'The start date must not be after the end date.',
+				[ 'param-error-2' ]
+			);
+		}
+
+		$cacheKey = sprintf(
+			'se.%s.%s.%s.%s.%s.%s',
+			$editorType,
+			$pageType,
+			$granularity,
+			$startDate->format( 'Ymd' ),
+			$endDate->format( 'Ymd' ),
+			sha1( implode( '|', $sites ) )
+		);
+
+		return $this->cacheMetrics->get(
+			$cacheKey,
+			function ( ItemInterface $item ) use (
+				$sites, $startDate, $endDate, $editorType, $pageType, $granularity
+			): array {
+				$item->expiresAfter( $this->ttlForRange( $endDate ) );
+				return $this->fetchSiteEdits(
+					$sites, $startDate, $endDate, $editorType, $pageType, $granularity
+				);
+			}
+		);
+	}
+
+	private function fetchSiteEdits(
+		array $sites,
+		DateTime $startDate,
+		DateTime $endDate,
+		string $editorType,
+		string $pageType,
+		string $granularity,
+	): array {
+		$dates = $this->dateAxis( $startDate, $endDate, $granularity );
+		$startTs = $startDate->format( 'Ymd' );
+		// The edits API's end timestamp is exclusive.
+		$endTs = ( clone $endDate )->modify( '+1 day' )->format( 'Ymd' );
+
+		$siteData = [];
+		$totals = array_fill( 0, count( $dates ), 0 );
+		$dataThrough = null;
+
+		foreach ( array_chunk( $sites, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
+			if ( $waveIndex > 0 ) {
+				usleep( self::AQS_WAVE_PAUSE_US );
+			}
+			$responses = [];
+			foreach ( $wave as $site ) {
+				$domain = rawurlencode( $this->normalizeProject( $site ) );
+				$responses[ $site ] = $this->aqsClient->request(
+					'GET',
+					"edits/aggregate/$domain/$editorType/$pageType/$granularity/$startTs/$endTs"
+				);
+			}
+
+			foreach ( $responses as $site => $response ) {
+				$counts = $this->extractAggregateResults(
+					$response, $dates, $granularity, $noData, $lastDate, 'edits'
+				);
+				foreach ( $counts as $i => $count ) {
+					$totals[ $i ] += $count;
+				}
+				if ( $lastDate !== null && $lastDate > $dataThrough ) {
+					$dataThrough = $lastDate;
+				}
+				$total = array_sum( $counts );
+				$domain = $this->normalizeProject( $site );
+				$siteData[] = [
+					'site' => $domain === 'all-projects' ? $domain : "$domain.org",
+					'counts' => $counts,
+					'total' => $total,
+					'average' => round( $total / count( $dates ), 2 ),
+				] + ( $noData ? [ 'no_data' => true ] : [] );
+			}
+		}
+
+		return [
+			'editorType' => $editorType,
+			'pageType' => $pageType,
+			'granularity' => $granularity,
+			'start' => $startDate->format( 'Y-m-d' ),
+			'end' => $endDate->format( 'Y-m-d' ),
+			'dataThrough' => $dataThrough,
+			'dates' => $dates,
+			'sites' => $siteData,
+			'totals' => [
+				'counts' => $totals,
+				'total' => array_sum( $totals ),
+				'average' => round( array_sum( $totals ) / count( $dates ), 2 ),
+			],
+		];
+	}
+
+	/**
+	 * Map an AQS "wikistats 2" style response (items[0].results with
+	 * ISO-8601 timestamps) onto the date axis, zero-filling gaps.
+	 *
+	 * @param string[] $dates
+	 * @param bool|null $noData Set to whether AQS had no data at all (404).
+	 * @param string|null $lastDate Set to the last date (Y-m-d or Y-m per
+	 *   granularity) with a data point, or null.
+	 * @return int[]
+	 */
+	private function extractAggregateResults(
+		object $response,
+		array $dates,
+		string $granularity,
+		?bool &$noData,
+		?string &$lastDate,
+		string $valueKey,
+	): array {
+		$noData = false;
+		$lastDate = null;
+		try {
+			$results = $response->toArray()['items'][0]['results'] ?? [];
+		} catch ( HttpClientExceptionInterface $e ) {
+			if (
+				$e instanceof ClientExceptionInterface &&
+				$response->getStatusCode() === Response::HTTP_NOT_FOUND
+			) {
+				$noData = true;
+				return array_fill( 0, count( $dates ), 0 );
+			}
+			throw new ApiException(
+				'upstream_error',
+				'The Pageviews API returned an error.',
+				[ 'api-error', 'Pageviews API' ],
+				Response::HTTP_BAD_GATEWAY,
+				'aqs',
+				true,
+			);
+		}
+
+		$byDate = [];
+		foreach ( $results as $result ) {
+			// ISO-8601, e.g. 2026-06-01T00:00:00.000Z.
+			$day = substr( $result['timestamp'], 0, 10 );
+			$key = $granularity === 'monthly' ? substr( $day, 0, 7 ) : $day;
+			$byDate[ $key ] = $result[ $valueKey ];
+			if ( $key > $lastDate ) {
+				$lastDate = $key;
+			}
+		}
+
+		return array_map(
+			static fn ( string $date ): int => $byDate[ $date ] ?? 0,
+			$dates
+		);
+	}
+
 	/**
 	 * The most-viewed pages of a month or day, with the curated
 	 * false positives (config/topviews_excludes.yaml) removed and ranks

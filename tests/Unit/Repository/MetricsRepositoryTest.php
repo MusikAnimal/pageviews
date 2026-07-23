@@ -279,6 +279,88 @@ class MetricsRepositoryTest extends TestCase {
 		}
 	}
 
+	private static function aqsEdits( array $editsByIsoDate ): array {
+		$results = [];
+		foreach ( $editsByIsoDate as $date => $edits ) {
+			$results[] = [ 'timestamp' => "{$date}T00:00:00.000Z", 'edits' => $edits ];
+		}
+		return [ 'items' => [ [ 'results' => $results ] ] ];
+	}
+
+	public function testSiteEditsContractShape(): void {
+		$repo = $this->makeRepo( [
+			// AQS only has data through 07-02: 07-03 zero-fills, and
+			// dataThrough reports the coverage for the client's hint.
+			'edits/aggregate/fr.wikipedia/user/content/daily/20260701/20260704' =>
+				self::aqsEdits( [ '2026-07-01' => 100, '2026-07-02' => 200 ] ),
+		] );
+
+		$result = $repo->getSiteEdits( 'fr.wikipedia.org', '2026-07-01', '2026-07-03' );
+
+		static::assertSame( [
+			'editorType' => 'user',
+			'pageType' => 'content',
+			'granularity' => 'daily',
+			'start' => '2026-07-01',
+			'end' => '2026-07-03',
+			'dataThrough' => '2026-07-02',
+			'dates' => [ '2026-07-01', '2026-07-02', '2026-07-03' ],
+			'sites' => [
+				[ 'site' => 'fr.wikipedia.org', 'counts' => [ 100, 200, 0 ], 'total' => 300, 'average' => 100.0 ],
+			],
+			'totals' => [
+				'counts' => [ 100, 200, 0 ],
+				'total' => 300,
+				'average' => 100.0,
+			],
+		], $result );
+	}
+
+	public function testSiteEditsMonthlyAndTypes(): void {
+		$repo = $this->makeRepo( [
+			// Monthly, non-default types; the exclusive end timestamp
+			// covers the whole final month.
+			'edits/aggregate/de.wikipedia/anonymous/all-page-types/monthly/20260401/20260601' =>
+				self::aqsEdits( [ '2026-04-01' => 1000, '2026-05-01' => 2000 ] ),
+		] );
+
+		$result = $repo->getSiteEdits(
+			'de.wikipedia', '2026-04', '2026-05', 'anonymous', 'all-page-types', 'monthly'
+		);
+
+		static::assertSame( [ '2026-04', '2026-05' ], $result['dates'] );
+		static::assertSame( [ 1000, 2000 ], $result['sites'][0]['counts'] );
+		static::assertSame( '2026-05', $result['dataThrough'] );
+	}
+
+	public function testSiteEditsNoData(): void {
+		// No mocked route: the mock client 404s (data not loaded yet).
+		$repo = $this->makeRepo();
+
+		$result = $repo->getSiteEdits( 'fr.wikipedia', '2026-07-01', '2026-07-02' );
+
+		static::assertTrue( $result['sites'][0]['no_data'] );
+		static::assertSame( [ 0, 0 ], $result['sites'][0]['counts'] );
+		static::assertNull( $result['dataThrough'] );
+	}
+
+	public function testSiteEditsValidation(): void {
+		$repo = $this->makeRepo();
+
+		foreach ( [
+			[ [ 'fr.wikipedia', '2026-07-01', '2026-07-02', 'vandals' ], 'invalid_editor-type' ],
+			[ [ 'fr.wikipedia', '2026-07-01', '2026-07-02', 'user', 'talk' ], 'invalid_page-type' ],
+			[ [ '', '2026-07-01', '2026-07-02' ], 'missing_param' ],
+		] as [ $args, $expectedCode ] ) {
+			try {
+				$repo->getSiteEdits( ...$args );
+				static::fail( "Expected ApiException ($expectedCode)" );
+			} catch ( ApiException $e ) {
+				static::assertSame( $expectedCode, $e->errorCode );
+			}
+		}
+	}
+
 	private const EXCLUDES_FIXTURE = __DIR__ . '/../../Fixtures/topviews_excludes.yaml';
 
 	private static function aqsTop( array $articlesToViews ): array {
