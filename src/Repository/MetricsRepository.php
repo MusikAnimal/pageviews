@@ -362,6 +362,144 @@ class MetricsRepository extends Repository {
 		return $sites;
 	}
 
+	private const REFERERS = [ 'all-referers', 'internal', 'external', 'search-engine', 'unknown', 'none' ];
+	// The mediarequests data has no 'automated' agent breakdown.
+	private const MEDIAREQUESTS_AGENTS = [ 'all-agents', 'user', 'spider' ];
+
+	/**
+	 * Batched per-file mediarequest counts for Mediaviews, same
+	 * contract shape as getPageviews() with `files` (upload.wikimedia
+	 * paths, e.g. /wikipedia/commons/a/a9/Example.jpg) in place of
+	 * pages. The client resolves file names to paths via imageinfo.
+	 *
+	 * @param string $filesParam Pipe-delimited file paths (max 10).
+	 */
+	public function getMediarequests(
+		string $filesParam,
+		string $start,
+		string $end,
+		string $referer = 'all-referers',
+		string $agent = 'user',
+		string $granularity = 'daily',
+	): array {
+		$referer = $this->validated( 'referer', $referer, self::REFERERS );
+		$agent = $this->validated(
+			'agent',
+			$agent === 'all' ? 'all-agents' : $agent,
+			self::MEDIAREQUESTS_AGENTS
+		);
+		$granularity = $this->validated( 'granularity', $granularity, [ 'daily', 'monthly' ] );
+		$files = array_values( array_unique( array_filter(
+			array_map( 'trim', explode( '|', $filesParam ) ),
+			static fn ( string $file ): bool => $file !== ''
+		) ) );
+		if ( !$files ) {
+			$this->invalidParameter(
+				'missing_param',
+				'The files parameter is required.',
+				[ 'param-error-3', 'files' ]
+			);
+		}
+		if ( count( $files ) > self::MAX_SITES ) {
+			$this->invalidParameter(
+				'too_many_files',
+				sprintf( 'A maximum of %d files may be requested at once.', self::MAX_SITES ),
+				[ 'param-error-3', 'files' ]
+			);
+		}
+
+		$startDate = $this->parseDate( $start );
+		$endDate = $this->parseDate( $end, true );
+		if ( $startDate > $endDate ) {
+			$this->invalidParameter(
+				'invalid_date_range',
+				'The start date must not be after the end date.',
+				[ 'param-error-2' ]
+			);
+		}
+
+		$cacheKey = sprintf(
+			'mr.%s.%s.%s.%s.%s.%s',
+			$referer,
+			$agent,
+			$granularity,
+			$startDate->format( 'Ymd' ),
+			$endDate->format( 'Ymd' ),
+			sha1( implode( '|', $files ) )
+		);
+
+		return $this->cacheMetrics->get(
+			$cacheKey,
+			function ( ItemInterface $item ) use (
+				$files, $startDate, $endDate, $referer, $agent, $granularity
+			): array {
+				$item->expiresAfter( $this->ttlForRange( $endDate ) );
+				return $this->fetchMediarequests(
+					$files, $startDate, $endDate, $referer, $agent, $granularity
+				);
+			}
+		);
+	}
+
+	private function fetchMediarequests(
+		array $files,
+		DateTime $startDate,
+		DateTime $endDate,
+		string $referer,
+		string $agent,
+		string $granularity,
+	): array {
+		$dates = $this->dateAxis( $startDate, $endDate, $granularity );
+		$startTs = $startDate->format( 'Ymd' ) . '00';
+		$endTs = $endDate->format( 'Ymd' ) . '00';
+
+		$fileData = [];
+		$totals = array_fill( 0, count( $dates ), 0 );
+
+		foreach ( array_chunk( $files, self::AQS_CONCURRENCY ) as $waveIndex => $wave ) {
+			if ( $waveIndex > 0 ) {
+				usleep( self::AQS_WAVE_PAUSE_US );
+			}
+			$responses = [];
+			foreach ( $wave as $file ) {
+				$path = rawurlencode( $file );
+				$responses[ $file ] = $this->aqsClient->request(
+					'GET',
+					"mediarequests/per-file/$referer/$agent/$path/$granularity/$startTs/$endTs"
+				);
+			}
+
+			foreach ( $responses as $file => $response ) {
+				$counts = $this->extractCounts( $response, $dates, $granularity, $noData, 'requests' );
+				foreach ( $counts as $i => $count ) {
+					$totals[ $i ] += $count;
+				}
+				$total = array_sum( $counts );
+				$fileData[] = [
+					'path' => $file,
+					'counts' => $counts,
+					'total' => $total,
+					'average' => round( $total / count( $dates ), 2 ),
+				] + ( $noData ? [ 'no_data' => true ] : [] );
+			}
+		}
+
+		return [
+			'referer' => $referer,
+			'agent' => $agent,
+			'granularity' => $granularity,
+			'start' => $startDate->format( 'Y-m-d' ),
+			'end' => $endDate->format( 'Y-m-d' ),
+			'dates' => $dates,
+			'files' => $fileData,
+			'totals' => [
+				'counts' => $totals,
+				'total' => array_sum( $totals ),
+				'average' => round( array_sum( $totals ) / count( $dates ), 2 ),
+			],
+		];
+	}
+
 	private const EDITOR_TYPES = [ 'all-editor-types', 'anonymous', 'group-bot', 'name-bot', 'user' ];
 	private const PAGE_TYPES = [ 'all-page-types', 'content', 'non-content' ];
 

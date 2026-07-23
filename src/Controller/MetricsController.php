@@ -52,6 +52,22 @@ class MetricsController extends AbstractController {
 		) );
 	}
 
+	#[Route( '/api/metrics/mediarequests', name: 'api_metrics_mediarequests', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function mediarequests(
+		MetricsRepository $metricsRepo,
+		#[MapQueryParameter] string $files = '',
+		#[MapQueryParameter] string $start = '',
+		#[MapQueryParameter] string $end = '',
+		#[MapQueryParameter] string $referer = 'all-referers',
+		#[MapQueryParameter] string $agent = 'user',
+		#[MapQueryParameter] string $granularity = 'daily',
+	): JsonResponse {
+		return new JsonResponse( $metricsRepo->getMediarequests(
+			$files, $start, $end, $referer, $agent, $granularity
+		) );
+	}
+
 	#[Route( '/api/metrics/edits', name: 'api_metrics_edits', methods: [ 'GET' ] )]
 	#[Cache( maxage: 600, public: true )]
 	public function edits(

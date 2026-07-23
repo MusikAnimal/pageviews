@@ -279,6 +279,58 @@ class MetricsRepositoryTest extends TestCase {
 		}
 	}
 
+	public function testMediarequestsContractShape(): void {
+		$repo = $this->makeRepo( [
+			'mediarequests/per-file/all-referers/user/%2Fwikipedia%2Fcommons%2Fa%2Fa9%2FExample.jpg/daily' =>
+				self::aqsAggregate( 'requests', [ '2026070100' => 10, '2026070300' => 30 ] ),
+		] );
+
+		$result = $repo->getMediarequests(
+			'/wikipedia/commons/a/a9/Example.jpg', '2026-07-01', '2026-07-03'
+		);
+
+		static::assertSame( [
+			'referer' => 'all-referers',
+			'agent' => 'user',
+			'granularity' => 'daily',
+			'start' => '2026-07-01',
+			'end' => '2026-07-03',
+			'dates' => [ '2026-07-01', '2026-07-02', '2026-07-03' ],
+			'files' => [
+				[
+					'path' => '/wikipedia/commons/a/a9/Example.jpg',
+					'counts' => [ 10, 0, 30 ],
+					'total' => 40,
+					'average' => 13.33,
+				],
+			],
+			'totals' => [
+				'counts' => [ 10, 0, 30 ],
+				'total' => 40,
+				'average' => 13.33,
+			],
+		], $result );
+	}
+
+	public function testMediarequestsValidation(): void {
+		$repo = $this->makeRepo();
+
+		foreach ( [
+			[ [ '/a/b.jpg', '2026-07-01', '2026-07-02', 'friend' ], 'invalid_referer' ],
+			// No 'automated' agent for mediarequests.
+			[ [ '/a/b.jpg', '2026-07-01', '2026-07-02', 'all-referers', 'automated' ], 'invalid_agent' ],
+			[ [ '', '2026-07-01', '2026-07-02' ], 'missing_param' ],
+			[ [ implode( '|', range( 1, 11 ) ), '2026-07-01', '2026-07-02' ], 'too_many_files' ],
+		] as [ $args, $expectedCode ] ) {
+			try {
+				$repo->getMediarequests( ...$args );
+				static::fail( "Expected ApiException ($expectedCode)" );
+			} catch ( ApiException $e ) {
+				static::assertSame( $expectedCode, $e->errorCode );
+			}
+		}
+	}
+
 	private static function aqsResults( string $valueKey, array $valuesByIsoDate ): array {
 		$results = [];
 		foreach ( $valuesByIsoDate as $date => $value ) {
