@@ -54,13 +54,14 @@ import { computed, onMounted, watch } from 'vue';
 import {
 	CdxMessage,
 	CdxProgressBar,
-	CdxToastContainer,
-	useToast
+	CdxToastContainer
 } from '@wikimedia/codex';
 import { DEFAULT_SITES, useSiteviewsStore } from '../stores/siteviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
+import { useIncompleteDataToast } from '../composables/useIncompleteDataToast.js';
+import { useAppToast } from '../composables/useAppToast.js';
 import { formatDate } from '../lib/format.js';
 import { PAGECOUNTS_MAX_DATE, PAGECOUNTS_MIN_DATE, parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
@@ -79,6 +80,7 @@ const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
+useIncompleteDataToast( store );
 
 // The /siteviews/faq and /siteviews/url_structure routes open dialogs
 // over the app.
@@ -106,7 +108,7 @@ function retry( message ) {
 // dates outside the legacy dataset) falls back to pageviews; tell the
 // user why via a toast. Immediate: the URL is parsed during setup,
 // before this watcher registers.
-const toast = useToast();
+const toast = useAppToast();
 watch( () => store.unsupportedSource, ( value ) => {
 	if ( !value ) {
 		return;

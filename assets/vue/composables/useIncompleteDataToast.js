@@ -1,0 +1,29 @@
+import { watch } from 'vue';
+import { useAppToast } from './useAppToast.js';
+import { formatDate } from '../lib/format.js';
+import { parseDate } from '../lib/dates.js';
+import { banana } from '../i18n.js';
+
+/**
+ * Toast the one-shot incompleteDate signal set when a store's load
+ * dropped a not-yet-published trailing date (trimIncompleteTail).
+ * Immediate: the first load may resolve before the watcher registers.
+ *
+ * @param {Object} store Any app store exposing `incompleteDate`.
+ */
+export function useIncompleteDataToast( store ) {
+	const toast = useAppToast();
+	watch( () => store.incompleteDate, ( date ) => {
+		if ( !date ) {
+			return;
+		}
+		toast.warning( banana.i18n(
+			'api-incomplete-data',
+			formatDate( parseDate( date ), {
+				locale: banana.locale,
+				monthly: date.length === 7
+			} )
+		) );
+		store.incompleteDate = null;
+	}, { immediate: true } );
+}

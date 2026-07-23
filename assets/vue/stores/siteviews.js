@@ -1,6 +1,6 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchSiteviews } from '../lib/metricsApi.js';
+import { fetchSiteviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getSiteStatistics } from '../lib/mwApi.js';
 import {
 	PAGECOUNTS_MAX_DATE,
@@ -125,6 +125,14 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 * @type {import('vue').Ref<?string>}
 	 */
 	const unsupportedSource = ref( null );
+	/**
+	 * One-shot signal: the trailing date dropped because its data
+	 * hasn't been published yet (see trimIncompleteTail). The
+	 * controller shows a toast and clears it.
+	 *
+	 * @type {import('vue').Ref<?string>}
+	 */
+	const incompleteDate = ref( null );
 
 	// Fall back to pageviews whenever pagecounts stops applying —
 	// whether requested via URL (setFromQuery runs after the settings
@@ -269,9 +277,16 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 				return;
 			}
 
-			dates.value = result.dates;
-			series.value = result.sites;
-			totals.value = result.totals;
+			// Drop a not-yet-published trailing date (see the helper).
+			const trimmed = trimIncompleteTail( {
+				dates: result.dates,
+				series: result.sites,
+				totals: result.totals
+			} );
+			incompleteDate.value = trimmed?.trimmedDate ?? null;
+			dates.value = trimmed?.dates ?? result.dates;
+			series.value = trimmed?.series ?? result.sites;
+			totals.value = trimmed?.totals ?? result.totals;
 			status.value = 'complete';
 		} catch ( error ) {
 			if ( id !== loadId ) {
@@ -301,6 +316,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		isAllProjects,
 		pagecountsAvailable,
 		unsupportedSource,
+		incompleteDate,
 		query,
 		setFromQuery,
 		load

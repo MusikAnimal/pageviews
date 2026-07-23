@@ -166,6 +166,47 @@ export function fetchTopviews( { project, date, platform = 'all-access' } ) {
 	);
 }
 
+/**
+ * Detect and drop a not-yet-populated trailing data point: AQS can
+ * take a day or more to backfill, and an all-zero most recent day
+ * right after a non-zero one almost certainly means "no data yet",
+ * not "zero views". Averages are recomputed over the shorter axis.
+ *
+ * @param {Object} data
+ * @param {string[]} data.dates
+ * @param {Array<{counts: number[], total: number, average: number}>} data.series
+ * @param {{counts: number[], total: number, average: number}} data.totals
+ * @return {?{dates: string[], series: Array, totals: Object, trimmedDate: string}}
+ *   The trimmed data plus the dropped date, or null when nothing was
+ *   trimmed.
+ */
+export function trimIncompleteTail( { dates, series, totals } ) {
+	const last = dates.length - 1;
+	if (
+		last < 1 ||
+		!totals?.counts ||
+		totals.counts[ last ] !== 0 ||
+		totals.counts[ last - 1 ] <= 0
+	) {
+		return null;
+	}
+	const average = ( total ) => Math.round( ( total / last ) * 100 ) / 100;
+	return {
+		dates: dates.slice( 0, -1 ),
+		series: series.map( ( entry ) => ( {
+			...entry,
+			counts: entry.counts.slice( 0, -1 ),
+			average: average( entry.total )
+		} ) ),
+		totals: {
+			...totals,
+			counts: totals.counts.slice( 0, -1 ),
+			average: average( totals.total )
+		},
+		trimmedDate: dates[ last ]
+	};
+}
+
 function mergeResults( results ) {
 	if ( results.length === 1 ) {
 		return results[ 0 ];

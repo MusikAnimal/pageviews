@@ -24,7 +24,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { CdxButton, CdxIcon, CdxMenuButton, useToast } from '@wikimedia/codex';
+import { CdxButton, CdxIcon, CdxMenuButton } from '@wikimedia/codex';
+import { useAppToast } from '../composables/useAppToast.js';
 import { cdxIconDownload, cdxIconLink, cdxIconPrinter } from '@wikimedia/codex-icons';
 import { buildCsv } from '../lib/csv.js';
 import { downloadFile } from '../lib/download.js';
@@ -62,7 +63,7 @@ const props = defineProps( {
 	}
 } );
 
-const toast = useToast();
+const toast = useAppToast();
 const selection = ref( null );
 
 const menuItems = [

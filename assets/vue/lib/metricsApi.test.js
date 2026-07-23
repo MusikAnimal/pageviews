@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchEditData, fetchPageviews } from './metricsApi.js';
+import { fetchEditData, fetchPageviews, trimIncompleteTail } from './metricsApi.js';
 
 function chunkResponse( titles ) {
 	return {
@@ -123,5 +123,42 @@ describe( 'fetchPageviews', () => {
 			start: '2026-07-01',
 			end: '2026-07-02'
 		} ) ).rejects.toMatchObject( { name: 'ApiError', retryable: true } );
+	} );
+} );
+
+describe( 'trimIncompleteTail', () => {
+	const data = ( counts1, counts2 ) => {
+		const totals = counts1.map( ( value, i ) => value + counts2[ i ] );
+		return {
+			dates: [ '2026-07-19', '2026-07-20', '2026-07-21' ].slice( 0, counts1.length ),
+			series: [
+				{ title: 'Cat', counts: counts1, total: counts1.reduce( ( a, b ) => a + b ), average: 0 },
+				{ title: 'Dog', counts: counts2, total: counts2.reduce( ( a, b ) => a + b ), average: 0 }
+			],
+			totals: { counts: totals, total: totals.reduce( ( a, b ) => a + b ), average: 0 }
+		};
+	};
+
+	it( 'drops an all-zero trailing day after a non-zero one', () => {
+		const trimmed = trimIncompleteTail( data( [ 10, 20, 0 ], [ 1, 2, 0 ] ) );
+		expect( trimmed.trimmedDate ).toBe( '2026-07-21' );
+		expect( trimmed.dates ).toEqual( [ '2026-07-19', '2026-07-20' ] );
+		expect( trimmed.series[ 0 ].counts ).toEqual( [ 10, 20 ] );
+		expect( trimmed.totals.counts ).toEqual( [ 11, 22 ] );
+		// Averages recomputed over the shorter axis.
+		expect( trimmed.series[ 0 ].average ).toBe( 15 );
+		expect( trimmed.totals.average ).toBe( 16.5 );
+	} );
+
+	it( 'keeps a genuine zero day (previous day also zero)', () => {
+		expect( trimIncompleteTail( data( [ 10, 0, 0 ], [ 1, 0, 0 ] ) ) ).toBeNull();
+	} );
+
+	it( 'keeps a non-zero trailing day', () => {
+		expect( trimIncompleteTail( data( [ 10, 20, 30 ], [ 1, 2, 3 ] ) ) ).toBeNull();
+	} );
+
+	it( 'never trims a single-day axis', () => {
+		expect( trimIncompleteTail( data( [ 0 ], [ 0 ] ) ) ).toBeNull();
 	} );
 } );

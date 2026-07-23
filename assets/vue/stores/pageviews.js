@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
+import { fetchEditData, fetchPageviews, fetchTopviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getPageInfo } from '../lib/mwApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../lib/dates.js';
@@ -95,6 +95,14 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * @type {import('vue').Ref<?{rank: number, date: string}>}
 	 */
 	const topRank = ref( null );
+	/**
+	 * One-shot signal: the trailing date dropped because its data
+	 * hasn't been published yet (see trimIncompleteTail). The
+	 * controller shows a toast and clears it.
+	 *
+	 * @type {import('vue').Ref<?string>}
+	 */
+	const incompleteDate = ref( null );
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
@@ -335,14 +343,25 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 				return;
 			}
 
-			dates.value = result.dates;
 			// Consolidation does not change the grand totals: redirect
 			// counts are moved into their targets, not duplicated.
 			const consolidated = redirectMap ?
 				consolidateSeries( pages.value, redirectMap, result.pages ) :
 				result.pages;
-			series.value = dropMissingPages( consolidated, await pageInfoPromise, ui );
-			totals.value = result.totals;
+			// An all-zero most recent day right after a non-zero one
+			// means AQS hasn't published it yet: drop it and tell the
+			// user via the one-shot signal.
+			const trimmed = trimIncompleteTail( {
+				dates: result.dates,
+				series: consolidated,
+				totals: result.totals
+			} );
+			incompleteDate.value = trimmed?.trimmedDate ?? null;
+			dates.value = trimmed?.dates ?? result.dates;
+			series.value = dropMissingPages(
+				trimmed?.series ?? consolidated, await pageInfoPromise, ui
+			);
+			totals.value = trimmed?.totals ?? result.totals;
 			status.value = 'complete';
 		} catch ( error ) {
 			if ( id !== loadId ) {
@@ -378,6 +397,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		editData,
 		pageInfo,
 		topRank,
+		incompleteDate,
 		query,
 		setFromQuery,
 		load

@@ -99,7 +99,18 @@ describe( 'ExportMenu', () => {
 		expect( writeText ).toHaveBeenCalledWith( location.href );
 		expect( toastSuccess ).toHaveBeenCalledWith(
 			'Permalink copied to clipboard',
-			{ autoDismiss: true }
+			expect.objectContaining( { autoDismiss: true } )
 		);
+
+		// Deduped: a second identical toast is not shown while the
+		// first is still up (useAppToast).
+		await wrapper.find( '.app-export__permalink' ).trigger( 'click' );
+		await vi.waitFor( () => expect( writeText ).toHaveBeenCalledTimes( 2 ) );
+		expect( toastSuccess ).toHaveBeenCalledTimes( 1 );
+
+		// Once dismissed, it may show again.
+		toastSuccess.mock.calls[ 0 ][ 1 ].onAutoDismissed();
+		await wrapper.find( '.app-export__permalink' ).trigger( 'click' );
+		await vi.waitFor( () => expect( toastSuccess ).toHaveBeenCalledTimes( 2 ) );
 	} );
 } );

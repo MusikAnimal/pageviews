@@ -6,7 +6,9 @@ import { useUiStore } from './ui.js';
 import { fetchSiteviews } from '../lib/metricsApi.js';
 import { getSiteStatistics } from '../lib/mwApi.js';
 
-vi.mock( '../lib/metricsApi.js', () => ( {
+vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
+	// trimIncompleteTail stays real (pure, tested separately).
+	...await importOriginal(),
 	fetchSiteviews: vi.fn()
 } ) );
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
@@ -171,6 +173,21 @@ describe( 'siteviews store', () => {
 
 			expect( getSiteStatistics ).not.toHaveBeenCalled();
 			expect( store.series[ 0 ].site ).toBe( 'all-projects' );
+		} );
+
+		it( 'drops a not-yet-published trailing date with a signal', async () => {
+			const store = useSiteviewsStore();
+			store.sites = [ 'fr.wikipedia.org' ];
+			fetchSiteviews.mockResolvedValue( {
+				dates: [ '2026-07-20', '2026-07-21' ],
+				sites: [ { site: 'fr.wikipedia.org', counts: [ 10, 0 ], total: 10, average: 5 } ],
+				totals: { counts: [ 10, 0 ], total: 10, average: 5 }
+			} );
+
+			await store.load();
+
+			expect( store.dates ).toEqual( [ '2026-07-20' ] );
+			expect( store.incompleteDate ).toBe( '2026-07-21' );
 		} );
 
 		it( 'notifies with a retryable error message on failure', async () => {

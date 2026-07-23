@@ -7,7 +7,9 @@ import { ApiError } from '../lib/errors.js';
 import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 
-vi.mock( '../lib/metricsApi.js', () => ( {
+vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
+	// trimIncompleteTail stays real (pure, tested separately).
+	...await importOriginal(),
 	fetchPageviews: vi.fn(),
 	fetchEditData: vi.fn( () => Promise.resolve( { pages: {} } ) ),
 	fetchTopviews: vi.fn( () => Promise.resolve( { articles: [] } ) )
@@ -194,6 +196,23 @@ describe( 'pageviews store', () => {
 			expect( ui.messages ).toHaveLength( 1 );
 			expect( ui.messages[ 0 ].type ).toBe( 'error' );
 			expect( ui.messages[ 0 ].text ).toContain( 'No such page' );
+		} );
+
+		it( 'drops a not-yet-published trailing date with a signal', async () => {
+			const store = usePageviewsStore();
+			store.pages = [ 'Cat' ];
+			fetchPageviews.mockResolvedValue( {
+				dates: [ '2026-07-19', '2026-07-20', '2026-07-21' ],
+				pages: [ { title: 'Cat', counts: [ 10, 20, 0 ], total: 30, average: 10 } ],
+				totals: { counts: [ 10, 20, 0 ], total: 30, average: 10 }
+			} );
+
+			await store.load();
+
+			expect( store.dates ).toEqual( [ '2026-07-19', '2026-07-20' ] );
+			expect( store.series[ 0 ].counts ).toEqual( [ 10, 20 ] );
+			expect( store.totals.average ).toBe( 15 );
+			expect( store.incompleteDate ).toBe( '2026-07-21' );
 		} );
 
 		it( 'looks up the Topviews rank for single-page queries', async () => {
