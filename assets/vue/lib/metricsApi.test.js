@@ -150,6 +150,18 @@ describe( 'trimIncompleteTail', () => {
 		expect( trimmed.totals.average ).toBe( 16.5 );
 	} );
 
+	it( 'warns without trimming when only some series are missing the day', () => {
+		// en.wikipedia is populated for the last day, de/fr aren't yet:
+		// the date is real data for one series, so nothing is dropped —
+		// but the signal still fires so the UI can warn.
+		const input = data( [ 10, 20, 30 ], [ 1, 2, 0 ] );
+		const trimmed = trimIncompleteTail( input );
+		expect( trimmed.trimmedDate ).toBe( '2026-07-21' );
+		expect( trimmed.dates ).toBeUndefined();
+		expect( trimmed.series ).toBeUndefined();
+		expect( trimmed.totals ).toBeUndefined();
+	} );
+
 	it( 'keeps a genuine zero day (previous day also zero)', () => {
 		expect( trimIncompleteTail( data( [ 10, 0, 0 ], [ 1, 0, 0 ] ) ) ).toBeNull();
 	} );

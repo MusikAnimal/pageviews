@@ -203,28 +203,38 @@ export function fetchTopviews( { project, date, platform = 'all-access' } ) {
 }
 
 /**
- * Detect and drop a not-yet-populated trailing data point: AQS can
- * take a day or more to backfill, and an all-zero most recent day
- * right after a non-zero one almost certainly means "no data yet",
- * not "zero views". Averages are recomputed over the shorter axis.
+ * Detect a not-yet-populated trailing data point: AQS can take a day
+ * or more to backfill (and lags differently per wiki), so a zero on
+ * the most recent date right after a non-zero one almost certainly
+ * means "no data yet", not "zero views".
+ *
+ * When every series is missing the date, it is dropped from the axis
+ * (averages recomputed over the shorter span). When only some are —
+ * e.g. en.wikipedia is populated but de/fr aren't yet — the data is
+ * left untouched (the date is real for the others) and only the
+ * dropped-date signal is returned, so the UI can still warn.
  *
  * @param {Object} data
  * @param {string[]} data.dates
  * @param {Array<{counts: number[], total: number, average: number}>} data.series
  * @param {{counts: number[], total: number, average: number}} data.totals
- * @return {?{dates: string[], series: Array, totals: Object, trimmedDate: string}}
- *   The trimmed data plus the dropped date, or null when nothing was
- *   trimmed.
+ * @return {?{dates?: string[], series?: Array, totals?: Object, trimmedDate: string}}
+ *   The dropped date, with the trimmed data when every series was
+ *   missing it; null when no series looks incomplete.
  */
 export function trimIncompleteTail( { dates, series, totals } ) {
 	const last = dates.length - 1;
+	const incompleteTail = ( counts ) => counts[ last ] === 0 && counts[ last - 1 ] > 0;
 	if (
 		last < 1 ||
 		!totals?.counts ||
-		totals.counts[ last ] !== 0 ||
-		totals.counts[ last - 1 ] <= 0
+		!series.some( ( entry ) => incompleteTail( entry.counts ) )
 	) {
 		return null;
+	}
+	if ( !incompleteTail( totals.counts ) ) {
+		// Some series do have data for the date: warn without trimming.
+		return { trimmedDate: dates[ last ] };
 	}
 	const average = ( total ) => Math.round( ( total / last ) * 100 ) / 100;
 	return {
