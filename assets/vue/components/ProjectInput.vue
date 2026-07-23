@@ -46,15 +46,6 @@ const project = defineModel( {
 const lookup = ref( null );
 
 /**
- * The project is required: when cleared, keep focus here so the user
- * fills it in (the pages input clears itself but must not steal focus).
- */
-function onClear() {
-	checkValidity();
-	lookup.value?.$el?.querySelector( 'input' )?.focus();
-}
-
-/**
  * List of supported projects for the lookup component.
  *
  * @type {import( 'vue' ).Ref<string[]>}
@@ -83,6 +74,18 @@ const menuItems = ref( supportedProjects.value.map( ( projectId ) => ( {
 const currentSearchTerm = ref( project.value );
 
 const menuConfig = { visibleItemLimit: 10 };
+
+/**
+ * The project is required: when cleared, keep focus here so the user
+ * fills it in (the pages input clears itself but must not steal focus).
+ * The visible text is ours to reset — Codex clears only the selection,
+ * not a bound input-value model.
+ */
+function onClear() {
+	currentSearchTerm.value = '';
+	checkValidity();
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
+}
 
 /**
  * Handles input events from the lookup component, filtering the supported projects

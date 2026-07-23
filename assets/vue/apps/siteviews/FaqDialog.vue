@@ -56,8 +56,7 @@ const entries = [
 				[ 'pageviews', 'faq-source-pageviews' ],
 				[ 'unique-devices', 'faq-source-unique-devices' ],
 				[ 'pagecounts-legacy', 'faq-source-pagecounts' ]
-			].map( ( [ label, body ] ) =>
-				`<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
+			].map( ( [ label, body ] ) => `<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
 			).join( '' ) + '</ul>'
 		]
 	},
