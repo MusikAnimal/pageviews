@@ -57,6 +57,15 @@ document.addEventListener( 'click', ( event ) => {
 			dropdown.removeAttribute( 'open' );
 		}
 	} );
+	// Same for Codex menu buttons (Chart type, Download, Presets):
+	// they only close on blur, which never fires when the click lands
+	// on a non-focusable area (the page background, the chart canvas).
+	// Clicks within any menu button are left to Codex — the toggle and
+	// blur handling cover those.
+	if ( !event.target.closest( '.cdx-menu-button' ) ) {
+		document.querySelectorAll( '.cdx-menu-button [aria-expanded="true"]' )
+			.forEach( ( toggle ) => toggle.click() );
+	}
 	if ( event.target.closest( '.app-nav__settings' ) ) {
 		useUiStore( pinia ).preferencesOpen = true;
 		return;

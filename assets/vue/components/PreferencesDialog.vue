@@ -14,26 +14,28 @@
 			{{ $i18n( 'settings-notice' ) }}
 		</p>
 
-		<CdxField>
-			<CdxCheckbox v-model="staged.alwaysRedirects">
-				{{ $i18n( 'always-include-redirects' ) }}
-			</CdxCheckbox>
-		</CdxField>
+		<template v-if="!hidePageOptions">
+			<CdxField>
+				<CdxCheckbox v-model="staged.alwaysRedirects">
+					{{ $i18n( 'always-include-redirects' ) }}
+				</CdxCheckbox>
+			</CdxField>
 
-		<CdxField :is-fieldset="true">
-			<template #label>
-				{{ $i18n( 'search-method' ) }}
-			</template>
-			<CdxRadio
-				v-for="mode in autocompleteModes"
-				:key="mode.value"
-				v-model="staged.autocomplete"
-				name="autocomplete-mode"
-				:input-value="mode.value"
-			>
-				{{ mode.label }}
-			</CdxRadio>
-		</CdxField>
+			<CdxField :is-fieldset="true">
+				<template #label>
+					{{ $i18n( 'search-method' ) }}
+				</template>
+				<CdxRadio
+					v-for="mode in autocompleteModes"
+					:key="mode.value"
+					v-model="staged.autocomplete"
+					name="autocomplete-mode"
+					:input-value="mode.value"
+				>
+					{{ mode.label }}
+				</CdxRadio>
+			</CdxField>
+		</template>
 
 		<CdxField :is-fieldset="true">
 			<template #label>
@@ -75,6 +77,14 @@ import { banana } from '../i18n.js';
 
 const props = defineProps( {
 	open: {
+		type: Boolean,
+		default: false
+	},
+	/**
+	 * Set by apps without a page search (e.g. Siteviews) to hide the
+	 * redirects and search-method preferences.
+	 */
+	hidePageOptions: {
 		type: Boolean,
 		default: false
 	}

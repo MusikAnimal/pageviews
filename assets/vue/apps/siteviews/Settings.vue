@@ -42,7 +42,10 @@
 			</CdxRadio>
 		</CdxField>
 	</form>
-	<PreferencesDialog v-model:open="ui.preferencesOpen" />
+	<PreferencesDialog
+		v-model:open="ui.preferencesOpen"
+		:hide-page-options="true"
+	/>
 </template>
 
 <script setup>

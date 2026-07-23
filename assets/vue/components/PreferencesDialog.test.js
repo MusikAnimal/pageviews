@@ -60,4 +60,22 @@ describe( 'PreferencesDialog', () => {
 		expect( radios.map( ( radio ) => radio.element.value ) )
 			.toEqual( [ 'autocomplete', 'autocomplete_redirects' ] );
 	} );
+
+	it( 'hides the page-specific options when requested', () => {
+		const wrapper = mount( PreferencesDialog, {
+			props: { open: true, hidePageOptions: true },
+			global: {
+				stubs: { teleport: true },
+				config: {
+					globalProperties: { $i18n: ( key ) => key }
+				}
+			}
+		} );
+		// No redirects checkbox, no search-method radios; the shared
+		// localization/chart sections remain.
+		expect( wrapper.text() ).not.toContain( 'always-include-redirects' );
+		expect( wrapper.findAll( 'input[type="radio"]' ) ).toHaveLength( 0 );
+		expect( wrapper.text() ).toContain( 'localization' );
+		expect( wrapper.text() ).toContain( 'chart-preferences' );
+	} );
 } );
