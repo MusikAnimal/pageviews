@@ -67,25 +67,21 @@ watch( () => props.project, () => {
 } );
 
 /**
- * Enter selects the matching suggestion (exact match first, else the
- * top prefixsearch hit) — Codex only selects on Enter when a menu
- * item is highlighted.
+ * Enter submits exactly what was typed. The suggestions lag behind
+ * the keystrokes (debounced), so consulting them here could submit a
+ * stale prefix hit — a highlighted menu item is still honored, since
+ * Codex selects it before this runs.
  */
 async function onEnter() {
+	clearTimeout( debounceTimer );
 	// Let a Codex highlight-selection land first.
 	await nextTick();
 	if ( selected.value || !inputValue.value ) {
 		return;
 	}
-	const typed = inputValue.value.toLowerCase();
-	const match = menuItems.value.find(
-		( item ) => item.value.toLowerCase() === typed
-	) ?? menuItems.value[ 0 ];
-	if ( match ) {
-		selected.value = match.value;
-		inputValue.value = match.value;
-		page.value = match.value;
-	}
+	menuItems.value = [];
+	selected.value = inputValue.value;
+	page.value = inputValue.value;
 }
 
 function onSelect( value ) {
