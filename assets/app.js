@@ -8,9 +8,11 @@ import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
 import Siteviews from './vue/controllers/Siteviews.vue';
 import Mediaviews from './vue/controllers/Mediaviews.vue';
+import Langviews from './vue/controllers/Langviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
 import { useSiteviewsStore } from './vue/stores/siteviews.js';
 import { useMediaviewsStore } from './vue/stores/mediaviews.js';
+import { useLangviewsStore } from './vue/stores/langviews.js';
 import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
@@ -46,6 +48,17 @@ const router = createRouter( {
 			path: '/mediaviews/url_structure',
 			component: Mediaviews,
 			meta: { store: useMediaviewsStore, dialog: 'url-structure' }
+		},
+		{ path: '/langviews', component: Langviews, meta: { store: useLangviewsStore } },
+		{
+			path: '/langviews/faq',
+			component: Langviews,
+			meta: { store: useLangviewsStore, dialog: 'faq' }
+		},
+		{
+			path: '/langviews/url_structure',
+			component: Langviews,
+			meta: { store: useLangviewsStore, dialog: 'url-structure' }
 		}
 	]
 } );
