@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import {
 	CdxMessage,
 	CdxProgressBar,
@@ -64,6 +64,14 @@ const settings = useSettingsStore();
 const ui = useUiStore();
 useQuerySync( store );
 useIncompleteDataToast( store );
+
+// A bare visit shows a couple of well-known example files rather than
+// an empty app (the default dates come from ensureDefaultDates).
+onMounted( () => {
+	if ( !store.files.length ) {
+		store.files = [ 'Example.jpg', 'Example.ogg' ];
+	}
+} );
 
 function retry( message ) {
 	ui.dismiss( message.id );
