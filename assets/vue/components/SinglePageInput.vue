@@ -1,7 +1,7 @@
 <template>
 	<CdxField class="app-pages">
 		<template #label>
-			{{ $i18n( 'page-title' ) }}
+			{{ label || $i18n( 'page-title' ) }}
 		</template>
 		<CdxLookup
 			ref="lookup"
@@ -9,8 +9,8 @@
 			v-model:input-value="inputValue"
 			:menu-items="menuItems"
 			:clearable="true"
-			:aria-label="$i18n( 'page-title' )"
-			:placeholder="$i18n( 'article-placeholder' )"
+			:aria-label="label || $i18n( 'page-title' )"
+			:placeholder="placeholder || $i18n( 'article-placeholder' )"
 			@input="onInput"
 			@update:selected="onSelect"
 			@keydown.enter="onEnter"
@@ -39,6 +39,22 @@ const props = defineProps( {
 	project: {
 		type: String,
 		required: true
+	},
+	// Autocomplete usernames (Userviews) instead of page titles: the
+	// prefixsearch runs in the User namespace and results are stripped
+	// to the bare name (no prefix, no subpages).
+	userSearch: {
+		type: Boolean,
+		default: false
+	},
+	// Label override (defaults to "Page title").
+	label: {
+		type: String,
+		default: ''
+	},
+	placeholder: {
+		type: String,
+		default: ''
 	}
 } );
 
@@ -138,16 +154,25 @@ function onInput( value ) {
 			const response = await mwApiGet( props.project, {
 				action: 'query',
 				list: 'prefixsearch',
-				pssearch: value,
-				pslimit: 10,
-				cirrusUseCompletionSuggester: 'yes'
+				...( props.userSearch ?
+					{ pssearch: `User:${ value }`, psnamespace: 2 } :
+					{ pssearch: value, cirrusUseCompletionSuggester: 'yes' }
+				),
+				pslimit: 10
 			} );
 			if ( id !== searchId ) {
 				// Superseded (newer keystroke or an Enter submission).
 				return;
 			}
-			menuItems.value = ( response.query?.prefixsearch || [] )
-				.map( ( { title } ) => ( { value: title, label: title } ) );
+			let titles = ( response.query?.prefixsearch || [] )
+				.map( ( { title } ) => title );
+			if ( props.userSearch ) {
+				// User:Name/subpage → Name, deduplicated.
+				titles = [ ...new Set( titles.map(
+					( title ) => title.split( '/' )[ 0 ].slice( title.indexOf( ':' ) + 1 )
+				) ) ];
+			}
+			menuItems.value = titles.map( ( title ) => ( { value: title, label: title } ) );
 		} catch {
 			// Autocomplete failures are non-fatal; just show no matches.
 			if ( id === searchId ) {

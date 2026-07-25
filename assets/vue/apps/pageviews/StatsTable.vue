@@ -28,7 +28,7 @@
 	</template>
 	<DataTable
 		v-else-if="rows.length"
-		:caption="$i18n( 'pageviews-title' )"
+		:caption="$i18n( 'title' )"
 		:columns="columns"
 		:rows="rows"
 		default-sort="views"
