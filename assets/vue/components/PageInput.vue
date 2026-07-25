@@ -41,7 +41,7 @@ import { usePageviewsStore } from '../stores/pageviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
-import { PALETTE, seriesColor } from '../charts/palette.js';
+import { PALETTE, seriesTint } from '../charts/palette.js';
 import { banana } from '../i18n.js';
 
 const MAX_PAGES = 10;
@@ -50,7 +50,7 @@ const DEBOUNCE_MS = 200;
 // Each chip is tinted with its series color, making the chips double as
 // the chart legend (the ECharts legend is disabled).
 const paletteVars = Object.fromEntries(
-	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesColor( i ) ] )
+	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesTint( i ) ] )
 );
 
 const store = usePageviewsStore();

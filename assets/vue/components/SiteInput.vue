@@ -44,7 +44,7 @@ import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/c
 import { cdxIconClear } from '@wikimedia/codex-icons';
 import { MAX_SITES, useSiteviewsStore } from '../stores/siteviews.js';
 import { useUiStore } from '../stores/ui.js';
-import { PALETTE, seriesColor } from '../charts/palette.js';
+import { PALETTE, seriesTint } from '../charts/palette.js';
 import { getProjects } from '../projects.js';
 import { banana } from '../i18n.js';
 
@@ -62,7 +62,7 @@ defineProps( {
 // Each chip is tinted with its series color, making the chips double as
 // the chart legend (the ECharts legend is disabled).
 const paletteVars = Object.fromEntries(
-	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesColor( i ) ] )
+	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesTint( i ) ] )
 );
 
 const store = useSiteviewsStore();

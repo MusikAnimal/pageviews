@@ -38,7 +38,7 @@ import { storeToRefs } from 'pinia';
 import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
 import { cdxIconClear } from '@wikimedia/codex-icons';
 import { MAX_FILES, useMediaviewsStore } from '../stores/mediaviews.js';
-import { PALETTE, seriesColor } from '../charts/palette.js';
+import { PALETTE, seriesTint } from '../charts/palette.js';
 import { mwApiGet } from '../lib/mwApi.js';
 
 const DEBOUNCE_MS = 200;
@@ -46,7 +46,7 @@ const DEBOUNCE_MS = 200;
 // Each chip is tinted with its series color, making the chips double as
 // the chart legend (the ECharts legend is disabled).
 const paletteVars = Object.fromEntries(
-	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesColor( i ) ] )
+	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesTint( i ) ] )
 );
 
 const store = useMediaviewsStore();

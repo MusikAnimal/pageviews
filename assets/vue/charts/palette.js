@@ -31,3 +31,19 @@ export function seriesColor( index, alpha = 1 ) {
 	const [ r, g, b ] = PALETTE[ index % PALETTE.length ];
 	return `rgba(${ r }, ${ g }, ${ b }, ${ alpha })`;
 }
+
+/**
+ * A pastel take on a series color for tinted backgrounds (the input
+ * chips): blended toward white — rather than an actual alpha, which
+ * would sink into the dark-mode background — so the chips stay light
+ * and their dark text readable in both color modes.
+ *
+ * @param {number} index Series position; wraps beyond the palette size.
+ * @param {number} [strength] The series color's share of the blend.
+ * @return {string} rgb() color.
+ */
+export function seriesTint( index, strength = 0.5 ) {
+	const [ r, g, b ] = PALETTE[ index % PALETTE.length ]
+		.map( ( channel ) => Math.round( channel * strength + 255 * ( 1 - strength ) ) );
+	return `rgb(${ r }, ${ g }, ${ b })`;
+}
