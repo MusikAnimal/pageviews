@@ -13,101 +13,85 @@
 		·
 		<strong>{{ summary.views }}</strong>
 	</p>
-	<table v-else-if="rows.length" class="app-stats">
-		<thead>
-			<tr>
-				<th />
-				<th
-					v-for="column in columns"
-					:key="column.key"
-					:aria-sort="ariaSort( column.key )"
-				>
-					<button
-						v-if="column.sortable"
-						class="app-stats__sort"
-						@click="sortBy( column.key )"
-					>
-						{{ column.label }}
-					</button>
-					<template v-else>
-						{{ column.label }}
-					</template>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr v-for="row in rows" :key="row.site">
-				<td>
-					<span class="app-stats__color" :style="{ background: row.color }" />
-				</td>
-				<td>
-					<a :href="`https://${ row.site }`" target="_blank">{{ row.site }}</a>
-				</td>
-				<td v-if="showSum" class="app-stats__number">
-					{{ number( row.views ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ number( Math.round( row.average ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.edits === null ? '?' : number( row.edits ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.editors === null ? '?' : number( Math.round( row.editors ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.editedPages === null ? '?' : number( row.editedPages ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.newPages === null ? '?' : number( row.newPages ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.netBytes === null ? '?' : number( row.netBytes ) }}
-				</td>
-				<td>
-					<a :href="topviewsUrl( row.site )" target="_blank">
-						{{ $i18n( 'most-viewed-pages' ) }}
-					</a>
-				</td>
-			</tr>
-		</tbody>
-		<tfoot v-if="rows.length > 1 && store.totals">
-			<tr>
-				<td />
-				<th>{{ $i18n( 'num-projects', number( rows.length ), rows.length ) }}</th>
-				<td v-if="showSum" class="app-stats__number">
-					{{ number( store.totals.total ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ number( Math.round( store.totals.average ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editsTotal( 'edits' ) === null ? '?' : number( editsTotal( 'edits' ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editsTotal( 'editors' ) === null ?
-						'?' : number( Math.round( editsTotal( 'editors' ) ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editsTotal( 'editedPages' ) === null ?
-						'?' : number( editsTotal( 'editedPages' ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editsTotal( 'newPages' ) === null ?
-						'?' : number( editsTotal( 'newPages' ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editsTotal( 'netBytes' ) === null ?
-						'?' : number( editsTotal( 'netBytes' ) ) }}
-				</td>
-				<td />
-			</tr>
-		</tfoot>
-	</table>
+	<DataTable
+		v-else-if="rows.length"
+		:caption="$i18n( 'siteviews-title' )"
+		:columns="columns"
+		:rows="rows"
+		default-sort="views"
+	>
+		<template #item-color="{ item }">
+			<span class="app-stats__color" :style="{ background: item }" />
+		</template>
+		<template #item-site="{ item }">
+			<a :href="`https://${ item }`" target="_blank">{{ item }}</a>
+		</template>
+		<template #item-views="{ item }">
+			{{ number( item ) }}
+		</template>
+		<template #item-average="{ item }">
+			{{ number( Math.round( item ) ) }}
+		</template>
+		<template #item-edits="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-editors="{ item }">
+			{{ item === null ? '?' : number( Math.round( item ) ) }}
+		</template>
+		<template #item-editedPages="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-newPages="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-netBytes="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-links="{ row }">
+			<a :href="topviewsUrl( row.site )" target="_blank">
+				{{ $i18n( 'most-viewed-pages' ) }}
+			</a>
+		</template>
+		<template v-if="rows.length > 1 && store.totals" #tfoot>
+			<tfoot>
+				<tr>
+					<td />
+					<th>{{ $i18n( 'num-projects', number( rows.length ), rows.length ) }}</th>
+					<td v-if="showSum" class="app-stats__number">
+						{{ number( store.totals.total ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( Math.round( store.totals.average ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editsTotal( 'edits' ) === null ? '?' : number( editsTotal( 'edits' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editsTotal( 'editors' ) === null ?
+							'?' : number( Math.round( editsTotal( 'editors' ) ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editsTotal( 'editedPages' ) === null ?
+							'?' : number( editsTotal( 'editedPages' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editsTotal( 'newPages' ) === null ?
+							'?' : number( editsTotal( 'newPages' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editsTotal( 'netBytes' ) === null ?
+							'?' : number( editsTotal( 'netBytes' ) ) }}
+					</td>
+					<td />
+				</tr>
+			</tfoot>
+		</template>
+	</DataTable>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import DataTable from '../../components/DataTable.vue';
 import { useSiteviewsStore } from '../../stores/siteviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
@@ -120,40 +104,41 @@ const store = useSiteviewsStore();
 const settings = useSettingsStore();
 const preferences = usePreferencesStore();
 
-const sortKey = ref( 'views' );
-const sortDescending = ref( true );
-
 const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
 // Unique devices are not additive across days: no sum column (legacy).
 const showSum = computed( () => store.source !== 'unique-devices' );
 
 const columns = computed( () => [
+	{ key: 'color', label: '', sortable: false },
 	{ key: 'site', label: banana.i18n( 'project' ), sortable: true },
 	...( showSum.value ?
 		[ {
 			key: 'views',
 			label: banana.i18n( store.source === 'pagecounts' ? 'counts' : 'views' ),
-			sortable: true
+			sortable: true,
+			numeric: true
 		} ] :
 		[]
 	),
 	{
 		key: 'average',
 		label: banana.i18n( settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average' ),
-		sortable: true
+		sortable: true,
+		numeric: true
 	},
-	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
+	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true, numeric: true },
 	{
 		key: 'editors',
 		label: `${ banana.i18n( 'editors' ) } (${ banana.i18n(
 			settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average'
 		).toLowerCase() })`,
-		sortable: true
+		sortable: true,
+		numeric: true
 	},
-	{ key: 'editedPages', label: banana.i18n( 'pages-edited' ), sortable: true },
-	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true },
-	{ key: 'netBytes', label: banana.i18n( 'net-bytes' ), sortable: true },
+	{ key: 'editedPages', label: banana.i18n( 'pages-edited' ), sortable: true, numeric: true },
+	{ key: 'newPages', label: banana.i18n( 'pages-created' ), sortable: true, numeric: true },
+	{ key: 'netBytes', label: banana.i18n( 'net-bytes' ), sortable: true, numeric: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
 
@@ -187,32 +172,20 @@ const summary = computed( () => {
 	};
 } );
 
-const rows = computed( () => {
-	const unsorted = store.series.map( ( site, index ) => ( {
-		site: site.site,
-		color: seriesColor( index ),
-		views: site.total,
-		average: site.average,
-		// null = the edits fetch is pending, failed or had no data.
-		// Distinct editors are not additive across days: their
-		// per-day/month average is shown instead of a total.
-		edits: editStat( site.site, 'edits' ),
-		editors: editStat( site.site, 'editors', 'average' ),
-		editedPages: editStat( site.site, 'editedPages' ),
-		newPages: editStat( site.site, 'newPages' ),
-		netBytes: editStat( site.site, 'netBytes' )
-	} ) );
-
-	const key = sortKey.value;
-	const direction = sortDescending.value ? -1 : 1;
-	return unsorted.sort( ( a, b ) => {
-		const [ x, y ] = [ a[ key ], b[ key ] ];
-		if ( typeof x === 'string' || typeof y === 'string' ) {
-			return direction * String( x ?? '' ).localeCompare( String( y ?? '' ) );
-		}
-		return direction * ( ( x ?? -1 ) - ( y ?? -1 ) );
-	} );
-} );
+const rows = computed( () => store.series.map( ( site, index ) => ( {
+	site: site.site,
+	color: seriesColor( index ),
+	views: site.total,
+	average: site.average,
+	// null = the edits fetch is pending, failed or had no data.
+	// Distinct editors are not additive across days: their
+	// per-day/month average is shown instead of a total.
+	edits: editStat( site.site, 'edits' ),
+	editors: editStat( site.site, 'editors', 'average' ),
+	editedPages: editStat( site.site, 'editedPages' ),
+	newPages: editStat( site.site, 'newPages' ),
+	netBytes: editStat( site.site, 'netBytes' )
+} ) ) );
 
 function editStat( site, metric, field = 'total' ) {
 	return store.editsData && !store.editsData.noData ?
@@ -226,23 +199,6 @@ function editsTotal( metric ) {
 	}
 	const totals = store.editsData.totals[ metric ];
 	return totals ? ( metric === 'editors' ? totals.average : totals.total ) : null;
-}
-
-function sortBy( key ) {
-	if ( sortKey.value === key ) {
-		sortDescending.value = !sortDescending.value;
-	} else {
-		sortKey.value = key;
-		// Numbers read best descending first; site names ascending.
-		sortDescending.value = key !== 'site';
-	}
-}
-
-function ariaSort( key ) {
-	if ( sortKey.value !== key ) {
-		return undefined;
-	}
-	return sortDescending.value ? 'descending' : 'ascending';
 }
 
 function topviewsUrl( site ) {

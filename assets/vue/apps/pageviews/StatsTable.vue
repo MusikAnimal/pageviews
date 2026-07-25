@@ -26,114 +26,98 @@
 		/>
 		<!-- eslint-enable vue/no-v-html -->
 	</template>
-	<table v-else-if="rows.length" class="app-stats">
-		<thead>
-			<tr>
-				<th />
-				<th
-					v-for="column in columns"
-					:key="column.key"
-					:aria-sort="ariaSort( column.key )"
+	<DataTable
+		v-else-if="rows.length"
+		:caption="$i18n( 'pageviews-title' )"
+		:columns="columns"
+		:rows="rows"
+		default-sort="views"
+	>
+		<template #item-color="{ item }">
+			<span class="app-stats__color" :style="{ background: item }" />
+		</template>
+		<template #item-title="{ item }">
+			<a :href="pageUrl( item )" target="_blank">{{ item }}</a>
+		</template>
+		<template #item-assessment="{ item }">
+			<template v-if="item">
+				<img
+					v-if="item.badge"
+					class="app-stats__badge"
+					:src="item.badge"
+					:alt="item.class"
 				>
-					<button
-						v-if="column.sortable"
-						class="app-stats__sort"
-						@click="sortBy( column.key )"
-					>
-						{{ column.label }}
-					</button>
-					<template v-else>
-						{{ column.label }}
-					</template>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr v-for="row in rows" :key="row.title">
-				<td>
-					<span class="app-stats__color" :style="{ background: row.color }" />
-				</td>
-				<td>
-					<a :href="pageUrl( row.title )" target="_blank">{{ row.title }}</a>
-				</td>
-				<td v-if="hasAssessment">
-					<template v-if="row.assessment">
-						<img
-							v-if="row.assessment.badge"
-							class="app-stats__badge"
-							:src="row.assessment.badge"
-							:alt="row.assessment.class"
-						>
-						{{ row.assessment.class }}
-					</template>
-				</td>
-				<td class="app-stats__number">
-					{{ number( row.views ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ number( Math.round( row.average ) ) }}
-				</td>
-				<td class="app-stats__number">
-					<a
-						v-if="row.edits !== null"
-						:href="historyUrl( row.title )"
-						target="_blank"
-					>{{ number( row.edits ) }}</a>
-					<template v-else>
-						?
-					</template>
-				</td>
-				<td class="app-stats__number">
-					{{ row.editors === null ? '?' : number( row.editors ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ row.size === null ? '?' : number( row.size ) }}
-				</td>
-				<td v-if="hasProtection">
-					{{ row.protection === null ? '' : ( row.protection || $i18n( 'none' ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ watchersLabel( row.watchers ) }}
-				</td>
-				<td>
-					<!-- Cross-app links land here later. -->
-				</td>
-			</tr>
-		</tbody>
-		<tfoot v-if="rows.length > 1 && store.totals">
-			<tr>
-				<td />
-				<th>{{ $i18n( 'num-pages', number( rows.length ), rows.length ) }}</th>
-				<td v-if="hasAssessment" />
-				<td class="app-stats__number">
-					{{ number( store.totals.total ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ number( Math.round( store.totals.average ) ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ editTotals ? number( editTotals.num_edits ) : '?' }}
-				</td>
-				<td class="app-stats__number">
-					{{ editTotals ? number( editTotals.num_users ) : '?' }}
-				</td>
-				<td class="app-stats__number">
-					{{ sizeTotal === null ? '?' : number( sizeTotal ) }}
-				</td>
-				<td v-if="hasProtection">
-					{{ $i18n( 'num-protections', number( protectionsTotal ), protectionsTotal ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ watchersTotal === null ? '?' : number( watchersTotal ) }}
-				</td>
-				<td />
-			</tr>
-		</tfoot>
-	</table>
+				{{ item.class }}
+			</template>
+		</template>
+		<template #item-views="{ item }">
+			{{ number( item ) }}
+		</template>
+		<template #item-average="{ item }">
+			{{ number( Math.round( item ) ) }}
+		</template>
+		<template #item-edits="{ item, row }">
+			<a
+				v-if="item !== null"
+				:href="historyUrl( row.title )"
+				target="_blank"
+			>{{ number( item ) }}</a>
+			<template v-else>
+				?
+			</template>
+		</template>
+		<template #item-editors="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-size="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-protection="{ item }">
+			{{ item === null ? '' : ( item || $i18n( 'none' ) ) }}
+		</template>
+		<template #item-watchers="{ item }">
+			{{ watchersLabel( item ) }}
+		</template>
+		<template #item-links>
+			<!-- Cross-app links land here later. -->
+		</template>
+		<template v-if="rows.length > 1 && store.totals" #tfoot>
+			<tfoot>
+				<tr>
+					<td />
+					<th>{{ $i18n( 'num-pages', number( rows.length ), rows.length ) }}</th>
+					<td v-if="hasAssessment" />
+					<td class="app-stats__number">
+						{{ number( store.totals.total ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( Math.round( store.totals.average ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ editTotals ? number( editTotals.num_edits ) : '?' }}
+					</td>
+					<td class="app-stats__number">
+						{{ editTotals ? number( editTotals.num_users ) : '?' }}
+					</td>
+					<td class="app-stats__number">
+						{{ sizeTotal === null ? '?' : number( sizeTotal ) }}
+					</td>
+					<td v-if="hasProtection">
+						{{ $i18n( 'num-protections', number( protectionsTotal ), protectionsTotal ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ watchersTotal === null ? '?' : number( watchersTotal ) }}
+					</td>
+					<td />
+				</tr>
+			</tfoot>
+		</template>
+	</DataTable>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import DataTable from '../../components/DataTable.vue';
 import { usePageviewsStore } from '../../stores/pageviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
@@ -150,9 +134,6 @@ const WATCHER_THRESHOLD = 30;
 const store = usePageviewsStore();
 const settings = useSettingsStore();
 const preferences = usePreferencesStore();
-
-const sortKey = ref( 'views' );
-const sortDescending = ref( true );
 
 const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
@@ -204,41 +185,25 @@ const rankHtml = computed( () => {
 	return rawI18n( 'most-viewed-rank', number( rank ), link, monthLabel );
 } );
 
-const rows = computed( () => {
-	const unsorted = store.series.map( ( page, index ) => {
-		const edits = store.editData?.pages?.[ page.title ] ?? null;
-		const info = store.pageInfo?.[ page.title ] ?? null;
-		return {
-			title: page.title,
-			color: seriesColor( index ),
-			assessment: edits?.assessment ?? null,
-			views: page.total,
-			average: page.average,
-			edits: edits ? Number( edits.num_edits ) : null,
-			editors: edits ? Number( edits.num_users ) : null,
-			size: info ? info.length ?? 0 : null,
-			// null = info unavailable; '' = loaded but unprotected.
-			protection: info ? ( editProtectionLevel( info ) ?? '' ) : null,
-			// null = info unavailable; undefined = hidden by the wiki
-			// (below the unwatched-pages threshold).
-			watchers: info ? info.watchers : null
-		};
-	} );
-
-	const key = sortKey.value;
-	const direction = sortDescending.value ? -1 : 1;
-	// Assessments sort by their class name.
-	const accessor = ( row ) => key === 'assessment' ?
-		row.assessment?.class ?? '' :
-		row[ key ];
-	return unsorted.sort( ( a, b ) => {
-		const [ x, y ] = [ accessor( a ), accessor( b ) ];
-		if ( typeof x === 'string' || typeof y === 'string' ) {
-			return direction * String( x ?? '' ).localeCompare( String( y ?? '' ) );
-		}
-		return direction * ( ( x ?? -1 ) - ( y ?? -1 ) );
-	} );
-} );
+const rows = computed( () => store.series.map( ( page, index ) => {
+	const edits = store.editData?.pages?.[ page.title ] ?? null;
+	const info = store.pageInfo?.[ page.title ] ?? null;
+	return {
+		title: page.title,
+		color: seriesColor( index ),
+		assessment: edits?.assessment ?? null,
+		views: page.total,
+		average: page.average,
+		edits: edits ? Number( edits.num_edits ) : null,
+		editors: edits ? Number( edits.num_users ) : null,
+		size: info ? info.length ?? 0 : null,
+		// null = info unavailable; '' = loaded but unprotected.
+		protection: info ? ( editProtectionLevel( info ) ?? '' ) : null,
+		// null = info unavailable; undefined = hidden by the wiki
+		// (below the unwatched-pages threshold).
+		watchers: info ? info.watchers : null
+	};
+} ) );
 
 // Like the legacy tool, the Class and Protection columns only appear
 // when at least one page has something to show there.
@@ -246,25 +211,33 @@ const hasAssessment = computed( () => rows.value.some( ( row ) => row.assessment
 const hasProtection = computed( () => rows.value.some( ( row ) => row.protection ) );
 
 const columns = computed( () => [
+	{ key: 'color', label: '', sortable: false },
 	{ key: 'title', label: banana.i18n( 'page-title' ), sortable: true },
 	...( hasAssessment.value ?
-		[ { key: 'assessment', label: banana.i18n( 'class' ), sortable: true } ] :
+		[ {
+			key: 'assessment',
+			label: banana.i18n( 'class' ),
+			sortable: true,
+			// Assessments sort by their class name.
+			sortValue: ( row ) => row.assessment?.class ?? ''
+		} ] :
 		[]
 	),
-	{ key: 'views', label: banana.i18n( 'views' ), sortable: true },
+	{ key: 'views', label: banana.i18n( 'views' ), sortable: true, numeric: true },
 	{
 		key: 'average',
 		label: banana.i18n( settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average' ),
-		sortable: true
+		sortable: true,
+		numeric: true
 	},
-	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true },
-	{ key: 'editors', label: banana.i18n( 'editors' ), sortable: true },
-	{ key: 'size', label: banana.i18n( 'size' ), sortable: true },
+	{ key: 'edits', label: banana.i18n( 'edits' ), sortable: true, numeric: true },
+	{ key: 'editors', label: banana.i18n( 'editors' ), sortable: true, numeric: true },
+	{ key: 'size', label: banana.i18n( 'size' ), sortable: true, numeric: true },
 	...( hasProtection.value ?
 		[ { key: 'protection', label: banana.i18n( 'protection' ), sortable: true } ] :
 		[]
 	),
-	{ key: 'watchers', label: banana.i18n( 'watchers' ), sortable: true },
+	{ key: 'watchers', label: banana.i18n( 'watchers' ), sortable: true, numeric: true },
 	{ key: 'links', label: banana.i18n( 'links' ), sortable: false }
 ] );
 
@@ -293,23 +266,6 @@ function watchersLabel( watchers ) {
 		return banana.i18n( 'fewer-than', number( WATCHER_THRESHOLD ) );
 	}
 	return number( watchers );
-}
-
-function sortBy( key ) {
-	if ( sortKey.value === key ) {
-		sortDescending.value = !sortDescending.value;
-	} else {
-		sortKey.value = key;
-		// Numbers read best descending first; titles ascending.
-		sortDescending.value = key !== 'title';
-	}
-}
-
-function ariaSort( key ) {
-	if ( sortKey.value !== key ) {
-		return undefined;
-	}
-	return sortDescending.value ? 'descending' : 'ascending';
 }
 
 function pageUrl( title ) {
