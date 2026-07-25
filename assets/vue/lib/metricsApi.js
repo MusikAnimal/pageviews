@@ -7,10 +7,28 @@ import { promisePool } from './queue.js';
  * pool, which is also what drives the progress bar in list apps.
  */
 
-const CHUNK_SIZE = 50;
+// The server accepts at most this many pages per request.
+const MAX_CHUNK_SIZE = 50;
 // Kept low: the server already fans each chunk out to AQS in waves,
 // and AQS rate-limits aggressive bursts per IP.
 const CONCURRENCY = 2;
+// Chunks are sized so the fan-out yields at least about this many
+// progress ticks: a small set gets small chunks (and a lively bar)
+// while large sets keep full chunks, where progress is smooth anyway
+// and the per-request overhead matters more.
+const TARGET_PROGRESS_TICKS = 12;
+const MIN_CHUNK_SIZE = 5;
+
+/**
+ * @param {number} total Number of pages being fetched.
+ * @return {number} Pages per request.
+ */
+function chunkSize( total ) {
+	return Math.min(
+		MAX_CHUNK_SIZE,
+		Math.max( MIN_CHUNK_SIZE, Math.ceil( total / TARGET_PROGRESS_TICKS ) )
+	);
+}
 
 /**
  * Fetch per-article pageview timeseries for any number of pages.
@@ -40,9 +58,10 @@ export async function fetchPageviews( {
 	onProgress,
 	signal
 } ) {
+	const size = chunkSize( pages.length );
 	const chunks = [];
-	for ( let i = 0; i < pages.length; i += CHUNK_SIZE ) {
-		chunks.push( pages.slice( i, i + CHUNK_SIZE ) );
+	for ( let i = 0; i < pages.length; i += size ) {
+		chunks.push( pages.slice( i, i + size ) );
 	}
 
 	const results = await promisePool(

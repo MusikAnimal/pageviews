@@ -59,13 +59,44 @@ describe( 'fetchPageviews', () => {
 			onProgress: ( done, total ) => progress.push( [ done, total ] )
 		} );
 
-		// 120 pages => chunks of 50 + 50 + 20.
-		expect( impl ).toHaveBeenCalledTimes( 3 );
-		expect( progress ).toContainEqual( [ 3, 3 ] );
+		// Chunks are sized for ~12 progress ticks: 120 pages => 12
+		// chunks of 10.
+		expect( impl ).toHaveBeenCalledTimes( 12 );
+		expect( progress ).toContainEqual( [ 12, 12 ] );
 		expect( result.pages ).toHaveLength( 120 );
 		// Totals are recomputed across all chunks: 120 * [1, 2].
 		expect( result.totals.counts ).toEqual( [ 120, 240 ] );
 		expect( result.totals.total ).toBe( 360 );
+	} );
+
+	it( 'clamps the dynamic chunk size between 5 and the server cap', async () => {
+		const sizes = [];
+		const impl = vi.fn( ( url ) => {
+			const requested = new URL( url, 'http://localhost' )
+				.searchParams.get( 'pages' ).split( '|' );
+			sizes.push( requested.length );
+			return Promise.resolve( {
+				ok: true,
+				json: () => Promise.resolve( chunkResponse( requested ) )
+			} );
+		} );
+		vi.stubGlobal( 'fetch', impl );
+		const query = ( length ) => fetchPageviews( {
+			project: 'en.wikipedia',
+			pages: Array.from( { length }, ( _, i ) => `Page ${ i }` ),
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} );
+
+		// Tiny sets never go below 5 pages per chunk.
+		await query( 20 );
+		expect( sizes ).toEqual( [ 5, 5, 5, 5 ] );
+
+		// Large sets never exceed the server's 50-page cap.
+		sizes.length = 0;
+		await query( 1000 );
+		expect( Math.max( ...sizes ) ).toBe( 50 );
+		expect( sizes ).toHaveLength( 20 );
 	} );
 
 	it( 'surfaces the error envelope as ApiError', async () => {
