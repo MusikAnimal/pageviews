@@ -122,6 +122,11 @@ async function onEnter() {
 		page.value = inputValue.value;
 	}
 	if ( page.value ) {
+		// Blurring closes the suggestion menu in every case — clearing
+		// menuItems can't be done when a selection landed (Codex drops
+		// a selection that vanishes from the menu). The legacy tool
+		// likewise blurred the active input when processing started.
+		lookup.value?.$el?.querySelector( 'input' )?.blur();
 		emit( 'submit' );
 	}
 }
