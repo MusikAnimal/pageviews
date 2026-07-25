@@ -12,10 +12,11 @@ import { mwApiQueryAll } from './mwApi.js';
  *
  * @param {string} project
  * @param {string[]} titles Target page titles.
+ * @param {AbortSignal} [signal]
  * @return {Promise<Object>} Map of target title => array of
  *   { title, fragment } redirect entries.
  */
-export async function getRedirects( project, titles ) {
+export async function getRedirects( project, titles, signal = undefined ) {
 	const pages = await mwApiQueryAll(
 		project,
 		{
@@ -25,7 +26,9 @@ export async function getRedirects( project, titles ) {
 			rdlimit: 'max',
 			titles
 		},
-		( response ) => response.query?.pages || []
+		( response ) => response.query?.pages || [],
+		20000,
+		signal
 	);
 
 	const map = Object.fromEntries( titles.map( ( title ) => [ title, [] ] ) );

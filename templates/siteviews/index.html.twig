@@ -11,5 +11,20 @@
 			</div>
 		</div>
 
+		<div class="app-workspace">
+			<form class="app-settings" aria-label="{{ msg( 'options' ) }}">
+				<header class="app-workspace__heading">
+					<h3>{{ msg( 'options' ) }}</h3>
+				</header>
+			</form>
+
+			<figure class="app-visualization" aria-label="{{ msg( 'visualization' ) }}"></figure>
+
+			<figure class="app-totals" aria-labelledby="app-totals__caption">
+				<figcaption id="app-totals__caption" class="app-totals__caption app-workspace__heading">
+					{{ msg( 'totals' ) }}
+				</figcaption>
+			</figure>
+		</div>
 	</main>
 {% endblock %}

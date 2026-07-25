@@ -20,10 +20,11 @@ export function apiUrl( project ) {
  * @param {string} project
  * @param {Object} params Query params; format/formatversion/origin are set
  *   for you. Arrays are pipe-joined.
+ * @param {AbortSignal} [signal]
  * @return {Promise<Object>} The parsed response.
  * @throws {ApiError} On HTTP failure or an Action API error response.
  */
-export async function mwApiGet( project, params ) {
+export async function mwApiGet( project, params, signal = undefined ) {
 	const query = new URLSearchParams( {
 		format: 'json',
 		formatversion: '2',
@@ -33,7 +34,7 @@ export async function mwApiGet( project, params ) {
 		query.set( key, Array.isArray( value ) ? value.join( '|' ) : String( value ) );
 	}
 
-	const response = await fetch( `${ apiUrl( project ) }?${ query }` );
+	const response = await fetch( `${ apiUrl( project ) }?${ query }`, { signal } );
 	if ( !response.ok ) {
 		throw new ApiError( {
 			code: 'upstream_error',
@@ -64,15 +65,16 @@ export async function mwApiGet( project, params ) {
  *
  * @param {string} project e.g. 'commons.wikimedia.org'.
  * @param {string[]} names File names without the File: prefix.
+ * @param {AbortSignal} [signal]
  * @return {Promise<Object>}
  */
-export async function getFileInfo( project, names ) {
+export async function getFileInfo( project, names, signal = undefined ) {
 	const response = await mwApiGet( project, {
 		action: 'query',
 		prop: 'imageinfo',
 		iiprop: [ 'mediatype', 'size', 'timestamp', 'url' ],
 		titles: names.map( ( name ) => `File:${ name.replace( /_/g, ' ' ) }` )
-	} );
+	}, signal );
 	const info = {};
 	for ( const page of response.query?.pages || [] ) {
 		const name = page.title.replace( /^[^:]+:/, '' );
@@ -100,15 +102,16 @@ export async function getFileInfo( project, names ) {
  *
  * @param {string} project
  * @param {string[]} titles
+ * @param {AbortSignal} [signal]
  * @return {Promise<Object>} Info objects keyed by (normalized) title.
  */
-export async function getPageInfo( project, titles ) {
+export async function getPageInfo( project, titles, signal = undefined ) {
 	const response = await mwApiGet( project, {
 		action: 'query',
 		prop: 'info',
 		inprop: [ 'watchers', 'protection' ],
 		titles
-	} );
+	}, signal );
 	return Object.fromEntries(
 		( response.query?.pages || [] ).map( ( page ) => [ page.title, page ] )
 	);
@@ -135,14 +138,15 @@ export function editProtectionLevel( info ) {
  *   interest out of each response page.
  * @param {number} [limit] Stop once this many items are collected
  *   (matches the legacy apiLimit of 20000).
+ * @param {AbortSignal} [signal]
  * @return {Promise<Array>} The concatenated extracted items.
  */
-export async function mwApiQueryAll( project, params, extract, limit = 20000 ) {
+export async function mwApiQueryAll( project, params, extract, limit = 20000, signal = undefined ) {
 	const items = [];
 	let continueParams = {};
 
 	do {
-		const response = await mwApiGet( project, { ...params, ...continueParams } );
+		const response = await mwApiGet( project, { ...params, ...continueParams }, signal );
 		items.push( ...extract( response ) );
 		continueParams = response.continue || null;
 	} while ( continueParams && items.length < limit );

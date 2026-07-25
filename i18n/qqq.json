@@ -29,6 +29,7 @@
 		]
 	},
 	"active-users": "Same as 'users' but indicates the users are active in editing activity.",
+	"abort": "Label for the button that cancels an in-progress query and returns to the form.",
 	"adblock-error-title": "Title for error message shown when the user has an ad blocker enabled.",
 	"adblock-error-body1": "Body for error message shown when the user has an ad blocker enabled.",
 	"adblock-error-body2": "Additional text for error message shown when the user has an ad blocker enabled.",

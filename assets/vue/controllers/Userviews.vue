@@ -1,6 +1,6 @@
 <template>
-	<LoadingOverlay v-if="store.status === 'loading'" />
-	<div v-show="!initialLoading" class="app-workspace">
+	<LoadingOverlay v-if="store.status === 'loading'" @abort="store.abort()" />
+	<div class="app-workspace">
 		<!-- List apps fan out many queries, so nothing fires reactively:
 			the form submits explicitly, and the results state replaces
 			it until "Do another query". -->
@@ -155,12 +155,6 @@ function retry( message ) {
 
 const ready = computed(
 	() => store.status === 'complete' && store.dates.length > 0
-);
-
-// The very first load shows nothing but the progress overlay; a
-// re-submission keeps the form up, dimmed underneath it.
-const initialLoading = computed(
-	() => store.status === 'loading' && !store.dates.length
 );
 
 /**

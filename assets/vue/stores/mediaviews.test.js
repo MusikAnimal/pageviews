@@ -65,7 +65,7 @@ describe( 'mediaviews store', () => {
 		await store.load();
 
 		expect( getFileInfo ).toHaveBeenCalledWith(
-			'commons.wikimedia.org', [ 'Example.jpg', 'No_such.png' ]
+			'commons.wikimedia.org', [ 'Example.jpg', 'No_such.png' ], expect.any( AbortSignal )
 		);
 		expect( fetchMediarequests ).toHaveBeenCalledWith( expect.objectContaining( {
 			files: [ '/wikipedia/commons/a/a9/Example.jpg' ],

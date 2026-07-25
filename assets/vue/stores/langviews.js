@@ -4,6 +4,7 @@ import { fetchPageviews } from '../lib/metricsApi.js';
 import { getLangLinks } from '../lib/wikidata.js';
 import { promisePool } from '../lib/queue.js';
 import { banana } from '../i18n.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -87,6 +88,10 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
+	// Cancels the previous cycle's requests whenever a new one starts.
+	const aborter = createLoadAborter();
+	// What abort() returns the app to.
+	let statusBeforeLoad = 'initial';
 
 	/**
 	 * The canonical serialized form of the app params, for the URL query string.
@@ -146,6 +151,9 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 	async function load() {
 		const ui = useUiStore();
 		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests —
+		// including the reset cycle from a cleared form.
+		const signal = aborter.next();
 
 		if ( !page.value ) {
 			status.value = 'initial';
@@ -159,6 +167,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		}
 
 		settings.ensureDefaultDates();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
 		status.value = 'loading';
 		ui.clearMessages();
 
@@ -172,7 +181,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		}
 
 		try {
-			const links = await getLangLinks( project.value, page.value );
+			const links = await getLangLinks( project.value, page.value, signal );
 			if ( id !== loadId ) {
 				return;
 			}
@@ -195,7 +204,8 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 					end: settings.end,
 					platform: platform.value,
 					agent: agent.value,
-					granularity: settings.dateType
+					granularity: settings.dateType,
+					signal
 				} ).then(
 					( result ) => ( { link, result } ),
 					// Non-fatal: a failed language is simply omitted.
@@ -253,6 +263,18 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		}
 	}
 
+	/**
+	 * Cancel the in-flight load (the overlay's Abort button): kills the
+	 * requests and returns to the pre-submission state; the bumped
+	 * loadId drops anything that already settled.
+	 */
+	function abort() {
+		loadId++;
+		aborter.abort();
+		status.value = statusBeforeLoad;
+		useUiStore().clearProgress();
+	}
+
 	return {
 		page,
 		project,
@@ -268,6 +290,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		totals,
 		query,
 		setFromQuery,
-		load
+		load,
+		abort
 	};
 } );

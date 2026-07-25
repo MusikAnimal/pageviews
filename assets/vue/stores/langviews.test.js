@@ -69,6 +69,24 @@ describe( 'langviews store', () => {
 		expect( ui.progress ).toBeNull();
 	} );
 
+	it( 'abort() cancels the load and restores the previous state', async () => {
+		const store = useLangviewsStore();
+		const ui = useUiStore();
+		store.page = 'Cat';
+		// A load that never settles, as if requests were in flight.
+		getLangLinks.mockReturnValue( new Promise( () => {} ) );
+
+		store.load();
+		expect( store.status ).toBe( 'loading' );
+
+		store.abort();
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.progress ).toBeNull();
+		// The aborted cycle's signal is flagged, so its in-flight
+		// requests reject instead of landing.
+		expect( getLangLinks.mock.calls[ 0 ][ 2 ].aborted ).toBe( true );
+	} );
+
 	it( 'errors gracefully when the page has no Wikidata item', async () => {
 		const store = useLangviewsStore();
 		const ui = useUiStore();

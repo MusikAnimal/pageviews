@@ -4,6 +4,7 @@ import { fetchPagesCreated, fetchPageviews } from '../lib/metricsApi.js';
 import { getSiteinfo } from '../projects.js';
 import { mwApiGet } from '../lib/mwApi.js';
 import { banana } from '../i18n.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -107,6 +108,10 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
+	// Cancels the previous cycle's requests whenever a new one starts.
+	const aborter = createLoadAborter();
+	// What abort() returns the app to.
+	let statusBeforeLoad = 'initial';
 
 	/**
 	 * The canonical serialized form of the app params, for the URL query string.
@@ -171,15 +176,16 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	 * one-shot editCountWarning signal the controller toasts.
 	 *
 	 * @param {number} id The loadId this check belongs to.
+	 * @param {AbortSignal} signal
 	 */
-	async function checkEditCount( id ) {
+	async function checkEditCount( id, signal ) {
 		try {
 			const response = await mwApiGet( project.value, {
 				action: 'query',
 				list: 'users',
 				ususers: user.value.replace( /_/g, ' ' ),
 				usprop: 'editcount'
-			} );
+			}, signal );
 			const count = response.query?.users?.[ 0 ]?.editcount ?? 0;
 			if ( id === loadId && status.value === 'loading' && count > EDIT_COUNT_WARNING ) {
 				editCountWarning.value = {
@@ -200,6 +206,9 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	async function load() {
 		const ui = useUiStore();
 		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests —
+		// including the reset cycle from a cleared form.
+		const signal = aborter.next();
 
 		if ( !user.value ) {
 			status.value = 'initial';
@@ -212,6 +221,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		}
 
 		settings.ensureDefaultDates();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
 		status.value = 'loading';
 		editCountWarning.value = null;
 		ui.clearMessages();
@@ -226,14 +236,15 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		}
 
 		// Fire-and-forget by design (see the function docs).
-		checkEditCount( id );
+		checkEditCount( id, signal );
 
 		try {
 			const created = await fetchPagesCreated( {
 				project: project.value,
 				user: user.value,
 				namespace: namespace.value,
-				redirects: redirects.value
+				redirects: redirects.value,
+				signal
 			} );
 			if ( id !== loadId ) {
 				return;
@@ -282,7 +293,8 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 				platform: platform.value,
 				agent: agent.value,
 				granularity: settings.dateType,
-				onProgress: ui.setProgress
+				onProgress: ui.setProgress,
+				signal
 			} );
 			if ( id !== loadId ) {
 				return;
@@ -330,6 +342,18 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		}
 	}
 
+	/**
+	 * Cancel the in-flight load (the overlay's Abort button): kills the
+	 * requests and returns to the pre-submission state; the bumped
+	 * loadId drops anything that already settled.
+	 */
+	function abort() {
+		loadId++;
+		aborter.abort();
+		status.value = statusBeforeLoad;
+		useUiStore().clearProgress();
+	}
+
 	return {
 		user,
 		project,
@@ -348,6 +372,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		editCountWarning,
 		query,
 		setFromQuery,
-		load
+		load,
+		abort
 	};
 } );

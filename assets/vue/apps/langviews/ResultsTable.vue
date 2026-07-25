@@ -13,7 +13,9 @@
 		<template #tbody="slotProps">
 			<tbody>
 				<tr v-if="store.totals" class="app-stats__totals">
-					<th scope="row">{{ $i18n( 'totals' ) }}</th>
+					<th scope="row">
+						{{ $i18n( 'totals' ) }}
+					</th>
 					<td>{{ $i18n( 'num-languages', number( rows.length ) ) }}</td>
 					<td>{{ $i18n( 'unique-titles', number( uniqueTitles ) ) }}</td>
 					<td>

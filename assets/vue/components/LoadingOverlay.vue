@@ -23,12 +23,19 @@
 			<div v-if="ui.progress" class="app-progress-bar__counts">
 				{{ $i18n( 'processing', `${ ui.progress.done } / ${ ui.progress.total }` ) }}
 			</div>
+			<CdxButton
+				class="app-progress-bar__abort"
+				weight="quiet"
+				@click="emit( 'abort' )"
+			>
+				{{ $i18n( 'abort' ) }}
+			</CdxButton>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { CdxProgressBar } from '@wikimedia/codex';
+import { CdxButton, CdxProgressBar } from '@wikimedia/codex';
 import { useUiStore } from '../stores/ui.js';
 
 /**
@@ -37,6 +44,10 @@ import { useUiStore } from '../stores/ui.js';
  * counting completed requests), then a determinate meter with a
  * done/total readout. Styles live in app.less, shared with the Twig
  * FOUC skeletons.
+ *
+ * abort: the user hit Abort — the parent should cancel the in-flight
+ * load (store.abort()) and return to the pre-submission state.
  */
+const emit = defineEmits( [ 'abort' ] );
 const ui = useUiStore();
 </script>

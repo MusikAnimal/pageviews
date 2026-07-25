@@ -7,6 +7,7 @@ import {
 	parseDate
 } from '../lib/dates.js';
 import { banana } from '../i18n.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -166,6 +167,10 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
+	// Cancels the previous cycle's requests whenever a new one starts.
+	const aborter = createLoadAborter();
+	// What abort() returns the app to.
+	let statusBeforeLoad = 'initial';
 
 	// Keep the platform vocabulary in step with the source; sync so the
 	// two are never observed mismatched. All-projects only exists for
@@ -236,6 +241,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	// Guards against out-of-order edits responses; independent of the
 	// main loadId so editor/page-type changes refetch only the edits.
 	let editsLoadId = 0;
+	const editsAborter = createLoadAborter();
 
 	/**
 	 * Ranged edit counts per site. Non-fatal and supplementary: the
@@ -244,6 +250,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 */
 	async function loadEdits() {
 		const id = ++editsLoadId;
+		const editsSignal = editsAborter.next();
 		editsData.value = null;
 		if ( !sites.value.length ) {
 			return;
@@ -255,7 +262,8 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 				end: settings.end,
 				editorType: editorType.value,
 				pageType: pageType.value,
-				granularity: settings.dateType
+				granularity: settings.dateType,
+				signal: editsSignal
 			} );
 			if ( id !== editsLoadId ) {
 				return;
@@ -294,6 +302,9 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	async function load() {
 		const ui = useUiStore();
 		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests —
+		// including the reset cycle from a cleared form.
+		const signal = aborter.next();
 
 		if ( !sites.value.length ) {
 			status.value = 'initial';
@@ -305,6 +316,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		}
 
 		settings.ensureDefaultDates();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
 		status.value = 'loading';
 		ui.clearMessages();
 
@@ -328,7 +340,8 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 				end: settings.end,
 				platform: platform.value,
 				agent: agent.value,
-				granularity: settings.dateType
+				granularity: settings.dateType,
+				signal
 			} );
 
 			if ( id !== loadId ) {
@@ -359,6 +372,20 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		}
 	}
 
+	/**
+	 * Cancel the in-flight load (the overlay's Abort button): kills the
+	 * requests and returns to the pre-submission state; the bumped
+	 * loadId drops anything that already settled.
+	 */
+	function abort() {
+		loadId++;
+		editsLoadId++;
+		aborter.abort();
+		editsAborter.abort();
+		status.value = statusBeforeLoad;
+		useUiStore().clearProgress();
+	}
+
 	return {
 		sites,
 		source,
@@ -380,6 +407,7 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		query,
 		setFromQuery,
 		load,
-		loadEdits
+		loadEdits,
+		abort
 	};
 } );

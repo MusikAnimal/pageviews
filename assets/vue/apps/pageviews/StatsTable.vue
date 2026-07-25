@@ -105,7 +105,9 @@
 						{{ sizeTotal === null ? '?' : number( sizeTotal ) }}
 					</td>
 					<td v-if="hasProtection">
-						{{ $i18n( 'num-protections', number( protectionsTotal ), protectionsTotal ) }}
+						{{ $i18n(
+							'num-protections', number( protectionsTotal ), protectionsTotal
+						) }}
 					</td>
 					<td class="app-stats__number">
 						{{ watchersTotal === null ? '?' : number( watchersTotal ) }}

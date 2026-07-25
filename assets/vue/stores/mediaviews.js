@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { fetchMediarequests, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getFileInfo } from '../lib/mwApi.js';
 import { banana } from '../i18n.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -82,6 +83,10 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
+	// Cancels the previous cycle's requests whenever a new one starts.
+	const aborter = createLoadAborter();
+	// What abort() returns the app to.
+	let statusBeforeLoad = 'initial';
 
 	/**
 	 * The canonical serialized form of the app params, for the URL query string.
@@ -135,6 +140,9 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	async function load() {
 		const ui = useUiStore();
 		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests —
+		// including the reset cycle from a cleared form.
+		const signal = aborter.next();
 
 		if ( !files.value.length ) {
 			status.value = 'initial';
@@ -147,6 +155,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		}
 
 		settings.ensureDefaultDates();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
 		status.value = 'loading';
 		ui.clearMessages();
 
@@ -160,7 +169,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		}
 
 		try {
-			const info = await getFileInfo( project.value, files.value );
+			const info = await getFileInfo( project.value, files.value, signal );
 			if ( id !== loadId ) {
 				return;
 			}
@@ -193,7 +202,8 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 				end: settings.end,
 				referer: referer.value,
 				agent: agent.value,
-				granularity: settings.dateType
+				granularity: settings.dateType,
+				signal
 			} );
 			if ( id !== loadId ) {
 				return;
@@ -227,6 +237,18 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		}
 	}
 
+	/**
+	 * Cancel the in-flight load (the overlay's Abort button): kills the
+	 * requests and returns to the pre-submission state; the bumped
+	 * loadId drops anything that already settled.
+	 */
+	function abort() {
+		loadId++;
+		aborter.abort();
+		status.value = statusBeforeLoad;
+		useUiStore().clearProgress();
+	}
+
 	return {
 		files,
 		project,
@@ -241,6 +263,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		incompleteDate,
 		query,
 		setFromQuery,
-		load
+		load,
+		abort
 	};
 } );

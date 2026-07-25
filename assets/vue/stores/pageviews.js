@@ -6,6 +6,7 @@ import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import { usePreferencesStore } from './preferences.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -106,6 +107,10 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
+	// Cancels the previous cycle's requests whenever a new one starts.
+	const aborter = createLoadAborter();
+	// What abort() returns the app to.
+	let statusBeforeLoad = 'initial';
 
 	/**
 	 * The canonical serialized form of the app params, for the URL query string.
@@ -161,14 +166,15 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		autolog.value = params.autolog !== 'false';
 	}
 
-	async function loadEditData( settings, id ) {
+	async function loadEditData( settings, id, signal ) {
 		editData.value = null;
 		try {
 			const result = await fetchEditData( {
 				project: project.value,
 				pages: pages.value,
 				start: settings.start,
-				end: settings.end
+				end: settings.end,
+				signal
 			} );
 			if ( id === loadId ) {
 				editData.value = {
@@ -186,10 +192,10 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		}
 	}
 
-	async function loadPageInfo( settings, id ) {
+	async function loadPageInfo( settings, id, signal ) {
 		pageInfo.value = null;
 		try {
-			const result = await getPageInfo( project.value, pages.value );
+			const result = await getPageInfo( project.value, pages.value, signal );
 			if ( id === loadId ) {
 				pageInfo.value = result;
 			}
@@ -207,8 +213,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 *
 	 * @param {Object} settings The settings store.
 	 * @param {number} id Load id, to discard superseded responses.
+	 * @param {AbortSignal} signal
 	 */
-	async function loadTopviewsRank( settings, id ) {
+	async function loadTopviewsRank( settings, id, signal ) {
 		topRank.value = null;
 		if ( pages.value.length !== 1 ) {
 			return;
@@ -220,7 +227,8 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			const result = await fetchTopviews( {
 				project: project.value,
 				date,
-				platform: platform.value
+				platform: platform.value,
+				signal
 			} );
 			if ( id !== loadId ) {
 				return;
@@ -279,6 +287,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		const settings = useSettingsStore();
 		const ui = useUiStore();
 		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests —
+		// including the reset cycle from a cleared form.
+		const signal = aborter.next();
 
 		if ( !pages.value.length ) {
 			status.value = 'initial';
@@ -292,6 +303,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		}
 
 		settings.ensureDefaultDates();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
 		status.value = 'loading';
 		ui.clearMessages();
 
@@ -312,15 +324,15 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		// unreachable locally). Deliberately not awaited here, so they
 		// run concurrently with the metrics fetch. Page info is awaited
 		// later to tell missing pages apart from zero-pageview ones.
-		loadEditData( settings, id );
-		loadTopviewsRank( settings, id );
-		const pageInfoPromise = loadPageInfo( settings, id );
+		loadEditData( settings, id, signal );
+		loadTopviewsRank( settings, id, signal );
+		const pageInfoPromise = loadPageInfo( settings, id, signal );
 
 		try {
 			let redirectMap = null;
 			let titles = pages.value;
 			if ( redirects.value ) {
-				redirectMap = await getRedirects( project.value, pages.value );
+				redirectMap = await getRedirects( project.value, pages.value, signal );
 				titles = [ ...new Set( [
 					...pages.value,
 					...Object.values( redirectMap ).flat().map( ( r ) => r.title )
@@ -335,7 +347,8 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 				platform: platform.value,
 				agent: agent.value,
 				granularity: settings.dateType,
-				onProgress: ui.setProgress
+				onProgress: ui.setProgress,
+				signal
 			} );
 
 			if ( id !== loadId ) {
@@ -383,6 +396,18 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		}
 	}
 
+	/**
+	 * Cancel the in-flight load (the overlay's Abort button): kills the
+	 * requests and returns to the pre-submission state; the bumped
+	 * loadId drops anything that already settled.
+	 */
+	function abort() {
+		loadId++;
+		aborter.abort();
+		status.value = statusBeforeLoad;
+		useUiStore().clearProgress();
+	}
+
 	return {
 		project,
 		platform,
@@ -400,6 +425,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		incompleteDate,
 		query,
 		setFromQuery,
-		load
+		load,
+		abort
 	};
 } );

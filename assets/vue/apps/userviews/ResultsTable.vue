@@ -13,9 +13,13 @@
 		<template #tbody="slotProps">
 			<tbody>
 				<tr v-if="store.totals" class="app-stats__totals">
-					<th scope="row">{{ $i18n( 'totals' ) }}</th>
+					<th scope="row">
+						{{ $i18n( 'totals' ) }}
+					</th>
 					<td>{{ $i18n( 'num-pages', number( rows.length ), rows.length ) }}</td>
-					<td>{{ datespan === null ? '' : $i18n( 'num-days-span', number( datespan ) ) }}</td>
+					<td>
+						{{ datespan === null ? '' : $i18n( 'num-days-span', number( datespan ) ) }}
+					</td>
 					<td class="app-stats__number">
 						{{ number( sizeTotal ) }}
 					</td>

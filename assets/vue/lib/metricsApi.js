@@ -24,6 +24,7 @@ const CONCURRENCY = 2;
  * @param {string} [params.agent]
  * @param {string} [params.granularity]
  * @param {Function} [params.onProgress] ( done, total ) in chunks.
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} The batch-endpoint contract shape, merged
  *   across chunks (dates, pages, totals).
  * @throws {ApiError}
@@ -36,7 +37,8 @@ export async function fetchPageviews( {
 	platform = 'all-access',
 	agent = 'user',
 	granularity = 'daily',
-	onProgress
+	onProgress,
+	signal
 } ) {
 	const chunks = [];
 	for ( let i = 0; i < pages.length; i += CHUNK_SIZE ) {
@@ -46,7 +48,7 @@ export async function fetchPageviews( {
 	const results = await promisePool(
 		chunks,
 		( chunk ) => fetchChunk(
-			{ project, pages: chunk, start, end, platform, agent, granularity }
+			{ project, pages: chunk, start, end, platform, agent, granularity, signal }
 		),
 		{ concurrency: CONCURRENCY, onProgress }
 	);
@@ -60,10 +62,11 @@ export async function fetchPageviews( {
  *
  * @param {string} path
  * @param {Object} params
+ * @param {AbortSignal} [signal]
  * @return {Promise<Object>}
  */
-async function apiGet( path, params ) {
-	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }` );
+async function apiGet( path, params, signal = undefined ) {
+	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }`, { signal } );
 
 	if ( !response.ok ) {
 		let envelope = null;
@@ -82,10 +85,11 @@ async function apiGet( path, params ) {
 	return response.json();
 }
 
-function fetchChunk( { project, pages, ...rest } ) {
+function fetchChunk( { project, pages, signal, ...rest } ) {
 	return apiGet(
 		`/api/metrics/pageviews/${ encodeURIComponent( project ) }`,
-		{ ...rest, pages: pages.join( '|' ) }
+		{ ...rest, pages: pages.join( '|' ) },
+		signal
 	);
 }
 
@@ -98,16 +102,17 @@ function fetchChunk( { project, pages, ...rest } ) {
  * @param {string} params.user
  * @param {string} [params.namespace] Namespace ID or 'all'.
  * @param {string} [params.redirects] '0' exclude, '1' only, '2' both.
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { project, user, namespace, redirects,
  *   limit, pages: [ { title, namespace, created, redirect, length } ] }
  * @throws {ApiError}
  */
-export function fetchPagesCreated( { project, user, namespace = 'all', redirects = '0' } ) {
+export function fetchPagesCreated( { project, user, namespace = 'all', redirects = '0', signal } ) {
 	return apiGet( `/api/users/${ encodeURIComponent( project ) }/pages-created`, {
 		user,
 		namespace,
 		redirects
-	} );
+	}, signal );
 }
 
 /**
@@ -119,16 +124,17 @@ export function fetchPagesCreated( { project, user, namespace = 'all', redirects
  * @param {string[]} params.pages
  * @param {string} params.start
  * @param {string} params.end
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { pages: { title: { num_edits, num_users,
  *   assessment } }, totals? }
  */
-export function fetchEditData( { project, pages, start, end } ) {
+export function fetchEditData( { project, pages, start, end, signal } ) {
 	return apiGet( `/api/pages/${ encodeURIComponent( project ) }/edits`, {
 		pages: pages.join( '|' ),
 		start,
 		end,
 		totals: '1'
-	} );
+	}, signal );
 }
 
 /**
@@ -143,6 +149,7 @@ export function fetchEditData( { project, pages, start, end } ) {
  * @param {string} [params.platform] Per-source vocabulary.
  * @param {string} [params.agent] Pageviews source only.
  * @param {string} [params.granularity]
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { source, platform, agent?, granularity,
  *   start, end, dates, sites: [ { site, counts, total, average,
  *   no_data? } ], totals }
@@ -155,7 +162,8 @@ export function fetchSiteviews( {
 	end,
 	platform,
 	agent = 'user',
-	granularity = 'daily'
+	granularity = 'daily',
+	signal
 } ) {
 	return apiGet( '/api/metrics/siteviews', {
 		sites: sites.join( '|' ),
@@ -165,7 +173,7 @@ export function fetchSiteviews( {
 		platform,
 		agent,
 		granularity
-	} );
+	}, signal );
 }
 
 /**
@@ -179,6 +187,7 @@ export function fetchSiteviews( {
  * @param {string} [params.referer]
  * @param {string} [params.agent]
  * @param {string} [params.granularity]
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { referer, agent, granularity, start, end,
  *   dates, files: [ { path, counts, total, average, no_data? } ],
  *   totals }
@@ -190,7 +199,8 @@ export function fetchMediarequests( {
 	end,
 	referer = 'all-referers',
 	agent = 'user',
-	granularity = 'daily'
+	granularity = 'daily',
+	signal
 } ) {
 	return apiGet( '/api/metrics/mediarequests', {
 		files: files.join( '|' ),
@@ -199,7 +209,7 @@ export function fetchMediarequests( {
 		referer,
 		agent,
 		granularity
-	} );
+	}, signal );
 }
 
 /**
@@ -215,6 +225,7 @@ export function fetchMediarequests( {
  * @param {string} [params.editorType]
  * @param {string} [params.pageType]
  * @param {string} [params.granularity]
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { editorType, pageType, granularity,
  *   start, end, dataThrough, dates, sites: [ { site, counts, total,
  *   average, no_data? } ], totals }
@@ -226,7 +237,8 @@ export function fetchSiteEdits( {
 	end,
 	editorType = 'user',
 	pageType = 'content',
-	granularity = 'daily'
+	granularity = 'daily',
+	signal
 } ) {
 	return apiGet( '/api/metrics/edits', {
 		sites: sites.join( '|' ),
@@ -235,7 +247,7 @@ export function fetchSiteEdits( {
 		'editor-type': editorType,
 		'page-type': pageType,
 		granularity
-	} );
+	}, signal );
 }
 
 /**
@@ -247,13 +259,15 @@ export function fetchSiteEdits( {
  * @param {string} params.project
  * @param {string} params.date
  * @param {string} [params.platform]
+ * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { project, platform, date, articles:
  *   [ { article, views, rank } ] }
  */
-export function fetchTopviews( { project, date, platform = 'all-access' } ) {
+export function fetchTopviews( { project, date, platform = 'all-access', signal } ) {
 	return apiGet(
 		`/api/metrics/top/${ encodeURIComponent( project ) }`,
-		{ date, platform }
+		{ date, platform },
+		signal
 	);
 }
 

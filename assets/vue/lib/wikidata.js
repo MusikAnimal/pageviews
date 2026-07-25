@@ -55,12 +55,13 @@ export function projectToSite( project ) {
  *
  * @param {string} project Source project domain, e.g. en.wikipedia.org.
  * @param {string} page
+ * @param {AbortSignal} [signal]
  * @return {Promise<?Array<{lang: string, title: string, badges: string[]}>>}
  *   One entry per language (the source included), or null when the
  *   page has no Wikidata item.
  * @throws {Error} On a Wikidata API error.
  */
-export async function getLangLinks( project, page ) {
+export async function getLangLinks( project, page, signal = undefined ) {
 	const family = project.split( '.' )[ 1 ];
 	const query = new URLSearchParams( {
 		action: 'wbgetentities',
@@ -71,7 +72,7 @@ export async function getLangLinks( project, page ) {
 		formatversion: '2',
 		origin: '*'
 	} );
-	const response = await fetch( `https://www.wikidata.org/w/api.php?${ query }` );
+	const response = await fetch( `https://www.wikidata.org/w/api.php?${ query }`, { signal } );
 	const data = await response.json();
 	if ( data.error ) {
 		throw new Error( data.error.info );
