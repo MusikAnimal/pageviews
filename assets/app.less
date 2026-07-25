@@ -505,6 +505,16 @@ a {
 	&__input {
 		flex: 1;
 	}
+
+	// The Source select and the Submit button keep their natural
+	// width — only the input between them stretches. (Without the
+	// width override, the global .cdx-select-vue width: 100% rule
+	// would apply.)
+	.cdx-select-vue,
+	.cdx-button {
+		flex: 0 0 auto;
+		width: auto;
+	}
 }
 
 // Subtle helper line describing the selected Massviews source.
