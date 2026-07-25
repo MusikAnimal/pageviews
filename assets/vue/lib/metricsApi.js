@@ -90,6 +90,27 @@ function fetchChunk( { project, pages, ...rest } ) {
 }
 
 /**
+ * The pages a user created, from the replica-backed endpoint
+ * (Userviews).
+ *
+ * @param {Object} params
+ * @param {string} params.project
+ * @param {string} params.user
+ * @param {string} [params.namespace] Namespace ID or 'all'.
+ * @param {string} [params.redirects] '0' exclude, '1' only, '2' both.
+ * @return {Promise<Object>} { project, user, namespace, redirects,
+ *   limit, pages: [ { title, namespace, created, redirect, length } ] }
+ * @throws {ApiError}
+ */
+export function fetchPagesCreated( { project, user, namespace = 'all', redirects = '0' } ) {
+	return apiGet( `/api/users/${ encodeURIComponent( project ) }/pages-created`, {
+		user,
+		namespace,
+		redirects
+	} );
+}
+
+/**
  * Edit statistics (edit/editor counts, assessment class) from the
  * replica-backed endpoint.
  *
