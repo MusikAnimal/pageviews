@@ -253,18 +253,17 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		status.value = 'loading';
 		ui.clearMessages();
 
-		const results = await Promise.all( categories.value.map( ( name ) =>
-			fetchCommonsCategory( {
-				category: name,
-				scope: scope.value,
-				wiki: wiki.value,
-				start: settings.start,
-				end: settings.end,
-				signal
-			} ).then(
-				( result ) => ( { name, result } ),
-				( error ) => ( { name, error } )
-			)
+		const results = await Promise.all( categories.value.map( ( name ) => fetchCommonsCategory( {
+			category: name,
+			scope: scope.value,
+			wiki: wiki.value,
+			start: settings.start,
+			end: settings.end,
+			signal
+		} ).then(
+			( result ) => ( { name, result } ),
+			( error ) => ( { name, error } )
+		)
 		) );
 		if ( id !== loadId ) {
 			return;

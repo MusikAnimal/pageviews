@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed, watch } from 'vue';
 import {
 	CdxMessage,
 	CdxToastContainer
@@ -96,13 +96,14 @@ function onDialogToggle( open ) {
 	}
 }
 
-// A bare visit shows a couple of well-known example files rather than
-// an empty app (the default dates come from ensureDefaultDates).
-onMounted( () => {
-	if ( store.source === 'files' && !store.files.length ) {
+// A bare visit — or switching to the files source with nothing
+// picked — shows a couple of well-known example files rather than an
+// empty app (the default dates come from ensureDefaultDates).
+watch( () => store.source, ( source ) => {
+	if ( source === 'files' && !store.files.length ) {
 		store.files = [ 'Example.jpg', 'Example.ogg' ];
 	}
-} );
+}, { immediate: true } );
 
 function retry( message ) {
 	ui.dismiss( message.id );
