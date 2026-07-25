@@ -25,6 +25,7 @@
 							:aria-label="targetLabel"
 							:placeholder="targetPlaceholder"
 							@keydown.enter="submit"
+							@clear="focusTarget"
 						/>
 						<!-- In the stacked (mobile) layout the help text
 							follows DOM order, right under the input; in the
@@ -311,13 +312,21 @@ const chartSeries = computed( () => store.totals ? [ {
 
 const targetInput = ref( null );
 
+/**
+ * Keep focus on the input after the clear button, ready for the next
+ * entry (Codex exposes no focus API, hence the DOM reach-in).
+ */
+function focusTarget() {
+	targetInput.value?.$el?.querySelector( 'input' )?.focus();
+}
+
 // Submission-based tools put the cursor on the main input on page
 // load; only the initial URL-provided target loads automatically.
 onMounted( () => {
 	if ( store.target ) {
 		store.load();
 	} else {
-		targetInput.value?.$el?.querySelector( 'input' )?.focus();
+		focusTarget();
 	}
 } );
 </script>
