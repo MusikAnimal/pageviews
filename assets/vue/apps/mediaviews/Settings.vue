@@ -27,15 +27,13 @@
 				:monthly-only="true"
 				:min="COMMONS_METRICS_MIN_MONTH"
 			/>
-			<CdxField>
-				<CdxCheckbox v-model="allWikis">
-					{{ $i18n( 'all-projects' ) }}
-				</CdxCheckbox>
-				<ProjectInput v-if="!allWikis" v-model="wikiDomain" />
-				<CdxCheckbox v-model="subcategories">
-					{{ $i18n( 'include-subcategories' ) }}
-				</CdxCheckbox>
-			</CdxField>
+			<CdxCheckbox v-model="allWikis">
+				{{ $i18n( 'all-projects' ) }}
+			</CdxCheckbox>
+			<ProjectInput v-if="!allWikis" v-model="wikiDomain" />
+			<CdxCheckbox v-model="subcategories">
+				{{ $i18n( 'include-subcategories' ) }}
+			</CdxCheckbox>
 		</template>
 		<template v-else>
 			<DateRangeInput />
