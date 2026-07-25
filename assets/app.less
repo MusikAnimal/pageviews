@@ -497,9 +497,17 @@ a {
 // right (and, in Massviews, the Source select to its left), bottoms
 // aligned (a field's label sits above its input).
 .app-page-input-row {
-	align-items: flex-end;
+	// Mobile-first: each control on its own line, full width; a row
+	// with bottoms aligned once there's room.
+	align-items: stretch;
 	display: flex;
+	flex-direction: column;
 	gap: @spacing-50;
+
+	@media screen and ( min-width: @min-width-breakpoint-mobile ) {
+		align-items: flex-end;
+		flex-direction: row;
+	}
 
 	.app-pages,
 	&__input {
