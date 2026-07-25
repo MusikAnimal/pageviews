@@ -14,6 +14,13 @@ class ProjectsRepository {
 
 	const string PROJECTS_TSV = 'https://raw.githubusercontent.com/wikimedia/analytics-refinery/master/static_data/pageview/allowlist/allowlist.tsv';
 
+	/**
+	 * The Commons Impact Metrics category allow-list — the categories
+	 * the commons-analytics AQS endpoints can answer for. Linked from
+	 * https://commons.wikimedia.org/wiki/Commons:Commons_Impact_Metrics
+	 */
+	const string COMMONS_CATEGORIES_TSV = 'https://gitlab.wikimedia.org/repos/data-engineering/airflow-dags/-/raw/main/main/dags/commons/commons_category_allow_list.tsv';
+
 	public function __construct(
 		private readonly HttpClientInterface $httpClient,
 		private readonly CacheInterface $cache,
@@ -84,6 +91,29 @@ class ProjectsRepository {
 					],
 				] )
 				->toArray()['query'];
+		} );
+	}
+
+	/**
+	 * The categories available to the Massviews Commons category
+	 * source, from the Commons Impact Metrics allow-list (one
+	 * underscored category name per line, no namespace prefix).
+	 * Categories are added on request, so cache only briefly.
+	 *
+	 * @return string[]
+	 */
+	public function getCommonsCategories(): array {
+		return $this->cache->get( 'commons-categories', function ( ItemInterface $item ) {
+			$item->expiresAfter( 24 * 60 * 60 ); // 1 day
+
+			$response = $this->httpClient
+				->request( 'GET', self::COMMONS_CATEGORIES_TSV )
+				->getContent();
+			$categories = array_values( array_filter(
+				array_map( 'trim', explode( "\n", $response ) )
+			) );
+			sort( $categories );
+			return $categories;
 		} );
 	}
 

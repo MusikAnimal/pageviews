@@ -85,3 +85,11 @@ const projectDomain = computed( {
 // the user interacts with them.
 onMounted( store.ensureMonthlyDefaults );
 </script>
+
+<style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.cdx-checkbox {
+	margin-top: @spacing-100;
+}
+</style>

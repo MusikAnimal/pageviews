@@ -7,19 +7,7 @@
 			<MassviewsSettings />
 			<figure class="app-chart">
 				<div class="app-page-input-row">
-					<CdxField class="app-pages">
-						<template #label>
-							{{ $i18n( 'category' ) }}
-						</template>
-						<CdxTextInput
-							ref="categoryInput"
-							v-model="category"
-							:clearable="true"
-							:aria-label="$i18n( 'category' )"
-							placeholder="UNESCO"
-							@keydown.enter="submit"
-						/>
-					</CdxField>
+					<CategoryInput v-model="category" @submit="submit" />
 					<CdxButton
 						action="progressive"
 						weight="primary"
@@ -99,13 +87,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import {
 	CdxButton,
-	CdxField,
 	CdxIcon,
 	CdxMessage,
-	CdxTextInput,
 	CdxToastContainer,
 	CdxToggleButtonGroup
 } from '@wikimedia/codex';
@@ -124,6 +110,7 @@ import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import MassviewsSettings from '../apps/massviews/Settings.vue';
+import CategoryInput from '../apps/massviews/CategoryInput.vue';
 import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
@@ -221,15 +208,12 @@ const chartSeries = computed( () => store.totals ? [ {
 	average: store.totals.average
 } ] : [] );
 
-const categoryInput = ref( null );
-
-// Submission-based tools put the cursor on the main input on page
-// load; only the initial URL-provided target loads automatically.
+// Unlike the chart apps, params never fire reactively: only the
+// initial URL-provided target loads automatically (CategoryInput
+// handles the empty-form focus).
 onMounted( () => {
 	if ( store.target ) {
 		store.load();
-	} else {
-		categoryInput.value?.$el?.querySelector( 'input' )?.focus();
 	}
 } );
 </script>

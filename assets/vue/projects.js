@@ -15,6 +15,27 @@ export function getProjects() {
 	return promise;
 }
 
+let commonsCategoriesPromise = null;
+
+/**
+ * The Commons Impact Metrics category allow-list (underscored names,
+ * no namespace prefix): the categories the Massviews Commons category
+ * source can query.
+ *
+ * @return {Promise<string[]>}
+ */
+export function getCommonsCategories() {
+	commonsCategoriesPromise ??= ( async () => {
+		try {
+			const response = await fetch( '/commons_categories.json' );
+			return response.ok ? await response.json() : [];
+		} catch {
+			return [];
+		}
+	} )();
+	return commonsCategoriesPromise;
+}
+
 const siteinfoPromises = new Map();
 
 /**
