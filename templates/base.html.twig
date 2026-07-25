@@ -18,12 +18,29 @@
 	'i18nPath': asset( 'i18n/' ~ lang() ~ '.json' ),
 	'i18nEnPath': asset( 'i18n/en.json' ),
 }|json_encode }}">
+{% set nav_apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ] %}
 <nav class="app-nav">
 	<a class="app-nav__home" href="/">
 		<img class="app-nav__logo" src="{{ asset( 'images/logo.svg' ) }}" alt="{{ msg( 'title' ) }}">
 	</a>
+	{# On narrow screens the apps list collapses into this dropdown. #}
+	<details class="app-nav__dropdown app-nav__dropdown--apps">
+		<summary class="app-nav__button" aria-label="{{ msg( 'tools' ) }}">
+			<svg class="app-nav__icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M18 16H2v-2h16zm0-5H2V9h16zm0-5H2V4h16z"/></svg>
+		</summary>
+		<ul class="app-nav__menu">
+			{% for app in nav_apps %}
+				<li>
+					<a
+						href="/{{ app }}"
+						{{ app == current_app ? 'aria-current="page"' }}
+					>{{ msg( app ) }}</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</details>
 	<ol class="app-nav__apps">
-		{% for app in [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ] %}
+		{% for app in nav_apps %}
 			<li>
 				<a
 					class="app-nav__link{{ app == current_app ? ' app-nav__link--active' }}"

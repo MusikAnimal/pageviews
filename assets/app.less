@@ -55,13 +55,18 @@ a {
 	}
 
 	&__apps {
-		display: flex;
+		// Collapsed into the hamburger dropdown on narrow screens.
+		display: none;
 		flex: 1;
 		flex-wrap: wrap;
 		gap: @spacing-35;
 		list-style: none;
 		margin: 0;
 		padding: 0;
+
+		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+			display: flex;
+		}
 	}
 
 	&__link {
@@ -85,6 +90,9 @@ a {
 		align-items: center;
 		display: flex;
 		gap: @spacing-25;
+		// Keeps the buttons flush right when the apps list (whose
+		// flex: 1 otherwise fills the middle) is collapsed.
+		margin-left: auto;
 	}
 
 	&__button {
@@ -121,6 +129,19 @@ a {
 		}
 	}
 
+	// The mobile stand-in for the apps list; its menu opens leftward
+	// from the logo side.
+	&__dropdown--apps {
+		.app-nav__menu {
+			left: 0;
+			right: auto;
+		}
+
+		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+			display: none;
+		}
+	}
+
 	&__menu {
 		background: @background-color-base;
 		border: @border-width-base solid @border-color-base;
@@ -143,6 +164,11 @@ a {
 
 			&:hover {
 				background: @background-color-interactive-subtle;
+			}
+
+			// The current app, in the collapsed apps menu.
+			&[ aria-current ] {
+				font-weight: @font-weight-bold;
 			}
 		}
 
