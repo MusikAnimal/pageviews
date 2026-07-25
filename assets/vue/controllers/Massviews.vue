@@ -1,19 +1,31 @@
 <template>
 	<LoadingOverlay v-if="store.status === 'loading'" @abort="store.abort()" />
 	<div class="app-workspace">
-		<!-- List apps query on explicit submission only; the results
-			state replaces the form until "Do another query". -->
+		<!-- List apps fan out many queries, so nothing fires reactively:
+			the form submits explicitly, and the results state replaces
+			it until "Do another query". -->
 		<template v-if="!ready">
 			<MassviewsSettings />
 			<figure class="app-chart">
-				<!-- The target input appears once a source is selected
-					(none are wired up yet). -->
-				<div v-if="store.source" class="app-page-input-row">
+				<div class="app-page-input-row">
+					<CdxField class="app-pages">
+						<template #label>
+							{{ $i18n( 'category' ) }}
+						</template>
+						<CdxTextInput
+							ref="targetInput"
+							v-model="target"
+							:clearable="true"
+							:aria-label="$i18n( 'category' )"
+							placeholder="https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City"
+							@keydown.enter="submit"
+						/>
+					</CdxField>
 					<CdxButton
 						action="progressive"
 						weight="primary"
 						:disabled="!store.target || store.status === 'loading'"
-						@click="store.load()"
+						@click="submit"
 					>
 						{{ $i18n( 'submit' ) }}
 					</CdxButton>
@@ -46,9 +58,13 @@
 				</a>
 				<div class="app-output-header__heading">
 					<h2 class="app-output-header__title">
-						{{ targetDisplay }}
+						<a :href="store.target" target="_blank">{{ categoryDisplay }}</a>
 						<span class="app-output-header__dates">{{ dateRange }}</span>
 					</h2>
+					<CdxToggleButtonGroup
+						v-model="viewModel"
+						:buttons="viewButtons"
+					/>
 				</div>
 			</header>
 			<CdxMessage
@@ -61,13 +77,16 @@
 				{{ message.text }}
 			</CdxMessage>
 			<ChartPanel
+				v-if="store.view === 'chart'"
 				:dates="store.dates"
 				:series="chartSeries"
 				:monthly="settings.dateType === 'monthly'"
 				:filename="exportFilename"
+				:no-autolog="!store.autolog"
 				:no-range-select="true"
 				:aria-label="$i18n( 'massviews-title' )"
 			/>
+			<ResultsTable v-else />
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -82,14 +101,22 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import {
 	CdxButton,
+	CdxField,
 	CdxIcon,
 	CdxMessage,
-	CdxToastContainer
+	CdxTextInput,
+	CdxToastContainer,
+	CdxToggleButtonGroup
 } from '@wikimedia/codex';
-import { cdxIconArrowPrevious } from '@wikimedia/codex-icons';
+import {
+	cdxIconArrowPrevious,
+	cdxIconChart,
+	cdxIconListBullet
+} from '@wikimedia/codex-icons';
+import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { useMassviewsStore } from '../stores/massviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
@@ -104,6 +131,7 @@ import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
+import ResultsTable from '../apps/massviews/ResultsTable.vue';
 
 const store = useMassviewsStore();
 const preferences = usePreferencesStore();
@@ -111,6 +139,7 @@ const settings = useSettingsStore();
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
+const { target } = storeToRefs( store );
 useQuerySync( store );
 
 // The /massviews/faq and /massviews/url_structure routes open dialogs
@@ -140,9 +169,28 @@ function anotherQuery() {
 	store.status = 'initial';
 }
 
-const targetDisplay = computed( () => store.target.replace( /_/g, ' ' ) );
+function submit() {
+	if ( store.target && store.status !== 'loading' ) {
+		store.load();
+	}
+}
 
-// The queried date range, shown next to the target.
+const viewButtons = [
+	{ value: 'list', label: banana.i18n( 'list' ), icon: cdxIconListBullet },
+	{ value: 'chart', label: banana.i18n( 'chart' ), icon: cdxIconChart }
+];
+const viewModel = computed( {
+	get: () => store.view,
+	set: ( value ) => {
+		if ( value ) {
+			store.view = value;
+		}
+	}
+} );
+
+const categoryDisplay = computed( () => store.category.replace( /_/g, ' ' ) );
+
+// The queried date range, shown next to the category name.
 const dateRange = computed( () => {
 	const options = {
 		locale: banana.locale,
@@ -157,17 +205,23 @@ const exportFilename = computed(
 	() => `massviews-${ settings.start }-${ settings.end }`
 );
 
+// The chart shows the combined views across all category members.
 const chartSeries = computed( () => store.totals ? [ {
-	label: targetDisplay.value,
+	label: categoryDisplay.value,
 	counts: store.totals.counts,
 	total: store.totals.total,
 	average: store.totals.average
 } ] : [] );
 
-// Only the initial URL-provided target loads automatically.
+const targetInput = ref( null );
+
+// Submission-based tools put the cursor on the main input on page
+// load; only the initial URL-provided target loads automatically.
 onMounted( () => {
 	if ( store.target ) {
 		store.load();
+	} else {
+		targetInput.value?.$el?.querySelector( 'input' )?.focus();
 	}
 } );
 </script>

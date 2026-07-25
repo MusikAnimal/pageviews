@@ -272,6 +272,27 @@ export function fetchTopviews( { project, date, platform = 'all-access', signal 
 }
 
 /**
+ * The page and file members of a category, from the replica-backed
+ * endpoint (the Massviews category source).
+ *
+ * @param {Object} params
+ * @param {string} params.project
+ * @param {string} params.category Without the namespace prefix.
+ * @param {string} [params.subcategories] '1' recurses through
+ *   subcategories.
+ * @param {AbortSignal} [params.signal]
+ * @return {Promise<Object>} { project, category, recursive, limit,
+ *   pages: [ { title, namespace } ] }
+ * @throws {ApiError}
+ */
+export function fetchCategoryMembers( { project, category, subcategories = '0', signal } ) {
+	return apiGet( `/api/lists/${ encodeURIComponent( project ) }/category`, {
+		category,
+		subcategories
+	}, signal );
+}
+
+/**
  * Monthly pageviews of the pages using media from a Commons category,
  * from the Commons Impact Metrics dataset (the Massviews "Commons
  * category" source). Only allowlisted categories are loaded.
