@@ -5,15 +5,21 @@
 		:hide-caption="true"
 		:columns="cdxColumns"
 		:data="sortedRows"
-		:sort="sort"
-		@update:sort="sort = $event"
+		:sort="sortModel"
+		@update:sort="sortModel = $event"
 	>
-		<!-- Forward the app's cell (item-<key>) and tfoot templates. -->
+		<!-- Forward the app's cell (item-<key>), tbody and tfoot
+			templates. Every slot also receives the sorted rows, for
+			custom tbody rendering (rank numbers, pinned totals). -->
 		<template
 			v-for="name in Object.keys( $slots )"
 			#[name]="slotProps"
 		>
-			<slot :name="name" v-bind="slotProps" />
+			<slot
+				:name="name"
+				v-bind="slotProps"
+				:rows="sortedRows"
+			/>
 		</template>
 	</CdxTable>
 </template>
@@ -59,10 +65,30 @@ const props = defineProps( {
 	defaultSort: {
 		type: String,
 		required: true
+	},
+	/**
+	 * Optional controlled sort state ({ key: 'asc'|'desc'|'none' }).
+	 * When given (with @update:sort), the parent owns the sort — e.g.
+	 * the list apps keep it in their store and thus the URL; when
+	 * omitted, the table keeps its own.
+	 */
+	sort: {
+		type: Object,
+		default: null
 	}
 } );
 
-const sort = ref( { [ props.defaultSort ]: 'desc' } );
+const emit = defineEmits( [ 'update:sort' ] );
+
+const internalSort = ref( { [ props.defaultSort ]: 'desc' } );
+
+const sortModel = computed( {
+	get: () => props.sort ?? internalSort.value,
+	set: ( value ) => {
+		internalSort.value = value;
+		emit( 'update:sort', value );
+	}
+} );
 
 const cdxColumns = computed( () => props.columns.map( ( column ) => ( {
 	id: column.key,
@@ -73,8 +99,8 @@ const cdxColumns = computed( () => props.columns.map( ( column ) => ( {
 
 // CdxTable only renders the sort UI; ordering the rows is ours.
 const sortedRows = computed( () => {
-	const [ key ] = Object.keys( sort.value );
-	const order = sort.value[ key ];
+	const [ key ] = Object.keys( sortModel.value );
+	const order = sortModel.value[ key ];
 	if ( !key || order === 'none' ) {
 		return props.rows;
 	}
