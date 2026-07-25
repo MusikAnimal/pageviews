@@ -1,10 +1,5 @@
 <template>
-	<!-- Same markup as the Twig FOUC skeleton: centered in the
-		.app-container both ways. -->
-	<div v-if="store.status === 'loading'" class="app-progress-bar">
-		<div>{{ $i18n( 'loading' ) }}</div>
-		<CdxProgressBar :aria-label="$i18n( 'loading' )" />
-	</div>
+	<LoadingOverlay v-if="store.status === 'loading'" />
 	<div v-show="!initialLoading" class="app-workspace">
 		<PageviewsSettings />
 		<figure class="app-chart">
@@ -61,7 +56,6 @@
 import { computed, onMounted, watch } from 'vue';
 import {
 	CdxMessage,
-	CdxProgressBar,
 	CdxToastContainer
 } from '@wikimedia/codex';
 import { usePageviewsStore } from '../stores/pageviews.js';
@@ -75,6 +69,7 @@ import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import FaqDialog from '../apps/pageviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/pageviews/UrlStructureDialog.vue';
 import PageInput from '../components/PageInput.vue';
+import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import Totals from '../apps/pageviews/Totals.vue';
 import StatsTable from '../apps/pageviews/StatsTable.vue';

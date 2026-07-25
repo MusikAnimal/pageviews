@@ -185,7 +185,16 @@ a {
 	position: relative;
 }
 
-// Centered (both axes) within .app-container.
+// Dims the app while a query runs; the progress bar centers within.
+.app-loading-overlay {
+	background-color: @background-color-backdrop-light;
+	inset: 0;
+	position: absolute;
+	z-index: @z-index-above-content;
+}
+
+// Centered (both axes) within .app-loading-overlay (which spans the
+// .app-container).
 .app-progress-bar {
 	left: @size-half;
 	position: absolute;
@@ -193,6 +202,28 @@ a {
 	top: @size-half;
 	transform: translate( -@size-half, -@size-half );
 	width: @size-half;
+
+	// Determinate variant of the Codex progress bar, filled by the
+	// completed share of the query fan-out.
+	&__meter {
+		background-color: @background-color-base;
+		border: @border-width-base solid @border-color-progressive;
+		border-radius: @border-radius-pill;
+		height: @size-100;
+		overflow: hidden;
+	}
+
+	&__fill {
+		background-color: @background-color-progressive;
+		border-radius: @border-radius-pill;
+		height: @size-full;
+		transition: width 0.25s ease;
+	}
+
+	&__counts {
+		color: @color-subtle;
+		margin-top: @spacing-25;
+	}
 }
 
 .app-footer {
@@ -526,4 +557,10 @@ a {
 
 figure {
 	margin: 0;
+}
+
+// Temporary Codex fixes.
+
+.cdx-field__help-text:empty {
+	display: none;
 }

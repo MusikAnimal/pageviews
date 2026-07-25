@@ -1,14 +1,6 @@
 <template>
-	<!-- Same markup as the Twig FOUC skeleton: centered in the
-		.app-container both ways. -->
-	<div v-if="store.status === 'loading'" class="app-progress-bar">
-		<div>{{ $i18n( 'loading' ) }}</div>
-		<CdxProgressBar :aria-label="$i18n( 'loading' )" />
-		<div v-if="ui.progress" class="app-progress-bar__counts">
-			{{ $i18n( 'processing', `${ ui.progress.done } / ${ ui.progress.total }` ) }}
-		</div>
-	</div>
-	<div v-show="store.status !== 'loading'" class="app-workspace">
+	<LoadingOverlay v-if="store.status === 'loading'" />
+	<div v-show="!initialLoading" class="app-workspace">
 		<!-- List apps fan out many queries, so nothing fires reactively:
 			the form submits explicitly, and the results state replaces
 			it until "Do another query". -->
@@ -106,7 +98,6 @@ import {
 	CdxButton,
 	CdxIcon,
 	CdxMessage,
-	CdxProgressBar,
 	CdxToastContainer,
 	CdxToggleButtonGroup
 } from '@wikimedia/codex';
@@ -129,6 +120,7 @@ import LangviewsSettings from '../apps/langviews/Settings.vue';
 import FaqDialog from '../apps/langviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/langviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
+import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import ResultsTable from '../apps/langviews/ResultsTable.vue';
 
@@ -158,6 +150,12 @@ function retry( message ) {
 
 const ready = computed(
 	() => store.status === 'complete' && store.dates.length > 0
+);
+
+// The very first load shows nothing but the progress overlay; a
+// re-submission keeps the form up, dimmed underneath it.
+const initialLoading = computed(
+	() => store.status === 'loading' && !store.dates.length
 );
 
 /**

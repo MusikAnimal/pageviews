@@ -2,10 +2,12 @@
 
 {% block body %}
 	<main class="app-container" {{ vue_component( 'Userviews' ) }}>
-		<div class="app-progress-bar">
-			<div>{{ msg( 'loading' ) }}</div>
-			<div class="cdx-progress-bar" role="progressbar">
-				<div class="cdx-progress-bar__bar"></div>
+		<div class="app-loading-overlay">
+			<div class="app-progress-bar">
+				<div>{{ msg( 'loading' ) }}</div>
+				<div class="cdx-progress-bar" role="progressbar">
+					<div class="cdx-progress-bar__bar"></div>
+				</div>
 			</div>
 		</div>
 
