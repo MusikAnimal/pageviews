@@ -20,6 +20,34 @@
 					</template>
 				</th>
 			</tr>
+			<!-- Totals sit directly beneath the header, legacy-style,
+				so they stay visible however the rows are sorted. -->
+			<tr v-if="store.totals" class="app-stats__totals">
+				<th scope="row">{{ $i18n( 'totals' ) }}</th>
+				<td>{{ $i18n( 'num-languages', number( rows.length ) ) }}</td>
+				<td>{{ $i18n( 'unique-titles', number( uniqueTitles ) ) }}</td>
+				<td>
+					<span
+						v-for="( count, badge ) in badgeTotals"
+						:key="badge"
+						class="app-stats__badge-total"
+					>
+						<img
+							class="app-stats__badge"
+							:src="BADGES[ badge ]?.image"
+							:alt="badgeName( badge )"
+							:title="badgeName( badge )"
+						>
+						× {{ number( count ) }}
+					</span>
+				</td>
+				<td class="app-stats__number">
+					{{ number( store.totals.total ) }}
+				</td>
+				<td class="app-stats__number">
+					{{ number( Math.round( store.totals.average ) ) }}
+				</td>
+			</tr>
 		</thead>
 		<tbody>
 			<tr v-for="( row, index ) in rows" :key="row.lang">
@@ -48,34 +76,6 @@
 				</td>
 			</tr>
 		</tbody>
-		<tfoot v-if="store.totals">
-			<tr>
-				<th>{{ $i18n( 'totals' ) }}</th>
-				<td>{{ $i18n( 'num-languages', number( rows.length ) ) }}</td>
-				<td>{{ $i18n( 'unique-titles', number( uniqueTitles ) ) }}</td>
-				<td>
-					<span
-						v-for="( count, badge ) in badgeTotals"
-						:key="badge"
-						class="app-stats__badge-total"
-					>
-						<img
-							class="app-stats__badge"
-							:src="BADGES[ badge ]?.image"
-							:alt="badgeName( badge )"
-							:title="badgeName( badge )"
-						>
-						× {{ number( count ) }}
-					</span>
-				</td>
-				<td class="app-stats__number">
-					{{ number( store.totals.total ) }}
-				</td>
-				<td class="app-stats__number">
-					{{ number( Math.round( store.totals.average ) ) }}
-				</td>
-			</tr>
-		</tfoot>
 	</table>
 </template>
 
@@ -99,8 +99,8 @@ const columns = computed( () => [
 	{ key: 'lang', label: banana.i18n( 'language' ), sortable: true },
 	{ key: 'title', label: banana.i18n( 'page-title' ), sortable: true },
 	{ key: 'badges', label: banana.i18n( 'badges' ), sortable: true },
-	{ key: 'views', label: banana.i18n( 'views' ), sortable: true },
-	{ key: 'average', label: banana.i18n( 'average' ), sortable: false }
+	{ key: 'views', label: banana.i18n( 'pageviews' ), sortable: true },
+	{ key: 'average', label: banana.i18n( 'daily-average' ), sortable: false }
 ] );
 
 // Sort state lives in the store (and thus the URL), legacy-style.

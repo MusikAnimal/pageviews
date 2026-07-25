@@ -417,6 +417,45 @@ a {
 	tfoot {
 		font-weight: @font-weight-bold;
 	}
+
+	// The list apps' totals row, sitting inside the table header.
+	&__totals {
+		font-weight: @font-weight-bold;
+	}
+}
+
+// The results-state header the list apps share: a back-to-the-form
+// link, then the queried page with the date range and the list/chart
+// toggle.
+.app-output-header {
+	margin-bottom: @spacing-50;
+
+	&__another-query {
+		align-items: center;
+		display: inline-flex;
+		gap: @spacing-25;
+	}
+
+	&__heading {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: @spacing-50;
+		justify-content: space-between;
+		margin-top: @spacing-50;
+	}
+
+	&__title {
+		font-size: @font-size-x-large;
+		margin: 0;
+	}
+
+	&__dates {
+		color: @color-subtle;
+		font-size: @font-size-medium;
+		font-weight: @font-weight-normal;
+		margin-left: @spacing-50;
+	}
 }
 
 .app-page-summary {

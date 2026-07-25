@@ -45,17 +45,26 @@
 			</figure>
 		</template>
 		<figure v-else class="app-chart">
-			<div class="app-chart__toolbar">
-				<CdxToggleButtonGroup
-					v-model="viewModel"
-					:buttons="viewButtons"
-				/>
+			<header class="app-output-header">
 				<a
-					class="app-chart__another-query"
+					class="app-output-header__another-query"
 					href="#"
 					@click.prevent="anotherQuery"
-				>{{ $i18n( 'another-query' ) }}</a>
-			</div>
+				>
+					<CdxIcon :icon="cdxIconArrowPrevious" size="small" />
+					{{ $i18n( 'another-query' ) }}
+				</a>
+				<div class="app-output-header__heading">
+					<h3 class="app-output-header__title">
+						<a :href="pageUrl" target="_blank">{{ pageDisplay }}</a>
+						<span class="app-output-header__dates">{{ dateRange }}</span>
+					</h3>
+					<CdxToggleButtonGroup
+						v-model="viewModel"
+						:buttons="viewButtons"
+					/>
+				</div>
+			</header>
 			<CdxMessage
 				v-for="message in ui.messages"
 				:key="message.id"
@@ -93,17 +102,26 @@
 import { computed, onMounted } from 'vue';
 import {
 	CdxButton,
+	CdxIcon,
 	CdxMessage,
 	CdxProgressBar,
 	CdxToastContainer,
 	CdxToggleButtonGroup
 } from '@wikimedia/codex';
+import {
+	cdxIconArrowPrevious,
+	cdxIconChart,
+	cdxIconListBullet
+} from '@wikimedia/codex-icons';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { useLangviewsStore } from '../stores/langviews.js';
+import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
+import { formatDate } from '../lib/format.js';
+import { parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import LangviewsSettings from '../apps/langviews/Settings.vue';
 import FaqDialog from '../apps/langviews/FaqDialog.vue';
@@ -113,6 +131,7 @@ import ChartPanel from '../components/ChartPanel.vue';
 import ResultsTable from '../apps/langviews/ResultsTable.vue';
 
 const store = useLangviewsStore();
+const preferences = usePreferencesStore();
 const settings = useSettingsStore();
 const ui = useUiStore();
 const route = useRoute();
@@ -148,8 +167,8 @@ function anotherQuery() {
 }
 
 const viewButtons = [
-	{ value: 'list', label: banana.i18n( 'list' ) },
-	{ value: 'chart', label: banana.i18n( 'chart' ) }
+	{ value: 'list', label: banana.i18n( 'list' ), icon: cdxIconListBullet },
+	{ value: 'chart', label: banana.i18n( 'chart' ), icon: cdxIconChart }
 ];
 const viewModel = computed( {
 	get: () => store.view,
@@ -160,13 +179,30 @@ const viewModel = computed( {
 	}
 } );
 
+const pageDisplay = computed( () => store.page.replace( /_/g, ' ' ) );
+const pageUrl = computed(
+	() => `https://${ store.project }/wiki/` +
+		encodeURIComponent( store.page.replace( / /g, '_' ) )
+);
+
+// The queried date range, shown next to the page title.
+const dateRange = computed( () => {
+	const options = {
+		locale: banana.locale,
+		monthly: settings.dateType === 'monthly',
+		localize: preferences.localizeDateFormat
+	};
+	return `${ formatDate( parseDate( settings.start ), options ) } – ${
+		formatDate( parseDate( settings.end ), options ) }`;
+} );
+
 const exportFilename = computed(
 	() => `langviews-${ settings.start }-${ settings.end }`
 );
 
 // The chart shows the combined views across all languages.
 const chartSeries = computed( () => store.totals ? [ {
-	label: store.page.replace( /_/g, ' ' ),
+	label: pageDisplay.value,
 	counts: store.totals.counts,
 	total: store.totals.total,
 	average: store.totals.average
@@ -180,9 +216,3 @@ onMounted( () => {
 	}
 } );
 </script>
-
-<style lang="less">
-.app-chart__another-query {
-	margin-left: auto;
-}
-</style>
