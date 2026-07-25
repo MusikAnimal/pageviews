@@ -2,12 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useMediaviewsStore } from './mediaviews.js';
 import { useUiStore } from './ui.js';
-import { fetchMediarequests } from '../lib/metricsApi.js';
+import { fetchCommonsCategory, fetchMediarequests } from '../lib/metricsApi.js';
 import { getFileInfo } from '../lib/mwApi.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	// trimIncompleteTail stays real (pure, tested separately).
 	...await importOriginal(),
+	fetchCommonsCategory: vi.fn(),
 	fetchMediarequests: vi.fn()
 } ) );
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
@@ -90,4 +91,52 @@ describe( 'mediaviews store', () => {
 		expect( fetchMediarequests ).not.toHaveBeenCalled();
 		expect( store.status ).toBe( 'initial' );
 	} );
+
+	it( 'loads the Commons category aggregate for the categories source', async () => {
+		const store = useMediaviewsStore();
+		store.setFromQuery( {
+			source: 'categories',
+			category: 'Media_from_NASA',
+			scope: 'shallow',
+			wiki: 'en.wikipedia.org'
+		} );
+		fetchCommonsCategory.mockResolvedValue( {
+			category: 'Media_from_NASA',
+			scope: 'shallow',
+			wiki: 'en.wikipedia',
+			granularity: 'monthly',
+			start: '2025-01',
+			end: '2025-03',
+			dates: [ '2025-01', '2025-02', '2025-03' ],
+			counts: [ 100, 0, 50 ],
+			total: 150,
+			average: 50
+		} );
+
+		await store.load();
+
+		expect( fetchCommonsCategory ).toHaveBeenCalledWith( expect.objectContaining( {
+			category: 'Media_from_NASA',
+			scope: 'shallow',
+			wiki: 'en.wikipedia.org'
+		} ) );
+		expect( fetchMediarequests ).not.toHaveBeenCalled();
+		expect( store.series ).toEqual( [ {
+			name: 'Media from NASA',
+			counts: [ 100, 0, 50 ],
+			total: 150,
+			average: 50
+		} ] );
+		expect( store.totals ).toMatchObject( { total: 150 } );
+		expect( store.status ).toBe( 'complete' );
+		// The query drops the files params while the source is active.
+		expect( store.query ).toEqual( {
+			source: 'categories',
+			category: 'Media_from_NASA',
+			scope: 'shallow',
+			wiki: 'en.wikipedia.org',
+			autolog: undefined
+		} );
+	} );
+
 } );

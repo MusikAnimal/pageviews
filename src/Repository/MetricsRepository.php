@@ -991,7 +991,7 @@ class MetricsRepository extends Repository {
 							'category_not_loaded',
 							'This category is not part of the Commons Impact Metrics dataset, ' .
 								'or has no data for the given dates.',
-							[ 'massviews-commons-category-unknown' ],
+							[ 'mediaviews-commons-category-unknown' ],
 							Response::HTTP_NOT_FOUND,
 							'aqs',
 							false,

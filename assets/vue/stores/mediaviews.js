@@ -1,7 +1,8 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchMediarequests, trimIncompleteTail } from '../lib/metricsApi.js';
+import { fetchCommonsCategory, fetchMediarequests, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getFileInfo } from '../lib/mwApi.js';
+import { formatYm, lastCompleteMonthUtc } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
@@ -13,6 +14,13 @@ const AGENTS = [ 'all-agents', 'user', 'spider' ];
 
 export const MAX_FILES = 10;
 
+const SOURCES = [ 'files', 'categories' ];
+const SCOPES = [ 'deep', 'shallow' ];
+// The Commons Impact Metrics dataset (the categories source) begins here.
+export const COMMONS_METRICS_MIN_MONTH = '2023-01';
+// Default span for the monthly categories source: a year of months.
+const DEFAULT_MONTH_SPAN = 12;
+
 export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	/**
 	 * The file names to query for, without the File: prefix
@@ -21,6 +29,33 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 * @type {import('vue').Ref<string[]>}
 	 */
 	const files = ref( [] );
+	/**
+	 * What to analyze: mediarequests per file, or (via Commons Impact
+	 * Metrics) pageviews of the pages using media from a category.
+	 *
+	 * @type {import('vue').Ref<'files'|'categories'>}
+	 */
+	const source = ref( 'files' );
+	/**
+	 * The Commons category (categories source), without the namespace
+	 * prefix; underscored in the URL.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const category = ref( '' );
+	/**
+	 * 'deep' includes all subcategories; 'shallow' the category alone.
+	 *
+	 * @type {import('vue').Ref<'deep'|'shallow'>}
+	 */
+	const scope = ref( 'deep' );
+	/**
+	 * The wiki whose pageviews to count (categories source): a project
+	 * domain, or 'all-wikis'.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const wiki = ref( 'all-wikis' );
 	/**
 	 * The project whose file pages to search (the mediarequest counts
 	 * themselves are global, keyed by upload.wikimedia path).
@@ -94,13 +129,23 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 *
 	 * @type {import('vue').ComputedRef<Object>}
 	 */
-	const query = computed( () => ( {
-		files: files.value.join( '|' ) || undefined,
-		project: project.value,
-		referer: referer.value,
-		agent: agent.value,
-		autolog: autolog.value ? undefined : 'false'
-	} ) );
+	const query = computed( () => source.value === 'categories' ?
+		{
+			source: 'categories',
+			category: category.value.replace( / /g, '_' ) || undefined,
+			scope: scope.value,
+			wiki: wiki.value,
+			autolog: autolog.value ? undefined : 'false'
+		} :
+		// The files source keeps the legacy URL structure (no source
+		// param).
+		{
+			files: files.value.join( '|' ) || undefined,
+			project: project.value,
+			referer: referer.value,
+			agent: agent.value,
+			autolog: autolog.value ? undefined : 'false'
+		} );
 
 	/**
 	 * Populate the store from URL query params.
@@ -108,6 +153,18 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
 	function setFromQuery( params ) {
+		if ( SOURCES.includes( params.source ) ) {
+			source.value = params.source;
+		}
+		if ( params.category !== undefined && params.category !== category.value ) {
+			category.value = params.category;
+		}
+		if ( SCOPES.includes( params.scope ) ) {
+			scope.value = params.scope;
+		}
+		if ( params.wiki ) {
+			wiki.value = params.wiki;
+		}
 		if ( params.project ) {
 			project.value = params.project;
 		}
@@ -133,11 +190,117 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	}
 
 	/**
+	 * The categories source only has monthly data: force the shared
+	 * date params into month form and default to the last complete
+	 * year. Called by the Settings component and loadCategory().
+	 */
+	function ensureMonthlyDefaults() {
+		settings.dateType = 'monthly';
+		// Day-precision values (e.g. carried over from the files
+		// source) truncate to their month.
+		settings.start = ( settings.start || '' ).slice( 0, 7 );
+		settings.end = ( settings.end || '' ).slice( 0, 7 );
+		if ( !settings.start || !settings.end ) {
+			const endMonth = lastCompleteMonthUtc();
+			const startMonth = new Date( Date.UTC(
+				endMonth.getUTCFullYear(),
+				endMonth.getUTCMonth() - ( DEFAULT_MONTH_SPAN - 1 ),
+				1
+			) );
+			settings.start = formatYm( startMonth );
+			settings.end = formatYm( endMonth );
+		}
+		if ( settings.start < COMMONS_METRICS_MIN_MONTH ) {
+			settings.start = COMMONS_METRICS_MIN_MONTH;
+		}
+	}
+
+	/**
+	 * One aggregate request per category (no fan-out): monthly views
+	 * of the pages using media from the category.
+	 */
+	async function loadCategory() {
+		const ui = useUiStore();
+		const id = ++loadId;
+		// A new cycle always cancels the previous one's requests.
+		const signal = aborter.next();
+
+		if ( !category.value ) {
+			status.value = 'initial';
+			dates.value = [];
+			series.value = [];
+			totals.value = null;
+			fileInfo.value = null;
+			incompleteDate.value = null;
+			// A cleared input also clears lingering errors.
+			ui.clearMessages();
+			return;
+		}
+
+		ensureMonthlyDefaults();
+		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
+		status.value = 'loading';
+		ui.clearMessages();
+
+		try {
+			const result = await fetchCommonsCategory( {
+				category: category.value,
+				scope: scope.value,
+				wiki: wiki.value,
+				start: settings.start,
+				end: settings.end,
+				signal
+			} );
+			if ( id !== loadId ) {
+				return;
+			}
+
+			dates.value = result.dates;
+			series.value = [ {
+				name: category.value.replace( /_/g, ' ' ),
+				counts: result.counts,
+				total: result.total,
+				average: result.average
+			} ];
+			totals.value = {
+				counts: result.counts,
+				total: result.total,
+				average: result.average
+			};
+			fileInfo.value = null;
+			incompleteDate.value = null;
+			status.value = 'complete';
+		} catch ( error ) {
+			if ( id !== loadId ) {
+				return;
+			}
+			status.value = 'error';
+			ui.notify( {
+				type: 'error',
+				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				onRetry: error.retryable === false ? undefined : loadCategory
+			} );
+		}
+	}
+
+	/**
+	 * Fetch the data for the current params and source.
+	 *
+	 * @return {Promise}
+	 */
+	async function load() {
+		if ( source.value === 'categories' ) {
+			return loadCategory();
+		}
+		return loadFiles();
+	}
+
+	/**
 	 * Fetch the mediarequest counts: resolve the file names to
 	 * upload.wikimedia paths via imageinfo (dropping files that don't
 	 * exist, with a message each), then query the batch endpoint.
 	 */
-	async function load() {
+	async function loadFiles() {
 		const ui = useUiStore();
 		const id = ++loadId;
 		// A new cycle always cancels the previous one's requests —
@@ -251,6 +414,10 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 
 	return {
 		files,
+		source,
+		category,
+		scope,
+		wiki,
 		project,
 		referer,
 		agent,
@@ -263,6 +430,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		incompleteDate,
 		query,
 		setFromQuery,
+		ensureMonthlyDefaults,
 		load,
 		abort
 	};

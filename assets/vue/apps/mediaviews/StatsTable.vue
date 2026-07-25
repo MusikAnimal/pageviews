@@ -1,6 +1,6 @@
 <template>
 	<p v-if="summary" class="app-page-summary">
-		<a :href="fileUrl( summary.name )" target="_blank">{{ summary.name }}</a>
+		<a :href="summary.url" target="_blank">{{ summary.name }}</a>
 		·
 		<span class="app-page-summary__dates">{{ summary.dates }}</span>
 		·
@@ -144,11 +144,22 @@ const summary = computed( () => {
 			{ locale: banana.locale, monthly, localize: preferences.localizeDateFormat }
 		) )
 		.join( ' – ' );
+	// The categories source counts pageviews, not mediarequests, and
+	// links to the Commons category rather than a file page.
+	const categories = store.source === 'categories';
 
 	return {
 		name: entry.name,
+		url: categories ?
+			'https://commons.wikimedia.org/wiki/Category:' +
+				encodeURIComponent( entry.name.replace( / /g, '_' ) ) :
+			fileUrl( entry.name ),
 		dates: range,
-		requests: banana.i18n( 'num-requests', number( entry.total ), entry.total )
+		requests: banana.i18n(
+			categories ? 'num-pageviews' : 'num-requests',
+			number( entry.total ),
+			entry.total
+		)
 	};
 } );
 

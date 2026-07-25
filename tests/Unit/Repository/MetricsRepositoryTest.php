@@ -592,7 +592,7 @@ class MetricsRepositoryTest extends TestCase {
 		} catch ( ApiException $e ) {
 			static::assertSame( 'category_not_loaded', $e->errorCode );
 			static::assertSame( 404, $e->status );
-			static::assertSame( [ 'massviews-commons-category-unknown' ], $e->i18n );
+			static::assertSame( [ 'mediaviews-commons-category-unknown' ], $e->i18n );
 			static::assertFalse( $e->retryable );
 		}
 	}

@@ -32,6 +32,13 @@ const emit = defineEmits( [ 'update:open' ] );
 // (views/mediaviews/url_structure.haml).
 const params = [
 	{
+		name: 'source',
+		html: listValues( [
+			`${ code( 'files' ) } ${ defaultMsg() }`,
+			code( 'categories' )
+		] )
+	},
+	{
 		name: 'project',
 		html: banana.i18n(
 			'url-structure-project',
@@ -44,6 +51,26 @@ const params = [
 		html: banana.i18n(
 			'url-structure-files',
 			code( 'Example.jpg|Example.ogg' )
+		)
+	},
+	{
+		name: 'category',
+		html: banana.i18n( 'url-structure-mediaviews-category', code( 'UNESCO' ) )
+	},
+	{
+		name: 'scope',
+		html: banana.i18n(
+			'url-structure-mediaviews-scope',
+			`${ code( 'deep' ) } ${ defaultMsg() }`,
+			code( 'shallow' )
+		)
+	},
+	{
+		name: 'wiki',
+		html: banana.i18n(
+			'url-structure-project',
+			`${ code( 'all-wikis' ) } ${ defaultMsg() } `,
+			sitematrixLink( banana.i18n( 'project' ).toLowerCase() )
 		)
 	},
 	...dateRangeParams(),

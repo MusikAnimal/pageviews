@@ -5,11 +5,11 @@
 		</figcaption>
 		<template v-if="store.totals">
 			<h4 class="app-totals__subheading app-totals__subheading--first">
-				{{ $i18n( 'requests' ) }}
+				{{ metricLabel }}
 			</h4>
 			<dl class="app-totals__stats">
 				<div class="app-totals__stat app-totals__stat--strong">
-					<dt>{{ $i18n( 'requests' ) }}</dt>
+					<dt>{{ metricLabel }}</dt>
 					<dd>{{ number( store.totals.total ) }}</dd>
 				</div>
 				<div class="app-totals__stat app-totals__stat--strong">
@@ -53,6 +53,11 @@ const number = ( value ) => formatNumber( value, banana.locale, preferences.nume
 
 const averageLabel = computed( () => banana.i18n(
 	settings.dateType === 'monthly' ? 'monthly-average' : 'daily-average'
+) );
+
+// The categories source counts pageviews, not mediarequests.
+const metricLabel = computed( () => banana.i18n(
+	store.source === 'categories' ? 'pageviews' : 'requests'
 ) );
 
 /**

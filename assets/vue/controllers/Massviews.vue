@@ -6,13 +6,14 @@
 		<template v-if="!ready">
 			<MassviewsSettings />
 			<figure class="app-chart">
-				<div class="app-page-input-row">
-					<CategoryInput v-model="category" @submit="submit" />
+				<!-- The target input appears once a source is selected
+					(none are wired up yet). -->
+				<div v-if="store.source" class="app-page-input-row">
 					<CdxButton
 						action="progressive"
 						weight="primary"
 						:disabled="!store.target || store.status === 'loading'"
-						@click="submit"
+						@click="store.load()"
 					>
 						{{ $i18n( 'submit' ) }}
 					</CdxButton>
@@ -45,13 +46,9 @@
 				</a>
 				<div class="app-output-header__heading">
 					<h2 class="app-output-header__title">
-						<a :href="categoryUrl" target="_blank">{{ categoryDisplay }}</a>
+						{{ targetDisplay }}
 						<span class="app-output-header__dates">{{ dateRange }}</span>
 					</h2>
-					<CdxToggleButtonGroup
-						v-model="viewModel"
-						:buttons="viewButtons"
-					/>
 				</div>
 			</header>
 			<CdxMessage
@@ -64,15 +61,13 @@
 				{{ message.text }}
 			</CdxMessage>
 			<ChartPanel
-				v-if="store.view === 'chart'"
 				:dates="store.dates"
 				:series="chartSeries"
-				:monthly="true"
+				:monthly="settings.dateType === 'monthly'"
 				:filename="exportFilename"
 				:no-range-select="true"
 				:aria-label="$i18n( 'massviews-title' )"
 			/>
-			<ResultsTable v-else />
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -92,14 +87,9 @@ import {
 	CdxButton,
 	CdxIcon,
 	CdxMessage,
-	CdxToastContainer,
-	CdxToggleButtonGroup
+	CdxToastContainer
 } from '@wikimedia/codex';
-import {
-	cdxIconArrowPrevious,
-	cdxIconChart,
-	cdxIconListBullet
-} from '@wikimedia/codex-icons';
+import { cdxIconArrowPrevious } from '@wikimedia/codex-icons';
 import { useRoute, useRouter } from 'vue-router';
 import { useMassviewsStore } from '../stores/massviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
@@ -110,12 +100,10 @@ import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import MassviewsSettings from '../apps/massviews/Settings.vue';
-import CategoryInput from '../apps/massviews/CategoryInput.vue';
 import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
-import ResultsTable from '../apps/massviews/ResultsTable.vue';
 
 const store = useMassviewsStore();
 const preferences = usePreferencesStore();
@@ -152,45 +140,13 @@ function anotherQuery() {
 	store.status = 'initial';
 }
 
-const category = computed( {
-	get: () => store.target.replace( /_/g, ' ' ),
-	set: ( value ) => {
-		store.target = value;
-	}
-} );
+const targetDisplay = computed( () => store.target.replace( /_/g, ' ' ) );
 
-function submit() {
-	// Tolerate a pasted namespace prefix (the URL keeps the bare name).
-	store.target = store.target.replace( /^Category:/i, '' ).trim();
-	if ( store.target && store.status !== 'loading' ) {
-		store.load();
-	}
-}
-
-const viewButtons = [
-	{ value: 'list', label: banana.i18n( 'list' ), icon: cdxIconListBullet },
-	{ value: 'chart', label: banana.i18n( 'chart' ), icon: cdxIconChart }
-];
-const viewModel = computed( {
-	get: () => store.view,
-	set: ( value ) => {
-		if ( value ) {
-			store.view = value;
-		}
-	}
-} );
-
-const categoryDisplay = computed( () => store.target.replace( /_/g, ' ' ) );
-const categoryUrl = computed(
-	() => 'https://commons.wikimedia.org/wiki/Category:' +
-		encodeURIComponent( store.target.replace( / /g, '_' ) )
-);
-
-// The queried month range, shown next to the category name.
+// The queried date range, shown next to the target.
 const dateRange = computed( () => {
 	const options = {
 		locale: banana.locale,
-		monthly: true,
+		monthly: settings.dateType === 'monthly',
 		localize: preferences.localizeDateFormat
 	};
 	return `${ formatDate( parseDate( settings.start ), options ) } – ${
@@ -202,15 +158,13 @@ const exportFilename = computed(
 );
 
 const chartSeries = computed( () => store.totals ? [ {
-	label: categoryDisplay.value,
+	label: targetDisplay.value,
 	counts: store.totals.counts,
 	total: store.totals.total,
 	average: store.totals.average
 } ] : [] );
 
-// Unlike the chart apps, params never fire reactively: only the
-// initial URL-provided target loads automatically (CategoryInput
-// handles the empty-form focus).
+// Only the initial URL-provided target loads automatically.
 onMounted( () => {
 	if ( store.target ) {
 		store.load();

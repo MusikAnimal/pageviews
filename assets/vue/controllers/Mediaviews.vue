@@ -3,7 +3,8 @@
 	<div class="app-workspace">
 		<MediaviewsSettings />
 		<figure class="app-chart">
-			<FileInput />
+			<FileInput v-if="store.source !== 'categories'" />
+			<CategoryInput v-else v-model="category" />
 			<CdxMessage
 				v-for="message in ui.messages"
 				:key="message.id"
@@ -58,6 +59,7 @@ import {
 	CdxMessage,
 	CdxToastContainer
 } from '@wikimedia/codex';
+import { storeToRefs } from 'pinia';
 import { useMediaviewsStore } from '../stores/mediaviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -68,6 +70,7 @@ import MediaviewsSettings from '../apps/mediaviews/Settings.vue';
 import FaqDialog from '../apps/mediaviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/mediaviews/UrlStructureDialog.vue';
 import FileInput from '../components/FileInput.vue';
+import CategoryInput from '../apps/mediaviews/CategoryInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import Totals from '../apps/mediaviews/Totals.vue';
@@ -75,6 +78,7 @@ import StatsTable from '../apps/mediaviews/StatsTable.vue';
 
 const store = useMediaviewsStore();
 const settings = useSettingsStore();
+const { category } = storeToRefs( store );
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
@@ -97,7 +101,7 @@ function onDialogToggle( open ) {
 // A bare visit shows a couple of well-known example files rather than
 // an empty app (the default dates come from ensureDefaultDates).
 onMounted( () => {
-	if ( !store.files.length ) {
+	if ( store.source === 'files' && !store.files.length ) {
 		store.files = [ 'Example.jpg', 'Example.ogg' ];
 	}
 } );
@@ -124,10 +128,14 @@ const chartSeries = computed( () => store.series.map( ( entry ) => ( {
 
 watch(
 	() => [
+		store.source,
 		store.files,
 		store.project,
 		store.referer,
 		store.agent,
+		store.category,
+		store.scope,
+		store.wiki,
 		settings.start,
 		settings.end,
 		settings.dateType
