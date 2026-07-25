@@ -30,8 +30,8 @@ describe( 'buildCircularOption', () => {
 
 	it( 'uses the shared palette in series order', () => {
 		const option = buildCircularOption( { series } );
-		expect( option.color[ 0 ] ).toBe( 'rgba(171, 212, 235, 1)' );
-		expect( option.color[ 1 ] ).toBe( 'rgba(178, 223, 138, 1)' );
+		expect( option.color[ 0 ] ).toBe( 'rgba(75, 119, 214, 1)' );
+		expect( option.color[ 1 ] ).toBe( 'rgba(237, 181, 55, 1)' );
 	} );
 
 	it( 'labels slices with formatted values', () => {

@@ -124,9 +124,9 @@ describe( 'StatsTable', () => {
 		// Sorted by views desc: Cat (series index 1) first.
 		// jsdom normalizes rgba(…, 1) to rgb(…).
 		expect( rows[ 0 ].find( '.app-stats__color' ).attributes( 'style' ) )
-			.toContain( 'rgb(178, 223, 138)' );
+			.toContain( 'rgb(237, 181, 55)' );
 		expect( rows[ 1 ].find( '.app-stats__color' ).attributes( 'style' ) )
-			.toContain( 'rgb(171, 212, 235)' );
+			.toContain( 'rgb(75, 119, 214)' );
 	} );
 
 	it( 'shows size and watchers, marking hidden watcher counts', () => {

@@ -110,7 +110,7 @@ describe( 'buildTimeseriesOption', () => {
 	it( 'styles bars with translucent fill and solid border', () => {
 		const option = buildTimeseriesOption( { ...base, chartType: 'bar' } );
 		expect( option.series[ 0 ].type ).toBe( 'bar' );
-		expect( option.series[ 0 ].itemStyle.color ).toBe( 'rgba(171, 212, 235, 0.6)' );
-		expect( option.series[ 0 ].itemStyle.borderColor ).toBe( 'rgba(171, 212, 235, 1)' );
+		expect( option.series[ 0 ].itemStyle.color ).toBe( 'rgba(75, 119, 214, 0.6)' );
+		expect( option.series[ 0 ].itemStyle.borderColor ).toBe( 'rgba(75, 119, 214, 1)' );
 	} );
 } );
