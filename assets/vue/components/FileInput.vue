@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
 import { cdxIconClear } from '@wikimedia/codex-icons';
@@ -60,6 +60,12 @@ const menuItems = ref( [] );
 const lookup = ref( null );
 
 let debounceTimer = null;
+
+// Submission-based tools put the cursor on the main input on page
+// load, ready to type more files.
+onMounted( () => {
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
+} );
 
 // Store → component, e.g. after URL-driven changes.
 watch( files, ( names ) => {

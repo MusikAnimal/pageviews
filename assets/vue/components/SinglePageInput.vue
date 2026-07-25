@@ -4,6 +4,7 @@
 			{{ $i18n( 'page-title' ) }}
 		</template>
 		<CdxLookup
+			ref="lookup"
 			v-model:selected="selected"
 			v-model:input-value="inputValue"
 			:menu-items="menuItems"
@@ -18,7 +19,7 @@
 </template>
 
 <script setup>
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { CdxField, CdxLookup } from '@wikimedia/codex';
 import { mwApiGet } from '../lib/mwApi.js';
 
@@ -46,6 +47,15 @@ const displayName = ( name ) => name.replace( /_/g, ' ' );
 const selected = ref( page.value ? displayName( page.value ) : null );
 const inputValue = ref( page.value ? displayName( page.value ) : '' );
 const menuItems = ref( [] );
+const lookup = ref( null );
+
+// Submission-based tools put the cursor on the main input on page
+// load (unless a URL-provided page is already being queried).
+onMounted( () => {
+	if ( !page.value ) {
+		lookup.value?.$el?.querySelector( 'input' )?.focus();
+	}
+} );
 
 let debounceTimer = null;
 // Bumped to invalidate in-flight autocomplete responses (e.g. after
