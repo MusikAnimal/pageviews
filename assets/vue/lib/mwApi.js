@@ -210,13 +210,14 @@ export async function getSubpages( project, title, namespaces, signal = undefine
 	}
 	const inverse = namespace % 2 === 0 ? namespace + 1 : namespace - 1;
 
-	const results = await Promise.all( [ namespace, inverse ].map( ( apnamespace ) => mwApiQueryAll( project, {
-		action: 'query',
-		list: 'allpages',
-		aplimit: 'max',
-		apnamespace,
-		apprefix: `${ base }/`
-	}, ( response ) => response.query?.allpages || [], undefined, signal )
+	const results = await Promise.all( [ namespace, inverse ].map(
+		( apnamespace ) => mwApiQueryAll( project, {
+			action: 'query',
+			list: 'allpages',
+			aplimit: 'max',
+			apnamespace,
+			apprefix: `${ base }/`
+		}, ( response ) => response.query?.allpages || [], undefined, signal )
 	) );
 	return results.flat().map( ( page ) => page.title );
 }

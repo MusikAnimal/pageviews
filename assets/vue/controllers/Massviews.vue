@@ -7,35 +7,51 @@
 		<template v-if="!ready">
 			<MassviewsSettings />
 			<figure class="app-chart">
-				<div class="app-page-input-row">
-					<CdxSelect
-						v-model:selected="source"
-						:menu-items="sourceItems"
-						:aria-label="$i18n( 'source' )"
-					/>
-					<CdxTextInput
-						ref="targetInput"
-						v-model="target"
-						class="app-page-input-row__input"
-						:clearable="true"
-						:aria-label="targetLabel"
-						:placeholder="targetPlaceholder"
-						@keydown.enter="submit"
-					/>
-					<CdxButton
-						action="progressive"
-						weight="primary"
-						:disabled="!store.target || store.status === 'loading'"
-						@click="submit"
-					>
-						{{ $i18n( 'submit' ) }}
-					</CdxButton>
+				<CdxField class="app-pages">
+					<template #label>
+						{{ $i18n( 'source' ) }}
+					</template>
+					<div class="app-page-input-row">
+						<CdxSelect
+							v-model:selected="source"
+							:menu-items="sourceItems"
+							:aria-label="$i18n( 'source' )"
+						/>
+						<CdxTextInput
+							ref="targetInput"
+							v-model="target"
+							class="app-page-input-row__input"
+							:clearable="true"
+							:aria-label="targetLabel"
+							:placeholder="targetPlaceholder"
+							@keydown.enter="submit"
+						/>
+						<!-- In the stacked (mobile) layout the help text
+							follows DOM order, right under the input; in the
+							row layout it wraps onto its own line below. -->
+						<!-- eslint-disable vue/no-v-html -- built from i18n
+							messages and our own help URLs; no
+							user-controlled markup. -->
+						<p class="app-page-input-row__description" v-html="sourceDescription" />
+						<!-- eslint-enable vue/no-v-html -->
+						<CdxButton
+							action="progressive"
+							weight="primary"
+							:disabled="!store.target || store.status === 'loading'"
+							@click="submit"
+						>
+							{{ $i18n( 'submit' ) }}
+						</CdxButton>
+					</div>
+				</CdxField>
+				<div v-if="source === 'category'" class="app-source-options">
+					<CdxCheckbox v-model="useSubjectPage" :inline="true">
+						{{ $i18n( 'category-subject-toggle' ) }}
+					</CdxCheckbox>
+					<CdxCheckbox v-model="includeSubcategories" :inline="true">
+						{{ $i18n( 'include-subcategories' ) }}
+					</CdxCheckbox>
 				</div>
-				<!-- eslint-disable vue/no-v-html -- built from i18n
-					messages and our own help URLs; no user-controlled
-					markup. -->
-				<p class="app-source-description" v-html="sourceDescription" />
-				<!-- eslint-enable vue/no-v-html -->
 				<CdxMessage
 					v-for="message in ui.messages"
 					:key="message.id"
@@ -110,6 +126,8 @@
 import { computed, onMounted, ref } from 'vue';
 import {
 	CdxButton,
+	CdxCheckbox,
+	CdxField,
 	CdxIcon,
 	CdxMessage,
 	CdxSelect,
@@ -145,7 +163,7 @@ const settings = useSettingsStore();
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
-const { source, target } = storeToRefs( store );
+const { source, target, subjectpage, subcategories } = storeToRefs( store );
 useQuerySync( store );
 
 // The /massviews/faq and /massviews/url_structure routes open dialogs
@@ -174,6 +192,20 @@ const ready = computed(
 function anotherQuery() {
 	store.status = 'initial';
 }
+
+const useSubjectPage = computed( {
+	get: () => subjectpage.value === '1',
+	set: ( value ) => {
+		subjectpage.value = value ? '1' : '0';
+	}
+} );
+
+const includeSubcategories = computed( {
+	get: () => subcategories.value === '1',
+	set: ( value ) => {
+		subcategories.value = value ? '1' : '0';
+	}
+} );
 
 function submit() {
 	if ( store.target && store.status !== 'loading' ) {

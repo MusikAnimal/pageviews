@@ -514,11 +514,25 @@ a {
 	@media screen and ( min-width: @min-width-breakpoint-tablet ) {
 		align-items: flex-end;
 		flex-direction: row;
+		flex-wrap: wrap;
 	}
 
 	.app-pages,
 	&__input {
 		flex: 1;
+	}
+
+	// Subtle helper line describing the selected source. Stacked
+	// layouts keep the DOM order (right under the input); the row
+	// layout wraps it onto its own full line below the controls.
+	&__description {
+		color: @color-subtle;
+		margin: 0;
+
+		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+			flex-basis: 100%;
+			order: 1;
+		}
 	}
 
 	// The Source select and the Submit button keep their natural
@@ -532,10 +546,18 @@ a {
 	}
 }
 
-// Subtle helper line describing the selected Massviews source.
-.app-source-description {
-	color: @color-subtle;
-	margin: @spacing-25 0 0;
+// The category source's toggles, inline beneath the input row.
+.app-source-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: @spacing-50 @spacing-100;
+	margin-top: @spacing-75;
+
+	// The flex gap provides the spacing; the inline checkboxes' own
+	// trailing margin would double it up.
+	.cdx-checkbox--inline {
+		margin-right: 0;
+	}
 }
 
 // The results-state header the list apps share: a back-to-the-form
