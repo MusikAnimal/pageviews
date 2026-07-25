@@ -550,6 +550,64 @@ class MetricsRepositoryTest extends TestCase {
 		}
 	}
 
+	public function testCommonsCategoryContractShape(): void {
+		$repo = $this->makeRepo( [
+			// 2025-02 is missing from the response: zero-filled. The
+			// dataset uses space-separated ISO timestamps.
+			'commons-analytics/pageviews-per-category-monthly/UNESCO/deep/en.wikipedia/20250101/20250401' => [
+				'items' => [
+					[ 'timestamp' => '2025-01-01 00:00:00.000Z', 'pageview-count' => 100 ],
+					[ 'timestamp' => '2025-03-01 00:00:00.000Z', 'pageview-count' => 50 ],
+				],
+			],
+		] );
+
+		$result = $repo->getCommonsCategoryViews(
+			// Prefix stripped, spaces underscored, project normalized.
+			'Category:UNESCO', 'deep', 'en.wikipedia.org', '2025-01', '2025-03'
+		);
+
+		static::assertSame( [
+			'category' => 'UNESCO',
+			'scope' => 'deep',
+			'wiki' => 'en.wikipedia',
+			'granularity' => 'monthly',
+			'start' => '2025-01',
+			'end' => '2025-03',
+			'dates' => [ '2025-01', '2025-02', '2025-03' ],
+			'counts' => [ 100, 0, 50 ],
+			'total' => 150,
+			'average' => 50.0,
+		], $result );
+	}
+
+	public function testCommonsCategoryNotLoaded(): void {
+		// 404 means the category is not in the allowlisted dataset:
+		// an error, not zeros (unlike per-article pageviews 404s).
+		$repo = $this->makeRepo();
+
+		try {
+			$repo->getCommonsCategoryViews( 'Nonexistent', 'deep', 'all-wikis', '2025-01', '2025-03' );
+			static::fail( 'Expected ApiException (category_not_loaded)' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'category_not_loaded', $e->errorCode );
+			static::assertSame( 404, $e->status );
+			static::assertSame( [ 'massviews-commons-category-unknown' ], $e->i18n );
+			static::assertFalse( $e->retryable );
+		}
+	}
+
+	public function testCommonsCategoryInvalidScope(): void {
+		$repo = $this->makeRepo();
+
+		try {
+			$repo->getCommonsCategoryViews( 'UNESCO', 'nested', 'all-wikis', '2025-01', '2025-03' );
+			static::fail( 'Expected ApiException (invalid_scope)' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 400, $e->status );
+		}
+	}
+
 	public function testUpstreamServerErrorBecomesApiException(): void {
 		// Both 4xx and 5xx (e.g. exhausted 429 retries, Cassandra
 		// errors) must surface as a labeled Pageviews API error, never

@@ -94,4 +94,19 @@ class MetricsController extends AbstractController {
 	): JsonResponse {
 		return new JsonResponse( $metricsRepo->getTopPageviews( $project, $date, $platform ) );
 	}
+
+	#[Route( '/api/metrics/commons-category', name: 'api_metrics_commons_category', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function commonsCategory(
+		MetricsRepository $metricsRepo,
+		#[MapQueryParameter] string $category = '',
+		#[MapQueryParameter] string $scope = 'deep',
+		#[MapQueryParameter] string $wiki = 'all-wikis',
+		#[MapQueryParameter] string $start = '',
+		#[MapQueryParameter] string $end = '',
+	): JsonResponse {
+		return new JsonResponse( $metricsRepo->getCommonsCategoryViews(
+			$category, $scope, $wiki, $start, $end
+		) );
+	}
 }

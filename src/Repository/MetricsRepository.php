@@ -911,6 +911,128 @@ class MetricsRepository extends Repository {
 	 * @return string[] Every day (Y-m-d) or month (Y-m) in the range,
 	 *   inclusive.
 	 */
+
+	/**
+	 * Monthly pageviews of the wiki pages that use media from a Commons
+	 * category, from the Commons Impact Metrics dataset (the Massviews
+	 * "Commons category" source). Only allowlisted categories are
+	 * loaded; anything else is a 404 from AQS, surfaced as an error
+	 * (unlike per-article 404s, zeros would be misleading here).
+	 *
+	 * @param string $category With or without the Category: prefix.
+	 * @param string $scope 'deep' includes subcategories.
+	 * @param string $wiki e.g. en.wikipedia(.org), or 'all-wikis'.
+	 * @param string $start YYYY-MM (or YYYY-MM-DD, snapped to the month).
+	 * @param string $end
+	 */
+	public function getCommonsCategoryViews(
+		string $category,
+		string $scope = 'deep',
+		string $wiki = 'all-wikis',
+		string $start = '',
+		string $end = '',
+	): array {
+		$scope = $this->validated( 'scope', $scope, [ 'deep', 'shallow' ] );
+		$wiki = $wiki === 'all-wikis' ? $wiki : $this->normalizeProject( $wiki );
+		$category = str_replace( ' ', '_', trim( preg_replace( '/^Category:/i', '', trim( $category ) ) ) );
+		if ( $category === '' ) {
+			$this->invalidParameter(
+				'missing_param',
+				'The category parameter is required.',
+				[ 'param-error-3', 'category' ]
+			);
+		}
+
+		$startDate = $this->parseDate( $start )->modify( 'first day of this month' );
+		$endDate = $this->parseDate( $end, true )->modify( 'first day of this month' );
+		if ( $startDate > $endDate ) {
+			$this->invalidParameter(
+				'invalid_date_range',
+				'The start date must not be after the end date.',
+				[ 'param-error-2' ]
+			);
+		}
+
+		$cacheKey = sprintf(
+			'cim.%s.%s.%s.%s.%s',
+			sha1( $category ),
+			$scope,
+			$wiki,
+			$startDate->format( 'Ym' ),
+			$endDate->format( 'Ym' )
+		);
+
+		return $this->cacheMetrics->get(
+			$cacheKey,
+			function ( ItemInterface $item ) use ( $category, $scope, $wiki, $startDate, $endDate ): array {
+				// The dataset refreshes monthly; recent ranges may gain
+				// last month's snapshot, so don't cache them for long.
+				$item->expiresAfter( $this->ttlForRange( $endDate ) );
+
+				$dates = $this->dateAxis( $startDate, $endDate, 'monthly' );
+				$response = $this->aqsClient->request( 'GET', sprintf(
+					'commons-analytics/pageviews-per-category-monthly/%s/%s/%s/%s/%s',
+					rawurlencode( $category ),
+					$scope,
+					$wiki,
+					$startDate->format( 'Ymd' ),
+					// AQS treats the end month as exclusive.
+					( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
+				) );
+
+				try {
+					$items = $response->toArray()['items'] ?? [];
+				} catch ( HttpClientExceptionInterface $e ) {
+					if (
+						$e instanceof ClientExceptionInterface &&
+						$response->getStatusCode() === Response::HTTP_NOT_FOUND
+					) {
+						throw new ApiException(
+							'category_not_loaded',
+							'This category is not part of the Commons Impact Metrics dataset, ' .
+								'or has no data for the given dates.',
+							[ 'massviews-commons-category-unknown' ],
+							Response::HTTP_NOT_FOUND,
+							'aqs',
+							false,
+						);
+					}
+					throw new ApiException(
+						'upstream_error',
+						'The Commons Impact Metrics API returned an error.',
+						[ 'api-error', 'Commons Impact Metrics API' ],
+						Response::HTTP_BAD_GATEWAY,
+						'aqs',
+						true,
+					);
+				}
+
+				$byMonth = [];
+				foreach ( $items as $row ) {
+					// e.g. "2025-01-01 00:00:00.000Z".
+					$byMonth[ substr( $row['timestamp'], 0, 7 ) ] = $row['pageview-count'];
+				}
+				$counts = array_map(
+					static fn ( string $month ): int => $byMonth[ $month ] ?? 0,
+					$dates
+				);
+
+				return [
+					'category' => $category,
+					'scope' => $scope,
+					'wiki' => $wiki,
+					'granularity' => 'monthly',
+					'start' => $startDate->format( 'Y-m' ),
+					'end' => $endDate->format( 'Y-m' ),
+					'dates' => $dates,
+					'counts' => $counts,
+					'total' => array_sum( $counts ),
+					'average' => round( array_sum( $counts ) / count( $dates ), 2 ),
+				];
+			}
+		);
+	}
+
 	private function dateAxis( DateTime $start, DateTime $end, string $granularity ): array {
 		$monthly = $granularity === 'monthly';
 		$period = new DatePeriod(
