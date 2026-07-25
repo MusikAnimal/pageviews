@@ -8,19 +8,20 @@
 			<MassviewsSettings />
 			<figure class="app-chart">
 				<div class="app-page-input-row">
-					<CdxField class="app-pages">
-						<template #label>
-							{{ targetLabel }}
-						</template>
-						<CdxTextInput
-							ref="targetInput"
-							v-model="target"
-							:clearable="true"
-							:aria-label="targetLabel"
-							:placeholder="targetPlaceholder"
-							@keydown.enter="submit"
-						/>
-					</CdxField>
+					<CdxSelect
+						v-model:selected="source"
+						:menu-items="sourceItems"
+						:aria-label="$i18n( 'source' )"
+					/>
+					<CdxTextInput
+						ref="targetInput"
+						v-model="target"
+						class="app-page-input-row__input"
+						:clearable="true"
+						:aria-label="targetLabel"
+						:placeholder="targetPlaceholder"
+						@keydown.enter="submit"
+					/>
 					<CdxButton
 						action="progressive"
 						weight="primary"
@@ -30,6 +31,11 @@
 						{{ $i18n( 'submit' ) }}
 					</CdxButton>
 				</div>
+				<!-- eslint-disable vue/no-v-html -- built from i18n
+					messages and our own help URLs; no user-controlled
+					markup. -->
+				<p class="app-source-description" v-html="sourceDescription" />
+				<!-- eslint-enable vue/no-v-html -->
 				<CdxMessage
 					v-for="message in ui.messages"
 					:key="message.id"
@@ -104,9 +110,9 @@
 import { computed, onMounted, ref } from 'vue';
 import {
 	CdxButton,
-	CdxField,
 	CdxIcon,
 	CdxMessage,
+	CdxSelect,
 	CdxTextInput,
 	CdxToastContainer,
 	CdxToggleButtonGroup
@@ -125,7 +131,7 @@ import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
-import { banana } from '../i18n.js';
+import { banana, rawI18n } from '../i18n.js';
 import MassviewsSettings from '../apps/massviews/Settings.vue';
 import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
@@ -139,7 +145,7 @@ const settings = useSettingsStore();
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
-const { target } = storeToRefs( store );
+const { source, target } = storeToRefs( store );
 useQuerySync( store );
 
 // The /massviews/faq and /massviews/url_structure routes open dialogs
@@ -192,7 +198,15 @@ const viewModel = computed( {
 // (localized prefixes included).
 const targetDisplay = computed( () => store.targetTitle.replace( /_/g, ' ' ) );
 
-// The target input's label and example, per source (legacy
+// The remaining legacy sources land here as they are ported.
+const sourceItems = [
+	{ value: 'category', label: banana.i18n( 'category' ) },
+	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
+	{ value: 'subpages', label: banana.i18n( 'subpages' ) },
+	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) }
+];
+
+// The target input's accessible name and example, per source (legacy
 // placeholders).
 const PLACEHOLDERS = {
 	category: 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City',
@@ -207,6 +221,38 @@ const targetLabel = computed( () => banana.i18n( {
 	transclusions: 'template'
 }[ store.source ] ) );
 const targetPlaceholder = computed( () => PLACEHOLDERS[ store.source ] );
+
+/**
+ * Subtle helper line under the input describing the selected source,
+ * like the legacy tool. The wikilinks/transclusions messages embed
+ * their help anchor in the content (rawI18n bypasses banana's
+ * sanitizer); the others take it as a parameter.
+ */
+const sourceDescription = computed( () => {
+	const help = ( page, text ) => `<a target="_blank" href="https://www.mediawiki.org/wiki/Special:MyLanguage/${ page }">${ text }</a>`;
+	switch ( store.source ) {
+		case 'wikilinks':
+			return rawI18n(
+				'massviews-wikilinks-description',
+				'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Wikilinks'
+			);
+		case 'subpages':
+			return banana.i18n(
+				'massviews-subpages-description',
+				help( 'Help:Subpages', banana.i18n( 'subpages' ).toLowerCase() )
+			);
+		case 'transclusions':
+			return rawI18n(
+				'massviews-transclusions-description',
+				'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Transclusion'
+			);
+		default:
+			return banana.i18n(
+				'massviews-category-description',
+				help( 'Help:Categories', banana.i18n( 'category' ).toLowerCase() )
+			);
+	}
+} );
 
 // The queried date range, shown next to the category name.
 const dateRange = computed( () => {

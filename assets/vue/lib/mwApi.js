@@ -129,19 +129,6 @@ export function editProtectionLevel( info ) {
 }
 
 /**
- * A GET request following API continuation until exhausted — the
- * equivalent of the legacy massApi() helper.
- *
- * @param {string} project
- * @param {Object} params
- * @param {Function} extract ( response ) => Array — pulls the items of
- *   interest out of each response page.
- * @param {number} [limit] Stop once this many items are collected
- *   (matches the legacy apiLimit of 20000).
- * @param {AbortSignal} [signal]
- * @return {Promise<Array>} The concatenated extracted items.
- */
-/**
  * All pages linked from the given page (the Massviews wikilinks
  * source), across all namespaces.
  *
@@ -223,18 +210,30 @@ export async function getSubpages( project, title, namespaces, signal = undefine
 	}
 	const inverse = namespace % 2 === 0 ? namespace + 1 : namespace - 1;
 
-	const results = await Promise.all( [ namespace, inverse ].map( ( apnamespace ) =>
-		mwApiQueryAll( project, {
-			action: 'query',
-			list: 'allpages',
-			aplimit: 'max',
-			apnamespace,
-			apprefix: `${ base }/`
-		}, ( response ) => response.query?.allpages || [], undefined, signal )
+	const results = await Promise.all( [ namespace, inverse ].map( ( apnamespace ) => mwApiQueryAll( project, {
+		action: 'query',
+		list: 'allpages',
+		aplimit: 'max',
+		apnamespace,
+		apprefix: `${ base }/`
+	}, ( response ) => response.query?.allpages || [], undefined, signal )
 	) );
 	return results.flat().map( ( page ) => page.title );
 }
 
+/**
+ * A GET request following API continuation until exhausted — the
+ * equivalent of the legacy massApi() helper.
+ *
+ * @param {string} project
+ * @param {Object} params
+ * @param {Function} extract ( response ) => Array — pulls the items of
+ *   interest out of each response page.
+ * @param {number} [limit] Stop once this many items are collected
+ *   (matches the legacy apiLimit of 20000).
+ * @param {AbortSignal} [signal]
+ * @return {Promise<Array>} The concatenated extracted items.
+ */
 export async function mwApiQueryAll( project, params, extract, limit = 20000, signal = undefined ) {
 	const items = [];
 	let continueParams = {};

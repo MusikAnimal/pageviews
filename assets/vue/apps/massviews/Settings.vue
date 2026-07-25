@@ -10,16 +10,6 @@
 			<h3>{{ $i18n( 'options' ) }}</h3>
 		</header>
 		<DateRangeInput />
-		<CdxField class="app-settings__source">
-			<template #label>
-				{{ $i18n( 'source' ) }}
-			</template>
-			<CdxSelect
-				v-model:selected="source"
-				:menu-items="sourceItems"
-				:aria-label="$i18n( 'source' )"
-			/>
-		</CdxField>
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
 		<template v-if="source === 'category'">
@@ -40,26 +30,17 @@
 <script setup>
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { CdxCheckbox, CdxField, CdxSelect } from '@wikimedia/codex';
+import { CdxCheckbox } from '@wikimedia/codex';
 import DateRangeInput from '../../components/DateRangeInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import PreferencesDialog from '../../components/PreferencesDialog.vue';
 import { useMassviewsStore } from '../../stores/massviews.js';
 import { useUiStore } from '../../stores/ui.js';
-import { banana } from '../../i18n.js';
 
 const ui = useUiStore();
 const store = useMassviewsStore();
 const { source, platform, agent, subjectpage, subcategories } = storeToRefs( store );
-
-// The remaining legacy sources land here as they are ported.
-const sourceItems = [
-	{ value: 'category', label: banana.i18n( 'category' ) },
-	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
-	{ value: 'subpages', label: banana.i18n( 'subpages' ) },
-	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) }
-];
 
 const useSubjectPage = computed( {
 	get: () => subjectpage.value === '1',

@@ -494,15 +494,23 @@ a {
 }
 
 // The list apps' main input with the Submit button inline to its
-// right, bottoms aligned (the field's label sits above the input).
+// right (and, in Massviews, the Source select to its left), bottoms
+// aligned (a field's label sits above its input).
 .app-page-input-row {
 	align-items: flex-end;
 	display: flex;
 	gap: @spacing-50;
 
-	.app-pages {
+	.app-pages,
+	&__input {
 		flex: 1;
 	}
+}
+
+// Subtle helper line describing the selected Massviews source.
+.app-source-description {
+	color: @color-subtle;
+	margin: @spacing-25 0 0;
 }
 
 // The results-state header the list apps share: a back-to-the-form
