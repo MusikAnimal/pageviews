@@ -169,7 +169,7 @@ function onInput( value ) {
 					pslimit: 10,
 					cirrusUseCompletionSuggester: 'yes'
 				},
-				searchAborter.next()
+			searchAborter.next()
 			);
 			const results = withRedirects ?
 				response.query?.pages || [] :

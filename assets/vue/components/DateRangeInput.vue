@@ -45,7 +45,7 @@
 			</CdxField>
 		</div>
 	</CdxField>
-	<CdxField class="app-setting__dates-type">
+	<CdxField v-if="!monthlyOnly" class="app-setting__dates-type">
 		<template #label>
 			{{ $i18n( 'date-type' ) }}
 		</template>
@@ -78,6 +78,22 @@ import {
 	yesterdayUtc
 } from '../lib/dates.js';
 
+const props = defineProps( {
+	// Sources limited to monthly data (Massviews' Commons category)
+	// hide the date-type selector; the owning Settings component
+	// forces the settings store's dateType to monthly.
+	monthlyOnly: {
+		type: Boolean,
+		default: false
+	},
+	// Earliest selectable date override, for datasets that begin later
+	// than the pageviews data (e.g. Commons Impact Metrics: 2023-01).
+	min: {
+		type: String,
+		default: ''
+	}
+} );
+
 const store = useSettingsStore();
 const { start, end, dateType, specialRange } = storeToRefs( store );
 
@@ -86,7 +102,8 @@ const inputType = computed( () => monthly.value ? 'month' : 'date' );
 // Data exists from July 2015 up to yesterday (or, in monthly mode,
 // the last complete month).
 const minDate = computed(
-	() => monthly.value ? PAGEVIEWS_MIN_DATE.slice( 0, 7 ) : PAGEVIEWS_MIN_DATE
+	() => props.min ||
+		( monthly.value ? PAGEVIEWS_MIN_DATE.slice( 0, 7 ) : PAGEVIEWS_MIN_DATE )
 );
 const maxDate = computed(
 	() => monthly.value ? formatYm( lastCompleteMonthUtc() ) : formatYmd( yesterdayUtc() )
@@ -101,7 +118,9 @@ const dateTypeOptions = [
 // shorter than a month make no sense in monthly mode.
 const presetItems = computed( () => {
 	if ( monthly.value ) {
-		return [ 'last-month', 'this-year', 'last-year', 'all-time' ]
+		// With a dataset-specific minimum, "all time" would resolve to
+		// dates before the dataset begins.
+		return [ 'last-month', 'this-year', 'last-year', ...( props.min ? [] : [ 'all-time' ] ) ]
 			.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) );
 	}
 	return [

@@ -272,6 +272,39 @@ export function fetchTopviews( { project, date, platform = 'all-access', signal 
 }
 
 /**
+ * Monthly pageviews of the pages using media from a Commons category,
+ * from the Commons Impact Metrics dataset (the Massviews "Commons
+ * category" source). Only allowlisted categories are loaded.
+ *
+ * @param {Object} params
+ * @param {string} params.category Without the Category: prefix.
+ * @param {string} [params.scope] 'deep' includes subcategories.
+ * @param {string} [params.wiki] A project domain, or 'all-wikis'.
+ * @param {string} params.start YYYY-MM.
+ * @param {string} params.end
+ * @param {AbortSignal} [params.signal]
+ * @return {Promise<Object>} { category, scope, wiki, granularity,
+ *   start, end, dates, counts, total, average }
+ * @throws {ApiError}
+ */
+export function fetchCommonsCategory( {
+	category,
+	scope = 'deep',
+	wiki = 'all-wikis',
+	start,
+	end,
+	signal
+} ) {
+	return apiGet( '/api/metrics/commons-category', {
+		category,
+		scope,
+		wiki,
+		start,
+		end
+	}, signal );
+}
+
+/**
  * Detect a not-yet-populated trailing data point: AQS can take a day
  * or more to backfill (and lags differently per wiki), so a zero on
  * the most recent date right after a non-zero one almost certainly

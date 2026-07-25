@@ -10,11 +10,13 @@ import Siteviews from './vue/controllers/Siteviews.vue';
 import Mediaviews from './vue/controllers/Mediaviews.vue';
 import Langviews from './vue/controllers/Langviews.vue';
 import Userviews from './vue/controllers/Userviews.vue';
+import Massviews from './vue/controllers/Massviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
 import { useSiteviewsStore } from './vue/stores/siteviews.js';
 import { useMediaviewsStore } from './vue/stores/mediaviews.js';
 import { useLangviewsStore } from './vue/stores/langviews.js';
 import { useUserviewsStore } from './vue/stores/userviews.js';
+import { useMassviewsStore } from './vue/stores/massviews.js';
 import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
@@ -72,6 +74,17 @@ const router = createRouter( {
 			path: '/userviews/url_structure',
 			component: Userviews,
 			meta: { store: useUserviewsStore, dialog: 'url-structure' }
+		},
+		{ path: '/massviews', component: Massviews, meta: { store: useMassviewsStore } },
+		{
+			path: '/massviews/faq',
+			component: Massviews,
+			meta: { store: useMassviewsStore, dialog: 'faq' }
+		},
+		{
+			path: '/massviews/url_structure',
+			component: Massviews,
+			meta: { store: useMassviewsStore, dialog: 'url-structure' }
 		}
 	]
 } );
