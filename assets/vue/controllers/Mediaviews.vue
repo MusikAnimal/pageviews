@@ -4,7 +4,7 @@
 		<MediaviewsSettings />
 		<figure class="app-chart">
 			<FileInput v-if="store.source !== 'categories'" />
-			<CategoryInput v-else v-model="category" />
+			<CategoryInput v-else />
 			<CdxMessage
 				v-for="message in ui.messages"
 				:key="message.id"
@@ -59,7 +59,6 @@ import {
 	CdxMessage,
 	CdxToastContainer
 } from '@wikimedia/codex';
-import { storeToRefs } from 'pinia';
 import { useMediaviewsStore } from '../stores/mediaviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -78,7 +77,6 @@ import StatsTable from '../apps/mediaviews/StatsTable.vue';
 
 const store = useMediaviewsStore();
 const settings = useSettingsStore();
-const { category } = storeToRefs( store );
 const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
@@ -133,7 +131,7 @@ watch(
 		store.project,
 		store.referer,
 		store.agent,
-		store.category,
+		store.categories,
 		store.scope,
 		store.wiki,
 		settings.start,

@@ -15,6 +15,7 @@ const AGENTS = [ 'all-agents', 'user', 'spider' ];
 export const MAX_FILES = 10;
 
 const SOURCES = [ 'files', 'categories' ];
+export const MAX_CATEGORIES = 10;
 const SCOPES = [ 'deep', 'shallow' ];
 // The Commons Impact Metrics dataset (the categories source) begins here.
 export const COMMONS_METRICS_MIN_MONTH = '2023-01';
@@ -37,12 +38,13 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 */
 	const source = ref( 'files' );
 	/**
-	 * The Commons category (categories source), without the namespace
-	 * prefix; underscored in the URL.
+	 * The Commons categories (categories source), without the
+	 * namespace prefix (underscored, pipe-delimited in the URL like
+	 * the files).
 	 *
-	 * @type {import('vue').Ref<string>}
+	 * @type {import('vue').Ref<string[]>}
 	 */
-	const category = ref( '' );
+	const categories = ref( [] );
 	/**
 	 * 'deep' includes all subcategories; 'shallow' the category alone.
 	 *
@@ -132,7 +134,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	const query = computed( () => source.value === 'categories' ?
 		{
 			source: 'categories',
-			category: category.value.replace( / /g, '_' ) || undefined,
+			categories: categories.value.join( '|' ) || undefined,
 			scope: scope.value,
 			wiki: wiki.value,
 			autolog: autolog.value ? undefined : 'false'
@@ -156,8 +158,15 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		if ( SOURCES.includes( params.source ) ) {
 			source.value = params.source;
 		}
-		if ( params.category !== undefined && params.category !== category.value ) {
-			category.value = params.category;
+		if ( params.categories !== undefined ) {
+			const names = params.categories.split( '|' )
+				.filter( ( name ) => name !== '' )
+				.slice( 0, MAX_CATEGORIES );
+			// Keep the array identity when unchanged (see the
+			// pageviews store).
+			if ( names.join( '|' ) !== categories.value.join( '|' ) ) {
+				categories.value = names;
+			}
 		}
 		if ( SCOPES.includes( params.scope ) ) {
 			scope.value = params.scope;
@@ -216,16 +225,18 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	}
 
 	/**
-	 * One aggregate request per category (no fan-out): monthly views
-	 * of the pages using media from the category.
+	 * One aggregate request per category (no per-page fan-out):
+	 * monthly views of the pages using media from each category.
+	 * Categories the dataset doesn't know get a message each and are
+	 * dropped, like missing files.
 	 */
-	async function loadCategory() {
+	async function loadCategories() {
 		const ui = useUiStore();
 		const id = ++loadId;
 		// A new cycle always cancels the previous one's requests.
 		const signal = aborter.next();
 
-		if ( !category.value ) {
+		if ( !categories.value.length ) {
 			status.value = 'initial';
 			dates.value = [];
 			series.value = [];
@@ -242,45 +253,63 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		status.value = 'loading';
 		ui.clearMessages();
 
-		try {
-			const result = await fetchCommonsCategory( {
-				category: category.value,
+		const results = await Promise.all( categories.value.map( ( name ) =>
+			fetchCommonsCategory( {
+				category: name,
 				scope: scope.value,
 				wiki: wiki.value,
 				start: settings.start,
 				end: settings.end,
 				signal
-			} );
-			if ( id !== loadId ) {
-				return;
-			}
+			} ).then(
+				( result ) => ( { name, result } ),
+				( error ) => ( { name, error } )
+			)
+		) );
+		if ( id !== loadId ) {
+			return;
+		}
 
-			dates.value = result.dates;
-			series.value = [ {
-				name: category.value.replace( /_/g, ' ' ),
-				counts: result.counts,
-				total: result.total,
-				average: result.average
-			} ];
-			totals.value = {
+		for ( const { name, error } of results.filter( ( entry ) => entry.error ) ) {
+			ui.notify( {
+				type: 'error',
+				text: `${ name.replace( /_/g, ' ' ) }: ${
+					error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message }`
+			} );
+		}
+
+		const successes = results.filter( ( entry ) => entry.result );
+		if ( !successes.length ) {
+			status.value = 'initial';
+			dates.value = [];
+			series.value = [];
+			totals.value = null;
+			return;
+		}
+
+		const axis = successes[ 0 ].result.dates;
+		const combined = axis.map( () => 0 );
+		series.value = successes.map( ( { name, result } ) => {
+			result.counts.forEach( ( count, i ) => {
+				combined[ i ] += count;
+			} );
+			return {
+				name: name.replace( /_/g, ' ' ),
 				counts: result.counts,
 				total: result.total,
 				average: result.average
 			};
-			fileInfo.value = null;
-			incompleteDate.value = null;
-			status.value = 'complete';
-		} catch ( error ) {
-			if ( id !== loadId ) {
-				return;
-			}
-			status.value = 'error';
-			ui.notify( {
-				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
-				onRetry: error.retryable === false ? undefined : loadCategory
-			} );
-		}
+		} );
+		dates.value = axis;
+		const total = combined.reduce( ( a, b ) => a + b, 0 );
+		totals.value = {
+			counts: combined,
+			total,
+			average: Math.round( ( total / axis.length ) * 100 ) / 100
+		};
+		fileInfo.value = null;
+		incompleteDate.value = null;
+		status.value = 'complete';
 	}
 
 	/**
@@ -290,7 +319,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 */
 	async function load() {
 		if ( source.value === 'categories' ) {
-			return loadCategory();
+			return loadCategories();
 		}
 		return loadFiles();
 	}
@@ -415,7 +444,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	return {
 		files,
 		source,
-		category,
+		categories,
 		scope,
 		wiki,
 		project,

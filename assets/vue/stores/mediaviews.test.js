@@ -92,47 +92,52 @@ describe( 'mediaviews store', () => {
 		expect( store.status ).toBe( 'initial' );
 	} );
 
-	it( 'loads the Commons category aggregate for the categories source', async () => {
+	it( 'fans out one aggregate request per category', async () => {
 		const store = useMediaviewsStore();
+		const ui = useUiStore();
 		store.setFromQuery( {
 			source: 'categories',
-			category: 'Media_from_NASA',
+			categories: 'Media_from_NASA|UNESCO|Bogus_category',
 			scope: 'shallow',
 			wiki: 'en.wikipedia.org'
 		} );
-		fetchCommonsCategory.mockResolvedValue( {
-			category: 'Media_from_NASA',
-			scope: 'shallow',
-			wiki: 'en.wikipedia',
-			granularity: 'monthly',
-			start: '2025-01',
-			end: '2025-03',
-			dates: [ '2025-01', '2025-02', '2025-03' ],
-			counts: [ 100, 0, 50 ],
-			total: 150,
-			average: 50
+		const error = new Error( 'not loaded' );
+		error.i18n = [ 'mediaviews-commons-category-unknown' ];
+		error.retryable = false;
+		fetchCommonsCategory.mockImplementation( ( { category } ) => {
+			if ( category === 'Bogus_category' ) {
+				return Promise.reject( error );
+			}
+			return Promise.resolve( {
+				category,
+				scope: 'shallow',
+				wiki: 'en.wikipedia',
+				granularity: 'monthly',
+				start: '2025-01',
+				end: '2025-02',
+				dates: [ '2025-01', '2025-02' ],
+				counts: category === 'UNESCO' ? [ 10, 20 ] : [ 100, 0 ],
+				total: category === 'UNESCO' ? 30 : 100,
+				average: category === 'UNESCO' ? 15 : 50
+			} );
 		} );
 
 		await store.load();
 
-		expect( fetchCommonsCategory ).toHaveBeenCalledWith( expect.objectContaining( {
-			category: 'Media_from_NASA',
-			scope: 'shallow',
-			wiki: 'en.wikipedia.org'
-		} ) );
+		expect( fetchCommonsCategory ).toHaveBeenCalledTimes( 3 );
 		expect( fetchMediarequests ).not.toHaveBeenCalled();
-		expect( store.series ).toEqual( [ {
-			name: 'Media from NASA',
-			counts: [ 100, 0, 50 ],
-			total: 150,
-			average: 50
-		} ] );
-		expect( store.totals ).toMatchObject( { total: 150 } );
+		// The unknown category gets a message and is dropped.
+		expect( ui.messages[ 0 ].text ).toContain( 'Bogus category' );
+		expect( store.series ).toEqual( [
+			{ name: 'Media from NASA', counts: [ 100, 0 ], total: 100, average: 50 },
+			{ name: 'UNESCO', counts: [ 10, 20 ], total: 30, average: 15 }
+		] );
+		expect( store.totals ).toMatchObject( { counts: [ 110, 20 ], total: 130 } );
 		expect( store.status ).toBe( 'complete' );
 		// The query drops the files params while the source is active.
 		expect( store.query ).toEqual( {
 			source: 'categories',
-			category: 'Media_from_NASA',
+			categories: 'Media_from_NASA|UNESCO|Bogus_category',
 			scope: 'shallow',
 			wiki: 'en.wikipedia.org',
 			autolog: undefined

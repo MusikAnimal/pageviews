@@ -1,134 +1,161 @@
 <template>
-	<CdxField class="app-pages">
+	<CdxField class="app-pages" :style="paletteVars">
 		<template #label>
-			{{ $i18n( 'category' ) }}
+			{{ $i18n( 'categories' ) }}
+			<span class="app-pages__hint">
+				{{ $i18n( 'num-categories-info', String( MAX_CATEGORIES ) ) }}
+			</span>
 		</template>
-		<CdxLookup
-			ref="lookup"
-			v-model:selected="selected"
-			v-model:input-value="inputValue"
-			:menu-items="menuItems"
-			:menu-config="{ visibleItemLimit: 10 }"
-			:clearable="true"
-			:aria-label="$i18n( 'category' )"
-			placeholder="UNESCO"
-			@input="onInput"
-			@update:selected="onSelect"
-			@keydown.enter="onEnter"
-			@clear="onClear"
-		/>
+		<div class="app-pages__controls">
+			<CdxMultiselectLookup
+				ref="lookup"
+				v-model:input-chips="chips"
+				v-model:selected="selected"
+				class="app-pages__lookup"
+				:menu-items="menuItems"
+				:aria-label="$i18n( 'categories' )"
+				placeholder="UNESCO"
+				@input="onInput"
+			/>
+			<!-- MultiselectLookup has no clearable prop (unlike
+				CdxLookup), so the clear affordance is our own. -->
+			<CdxButton
+				v-if="chips.length"
+				class="app-pages__clear"
+				weight="quiet"
+				:aria-label="$i18n( 'clear' )"
+				@click="clear"
+			>
+				<CdxIcon :icon="cdxIconClear" />
+			</CdxButton>
+		</div>
 	</CdxField>
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue';
-import { CdxField, CdxLookup } from '@wikimedia/codex';
+import { onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
+import { cdxIconClear } from '@wikimedia/codex-icons';
+import { MAX_CATEGORIES, useMediaviewsStore } from '../../stores/mediaviews.js';
+import { PALETTE, seriesTint } from '../../charts/palette.js';
 import { getCommonsCategories } from '../../projects.js';
 
 /**
- * Commons category selector for the Massviews commons-category
- * source. Unlike the API-backed lookups, the suggestions filter the
- * Commons Impact Metrics allow-list locally (~1800 entries, fetched
- * once) — only listed categories have data. Free text still submits
- * as typed, since the list can lag behind newly added categories.
- * v-model is the category name (spaces, no namespace prefix).
+ * Commons category chips for the Mediaviews categories source. The
+ * suggestions filter the Commons Impact Metrics allow-list locally
+ * (~1800 entries, fetched once) — only listed categories have data.
  */
-const category = defineModel( {
-	type: String,
-	required: true
-} );
 
-/**
- * submit: the user hit Enter — the parent should run the query.
- */
-const emit = defineEmits( [ 'submit' ] );
+// Each chip is tinted with its series color, making the chips double
+// as the chart legend (the ECharts legend is disabled).
+const paletteVars = Object.fromEntries(
+	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesTint( i ) ] )
+);
+
+const store = useMediaviewsStore();
+const { categories } = storeToRefs( store );
 
 const displayName = ( name ) => name.replace( /_/g, ' ' );
 
-const selected = ref( category.value ? displayName( category.value ) : null );
-const inputValue = ref( category.value ? displayName( category.value ) : '' );
+const chips = ref( categories.value.map( ( name ) => ( { value: displayName( name ) } ) ) );
+const selected = ref( categories.value.map( displayName ) );
 const menuItems = ref( [] );
 const lookup = ref( null );
 /** @type {string[]} Display-form allow-list entries. */
-let categories = [];
+let allowList = [];
 
-// Submission-based tools put the cursor on the main input on page
-// load (unless a URL-provided category is already being queried).
 onMounted( async () => {
-	if ( !category.value ) {
-		lookup.value?.$el?.querySelector( 'input' )?.focus();
-	}
-	categories = ( await getCommonsCategories() ).map( displayName );
+	allowList = ( await getCommonsCategories() ).map( displayName );
 } );
 
-// Store → component, e.g. after URL-driven changes. When the input
-// already shows the category, leave the lookup alone — setting
-// `selected` to a value that isn't among the menu items makes Codex
-// clear the field.
-watch( category, ( value ) => {
-	const display = value ? displayName( value ) : '';
-	if ( display !== inputValue.value ) {
-		selected.value = display || null;
-		inputValue.value = display;
+// Store → component, e.g. after URL-driven changes.
+watch( categories, ( names ) => {
+	const display = names.map( displayName );
+	if ( display.join( '|' ) !== selected.value.join( '|' ) ) {
+		selected.value = display;
+		chips.value = display.map( ( name ) => ( { value: name } ) );
 	}
 } );
 
-/**
- * Enter submits exactly what was typed (the allow-list may lag behind
- * a newly added category) — a highlighted menu item is still honored,
- * since Codex selects it before this runs.
- */
-async function onEnter() {
-	// Let a Codex highlight-selection land first.
-	await nextTick();
-	if ( !selected.value && inputValue.value ) {
-		// Submit without touching `selected`: a selection that isn't
-		// among the menu items gets cleared by Codex once the menu
-		// changes.
-		menuItems.value = [];
-		category.value = inputValue.value;
+// Component → store. The chips are the canonical user selection; the
+// URL carries underscores like the legacy tool.
+watch( chips, ( chipList ) => {
+	let names = chipList.map( ( chip ) => String( chip.value ) );
+	if ( names.length > MAX_CATEGORIES ) {
+		names = names.slice( 0, MAX_CATEGORIES );
+		chips.value = names.map( ( name ) => ( { value: name } ) );
+		selected.value = names;
+		return;
 	}
-	if ( category.value ) {
-		// Blurring closes the suggestion menu in every case (see
-		// SinglePageInput).
-		lookup.value?.$el?.querySelector( 'input' )?.blur();
-		emit( 'submit' );
+	const underscored = names.map( ( name ) => name.replace( / /g, '_' ) );
+	if ( underscored.join( '|' ) !== categories.value.join( '|' ) ) {
+		categories.value = underscored;
 	}
-}
+} );
 
-/**
- * Keep focus here after the clear button, ready for the next entry
- * (Codex exposes no focus API, hence the DOM reach-in).
- */
-function onClear() {
+function clear() {
+	chips.value = [];
+	selected.value = [];
+	menuItems.value = [];
+	// Ready for a fresh search (Codex exposes no focus API).
 	lookup.value?.$el?.querySelector( 'input' )?.focus();
 }
 
-function onSelect( value ) {
-	if ( value ) {
-		inputValue.value = value;
-		category.value = value;
-	} else if ( selected.value === null && !inputValue.value ) {
-		// Cleared.
-		category.value = '';
-	}
-}
-
 /**
- * Case-insensitive substring filter over the allow-list.
+ * Case-insensitive substring filter over the allow-list, minus the
+ * already-picked categories.
  *
  * @param {string} value
  */
 function onInput( value ) {
 	if ( !value ) {
 		menuItems.value = [];
-		category.value = '';
 		return;
 	}
 	const needle = value.toLowerCase();
-	menuItems.value = categories
-		.filter( ( name ) => name.toLowerCase().includes( needle ) )
+	const picked = new Set( selected.value );
+	menuItems.value = allowList
+		.filter( ( name ) => !picked.has( name ) && name.toLowerCase().includes( needle ) )
 		.slice( 0, 50 )
 		.map( ( name ) => ( { value: name, label: name } ) );
 }
 </script>
+
+<style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.app-pages {
+	// Inline with the bold label, like the legacy tool's muted hint.
+	&__hint {
+		color: @color-subtle;
+		font-weight: @font-weight-normal;
+		margin-left: @spacing-25;
+	}
+
+	&__controls {
+		align-items: flex-start;
+		display: flex;
+		gap: @spacing-25;
+	}
+
+	&__lookup {
+		flex: 1;
+	}
+}
+
+// Tint each chip with its series color (chips precede the text input
+// inside the Codex chip container, so nth-child indexes the chips).
+// NOTE: each() provides a built-in 1-based @index that shadows any
+// custom @index — hence @series for the 0-based palette position.
+each( range( 10 ), {
+	@series: ( @value - 1 );
+
+	:deep( .cdx-input-chip:nth-child( @{value} ) ) {
+		background-color: ~'var( --pv-series-@{series} )';
+		// The palette backgrounds are fixed light pastels; keep dark
+		// text in both color modes.
+		color: #202122;
+	}
+} );
+</style>

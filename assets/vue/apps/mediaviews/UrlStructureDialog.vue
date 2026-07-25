@@ -54,8 +54,11 @@ const params = [
 		)
 	},
 	{
-		name: 'category',
-		html: banana.i18n( 'url-structure-mediaviews-category', code( 'UNESCO' ) )
+		name: 'categories',
+		html: banana.i18n(
+			'url-structure-mediaviews-categories',
+			code( 'UNESCO|Media_from_NASA' )
+		)
 	},
 	{
 		name: 'scope',
