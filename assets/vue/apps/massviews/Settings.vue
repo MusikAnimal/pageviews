@@ -22,12 +22,14 @@
 		</CdxField>
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
-		<CdxCheckbox v-model="useSubjectPage">
-			{{ $i18n( 'category-subject-toggle' ) }}
-		</CdxCheckbox>
-		<CdxCheckbox v-model="includeSubcategories">
-			{{ $i18n( 'include-subcategories' ) }}
-		</CdxCheckbox>
+		<template v-if="source === 'category'">
+			<CdxCheckbox v-model="useSubjectPage">
+				{{ $i18n( 'category-subject-toggle' ) }}
+			</CdxCheckbox>
+			<CdxCheckbox v-model="includeSubcategories">
+				{{ $i18n( 'include-subcategories' ) }}
+			</CdxCheckbox>
+		</template>
 	</form>
 	<PreferencesDialog
 		v-model:open="ui.preferencesOpen"
@@ -53,7 +55,10 @@ const { source, platform, agent, subjectpage, subcategories } = storeToRefs( sto
 
 // The remaining legacy sources land here as they are ported.
 const sourceItems = [
-	{ value: 'category', label: banana.i18n( 'category' ) }
+	{ value: 'category', label: banana.i18n( 'category' ) },
+	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
+	{ value: 'subpages', label: banana.i18n( 'subpages' ) },
+	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) }
 ];
 
 const useSubjectPage = computed( {

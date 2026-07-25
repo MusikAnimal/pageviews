@@ -141,6 +141,100 @@ export function editProtectionLevel( info ) {
  * @param {AbortSignal} [signal]
  * @return {Promise<Array>} The concatenated extracted items.
  */
+/**
+ * All pages linked from the given page (the Massviews wikilinks
+ * source), across all namespaces.
+ *
+ * @param {string} project
+ * @param {string} title
+ * @param {AbortSignal} [signal]
+ * @return {Promise<?string[]>} Linked titles (prefixed), or null when
+ *   the page itself doesn't exist.
+ */
+export async function getWikilinks( project, title, signal = undefined ) {
+	let missing = false;
+	const links = await mwApiQueryAll( project, {
+		action: 'query',
+		prop: 'links',
+		pllimit: 'max',
+		titles: title
+	}, ( response ) => {
+		const page = response.query?.pages?.[ 0 ];
+		if ( !page || page.missing ) {
+			missing = true;
+			return [];
+		}
+		return page.links || [];
+	}, undefined, signal );
+	return missing ? null : links.map( ( link ) => link.title );
+}
+
+/**
+ * All pages transcluding the given page (the Massviews transclusions
+ * source).
+ *
+ * @param {string} project
+ * @param {string} title
+ * @param {AbortSignal} [signal]
+ * @return {Promise<?string[]>} Transcluding titles (prefixed), or
+ *   null when the page itself doesn't exist.
+ */
+export async function getTranscludedIn( project, title, signal = undefined ) {
+	let missing = false;
+	const pages = await mwApiQueryAll( project, {
+		action: 'query',
+		prop: 'transcludedin',
+		tilimit: 'max',
+		titles: title
+	}, ( response ) => {
+		const page = response.query?.pages?.[ 0 ];
+		if ( !page || page.missing ) {
+			missing = true;
+			return [];
+		}
+		return page.transcludedin || [];
+	}, undefined, signal );
+	return missing ? null : pages.map( ( page ) => page.title );
+}
+
+/**
+ * All subpages of the given page (the Massviews subpages source): the
+ * page's own namespace plus its talk/subject counterpart, like the
+ * legacy tool.
+ *
+ * @param {string} project
+ * @param {string} title Prefixed title, with spaces.
+ * @param {Object} namespaces The wiki's namespaces from siteinfo.
+ * @param {AbortSignal} [signal]
+ * @return {Promise<string[]>} Subpage titles (prefixed).
+ */
+export async function getSubpages( project, title, namespaces, signal = undefined ) {
+	// Determine the page's namespace by prefix, and strip it —
+	// allpages wants the bare prefix.
+	let namespace = 0;
+	let base = title;
+	for ( const ns of Object.keys( namespaces ) ) {
+		const nsName = namespaces[ ns ][ '*' ];
+		if ( ns !== '0' && nsName && title.startsWith( `${ nsName }:` ) ) {
+			namespace = Number( ns );
+			base = title.slice( nsName.length + 1 );
+			break;
+		}
+	}
+	const inverse = namespace % 2 === 0 ? namespace + 1 : namespace - 1;
+
+	const results = await Promise.all( [ namespace, inverse ].map( ( apnamespace ) =>
+		mwApiQueryAll( project, {
+			action: 'query',
+			list: 'allpages',
+			aplimit: 'max',
+			apnamespace,
+			apprefix: `${ base }/`
+		}, ( response ) => response.query?.allpages || [], undefined, signal )
+	) );
+	return results.flat().map( ( page ) => page.title );
+}
+
 export async function mwApiQueryAll( project, params, extract, limit = 20000, signal = undefined ) {
 	const items = [];
 	let continueParams = {};

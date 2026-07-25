@@ -10,14 +10,14 @@
 				<div class="app-page-input-row">
 					<CdxField class="app-pages">
 						<template #label>
-							{{ $i18n( 'category' ) }}
+							{{ targetLabel }}
 						</template>
 						<CdxTextInput
 							ref="targetInput"
 							v-model="target"
 							:clearable="true"
-							:aria-label="$i18n( 'category' )"
-							placeholder="https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City"
+							:aria-label="targetLabel"
+							:placeholder="targetPlaceholder"
 							@keydown.enter="submit"
 						/>
 					</CdxField>
@@ -58,7 +58,7 @@
 				</a>
 				<div class="app-output-header__heading">
 					<h2 class="app-output-header__title">
-						<a :href="store.target" target="_blank">{{ categoryDisplay }}</a>
+						<a :href="store.target" target="_blank">{{ targetDisplay }}</a>
 						<span class="app-output-header__dates">{{ dateRange }}</span>
 					</h2>
 					<CdxToggleButtonGroup
@@ -190,7 +190,23 @@ const viewModel = computed( {
 
 // The full title with its namespace prefix, as the URL spelled it
 // (localized prefixes included).
-const categoryDisplay = computed( () => store.categoryTitle.replace( /_/g, ' ' ) );
+const targetDisplay = computed( () => store.targetTitle.replace( /_/g, ' ' ) );
+
+// The target input's label and example, per source (legacy
+// placeholders).
+const PLACEHOLDERS = {
+	category: 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City',
+	wikilinks: 'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List',
+	subpages: 'https://en.wikipedia.org/wiki/User:Example',
+	transclusions: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'
+};
+const targetLabel = computed( () => banana.i18n( {
+	category: 'category',
+	wikilinks: 'wikilinks',
+	subpages: 'subpages',
+	transclusions: 'transclusions'
+}[ store.source ] ) );
+const targetPlaceholder = computed( () => PLACEHOLDERS[ store.source ] );
 
 // The queried date range, shown next to the category name.
 const dateRange = computed( () => {
@@ -209,7 +225,7 @@ const exportFilename = computed(
 
 // The chart shows the combined views across all category members.
 const chartSeries = computed( () => store.totals ? [ {
-	label: categoryDisplay.value,
+	label: targetDisplay.value,
 	counts: store.totals.counts,
 	total: store.totals.total,
 	average: store.totals.average

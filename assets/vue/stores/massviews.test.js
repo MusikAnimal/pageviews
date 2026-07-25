@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useMassviewsStore } from './massviews.js';
 import { useUiStore } from './ui.js';
 import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
+import { getSubpages, getTranscludedIn, getWikilinks } from '../lib/mwApi.js';
 import { getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
@@ -13,6 +14,12 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 vi.mock( '../projects.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	getSiteinfo: vi.fn()
+} ) );
+vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getSubpages: vi.fn(),
+	getTranscludedIn: vi.fn(),
+	getWikilinks: vi.fn()
 } ) );
 
 const SITEINFO = {
@@ -103,7 +110,7 @@ describe( 'massviews store', () => {
 			pages: [ 'Run-DMC', 'Talk:Beastie_Boys', 'File:Run-DMC.jpg' ]
 		} ) );
 		expect( store.project ).toBe( 'en.wikipedia.org' );
-		expect( store.category ).toBe( 'Hip-hop_groups' );
+		expect( store.targetTitle ).toBe( 'Category:Hip-hop_groups' );
 		expect( store.pagesData ).toEqual( [
 			expect.objectContaining( { title: 'Run-DMC', sum: 30 } ),
 			expect.objectContaining( { title: 'Talk:Beastie Boys', sum: 3 } ),
@@ -144,4 +151,103 @@ describe( 'massviews store', () => {
 		expect( ui.messages[ 0 ].type ).toBe( 'warning' );
 		expect( fetchPageviews ).not.toHaveBeenCalled();
 	} );
+
+	it( 'resolves wikilinks via the Action API', async () => {
+		const store = useMassviewsStore();
+		store.source = 'wikilinks';
+		store.target = 'https://en.wikipedia.org/wiki/Wikipedia:Vital_articles';
+		getWikilinks.mockResolvedValue( [ 'Cat', 'Dog' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [
+				{ title: 'Cat', counts: [ 5 ], total: 5, average: 5 },
+				{ title: 'Dog', counts: [ 2 ], total: 2, average: 2 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getWikilinks ).toHaveBeenCalledWith(
+			'en.wikipedia.org', 'Wikipedia:Vital articles', expect.any( AbortSignal )
+		);
+		expect( fetchCategoryMembers ).not.toHaveBeenCalled();
+		expect( store.targetTitle ).toBe( 'Wikipedia:Vital_articles' );
+		expect( store.pagesData ).toHaveLength( 2 );
+		expect( store.totals ).toMatchObject( { total: 7 } );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'reports an empty wikilinks set and returns to the form', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.source = 'wikilinks';
+		store.target = 'https://en.wikipedia.org/wiki/Empty_page';
+		getWikilinks.mockResolvedValue( [] );
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages[ 0 ].type ).toBe( 'warning' );
+		expect( fetchPageviews ).not.toHaveBeenCalled();
+	} );
+
+	it( 'resolves transclusions via the Action API', async () => {
+		const store = useMassviewsStore();
+		store.source = 'transclusions';
+		store.target = 'https://en.wikipedia.org/wiki/Template:Citation_needed';
+		getTranscludedIn.mockResolvedValue( [ 'Cat' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [ { title: 'Cat', counts: [ 5 ], total: 5, average: 5 } ],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getTranscludedIn ).toHaveBeenCalledWith(
+			'en.wikipedia.org', 'Template:Citation needed', expect.any( AbortSignal )
+		);
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'resolves subpages, including the page itself', async () => {
+		const store = useMassviewsStore();
+		store.source = 'subpages';
+		store.target = 'https://en.wikipedia.org/wiki/User:Example';
+		getSubpages.mockResolvedValue( [ 'User:Example/sandbox', 'User talk:Example/Archive' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [
+				{ title: 'User:Example', counts: [ 1 ], total: 1, average: 1 },
+				{ title: 'User:Example/sandbox', counts: [ 2 ], total: 2, average: 2 },
+				{ title: 'User talk:Example/Archive', counts: [ 3 ], total: 3, average: 3 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getSubpages ).toHaveBeenCalledWith(
+			'en.wikipedia.org', 'User:Example', SITEINFO.namespaces, expect.any( AbortSignal )
+		);
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			pages: [ 'User:Example', 'User:Example/sandbox', 'User talk:Example/Archive' ]
+		} ) );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'rejects a non-URL target for the page-based sources too', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.source = 'wikilinks';
+		store.target = 'Some page';
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages[ 0 ].type ).toBe( 'error' );
+		expect( getWikilinks ).not.toHaveBeenCalled();
+	} );
+
 } );

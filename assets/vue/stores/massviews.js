@@ -1,20 +1,22 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
+import { getSubpages, getTranscludedIn, getWikilinks } from '../lib/mwApi.js';
 import { getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
-// The remaining legacy sources (wikilinks, subpages, transclusions,
-// quarry, hashtag, external links, search) land here as they are
-// ported.
-const SOURCES = [ 'category' ];
+// The remaining legacy sources (quarry, hashtag, external links,
+// search) land here as they are ported.
+const SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
 const SORTS = [ 'title', 'views' ];
 const TOGGLES = [ '0', '1' ];
+// Matches the legacy apiLimit and the server-side caps.
+const MAX_PAGES = 20000;
 
 export const useMassviewsStore = defineStore( 'massviews', () => {
 	/**
@@ -24,8 +26,8 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const source = ref( 'category' );
 	/**
-	 * The source's input — for the category source, the full URL of
-	 * the category page (legacy target param).
+	 * The source's input — the full URL of the page or category
+	 * (legacy target param).
 	 *
 	 * @type {import('vue').Ref<string>}
 	 */
@@ -86,20 +88,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const project = ref( '' );
 	/**
-	 * The category name (underscored, no prefix), parsed from the
-	 * target URL during load.
+	 * The full title of the queried page/category as it appeared in
+	 * the target URL — namespace prefix included, in the wiki's own
+	 * language (e.g. Kategorie:… on dewiki). For display; underscored.
 	 *
 	 * @type {import('vue').Ref<string>}
 	 */
-	const category = ref( '' );
-	/**
-	 * The category's full title as it appeared in the target URL —
-	 * namespace prefix included, in the wiki's own language (e.g.
-	 * Kategorie:… on dewiki). For display; underscored.
-	 *
-	 * @type {import('vue').Ref<string>}
-	 */
-	const categoryTitle = ref( '' );
+	const targetTitle = ref( '' );
 	/**
 	 * The date axis, YYYY-MM-DD or YYYY-MM (monthly).
 	 *
@@ -188,17 +183,18 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	}
 
 	/**
-	 * Parse a full category URL (/wiki/ or index.php?title= form) into
-	 * its project and prefix-less category name. The prefix is dropped
-	 * at the first colon, whatever the wiki's language calls the
-	 * namespace (legacy behavior).
+	 * Parse a full page URL (/wiki/ or index.php?title= form) into its
+	 * project and title. For the category source, the title must carry
+	 * a namespace prefix — dropped at the first colon to get the bare
+	 * category name, whatever the wiki's language calls the namespace
+	 * (legacy behavior).
 	 *
 	 * @param {string} value
-	 * @return {?{project: string, title: string, category: string}}
-	 *   null when the value isn't a category URL; title keeps the
+	 * @return {?{project: string, title: string, category: ?string}}
+	 *   null when the value isn't a usable page URL; title keeps the
 	 *   URL's own namespace prefix.
 	 */
-	function parseCategoryUrl( value ) {
+	function parseTargetUrl( value ) {
 		let url;
 		try {
 			url = new URL( value.trim() );
@@ -211,14 +207,140 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		} else {
 			title = url.searchParams.get( 'title' );
 		}
-		if ( !title || !title.includes( ':' ) ) {
+		if ( !title ) {
 			return null;
 		}
 		return {
 			project: url.hostname,
 			title: title.replace( / /g, '_' ),
-			category: title.slice( title.indexOf( ':' ) + 1 ).replace( / /g, '_' )
+			category: title.includes( ':' ) ?
+				title.slice( title.indexOf( ':' ) + 1 ).replace( / /g, '_' ) :
+				null
 		};
+	}
+
+	/**
+	 * Resolve the target to the category's member titles: the replicas
+	 * list them without namespace prefixes, which siteinfo localizes
+	 * (with the subject-page toggle applied).
+	 *
+	 * @param {Object} parsed From parseTargetUrl().
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?string[]>} Prefixed titles, or null to bail
+	 *   (a message has been shown).
+	 */
+	async function resolveCategory( parsed, signal ) {
+		const ui = useUiStore();
+		const display = parsed.category.replace( /_/g, ' ' );
+		const members = await fetchCategoryMembers( {
+			project: parsed.project,
+			category: parsed.category,
+			subcategories: subcategories.value,
+			signal
+		} );
+		if ( !members.pages.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: `${ display }: ${ banana.i18n( 'api-error-no-data' ) }`
+			} );
+			return null;
+		}
+		if ( members.pages.length >= members.limit ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-oversized-set-unknown', display, members.limit )
+			} );
+		}
+
+		const siteinfo = await getSiteinfo( parsed.project );
+		if ( !siteinfo?.namespaces ) {
+			throw new Error( banana.i18n( 'api-error', 'siteinfo API' ) );
+		}
+		const useSubjectPage = subjectpage.value === '1';
+		return members.pages.map( ( page ) => {
+			// Talk namespaces are odd-numbered; the subject page
+			// lives one namespace below (legacy toggle).
+			const ns = useSubjectPage && page.namespace % 2 === 1 ?
+				page.namespace - 1 :
+				page.namespace;
+			const nsName = siteinfo.namespaces[ ns ]?.[ '*' ] ?? '';
+			return nsName ?
+				`${ nsName.replace( / /g, '_' ) }:${ page.title }` :
+				page.title;
+		} );
+	}
+
+	/**
+	 * Resolve the target to the titles it links to (wikilinks) or the
+	 * titles transcluding it (transclusions), via the Action API.
+	 *
+	 * @param {Object} parsed From parseTargetUrl().
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?string[]>} Prefixed titles, or null to bail
+	 *   (a message has been shown).
+	 */
+	async function resolveLinks( parsed, signal ) {
+		const ui = useUiStore();
+		const display = parsed.title.replace( /_/g, ' ' );
+		const resolver = source.value === 'wikilinks' ? getWikilinks : getTranscludedIn;
+		const titles = await resolver( parsed.project, display, signal );
+		if ( titles === null ) {
+			// The page itself doesn't exist.
+			ui.notify( {
+				type: 'warning',
+				text: `${ display }: ${ banana.i18n( 'api-error-no-data' ) }`
+			} );
+			return null;
+		}
+		if ( !titles.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-empty-set', display )
+			} );
+			return null;
+		}
+		if ( titles.length >= MAX_PAGES ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-oversized-set-unknown', display, MAX_PAGES )
+			} );
+		}
+		return titles;
+	}
+
+	/**
+	 * Resolve the target to itself plus all its subpages (own and
+	 * talk/subject namespaces, like the legacy tool).
+	 *
+	 * @param {Object} parsed From parseTargetUrl().
+	 * @param {AbortSignal} signal
+	 * @return {Promise<string[]>} Prefixed titles.
+	 */
+	async function resolveSubpages( parsed, signal ) {
+		const ui = useUiStore();
+		const display = parsed.title.replace( /_/g, ' ' );
+		const siteinfo = await getSiteinfo( parsed.project );
+		if ( !siteinfo?.namespaces ) {
+			throw new Error( banana.i18n( 'api-error', 'siteinfo API' ) );
+		}
+		let subpages = await getSubpages(
+			parsed.project, display, siteinfo.namespaces, signal
+		);
+		if ( subpages.length > MAX_PAGES ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n(
+					'massviews-oversized-set',
+					display,
+					String( subpages.length ),
+					MAX_PAGES,
+					subpages.length
+				)
+			} );
+			subpages = subpages.slice( 0, MAX_PAGES );
+		}
+		// The page itself counts too (legacy behavior).
+		return [ display, ...subpages ];
 	}
 
 	/**
@@ -243,16 +365,19 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			return;
 		}
 
-		const parsed = parseCategoryUrl( target.value );
-		if ( !parsed ) {
+		const isCategory = source.value === 'category';
+		const parsed = parseTargetUrl( target.value );
+		if ( !parsed || ( isCategory && !parsed.category ) ) {
 			status.value = 'initial';
 			ui.clearMessages();
-			ui.notify( { type: 'error', text: banana.i18n( 'invalid-category-url' ) } );
+			ui.notify( {
+				type: 'error',
+				text: banana.i18n( isCategory ? 'invalid-category-url' : 'invalid-page-url' )
+			} );
 			return;
 		}
 		project.value = parsed.project;
-		category.value = parsed.category;
-		categoryTitle.value = parsed.title;
+		targetTitle.value = parsed.title;
 
 		settings.ensureDefaultDates();
 		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
@@ -269,56 +394,21 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 
 		try {
-			const members = await fetchCategoryMembers( {
-				project: parsed.project,
-				category: parsed.category,
-				subcategories: subcategories.value,
-				signal
-			} );
+			const resolvers = {
+				category: resolveCategory,
+				wikilinks: resolveLinks,
+				transclusions: resolveLinks,
+				subpages: resolveSubpages
+			};
+			const prefixed = await resolvers[ source.value ]( parsed, signal );
 			if ( id !== loadId ) {
 				return;
 			}
-			if ( !members.pages.length ) {
+			if ( prefixed === null ) {
+				// The resolver already explained why.
 				status.value = 'initial';
-				ui.notify( {
-					type: 'warning',
-					text: `${ parsed.category.replace( /_/g, ' ' ) }: ${
-						banana.i18n( 'api-error-no-data' ) }`
-				} );
 				return;
 			}
-			if ( members.pages.length >= members.limit ) {
-				ui.notify( {
-					type: 'warning',
-					text: banana.i18n(
-						'massviews-oversized-set-unknown',
-						parsed.category.replace( /_/g, ' ' ),
-						members.limit
-					)
-				} );
-			}
-
-			// The replicas store titles without their namespace prefix;
-			// siteinfo supplies the localized names.
-			const siteinfo = await getSiteinfo( parsed.project );
-			if ( id !== loadId ) {
-				return;
-			}
-			if ( !siteinfo?.namespaces ) {
-				throw new Error( banana.i18n( 'api-error', 'siteinfo API' ) );
-			}
-			const useSubjectPage = subjectpage.value === '1';
-			const prefixed = members.pages.map( ( page ) => {
-				// Talk namespaces are odd-numbered; the subject page
-				// lives one namespace below (legacy toggle).
-				const ns = useSubjectPage && page.namespace % 2 === 1 ?
-					page.namespace - 1 :
-					page.namespace;
-				const nsName = siteinfo.namespaces[ ns ]?.[ '*' ] ?? '';
-				return nsName ?
-					`${ nsName.replace( / /g, '_' ) }:${ page.title }` :
-					page.title;
-			} );
 
 			const result = await fetchPageviews( {
 				project: parsed.project,
@@ -399,8 +489,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		view,
 		status,
 		project,
-		category,
-		categoryTitle,
+		targetTitle,
 		dates,
 		pagesData,
 		totals,

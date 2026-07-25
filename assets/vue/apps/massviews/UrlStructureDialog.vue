@@ -32,7 +32,12 @@ const emit = defineEmits( [ 'update:open' ] );
 const params = [
 	{
 		name: 'source',
-		html: listValues( [ `${ code( 'category' ) } ${ defaultMsg() }` ] )
+		html: listValues( [
+			`${ code( 'category' ) } ${ defaultMsg() }`,
+			code( 'wikilinks' ),
+			code( 'subpages' ),
+			code( 'transclusions' )
+		] )
 	},
 	{
 		name: 'target',
