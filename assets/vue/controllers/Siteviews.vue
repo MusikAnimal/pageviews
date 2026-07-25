@@ -5,7 +5,7 @@
 		<div>{{ $i18n( 'loading' ) }}</div>
 		<CdxProgressBar :aria-label="$i18n( 'loading' )" />
 	</div>
-	<div class="app-workspace">
+	<div v-show="!initialLoading" class="app-workspace">
 		<SiteviewsSettings />
 		<figure class="app-chart">
 			<SiteInput :disabled="store.isAllProjects" />
@@ -43,7 +43,7 @@
 		</figure>
 		<Totals />
 	</div>
-	<section class="app-breakdown">
+	<section v-show="!initialLoading" class="app-breakdown">
 		<StatsTable v-if="chartReady" />
 	</section>
 	<CdxToastContainer />
@@ -142,6 +142,13 @@ watch( () => store.unsupportedSource, ( value ) => {
 
 const chartReady = computed(
 	() => store.status === 'complete' && store.dates.length > 0
+);
+
+// The very first load shows nothing but the progress bar (like the
+// Twig FOUC skeleton); later loads keep the workspace up, with the
+// bar overlaying it.
+const initialLoading = computed(
+	() => store.status === 'loading' && !store.dates.length
 );
 
 const exportFilename = computed(

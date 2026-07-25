@@ -8,7 +8,7 @@
 			{{ $i18n( 'processing', `${ ui.progress.done } / ${ ui.progress.total }` ) }}
 		</div>
 	</div>
-	<div class="app-workspace">
+	<div v-show="store.status !== 'loading'" class="app-workspace">
 		<!-- List apps fan out many queries, so nothing fires reactively:
 			the form submits explicitly, and the results state replaces
 			it until "Do another query". -->
