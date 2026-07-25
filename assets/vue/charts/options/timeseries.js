@@ -66,8 +66,9 @@ export function buildTimeseriesOption( {
 		},
 		// ECharts defaults grid.top to 60px for a title/legend we
 		// don't render; a small margin still leaves headroom for the
-		// topmost value label.
-		grid: { containLabel: true, top: 12, left: 8, right: 8, bottom: 40 },
+		// topmost value label. containLabel already reserves the room
+		// the rotated date labels need, so the margins stay minimal.
+		grid: { containLabel: true, top: 12, left: 8, right: 8, bottom: 8 },
 		// The toolbox dataZoom feature must exist for the always-on
 		// drag-select that useChart() activates via takeGlobalCursor,
 		// but ECharts skips feature creation entirely under
