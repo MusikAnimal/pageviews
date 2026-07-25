@@ -144,8 +144,8 @@ const summary = computed( () => {
 			{ locale: banana.locale, monthly, localize: preferences.localizeDateFormat }
 		) )
 		.join( ' – ' );
-	// The categories source counts pageviews, not mediarequests, and
-	// links to the Commons category rather than a file page.
+	// The categories source links to the Commons category rather than
+	// a file page.
 	const categories = store.source === 'categories';
 
 	return {
@@ -155,11 +155,7 @@ const summary = computed( () => {
 				encodeURIComponent( entry.name.replace( / /g, '_' ) ) :
 			fileUrl( entry.name ),
 		dates: range,
-		requests: banana.i18n(
-			categories ? 'num-pageviews' : 'num-requests',
-			number( entry.total ),
-			entry.total
-		)
+		requests: banana.i18n( 'num-requests', number( entry.total ), entry.total )
 	};
 } );
 
