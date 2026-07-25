@@ -11,12 +11,14 @@ import Mediaviews from './vue/controllers/Mediaviews.vue';
 import Langviews from './vue/controllers/Langviews.vue';
 import Userviews from './vue/controllers/Userviews.vue';
 import Massviews from './vue/controllers/Massviews.vue';
+import Redirectviews from './vue/controllers/Redirectviews.vue';
 import { usePageviewsStore } from './vue/stores/pageviews.js';
 import { useSiteviewsStore } from './vue/stores/siteviews.js';
 import { useMediaviewsStore } from './vue/stores/mediaviews.js';
 import { useLangviewsStore } from './vue/stores/langviews.js';
 import { useUserviewsStore } from './vue/stores/userviews.js';
 import { useMassviewsStore } from './vue/stores/massviews.js';
+import { useRedirectviewsStore } from './vue/stores/redirectviews.js';
 import { useUiStore } from './vue/stores/ui.js';
 
 const router = createRouter( {
@@ -85,6 +87,17 @@ const router = createRouter( {
 			path: '/massviews/url_structure',
 			component: Massviews,
 			meta: { store: useMassviewsStore, dialog: 'url-structure' }
+		},
+		{ path: '/redirectviews', component: Redirectviews, meta: { store: useRedirectviewsStore } },
+		{
+			path: '/redirectviews/faq',
+			component: Redirectviews,
+			meta: { store: useRedirectviewsStore, dialog: 'faq' }
+		},
+		{
+			path: '/redirectviews/url_structure',
+			component: Redirectviews,
+			meta: { store: useRedirectviewsStore, dialog: 'url-structure' }
 		}
 	]
 } );
