@@ -3,7 +3,14 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useMassviewsStore } from './massviews.js';
 import { useUiStore } from './ui.js';
 import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
-import { getSubpages, getTranscludedIn, getWikilinks } from '../lib/mwApi.js';
+import {
+	getExternalLinkUsage,
+	getSearchResults,
+	getSubpages,
+	getTranscludedIn,
+	getWikilinks
+} from '../lib/mwApi.js';
+import { getQuarryTitles } from '../lib/quarry.js';
 import { getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
@@ -17,9 +24,15 @@ vi.mock( '../projects.js', async ( importOriginal ) => ( {
 } ) );
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
+	getExternalLinkUsage: vi.fn(),
+	getSearchResults: vi.fn(),
 	getSubpages: vi.fn(),
 	getTranscludedIn: vi.fn(),
 	getWikilinks: vi.fn()
+} ) );
+vi.mock( '../lib/quarry.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getQuarryTitles: vi.fn()
 } ) );
 
 const SITEINFO = {
@@ -248,6 +261,90 @@ describe( 'massviews store', () => {
 		expect( store.status ).toBe( 'initial' );
 		expect( ui.messages[ 0 ].type ).toBe( 'error' );
 		expect( getWikilinks ).not.toHaveBeenCalled();
+	} );
+
+	it( 'resolves a Quarry result set against the chosen project', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( { source: 'quarry', target: '12345', project: 'de.wikipedia.org' } );
+		getQuarryTitles.mockResolvedValue( [ 'Katze', 'Hund' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [
+				{ title: 'Katze', counts: [ 5 ], total: 5, average: 5 },
+				{ title: 'Hund', counts: [ 2 ], total: 2, average: 2 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getQuarryTitles ).toHaveBeenCalledWith( '12345', expect.any( AbortSignal ) );
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'de.wikipedia.org',
+			pages: [ 'Katze', 'Hund' ]
+		} ) );
+		expect( store.targetTitle ).toBe( 'Quarry 12345' );
+		expect( store.targetUrl ).toBe( 'https://quarry.wmcloud.org/query/12345' );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'rejects a Quarry result set without a page_title column', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.setFromQuery( { source: 'quarry', target: '99' } );
+		getQuarryTitles.mockResolvedValue( null );
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages[ 0 ].type ).toBe( 'error' );
+		expect( ui.messages[ 0 ].text ).toContain( 'page_title' );
+		expect( ui.messages[ 0 ].text ).not.toContain( '<code>' );
+		expect( fetchPageviews ).not.toHaveBeenCalled();
+	} );
+
+	it( 'resolves external link usage on the chosen project', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( {
+			source: 'external-link',
+			target: '*.nycgo.com',
+			project: 'en.wikipedia.org'
+		} );
+		getExternalLinkUsage.mockResolvedValue( [ 'New York City' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [ { title: 'New York City', counts: [ 9 ], total: 9, average: 9 } ],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getExternalLinkUsage ).toHaveBeenCalledWith(
+			'en.wikipedia.org', '*.nycgo.com', expect.any( AbortSignal )
+		);
+		expect( store.targetUrl ).toContain( 'Special:LinkSearch' );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'resolves search results, truncating long queries in the heading', async () => {
+		const store = useMassviewsStore();
+		const query = 'insource:"a very long search query that keeps going and going"';
+		store.setFromQuery( { source: 'search', target: query, project: 'en.wikipedia.org' } );
+		getSearchResults.mockResolvedValue( [ 'UNESCO' ] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [ { title: 'UNESCO', counts: [ 3 ], total: 3, average: 3 } ],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getSearchResults ).toHaveBeenCalledWith(
+			'en.wikipedia.org', query, expect.any( AbortSignal )
+		);
+		expect( store.targetTitle.endsWith( '…' ) ).toBe( true );
+		expect( store.targetUrl ).toContain( 'Special:Search' );
+		expect( store.status ).toBe( 'complete' );
 	} );
 
 } );

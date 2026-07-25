@@ -81,7 +81,7 @@
 				</a>
 				<div class="app-output-header__heading">
 					<h2 class="app-output-header__title">
-						<a :href="store.target" target="_blank">{{ targetDisplay }}</a>
+						<a :href="store.targetUrl" target="_blank">{{ targetDisplay }}</a>
 						<span class="app-output-header__dates">{{ dateRange }}</span>
 					</h2>
 					<CdxToggleButtonGroup
@@ -231,12 +231,15 @@ const viewModel = computed( {
 // (localized prefixes included).
 const targetDisplay = computed( () => store.targetTitle.replace( /_/g, ' ' ) );
 
-// The remaining legacy sources land here as they are ported.
+// The hashtag source remains to be ported. Quarry is a proper noun.
 const sourceItems = [
 	{ value: 'category', label: banana.i18n( 'category' ) },
 	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
 	{ value: 'subpages', label: banana.i18n( 'subpages' ) },
-	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) }
+	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) },
+	{ value: 'quarry', label: 'Quarry' },
+	{ value: 'external-link', label: banana.i18n( 'external-link' ) },
+	{ value: 'search', label: banana.i18n( 'search' ) }
 ];
 
 // The target input's accessible name and example, per source (legacy
@@ -245,14 +248,21 @@ const PLACEHOLDERS = {
 	category: 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups_from_New_York_City',
 	wikilinks: 'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List',
 	subpages: 'https://en.wikipedia.org/wiki/User:Example',
-	transclusions: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'
+	transclusions: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+	quarry: '12345',
+	'external-link': '*.nycgo.com',
+	search: 'insource:"UNESCO Science Report"'
 };
-const targetLabel = computed( () => banana.i18n( {
-	category: 'category',
-	wikilinks: 'page',
-	subpages: 'page',
-	transclusions: 'template'
-}[ store.source ] ) );
+const targetLabel = computed( () => store.source === 'quarry' ?
+	'Quarry' :
+	banana.i18n( {
+		category: 'category',
+		wikilinks: 'page',
+		subpages: 'page',
+		transclusions: 'template',
+		'external-link': 'external-link',
+		search: 'search'
+	}[ store.source ] ) );
 const targetPlaceholder = computed( () => PLACEHOLDERS[ store.source ] );
 
 /**
@@ -278,6 +288,22 @@ const sourceDescription = computed( () => {
 			return rawI18n(
 				'massviews-transclusions-description',
 				'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Transclusion'
+			);
+		case 'quarry':
+			return banana.i18n(
+				'massviews-quarry-description',
+				'<a target="_blank" href="https://quarry.wmcloud.org">Quarry</a>'
+			);
+		case 'external-link':
+			return banana.i18n(
+				'massviews-external-link-description',
+				'<a target="_blank" href="https://www.mediawiki.org/wiki/Help:Links#External_links">' +
+					`${ banana.i18n( 'external-link' ).toLowerCase() }</a>`
+			);
+		case 'search':
+			return banana.i18n(
+				'massviews-search-description',
+				'<a target="_blank" href="https://www.mediawiki.org/wiki/Help:CirrusSearch">CirrusSearch</a>'
 			);
 		default:
 			return banana.i18n(

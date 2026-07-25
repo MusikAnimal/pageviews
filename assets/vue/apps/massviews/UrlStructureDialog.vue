@@ -15,7 +15,8 @@ import {
 	dateRangeParams,
 	defaultMsg,
 	listValues,
-	muteValidationsParam
+	muteValidationsParam,
+	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
 
@@ -36,12 +37,22 @@ const params = [
 			`${ code( 'category' ) } ${ defaultMsg() }`,
 			code( 'wikilinks' ),
 			code( 'subpages' ),
-			code( 'transclusions' )
+			code( 'transclusions' ),
+			code( 'quarry' ),
+			code( 'external-link' ),
+			code( 'search' )
 		] )
 	},
 	{
 		name: 'target',
 		html: banana.i18n( 'url-structure-massviews-target' )
+	},
+	{
+		name: 'project',
+		html: banana.i18n(
+			'url-structure-massviews-project',
+			sitematrixLink( banana.i18n( 'project' ).toLowerCase() )
+		)
 	},
 	{
 		name: 'subjectpage',

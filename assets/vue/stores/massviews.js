@@ -1,16 +1,29 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
-import { getSubpages, getTranscludedIn, getWikilinks } from '../lib/mwApi.js';
+import {
+	getExternalLinkUsage,
+	getSearchResults,
+	getSubpages,
+	getTranscludedIn,
+	getWikilinks
+} from '../lib/mwApi.js';
+import { getQuarryTitles } from '../lib/quarry.js';
 import { getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
-// The remaining legacy sources (quarry, hashtag, external links,
-// search) land here as they are ported.
-const SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
+// The hashtag source remains to be ported.
+const SOURCES = [
+	'category', 'wikilinks', 'subpages', 'transclusions',
+	'quarry', 'external-link', 'search'
+];
+// Sources whose target is a full page URL (the project comes from it)…
+const URL_SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
+// …versus sources needing an explicit project alongside the target.
+const PROJECT_SOURCES = [ 'quarry', 'external-link', 'search' ];
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
 const SORTS = [ 'title', 'views' ];
@@ -81,12 +94,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const status = ref( 'initial' );
 	/**
-	 * The project the queried category lives on, parsed from the
-	 * target URL during load (runtime state, not a URL param).
+	 * The project the pages live on: derived from the target URL for
+	 * the URL sources, a user-set URL param for the others (quarry,
+	 * external links, search).
 	 *
 	 * @type {import('vue').Ref<string>}
 	 */
-	const project = ref( '' );
+	const project = ref( 'en.wikipedia.org' );
 	/**
 	 * The full title of the queried page/category as it appeared in
 	 * the target URL — namespace prefix included, in the wiki's own
@@ -95,6 +109,14 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * @type {import('vue').Ref<string>}
 	 */
 	const targetTitle = ref( '' );
+	/**
+	 * Where the results heading links: the target URL itself for URL
+	 * sources; the Quarry query, Special:LinkSearch or Special:Search
+	 * for the others. Set during load.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const targetUrl = ref( '' );
 	/**
 	 * The date axis, YYYY-MM-DD or YYYY-MM (monthly).
 	 *
@@ -132,6 +154,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	const query = computed( () => ( {
 		source: source.value,
 		target: target.value || undefined,
+		project: PROJECT_SOURCES.includes( source.value ) ? project.value : undefined,
 		platform: platform.value,
 		agent: agent.value,
 		subjectpage: subjectpage.value,
@@ -153,6 +176,9 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 		if ( params.target !== undefined && params.target !== target.value ) {
 			target.value = params.target;
+		}
+		if ( params.project ) {
+			project.value = params.project;
 		}
 		if ( PLATFORMS.includes( params.platform ) ) {
 			platform.value = params.platform;
@@ -217,6 +243,79 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				title.slice( title.indexOf( ':' ) + 1 ).replace( / /g, '_' ) :
 				null
 		};
+	}
+
+	/**
+	 * Resolve a Quarry query ID to its page_title column.
+	 *
+	 * @param {Object} parsed Unused (no URL to parse).
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?string[]>} Titles, or null to bail (a message
+	 *   has been shown).
+	 */
+	async function resolveQuarry( parsed, signal ) {
+		const ui = useUiStore();
+		const titles = await getQuarryTitles( target.value.trim(), signal );
+		if ( titles === null ) {
+			// The message embeds <code> markup, but messages render as
+			// plain text.
+			ui.notify( {
+				type: 'error',
+				text: banana.i18n( 'invalid-quarry-dataset', 'page_title' )
+					.replace( /<\/?code>/g, '' )
+			} );
+			return null;
+		}
+		if ( !titles.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: `${ targetTitle.value }: ${ banana.i18n( 'api-error-no-data' ) }`
+			} );
+			return null;
+		}
+		if ( titles.length > MAX_PAGES ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n(
+					'massviews-oversized-set',
+					targetTitle.value,
+					String( titles.length ),
+					MAX_PAGES,
+					titles.length
+				)
+			} );
+			return titles.slice( 0, MAX_PAGES );
+		}
+		return titles;
+	}
+
+	/**
+	 * Resolve the target to the mainspace pages containing a matching
+	 * external link, or to mainspace search results.
+	 *
+	 * @param {Object} parsed Unused (no URL to parse).
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?string[]>} Titles, or null to bail (a message
+	 *   has been shown).
+	 */
+	async function resolveProjectQuery( parsed, signal ) {
+		const ui = useUiStore();
+		const resolver = source.value === 'search' ? getSearchResults : getExternalLinkUsage;
+		const titles = await resolver( project.value, target.value.trim(), signal );
+		if ( !titles.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: `${ targetTitle.value }: ${ banana.i18n( 'api-error-no-data' ) }`
+			} );
+			return null;
+		}
+		if ( titles.length >= MAX_PAGES ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-oversized-set-unknown', targetTitle.value, MAX_PAGES )
+			} );
+		}
+		return titles;
 	}
 
 	/**
@@ -366,18 +465,37 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 
 		const isCategory = source.value === 'category';
-		const parsed = parseTargetUrl( target.value );
-		if ( !parsed || ( isCategory && !parsed.category ) ) {
-			status.value = 'initial';
-			ui.clearMessages();
-			ui.notify( {
-				type: 'error',
-				text: banana.i18n( isCategory ? 'invalid-category-url' : 'invalid-page-url' )
-			} );
-			return;
+		let parsed = null;
+		if ( URL_SOURCES.includes( source.value ) ) {
+			parsed = parseTargetUrl( target.value );
+			if ( !parsed || ( isCategory && !parsed.category ) ) {
+				status.value = 'initial';
+				ui.clearMessages();
+				ui.notify( {
+					type: 'error',
+					text: banana.i18n( isCategory ? 'invalid-category-url' : 'invalid-page-url' )
+				} );
+				return;
+			}
+			project.value = parsed.project;
+			targetTitle.value = parsed.title;
+			targetUrl.value = target.value;
+		} else {
+			const raw = target.value.trim();
+			if ( source.value === 'quarry' ) {
+				targetTitle.value = `Quarry ${ raw }`;
+				targetUrl.value = `https://quarry.wmcloud.org/query/${ encodeURIComponent( raw ) }`;
+			} else if ( source.value === 'external-link' ) {
+				targetTitle.value = raw;
+				targetUrl.value = `https://${ project.value }/w/index.php?title=Special:LinkSearch` +
+					`&target=${ encodeURIComponent( raw ) }`;
+			} else {
+				// Long search queries truncate in the heading (legacy).
+				targetTitle.value = raw.length > 50 ? `${ raw.slice( 0, 35 ) }…` : raw;
+				targetUrl.value = `https://${ project.value }/w/index.php?title=Special:Search` +
+					`&search=${ encodeURIComponent( raw ) }`;
+			}
 		}
-		project.value = parsed.project;
-		targetTitle.value = parsed.title;
 
 		settings.ensureDefaultDates();
 		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
@@ -398,7 +516,10 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				category: resolveCategory,
 				wikilinks: resolveLinks,
 				transclusions: resolveLinks,
-				subpages: resolveSubpages
+				subpages: resolveSubpages,
+				quarry: resolveQuarry,
+				'external-link': resolveProjectQuery,
+				search: resolveProjectQuery
 			};
 			const prefixed = await resolvers[ source.value ]( parsed, signal );
 			if ( id !== loadId ) {
@@ -411,7 +532,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			}
 
 			const result = await fetchPageviews( {
-				project: parsed.project,
+				project: project.value,
 				pages: prefixed,
 				start: settings.start,
 				end: settings.end,
@@ -490,6 +611,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		status,
 		project,
 		targetTitle,
+		targetUrl,
 		dates,
 		pagesData,
 		totals,

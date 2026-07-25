@@ -223,6 +223,53 @@ export async function getSubpages( project, title, namespaces, signal = undefine
 }
 
 /**
+ * The mainspace pages containing an external link matching the given
+ * pattern, via list=exturlusage (the Massviews external-link source).
+ *
+ * @param {string} project
+ * @param {string} pattern e.g. '*.nycgo.com', optionally with a
+ *   protocol prefix (default http, like the legacy tool).
+ * @param {AbortSignal} [signal]
+ * @return {Promise<string[]>} Deduplicated titles.
+ */
+export async function getExternalLinkUsage( project, pattern, signal = undefined ) {
+	// Supported values: https://www.mediawiki.org/wiki/Manual:$wgUrlProtocols
+	const protocolRegex = /^(?:\/\/|(ftps?|git|gopher|https?|ircs?|mms|nntp|redis|sftp|ssh|svn|telnet|worldwind):\/\/|(bitcoin|geo|magnet|mailto|news|sips?|sms|tel|urn|xmpp):)/;
+	const protocol = protocolRegex.exec( pattern )?.[ 1 ] || 'http';
+	const pages = await mwApiQueryAll( project, {
+		action: 'query',
+		list: 'exturlusage',
+		eulimit: 'max',
+		eunamespace: 0,
+		euprotocol: protocol,
+		euquery: pattern.replace( protocolRegex, '' )
+	}, ( response ) => response.query?.exturlusage || [], undefined, signal );
+	return [ ...new Set( pages.map( ( page ) => page.title ) ) ];
+}
+
+/**
+ * Mainspace search results via list=search (the Massviews search
+ * source; supports CirrusSearch syntax like insource:).
+ *
+ * @param {string} project
+ * @param {string} query
+ * @param {AbortSignal} [signal]
+ * @return {Promise<string[]>} Deduplicated titles.
+ */
+export async function getSearchResults( project, query, signal = undefined ) {
+	const pages = await mwApiQueryAll( project, {
+		action: 'query',
+		list: 'search',
+		srlimit: 'max',
+		srnamespace: 0,
+		srinfo: '',
+		srprop: '',
+		srsearch: query
+	}, ( response ) => response.query?.search || [], undefined, signal );
+	return [ ...new Set( pages.map( ( page ) => page.title ) ) ];
+}
+
+/**
  * A GET request following API continuation until exhausted — the
  * equivalent of the legacy massApi() helper.
  *
