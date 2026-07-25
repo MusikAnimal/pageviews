@@ -55,7 +55,8 @@ a {
 	}
 
 	&__apps {
-		// Collapsed into the hamburger dropdown on narrow screens.
+		// Collapsed into the hamburger dropdown below desktop widths —
+		// eight links don't fit comfortably on a tablet.
 		display: none;
 		flex: 1;
 		flex-wrap: wrap;
@@ -64,7 +65,7 @@ a {
 		margin: 0;
 		padding: 0;
 
-		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+		@media screen and ( min-width: @min-width-breakpoint-desktop ) {
 			display: flex;
 		}
 	}
@@ -137,7 +138,7 @@ a {
 			right: auto;
 		}
 
-		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+		@media screen and ( min-width: @min-width-breakpoint-desktop ) {
 			display: none;
 		}
 	}
