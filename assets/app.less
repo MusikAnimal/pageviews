@@ -263,10 +263,12 @@ a {
 // exactly midway between a sidebar and the chart.
 @column-space: calc( @spacing-50 + ( @layout-gap / 2 ) );
 
-// A generous ceiling on the stretched workspace, for portrait
-// monitors — past this the leftover space stays empty above the
-// footer instead.
-@workspace-max-height: 64rem;
+// A generous ceiling on the stretched chart canvas, for portrait
+// monitors — past this the leftover space stays empty instead. The
+// workspace itself is never height-capped: tall in-flow content (the
+// list apps' results tables) must push the footer down, not spill
+// underneath it.
+@chart-max-height: 56rem;
 
 .app-workspace {
 	align-items: flex-start;
@@ -285,9 +287,6 @@ a {
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
 			column-gap: 0;
-			// Only capped in the column layout: stacked layouts are
-			// content-driven and must never clip.
-			max-height: @workspace-max-height;
 		}
 	}
 }
@@ -330,6 +329,12 @@ a {
 		& {
 			padding-right: @column-space;
 		}
+	}
+
+	// The flex:1 canvas (see Chart.vue) stops growing here; the
+	// workspace stays content-driven so nothing clips.
+	&__canvas {
+		max-height: @chart-max-height;
 	}
 
 	&__toolbar {
