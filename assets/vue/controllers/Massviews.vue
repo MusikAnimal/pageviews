@@ -188,7 +188,9 @@ const viewModel = computed( {
 	}
 } );
 
-const categoryDisplay = computed( () => store.category.replace( /_/g, ' ' ) );
+// The full title with its namespace prefix, as the URL spelled it
+// (localized prefixes included).
+const categoryDisplay = computed( () => store.categoryTitle.replace( /_/g, ' ' ) );
 
 // The queried date range, shown next to the category name.
 const dateRange = computed( () => {

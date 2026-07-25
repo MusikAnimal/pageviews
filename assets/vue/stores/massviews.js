@@ -93,6 +93,14 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const category = ref( '' );
 	/**
+	 * The category's full title as it appeared in the target URL —
+	 * namespace prefix included, in the wiki's own language (e.g.
+	 * Kategorie:… on dewiki). For display; underscored.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const categoryTitle = ref( '' );
+	/**
 	 * The date axis, YYYY-MM-DD or YYYY-MM (monthly).
 	 *
 	 * @type {import('vue').Ref<string[]>}
@@ -186,8 +194,9 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * namespace (legacy behavior).
 	 *
 	 * @param {string} value
-	 * @return {?{project: string, category: string}} null when the
-	 *   value isn't a category URL.
+	 * @return {?{project: string, title: string, category: string}}
+	 *   null when the value isn't a category URL; title keeps the
+	 *   URL's own namespace prefix.
 	 */
 	function parseCategoryUrl( value ) {
 		let url;
@@ -207,6 +216,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 		return {
 			project: url.hostname,
+			title: title.replace( / /g, '_' ),
 			category: title.slice( title.indexOf( ':' ) + 1 ).replace( / /g, '_' )
 		};
 	}
@@ -242,6 +252,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 		project.value = parsed.project;
 		category.value = parsed.category;
+		categoryTitle.value = parsed.title;
 
 		settings.ensureDefaultDates();
 		statusBeforeLoad = status.value === 'loading' ? statusBeforeLoad : status.value;
@@ -389,6 +400,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		status,
 		project,
 		category,
+		categoryTitle,
 		dates,
 		pagesData,
 		totals,
