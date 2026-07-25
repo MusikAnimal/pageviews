@@ -14,6 +14,7 @@
 			@input="onInput"
 			@update:selected="onSelect"
 			@keydown.enter="onEnter"
+			@clear="onClear"
 		/>
 	</CdxField>
 </template>
@@ -129,6 +130,14 @@ async function onEnter() {
 		lookup.value?.$el?.querySelector( 'input' )?.blur();
 		emit( 'submit' );
 	}
+}
+
+/**
+ * Keep focus here after the clear button, ready for the next entry
+ * (Codex exposes no focus API, hence the DOM reach-in).
+ */
+function onClear() {
+	lookup.value?.$el?.querySelector( 'input' )?.focus();
 }
 
 function onSelect( value ) {

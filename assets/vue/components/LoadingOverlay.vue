@@ -25,6 +25,7 @@
 			</div>
 			<CdxButton
 				class="app-progress-bar__abort"
+				action="destructive"
 				weight="quiet"
 				@click="emit( 'abort' )"
 			>
