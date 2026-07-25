@@ -535,14 +535,28 @@ a {
 		}
 	}
 
-	// The Source select and the Submit button keep their natural
-	// width — only the input between them stretches. (Without the
-	// width override, the global .cdx-select-vue width: 100% rule
-	// would apply.)
+	// In the row layout, the Source select and the Submit button keep
+	// their natural width — only the input between them stretches.
+	// (Without the width override, the global .cdx-select-vue
+	// width: 100% rule would apply.)
 	.cdx-select-vue,
 	.cdx-button {
 		flex: 0 0 auto;
 		width: auto;
+	}
+
+	// Stacked (mobile) layout: Submit spans the full width, set off a
+	// bit from the inputs above.
+	.cdx-button {
+		margin-top: @spacing-50;
+		max-width: none;
+		width: @size-full;
+
+		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+			margin-top: 0;
+			max-width: none;
+			width: auto;
+		}
 	}
 }
 
