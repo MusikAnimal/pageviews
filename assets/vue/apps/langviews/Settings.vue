@@ -10,7 +10,7 @@
 			<h3>{{ $i18n( 'options' ) }}</h3>
 		</header>
 		<DateRangeInput />
-		<ProjectInput v-model="project" />
+		<ProjectInput v-model="project" :label="$i18n( 'source-project' )" />
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
 	</form>

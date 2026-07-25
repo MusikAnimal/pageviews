@@ -4,7 +4,7 @@
 		:status="status ? 'error' : 'default'"
 	>
 		<template #label>
-			{{ $i18n( 'project' ) }}
+			{{ label || $i18n( 'project' ) }}
 		</template>
 		<template #error>
 			<!-- The status message can contain anchors built from i18n messages. -->
@@ -19,7 +19,7 @@
 			required
 			:menu-items="menuItems"
 			:menu-config="menuConfig"
-			:aria-label="$i18n( 'project' )"
+			:aria-label="label || $i18n( 'project' )"
 			:clearable="true"
 			@input="onInput"
 			@change="checkValidity"
@@ -41,6 +41,15 @@ import { getProjects } from '../projects.js';
 const project = defineModel( {
 	type: [ String, null ],
 	required: true
+} );
+
+defineProps( {
+	// Label override (defaults to "Project"), e.g. Langviews'
+	// "Source project".
+	label: {
+		type: String,
+		default: ''
+	}
 } );
 
 const lookup = ref( null );
