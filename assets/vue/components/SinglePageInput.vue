@@ -23,6 +23,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { CdxField, CdxLookup } from '@wikimedia/codex';
 import { mwApiGet } from '../lib/mwApi.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 
 const DEBOUNCE_MS = 200;
 
@@ -83,6 +84,8 @@ let debounceTimer = null;
 // Bumped to invalidate in-flight autocomplete responses (e.g. after
 // Enter): a late response must not repopulate the menu.
 let searchId = 0;
+// ...and the requests themselves get aborted, not just ignored.
+const searchAborter = createLoadAborter();
 
 // Store → component, e.g. after URL-driven changes. When the input
 // already shows the page (e.g. it was just submitted via Enter),
@@ -113,6 +116,7 @@ watch( () => props.project, () => {
 async function onEnter() {
 	clearTimeout( debounceTimer );
 	searchId++;
+	searchAborter.abort();
 	// Let a Codex highlight-selection land first.
 	await nextTick();
 	if ( !selected.value && inputValue.value ) {
@@ -158,6 +162,7 @@ function onSelect( value ) {
 function onInput( value ) {
 	clearTimeout( debounceTimer );
 	if ( !value ) {
+		searchAborter.abort();
 		menuItems.value = [];
 		page.value = '';
 		return;
@@ -173,7 +178,7 @@ function onInput( value ) {
 					{ pssearch: value, cirrusUseCompletionSuggester: 'yes' }
 				),
 				pslimit: 10
-			} );
+			}, searchAborter.next() );
 			if ( id !== searchId ) {
 				// Superseded (newer keystroke or an Enter submission).
 				return;

@@ -50,7 +50,7 @@ describe( 'PageInput', () => {
 		expect( mwApiGet ).toHaveBeenCalledWith( 'en.wikipedia.org', expect.objectContaining( {
 			list: 'prefixsearch',
 			pssearch: 'cat'
-		} ) );
+		} ), expect.any( AbortSignal ) );
 		expect( lookup.props( 'menuItems' ) ).toEqual( [
 			{ value: 'Cat', label: 'Cat' },
 			{ value: 'Cattle', label: 'Cattle' }

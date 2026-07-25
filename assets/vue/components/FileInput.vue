@@ -40,6 +40,7 @@ import { cdxIconClear } from '@wikimedia/codex-icons';
 import { MAX_FILES, useMediaviewsStore } from '../stores/mediaviews.js';
 import { PALETTE, seriesTint } from '../charts/palette.js';
 import { mwApiGet } from '../lib/mwApi.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 
 const DEBOUNCE_MS = 200;
 
@@ -60,6 +61,8 @@ const menuItems = ref( [] );
 const lookup = ref( null );
 
 let debounceTimer = null;
+// Aborts the previous autocomplete request when a new one fires.
+const searchAborter = createLoadAborter();
 
 // Store → component, e.g. after URL-driven changes.
 watch( files, ( names ) => {
@@ -109,6 +112,7 @@ watch( () => store.project, () => {
 function onInput( value ) {
 	clearTimeout( debounceTimer );
 	if ( !value ) {
+		searchAborter.abort();
 		menuItems.value = [];
 		return;
 	}
@@ -123,15 +127,18 @@ function onInput( value ) {
 				aifrom: term,
 				ailimit: 10,
 				aiprop: ''
-			} );
+			}, searchAborter.next() );
 			menuItems.value = ( response.query?.allimages || [] )
 				.map( ( { name } ) => ( {
 					value: displayName( name ),
 					label: displayName( name )
 				} ) );
-		} catch {
-			// Autocomplete failures are non-fatal; just show no matches.
-			menuItems.value = [];
+		} catch ( error ) {
+			// Autocomplete failures are non-fatal; just show no matches
+			// (an abort means a newer search owns the menu).
+			if ( error?.name !== 'AbortError' ) {
+				menuItems.value = [];
+			}
 		}
 	}, DEBOUNCE_MS );
 }

@@ -41,6 +41,7 @@ import { usePageviewsStore } from '../stores/pageviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { useUiStore } from '../stores/ui.js';
 import { mwApiGet } from '../lib/mwApi.js';
+import { createLoadAborter } from '../lib/loadAborter.js';
 import { PALETTE, seriesTint } from '../charts/palette.js';
 import { banana } from '../i18n.js';
 
@@ -64,6 +65,8 @@ const menuItems = ref( [] );
 const lookup = ref( null );
 
 let debounceTimer = null;
+// Aborts the previous autocomplete request when a new one fires.
+const searchAborter = createLoadAborter();
 let warnedAboutMax = false;
 
 // Store → component, e.g. after URL-driven changes.
@@ -141,6 +144,7 @@ watch( () => store.project, ( project ) => {
 function onInput( value ) {
 	clearTimeout( debounceTimer );
 	if ( !value ) {
+		searchAborter.abort();
 		menuItems.value = [];
 		return;
 	}
@@ -164,16 +168,20 @@ function onInput( value ) {
 					pssearch: value,
 					pslimit: 10,
 					cirrusUseCompletionSuggester: 'yes'
-				}
+				},
+				searchAborter.next()
 			);
 			const results = withRedirects ?
 				response.query?.pages || [] :
 				response.query?.prefixsearch || [];
 			menuItems.value = results
 				.map( ( { title } ) => ( { value: title, label: title } ) );
-		} catch {
-			// Autocomplete failures are non-fatal; just show no matches.
-			menuItems.value = [];
+		} catch ( error ) {
+			// Autocomplete failures are non-fatal; just show no matches
+			// (an abort means a newer search owns the menu).
+			if ( error?.name !== 'AbortError' ) {
+				menuItems.value = [];
+			}
 		}
 	}, DEBOUNCE_MS );
 }
