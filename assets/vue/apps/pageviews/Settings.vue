@@ -59,7 +59,10 @@ const ui = useUiStore();
 	display: flex;
 	gap: @spacing-25;
 
-	.cdx-checkbox {
+	// Mirrors Codex's own margin selector so this outranks it on
+	// specificity, not on stylesheet load order (which differs
+	// between the dev server and the build).
+	.cdx-checkbox:not( .cdx-checkbox--inline ) {
 		margin-bottom: 0;
 	}
 }
