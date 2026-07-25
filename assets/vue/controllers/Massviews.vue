@@ -25,7 +25,7 @@
 							:aria-label="targetLabel"
 							:placeholder="targetPlaceholder"
 							@keydown.enter="submit"
-							@clear="focusTarget"
+							@clear="onTargetClear"
 						/>
 						<!-- In the stacked (mobile) layout the help text
 							follows DOM order, right under the input; in the
@@ -318,6 +318,15 @@ const targetInput = ref( null );
  */
 function focusTarget() {
 	targetInput.value?.$el?.querySelector( 'input' )?.focus();
+}
+
+/**
+ * A cleared input also clears lingering errors (e.g. a failed
+ * previous query).
+ */
+function onTargetClear() {
+	ui.clearMessages();
+	focusTarget();
 }
 
 // Submission-based tools put the cursor on the main input on page
