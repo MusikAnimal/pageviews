@@ -32,6 +32,14 @@
 				:no-autolog="!store.autolog"
 				:aria-label="$i18n( 'mediaviews-title' )"
 			/>
+			<CdxMessage
+				v-if="incompleteMessage"
+				type="warning"
+				allow-user-dismiss
+				@user-dismissed="dismissIncomplete"
+			>
+				{{ incompleteMessage }}
+			</CdxMessage>
 		</figure>
 		<Totals />
 	</div>
@@ -60,7 +68,7 @@ import { useMediaviewsStore } from '../stores/mediaviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
-import { useIncompleteDataToast } from '../composables/useIncompleteDataToast.js';
+import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
 import { useRoute, useRouter } from 'vue-router';
 import MediaviewsSettings from '../apps/mediaviews/Settings.vue';
 import FaqDialog from '../apps/mediaviews/FaqDialog.vue';
@@ -76,7 +84,10 @@ const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
-useIncompleteDataToast( store );
+const {
+	message: incompleteMessage,
+	dismiss: dismissIncomplete
+} = useIncompleteDataMessage( store );
 
 // The /mediaviews/faq and /mediaviews/url_structure routes open
 // dialogs over the app.

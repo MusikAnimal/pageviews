@@ -32,6 +32,14 @@
 				:no-autolog="!store.autolog"
 				:aria-label="$i18n( 'pageviews' )"
 			/>
+			<CdxMessage
+				v-if="incompleteMessage"
+				type="warning"
+				allow-user-dismiss
+				@user-dismissed="dismissIncomplete"
+			>
+				{{ incompleteMessage }}
+			</CdxMessage>
 		</figure>
 		<Totals />
 	</div>
@@ -60,7 +68,7 @@ import { usePageviewsStore } from '../stores/pageviews.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
-import { useIncompleteDataToast } from '../composables/useIncompleteDataToast.js';
+import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
 import { getDefaultPages } from '../lib/defaultPages.js';
 import { useRoute, useRouter } from 'vue-router';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
@@ -77,7 +85,10 @@ const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
-useIncompleteDataToast( store );
+const {
+	message: incompleteMessage,
+	dismiss: dismissIncomplete
+} = useIncompleteDataMessage( store );
 
 // The /faq and /url_structure routes open dialogs over the app.
 const activeDialog = computed( () => route.meta.dialog ?? null );

@@ -32,6 +32,14 @@
 				:no-autolog="!store.autolog"
 				:aria-label="$i18n( 'siteviews-title' )"
 			/>
+			<CdxMessage
+				v-if="incompleteMessage"
+				type="warning"
+				allow-user-dismiss
+				@user-dismissed="dismissIncomplete"
+			>
+				{{ incompleteMessage }}
+			</CdxMessage>
 		</figure>
 		<Totals />
 	</div>
@@ -61,7 +69,7 @@ import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
-import { useIncompleteDataToast } from '../composables/useIncompleteDataToast.js';
+import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
 import { useAppToast } from '../composables/useAppToast.js';
 import { formatDate } from '../lib/format.js';
 import { PAGECOUNTS_MAX_DATE, PAGECOUNTS_MIN_DATE, parseDate } from '../lib/dates.js';
@@ -82,7 +90,10 @@ const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
-useIncompleteDataToast( store );
+const {
+	message: incompleteMessage,
+	dismiss: dismissIncomplete
+} = useIncompleteDataMessage( store );
 
 // The /siteviews/faq and /siteviews/url_structure routes open dialogs
 // over the app.
