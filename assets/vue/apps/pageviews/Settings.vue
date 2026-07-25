@@ -14,6 +14,9 @@
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
 		<CdxField class="app-settings__redirects">
+			<!-- The help button is a sibling of the checkbox, not inside
+				its label, so clicking it can't toggle the checkbox (and
+				its 32px hit area doesn't inflate the label line). -->
 			<div class="app-settings__redirects-row">
 				<CdxCheckbox v-model="redirects">
 					{{ $i18n( 'include-redirects' ) }}
@@ -55,5 +58,9 @@ const ui = useUiStore();
 	align-items: center;
 	display: flex;
 	gap: @spacing-25;
+
+	.cdx-checkbox {
+		margin-bottom: 0;
+	}
 }
 </style>
