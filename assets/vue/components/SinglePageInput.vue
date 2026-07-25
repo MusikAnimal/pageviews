@@ -23,6 +23,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { CdxField, CdxLookup } from '@wikimedia/codex';
 import { mwApiGet } from '../lib/mwApi.js';
+import { useUiStore } from '../stores/ui.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 
 const DEBOUNCE_MS = 200;
@@ -137,10 +138,12 @@ async function onEnter() {
 }
 
 /**
- * Keep focus here after the clear button, ready for the next entry
- * (Codex exposes no focus API, hence the DOM reach-in).
+ * The clear button leaves the field ready for the next entry: focus
+ * stays here (Codex exposes no focus API, hence the DOM reach-in) and
+ * lingering errors from the previous query are dismissed.
  */
 function onClear() {
+	useUiStore().clearMessages();
 	lookup.value?.$el?.querySelector( 'input' )?.focus();
 }
 
