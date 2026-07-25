@@ -449,6 +449,18 @@ a {
 	}
 }
 
+// The list apps' main input with the Submit button inline to its
+// right, bottoms aligned (the field's label sits above the input).
+.app-page-input-row {
+	align-items: flex-end;
+	display: flex;
+	gap: @spacing-50;
+
+	.app-pages {
+		flex: 1;
+	}
+}
+
 // The results-state header the list apps share: a back-to-the-form
 // link, then the queried page with the date range and the list/chart
 // toggle.

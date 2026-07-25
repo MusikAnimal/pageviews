@@ -15,11 +15,21 @@
 		<template v-if="!ready">
 			<LangviewsSettings />
 			<figure class="app-chart">
-				<SinglePageInput
-					v-model="page"
-					:project="store.project"
-					@submit="store.load()"
-				/>
+				<div class="app-page-input-row">
+					<SinglePageInput
+						v-model="page"
+						:project="store.project"
+						@submit="store.load()"
+					/>
+					<CdxButton
+						action="progressive"
+						weight="primary"
+						:disabled="!store.page || store.status === 'loading'"
+						@click="store.load()"
+					>
+						{{ $i18n( 'submit' ) }}
+					</CdxButton>
+				</div>
 				<CdxMessage
 					v-for="message in ui.messages"
 					:key="message.id"
@@ -34,14 +44,6 @@
 						@click.prevent="retry( message )"
 					>{{ $i18n( 'try-again' ) }}</a>
 				</CdxMessage>
-				<CdxButton
-					action="progressive"
-					weight="primary"
-					:disabled="!store.page || store.status === 'loading'"
-					@click="store.load()"
-				>
-					{{ $i18n( 'submit' ) }}
-				</CdxButton>
 			</figure>
 		</template>
 		<figure v-else class="app-chart">
