@@ -202,9 +202,9 @@ const PLACEHOLDERS = {
 };
 const targetLabel = computed( () => banana.i18n( {
 	category: 'category',
-	wikilinks: 'wikilinks',
-	subpages: 'subpages',
-	transclusions: 'transclusions'
+	wikilinks: 'page',
+	subpages: 'page',
+	transclusions: 'template'
 }[ store.source ] ) );
 const targetPlaceholder = computed( () => PLACEHOLDERS[ store.source ] );
 

@@ -393,6 +393,7 @@
 	"target": "In the Redirect Views app, a page of all redirects to a given page are shown. This 'Target' text is shown next to the given page, which is the target of all the other redirects. This text should be lowercased, if possible.\n{{Identical|Target}}",
 	"th": "Abbreviation for Thursday, a day of the week.",
 	"this-month": "Link to set the date range to the current month\n{{Identical|This month}}",
+	"template": "Label for the input taking a template name, used by the Massviews transclusions source.\n{{Identical|Template}}",
 	"this-week": "Link to set the date range to the current week",
 	"this-year": "Link to set the date range to the current year\n{{Identical|This year}}",
 	"title": "The title of the tool. This is shown as a header at the top of the page.",
