@@ -15,7 +15,11 @@
 		<template v-if="!ready">
 			<LangviewsSettings />
 			<figure class="app-chart">
-				<SinglePageInput v-model="page" :project="store.project" />
+				<SinglePageInput
+					v-model="page"
+					:project="store.project"
+					@submit="store.load()"
+				/>
 				<CdxMessage
 					v-for="message in ui.messages"
 					:key="message.id"

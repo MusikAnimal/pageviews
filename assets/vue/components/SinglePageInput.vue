@@ -42,6 +42,11 @@ const props = defineProps( {
 	}
 } );
 
+/**
+ * submit: the user hit Enter — the parent should run the query.
+ */
+const emit = defineEmits( [ 'submit' ] );
+
 const displayName = ( name ) => name.replace( /_/g, ' ' );
 
 const selected = ref( page.value ? displayName( page.value ) : null );
@@ -93,13 +98,16 @@ async function onEnter() {
 	searchId++;
 	// Let a Codex highlight-selection land first.
 	await nextTick();
-	if ( selected.value || !inputValue.value ) {
-		return;
+	if ( !selected.value && inputValue.value ) {
+		// Submit without touching `selected`: a selection that isn't
+		// among the menu items gets cleared by Codex once the menu
+		// changes.
+		menuItems.value = [];
+		page.value = inputValue.value;
 	}
-	// Submit without touching `selected`: a selection that isn't among
-	// the menu items gets cleared by Codex once the menu changes.
-	menuItems.value = [];
-	page.value = inputValue.value;
+	if ( page.value ) {
+		emit( 'submit' );
+	}
 }
 
 function onSelect( value ) {
