@@ -34,6 +34,14 @@
 							user-controlled markup. -->
 						<p class="app-page-input-row__description" v-html="sourceDescription" />
 						<!-- eslint-enable vue/no-v-html -->
+						<div v-if="source === 'category'" class="app-source-options">
+							<CdxCheckbox v-model="useSubjectPage" :inline="true">
+								{{ $i18n( 'category-subject-toggle' ) }}
+							</CdxCheckbox>
+							<CdxCheckbox v-model="includeSubcategories" :inline="true">
+								{{ $i18n( 'include-subcategories' ) }}
+							</CdxCheckbox>
+						</div>
 						<CdxButton
 							action="progressive"
 							weight="primary"
@@ -44,14 +52,6 @@
 						</CdxButton>
 					</div>
 				</CdxField>
-				<div v-if="source === 'category'" class="app-source-options">
-					<CdxCheckbox v-model="useSubjectPage" :inline="true">
-						{{ $i18n( 'category-subject-toggle' ) }}
-					</CdxCheckbox>
-					<CdxCheckbox v-model="includeSubcategories" :inline="true">
-						{{ $i18n( 'include-subcategories' ) }}
-					</CdxCheckbox>
-				</div>
 				<CdxMessage
 					v-for="message in ui.messages"
 					:key="message.id"

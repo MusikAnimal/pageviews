@@ -546,12 +546,19 @@ a {
 	}
 }
 
-// The category source's toggles, inline beneath the input row.
+// The category source's toggles, inline within the input row: the
+// stacked (mobile) layout keeps them in DOM order above the Submit
+// button; the row layout wraps them onto their own line below the
+// help text.
 .app-source-options {
 	display: flex;
 	flex-wrap: wrap;
 	gap: @spacing-50 @spacing-100;
-	margin-top: @spacing-75;
+
+	@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+		flex-basis: 100%;
+		order: 2;
+	}
 
 	// The flex gap provides the spacing; the inline checkboxes' own
 	// trailing margin would double it up.
