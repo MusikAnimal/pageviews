@@ -4,8 +4,12 @@ declare( strict_types = 1 );
 
 namespace App\Controller;
 
+use App\Repository\MassviewsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\Cache;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -24,5 +28,18 @@ class MassviewsController extends AbstractController {
 		return $this->render( 'massviews/index.html.twig', [
 			'current_app' => 'massviews',
 		] );
+	}
+
+	#[Route( '/api/lists/{project}/category', name: 'api_lists_category', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function categoryMembers(
+		MassviewsRepository $massviewsRepo,
+		string $project,
+		#[MapQueryParameter] string $category = '',
+		#[MapQueryParameter] string $subcategories = '0',
+	): JsonResponse {
+		return new JsonResponse( $massviewsRepo->getCategoryMembers(
+			$project, $category, $subcategories === '1'
+		) );
 	}
 }
