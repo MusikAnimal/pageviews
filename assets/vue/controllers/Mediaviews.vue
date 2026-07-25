@@ -96,12 +96,17 @@ function onDialogToggle( open ) {
 	}
 }
 
-// A bare visit — or switching to the files source with nothing
-// picked — shows a couple of well-known example files rather than an
-// empty app (the default dates come from ensureDefaultDates).
+// A bare visit — or switching sources with nothing picked — shows a
+// couple of well-known examples rather than an empty app (the
+// default dates come from ensureDefaultDates).
 watch( () => store.source, ( source ) => {
 	if ( source === 'files' && !store.files.length ) {
 		store.files = [ 'Example.jpg', 'Example.ogg' ];
+	} else if ( source === 'categories' && !store.categories.length ) {
+		store.categories = [
+			'Content_produced_by_UNESCO',
+			'Content_produced_by_Food_and_Agriculture_Organization_of_the_United_Nations'
+		];
 	}
 }, { immediate: true } );
 
