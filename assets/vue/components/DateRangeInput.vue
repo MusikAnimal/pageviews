@@ -151,19 +151,19 @@ const presetItems = computed( () => {
 
 .app-settings__dates-inputs {
 	display: flex;
-	flex-direction: column;
 	gap: @spacing-50;
 
-	@media screen and ( min-width: @min-width-breakpoint-mobile ) {
-		flex-direction: row;
-	}
-
+	// Start and end always share the line, at equal widths filling it
+	// (the native date inputs' intrinsic minimum would otherwise keep
+	// them from shrinking evenly on narrow screens).
 	.cdx-field {
+		flex: 1;
 		margin-top: 0;
+		min-width: 0;
 	}
 
 	.cdx-text-input {
-		min-width: 150px;
+		min-width: 0;
 	}
 }
 </style>
