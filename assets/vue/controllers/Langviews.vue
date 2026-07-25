@@ -55,10 +55,10 @@
 					{{ $i18n( 'another-query' ) }}
 				</a>
 				<div class="app-output-header__heading">
-					<h3 class="app-output-header__title">
+					<h2 class="app-output-header__title">
 						<a :href="pageUrl" target="_blank">{{ pageDisplay }}</a>
 						<span class="app-output-header__dates">{{ dateRange }}</span>
-					</h3>
+					</h2>
 					<CdxToggleButtonGroup
 						v-model="viewModel"
 						:buttons="viewButtons"

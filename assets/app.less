@@ -443,6 +443,12 @@ a {
 		align-items: center;
 		display: inline-flex;
 		gap: @spacing-25;
+
+		// Standalone icons default to @color-base; follow the link
+		// color instead (including hover/visited states).
+		.cdx-icon {
+			color: inherit;
+		}
 	}
 
 	&__heading {
@@ -455,7 +461,6 @@ a {
 	}
 
 	&__title {
-		font-size: @font-size-x-large;
 		margin: 0;
 	}
 
