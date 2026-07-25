@@ -78,8 +78,10 @@
 		<template #item-watchers="{ item }">
 			{{ watchersLabel( item ) }}
 		</template>
-		<template #item-links>
-			<!-- Cross-app links land here later. -->
+		<template #item-links="{ row }">
+			<a :href="langviewsUrl( row.title )" target="_blank">
+				{{ $i18n( 'all-languages' ) }}
+			</a>
 		</template>
 		<template v-if="rows.length > 1 && store.totals" #tfoot>
 			<tfoot>
@@ -275,5 +277,17 @@ function pageUrl( title ) {
 function historyUrl( title ) {
 	return `https://${ store.project }/w/index.php?title=` +
 		`${ encodeURIComponent( title.replace( / /g, '_' ) ) }&action=history`;
+}
+
+function langviewsUrl( title ) {
+	const query = new URLSearchParams( {
+		project: store.project,
+		platform: store.platform,
+		agent: store.agent,
+		start: settings.start,
+		end: settings.end,
+		page: title.replace( / /g, '_' )
+	} );
+	return `/langviews?${ query }`;
 }
 </script>

@@ -74,6 +74,11 @@
 				</div>
 			</dl>
 		</template>
+		<!-- Cross-app links for the single queried page (comparisons
+			get them per-row in the stats table instead). -->
+		<nav v-if="langviewsUrl" class="app-totals__links">
+			<a :href="langviewsUrl" target="_blank">{{ $i18n( 'all-languages' ) }}</a>
+		</nav>
 	</figure>
 </template>
 
@@ -155,6 +160,25 @@ const editTotals = computed( () => {
  * the API below the unwatched-pages threshold; null when no page
  * reported a count.
  */
+/**
+ * Langviews for the single queried page, carrying the same report
+ * parameters over.
+ */
+const langviewsUrl = computed( () => {
+	if ( store.series.length !== 1 ) {
+		return null;
+	}
+	const query = new URLSearchParams( {
+		project: store.project,
+		platform: store.platform,
+		agent: store.agent,
+		start: settings.start,
+		end: settings.end,
+		page: store.series[ 0 ].title.replace( / /g, '_' )
+	} );
+	return `/langviews?${ query }`;
+} );
+
 const basicInfo = computed( () => {
 	if ( !store.pageInfo ) {
 		return null;
