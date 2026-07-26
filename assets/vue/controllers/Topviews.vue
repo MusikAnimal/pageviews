@@ -360,7 +360,7 @@ watch(
 // grown in on render.
 .app-topviews__row {
 	animation: app-topviews-bar 1s ease;
-	background-image: linear-gradient( @background-color-neutral, @background-color-neutral );
+	background-image: linear-gradient( @background-color-neutral-subtle, @background-color-neutral-subtle );
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	// Excluding a page can change the scale; existing bars resize
