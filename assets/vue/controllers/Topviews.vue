@@ -87,10 +87,10 @@
 						class="app-topviews__row"
 						:style="barStyle( entry )"
 					>
-						<th scope="row">
-							{{ number( entry.rank ) }}
-						</th>
-						<td>
+						<th scope="row" class="app-topviews__rank">
+							<span class="app-topviews__rank-number">
+								{{ number( entry.rank ) }}
+							</span>
 							<CdxButton
 								class="app-topviews__remove"
 								weight="quiet"
@@ -100,6 +100,8 @@
 							>
 								<CdxIcon :icon="cdxIconClear" size="small" />
 							</CdxButton>
+						</th>
+						<td>
 							<a :href="pageUrl( entry.article )" target="_blank">
 								{{ entry.article }}
 							</a>
@@ -358,9 +360,11 @@ watch(
 // chart, spanning every column. A solid background-image whose
 // background-size carries the page's share of the top entry's views,
 // grown in on render.
+@topviews-bar-color: @background-color-neutral-subtle;
+
 .app-topviews__row {
 	animation: app-topviews-bar 1s ease;
-	background-image: linear-gradient( @background-color-neutral-subtle, @background-color-neutral-subtle );
+	background-image: linear-gradient( @topviews-bar-color, @topviews-bar-color );
 	background-position: 0 0;
 	background-repeat: no-repeat;
 	// Excluding a page can change the scale; existing bars resize
@@ -378,11 +382,34 @@ watch(
 	}
 }
 
+// The niche exclude button hides behind the rank number (legacy
+// design): hovering the row — or tabbing to the button — swaps them.
+.app-topviews__rank {
+	position: relative;
+}
+
 .app-topviews__remove {
-	margin-right: @spacing-25;
+	inset-inline-start: @spacing-25;
 	// Keep the rows compact despite the 32px button hit area.
 	min-height: 0;
+	// Kept in the tab order and accessibility tree, unlike the
+	// legacy display: none.
+	opacity: 0;
 	padding: 0 @spacing-25;
+	position: absolute;
+	top: 50%;
+	transform: translateY( -50% );
+}
+
+.app-topviews__row:hover,
+.app-topviews__rank:focus-within {
+	.app-topviews__rank-number {
+		visibility: hidden;
+	}
+
+	.app-topviews__remove {
+		opacity: 1;
+	}
 }
 
 .app-topviews__more {
