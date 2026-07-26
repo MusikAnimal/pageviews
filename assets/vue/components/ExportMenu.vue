@@ -34,18 +34,20 @@ import { banana } from '../i18n.js';
 
 const props = defineProps( {
 	/**
-	 * The date axis (YYYY-MM-DD / YYYY-MM strings).
+	 * The date axis (YYYY-MM-DD / YYYY-MM strings). Unused when the
+	 * host supplies its own getCsvRows/getJson builders.
 	 */
 	dates: {
 		type: Array,
-		required: true
+		default: () => []
 	},
 	/**
-	 * Series as { title, counts, total, average } objects.
+	 * Series as { title, counts, total, average } objects. Unused when
+	 * the host supplies its own getCsvRows/getJson builders.
 	 */
 	series: {
 		type: Array,
-		required: true
+		default: () => []
 	},
 	/**
 	 * Filename stem, e.g. 'pageviews-2026-07-01-2026-07-20'.
@@ -59,6 +61,23 @@ const props = defineProps( {
 	 * getPngDataUrl); null hides the PNG option.
 	 */
 	getPng: {
+		type: Function,
+		default: null
+	},
+	/**
+	 * Returns CSV rows (arrays, header first), replacing the default
+	 * dates × series shape — for list views, whose exports are one row
+	 * per page.
+	 */
+	getCsvRows: {
+		type: Function,
+		default: null
+	},
+	/**
+	 * Returns the JSON-serializable export data, replacing the default
+	 * per-series timeseries objects.
+	 */
+	getJson: {
 		type: Function,
 		default: null
 	}
@@ -79,7 +98,7 @@ const menuItems = [
 
 const actions = {
 	csv() {
-		const rows = [
+		const rows = props.getCsvRows ? props.getCsvRows() : [
 			[ 'Date', ...props.series.map( ( s ) => s.title ) ],
 			...props.dates.map( ( date, i ) => [
 				date,
@@ -89,7 +108,7 @@ const actions = {
 		downloadFile( `${ props.filename }.csv`, buildCsv( rows ), 'text/csv' );
 	},
 	json() {
-		const data = props.series.map( ( s ) => ( {
+		const data = props.getJson ? props.getJson() : props.series.map( ( s ) => ( {
 			title: s.title,
 			total: s.total,
 			average: s.average,

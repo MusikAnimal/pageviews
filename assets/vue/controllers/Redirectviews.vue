@@ -78,7 +78,16 @@
 				:no-range-select="true"
 				:aria-label="$i18n( 'redirectviews-title' )"
 			/>
-			<ResultsTable v-else />
+			<template v-else>
+				<div class="app-chart__toolbar">
+					<ExportMenu
+						:filename="exportFilename"
+						:get-csv-rows="listCsvRows"
+						:get-json="() => store.redirectData"
+					/>
+				</div>
+				<ResultsTable />
+			</template>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -122,6 +131,7 @@ import UrlStructureDialog from '../apps/redirectviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 import ResultsTable from '../apps/redirectviews/ResultsTable.vue';
 
 const store = useRedirectviewsStore();
@@ -193,6 +203,15 @@ const dateRange = computed( () => {
 const exportFilename = computed(
 	() => `redirectviews-${ settings.start }-${ settings.end }`
 );
+
+// The list export is one row per page with the daily counts (legacy
+// shape), unlike the chart export's combined series.
+function listCsvRows() {
+	return [
+		[ 'Title', ...store.dates ],
+		...store.redirectData.map( ( row ) => [ row.title, ...row.counts ] )
+	];
+}
 
 // The chart shows the combined views across the target and all its
 // redirects.

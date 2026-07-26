@@ -109,7 +109,16 @@
 				:no-range-select="true"
 				:aria-label="$i18n( 'massviews-title' )"
 			/>
-			<ResultsTable v-else />
+			<template v-else>
+				<div class="app-chart__toolbar">
+					<ExportMenu
+						:filename="exportFilename"
+						:get-csv-rows="listCsvRows"
+						:get-json="() => store.pagesData"
+					/>
+				</div>
+				<ResultsTable />
+			</template>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -156,6 +165,7 @@ import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 import ResultsTable from '../apps/massviews/ResultsTable.vue';
 
 const store = useMassviewsStore();
@@ -327,6 +337,15 @@ const dateRange = computed( () => {
 const exportFilename = computed(
 	() => `massviews-${ settings.start }-${ settings.end }`
 );
+
+// The list export is one row per page with the daily counts (legacy
+// shape), unlike the chart export's combined series.
+function listCsvRows() {
+	return [
+		[ 'Title', ...store.dates ],
+		...store.pagesData.map( ( row ) => [ row.title, ...row.counts ] )
+	];
+}
 
 // The chart shows the combined views across all category members.
 const chartSeries = computed( () => store.totals ? [ {

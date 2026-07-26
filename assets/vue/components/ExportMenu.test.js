@@ -71,6 +71,29 @@ describe( 'ExportMenu', () => {
 		} );
 	} );
 
+	it( 'lets list views supply their own CSV and JSON shapes', () => {
+		const wrapper = mount( ExportMenu, {
+			global: globalConfig,
+			props: {
+				filename: 'topviews-2026-06',
+				getCsvRows: () => [ [ 'Page', 'Views' ], [ 'Cat', 100 ] ],
+				getJson: () => [ { article: 'Cat', views: 100, rank: 1 } ]
+			}
+		} );
+
+		select( wrapper, 'csv' );
+		expect( downloadFile ).toHaveBeenCalledWith(
+			'topviews-2026-06.csv', 'Page,Views\nCat,100', 'text/csv'
+		);
+
+		select( wrapper, 'json' );
+		expect( downloadFile ).toHaveBeenLastCalledWith(
+			'topviews-2026-06.json',
+			JSON.stringify( [ { article: 'Cat', views: 100, rank: 1 } ] ),
+			'application/json'
+		);
+	} );
+
 	it( 'offers PNG only when a chart source is provided', () => {
 		const without = mount( ExportMenu, { props, global: globalConfig } );
 		expect( without.findComponent( CdxMenuButton ).props( 'menuItems' )

@@ -78,7 +78,16 @@
 				:no-range-select="true"
 				:aria-label="$i18n( 'langviews-title' )"
 			/>
-			<ResultsTable v-else />
+			<template v-else>
+				<div class="app-chart__toolbar">
+					<ExportMenu
+						:filename="exportFilename"
+						:get-csv-rows="listCsvRows"
+						:get-json="() => store.langData"
+					/>
+				</div>
+				<ResultsTable />
+			</template>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -122,7 +131,9 @@ import UrlStructureDialog from '../apps/langviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 import ResultsTable from '../apps/langviews/ResultsTable.vue';
+import { BADGES } from '../lib/wikidata.js';
 
 const store = useLangviewsStore();
 const preferences = usePreferencesStore();
@@ -193,6 +204,22 @@ const dateRange = computed( () => {
 const exportFilename = computed(
 	() => `langviews-${ settings.start }-${ settings.end }`
 );
+
+// The list export is one row per language with the daily counts
+// (legacy shape), unlike the chart export's combined series.
+function listCsvRows() {
+	return [
+		[ 'Language', 'Title', 'Badges', ...store.dates ],
+		...store.langData.map( ( row ) => [
+			row.lang,
+			row.title,
+			row.badges.map(
+				( badge ) => BADGES[ badge ] ? banana.i18n( BADGES[ badge ].name ) : badge
+			).join( ', ' ),
+			...row.counts
+		] )
+	];
+}
 
 // The chart shows the combined views across all languages.
 const chartSeries = computed( () => store.totals ? [ {

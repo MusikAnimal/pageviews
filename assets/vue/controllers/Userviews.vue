@@ -81,7 +81,16 @@
 				:no-range-select="true"
 				:aria-label="$i18n( 'userviews-title' )"
 			/>
-			<ResultsTable v-else />
+			<template v-else>
+				<div class="app-chart__toolbar">
+					<ExportMenu
+						:filename="exportFilename"
+						:get-csv-rows="listCsvRows"
+						:get-json="() => store.pagesData"
+					/>
+				</div>
+				<ResultsTable />
+			</template>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -126,6 +135,7 @@ import UrlStructureDialog from '../apps/userviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 import ResultsTable from '../apps/userviews/ResultsTable.vue';
 
 const store = useUserviewsStore();
@@ -211,6 +221,15 @@ const dateRange = computed( () => {
 const exportFilename = computed(
 	() => `userviews-${ settings.start }-${ settings.end }`
 );
+
+// The list export is one row per page with the daily counts (legacy
+// shape), unlike the chart export's combined series.
+function listCsvRows() {
+	return [
+		[ 'Title', ...store.dates ],
+		...store.pagesData.map( ( row ) => [ row.title, ...row.counts ] )
+	];
+}
 
 // The chart shows the combined views across all created pages.
 const chartSeries = computed( () => store.totals ? [ {

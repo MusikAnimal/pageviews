@@ -11,6 +11,12 @@
 					:aria-label="$i18n( 'search' )"
 					:placeholder="$i18n( 'search' )"
 				/>
+				<ExportMenu
+					v-if="store.pageData.length"
+					:filename="exportFilename"
+					:get-csv-rows="listCsvRows"
+					:get-json="() => store.pageData"
+				/>
 			</div>
 			<CdxMessage
 				v-for="message in ui.messages"
@@ -79,7 +85,12 @@
 						<th scope="row">
 							{{ number( entry.rank ) }}
 						</th>
-						<td>
+						<td class="app-topviews__page">
+							<span
+								class="app-topviews__bar"
+								:style="{ width: barWidth( entry ) }"
+								aria-hidden="true"
+							/>
 							<CdxButton
 								class="app-topviews__remove"
 								weight="quiet"
@@ -160,6 +171,7 @@ import TopviewsSettings from '../apps/topviews/Settings.vue';
 import FaqDialog from '../apps/topviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/topviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
+import ExportMenu from '../components/ExportMenu.vue';
 
 const store = useTopviewsStore();
 const preferences = usePreferencesStore();
@@ -229,6 +241,37 @@ function percentMobile( entry ) {
 	return `${ percentage }%`;
 }
 
+const exportFilename = computed( () => `topviews-${ store.date }` );
+
+// The list export mirrors the table (legacy shape): one row per page
+// with the enrichment values where they've arrived, "?" otherwise.
+function listCsvRows() {
+	const header = [ 'Page', 'Edits', 'Editors', 'Views' ];
+	if ( store.shouldShowMobile ) {
+		header.push( 'Mobile %' );
+	}
+	return [ header, ...store.pageData.map( ( entry ) => {
+		const row = [
+			entry.article,
+			edits( entry.article ) ?? '?',
+			editors( entry.article ) ?? '?',
+			entry.views
+		];
+		if ( store.shouldShowMobile ) {
+			row.push( percentMobile( entry ).replace( '%', '' ) );
+		}
+		return row;
+	} ) ];
+}
+
+// The rows double as a bar chart: each page's background is shaded
+// relative to the top-ranked entry (legacy behavior).
+const maxViews = computed( () => store.pageData[ 0 ]?.views ?? 0 );
+
+function barWidth( entry ) {
+	return maxViews.value ? `${ ( 100 * entry.views ) / maxViews.value }%` : '0';
+}
+
 function pageUrl( article ) {
 	return `https://${ store.project }/wiki/` +
 		encodeURIComponent( article.replace( / /g, '_' ) );
@@ -275,6 +318,9 @@ watch(
 
 .app-topviews__toolbar {
 	display: flex;
+	flex-wrap: wrap;
+	gap: @spacing-50;
+	justify-content: space-between;
 	margin-bottom: @spacing-50;
 }
 
@@ -303,6 +349,34 @@ watch(
 
 .app-topviews__known-table {
 	max-width: @size-3200;
+}
+
+// The shaded backgrounds that make the ranked list read as a bar
+// chart. The cell is a stacking context so the bar sits above the row
+// background but beneath the cell's content.
+.app-topviews__page {
+	position: relative;
+	z-index: 0;
+}
+
+.app-topviews__bar {
+	animation: app-topviews-bar 1s ease;
+	background-color: @background-color-neutral;
+	bottom: 0;
+	inset-inline-start: 0;
+	opacity: 0.6;
+	position: absolute;
+	top: 0;
+	// Excluding a page can change the scale; existing bars resize
+	// smoothly rather than jumping.
+	transition: width 1s ease;
+	z-index: -1;
+}
+
+@keyframes app-topviews-bar {
+	from {
+		width: 0;
+	}
 }
 
 .app-topviews__remove {
