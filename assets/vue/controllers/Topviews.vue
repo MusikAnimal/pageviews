@@ -81,16 +81,16 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="entry in store.displayed" :key="entry.article">
+					<tr
+						v-for="entry in store.displayed"
+						:key="entry.article"
+						class="app-topviews__row"
+						:style="barStyle( entry )"
+					>
 						<th scope="row">
 							{{ number( entry.rank ) }}
 						</th>
-						<td class="app-topviews__page">
-							<span
-								class="app-topviews__bar"
-								:style="{ width: barWidth( entry ) }"
-								aria-hidden="true"
-							/>
+						<td>
 							<CdxButton
 								class="app-topviews__remove"
 								weight="quiet"
@@ -264,12 +264,15 @@ function listCsvRows() {
 	} ) ];
 }
 
-// The rows double as a bar chart: each page's background is shaded
-// relative to the top-ranked entry (legacy behavior).
+// The rows double as a bar chart: each row's background is shaded
+// relative to the top-ranked entry (legacy behavior). The bar is a
+// background-image sized to the page's share, since a row can't
+// anchor an absolutely-positioned child on our whole browser matrix.
 const maxViews = computed( () => store.pageData[ 0 ]?.views ?? 0 );
 
-function barWidth( entry ) {
-	return maxViews.value ? `${ ( 100 * entry.views ) / maxViews.value }%` : '0';
+function barStyle( entry ) {
+	const width = maxViews.value ? ( 100 * entry.views ) / maxViews.value : 0;
+	return { backgroundSize: `${ width }% 100%` };
 }
 
 function pageUrl( article ) {
@@ -352,30 +355,26 @@ watch(
 }
 
 // The shaded backgrounds that make the ranked list read as a bar
-// chart. The cell is a stacking context so the bar sits above the row
-// background but beneath the cell's content.
-.app-topviews__page {
-	position: relative;
-	z-index: 0;
-}
-
-.app-topviews__bar {
+// chart, spanning every column. A solid background-image whose
+// background-size carries the page's share of the top entry's views,
+// grown in on render.
+.app-topviews__row {
 	animation: app-topviews-bar 1s ease;
-	background-color: @background-color-neutral;
-	bottom: 0;
-	inset-inline-start: 0;
-	opacity: 0.6;
-	position: absolute;
-	top: 0;
+	background-image: linear-gradient( @background-color-neutral, @background-color-neutral );
+	background-position: 0 0;
+	background-repeat: no-repeat;
 	// Excluding a page can change the scale; existing bars resize
 	// smoothly rather than jumping.
-	transition: width 1s ease;
-	z-index: -1;
+	transition: background-size 1s ease;
+
+	.rtl & {
+		background-position: 100% 0;
+	}
 }
 
 @keyframes app-topviews-bar {
 	from {
-		width: 0;
+		background-size: 0 100%;
 	}
 }
 
