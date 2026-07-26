@@ -68,6 +68,8 @@ class MetricsRepository extends Repository {
 		private readonly CacheInterface $cacheMetrics,
 		#[Autowire( '%kernel.project_dir%/config/topviews_excludes.yaml' )]
 		private readonly string $topviewsExcludesPath = '',
+		#[Autowire( '%kernel.project_dir%/data/topviews' )]
+		private readonly string $topviewsYearlyDir = '',
 	) {
 	}
 
@@ -757,10 +759,15 @@ class MetricsRepository extends Repository {
 		} elseif ( preg_match( '/^\d{4}-\d{2}-(\d{2})$/', $date, $matches ) ) {
 			$day = $matches[1];
 			$end = new DateTime( $date );
+		} elseif ( preg_match( '/^\d{4}$/', $date ) ) {
+			// Yearly lists come from pre-generated static datasets (AQS
+			// has no yearly top endpoint); always all-access.
+			$day = null;
+			$end = new DateTime( "$date-12-31" );
 		} else {
 			$this->invalidParameter(
 				'invalid_date',
-				"Date $date is not in a valid format (YYYY-MM or YYYY-MM-DD).",
+				"Date $date is not in a valid format (YYYY, YYYY-MM or YYYY-MM-DD).",
 				[ 'param-error-3', 'date' ]
 			);
 		}
@@ -771,7 +778,9 @@ class MetricsRepository extends Repository {
 			$cacheKey,
 			function ( ItemInterface $item ) use ( $project, $platform, $date, $day, $end ): array {
 				$item->expiresAfter( $this->ttlForRange( $end ) );
-				return $this->fetchTopPageviews( $project, $platform, $date, $day );
+				return $day === null ?
+					$this->fetchYearlyTopPageviews( $project, $date ) :
+					$this->fetchTopPageviews( $project, $platform, $date, $day );
 			}
 		);
 	}
@@ -811,27 +820,71 @@ class MetricsRepository extends Repository {
 			}
 		}
 
-		$excludes = $this->topviewsExcludes( $project );
-		$articles = [];
-		$rank = 0;
-		foreach ( $entries as $entry ) {
-			$title = str_replace( '_', ' ', $entry['article'] );
-			if ( in_array( $title, $excludes, true ) ) {
-				continue;
-			}
-			$articles[] = [
-				'article' => $title,
-				'views' => $entry['views'],
-				'rank' => ++$rank,
-			];
-		}
-
 		return [
 			'project' => $project,
 			'platform' => $platform,
 			'date' => $date,
-			'articles' => $articles,
-		] + ( $noData ? [ 'no_data' => true ] : [] );
+		] + $this->rankTopArticles( $project, $entries )
+			+ ( $noData ? [ 'no_data' => true ] : [] );
+	}
+
+	/**
+	 * The yearly lists, from the pre-generated static datasets the
+	 * legacy tool used (drop them under data/topviews/; see the README
+	 * there). Entries carry article, views and mobile_percentage.
+	 */
+	private function fetchYearlyTopPageviews( string $project, string $year ): array {
+		$path = "{$this->topviewsYearlyDir}/$project/$year.json";
+		if ( !is_file( $path ) ) {
+			throw new ApiException(
+				'no_data',
+				"No yearly Topviews dataset is available for $project in $year.",
+				[ 'api-error-no-data' ],
+				Response::HTTP_NOT_FOUND,
+				null,
+				false,
+			);
+		}
+		$entries = json_decode( (string)file_get_contents( $path ), true ) ?: [];
+
+		return [
+			'project' => $project,
+			'platform' => 'all-access',
+			'date' => $year,
+		] + $this->rankTopArticles( $project, $entries );
+	}
+
+	/**
+	 * Apply the curated excludes and recompute ranks. The excluded
+	 * entries are reported too (with their original position), so the
+	 * client can note the known false positives.
+	 *
+	 * @param array $entries Raw entries with underscored 'article'.
+	 * @return array{articles: array, excluded: array}
+	 */
+	private function rankTopArticles( string $project, array $entries ): array {
+		$excludes = $this->topviewsExcludes( $project );
+		$articles = [];
+		$excluded = [];
+		$rank = 0;
+		$position = 0;
+		foreach ( $entries as $entry ) {
+			$position++;
+			$row = [
+				'article' => str_replace( '_', ' ', (string)$entry['article'] ),
+				'views' => (int)$entry['views'],
+			];
+			if ( isset( $entry['mobile_percentage'] ) ) {
+				$row['mobile_percentage'] = $entry['mobile_percentage'];
+			}
+			if ( in_array( $row['article'], $excludes, true ) ) {
+				$excluded[] = $row + [ 'rank' => $position ];
+				continue;
+			}
+			$articles[] = $row + [ 'rank' => ++$rank ];
+		}
+
+		return [ 'articles' => $articles, 'excluded' => $excluded ];
 	}
 
 	/**

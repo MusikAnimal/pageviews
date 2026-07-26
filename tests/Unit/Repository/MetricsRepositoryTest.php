@@ -19,7 +19,11 @@ class MetricsRepositoryTest extends TestCase {
 	/**
 	 * @param array $routes Substring => MockResponse factory or body array.
 	 */
-	private function makeRepo( array $routes = [], string $excludesPath = '' ): MetricsRepository {
+	private function makeRepo(
+		array $routes = [],
+		string $excludesPath = '',
+		string $yearlyDir = ''
+	): MetricsRepository {
 		$client = new MockHttpClient( function ( string $method, string $url ) use ( $routes ) {
 			$this->requestedUrls[] = $url;
 			foreach ( $routes as $needle => $response ) {
@@ -35,7 +39,7 @@ class MetricsRepositoryTest extends TestCase {
 			);
 		}, 'https://wikimedia.org/api/rest_v1/metrics/' );
 
-		return new MetricsRepository( $client, new ArrayAdapter(), $excludesPath );
+		return new MetricsRepository( $client, new ArrayAdapter(), $excludesPath, $yearlyDir );
 	}
 
 	private static function aqsItems( string $article, array $viewsByTimestamp ): array {
@@ -509,7 +513,48 @@ class MetricsRepositoryTest extends TestCase {
 				[ 'article' => 'Cat', 'views' => 500, 'rank' => 1 ],
 				[ 'article' => 'Dog', 'views' => 200, 'rank' => 2 ],
 			],
+			// The known false positives, with their original position.
+			'excluded' => [
+				[ 'article' => 'Global Spam', 'views' => 400, 'rank' => 2 ],
+				[ 'article' => 'Bot Magnet', 'views' => 300, 'rank' => 3 ],
+			],
 		], $result );
+	}
+
+	public function testTopPageviewsYearlyFromStaticDataset(): void {
+		$repo = $this->makeRepo(
+			[],
+			self::EXCLUDES_FIXTURE,
+			__DIR__ . '/../../Fixtures/topviews_yearly'
+		);
+
+		$result = $repo->getTopPageviews( 'en.wikipedia.org', '2016' );
+
+		static::assertSame( [
+			'project' => 'en.wikipedia',
+			'platform' => 'all-access',
+			'date' => '2016',
+			'articles' => [
+				[ 'article' => 'Cat', 'views' => 900, 'mobile_percentage' => 60.1, 'rank' => 1 ],
+				[ 'article' => 'Dog', 'views' => 700, 'mobile_percentage' => 55.5, 'rank' => 2 ],
+			],
+			'excluded' => [
+				[ 'article' => 'Global Spam', 'views' => 800, 'mobile_percentage' => 99.9, 'rank' => 2 ],
+			],
+		], $result );
+	}
+
+	public function testTopPageviewsYearlyMissingDataset(): void {
+		$repo = $this->makeRepo( [], '', __DIR__ . '/../../Fixtures/topviews_yearly' );
+
+		try {
+			$repo->getTopPageviews( 'en.wikipedia', '1999' );
+			static::fail( 'Expected ApiException (no_data)' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'no_data', $e->errorCode );
+			static::assertSame( 404, $e->status );
+			static::assertFalse( $e->retryable );
+		}
 	}
 
 	public function testTopPageviewsDailyAndOtherProjectExcludes(): void {

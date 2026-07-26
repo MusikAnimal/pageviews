@@ -1,0 +1,5 @@
+[
+	{ "article": "Cat", "views": 900, "mobile_percentage": 60.1 },
+	{ "article": "Global_Spam", "views": 800, "mobile_percentage": 99.9 },
+	{ "article": "Dog", "views": 700, "mobile_percentage": 55.5 }
+]
