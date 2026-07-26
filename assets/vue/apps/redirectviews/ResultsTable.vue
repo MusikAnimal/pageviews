@@ -16,7 +16,9 @@
 					<th scope="row">
 						{{ $i18n( 'totals' ) }}
 					</th>
-					<td>{{ $i18n( 'num-redirects', number( rows.length - 1 ), rows.length - 1 ) }}</td>
+					<td>
+						{{ $i18n( 'num-redirects', number( rows.length - 1 ), rows.length - 1 ) }}
+					</td>
 					<td>{{ $i18n( 'num-sections', number( sectionCount ), sectionCount ) }}</td>
 					<td class="app-stats__number">
 						{{ number( store.totals.total ) }}

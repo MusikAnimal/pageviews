@@ -7,8 +7,12 @@ import { useSettingsStore } from '../stores/settings.js';
  *
  * @param {Object} store Must implement `setFromQuery( query )` and a `query` getter
  *   with the serialized, canonical form of relevant params.
+ * @param {Object} [options]
+ * @param {boolean} [options.syncSettings] Set false for apps that
+ *   don't use the shared date range (Topviews has its own single
+ *   date), keeping range/start/end out of their URLs.
  */
-export function useQuerySync( store ) {
+export function useQuerySync( store, { syncSettings = true } = {} ) {
 	const route = useRoute();
 	const router = useRouter();
 	const settings = useSettingsStore();
@@ -17,7 +21,9 @@ export function useQuerySync( store ) {
 	watch(
 		() => route.query,
 		( query ) => {
-			settings.setFromQuery( query );
+			if ( syncSettings ) {
+				settings.setFromQuery( query );
+			}
 			store.setFromQuery( query );
 		},
 		{ immediate: true }
@@ -25,9 +31,12 @@ export function useQuerySync( store ) {
 
 	// Sync the stores with the URL.
 	watch(
-		[ () => store.query, () => settings.query ],
+		syncSettings ? [ () => store.query, () => settings.query ] : [ () => store.query ],
 		() => {
-			router.replace( { query: { ...settings.query, ...store.query } } );
+			router.replace( { query: {
+				...( syncSettings ? settings.query : {} ),
+				...store.query
+			} } );
 		}
 	);
 }
