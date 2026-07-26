@@ -29,7 +29,7 @@
 				weight="quiet"
 				@click="emit( 'abort' )"
 			>
-				{{ $i18n( 'abort' ) }}
+				{{ $i18n( abortLabelKey ) }}
 			</CdxButton>
 		</div>
 	</div>
@@ -46,9 +46,23 @@ import { useUiStore } from '../stores/ui.js';
  * done/total readout. Styles live in app.less, shared with the Twig
  * FOUC skeletons.
  *
- * abort: the user hit Abort — the parent should cancel the in-flight
- * load (store.abort()) and return to the pre-submission state.
+ * abort: the user hit the button — the parent should cancel the
+ * in-flight load (store.abort()) and return to the pre-submission
+ * state.
  */
 const emit = defineEmits( [ 'abort' ] );
+
+defineProps( {
+	/**
+	 * Message key for the button's label. The submission apps say
+	 * "Cancel" (nothing was asked for yet beyond the form); the chart
+	 * apps keep the stronger "Abort".
+	 */
+	abortLabelKey: {
+		type: String,
+		default: 'abort'
+	}
+} );
+
 const ui = useUiStore();
 </script>

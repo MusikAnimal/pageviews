@@ -87,6 +87,9 @@ for ( const range of [ 'this-week', 'this-month', 'last-month', 'this-year', 'la
 // StatsTable / Totals average label.
 record( 'daily-average', 'assets/vue/apps/pageviews (dateType label)' );
 record( 'monthly-average', 'assets/vue/apps/pageviews (dateType label)' );
+// LoadingOverlay's button label, via the abortLabelKey prop.
+record( 'abort', 'assets/vue/components/LoadingOverlay.vue (abortLabelKey)' );
+record( 'cancel', 'assets/vue/components/LoadingOverlay.vue (abortLabelKey)' );
 
 let failed = false;
 

@@ -1,5 +1,9 @@
 <template>
-	<LoadingOverlay v-if="store.status === 'loading'" @abort="store.abort()" />
+	<LoadingOverlay
+		v-if="store.status === 'loading'"
+		abort-label-key="cancel"
+		@abort="store.abort()"
+	/>
 	<div class="app-workspace">
 		<!-- List apps fan out many queries, so nothing fires reactively:
 			the form submits explicitly, and the results state replaces

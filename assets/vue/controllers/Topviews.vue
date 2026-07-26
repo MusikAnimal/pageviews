@@ -1,5 +1,9 @@
 <template>
-	<LoadingOverlay v-if="store.status === 'loading'" @abort="store.abort()" />
+	<LoadingOverlay
+		v-if="store.status === 'loading'"
+		abort-label-key="cancel"
+		@abort="store.abort()"
+	/>
 	<div class="app-workspace">
 		<TopviewsSettings />
 		<figure class="app-chart">
@@ -390,6 +394,7 @@ watch(
 
 .app-topviews__remove {
 	inset-inline-start: @spacing-25;
+	left: 0;
 	// Keep the rows compact despite the 32px button hit area.
 	min-height: 0;
 	// Kept in the tab order and accessibility tree, unlike the
