@@ -245,13 +245,14 @@ const viewModel = computed( {
 // (localized prefixes included).
 const targetDisplay = computed( () => store.targetTitle.replace( /_/g, ' ' ) );
 
-// The hashtag source remains to be ported. Quarry is a proper noun.
+// Quarry is a proper noun.
 const sourceItems = [
 	{ value: 'category', label: banana.i18n( 'category' ) },
 	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
 	{ value: 'subpages', label: banana.i18n( 'subpages' ) },
 	{ value: 'transclusions', label: banana.i18n( 'transclusions' ) },
 	{ value: 'quarry', label: 'Quarry' },
+	{ value: 'hashtag', label: banana.i18n( 'hashtag' ) },
 	{ value: 'external-link', label: banana.i18n( 'external-link' ) },
 	{ value: 'search', label: banana.i18n( 'search' ) }
 ];
@@ -264,6 +265,7 @@ const PLACEHOLDERS = {
 	subpages: 'https://en.wikipedia.org/wiki/User:Example',
 	transclusions: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
 	quarry: '12345',
+	hashtag: '#editathon',
 	'external-link': '*.nycgo.com',
 	search: 'insource:"UNESCO Science Report"'
 };
@@ -274,6 +276,7 @@ const targetLabel = computed( () => store.source === 'quarry' ?
 		wikilinks: 'page',
 		subpages: 'page',
 		transclusions: 'template',
+		hashtag: 'hashtag',
 		'external-link': 'external-link',
 		search: 'search'
 	}[ store.source ] ) );
@@ -307,6 +310,17 @@ const sourceDescription = computed( () => {
 			return banana.i18n(
 				'massviews-quarry-description',
 				'<a target="_blank" href="https://quarry.wmcloud.org">Quarry</a>'
+			);
+		case 'hashtag':
+			return banana.i18n(
+				'massviews-hashtag-description',
+				banana.i18n(
+					'hashtag-credits',
+					'<a target="_blank" href="https://hashtags.wmcloud.org">' +
+						'Wikimedia hashtag search</a>'
+				),
+				'<a target="_blank" href="https://hashtags.wmcloud.org/docs/">' +
+					`${ banana.i18n( 'hashtag' ).toLowerCase() }</a>`
 			);
 		case 'external-link':
 			return banana.i18n(

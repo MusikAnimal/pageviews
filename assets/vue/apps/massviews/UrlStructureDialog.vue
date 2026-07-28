@@ -29,7 +29,6 @@ defineProps( {
 
 const emit = defineEmits( [ 'update:open' ] );
 
-// Grows as the remaining page-list sources are ported.
 const params = [
 	{
 		name: 'source',
@@ -39,6 +38,7 @@ const params = [
 			code( 'subpages' ),
 			code( 'transclusions' ),
 			code( 'quarry' ),
+			code( 'hashtag' ),
 			code( 'external-link' ),
 			code( 'search' )
 		] )

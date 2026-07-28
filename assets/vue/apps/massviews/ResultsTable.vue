@@ -24,7 +24,12 @@
 						{{ number( Math.round( store.totals.average ) ) }}
 					</td>
 				</tr>
-				<tr v-for="( row, index ) in slotProps.rows" :key="row.title">
+				<!-- Hashtag results span wikis, so titles alone can
+					collide across rows. -->
+				<tr
+					v-for="( row, index ) in slotProps.rows"
+					:key="`${ row.project }|${ row.title }`"
+				>
 					<th scope="row">
 						{{ number( index + 1 ) }}
 					</th>
@@ -94,13 +99,13 @@ function onSort( value ) {
 }
 
 function pageUrl( row ) {
-	return `https://${ store.project }/wiki/` +
+	return `https://${ row.project }/wiki/` +
 		encodeURIComponent( row.title.replace( / /g, '_' ) );
 }
 
 function pageviewsUrl( row ) {
 	const query = new URLSearchParams( {
-		project: store.project,
+		project: row.project,
 		platform: store.platform,
 		agent: store.agent,
 		start: settings.start,

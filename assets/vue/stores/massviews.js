@@ -9,20 +9,21 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
+import { getHashtagPages } from '../lib/hashtags.js';
 import { getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
-// The hashtag source remains to be ported.
 const SOURCES = [
 	'category', 'wikilinks', 'subpages', 'transclusions',
-	'quarry', 'external-link', 'search'
+	'quarry', 'hashtag', 'external-link', 'search'
 ];
 // Sources whose target is a full page URL (the project comes from it)…
 const URL_SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
 // …versus sources needing an explicit project alongside the target.
+// (Hashtag is neither: its results carry their own wiki per page.)
 const PROJECT_SOURCES = [ 'quarry', 'external-link', 'search' ];
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
@@ -124,8 +125,9 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const dates = ref( [] );
 	/**
-	 * Per-page rows: { title, counts, sum, average }. Titles carry
-	 * their localized namespace prefix, with spaces.
+	 * Per-page rows: { title, project, counts, sum, average }. Titles
+	 * carry their localized namespace prefix, with spaces. The project
+	 * matters for the hashtag source, whose pages span wikis.
 	 *
 	 * @type {import('vue').Ref<Array<Object>>}
 	 */
@@ -287,6 +289,43 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			return titles.slice( 0, MAX_PAGES );
 		}
 		return titles;
+	}
+
+	/**
+	 * Resolve the hashtag to the pages carrying it in an edit summary,
+	 * across all wikis.
+	 *
+	 * @param {Object} parsed Unused (no URL to parse).
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?Array<{project: string, title: string}>>}
+	 *   Pages, or null to bail (a message has been shown).
+	 */
+	async function resolveHashtag( parsed, signal ) {
+		const ui = useUiStore();
+		const pages = await getHashtagPages(
+			target.value.trim().replace( /^#/, '' ), signal
+		);
+		if ( !pages.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-empty-set', targetTitle.value )
+			} );
+			return null;
+		}
+		if ( pages.length > MAX_PAGES ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n(
+					'massviews-oversized-set',
+					targetTitle.value,
+					String( pages.length ),
+					MAX_PAGES,
+					pages.length
+				)
+			} );
+			return pages.slice( 0, MAX_PAGES );
+		}
+		return pages;
 	}
 
 	/**
@@ -485,6 +524,10 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			if ( source.value === 'quarry' ) {
 				targetTitle.value = `Quarry ${ raw }`;
 				targetUrl.value = `https://quarry.wmcloud.org/query/${ encodeURIComponent( raw ) }`;
+			} else if ( source.value === 'hashtag' ) {
+				const tag = raw.replace( /^#/, '' );
+				targetTitle.value = `#${ tag }`;
+				targetUrl.value = `https://hashtags.wmcloud.org/?query=${ encodeURIComponent( tag ) }`;
 			} else if ( source.value === 'external-link' ) {
 				targetTitle.value = raw;
 				targetUrl.value = `https://${ project.value }/w/index.php?title=Special:LinkSearch` +
@@ -518,48 +561,77 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				transclusions: resolveLinks,
 				subpages: resolveSubpages,
 				quarry: resolveQuarry,
+				hashtag: resolveHashtag,
 				'external-link': resolveProjectQuery,
 				search: resolveProjectQuery
 			};
-			const prefixed = await resolvers[ source.value ]( parsed, signal );
+			const resolved = await resolvers[ source.value ]( parsed, signal );
 			if ( id !== loadId ) {
 				return;
 			}
-			if ( prefixed === null ) {
+			if ( resolved === null ) {
 				// The resolver already explained why.
 				status.value = 'initial';
 				return;
 			}
 
-			const result = await fetchPageviews( {
-				project: project.value,
-				pages: prefixed,
-				start: settings.start,
-				end: settings.end,
-				platform: platform.value,
-				agent: agent.value,
-				granularity: settings.dateType,
-				onProgress: ui.setProgress,
-				signal
-			} );
-			if ( id !== loadId ) {
-				return;
+			// Hashtag pages carry their own wiki; every other source's
+			// titles all live on the target's project. Group by project
+			// and query each group, sequentially so the progress bar
+			// (in pages, approximated within a group's chunks) stays
+			// monotonic.
+			const pages = source.value === 'hashtag' ?
+				resolved :
+				resolved.map( ( title ) => ( { project: project.value, title } ) );
+			const groups = new Map();
+			for ( const page of pages ) {
+				if ( !groups.has( page.project ) ) {
+					groups.set( page.project, [] );
+				}
+				groups.get( page.project ).push( page.title );
 			}
 
-			const axis = result.dates;
-			const combined = axis.map( () => 0 );
-			// Chunks preserve request order, so rows align by index.
-			pagesData.value = result.pages.map( ( series, i ) => {
-				series.counts.forEach( ( count, j ) => {
-					combined[ j ] += count;
+			let axis = null;
+			let combined = null;
+			const rows = [];
+			let done = 0;
+			for ( const [ pagesProject, titles ] of groups ) {
+				const doneBefore = done;
+				const result = await fetchPageviews( {
+					project: pagesProject,
+					pages: titles,
+					start: settings.start,
+					end: settings.end,
+					platform: platform.value,
+					agent: agent.value,
+					granularity: settings.dateType,
+					onProgress: ( chunksDone, chunksTotal ) => ui.setProgress(
+						doneBefore + Math.round( ( titles.length * chunksDone ) / chunksTotal ),
+						pages.length
+					),
+					signal
 				} );
-				return {
-					title: prefixed[ i ].replace( /_/g, ' ' ),
-					counts: series.counts,
-					sum: series.total,
-					average: series.average
-				};
-			} );
+				if ( id !== loadId ) {
+					return;
+				}
+				axis ??= result.dates;
+				combined ??= axis.map( () => 0 );
+				// Chunks preserve request order, so rows align by index.
+				for ( const [ i, series ] of result.pages.entries() ) {
+					for ( const [ j, count ] of series.counts.entries() ) {
+						combined[ j ] += count;
+					}
+					rows.push( {
+						title: titles[ i ].replace( /_/g, ' ' ),
+						project: pagesProject,
+						counts: series.counts,
+						sum: series.total,
+						average: series.average
+					} );
+				}
+				done += titles.length;
+			}
+			pagesData.value = rows;
 			dates.value = axis;
 			const total = combined.reduce( ( a, b ) => a + b, 0 );
 			totals.value = {

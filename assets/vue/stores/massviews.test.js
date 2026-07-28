@@ -11,6 +11,7 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
+import { getHashtagPages } from '../lib/hashtags.js';
 import { getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
@@ -33,6 +34,10 @@ vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 vi.mock( '../lib/quarry.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	getQuarryTitles: vi.fn()
+} ) );
+vi.mock( '../lib/hashtags.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getHashtagPages: vi.fn()
 } ) );
 
 const SITEINFO = {
@@ -286,6 +291,74 @@ describe( 'massviews store', () => {
 		expect( store.targetTitle ).toBe( 'Quarry 12345' );
 		expect( store.targetUrl ).toBe( 'https://quarry.wmcloud.org/query/12345' );
 		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'resolves a hashtag and fans out per wiki', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( { source: 'hashtag', target: '#moiswikif' } );
+		getHashtagPages.mockResolvedValue( [
+			{ project: 'fr.wikipedia.org', title: 'Jacques_Servin' },
+			{ project: 'fr.wikipedia.org', title: 'Henri_Yav_Mulang' },
+			{ project: 'en.wikipedia.org', title: 'Jacques_Servin' }
+		] );
+		fetchPageviews
+			.mockResolvedValueOnce( {
+				dates: [ '2026-07-01' ],
+				pages: [
+					{ title: 'Jacques_Servin', counts: [ 5 ], total: 5, average: 5 },
+					{ title: 'Henri_Yav_Mulang', counts: [ 2 ], total: 2, average: 2 }
+				],
+				totals: {}
+			} )
+			.mockResolvedValueOnce( {
+				dates: [ '2026-07-01' ],
+				pages: [ { title: 'Jacques_Servin', counts: [ 1 ], total: 1, average: 1 } ],
+				totals: {}
+			} );
+
+		await store.load();
+
+		expect( getHashtagPages ).toHaveBeenCalledWith( 'moiswikif', expect.any( AbortSignal ) );
+		expect( fetchPageviews ).toHaveBeenCalledTimes( 2 );
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'fr.wikipedia.org',
+			pages: [ 'Jacques_Servin', 'Henri_Yav_Mulang' ]
+		} ) );
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'en.wikipedia.org',
+			pages: [ 'Jacques_Servin' ]
+		} ) );
+		expect( store.pagesData ).toEqual( [
+			expect.objectContaining( {
+				title: 'Jacques Servin', project: 'fr.wikipedia.org', sum: 5
+			} ),
+			expect.objectContaining( {
+				title: 'Henri Yav Mulang', project: 'fr.wikipedia.org', sum: 2
+			} ),
+			expect.objectContaining( {
+				title: 'Jacques Servin', project: 'en.wikipedia.org', sum: 1
+			} )
+		] );
+		expect( store.totals ).toMatchObject( { counts: [ 8 ], total: 8 } );
+		expect( store.targetTitle ).toBe( '#moiswikif' );
+		expect( store.targetUrl ).toBe( 'https://hashtags.wmcloud.org/?query=moiswikif' );
+		// The hashtag spans wikis, so no single project is serialized.
+		expect( store.query.project ).toBeUndefined();
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'reports an empty hashtag result set and returns to the form', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.setFromQuery( { source: 'hashtag', target: 'nosuchtag' } );
+		getHashtagPages.mockResolvedValue( [] );
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages[ 0 ].type ).toBe( 'warning' );
+		expect( ui.messages[ 0 ].text ).toContain( '#nosuchtag' );
+		expect( fetchPageviews ).not.toHaveBeenCalled();
 	} );
 
 	it( 'rejects a Quarry result set without a page_title column', async () => {
