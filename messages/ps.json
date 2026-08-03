@@ -347,7 +347,7 @@
 	"url-structure-onwiki-link": "په ويکي کې د اوسني مخ سره د تړنې لپاره $1 وکاروئ",
 	"url-structure-page": "تښتېدلي مخ نوم.",
 	"url-structure-pages": "د تښتېدلو مخ نومونه چې د  <code>|</code> لوښو لکه د <code>پيشو|سپي</code> سره جلا شوي (تلواليز)",
-	"url-structure-parameters": "پاراميترونه",
+	"url-structure-parameters": "ارزښتونه",
 	"url-structure-parameters-order": "په هر ترتيب کې کارېدای شي",
 	"url-structure-project": "$1 يا نور باوري $2.",
 	"url-structure-project-multilang": "د چمتو شوې سرچينې پروژه بايد څوژبيزه وي. د بېلگې په نوگه $1 يا $2",
