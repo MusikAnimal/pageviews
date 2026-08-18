@@ -339,32 +339,37 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 		const needMobile = rows
 			.map( ( entry ) => entry.article )
 			.filter( ( article ) => !( article in mobileViews.value ) );
-		if ( !needMobile.length ) {
-			return;
+		const mobileChunks = [];
+		for ( let i = 0; i < needMobile.length; i += EDIT_CHUNK ) {
+			mobileChunks.push( needMobile.slice( i, i + EDIT_CHUNK ) );
 		}
-		const results = await Promise.all( [ 'mobile-web', 'mobile-app' ].map(
-			( mobilePlatform ) => fetchPageviews( {
-				project: project.value,
-				pages: needMobile,
-				start,
-				end,
-				platform: mobilePlatform,
-				agent: 'user',
-				granularity: dateType.value === 'monthly' ? 'monthly' : 'daily',
-				signal
-			} ).catch( () => null )
-		) );
-		if ( signal.aborted ) {
-			return;
-		}
-		const combined = {};
-		for ( const result of results.filter( Boolean ) ) {
-			for ( const page of result.pages ) {
-				const article = page.title.replace( /_/g, ' ' );
-				combined[ article ] = ( combined[ article ] ?? 0 ) + page.total;
+		// Chunked like the edit data, so the column fills in row by row
+		// rather than all at once when the last request lands.
+		await promisePool( mobileChunks, async ( chunk ) => {
+			const results = await Promise.all( [ 'mobile-web', 'mobile-app' ].map(
+				( mobilePlatform ) => fetchPageviews( {
+					project: project.value,
+					pages: chunk,
+					start,
+					end,
+					platform: mobilePlatform,
+					agent: 'user',
+					granularity: dateType.value === 'monthly' ? 'monthly' : 'daily',
+					signal
+				} ).catch( () => null )
+			) );
+			if ( signal.aborted ) {
+				return;
 			}
-		}
-		mobileViews.value = { ...mobileViews.value, ...combined };
+			const combined = {};
+			for ( const result of results.filter( Boolean ) ) {
+				for ( const page of result.pages ) {
+					const article = page.title.replace( /_/g, ' ' );
+					combined[ article ] = ( combined[ article ] ?? 0 ) + page.total;
+				}
+			}
+			mobileViews.value = { ...mobileViews.value, ...combined };
+		}, { concurrency: EDIT_CONCURRENCY } );
 	}
 
 	/**

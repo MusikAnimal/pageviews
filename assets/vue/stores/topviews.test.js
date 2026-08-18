@@ -103,6 +103,23 @@ describe( 'topviews store', () => {
 		] );
 	} );
 
+	it( 'fetches mobile views in chunks so rows fill in progressively', async () => {
+		const store = useTopviewsStore();
+		store.date = '2026-06';
+		mockTop( Array.from( { length: 15 }, ( unused, i ) => (
+			{ article: `Page ${ i }`, views: 100 - i, rank: i + 1 }
+		) ) );
+
+		await store.load();
+		store.showMobile = true;
+		await store.ensureEnrichment();
+
+		const mobileCalls = fetchPageviews.mock.calls
+			.map( ( [ params ] ) => params )
+			.filter( ( params ) => params.platform === 'mobile-web' );
+		expect( mobileCalls.map( ( params ) => params.pages.length ) ).toEqual( [ 10, 5 ] );
+	} );
+
 	it( 'shows the mobile column for yearly or opted-in all-access', () => {
 		const store = useTopviewsStore();
 		store.date = '2026-06';

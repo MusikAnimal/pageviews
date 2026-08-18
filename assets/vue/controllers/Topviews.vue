@@ -71,15 +71,26 @@
 			</details>
 			<table v-if="store.displayed.length" class="app-stats">
 				<thead>
+					<!-- While filtering, matches come from the whole list,
+						most of it unenriched; fetching on the fly per
+						keystroke would be wasteful, so the enrichment
+						columns hide instead (legacy behavior). -->
 					<tr>
 						<th>{{ $i18n( 'rank' ) }}</th>
 						<th>{{ $i18n( 'page' ) }}</th>
-						<th>{{ $i18n( 'edits' ) }}</th>
-						<th>{{ $i18n( 'editors' ) }}</th>
+						<th v-if="!store.search">
+							{{ $i18n( 'edits' ) }}
+						</th>
+						<th v-if="!store.search">
+							{{ $i18n( 'editors' ) }}
+						</th>
 						<th class="app-stats__number">
 							{{ $i18n( 'pageviews' ) }}
 						</th>
-						<th v-if="store.shouldShowMobile" class="app-stats__number">
+						<th
+							v-if="store.shouldShowMobile && !store.search"
+							class="app-stats__number"
+						>
 							{{ $i18n( 'percent-mobile' ) }}
 						</th>
 					</tr>
@@ -110,7 +121,7 @@
 								{{ entry.article }}
 							</a>
 						</td>
-						<td class="app-stats__number">
+						<td v-if="!store.search" class="app-stats__number">
 							<a
 								v-if="edits( entry.article ) !== null"
 								:href="historyUrl( entry.article )"
@@ -120,7 +131,7 @@
 								?
 							</template>
 						</td>
-						<td class="app-stats__number">
+						<td v-if="!store.search" class="app-stats__number">
 							{{ editors( entry.article ) === null ?
 								'?' : number( editors( entry.article ) ) }}
 						</td>
@@ -129,7 +140,10 @@
 								{{ number( entry.views ) }}
 							</a>
 						</td>
-						<td v-if="store.shouldShowMobile" class="app-stats__number">
+						<td
+							v-if="store.shouldShowMobile && !store.search"
+							class="app-stats__number"
+						>
 							{{ percentMobile( entry ) }}
 						</td>
 					</tr>
