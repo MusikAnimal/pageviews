@@ -59,7 +59,7 @@
 		<template #item-edits="{ item, row }">
 			<a
 				v-if="item !== null"
-				:href="historyUrl( row.title )"
+				:href="historyUrl( row.title, item )"
 				target="_blank"
 			>{{ number( item ) }}</a>
 			<template v-else>
@@ -128,6 +128,7 @@ import { useSettingsStore } from '../../stores/settings.js';
 import { formatDate, formatNumber } from '../../lib/format.js';
 import { parseDate } from '../../lib/dates.js';
 import { editProtectionLevel } from '../../lib/mwApi.js';
+import { historyUrl as buildHistoryUrl } from '../../lib/wikiUrls.js';
 import { seriesColor } from '../../charts/palette.js';
 import { banana, rawI18n } from '../../i18n.js';
 
@@ -276,9 +277,8 @@ function pageUrl( title ) {
 	return `https://${ store.project }/wiki/${ encodeURIComponent( title.replace( / /g, '_' ) ) }`;
 }
 
-function historyUrl( title ) {
-	return `https://${ store.project }/w/index.php?title=` +
-		`${ encodeURIComponent( title.replace( / /g, '_' ) ) }&action=history`;
+function historyUrl( title, edits ) {
+	return buildHistoryUrl( store.project, title, { end: settings.end, edits } );
 }
 
 function langviewsUrl( title ) {

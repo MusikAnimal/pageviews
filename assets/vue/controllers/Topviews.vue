@@ -186,6 +186,7 @@ import { usePreferencesStore } from '../stores/preferences.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { formatNumber } from '../lib/format.js';
+import { historyUrl as buildHistoryUrl } from '../lib/wikiUrls.js';
 import { banana, rawI18n } from '../i18n.js';
 import TopviewsSettings from '../apps/topviews/Settings.vue';
 import FaqDialog from '../apps/topviews/FaqDialog.vue';
@@ -301,8 +302,8 @@ function pageUrl( article ) {
 }
 
 function historyUrl( article ) {
-	return `https://${ store.project }/w/index.php?title=` +
-		`${ encodeURIComponent( article.replace( / /g, '_' ) ) }&action=history`;
+	const [ , end ] = store.periodDates();
+	return buildHistoryUrl( store.project, article, { end, edits: edits( article ) } );
 }
 
 function pageviewsUrl( article ) {

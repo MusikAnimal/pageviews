@@ -89,6 +89,7 @@ import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
 import { editProtectionLevel } from '../../lib/mwApi.js';
+import { historyUrl as buildHistoryUrl } from '../../lib/wikiUrls.js';
 import { shouldUseLogScale } from '../../charts/logScale.js';
 import { banana } from '../../i18n.js';
 
@@ -124,18 +125,6 @@ const median = computed( () => {
 } );
 
 /**
- * For a single page the edit count links to the revision history;
- * multi-page numbers are combined and link nowhere.
- */
-const historyUrl = computed( () => {
-	if ( store.series.length !== 1 ) {
-		return null;
-	}
-	const title = encodeURIComponent( store.series[ 0 ].title.replace( / /g, '_' ) );
-	return `https://${ store.project }/w/index.php?title=${ title }&action=history`;
-} );
-
-/**
  * Combined edit stats: the endpoint provides an exact combined row for
  * multi-page queries (distinct editors overlap, so summing per-page
  * numbers would overcount); a single page is its own total.
@@ -156,10 +145,19 @@ const editTotals = computed( () => {
 } );
 
 /**
- * Watchers and byte size summed across pages. Watchers are hidden by
- * the API below the unwatched-pages threshold; null when no page
- * reported a count.
+ * For a single page the edit count links to the revision history;
+ * multi-page numbers are combined and link nowhere.
  */
+const historyUrl = computed( () => {
+	if ( store.series.length !== 1 ) {
+		return null;
+	}
+	return buildHistoryUrl( store.project, store.series[ 0 ].title, {
+		end: settings.end,
+		edits: editTotals.value ? Number( editTotals.value.num_edits ) : null
+	} );
+} );
+
 /**
  * Langviews for the single queried page, carrying the same report
  * parameters over.
@@ -179,6 +177,11 @@ const langviewsUrl = computed( () => {
 	return `/langviews?${ query }`;
 } );
 
+/**
+ * Watchers and byte size summed across pages. Watchers are hidden by
+ * the API below the unwatched-pages threshold; null when no page
+ * reported a count.
+ */
 const basicInfo = computed( () => {
 	if ( !store.pageInfo ) {
 		return null;
