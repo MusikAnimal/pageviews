@@ -178,7 +178,6 @@ const topviewsUrl = computed( () => {
 	}
 
 	&__links {
-		font-size: @font-size-small;
 		margin: @spacing-50 0 0;
 	}
 }

@@ -454,6 +454,9 @@ a {
 
 .app-totals {
 	flex: 1 1 @size-1600;
+	// Everything in the sidebar, headings included (see the shared
+	// sidebar rule above for the Codex controls, which don't inherit).
+	font-size: @font-size-small;
 	padding: @spacing-50;
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
@@ -510,7 +513,6 @@ a {
 	// Cross-app links at the bottom, set off from the stats above.
 	&__links {
 		border-top: @border-width-base solid @border-color-subtle;
-		font-size: @font-size-small;
 		margin-top: @spacing-100;
 		padding-top: @spacing-75;
 	}
