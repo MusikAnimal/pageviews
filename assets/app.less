@@ -212,6 +212,15 @@ a {
 	position: relative;
 }
 
+.app-breakdown {
+	margin-bottom: @spacing-100;
+
+	.cdx-table__table,
+	.cdx-table__table__sort-button {
+		font-size: @font-size-small;
+	}
+}
+
 // Dims the app while a query runs; the progress bar centers within.
 .app-loading-overlay {
 	background-color: @background-color-backdrop-light;
@@ -260,7 +269,7 @@ a {
 .app-footer {
 	border-top: @border-width-base solid @border-color-muted;
 	display: block;
-	font-family: sans-serif;
+	font-size: @font-size-small;
 	padding: @spacing-100 0;
 	text-align: center;
 }
@@ -336,6 +345,10 @@ a {
 	flex: 1 1 @size-1600;
 	padding: @spacing-50;
 
+	.cdx-select-vue {
+		width: 100%;
+	}
+
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
 			border-right: @border-width-base solid @border-color-base;
@@ -381,6 +394,11 @@ a {
 		flex-wrap: wrap;
 		gap: @spacing-50;
 		margin: @spacing-50 0;
+
+		.cdx-button,
+		.cdx-label {
+			font-size: @font-size-small;
+		}
 
 		// The flex gap provides the spacing; the inline checkboxes'
 		// own trailing margin would double it up.
@@ -456,9 +474,7 @@ a {
 	// Cross-app links at the bottom, set off from the stats above.
 	&__links {
 		border-top: @border-width-base solid @border-color-subtle;
-		display: flex;
-		flex-direction: column;
-		gap: @spacing-25;
+		font-size: @font-size-small;
 		margin-top: @spacing-100;
 		padding-top: @spacing-75;
 	}
@@ -647,28 +663,6 @@ a {
 		font-size: @font-size-medium;
 		font-weight: @font-weight-normal;
 		margin-left: @spacing-50;
-	}
-}
-
-.app-page-summary {
-	margin: @spacing-100 0 0;
-	text-align: center;
-
-	&__badge {
-		height: @size-100;
-		margin-right: @spacing-25;
-		vertical-align: text-bottom;
-		width: @size-100;
-	}
-
-	&__dates {
-		color: @color-subtle;
-	}
-
-	&__rank {
-		font-size: @font-size-small;
-		margin: @spacing-25 0 0;
-		text-align: center;
 	}
 }
 

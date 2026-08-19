@@ -47,11 +47,13 @@ const { project, platform, agent, redirects } = storeToRefs( usePageviewsStore()
 const ui = useUiStore();
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
-.cdx-select-vue {
-	width: 100%;
+h3,
+.cdx-label,
+.cdx-button {
+	font-size: @font-size-small;
 }
 
 .app-settings__redirects-row {

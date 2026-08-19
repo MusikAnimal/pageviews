@@ -80,6 +80,7 @@
 			<a :href="crossAppUrls.langviews" target="_blank">
 				{{ $i18n( 'all-languages' ) }}
 			</a>
+			<span class="app-stats__muted">&nbsp;·&nbsp;</span>
 			<a :href="crossAppUrls.redirectviews" target="_blank">
 				{{ $i18n( 'redirects' ) }}
 			</a>

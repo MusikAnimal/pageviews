@@ -11,7 +11,11 @@
 				{{ summary.assessment.class }}
 				·
 			</template>
-			<a :href="pageUrl( summary.title )" target="_blank">{{ summary.title }}</a>
+			<a
+				:href="pageUrl( summary.title )"
+				class="app-page-summary__title"
+				target="_blank"
+			>{{ summary.title }}</a>
 			·
 			<span class="app-page-summary__dates">{{ summary.dates }}</span>
 			·
@@ -82,8 +86,6 @@
 			<a :href="crossAppUrl( 'langviews', row.title )" target="_blank">
 				{{ $i18n( 'all-languages' ) }}
 			</a>
-			<!-- Vue condenses inter-element whitespace, so the spacing
-				around the separator must be explicit. -->
 			<span class="app-stats__muted">&nbsp;·&nbsp;</span>
 			<a :href="crossAppUrl( 'redirectviews', row.title )" target="_blank">
 				{{ $i18n( 'redirects' ) }}
@@ -306,3 +308,34 @@ function crossAppUrl( app, title ) {
 	return `/${ app }?${ query }`;
 }
 </script>
+
+<style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.app-page-summary {
+	font-size: @font-size-large;
+	margin: @spacing-100 0;
+	text-align: center;
+
+	&__badge {
+		height: @size-100;
+		margin-right: @spacing-25;
+		vertical-align: text-bottom;
+		width: @size-100;
+	}
+
+	&__dates {
+		color: @color-subtle;
+	}
+
+	&__rank {
+		font-size: @font-size-small;
+		margin: @spacing-25 0 0;
+		text-align: center;
+	}
+
+	&__title {
+		font-weight: @font-weight-bold;
+	}
+}
+</style>
