@@ -65,16 +65,30 @@ describe( 'Chart', () => {
 		);
 	} );
 
-	it( 'keeps drag-select zoom active across option changes', async () => {
-		const wrapper = mount( Chart, { props: { option: { a: 1 } } } );
-		const activation = { type: 'takeGlobalCursor', key: 'dataZoomSelect', dataZoomSelectActive: true };
-		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( activation );
+	it( 'arms drag-select zoom only for options with the dataZoom feature', async () => {
+		const zoomable = { toolbox: { feature: { dataZoom: {} } } };
+		const cursor = ( active ) => ( {
+			type: 'takeGlobalCursor',
+			key: 'dataZoomSelect',
+			dataZoomSelectActive: active
+		} );
+		const wrapper = mount( Chart, { props: { option: zoomable } } );
+		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( cursor( true ) );
 
+		// notMerge resets interaction state; it must be re-armed.
 		mockChart.dispatchAction.mockClear();
-		await wrapper.setProps( { option: { a: 2 } } );
+		await wrapper.setProps( { option: { ...zoomable, a: 2 } } );
 		await nextTick();
-		// notMerge resets interaction state; it must be re-activated.
-		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( activation );
+		expect( mockChart.dispatchAction ).toHaveBeenLastCalledWith( cursor( true ) );
+
+		// The circular/radar types have no zoomable axis: the cursor is
+		// released — through the outgoing option's toolbox, before the
+		// swap — and never re-armed.
+		mockChart.dispatchAction.mockClear();
+		await wrapper.setProps( { option: { a: 3 } } );
+		await nextTick();
+		expect( mockChart.dispatchAction ).toHaveBeenCalledWith( cursor( false ) );
+		expect( mockChart.dispatchAction ).not.toHaveBeenCalledWith( cursor( true ) );
 	} );
 
 	it( 'emits range-select with the drag-selected axis indices', () => {

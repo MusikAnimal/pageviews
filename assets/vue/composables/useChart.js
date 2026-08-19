@@ -18,21 +18,22 @@ export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 	let chart = null;
 	let resizeObserver = null;
 
-	// Make drag-select zoom always active — no toolbox button needed.
-	// A no-op for options without the (hidden) toolbox dataZoom feature.
-	function activateDragZoom() {
+	// Make drag-select zoom always active — no toolbox button needed —
+	// on options carrying the (hidden) toolbox dataZoom feature. The
+	// circular/radar types don't: they have no zoomable axis.
+	function setDragZoom( active ) {
 		chart.dispatchAction( {
 			type: 'takeGlobalCursor',
 			key: 'dataZoomSelect',
-			dataZoomSelectActive: true
+			dataZoomSelectActive: active
 		} );
 	}
 
 	onMounted( () => {
 		chart = echarts.init( containerRef.value );
 		chart.setOption( optionRef.value, { notMerge: true } );
-		if ( onRangeSelect ) {
-			activateDragZoom();
+		if ( onRangeSelect && optionRef.value.toolbox?.feature?.dataZoom ) {
+			setDragZoom( true );
 		}
 		resizeObserver = new ResizeObserver( () => chart && chart.resize() );
 		resizeObserver.observe( containerRef.value );
@@ -54,10 +55,17 @@ export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 
 	watch( optionRef, ( option ) => {
 		if ( chart ) {
-			// notMerge resets interaction state, so re-activate.
-			chart.setOption( option, { notMerge: true } );
 			if ( onRangeSelect ) {
-				activateDragZoom();
+				// Release through the OUTGOING option's toolbox: the
+				// replacement may have none to receive the action, and
+				// the brush handler would survive the notMerge swap,
+				// drawing selection boxes on circular/radar charts.
+				setDragZoom( false );
+			}
+			chart.setOption( option, { notMerge: true } );
+			// notMerge resets interaction state, so re-arm.
+			if ( onRangeSelect && option.toolbox?.feature?.dataZoom ) {
+				setDragZoom( true );
 			}
 		}
 	}, { deep: true } );
