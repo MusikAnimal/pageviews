@@ -81,18 +81,23 @@ describe( 'StatsTable', () => {
 			.toBe( 'https://en.wikipedia.org/wiki/Cat' );
 	} );
 
-	it( 'links each page to Langviews with the report params', () => {
+	it( 'links each page to Langviews and Redirect Views with the report params', () => {
 		seedStore();
 		const settings = useSettingsStore();
 		settings.setFromQuery( { start: '2026-07-01', end: '2026-07-20' } );
 		const catRow = mountTable().findAll( 'tbody tr' )[ 0 ];
-		const link = catRow.findAll( 'a' )
-			.find( ( a ) => a.attributes( 'href' ).startsWith( '/langviews' ) );
+		for ( const [ app, label ] of [
+			[ 'langviews', 'all-languages' ],
+			[ 'redirectviews', 'redirects' ]
+		] ) {
+			const link = catRow.findAll( 'a' )
+				.find( ( a ) => a.attributes( 'href' ).startsWith( `/${ app }` ) );
 
-		expect( link.text() ).toBe( 'all-languages' );
-		expect( link.attributes( 'href' ) ).toContain( 'project=en.wikipedia.org' );
-		expect( link.attributes( 'href' ) ).toContain( 'start=2026-07-01' );
-		expect( link.attributes( 'href' ) ).toContain( 'page=Cat' );
+			expect( link.text() ).toBe( label );
+			expect( link.attributes( 'href' ) ).toContain( 'project=en.wikipedia.org' );
+			expect( link.attributes( 'href' ) ).toContain( 'start=2026-07-01' );
+			expect( link.attributes( 'href' ) ).toContain( 'page=Cat' );
+		}
 	} );
 
 	it( 'links the edit count to the revision history', () => {

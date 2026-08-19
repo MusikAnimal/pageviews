@@ -79,8 +79,14 @@
 			{{ watchersLabel( item ) }}
 		</template>
 		<template #item-links="{ row }">
-			<a :href="langviewsUrl( row.title )" target="_blank">
+			<a :href="crossAppUrl( 'langviews', row.title )" target="_blank">
 				{{ $i18n( 'all-languages' ) }}
+			</a>
+			<!-- Vue condenses inter-element whitespace, so the spacing
+				around the separator must be explicit. -->
+			<span class="app-stats__muted">&nbsp;·&nbsp;</span>
+			<a :href="crossAppUrl( 'redirectviews', row.title )" target="_blank">
+				{{ $i18n( 'redirects' ) }}
 			</a>
 		</template>
 		<template v-if="rows.length > 1 && store.totals" #tfoot>
@@ -281,7 +287,14 @@ function historyUrl( title, edits ) {
 	return buildHistoryUrl( store.project, title, { end: settings.end, edits } );
 }
 
-function langviewsUrl( title ) {
+/**
+ * A cross-app link for one page, carrying the report params over.
+ *
+ * @param {string} app Route name, e.g. 'langviews'.
+ * @param {string} title
+ * @return {string}
+ */
+function crossAppUrl( app, title ) {
 	const query = new URLSearchParams( {
 		project: store.project,
 		platform: store.platform,
@@ -290,6 +303,6 @@ function langviewsUrl( title ) {
 		end: settings.end,
 		page: title.replace( / /g, '_' )
 	} );
-	return `/langviews?${ query }`;
+	return `/${ app }?${ query }`;
 }
 </script>

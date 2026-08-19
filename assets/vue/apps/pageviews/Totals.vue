@@ -76,8 +76,13 @@
 		</template>
 		<!-- Cross-app links for the single queried page (comparisons
 			get them per-row in the stats table instead). -->
-		<nav v-if="langviewsUrl" class="app-totals__links">
-			<a :href="langviewsUrl" target="_blank">{{ $i18n( 'all-languages' ) }}</a>
+		<nav v-if="crossAppUrls" class="app-totals__links">
+			<a :href="crossAppUrls.langviews" target="_blank">
+				{{ $i18n( 'all-languages' ) }}
+			</a>
+			<a :href="crossAppUrls.redirectviews" target="_blank">
+				{{ $i18n( 'redirects' ) }}
+			</a>
 		</nav>
 	</figure>
 </template>
@@ -159,10 +164,10 @@ const historyUrl = computed( () => {
 } );
 
 /**
- * Langviews for the single queried page, carrying the same report
- * parameters over.
+ * Langviews and Redirect Views for the single queried page, carrying
+ * the same report parameters over.
  */
-const langviewsUrl = computed( () => {
+const crossAppUrls = computed( () => {
 	if ( store.series.length !== 1 ) {
 		return null;
 	}
@@ -174,7 +179,10 @@ const langviewsUrl = computed( () => {
 		end: settings.end,
 		page: store.series[ 0 ].title.replace( / /g, '_' )
 	} );
-	return `/langviews?${ query }`;
+	return {
+		langviews: `/langviews?${ query }`,
+		redirectviews: `/redirectviews?${ query }`
+	};
 } );
 
 /**
