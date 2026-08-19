@@ -212,8 +212,16 @@ a {
 	position: relative;
 }
 
+// The full-width stats line below the workspace columns (a wrapped
+// flex line of .app-workspace, so it sits directly under them instead
+// of being pushed against the footer by the stretching workspace).
 .app-breakdown {
+	// Keeps the padding within the 100% basis.
+	box-sizing: border-box;
+	flex-basis: 100%;
 	margin-bottom: @spacing-100;
+	// Aligns with the columns' padded edges.
+	padding: 0 @spacing-50;
 
 	.cdx-table__table,
 	.cdx-table__table__sort-button {
@@ -335,6 +343,14 @@ a {
 			align-content: stretch;
 			column-gap: 0;
 		}
+	}
+
+	// With the breakdown line showing there are two lines, and the
+	// stretch above would split the leftover height between them,
+	// floating the table mid-page: hug the lines to the top instead
+	// (the controllers toggle this alongside the section itself).
+	&--with-breakdown {
+		align-content: flex-start;
 	}
 }
 

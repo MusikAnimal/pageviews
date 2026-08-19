@@ -1,6 +1,9 @@
 <template>
 	<LoadingOverlay v-if="store.status === 'loading'" @abort="store.abort()" />
-	<div class="app-workspace">
+	<div
+		class="app-workspace"
+		:class="{ 'app-workspace--with-breakdown': chartReady }"
+	>
 		<PageviewsSettings />
 		<figure class="app-chart">
 			<PageInput />
@@ -37,10 +40,13 @@
 			</CdxMessage>
 		</figure>
 		<Totals />
+		<!-- Full-width line below the columns (the v-if is on the
+			section so an empty one doesn't add a flex line for
+			align-content to stretch). -->
+		<section v-if="chartReady" class="app-breakdown">
+			<StatsTable />
+		</section>
 	</div>
-	<section class="app-breakdown">
-		<StatsTable v-if="chartReady" />
-	</section>
 	<CdxToastContainer />
 	<FaqDialog
 		:open="activeDialog === 'faq'"
