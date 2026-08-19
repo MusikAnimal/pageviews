@@ -122,7 +122,8 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		project: project.value,
 		platform: platform.value,
 		agent: agent.value,
-		pages: pages.value.join( '|' ) || undefined,
+		pages: pages.value.map( ( page ) => page.replace( / /g, '_' ) ).join( '|' ) ||
+			undefined,
 		redirects: redirects.value ? '1' : undefined,
 		autolog: autolog.value ? undefined : 'false'
 	} ) );
@@ -150,7 +151,9 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			agent.value = 'all-agents';
 		}
 		if ( params.pages ) {
-			const titles = params.pages.split( '|' ).filter( ( page ) => page !== '' );
+			const titles = params.pages.split( '|' )
+				.filter( ( page ) => page !== '' )
+				.map( ( page ) => page.replace( /_/g, ' ' ) );
 			// Keep the array identity when unchanged: replacing it
 			// retriggers the load watcher (e.g. when the FAQ dialog
 			// route reuses the same query), flickering the chart.

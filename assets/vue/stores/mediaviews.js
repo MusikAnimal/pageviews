@@ -142,7 +142,8 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		// The files source keeps the legacy URL structure (no source
 		// param).
 		{
-			files: files.value.join( '|' ) || undefined,
+			files: files.value.map( ( file ) => file.replace( / /g, '_' ) ).join( '|' ) ||
+				undefined,
 			project: project.value,
 			referer: referer.value,
 			agent: agent.value,
@@ -188,6 +189,7 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		if ( params.files ) {
 			const names = params.files.split( '|' )
 				.filter( ( name ) => name !== '' )
+				.map( ( name ) => name.replace( /_/g, ' ' ) )
 				.slice( 0, MAX_FILES );
 			// Keep the array identity when unchanged (see the
 			// pageviews store).

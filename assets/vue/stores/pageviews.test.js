@@ -89,6 +89,13 @@ describe( 'pageviews store', () => {
 		expect( store.query ).toEqual( serialized );
 	} );
 
+	it( 'displays underscored titles with spaces, serializing them back', () => {
+		const store = usePageviewsStore();
+		store.setFromQuery( { pages: 'New_York_City|Cat' } );
+		expect( store.pages ).toEqual( [ 'New York City', 'Cat' ] );
+		expect( store.query.pages ).toBe( 'New_York_City|Cat' );
+	} );
+
 	it( 'carries autolog in the URL only when disabled', () => {
 		const store = usePageviewsStore();
 		expect( store.autolog ).toBe( true );

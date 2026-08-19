@@ -123,8 +123,11 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 		} else if ( params.agent === 'all' ) {
 			agent.value = 'all-agents';
 		}
-		if ( params.page !== undefined && params.page !== page.value ) {
-			page.value = params.page;
+		if ( params.page !== undefined ) {
+			const title = params.page.replace( /_/g, ' ' );
+			if ( title !== page.value ) {
+				page.value = title;
+			}
 		}
 		if ( SORTS.includes( params.sort ) ) {
 			sort.value = params.sort;

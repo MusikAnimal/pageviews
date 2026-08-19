@@ -39,6 +39,13 @@ describe( 'mediaviews store', () => {
 		expect( store.agent ).toBe( 'spider' );
 	} );
 
+	it( 'displays underscored file names with spaces, serializing them back', () => {
+		const store = useMediaviewsStore();
+		store.setFromQuery( { files: 'JPEG_example_JPG_RIP_100.jpg' } );
+		expect( store.files ).toEqual( [ 'JPEG example JPG RIP 100.jpg' ] );
+		expect( store.query.files ).toBe( 'JPEG_example_JPG_RIP_100.jpg' );
+	} );
+
 	it( 'resolves names to paths, dropping missing files', async () => {
 		const store = useMediaviewsStore();
 		const ui = useUiStore();

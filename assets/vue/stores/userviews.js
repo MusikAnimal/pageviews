@@ -156,8 +156,11 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		if ( REDIRECTS.includes( params.redirects ) ) {
 			redirects.value = params.redirects;
 		}
-		if ( params.user !== undefined && params.user !== user.value ) {
-			user.value = params.user;
+		if ( params.user !== undefined ) {
+			const name = params.user.replace( /_/g, ' ' );
+			if ( name !== user.value ) {
+				user.value = name;
+			}
 		}
 		if ( SORTS.includes( params.sort ) ) {
 			sort.value = params.sort;
