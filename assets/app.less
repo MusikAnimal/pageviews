@@ -336,6 +336,13 @@ a {
 		text-align: center;
 	}
 
+	// Codex buttons default to bold; regular weight reads better amid
+	// the workspace's compact typography.
+	.cdx-button,
+	.cdx-toggle-button {
+		font-weight: @font-weight-normal;
+	}
+
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
 			// Single-line column layout: the line stretches so the
