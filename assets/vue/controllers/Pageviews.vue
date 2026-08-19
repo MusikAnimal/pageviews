@@ -33,8 +33,7 @@
 			<CdxMessage
 				v-if="incompleteMessage"
 				type="warning"
-				allow-user-dismiss
-				@user-dismissed="dismissIncomplete"
+				:inline="true"
 			>
 				{{ incompleteMessage }}
 			</CdxMessage>
@@ -86,10 +85,7 @@ const ui = useUiStore();
 const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
-const {
-	message: incompleteMessage,
-	dismiss: dismissIncomplete
-} = useIncompleteDataMessage( store );
+const { message: incompleteMessage } = useIncompleteDataMessage( store );
 
 // The /faq and /url_structure routes open dialogs over the app.
 const activeDialog = computed( () => route.meta.dialog ?? null );
