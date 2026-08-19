@@ -50,12 +50,6 @@ const ui = useUiStore();
 <style scoped lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
-h3,
-.cdx-label,
-.cdx-button {
-	font-size: @font-size-small;
-}
-
 .app-settings__redirects-row {
 	align-items: center;
 	display: flex;

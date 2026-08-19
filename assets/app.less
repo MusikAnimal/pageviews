@@ -354,6 +354,19 @@ a {
 	}
 }
 
+// Compact sidebar typography, the headings included. Shared by every
+// app's Options and Totals — and by the Twig loading skeletons, which
+// scoped component styles cannot reach (nor can they reach Codex
+// children's internals, e.g. the labels inside CdxField).
+.app-settings,
+.app-totals {
+	h3,
+	.cdx-label,
+	.cdx-button {
+		font-size: @font-size-small;
+	}
+}
+
 // The sidebars carry a single separator edge toward the chart (no
 // top/bottom borders), and only once the layout is wide enough for
 // them to render as columns.
