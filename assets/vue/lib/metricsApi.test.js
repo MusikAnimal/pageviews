@@ -197,6 +197,22 @@ describe( 'trimIncompleteTail', () => {
 		expect( trimIncompleteTail( data( [ 10, 0, 0 ], [ 1, 0, 0 ] ) ) ).toBeNull();
 	} );
 
+	it( 'detects on the probe series when they differ from the shown ones', () => {
+		// Redirect consolidation: Cat's own last day is unpublished but
+		// an early-published redirect contributed, so the consolidated
+		// sum masks the zero — the raw target series does not.
+		const input = data( [ 10, 20, 2 ], [ 1, 2, 3 ] );
+		expect( trimIncompleteTail( input ) ).toBeNull();
+
+		const probed = trimIncompleteTail( {
+			...input,
+			probe: [ { title: 'Cat', counts: [ 10, 18, 0 ], total: 28, average: 0 } ]
+		} );
+		expect( probed.trimmedDate ).toBe( '2026-07-21' );
+		// The shown data has real counts for the day: warn, no trim.
+		expect( probed.series ).toBeUndefined();
+	} );
+
 	it( 'keeps a non-zero trailing day', () => {
 		expect( trimIncompleteTail( data( [ 10, 20, 30 ], [ 1, 2, 3 ] ) ) ).toBeNull();
 	} );

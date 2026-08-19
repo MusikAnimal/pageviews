@@ -360,17 +360,22 @@ export function fetchCommonsCategory( {
  * @param {string[]} data.dates
  * @param {Array<{counts: number[], total: number, average: number}>} data.series
  * @param {{counts: number[], total: number, average: number}} data.totals
+ * @param {Array} [data.probe] Series to run the detection against
+ *   when it should differ from the displayed ones — e.g. the queried
+ *   pages' own raw series, since consolidated redirect sums can mask
+ *   a target's not-yet-published day with an early-published
+ *   redirect's counts.
  * @return {?{dates?: string[], series?: Array, totals?: Object, trimmedDate: string}}
  *   The dropped date, with the trimmed data when every series was
  *   missing it; null when no series looks incomplete.
  */
-export function trimIncompleteTail( { dates, series, totals } ) {
+export function trimIncompleteTail( { dates, series, totals, probe = series } ) {
 	const last = dates.length - 1;
 	const incompleteTail = ( counts ) => counts[ last ] === 0 && counts[ last - 1 ] > 0;
 	if (
 		last < 1 ||
 		!totals?.counts ||
-		!series.some( ( entry ) => incompleteTail( entry.counts ) )
+		!probe.some( ( entry ) => incompleteTail( entry.counts ) )
 	) {
 		return null;
 	}

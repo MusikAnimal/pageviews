@@ -366,11 +366,17 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 				result.pages;
 			// An all-zero most recent day right after a non-zero one
 			// means AQS hasn't published it yet: drop it and tell the
-			// user via the one-shot signal.
+			// user via the one-shot signal. The detection probes the
+			// queried pages' own series — AQS publishes per article,
+			// so a redirect whose day landed early would otherwise
+			// mask its target's empty day in the consolidated sums.
 			const trimmed = trimIncompleteTail( {
 				dates: result.dates,
 				series: consolidated,
-				totals: result.totals
+				totals: result.totals,
+				probe: redirectMap ?
+					result.pages.filter( ( entry ) => pages.value.includes( entry.title ) ) :
+					consolidated
 			} );
 			incompleteDate.value = trimmed?.trimmedDate ?? null;
 			dates.value = trimmed?.dates ?? result.dates;

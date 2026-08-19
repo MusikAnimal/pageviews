@@ -222,6 +222,31 @@ describe( 'pageviews store', () => {
 			expect( store.incompleteDate ).toBe( '2026-07-21' );
 		} );
 
+		it( 'flags an unpublished date a redirect would otherwise mask', async () => {
+			const store = usePageviewsStore();
+			const ui = useUiStore();
+			store.setFromQuery( { pages: 'Cat', redirects: '1' } );
+			getRedirects.mockResolvedValue( { Cat: [ { title: 'Cats', fragment: null } ] } );
+			// Cat's last day is not yet published; the redirect's landed
+			// early, so the consolidated sum for the day is non-zero.
+			fetchPageviews.mockResolvedValue( {
+				dates: [ '2026-07-19', '2026-07-20', '2026-07-21' ],
+				pages: [
+					{ title: 'Cat', counts: [ 10, 20, 0 ], total: 30, average: 10 },
+					{ title: 'Cats', counts: [ 1, 2, 3 ], total: 6, average: 2 }
+				],
+				totals: { counts: [ 11, 22, 3 ], total: 36, average: 12 }
+			} );
+
+			await store.load();
+
+			// Warns, but keeps the day: it has real (partial) data.
+			expect( store.incompleteDate ).toBe( '2026-07-21' );
+			expect( store.dates ).toHaveLength( 3 );
+			expect( store.series[ 0 ].counts ).toEqual( [ 11, 22, 3 ] );
+			expect( ui.messages ).toHaveLength( 0 );
+		} );
+
 		it( 'looks up the Topviews rank for single-page queries', async () => {
 			vi.useFakeTimers();
 			vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
