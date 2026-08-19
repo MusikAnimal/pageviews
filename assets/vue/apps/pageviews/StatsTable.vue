@@ -320,7 +320,7 @@ function crossAppUrl( app, title ) {
 	&__badge {
 		height: @size-100;
 		margin-right: @spacing-25;
-		vertical-align: text-bottom;
+		vertical-align: center;
 		width: @size-100;
 	}
 

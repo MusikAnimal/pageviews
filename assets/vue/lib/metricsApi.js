@@ -367,7 +367,9 @@ export function fetchCommonsCategory( {
  *   redirect's counts.
  * @return {?{dates?: string[], series?: Array, totals?: Object, trimmedDate: string}}
  *   The dropped date, with the trimmed data when every series was
- *   missing it; null when no series looks incomplete.
+ *   missing it — or, when only some were, the series with the
+ *   affected trailing zeros nulled (a chart gap); null when no
+ *   series looks incomplete.
  */
 export function trimIncompleteTail( { dates, series, totals, probe = series } ) {
 	const last = dates.length - 1;
@@ -379,11 +381,27 @@ export function trimIncompleteTail( { dates, series, totals, probe = series } ) 
 	) {
 		return null;
 	}
-	if ( !incompleteTail( totals.counts ) ) {
-		// Some series do have data for the date: warn without trimming.
-		return { trimmedDate: dates[ last ] };
-	}
 	const average = ( total ) => Math.round( ( total / last ) * 100 ) / 100;
+	if ( !incompleteTail( totals.counts ) ) {
+		// Some series do have data for the date: keep it, but null the
+		// affected series' trailing zeros so their lines/bars end on
+		// the last published day instead of dipping to a false zero.
+		// Their averages exclude the unpublished day. (With detection
+		// via the probe alone, the displayed series stay untouched.)
+		if ( !series.some( ( entry ) => incompleteTail( entry.counts ) ) ) {
+			return { trimmedDate: dates[ last ] };
+		}
+		return {
+			series: series.map( ( entry ) => incompleteTail( entry.counts ) ?
+				{
+					...entry,
+					counts: [ ...entry.counts.slice( 0, -1 ), null ],
+					average: average( entry.total )
+				} :
+				entry ),
+			trimmedDate: dates[ last ]
+		};
+	}
 	return {
 		dates: dates.slice( 0, -1 ),
 		series: series.map( ( entry ) => ( {

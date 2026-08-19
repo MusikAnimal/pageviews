@@ -181,16 +181,19 @@ describe( 'trimIncompleteTail', () => {
 		expect( trimmed.totals.average ).toBe( 16.5 );
 	} );
 
-	it( 'warns without trimming when only some series are missing the day', () => {
+	it( 'keeps a partially-published day, ending the affected series early', () => {
 		// en.wikipedia is populated for the last day, de/fr aren't yet:
-		// the date is real data for one series, so nothing is dropped —
-		// but the signal still fires so the UI can warn.
+		// the date is real data for one series, so it is not dropped —
+		// the signal fires, and the unpublished series' trailing zero
+		// becomes a chart gap with the day excluded from its average.
 		const input = data( [ 10, 20, 30 ], [ 1, 2, 0 ] );
 		const trimmed = trimIncompleteTail( input );
 		expect( trimmed.trimmedDate ).toBe( '2026-07-21' );
 		expect( trimmed.dates ).toBeUndefined();
-		expect( trimmed.series ).toBeUndefined();
 		expect( trimmed.totals ).toBeUndefined();
+		expect( trimmed.series[ 0 ].counts ).toEqual( [ 10, 20, 30 ] );
+		expect( trimmed.series[ 1 ].counts ).toEqual( [ 1, 2, null ] );
+		expect( trimmed.series[ 1 ].average ).toBe( 1.5 );
 	} );
 
 	it( 'keeps a genuine zero day (previous day also zero)', () => {
