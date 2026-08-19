@@ -36,39 +36,21 @@
 					@click.prevent="retry( message )"
 				>{{ $i18n( 'try-again' ) }}</a>
 			</CdxMessage>
-			<!-- eslint-disable vue/no-v-html -- i18n message with a
-				link to our own FAQ; no user-controlled markup. -->
-			<p class="app-topviews__notice" v-html="falsePositiveNotice" />
+			<!-- eslint-disable vue/no-v-html -- i18n messages whose
+				markup we build ourselves (a link to our own FAQ, or the
+				dialog-opening link); no user-controlled markup. -->
+			<p
+				v-if="store.serverExcluded.length"
+				class="app-topviews__notice"
+				@click="onKnownClick"
+				v-html="knownNotice"
+			/>
+			<p
+				v-else
+				class="app-topviews__notice"
+				v-html="falsePositiveNotice"
+			/>
 			<!-- eslint-enable vue/no-v-html -->
-			<details v-if="store.serverExcluded.length" class="app-topviews__known">
-				<summary>
-					{{ $i18n(
-						'known-false-positives-text',
-						$i18n( 'known-false-positives-link', store.serverExcluded.length ),
-						store.serverExcluded.length
-					) }}
-				</summary>
-				<table class="app-stats app-topviews__known-table">
-					<thead>
-						<tr>
-							<th>{{ $i18n( 'page' ) }}</th>
-							<th>{{ $i18n( 'original-rank' ) }}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="entry in store.serverExcluded" :key="entry.article">
-							<td>
-								<a :href="pageUrl( entry.article )" target="_blank">
-									{{ entry.article }}
-								</a>
-							</td>
-							<td class="app-stats__number">
-								{{ number( entry.rank ) }}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</details>
 			<table v-if="store.displayed.length" class="app-stats">
 				<thead>
 					<!-- While filtering, matches come from the whole list,
@@ -160,6 +142,38 @@
 		</figure>
 	</div>
 	<CdxToastContainer />
+	<CdxDialog
+		v-model:open="knownOpen"
+		:title="$i18n( 'list-false-positives-heading' )"
+		:use-close-button="true"
+	>
+		<!-- i18n message with a link to our own FAQ; no
+			user-controlled markup. -->
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<p @click="onKnownClick" v-html="knownIntro" />
+		<table class="app-stats app-topviews__known-table">
+			<thead>
+				<tr>
+					<th>{{ $i18n( 'page' ) }}</th>
+					<th class="app-stats__number">
+						{{ $i18n( 'original-rank' ) }}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="entry in store.serverExcluded" :key="entry.article">
+					<td>
+						<a :href="pageUrl( entry.article )" target="_blank">
+							{{ entry.article }}
+						</a>
+					</td>
+					<td class="app-stats__number">
+						{{ number( entry.rank ) }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</CdxDialog>
 	<FaqDialog
 		:open="activeDialog === 'faq'"
 		@update:open="onDialogToggle"
@@ -171,9 +185,10 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
 	CdxButton,
+	CdxDialog,
 	CdxIcon,
 	CdxMessage,
 	CdxSearchInput,
@@ -221,6 +236,47 @@ function retry( message ) {
 
 // The message embeds a link to the FAQ's false-positive entry.
 const falsePositiveNotice = computed( () => rawI18n( 'topviews-false-positive' ) );
+
+// "[3 pages] have been automatically excluded as [false positives]."
+// — the count opens the known-false-positives dialog, "false
+// positives" goes to the FAQ. Anchors survive as message parameters
+// (banana's sanitizer only strips them from message content), and
+// the dialog click is wired by delegation since the markup comes
+// from the message.
+const knownOpen = ref( false );
+const FAQ_LINK_OPEN = '<a href="/topviews/faq#false_positive" class="app-topviews__faq-link">';
+
+const knownNotice = computed( () => {
+	const count = store.serverExcluded.length;
+	const pagesLink = '<a href="#" class="app-topviews__known-link">' +
+		`${ banana.i18n( 'known-false-positives-link', count ) }</a>`;
+	const faqLink = `${ FAQ_LINK_OPEN }${ banana.i18n( 'false-positives', count ) }</a>`;
+	return banana.i18n( 'known-false-positives-notice', pagesLink, count, faqLink );
+} );
+
+/**
+ * Delegated clicks for the message-built links: the count opens the
+ * known-false-positives dialog, the FAQ links route client-side (no
+ * page reload; the plain href still serves open-in-new-tab).
+ *
+ * @param {MouseEvent} event
+ */
+function onKnownClick( event ) {
+	if ( event.target.closest( '.app-topviews__known-link' ) ) {
+		event.preventDefault();
+		knownOpen.value = true;
+	} else if ( event.target.closest( '.app-topviews__faq-link' ) ) {
+		event.preventDefault();
+		knownOpen.value = false;
+		router.push( { path: '/topviews/faq', hash: '#false_positive', query: route.query } );
+	}
+}
+
+// The dialog's lead-in above the table.
+const knownIntro = computed( () => banana.i18n(
+	'known-false-positives-intro',
+	`${ FAQ_LINK_OPEN }${ banana.i18n( 'automatically-removed' ) }</a>`
+) );
 
 function exclude( article ) {
 	store.excludes = [ ...store.excludes, article ];
@@ -362,17 +418,8 @@ watch(
 	margin: 0;
 }
 
-.app-topviews__known {
-	color: @color-subtle;
-	font-size: @font-size-small;
-
-	summary {
-		cursor: pointer;
-	}
-}
-
 .app-topviews__known-table {
-	max-width: @size-3200;
+	font-size: @font-size-small;
 }
 
 // The shaded backgrounds that make the ranked list read as a bar

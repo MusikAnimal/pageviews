@@ -11,4 +11,5 @@
 # Example:
 # en.wikipedia.org:
 #   - XHamster
-"*": []
+"*":
+  - XHamster
