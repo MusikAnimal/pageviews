@@ -54,9 +54,13 @@ defineExpose( { getPngDataUrl } );
 
 <style lang="less">
 .app-chart__canvas {
-	// Fills the chart column's leftover height (see .app-chart, a flex
-	// column); the min keeps it usable in cramped viewports.
-	flex: 1;
+	// The chart holds roughly the legacy 2:1 shape at any viewport
+	// size: the ratio sets its natural height from the column's width.
+	// When the column is taller (the stretched no-breakdown layout),
+	// flex-grow expands it further; the min keeps it usable in cramped
+	// viewports (max lives in app.less, @chart-max-height).
+	aspect-ratio: 2 / 1;
+	flex: 1 1 auto;
 	min-height: 400px;
 	width: 100%;
 }
