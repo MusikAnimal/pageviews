@@ -21,6 +21,7 @@
 	"anonymous": "Anonymous",
 	"another-query": "Do another query",
 	"api-error": "Error querying $1.",
+	"api-error-auth": "Your session could not be verified. Please reload the page.",
 	"api-error-no-data": "No data found.",
 	"api-error-timeout": "Due to API failure, the following could not be processed:\n$1\nPlease wait several minutes and try again.",
 	"api-error-unknown": "An unknown error occurred when querying $1",

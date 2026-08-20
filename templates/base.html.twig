@@ -29,6 +29,7 @@
 <body {%- if is_rtl() %}class="rtl"{% endif %} data-app-config="{{ {
 	'i18nPath': asset( 'i18n/' ~ lang() ~ '.json' ),
 	'i18nEnPath': asset( 'i18n/en.json' ),
+	'apiToken': api_token(),
 }|json_encode }}">
 {% set nav_apps = [ 'pageviews', 'langviews', 'topviews', 'siteviews', 'massviews', 'redirectviews', 'userviews', 'mediaviews' ] %}
 <nav class="app-nav">

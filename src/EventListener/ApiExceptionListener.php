@@ -5,9 +5,10 @@ declare( strict_types = 1 );
 namespace App\EventListener;
 
 use App\Exception\ApiException;
+use App\Exception\ErrorEnvelope;
 use InvalidArgumentException;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -103,14 +104,6 @@ class ApiExceptionListener {
 		?string $upstream = null,
 		bool $retryable = false,
 	): JsonResponse {
-		return new JsonResponse( [
-			'error' => [
-				'code' => $code,
-				'message' => $message,
-				'i18n' => $i18n,
-				'upstream' => $upstream,
-				'retryable' => $retryable,
-			],
-		], $status );
+		return ErrorEnvelope::json( $code, $message, $i18n, $status, $upstream, $retryable );
 	}
 }

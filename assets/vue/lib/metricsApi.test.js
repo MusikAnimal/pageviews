@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fetchEditData, fetchPageviews, trimIncompleteTail } from './metricsApi.js';
+import { getToken, refreshToken } from './apiToken.js';
+
+vi.mock( './apiToken.js', () => ( {
+	getToken: vi.fn( () => 'tok-1' ),
+	refreshToken: vi.fn()
+} ) );
 
 function chunkResponse( titles ) {
 	return {
@@ -14,6 +20,73 @@ function chunkResponse( titles ) {
 
 afterEach( () => {
 	vi.unstubAllGlobals();
+	// Keeps mock implementations, resets call counts between tests.
+	vi.clearAllMocks();
+} );
+
+describe( 'apiGet auth', () => {
+	const okResponse = {
+		ok: true,
+		status: 200,
+		json: () => Promise.resolve( chunkResponse( [ 'Cat' ] ) )
+	};
+	const unauthorized = {
+		ok: false,
+		status: 401,
+		json: () => Promise.resolve( { error: {
+			code: 'auth_expired', message: 'expired', i18n: [ 'api-error-auth' ]
+		} } )
+	};
+
+	it( 'sends the access token on every request', async () => {
+		const impl = vi.fn( () => Promise.resolve( okResponse ) );
+		vi.stubGlobal( 'fetch', impl );
+
+		await fetchPageviews( {
+			project: 'en.wikipedia', pages: [ 'Cat' ], start: '2026-07-01', end: '2026-07-02'
+		} );
+
+		expect( impl.mock.calls[ 0 ][ 1 ].headers ).toEqual( {
+			Authorization: 'Bearer tok-1'
+		} );
+	} );
+
+	it( 'renews once on 401 and replays the request', async () => {
+		const impl = vi.fn()
+			.mockResolvedValueOnce( unauthorized )
+			.mockResolvedValueOnce( okResponse );
+		vi.stubGlobal( 'fetch', impl );
+		refreshToken.mockResolvedValue( 'tok-2' );
+
+		const result = await fetchPageviews( {
+			project: 'en.wikipedia', pages: [ 'Cat' ], start: '2026-07-01', end: '2026-07-02'
+		} );
+
+		expect( refreshToken ).toHaveBeenCalledOnce();
+		expect( impl ).toHaveBeenCalledTimes( 2 );
+		expect( result.pages ).toHaveLength( 1 );
+	} );
+
+	it( 'surfaces the auth envelope when the replay fails too', async () => {
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( unauthorized ) ) );
+		refreshToken.mockResolvedValue( 'tok-2' );
+
+		await expect( fetchPageviews( {
+			project: 'en.wikipedia', pages: [ 'Cat' ], start: '2026-07-01', end: '2026-07-02'
+		} ) ).rejects.toMatchObject( { code: 'auth_expired', i18n: [ 'api-error-auth' ] } );
+		// One renewal only — no loops.
+		expect( refreshToken ).toHaveBeenCalledOnce();
+	} );
+
+	it( 'surfaces the original 401 when renewal itself fails', async () => {
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( unauthorized ) ) );
+		refreshToken.mockRejectedValue( new Error( 'renewal down' ) );
+
+		await expect( fetchPageviews( {
+			project: 'en.wikipedia', pages: [ 'Cat' ], start: '2026-07-01', end: '2026-07-02'
+		} ) ).rejects.toMatchObject( { code: 'auth_expired' } );
+		expect( getToken ).toHaveBeenCalled();
+	} );
 } );
 
 describe( 'fetchPageviews', () => {

@@ -1,4 +1,5 @@
 import { ApiError } from './errors.js';
+import { getToken, refreshToken } from './apiToken.js';
 import { promisePool } from './queue.js';
 
 /**
@@ -84,9 +85,27 @@ export async function fetchPageviews( {
  * @param {AbortSignal} [signal]
  * @return {Promise<Object>}
  */
-async function apiGet( path, params, signal = undefined ) {
-	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }`, { signal } );
+async function apiGet( path, params, signal = undefined, isRetry = false ) {
+	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }`, {
+		signal,
+		headers: { Authorization: `Bearer ${ getToken() }` }
+	} );
 
+	if ( response.status === 401 && !isRetry ) {
+		// The token likely expired under a long-lived tab: renew once
+		// and replay. Renewal is single-flight across concurrent
+		// chunks; if it fails, fall through to the 401 envelope.
+		let renewed = false;
+		try {
+			await refreshToken();
+			renewed = true;
+		} catch {
+			// Surface the original 401 below.
+		}
+		if ( renewed ) {
+			return apiGet( path, params, signal, true );
+		}
+	}
 	if ( !response.ok ) {
 		let envelope = null;
 		try {

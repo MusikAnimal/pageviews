@@ -16,6 +16,7 @@
 		"symfony/http-client": "7.4.*",
 		"symfony/monolog-bundle": "^4.0",
 		"symfony/runtime": "7.4.*",
+		"symfony/security-bundle": "7.4.*",
 		"symfony/twig-bundle": "7.4.*",
 		"symfony/ux-vue": "^2.36",
 		"symfony/yaml": "7.4.*",

@@ -44,6 +44,7 @@
 	"anonymous": "Editor type option: edits by logged-out (anonymous) users.\n{{Identical|Anonymous}}",
 	"another-query": "Link to run a new query on the Langviews application",
 	"api-error": "Generic error message for when something went wrong while querying an API. $1 is the name of the API. This message is followed by the error returned by the API.",
+	"api-error-auth": "Error shown when the internal API rejects the page's access token and it could not be renewed. Reloading the page issues a fresh token.",
 	"api-error-no-data": "When the API returned no data",
 	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
 	"api-error-unknown": "Error message saying an unknown error occurred when querying an API. $1 is the name of the API.",
