@@ -76,7 +76,9 @@
 		"phpunit/phpunit": "^12.5",
 		"symfony/browser-kit": "7.4.*",
 		"symfony/css-selector": "7.4.*",
+		"symfony/debug-bundle": "7.4.*",
 		"symfony/maker-bundle": "^1.67",
-		"symfony/panther": "^2.4"
+		"symfony/panther": "^2.4",
+		"symfony/web-profiler-bundle": "7.4.*"
 	}
 }
