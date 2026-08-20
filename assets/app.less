@@ -270,6 +270,31 @@ a {
 	}
 }
 
+// Rows that double as a bar chart (see lib/rowBar.js): a solid
+// background-image whose background-size carries the row's share of
+// the table's largest value, grown in on render.
+@row-bar-color: @background-color-neutral-subtle;
+
+.app-row-bar {
+	animation: app-row-bar 1s ease;
+	background-image: linear-gradient( @row-bar-color, @row-bar-color );
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	// Filtering can change the scale (e.g. Topviews excludes);
+	// existing bars resize smoothly rather than jumping.
+	transition: background-size 1s ease;
+
+	.rtl & {
+		background-position: 100% 0;
+	}
+}
+
+@keyframes app-row-bar {
+	from {
+		background-size: 0 100%;
+	}
+}
+
 // Dims the app while a query runs; the progress bar centers within.
 .app-loading-overlay {
 	background-color: @background-color-backdrop-light;

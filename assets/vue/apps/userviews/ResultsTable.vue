@@ -30,7 +30,12 @@
 						{{ number( Math.round( store.totals.average ) ) }}
 					</td>
 				</tr>
-				<tr v-for="( row, index ) in slotProps.rows" :key="row.title">
+				<tr
+					v-for="( row, index ) in slotProps.rows"
+					:key="row.title"
+					class="app-row-bar"
+					:style="rowBarStyle( row.sum, maxSum )"
+				>
 					<th scope="row">
 						{{ number( index + 1 ) }}
 					</th>
@@ -63,6 +68,7 @@ import { useUserviewsStore } from '../../stores/userviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatDate, formatNumber } from '../../lib/format.js';
+import { rowBarStyle } from '../../lib/rowBar.js';
 import { parseDate } from '../../lib/dates.js';
 import { banana } from '../../i18n.js';
 
@@ -77,6 +83,12 @@ const date = ( value ) => formatDate( parseDate( value ), {
 } );
 
 const rows = computed( () => store.pagesData );
+
+// The rows double as a bar chart, shaded relative to the table's
+// largest total (see the shared .app-row-bar).
+const maxSum = computed( () => rows.value.reduce(
+	( max, row ) => Math.max( max, row.sum ), 0
+) );
 
 const columns = computed( () => [
 	{ key: 'rank', label: '', sortable: false },

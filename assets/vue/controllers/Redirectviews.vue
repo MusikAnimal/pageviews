@@ -14,6 +14,7 @@
 				<div class="app-page-input-row">
 					<SinglePageInput
 						v-model="page"
+						placeholder="Star Wars"
 						:project="store.project"
 						@submit="store.load()"
 					/>

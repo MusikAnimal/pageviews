@@ -81,8 +81,8 @@
 					<tr
 						v-for="entry in store.displayed"
 						:key="entry.article"
-						class="app-topviews__row"
-						:style="barStyle( entry )"
+						class="app-topviews__row app-row-bar"
+						:style="rowBarStyle( entry.views, maxViews )"
 					>
 						<th scope="row" class="app-topviews__rank">
 							<span class="app-topviews__rank-number">
@@ -202,6 +202,7 @@ import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { formatNumber } from '../lib/format.js';
 import { historyUrl as buildHistoryUrl } from '../lib/wikiUrls.js';
+import { rowBarStyle } from '../lib/rowBar.js';
 import { banana, rawI18n } from '../i18n.js';
 import TopviewsSettings from '../apps/topviews/Settings.vue';
 import FaqDialog from '../apps/topviews/FaqDialog.vue';
@@ -341,16 +342,9 @@ function listCsvRows() {
 	} ) ];
 }
 
-// The rows double as a bar chart: each row's background is shaded
-// relative to the top-ranked entry (legacy behavior). The bar is a
-// background-image sized to the page's share, since a row can't
-// anchor an absolutely-positioned child on our whole browser matrix.
+// The rows double as a bar chart, shaded relative to the top-ranked
+// entry (legacy behavior).
 const maxViews = computed( () => store.pageData[ 0 ]?.views ?? 0 );
-
-function barStyle( entry ) {
-	const width = maxViews.value ? ( 100 * entry.views ) / maxViews.value : 0;
-	return { backgroundSize: `${ width }% 100%` };
-}
 
 function pageUrl( article ) {
 	return `https://${ store.project }/wiki/` +
@@ -420,32 +414,6 @@ watch(
 
 .app-topviews__known-table {
 	font-size: @font-size-small;
-}
-
-// The shaded backgrounds that make the ranked list read as a bar
-// chart, spanning every column. A solid background-image whose
-// background-size carries the page's share of the top entry's views,
-// grown in on render.
-@topviews-bar-color: @background-color-neutral-subtle;
-
-.app-topviews__row {
-	animation: app-topviews-bar 1s ease;
-	background-image: linear-gradient( @topviews-bar-color, @topviews-bar-color );
-	background-position: 0 0;
-	background-repeat: no-repeat;
-	// Excluding a page can change the scale; existing bars resize
-	// smoothly rather than jumping.
-	transition: background-size 1s ease;
-
-	.rtl & {
-		background-position: 100% 0;
-	}
-}
-
-@keyframes app-topviews-bar {
-	from {
-		background-size: 0 100%;
-	}
 }
 
 // The niche exclude button hides behind the rank number (legacy

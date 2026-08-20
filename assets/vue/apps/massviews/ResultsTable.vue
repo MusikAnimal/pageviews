@@ -29,6 +29,8 @@
 				<tr
 					v-for="( row, index ) in slotProps.rows"
 					:key="`${ row.project }|${ row.title }`"
+					class="app-row-bar"
+					:style="rowBarStyle( row.sum, maxSum )"
 				>
 					<th scope="row">
 						{{ number( index + 1 ) }}
@@ -55,6 +57,7 @@ import { useMassviewsStore } from '../../stores/massviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
+import { rowBarStyle } from '../../lib/rowBar.js';
 import { banana } from '../../i18n.js';
 
 const store = useMassviewsStore();
@@ -64,6 +67,12 @@ const settings = useSettingsStore();
 const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
 const rows = computed( () => store.pagesData );
+
+// The rows double as a bar chart, shaded relative to the table's
+// largest total (see the shared .app-row-bar).
+const maxSum = computed( () => rows.value.reduce(
+	( max, row ) => Math.max( max, row.sum ), 0
+) );
 
 const columns = computed( () => [
 	{ key: 'rank', label: '', sortable: false },

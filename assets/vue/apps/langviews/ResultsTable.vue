@@ -40,7 +40,12 @@
 						{{ number( Math.round( store.totals.average ) ) }}
 					</td>
 				</tr>
-				<tr v-for="( row, index ) in slotProps.rows" :key="row.lang">
+				<tr
+					v-for="( row, index ) in slotProps.rows"
+					:key="row.lang"
+					class="app-row-bar"
+					:style="rowBarStyle( row.sum, maxSum )"
+				>
 					<th scope="row">
 						{{ number( index + 1 ) }}
 					</th>
@@ -77,6 +82,7 @@ import { useLangviewsStore } from '../../stores/langviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatNumber } from '../../lib/format.js';
+import { rowBarStyle } from '../../lib/rowBar.js';
 import { BADGES } from '../../lib/wikidata.js';
 import { banana } from '../../i18n.js';
 
@@ -88,6 +94,12 @@ const number = ( value ) => formatNumber( value, banana.locale, preferences.nume
 const badgeName = ( badge ) => BADGES[ badge ] ? banana.i18n( BADGES[ badge ].name ) : badge;
 
 const rows = computed( () => store.langData );
+
+// The rows double as a bar chart, shaded relative to the table's
+// largest total (see the shared .app-row-bar).
+const maxSum = computed( () => rows.value.reduce(
+	( max, row ) => Math.max( max, row.sum ), 0
+) );
 
 const columns = computed( () => [
 	{ key: 'rank', label: '', sortable: false },
