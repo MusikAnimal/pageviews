@@ -320,7 +320,9 @@ function crossAppUrl( app, title ) {
 	&__badge {
 		height: @size-100;
 		margin-right: @spacing-25;
-		vertical-align: center;
+		// Like .app-stats__badge ('center' is not a vertical-align
+		// value — it computed to the default baseline).
+		vertical-align: text-bottom;
 		width: @size-100;
 	}
 

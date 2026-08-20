@@ -389,13 +389,16 @@ a {
 	}
 }
 
-// Compact sidebar typography, the headings included. Shared by every
-// app's Options and Totals — and by the Twig loading skeletons, which
-// scoped component styles cannot reach (nor can they reach Codex
-// children's internals, e.g. the labels inside CdxField).
+// Compact sidebar typography. Shared by every app's Options and
+// Totals — and by the Twig loading skeletons, which scoped component
+// styles cannot reach (nor can they reach Codex children's
+// internals, e.g. the labels inside CdxField).
 .app-settings,
 .app-totals {
-	h3,
+	h3 {
+		font-size: @font-size-medium;
+	}
+
 	.cdx-label,
 	.cdx-button {
 		font-size: @font-size-small;
