@@ -20,6 +20,7 @@
 							v-model:selected="source"
 							:menu-items="sourceItems"
 							:aria-label="$i18n( 'source' )"
+							@update:selected="onSourceSelect"
 						/>
 						<CdxTextInput
 							ref="targetInput"
@@ -137,7 +138,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import {
 	CdxButton,
 	CdxCheckbox,
@@ -381,6 +382,15 @@ const targetInput = ref( null );
  */
 function focusTarget() {
 	targetInput.value?.$el?.querySelector( 'input' )?.focus();
+}
+
+/**
+ * Picking a source readies the input for its target: focus moves
+ * there once the menu has closed.
+ */
+async function onSourceSelect() {
+	await nextTick();
+	focusTarget();
 }
 
 /**
