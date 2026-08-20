@@ -3,6 +3,7 @@
 		<a
 			v-if="summary.url"
 			:href="summary.url"
+			class="app-page-summary__title"
 			target="_blank"
 		>{{ summary.label }}</a>
 		<template v-else>

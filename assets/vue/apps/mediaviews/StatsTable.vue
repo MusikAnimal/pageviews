@@ -1,6 +1,10 @@
 <template>
 	<p v-if="summary" class="app-page-summary">
-		<a :href="summary.url" target="_blank">{{ summary.name }}</a>
+		<a
+			:href="summary.url"
+			class="app-page-summary__title"
+			target="_blank"
+		>{{ summary.name }}</a>
 		·
 		<span class="app-page-summary__dates">{{ summary.dates }}</span>
 		·

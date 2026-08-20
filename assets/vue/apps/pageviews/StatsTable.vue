@@ -313,10 +313,6 @@ function crossAppUrl( app, title ) {
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-page-summary {
-	font-size: @font-size-large;
-	margin: @spacing-100 0;
-	text-align: center;
-
 	&__badge {
 		height: @size-100;
 		margin-right: @spacing-25;
@@ -326,18 +322,10 @@ function crossAppUrl( app, title ) {
 		width: @size-100;
 	}
 
-	&__dates {
-		color: @color-subtle;
-	}
-
 	&__rank {
 		font-size: @font-size-small;
 		margin: @spacing-25 0 0;
 		text-align: center;
-	}
-
-	&__title {
-		font-weight: @font-weight-bold;
 	}
 }
 </style>

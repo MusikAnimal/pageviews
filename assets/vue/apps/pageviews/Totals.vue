@@ -217,10 +217,3 @@ const basicInfo = computed( () => {
 } );
 </script>
 
-<style scoped lang="less">
-@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
-
-.app-totals__stats {
-	line-height: @line-height-small;
-}
-</style>
