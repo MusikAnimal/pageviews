@@ -5,6 +5,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { registerVueControllerComponents } from 'vite-plugin-symfony/stimulus/helpers/vue';
 import { createPinia } from 'pinia';
 import { banana, loadMessages, i18nHtml } from './vue/i18n.js';
+import { cdxIconMoon } from '@wikimedia/codex-icons';
+import { setTheme, theme } from './vue/lib/theme.js';
 import Pageviews from './vue/controllers/Pageviews.vue';
 import Siteviews from './vue/controllers/Siteviews.vue';
 import Mediaviews from './vue/controllers/Mediaviews.vue';
@@ -121,11 +123,28 @@ registerVueControllerComponents(
 
 const pinia = createPinia();
 
+// The theme button's icon comes from the Codex icon set rather than
+// another hand-inlined SVG in the Twig nav.
+document.querySelector( '.app-nav__theme-icon' ).innerHTML = cdxIconMoon;
+
+// Mark the active entry in the nav's theme menu (the attribute the
+// inline head script set covers the visuals; this covers the menu).
+function syncThemeMenu() {
+	document.querySelectorAll( '[data-theme-value]' ).forEach( ( button ) => {
+		if ( button.dataset.themeValue === theme.value ) {
+			button.setAttribute( 'aria-current', 'true' );
+		} else {
+			button.removeAttribute( 'aria-current' );
+		}
+	} );
+}
+syncThemeMenu();
+
 // Bridge for the Twig shell (nav bar and footer), which lives outside
 // the Vue app: FAQ / URL structure links route client-side so the
 // dialogs open without a page reload (which would drop the query
-// string, clearing the form), and the nav Settings button opens the
-// preferences dialog.
+// string, clearing the form), the nav Settings button opens the
+// preferences dialog, and the theme menu persists its pick.
 document.addEventListener( 'click', ( event ) => {
 	// Close any open nav dropdown when clicking outside of it. Clicks
 	// inside are left to the native details toggle / the link handling
@@ -146,6 +165,13 @@ document.addEventListener( 'click', ( event ) => {
 	}
 	if ( event.target.closest( '.app-nav__settings' ) ) {
 		useUiStore( pinia ).preferencesOpen = true;
+		return;
+	}
+	const themeButton = event.target.closest( '[data-theme-value]' );
+	if ( themeButton ) {
+		setTheme( themeButton.dataset.themeValue );
+		syncThemeMenu();
+		themeButton.closest( 'details' ).removeAttribute( 'open' );
 		return;
 	}
 	const link = event.target.closest( 'a[href$="/faq"], a[href$="/url_structure"]' );

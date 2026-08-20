@@ -94,18 +94,32 @@ export function useChart( containerRef, optionRef, onRangeSelect = null ) {
 }
 
 /**
- * Reactive prefers-color-scheme flag. Include it in the computed that
- * builds the chart option so charts re-theme when the mode flips.
+ * Reactive effective-dark-mode flag: a theme forced via the header
+ * switch (the data-theme attribute on <html>) wins over
+ * prefers-color-scheme. Include it in the computed that builds the
+ * chart option so charts re-theme when the mode flips either way.
  *
  * @return {import('vue').Ref<boolean>}
  */
 export function usePrefersDark() {
 	const query = window.matchMedia( '(prefers-color-scheme: dark)' );
-	const dark = ref( query.matches );
-	const onChange = ( event ) => {
-		dark.value = event.matches;
+	const compute = () => {
+		const forced = document.documentElement.dataset.theme;
+		return forced ? forced === 'dark' : query.matches;
 	};
-	query.addEventListener( 'change', onChange );
-	onScopeDispose( () => query.removeEventListener( 'change', onChange ) );
+	const dark = ref( compute() );
+	const update = () => {
+		dark.value = compute();
+	};
+	query.addEventListener( 'change', update );
+	const observer = new MutationObserver( update );
+	observer.observe( document.documentElement, {
+		attributes: true,
+		attributeFilter: [ 'data-theme' ]
+	} );
+	onScopeDispose( () => {
+		query.removeEventListener( 'change', update );
+		observer.disconnect();
+	} );
 	return dark;
 }

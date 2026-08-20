@@ -2,6 +2,18 @@
 <html lang="{{ lang() }}">
 <head>
 	<meta charset="UTF-8">
+	{# Apply a stored theme preference before first paint; 'auto' (the
+	   default) leaves it to the prefers-color-scheme stylesheets. #}
+	<script>
+		try {
+			var theme = JSON.parse( localStorage.getItem( 'pageviews-settings-theme' ) );
+			if ( theme === 'light' || theme === 'dark' ) {
+				document.documentElement.dataset.theme = theme;
+			}
+		} catch ( e ) {
+			// Storage unavailable; stay on 'auto'.
+		}
+	</script>
 	<title>{% block title %}{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }}{% endblock %}</title>
 	<link rel="icon" href="{{ asset( 'images/favicon.ico' ) }}">
 	{% block stylesheets %}
@@ -50,6 +62,19 @@
 		{% endfor %}
 	</ol>
 	<div class="app-nav__buttons">
+		{# Light/dark theme switch; wired up in app.js. #}
+		<details class="app-nav__dropdown">
+			<summary class="app-nav__button" aria-label="{{ msg( 'theme' ) }}" title="{{ msg( 'theme' ) }}">
+				{# Filled with cdxIconMoon at boot (app.js) — the menu
+				   needs JS to function anyway. #}
+				<svg class="app-nav__icon app-nav__theme-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"></svg>
+			</summary>
+			<ul class="app-nav__menu">
+				<li><button type="button" data-theme-value="auto">{{ msg( 'theme-auto' ) }}</button></li>
+				<li><button type="button" data-theme-value="light">{{ msg( 'theme-light' ) }}</button></li>
+				<li><button type="button" data-theme-value="dark">{{ msg( 'theme-dark' ) }}</button></li>
+			</ul>
+		</details>
 		<button type="button" class="app-nav__button app-nav__settings">
 			<svg class="app-nav__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3"/><path d="M11.74 3.218a7 7 0 011.822.757l2.095-1.046 1.414 1.414-1.047 2.094c.334.562.591 1.174.757 1.823L19 9v2l-2.219.74a7 7 0 01-.757 1.822l1.047 2.095-1.414 1.414-2.095-1.047a7 7 0 01-1.823.757L11 19H9l-.74-2.219a7 7 0 01-1.823-.757l-2.094 1.047-1.414-1.414 1.046-2.095a7 7 0 01-.757-1.823L1 11V9l2.218-.74a7 7 0 01.757-1.823L2.929 4.343l1.414-1.414 2.094 1.046a7 7 0 011.823-.757L9 1h2zM10 5a5 5 0 100 10 5 5 0 000-10"/></svg>
 			{{ msg( 'settings' ) }}

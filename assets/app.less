@@ -3,7 +3,22 @@
 @import url( '../node_modules/@wikimedia/codex-design-tokens/theme-wikimedia-ui-mode-dark.css' ) only screen and ( prefers-color-scheme: dark );
 /* stylelint-enable function-url-quotes */
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui-mixin-light.less';
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui-mixin-dark.less';
 @import ( reference ) '@wikimedia/codex/mixins/link.less';
+
+// A forced theme (the header switch, applied as data-theme on <html>
+// before first paint): outranks the prefers-color-scheme imports
+// above by specificity. Without the attribute ('auto'), those apply.
+html[ data-theme='light' ] {
+	.cdx-mode-light();
+	color-scheme: light;
+}
+
+html[ data-theme='dark' ] {
+	.cdx-mode-dark();
+	color-scheme: dark;
+}
 
 html {
 	height: 100%;
@@ -156,7 +171,8 @@ a {
 		right: 0;
 		z-index: @z-index-dropdown;
 
-		a {
+		a,
+		button {
 			color: @color-base;
 			display: block;
 			padding: @spacing-25 @spacing-75;
@@ -167,10 +183,22 @@ a {
 				background: @background-color-interactive-subtle;
 			}
 
-			// The current app, in the collapsed apps menu.
+			// The current app in the collapsed apps menu, or the
+			// active theme in the theme menu.
 			&[ aria-current ] {
 				font-weight: @font-weight-bold;
 			}
+		}
+
+		// Menu entries that act in place (the theme switch) rather
+		// than navigate.
+		button {
+			background: none;
+			border: 0;
+			cursor: pointer;
+			font: inherit;
+			text-align: start;
+			width: @size-full;
 		}
 
 		&--scroll {

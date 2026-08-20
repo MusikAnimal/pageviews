@@ -156,6 +156,13 @@ each( range( 10 ), {
 		// The palette backgrounds are fixed light pastels; keep dark
 		// text in both color modes.
 		color: #202122;
+
+		.cdx-icon svg {
+			// The dismiss icon inherits Codex button/icon colors —
+			// near-white in dark mode, invisible on these fixed light
+			// pastels. Pin it to the chip text color.
+			fill: #202122;
+		}
 	}
 } );
 </style>
