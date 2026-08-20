@@ -35,13 +35,10 @@ final class PageviewsController extends AbstractController {
 
 	/**
 	 * Edit statistics (edit/editor counts, assessments) from the
-	 * replicas. The /pageviews/api path is a deprecated alias from
-	 * before the /api/* namespace existed.
+	 * replicas.
 	 */
 	#[Route( '/api/pages/{project}/edits', name: 'api_page_edits', methods: [ 'GET' ] )]
-	#[Route( '/pageviews/api', name: 'api_pageviews' )]
-	public function api( Request $request, PageviewsRepository $pageviewsRepo, ?string $project = null ): JsonResponse {
-		$project ??= $request->query->get( 'project', '' );
+	public function api( Request $request, PageviewsRepository $pageviewsRepo, string $project ): JsonResponse {
 		$requiredParams = [ 'pages', 'start', 'end' ];
 		foreach ( $requiredParams as $param ) {
 			if ( !$request->query->has( $param ) ) {
