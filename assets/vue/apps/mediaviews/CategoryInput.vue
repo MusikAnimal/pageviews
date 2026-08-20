@@ -14,7 +14,7 @@
 				class="app-pages__lookup"
 				:menu-items="menuItems"
 				:aria-label="$i18n( 'categories' )"
-				placeholder="UNESCO"
+				:placeholder="$i18n( 'category-placeholder' )"
 				@input="onInput"
 			/>
 			<!-- MultiselectLookup has no clearable prop (unlike

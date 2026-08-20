@@ -70,6 +70,7 @@
 	"building-dataset": "Message shown on the Massviews tool when data is being put together to be shown to the user. This is different than the 'fetching-data' message.",
 	"cancel": "Label for button\n{{Identical|Cancel}}",
 	"categories": "Label for the Mediaviews source backed by the Commons Impact Metrics dataset. See [[:m:Commons Impact Metrics]].",
+	"category-placeholder": "Placeholder text for the input where the user enters Commons category names in the Mediaviews tool.",
 	"category": "Label for the 'Category' input field on the Massviews tool. This is also the label for the option to query for a category in the Mediaviews tool.\n{{Identical|Category}}",
 	"category-subject-toggle": "Option shown on Massviews when the 'Category URL' source is selected. This option tells the tool to use the subject page of any talk pages in the category.",
 	"change-chart": "Link that allows the user to choose a different type of chart",

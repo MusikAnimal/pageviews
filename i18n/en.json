@@ -47,6 +47,7 @@
 	"building-dataset": "Building dataset...",
 	"cancel": "Cancel",
 	"categories": "Categories",
+	"category-placeholder": "Type category names...",
 	"category": "Category",
 	"category-subject-toggle": "Use subject page instead of talk page",
 	"change-chart": "Chart type",
