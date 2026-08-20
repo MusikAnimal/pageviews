@@ -87,10 +87,17 @@ a {
 
 	&__link {
 		border-radius: @border-radius-base;
-		color: @color-base;
+		color: @color-link;
 		display: block;
 		padding: @spacing-25 @spacing-35;
 		text-decoration: none;
+
+		// Navigation chrome, not content: the visited purple from the
+		// global Codex link mixin is just distracting here.
+		&:visited,
+		&:visited:hover {
+			color: @color-link;
+		}
 
 		&--active {
 			font-weight: @font-weight-bold;
@@ -178,6 +185,11 @@ a {
 			padding: @spacing-25 @spacing-75;
 			text-decoration: none;
 			white-space: nowrap;
+
+			// See .app-nav__link — no visited purple in the menus.
+			&:visited {
+				color: @color-base;
+			}
 
 			&:hover {
 				background: @background-color-interactive-subtle;
