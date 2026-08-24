@@ -82,9 +82,14 @@ export function buildTimeseriesOption( {
 		aria: { enabled: true },
 		backgroundColor: 'transparent',
 		textStyle: { color: theme.text },
+		// ECharts tooltips default to a white card; theme them so
+		// dark mode gets a dark one.
 		tooltip: {
 			trigger: 'axis',
-			valueFormatter: number
+			valueFormatter: number,
+			backgroundColor: theme.background,
+			borderColor: theme.border,
+			textStyle: { color: theme.text }
 		},
 		legend: {
 			show: showLegend && series.length > 1,

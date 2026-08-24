@@ -35,9 +35,14 @@ export function buildRadarOption( {
 		backgroundColor: 'transparent',
 		textStyle: { color: theme.text },
 		color: series.map( ( _, index ) => seriesColor( index ) ),
+		// ECharts tooltips default to a white card; theme them so
+		// dark mode gets a dark one.
 		tooltip: {
 			trigger: 'item',
-			valueFormatter: number
+			valueFormatter: number,
+			backgroundColor: theme.background,
+			borderColor: theme.border,
+			textStyle: { color: theme.text }
 		},
 		radar: {
 			indicator: dates.map( ( dateStr ) => ( {
