@@ -136,17 +136,17 @@ const chartRef = ref( null );
 // the mode) and thus the chart option rebuild when the mode flips.
 const theme = computed( () => ( { dark: dark.value, ...chartTheme() } ) );
 
-// null = automatic (the legacy default: bar for a single series, line
-// for comparisons); set once the user picks a type explicitly. With
-// the remember-chart preference on, the pick persists across sessions
-// under the legacy tool's storage key, shared by all apps.
+// null = no explicit pick yet (the default is a line chart); set once
+// the user picks a type explicitly. With the remember-chart
+// preference on, the pick persists across sessions under the legacy
+// tool's storage key, shared by all apps.
 const userChartType = ref( null );
 const rememberedChartType = persistentRef( 'pageviews-chart-preference', null );
 
 const selectedChartType = computed( {
 	get: () => userChartType.value ??
 		( preferences.rememberChart ? rememberedChartType.value : null ) ??
-		( props.series.length > 1 ? 'line' : 'bar' ),
+		'line',
 	set: ( value ) => {
 		userChartType.value = value;
 		if ( preferences.rememberChart ) {
