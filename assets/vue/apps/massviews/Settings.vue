@@ -19,10 +19,6 @@
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
 	</form>
-	<PreferencesDialog
-		v-model:open="ui.preferencesOpen"
-		:hide-page-options="true"
-	/>
 </template>
 
 <script setup>
@@ -31,7 +27,6 @@ import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
-import PreferencesDialog from '../../components/PreferencesDialog.vue';
 import { useMassviewsStore } from '../../stores/massviews.js';
 import { useUiStore } from '../../stores/ui.js';
 

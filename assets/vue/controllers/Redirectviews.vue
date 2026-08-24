@@ -103,6 +103,13 @@
 		</figure>
 	</div>
 	<CdxToastContainer />
+	<!-- Mounted here, not in the Settings sidebar: the results state
+		replaces the sidebar entirely, and the nav's Settings button
+		must keep working there. -->
+	<PreferencesDialog
+		v-model:open="ui.preferencesOpen"
+		:hide-page-options="true"
+	/>
 	<FaqDialog
 		:open="activeDialog === 'faq'"
 		@update:open="onDialogToggle"
@@ -143,6 +150,7 @@ import FaqDialog from '../apps/redirectviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/redirectviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
+import PreferencesDialog from '../components/PreferencesDialog.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import ExportMenu from '../components/ExportMenu.vue';
 import ResultsTable from '../apps/redirectviews/ResultsTable.vue';
