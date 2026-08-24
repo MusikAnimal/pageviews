@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
-import { getSiteinfo } from '../projects.js';
+import { findNonMainspace } from '../lib/mainspace.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { promisePool } from '../lib/queue.js';
 import {
@@ -262,38 +262,6 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 	}
 
 	/**
-	 * Titles the mainspace filter should drop: anything with a known
-	 * namespace prefix (plus legacy quirks the AQS data exhibits) and
-	 * the wiki's main page.
-	 *
-	 * @param {string[]} titles
-	 * @param {AbortSignal} signal
-	 * @return {Promise<Set<string>>}
-	 */
-	async function findNonMainspace( titles, signal ) {
-		const siteinfo = await getSiteinfo( project.value );
-		if ( signal.aborted || !siteinfo?.namespaces ) {
-			return new Set();
-		}
-		const prefixes = new Set(
-			Object.values( siteinfo.namespaces )
-				.map( ( ns ) => ns[ '*' ] )
-				.filter( Boolean )
-		);
-		// The AQS data mixes in localized/misencoded variants
-		// (see legacy FIXME re phab:T145043).
-		[ 'Wikipedia', 'Special', 'Sp?cial' ].forEach( ( extra ) => prefixes.add( extra ) );
-		const mainPage = siteinfo.general?.mainpage ?? '';
-
-		return new Set( titles.filter( ( title ) => {
-			if ( title === mainPage || title === mainPage.split( ':' )[ 1 ] ) {
-				return true;
-			}
-			return title.includes( ':' ) && prefixes.has( title.split( ':' )[ 0 ] );
-		} ) );
-	}
-
-	/**
 	 * Lazily fetch edit counts and mobile views for the entries
 	 * currently in view, skipping what's cached. Non-fatal: missing
 	 * enrichment renders as "?".
@@ -417,6 +385,7 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 			articles.value = result.articles;
 			serverExcluded.value = result.excluded ?? [];
 			nonMainspace.value = await findNonMainspace(
+				project.value,
 				result.articles.map( ( entry ) => entry.article ),
 				signal
 			);

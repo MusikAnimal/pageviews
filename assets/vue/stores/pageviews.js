@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { fetchEditData, fetchPageviews, fetchTopviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getPageInfo } from '../lib/mwApi.js';
 import { consolidateSeries, getRedirects } from '../lib/redirects.js';
+import { findNonMainspace } from '../lib/mainspace.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../lib/dates.js';
 import { banana } from '../i18n.js';
 import { usePreferencesStore } from './preferences.js';
@@ -233,12 +234,31 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 				platform: platform.value,
 				signal
 			} );
+			// Mirror the rank the Topviews app itself would show under
+			// its defaults: the mainspace filter applied, then reranked
+			// sequentially. Cheap: siteinfo is client-cached and the
+			// top list is at most a thousand entries.
+			const nonMainspace = await findNonMainspace(
+				project.value,
+				result.articles.map( ( article ) => article.article ),
+				signal
+			);
 			if ( id !== loadId ) {
 				return;
 			}
 			const title = pages.value[ 0 ].replace( /_/g, ' ' );
-			const entry = result.articles.find( ( article ) => article.article === title );
-			topRank.value = entry ? { rank: entry.rank, date } : null;
+			let rank = 0;
+			topRank.value = null;
+			for ( const article of result.articles ) {
+				if ( nonMainspace.has( article.article ) ) {
+					continue;
+				}
+				rank++;
+				if ( article.article === title ) {
+					topRank.value = { rank, date };
+					break;
+				}
+			}
 		} catch {
 			// Non-fatal; the rank line simply doesn't render.
 		}

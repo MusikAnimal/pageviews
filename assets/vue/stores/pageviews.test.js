@@ -6,6 +6,7 @@ import { useUiStore } from './ui.js';
 import { ApiError } from '../lib/errors.js';
 import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
+import { getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	// trimIncompleteTail stays real (pure, tested separately).
@@ -17,6 +18,10 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	getPageInfo: vi.fn( () => Promise.resolve( {} ) )
+} ) );
+vi.mock( '../projects.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getSiteinfo: vi.fn()
 } ) );
 vi.mock( '../lib/redirects.js', async ( importOriginal ) => ( {
 	// consolidateSeries stays real (pure, tested separately).
@@ -258,10 +263,18 @@ describe( 'pageviews store', () => {
 			fetchPageviews.mockResolvedValue( metricsResult( [
 				{ title: 'Cat', counts: [ 1, 2 ], total: 3, average: 1.5 }
 			] ) );
+			// The rank mirrors Topviews' default view: Main Page and
+			// Special: entries are dropped and the rest reranked.
+			getSiteinfo.mockResolvedValue( {
+				general: { mainpage: 'Main Page' },
+				namespaces: { 0: { '*': '' }, 1: { '*': 'Talk' } }
+			} );
 			fetchTopviews.mockResolvedValue( {
 				articles: [
-					{ article: 'Dog', views: 500, rank: 1 },
-					{ article: 'Cat', views: 400, rank: 2 }
+					{ article: 'Main Page', views: 900, rank: 1 },
+					{ article: 'Special:Search', views: 800, rank: 2 },
+					{ article: 'Dog', views: 500, rank: 3 },
+					{ article: 'Cat', views: 400, rank: 4 }
 				]
 			} );
 
