@@ -252,6 +252,7 @@
 	"most-viewed-pages": "Most viewed pages",
 	"most-viewed-rank": "Ranked $1 of the $2 for $3",
 	"moving-average": "Moving average",
+	"moving-average-option": "Show a moving average on charts",
 	"name-bot": "Name bot",
 	"namespace": "Namespace",
 	"net-bytes": "Net bytes changed",

@@ -65,6 +65,9 @@
 			<CdxCheckbox v-model="staged.bezierCurve">
 				{{ $i18n( 'bezier-curve-option' ) }}
 			</CdxCheckbox>
+			<CdxCheckbox v-model="staged.movingAverage">
+				{{ $i18n( 'moving-average-option' ) }}
+			</CdxCheckbox>
 		</CdxField>
 	</CdxDialog>
 </template>

@@ -160,7 +160,15 @@ const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType
 
 const logScale = ref( false );
 const showValues = ref( false );
-const movingAverage = ref( false );
+// The preference provides the default; the toolbar checkbox
+// overrides for the current view.
+const userMovingAverage = ref( null );
+const movingAverage = computed( {
+	get: () => userMovingAverage.value ?? preferences.movingAverage,
+	set: ( value ) => {
+		userMovingAverage.value = value;
+	}
+} );
 
 // Auto-enable on spiky data (the legacy Theil-index heuristic), when
 // the preference allows and the URL doesn't carry autolog=false; the

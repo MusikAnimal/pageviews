@@ -42,6 +42,11 @@ export const usePreferencesStore = defineStore( 'preferences', () => {
 	 * Smooth (Bézier) line charts.
 	 */
 	const bezierCurve = persistentRef( 'pageviews-settings-bezierCurve', false );
+	/**
+	 * Overlay a moving average on charts by default (the chart
+	 * toolbar's checkbox overrides per view).
+	 */
+	const movingAverage = persistentRef( 'pageviews-settings-movingAverage', false );
 
 	return {
 		alwaysRedirects,
@@ -51,6 +56,7 @@ export const usePreferencesStore = defineStore( 'preferences', () => {
 		autoLogDetection,
 		beginAtZero,
 		rememberChart,
-		bezierCurve
+		bezierCurve,
+		movingAverage
 	};
 } );
