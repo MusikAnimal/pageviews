@@ -42,9 +42,11 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { CdxCheckbox } from '@wikimedia/codex';
 import { usePreferencesStore } from '../stores/preferences.js';
+import { storeToRefs } from 'pinia';
+import { useChartControlsStore } from '../stores/chartControls.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { usePrefersDark } from '../composables/useChart.js';
 import { buildTimeseriesOption } from '../charts/options/timeseries.js';
@@ -136,19 +138,21 @@ const chartRef = ref( null );
 // the mode) and thus the chart option rebuild when the mode flips.
 const theme = computed( () => ( { dark: dark.value, ...chartTheme() } ) );
 
-// null = no explicit pick yet (the default is a line chart); set once
-// the user picks a type explicitly. With the remember-chart
-// preference on, the pick persists across sessions under the legacy
+// The toolbar picks live in the chartControls store, surviving this
+// panel's unmount while a new query loads. null = no explicit pick
+// (the default is a line chart). With the remember-chart preference
+// on, the pick also persists across sessions under the legacy
 // tool's storage key, shared by all apps.
-const userChartType = ref( null );
+const controls = useChartControlsStore();
+const { showValues } = storeToRefs( controls );
 const rememberedChartType = persistentRef( 'pageviews-chart-preference', null );
 
 const selectedChartType = computed( {
-	get: () => userChartType.value ??
+	get: () => controls.userChartType ??
 		( preferences.rememberChart ? rememberedChartType.value : null ) ??
 		'line',
 	set: ( value ) => {
-		userChartType.value = value;
+		controls.userChartType = value;
 		if ( preferences.rememberChart ) {
 			rememberedChartType.value = value;
 		}
@@ -158,24 +162,26 @@ const selectedChartType = computed( {
 // Only the linear chart types can plot on a log axis or be zoomed.
 const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
 
-const logScale = ref( false );
-const showValues = ref( false );
-// The preference provides the default; the toolbar checkbox
-// overrides for the current view.
-const userMovingAverage = ref( null );
-const movingAverage = computed( {
-	get: () => userMovingAverage.value ?? preferences.movingAverage,
+// Auto-enabled on spiky data (the legacy Theil-index heuristic) when
+// the preference allows and the URL doesn't carry autolog=false; a
+// manual pick — kept across reloads — always wins.
+const autoLog = computed( () =>
+	preferences.autoLogDetection && !props.noAutolog &&
+	shouldUseLogScale( props.series.map( ( entry ) => entry.counts ) )
+);
+const logScale = computed( {
+	get: () => controls.userLogScale ?? autoLog.value,
 	set: ( value ) => {
-		userMovingAverage.value = value;
+		controls.userLogScale = value;
 	}
 } );
 
-// Auto-enable on spiky data (the legacy Theil-index heuristic), when
-// the preference allows and the URL doesn't carry autolog=false; the
-// user can always override via the checkbox.
-watch( () => props.series, ( series ) => {
-	if ( preferences.autoLogDetection && !props.noAutolog ) {
-		logScale.value = shouldUseLogScale( series.map( ( entry ) => entry.counts ) );
+// The preference provides the default; the toolbar checkbox
+// overrides until the next page load.
+const movingAverage = computed( {
+	get: () => controls.userMovingAverage ?? preferences.movingAverage,
+	set: ( value ) => {
+		controls.userMovingAverage = value;
 	}
 } );
 

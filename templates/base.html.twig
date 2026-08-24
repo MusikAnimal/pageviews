@@ -136,7 +136,6 @@
 					{{ msg( 'credits-other-contributors' ) -}}
 				</a>
 		{%- endset %}
-		{{ msg( 'credits-msg', [ musikanimal, others ] ) }}
 	</span>
 
 	<div>
@@ -147,8 +146,14 @@
 			{% set host %}
 				<a href='https://wikitech.wikimedia.org/wiki/Help:Cloud_Services_introduction'>{{ msg( 'wmcs' ) }}</a>
 			{%- endset %}
-			{{ msg( 'hosted', [ heart, host ] ) }}
+			{% set codex %}
+				<a href='https://doc.wikimedia.org/codex/latest/'>Codex</a>
+			{%- endset %}
+			{{ msg( 'hosted-codex', [ heart, host, codex ] ) }}
 		</span>
+	</div>
+
+	<div>
 		<span>
 				{% set translateWiki %}
 					<a href='https://translatewiki.net/'>translatewiki.net</a>
