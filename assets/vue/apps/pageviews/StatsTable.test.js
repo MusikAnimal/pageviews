@@ -215,7 +215,7 @@ describe( 'StatsTable', () => {
 		expect( wrapper.find( 'table' ).exists() ).toBe( false );
 		const summary = wrapper.find( '.app-page-summary' );
 		// Assessment badge and class come first.
-		expect( summary.find( '.app-page-summary__badge' ).attributes( 'alt' ) ).toBe( 'GA' );
+		expect( summary.find( '.app-page-summary__badge img' ).attributes( 'alt' ) ).toBe( 'GA' );
 		// Linked title.
 		expect( summary.find( 'a' ).attributes( 'href' ) )
 			.toBe( 'https://en.wikipedia.org/wiki/Cat' );
