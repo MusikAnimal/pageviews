@@ -129,6 +129,7 @@
 	"faq-bug-report-body": "FAQ - body of the section explaining how to report a bug or request a feature",
 	"faq-bug-report-title": "FAQ - title of the section explaining how to report a bug or request a feature",
 	"faq-chart-type-body": "FAQ - body of the section explaining how to change the chart type. \"Chart type\" is the same as {{msg-wm|Pageviews-change-chart}}.",
+	"faq-chart-types-body": "FAQ - how to change the chart type, and what the default is (a line chart). Replaces 'faq-chart-type-body', whose wording described the old single-page bar-chart default. $1 is the 'change-chart' message.",
 	"faq-chart-type-title": "FAQ - title of the section explaining how to change the chart type. $1 is the message 'change-chart', which is the label of the button in the interface.",
 	"faq-counts-body": "FAQ - body of the section exlaining how pageviews are counted. $1 is a link to a page on Meta, with the page name as the link text.",
 	"faq-counts-title": "FAQ - title of the section explaining how pageviews are counted",

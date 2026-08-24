@@ -106,6 +106,7 @@
 	"faq-bug-report-body": "If you would like to use a wiki to provide feedback, use the <a href='https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis'>feedback forum</a> on Meta. You can also report issues on <a href='https://phabricator.wikimedia.org/project/profile/2045/'>Phabricator</a>.",
 	"faq-bug-report-title": "I have a feature request or bug to report",
 	"faq-chart-type-body": "Click \"$1\" to choose amongst 6 different types. The app will remember your preference. By default, the application will show a bar chart when viewing data for a single page, and a line chart for multiple pages. Note that the pie, doughnut and polar area charts can only show data for the total number of views within the daterange.",
+	"faq-chart-types-body": "Click \"$1\" to choose amongst 6 different types. The app will remember your preference. By default, the application will show a line chart. Note that the pie, doughnut and polar area charts can only show data for the total number of views within the daterange.",
 	"faq-chart-type-title": "How can I change the chart type?",
 	"faq-counts-body": "Yes. Every time you load a page, a pageview is registered, even if you created the page. You can learn more about the pageview definition at $1.",
 	"faq-counts-title": "Are pageviews by the same user counted every time?",

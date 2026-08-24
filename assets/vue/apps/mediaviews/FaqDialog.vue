@@ -48,7 +48,7 @@ const entries = [
 	{
 		id: 'chart_type',
 		title: banana.i18n( 'faq-chart-type-title' ),
-		paragraphs: [ banana.i18n( 'faq-chart-type-body', banana.i18n( 'change-chart' ) ) ]
+		paragraphs: [ banana.i18n( 'faq-chart-types-body', banana.i18n( 'change-chart' ) ) ]
 	},
 	{
 		id: 'feedback',
