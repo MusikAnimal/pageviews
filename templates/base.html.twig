@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ lang() }}">
+<html lang="{{ lang() }}" dir="{{ is_rtl() ? 'rtl' : 'ltr' }}">
 <head>
 	<meta charset="UTF-8">
 	{# Apply a stored theme preference before first paint; 'auto' (the
@@ -26,7 +26,7 @@
 
 	<link rel="preload" href="{{ path( 'api_projects' ) }}" as="fetch" crossorigin>
 </head>
-<body {%- if is_rtl() %}class="rtl"{% endif %} data-app-config="{{ {
+<body data-app-config="{{ {
 	'i18nPath': asset( 'i18n/' ~ lang() ~ '.json' ),
 	'i18nEnPath': asset( 'i18n/en.json' ),
 	'apiToken': api_token(),

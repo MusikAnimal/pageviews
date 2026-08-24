@@ -1,4 +1,4 @@
-import '@wikimedia/codex/dist/codex.style.css';
+import '@wikimedia/codex/dist/codex.style-bidi.css';
 import './app.less';
 import { startStimulusApp } from 'vite-plugin-symfony/stimulus/helpers';
 import { createRouter, createWebHistory } from 'vue-router';
