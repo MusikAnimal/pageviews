@@ -115,7 +115,7 @@ a {
 		gap: @spacing-25;
 		// Keeps the buttons flush right when the apps list (whose
 		// flex: 1 otherwise fills the middle) is collapsed.
-		margin-left: auto;
+		margin-inline-start: auto;
 	}
 
 	&__button {
@@ -156,8 +156,8 @@ a {
 	// from the logo side.
 	&__dropdown--apps {
 		.app-nav__menu {
-			left: 0;
-			right: auto;
+			inset-inline-end: auto;
+			inset-inline-start: 0;
 		}
 
 		@media screen and ( min-width: @min-width-breakpoint-desktop ) {
@@ -175,7 +175,7 @@ a {
 		min-width: @size-1200;
 		padding: @spacing-25 0;
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		z-index: @z-index-dropdown;
 
 		a,
@@ -457,8 +457,8 @@ a {
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
-			border-right: @border-width-base solid @border-color-base;
-			padding-right: @column-space;
+			border-inline-end: @border-width-base solid @border-color-base;
+			padding-inline-end: @column-space;
 		}
 	}
 }
@@ -478,13 +478,13 @@ a {
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @layout-gap ) ) {
 		& {
-			padding-left: @column-space;
+			padding-inline-start: @column-space;
 		}
 	}
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
 		& {
-			padding-right: @column-space;
+			padding-inline-end: @column-space;
 		}
 	}
 
@@ -509,12 +509,12 @@ a {
 		// The flex gap provides the spacing; the inline checkboxes'
 		// own trailing margin would double it up.
 		.cdx-checkbox--inline {
-			margin-right: 0;
+			margin-inline-end: 0;
 		}
 	}
 
 	&__show-values {
-		margin-left: auto;
+		margin-inline-start: auto;
 	}
 
 	& > .cdx-message {
@@ -531,8 +531,8 @@ a {
 
 	@container ( min-width: calc( @form-basis + @viz-basis + @totals-basis + 2 * @layout-gap ) ) {
 		& {
-			border-left: @border-width-base solid @border-color-base;
-			padding-left: @column-space;
+			border-inline-start: @border-width-base solid @border-color-base;
+			padding-inline-start: @column-space;
 		}
 	}
 
@@ -554,7 +554,7 @@ a {
 
 		dd {
 			margin: 0;
-			text-align: right;
+			text-align: end;
 		}
 
 		// The headline pageview numbers (views, median, average).
@@ -611,12 +611,12 @@ a {
 	td {
 		border-bottom: @border-width-base solid @border-color-subtle;
 		padding: @spacing-35 @spacing-50;
-		text-align: left;
+		text-align: start;
 	}
 
 	&__number {
 		font-variant-numeric: tabular-nums;
-		text-align: right;
+		text-align: end;
 	}
 
 	&__color {
@@ -629,7 +629,7 @@ a {
 
 	&__badge {
 		height: @size-100;
-		margin-right: @spacing-25;
+		margin-inline-end: @spacing-25;
 		vertical-align: text-bottom;
 		width: @size-100;
 	}
@@ -744,7 +744,7 @@ a {
 	// The flex gap provides the spacing; the inline checkboxes' own
 	// trailing margin would double it up.
 	.cdx-checkbox--inline {
-		margin-right: 0;
+		margin-inline-end: 0;
 	}
 }
 
@@ -784,7 +784,7 @@ a {
 		color: @color-subtle;
 		font-size: @font-size-medium;
 		font-weight: @font-weight-normal;
-		margin-left: @spacing-50;
+		margin-inline-start: @spacing-50;
 	}
 }
 

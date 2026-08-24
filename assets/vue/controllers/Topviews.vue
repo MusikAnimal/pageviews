@@ -423,8 +423,7 @@ watch(
 }
 
 .app-topviews__remove {
-	inset-inline-start: @spacing-25;
-	left: 0;
+	inset-inline-start: 0;
 	// Keep the rows compact despite the 32px button hit area.
 	min-height: 0;
 	// Kept in the tab order and accessibility tree, unlike the

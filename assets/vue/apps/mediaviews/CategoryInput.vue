@@ -130,7 +130,7 @@ function onInput( value ) {
 	&__hint {
 		color: @color-subtle;
 		font-weight: @font-weight-normal;
-		margin-left: @spacing-25;
+		margin-inline-start: @spacing-25;
 	}
 
 	&__controls {

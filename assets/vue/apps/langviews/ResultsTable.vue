@@ -179,7 +179,7 @@ function pageviewsUrl( row ) {
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-stats__badge-total {
-	margin-right: @spacing-50;
+	margin-inline-end: @spacing-50;
 	white-space: nowrap;
 }
 </style>

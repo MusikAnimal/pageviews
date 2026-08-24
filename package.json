@@ -22,7 +22,6 @@
 		"@wikimedia/codex-design-tokens": "^2.6.0",
 		"@wikimedia/codex-icons": "^2.6.0",
 		"banana-i18n": "^2.4.0",
-		"cssjanus": "^2.3.1",
 		"echarts": "^6.1.0",
 		"eslint-config-wikimedia": "^0.32.4",
 		"jsdom": "^29.1.1",

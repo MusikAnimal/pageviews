@@ -58,7 +58,7 @@ defineProps( {
 
 .app-settings__agent-help {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	top: -5px;
 }
 </style>

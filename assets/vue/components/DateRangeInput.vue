@@ -144,7 +144,7 @@ const presetItems = computed( () => {
 
 .app-settings__dates-presets {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	// Vertically aligns the quiet button with the field's legend.
 	top: -30px;
 }
