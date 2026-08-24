@@ -60,11 +60,32 @@ describe( 'buildTimeseriesOption', () => {
 			.toBeUndefined();
 	} );
 
-	it( 'pins the axis to zero only when compatible', () => {
-		expect( buildTimeseriesOption( { ...base, beginAtZero: true } ).yAxis.min ).toBe( 0 );
-		expect(
-			buildTimeseriesOption( { ...base, beginAtZero: true, logScale: true } ).yAxis.min
-		).toBeUndefined();
+	it( 'starts at zero with headroom by default', () => {
+		const { yAxis } = buildTimeseriesOption( base );
+		// scale: false is what actually pins an ECharts value axis to
+		// zero; the top gap keeps lines off the ceiling.
+		expect( yAxis.scale ).toBe( false );
+		expect( yAxis.boundaryGap ).toEqual( [ 0, '10%' ] );
+	} );
+
+	it( 'lifts the baseline when the data is compressed near the top', () => {
+		const compressed = {
+			dates: base.dates,
+			series: [ { label: 'Cat', data: [ 900, 950, 1000 ] } ]
+		};
+		const { yAxis } = buildTimeseriesOption( compressed );
+		expect( yAxis.scale ).toBe( true );
+		expect( yAxis.boundaryGap ).toEqual( [ '10%', '10%' ] );
+
+		// The always-zero preference suppresses the heuristic…
+		expect( buildTimeseriesOption( { ...compressed, beginAtZero: true } ).yAxis.scale )
+			.toBe( false );
+		// …and truncated bars would mislead, so bars always hit zero.
+		expect( buildTimeseriesOption( { ...compressed, chartType: 'bar' } ).yAxis.scale )
+			.toBe( false );
+		// A log axis has neither knob.
+		expect( buildTimeseriesOption( { ...compressed, logScale: true } ).yAxis.scale )
+			.toBeUndefined();
 	} );
 
 	it( 'toggles data labels', () => {

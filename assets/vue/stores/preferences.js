@@ -30,10 +30,11 @@ export const usePreferencesStore = defineStore( 'preferences', () => {
 	 */
 	const autoLogDetection = persistentRef( 'pageviews-settings-autoLogDetection', true );
 	/**
-	 * Always start the y-axis at zero. On by default (unlike legacy):
-	 * a truncated axis exaggerates differences.
+	 * Always start the y-axis at zero, suppressing the compressed-data
+	 * baseline heuristic (charts start at zero by default regardless;
+	 * see buildTimeseriesOption).
 	 */
-	const beginAtZero = persistentRef( 'pageviews-settings-beginAtZero', true );
+	const beginAtZero = persistentRef( 'pageviews-settings-beginAtZero', false );
 	/**
 	 * Remember the chosen chart type across sessions.
 	 */

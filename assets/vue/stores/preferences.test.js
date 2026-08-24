@@ -13,7 +13,7 @@ describe( 'preferences store', () => {
 		expect( preferences.numericalFormatting ).toBe( true );
 		expect( preferences.localizeDateFormat ).toBe( true );
 		expect( preferences.autoLogDetection ).toBe( true );
-		expect( preferences.beginAtZero ).toBe( true );
+		expect( preferences.beginAtZero ).toBe( false );
 		expect( preferences.rememberChart ).toBe( false );
 		expect( preferences.bezierCurve ).toBe( false );
 		expect( preferences.alwaysRedirects ).toBe( false );

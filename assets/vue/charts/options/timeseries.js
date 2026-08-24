@@ -15,7 +15,8 @@ import { parseDate } from '../../lib/dates.js';
  * @param {'line'|'bar'} [input.chartType]
  * @param {boolean} [input.logScale] Zeros are plotted as gaps (nulls):
  *   a log axis cannot represent 0.
- * @param {boolean} [input.beginAtZero]
+ * @param {boolean} [input.beginAtZero] Always include zero, suppressing
+ *   the compressed-data heuristic (see the yAxis config).
  * @param {boolean} [input.showValues] Data labels above points/bars.
  * @param {boolean} [input.smooth] Bezier curves (line only).
  * @param {boolean} [input.monthly]
@@ -51,6 +52,24 @@ export function buildTimeseriesOption( {
 	theme = {}
 } ) {
 	const number = ( value ) => formatNumber( value, locale, localizeNumbers );
+
+	// The data extent across series, for the y-axis heuristic below.
+	let dataMin = Infinity;
+	let dataMax = -Infinity;
+	for ( const { data } of series ) {
+		for ( const value of data ) {
+			if ( typeof value === 'number' ) {
+				dataMin = Math.min( dataMin, value );
+				dataMax = Math.max( dataMax, value );
+			}
+		}
+	}
+	// The axis starts at zero unless everything sits compressed into
+	// the top half of that scale — then a padded non-zero baseline
+	// keeps the fluctuations readable. Never for bars (a truncated
+	// bar misleads) and suppressed by the always-zero preference.
+	const compressed = !beginAtZero && chartType === 'line' &&
+		dataMin > 0 && dataMin > dataMax / 2;
 
 	const xLabels = dates.map( ( dateStr ) => {
 		const date = parseDate( dateStr );
@@ -105,10 +124,15 @@ export function buildTimeseriesOption( {
 		},
 		yAxis: {
 			type: logScale ? 'log' : 'value',
-			// Pageviews are integers; never show fractional ticks
-			// (minInterval only applies to value axes).
-			...( logScale ? {} : { minInterval: 1 } ),
-			...( beginAtZero && !logScale ? { min: 0 } : {} ),
+			// Pageviews are integers; never show fractional ticks.
+			// scale: false pins the axis to zero (the ECharts default,
+			// which made the old explicit min: 0 a no-op); the top gap
+			// is headroom so lines never hug the chart's ceiling.
+			...( logScale ? {} : {
+				minInterval: 1,
+				scale: compressed,
+				boundaryGap: compressed ? [ '10%', '10%' ] : [ 0, '10%' ]
+			} ),
 			axisLabel: {
 				color: theme.subtleText,
 				formatter: number
