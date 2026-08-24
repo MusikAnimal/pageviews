@@ -124,7 +124,7 @@ const presetItems = computed( () => {
 			.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) );
 	}
 	return [
-		...[ 7, 30, 60, 90 ].map( ( days ) => ( {
+		...[ 7, 30, 60, 90, 365 ].map( ( days ) => ( {
 			value: `latest-${ days }`,
 			label: banana.i18n( 'latest-days', String( days ) )
 		} ) ),
