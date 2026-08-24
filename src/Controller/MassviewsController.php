@@ -25,7 +25,7 @@ class MassviewsController extends AbstractController {
 	#[Route( '/massviews/faq', name: 'massviews/faq' )]
 	#[Route( '/massviews/url_structure', name: 'massviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'massviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'massviews',
 		] );
 	}

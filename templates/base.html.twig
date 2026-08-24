@@ -6,7 +6,7 @@
 	   default) leaves it to the prefers-color-scheme stylesheets. #}
 	<script>
 		try {
-			var theme = JSON.parse( localStorage.getItem( 'pageviews-settings-theme' ) );
+			const theme = JSON.parse( localStorage.getItem( 'pageviews-settings-theme' ) );
 			if ( theme === 'light' || theme === 'dark' ) {
 				document.documentElement.dataset.theme = theme;
 			}

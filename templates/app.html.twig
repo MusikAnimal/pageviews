@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{# The shared app shell: every app mounts its Vue controller (named
+   after the app) into the same FOUC skeleton — an indeterminate
+   progress bar that the mounted app replaces. #}
+{% block body %}
+	<main class="app-container" {{ vue_component( current_app|capitalize ) }}>
+		<div class="app-loading-overlay">
+			<div class="app-progress-bar">
+				<div>{{ msg( 'loading' ) }}</div>
+				<div class="cdx-progress-bar" role="progressbar">
+					<div class="cdx-progress-bar__bar"></div>
+				</div>
+			</div>
+		</div>
+	</main>
+{% endblock %}

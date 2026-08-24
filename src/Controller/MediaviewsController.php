@@ -20,7 +20,7 @@ class MediaviewsController extends AbstractController {
 	#[Route( '/mediaviews/faq', name: 'mediaviews/faq' )]
 	#[Route( '/mediaviews/url_structure', name: 'mediaviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'mediaviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'mediaviews',
 		] );
 	}

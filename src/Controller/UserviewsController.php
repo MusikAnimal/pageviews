@@ -26,7 +26,7 @@ class UserviewsController extends AbstractController {
 	#[Route( '/userviews/faq', name: 'userviews/faq' )]
 	#[Route( '/userviews/url_structure', name: 'userviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'userviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'userviews',
 		] );
 	}

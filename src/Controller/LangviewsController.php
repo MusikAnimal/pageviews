@@ -21,7 +21,7 @@ class LangviewsController extends AbstractController {
 	#[Route( '/langviews/faq', name: 'langviews/faq' )]
 	#[Route( '/langviews/url_structure', name: 'langviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'langviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'langviews',
 		] );
 	}

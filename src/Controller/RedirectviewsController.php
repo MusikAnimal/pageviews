@@ -21,7 +21,7 @@ class RedirectviewsController extends AbstractController {
 	#[Route( '/redirectviews/faq', name: 'redirectviews/faq' )]
 	#[Route( '/redirectviews/url_structure', name: 'redirectviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'redirectviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'redirectviews',
 		] );
 	}

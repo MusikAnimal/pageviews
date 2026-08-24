@@ -21,7 +21,7 @@ class TopviewsController extends AbstractController {
 	#[Route( '/topviews/faq', name: 'topviews/faq' )]
 	#[Route( '/topviews/url_structure', name: 'topviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'topviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'topviews',
 		] );
 	}

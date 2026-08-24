@@ -20,7 +20,7 @@ class SiteviewsController extends AbstractController {
 	#[Route( '/siteviews/faq', name: 'siteviews/faq' )]
 	#[Route( '/siteviews/url_structure', name: 'siteviews/url_structure' )]
 	public function index(): Response {
-		return $this->render( 'siteviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'siteviews',
 		] );
 	}

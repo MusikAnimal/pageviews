@@ -16,7 +16,7 @@ final class PageviewsController extends AbstractController {
 	#[Route( '/', name: 'default' )]
 	#[Route( '/pageviews', name: 'pageviews' )]
 	public function index(): Response {
-		return $this->render('pageviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'pageviews',
 		] );
 	}
@@ -28,7 +28,7 @@ final class PageviewsController extends AbstractController {
 	#[Route( '/faq', name: 'pageviews/faq' )]
 	#[Route( '/url_structure', name: 'pageviews/url_structure' )]
 	public function dialogs(): Response {
-		return $this->render( 'pageviews/index.html.twig', [
+		return $this->render( 'app.html.twig', [
 			'current_app' => 'pageviews',
 		] );
 	}
