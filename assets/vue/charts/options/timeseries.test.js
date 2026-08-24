@@ -16,6 +16,37 @@ describe( 'buildTimeseriesOption', () => {
 		expect( option.yAxis.type ).toBe( 'value' );
 	} );
 
+	it( 'overlays a dashed moving average per series when enabled', () => {
+		const option = buildTimeseriesOption( {
+			...base,
+			chartType: 'bar',
+			movingAverage: true,
+			movingAverageSuffix: 'moving average'
+		} );
+
+		expect( option.series ).toHaveLength( 2 );
+		const [ , overlay ] = option.series;
+		expect( overlay.name ).toBe( 'Cat (moving average)' );
+		expect( overlay.type ).toBe( 'line' );
+		expect( overlay.lineStyle.type ).toBe( 'dashed' );
+		// Trailing 7-day window over [ 5, 0, 12 ].
+		expect( overlay.data ).toEqual( [ 5, 2.5, 5.67 ] );
+
+		// Off by default, and no overlay series.
+		expect( buildTimeseriesOption( base ).series ).toHaveLength( 1 );
+	} );
+
+	it( 'smooths over a 3-month window in monthly mode', () => {
+		const option = buildTimeseriesOption( {
+			dates: [ '2026-03', '2026-04', '2026-05', '2026-06' ],
+			series: [ { label: 'Cat', data: [ 3, 6, 9, 30 ] } ],
+			monthly: true,
+			movingAverage: true
+		} );
+		// The last point averages only the last three months.
+		expect( option.series[ 1 ].data ).toEqual( [ 3, 4.5, 6, 15 ] );
+	} );
+
 	it( 'converts zeros to gaps on a log axis', () => {
 		const option = buildTimeseriesOption( { ...base, logScale: true } );
 		expect( option.yAxis.type ).toBe( 'log' );

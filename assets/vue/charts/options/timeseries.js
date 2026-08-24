@@ -1,4 +1,5 @@
-import { seriesColor } from '../palette.js';
+import { seriesColor, seriesTint } from '../palette.js';
+import { movingAverage as smooth } from '../movingAverage.js';
 import { formatDate, formatNumber } from '../../lib/format.js';
 import { parseDate } from '../../lib/dates.js';
 
@@ -18,6 +19,11 @@ import { parseDate } from '../../lib/dates.js';
  * @param {boolean} [input.showValues] Data labels above points/bars.
  * @param {boolean} [input.smooth] Bezier curves (line only).
  * @param {boolean} [input.monthly]
+ * @param {boolean} [input.movingAverage] Overlay a dashed trailing
+ *   moving average per series: 7-day for daily data, 3-month for
+ *   monthly.
+ * @param {string} [input.movingAverageSuffix] Localized name suffix
+ *   for the overlay series (tooltips).
  * @param {string} [input.locale]
  * @param {boolean} [input.localizeDates] User preference; false = ISO dates.
  * @param {boolean} [input.localizeNumbers] User preference; false =
@@ -34,8 +40,10 @@ export function buildTimeseriesOption( {
 	logScale = false,
 	beginAtZero = false,
 	showValues = false,
-	smooth = false,
+	smooth: bezier = false,
 	monthly = false,
+	movingAverage = false,
+	movingAverageSuffix = 'moving average',
 	locale = 'en',
 	localizeDates = true,
 	localizeNumbers = true,
@@ -107,14 +115,14 @@ export function buildTimeseriesOption( {
 			},
 			splitLine: { lineStyle: { color: theme.grid } }
 		},
-		series: series.map( ( { label, data }, index ) => ( {
+		series: [ ...series.map( ( { label, data }, index ) => ( {
 			name: label,
 			type: chartType,
 			data: logScale ? data.map( ( value ) => value || null ) : data,
 			connectNulls: false,
 			...( chartType === 'line' ?
 				{
-					smooth,
+					smooth: bezier,
 					itemStyle: { color: seriesColor( index ) }
 				} :
 				{
@@ -130,6 +138,23 @@ export function buildTimeseriesOption( {
 				color: theme.text,
 				formatter: ( { value } ) => value === null ? '' : number( value )
 			}
-		} ) )
+		} ) ),
+		// Dashed smoothing overlays in the base series' colors, drawn
+		// on top since later series paint last.
+		...( movingAverage ? series.map( ( { label, data }, index ) => ( {
+			name: `${ label } (${ movingAverageSuffix })`,
+			type: 'line',
+			data: smooth(
+				logScale ? data.map( ( value ) => value || null ) : data,
+				monthly ? 3 : 7
+			),
+			connectNulls: false,
+			smooth: true,
+			symbol: 'none',
+			// A markedly brighter tint of the series color, so the
+			// smoothed line stands out from the raw data it overlays.
+			lineStyle: { color: seriesTint( index, 0.45 ), type: 'dashed', width: 2.5 },
+			itemStyle: { color: seriesTint( index, 0.45 ) }
+		} ) ) : [] ) ]
 	};
 }

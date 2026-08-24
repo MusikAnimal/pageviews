@@ -24,6 +24,13 @@
 		>
 			{{ $i18n( 'logarithmic-scale' ) }}
 		</CdxCheckbox>
+		<CdxCheckbox
+			v-if="linearType"
+			v-model="movingAverage"
+			:inline="true"
+		>
+			{{ $i18n( 'moving-average' ) }}
+		</CdxCheckbox>
 	</div>
 	<Chart
 		ref="chartRef"
@@ -153,6 +160,7 @@ const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType
 
 const logScale = ref( false );
 const showValues = ref( false );
+const movingAverage = ref( false );
 
 // Auto-enable on spiky data (the legacy Theil-index heuristic), when
 // the preference allows and the URL doesn't carry autolog=false; the
@@ -203,6 +211,8 @@ const chartOption = computed( () => {
 		chartType: type,
 		logScale: logScale.value,
 		showValues: showValues.value,
+		movingAverage: movingAverage.value,
+		movingAverageSuffix: banana.i18n( 'moving-average' ).toLowerCase(),
 		beginAtZero: preferences.beginAtZero,
 		smooth: preferences.bezierCurve,
 		monthly: props.monthly,

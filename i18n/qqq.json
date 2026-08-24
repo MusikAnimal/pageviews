@@ -274,6 +274,7 @@
 	"more": "Label for dropdown in navigation that lists more links.\n{{Identical|More}}",
 	"most-viewed-pages": "Link to view the most viewed pages of a project",
 	"most-viewed-rank": "Text saying that a page ranked as one of the top most-viewed pages for a month. $1 is the number of the ranking, $2 is a link to the Topviews app with the message for \"most-viewed-pages\" as the link text, and $3 is the month name and year.",
+	"moving-average": "Label for the checkbox that overlays a dashed moving average line on the chart (7-day for daily data, 3-month for monthly). Also used, lowercased, as the suffix in the overlay's tooltip name.",
 	"name-bot": "Editor type option: accounts identified as bots by their username. See https://meta.wikimedia.org/wiki/Research:Bot_user",
 	"namespace": "Label for the dropdown to pick a namespace in the Userviews tool.\n{{Identical|Namespace}}",
 	"net-bytes": "Label for the net number of bytes added minus removed during the selected date range. Can be negative.",
