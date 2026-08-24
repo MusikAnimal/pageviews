@@ -74,7 +74,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 * Edit stats from the replica-backed endpoint: { pages: { title:
 	 * { num_edits, num_users, assessment } }, totals: ?{ num_edits,
 	 * num_users }, failed: boolean } — totals is the exact combined row
-	 * for multi-page queries. null while pending; failed is set when
+	 * for multipage queries. null while pending; failed is set when
 	 * the endpoint errors (e.g. replicas unreachable) so the UI can
 	 * show "data unavailable" rather than nothing.
 	 *

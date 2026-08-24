@@ -83,6 +83,7 @@ export async function fetchPageviews( {
  * @param {string} path
  * @param {Object} params
  * @param {AbortSignal} [signal]
+ * @param {boolean} isRetry
  * @return {Promise<Object>}
  */
 async function apiGet( path, params, signal = undefined, isRetry = false ) {
@@ -400,7 +401,11 @@ export function trimIncompleteTail( { dates, series, totals, probe = series } ) 
 	) {
 		return null;
 	}
-	const average = ( total ) => Math.round( ( total / last ) * 100 ) / 100;
+	// From the counts (dropped/nulled trailing zeros contribute 0), so
+	// chart series ({ total }) and list rows ({ sum }) both work.
+	const average = ( counts ) => Math.round(
+		( counts.reduce( ( a, b ) => a + ( b || 0 ), 0 ) / last ) * 100
+	) / 100;
 	if ( !incompleteTail( totals.counts ) ) {
 		// Some series do have data for the date: keep it, but null the
 		// affected series' trailing zeros so their lines/bars end on
@@ -415,7 +420,7 @@ export function trimIncompleteTail( { dates, series, totals, probe = series } ) 
 				{
 					...entry,
 					counts: [ ...entry.counts.slice( 0, -1 ), null ],
-					average: average( entry.total )
+					average: average( entry.counts )
 				} :
 				entry ),
 			trimmedDate: dates[ last ]
@@ -426,12 +431,12 @@ export function trimIncompleteTail( { dates, series, totals, probe = series } ) 
 		series: series.map( ( entry ) => ( {
 			...entry,
 			counts: entry.counts.slice( 0, -1 ),
-			average: average( entry.total )
+			average: average( entry.counts )
 		} ) ),
 		totals: {
 			...totals,
 			counts: totals.counts.slice( 0, -1 ),
-			average: average( totals.total )
+			average: average( totals.counts )
 		},
 		trimmedDate: dates[ last ]
 	};

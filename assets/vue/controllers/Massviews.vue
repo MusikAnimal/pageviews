@@ -124,6 +124,13 @@
 				</div>
 				<ResultsTable />
 			</template>
+			<CdxMessage
+				v-if="incompleteMessage"
+				type="warning"
+				:inline="true"
+			>
+				{{ incompleteMessage }}
+			</CdxMessage>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -162,6 +169,7 @@ import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
+import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
 import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
 import { banana, rawI18n } from '../i18n.js';
@@ -181,6 +189,7 @@ const route = useRoute();
 const router = useRouter();
 const { source, target, subjectpage, subcategories } = storeToRefs( store );
 useQuerySync( store );
+const { message: incompleteMessage } = useIncompleteDataMessage( store );
 
 // The /massviews/faq and /massviews/url_structure routes open dialogs
 // over the app.

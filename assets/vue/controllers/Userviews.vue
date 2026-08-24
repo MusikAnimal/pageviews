@@ -95,6 +95,13 @@
 				</div>
 				<ResultsTable />
 			</template>
+			<CdxMessage
+				v-if="incompleteMessage"
+				type="warning"
+				:inline="true"
+			>
+				{{ incompleteMessage }}
+			</CdxMessage>
 		</figure>
 	</div>
 	<CdxToastContainer />
@@ -129,6 +136,7 @@ import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
+import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
 import { useAppToast } from '../composables/useAppToast.js';
 import { formatDate, formatNumber } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
@@ -151,6 +159,7 @@ const route = useRoute();
 const router = useRouter();
 const { user } = storeToRefs( store );
 useQuerySync( store );
+const { message: incompleteMessage } = useIncompleteDataMessage( store );
 
 // The /userviews/faq and /userviews/url_structure routes open dialogs
 // over the app.

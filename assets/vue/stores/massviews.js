@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
+import { fetchCategoryMembers, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
 	getSearchResults,
@@ -138,6 +138,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * @type {import('vue').Ref<?{counts: number[], total: number, average: number}>}
 	 */
 	const totals = ref( null );
+	/**
+	 * One-shot signal: the trailing date's data has not been published
+	 * by AQS yet (see trimIncompleteTail).
+	 *
+	 * @type {import('vue').Ref<?string>}
+	 */
+	const incompleteDate = ref( null );
 
 	const settings = useSettingsStore();
 
@@ -498,6 +505,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			dates.value = [];
 			pagesData.value = [];
 			totals.value = null;
+			incompleteDate.value = null;
 			// A cleared input also clears lingering errors.
 			ui.clearMessages();
 			return;
@@ -632,13 +640,24 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				done += titles.length;
 			}
 			pagesData.value = rows;
-			dates.value = axis;
 			const total = combined.reduce( ( a, b ) => a + b, 0 );
-			totals.value = {
+			const allTotals = {
 				counts: combined,
 				total,
 				average: Math.round( ( total / axis.length ) * 100 ) / 100
 			};
+			// An all-zero most recent day right after a non-zero one
+			// means AQS has not published it yet: drop it (or gap the
+			// affected rows) and tell the user via the one-shot signal.
+			const trimmed = trimIncompleteTail( {
+				dates: axis,
+				series: rows,
+				totals: allTotals
+			} );
+			incompleteDate.value = trimmed?.trimmedDate ?? null;
+			dates.value = trimmed?.dates ?? axis;
+			pagesData.value = trimmed?.series ?? rows;
+			totals.value = trimmed?.totals ?? allTotals;
 			status.value = 'complete';
 		} catch ( error ) {
 			if ( id !== loadId ) {
@@ -687,6 +706,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		dates,
 		pagesData,
 		totals,
+		incompleteDate,
 		query,
 		setFromQuery,
 		load,

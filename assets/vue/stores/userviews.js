@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchPagesCreated, fetchPageviews } from '../lib/metricsApi.js';
+import { fetchPagesCreated, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getSiteinfo } from '../projects.js';
 import { mwApiGet } from '../lib/mwApi.js';
 import { banana } from '../i18n.js';
@@ -96,6 +96,13 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	 * @type {import('vue').Ref<?{counts: number[], total: number, average: number}>}
 	 */
 	const totals = ref( null );
+	/**
+	 * One-shot signal: the trailing date's data has not been published
+	 * by AQS yet (see trimIncompleteTail).
+	 *
+	 * @type {import('vue').Ref<?string>}
+	 */
+	const incompleteDate = ref( null );
 	/**
 	 * One-shot signal for the controller to toast: the user has a huge
 	 * edit count, so the replica query may take a while.
@@ -218,6 +225,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 			dates.value = [];
 			pagesData.value = [];
 			totals.value = null;
+			incompleteDate.value = null;
 			// A cleared input also clears lingering errors.
 			ui.clearMessages();
 			return;
@@ -306,7 +314,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 			const axis = result.dates;
 			const combined = axis.map( () => 0 );
 			// Chunks preserve request order, so rows align by index.
-			pagesData.value = result.pages.map( ( series, i ) => {
+			const rows = result.pages.map( ( series, i ) => {
 				series.counts.forEach( ( count, j ) => {
 					combined[ j ] += count;
 				} );
@@ -320,13 +328,24 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 					average: series.average
 				};
 			} );
-			dates.value = axis;
 			const total = combined.reduce( ( a, b ) => a + b, 0 );
-			totals.value = {
+			const allTotals = {
 				counts: combined,
 				total,
 				average: Math.round( ( total / axis.length ) * 100 ) / 100
 			};
+			// An all-zero most recent day right after a non-zero one
+			// means AQS has not published it yet: drop it (or gap the
+			// affected rows) and tell the user via the one-shot signal.
+			const trimmed = trimIncompleteTail( {
+				dates: axis,
+				series: rows,
+				totals: allTotals
+			} );
+			incompleteDate.value = trimmed?.trimmedDate ?? null;
+			dates.value = trimmed?.dates ?? axis;
+			pagesData.value = trimmed?.series ?? rows;
+			totals.value = trimmed?.totals ?? allTotals;
 			status.value = 'complete';
 		} catch ( error ) {
 			if ( id !== loadId ) {
@@ -372,6 +391,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		dates,
 		pagesData,
 		totals,
+		incompleteDate,
 		editCountWarning,
 		query,
 		setFromQuery,

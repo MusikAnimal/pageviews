@@ -76,6 +76,28 @@ describe( 'redirectviews store', () => {
 		expect( ui.progress ).toBeNull();
 	} );
 
+	it( 'drops a not-yet-published trailing date with a signal', async () => {
+		const store = useRedirectviewsStore();
+		store.page = 'Cat';
+		getRedirects.mockResolvedValue( { Cat: [ { title: 'Cats', fragment: null } ] } );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01', '2026-07-02', '2026-07-03' ],
+			pages: [
+				{ title: 'Cat', counts: [ 100, 200, 0 ], total: 300, average: 100 },
+				{ title: 'Cats', counts: [ 10, 20, 0 ], total: 30, average: 10 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( store.incompleteDate ).toBe( '2026-07-03' );
+		expect( store.dates ).toEqual( [ '2026-07-01', '2026-07-02' ] );
+		expect( store.redirectData[ 0 ].counts ).toEqual( [ 100, 200 ] );
+		expect( store.redirectData[ 0 ].average ).toBe( 150 );
+		expect( store.totals.counts ).toEqual( [ 110, 220 ] );
+	} );
+
 	it( 'still works for a page with no redirects', async () => {
 		const store = useRedirectviewsStore();
 		store.page = 'Lonely_page';
