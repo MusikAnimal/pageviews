@@ -2,13 +2,14 @@
 	<template v-if="summary">
 		<p class="app-page-summary">
 			<template v-if="summary.assessment">
-				<img
-					v-if="summary.assessment.badge"
-					class="app-page-summary__badge"
-					:src="summary.assessment.badge"
-					:alt="summary.assessment.class"
-				>
-				{{ summary.assessment.class }}
+				<span class="app-page-summary__badge">
+					<img
+						v-if="summary.assessment.badge"
+						:src="summary.assessment.badge"
+						:alt="summary.assessment.class"
+					>
+					{{ summary.assessment.class }}
+				</span>
 				·
 			</template>
 			<a
@@ -313,13 +314,20 @@ function crossAppUrl( app, title ) {
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-page-summary {
+	align-items: center;
+	display: flex;
+	gap: @spacing-50;
+	justify-content: center;
+
 	&__badge {
-		height: @size-100;
-		margin-right: @spacing-25;
-		// Like .app-stats__badge ('center' is not a vertical-align
-		// value — it computed to the default baseline).
-		vertical-align: text-bottom;
-		width: @size-100;
+		align-items: center;
+		display: flex;
+		gap: @spacing-25;
+
+		img {
+			height: @size-100;
+			width: @size-100;
+		}
 	}
 
 	&__rank {
