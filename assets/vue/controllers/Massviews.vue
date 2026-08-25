@@ -402,10 +402,13 @@ function focusTarget() {
 }
 
 /**
- * Picking a source readies the input for its target: focus moves
- * there once the menu has closed.
+ * Picking a source readies the input for its target: the previous
+ * source's value (and any errors it caused) no longer applies, so
+ * both clear, and focus moves there once the menu has closed.
  */
 async function onSourceSelect() {
+	target.value = '';
+	ui.clearMessages();
 	await nextTick();
 	focusTarget();
 }
