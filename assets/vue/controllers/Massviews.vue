@@ -29,6 +29,7 @@
 							v-model="target"
 							class="app-page-input-row__input"
 							autocomplete="on"
+							min="1"
 							data-1p-ignore
 							data-lpignore="true"
 							data-bwignore
@@ -290,7 +291,7 @@ const PLACEHOLDERS = {
 	wikilinks: 'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List',
 	subpages: 'https://en.wikipedia.org/wiki/User:Example',
 	transclusions: 'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
-	quarry: '12345',
+	quarry: '1',
 	hashtag: '#editathon',
 	'external-link': '*.nycgo.com',
 	search: 'insource:"UNESCO Science Report"'
