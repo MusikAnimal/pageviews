@@ -314,11 +314,6 @@ function crossAppUrl( app, title ) {
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-page-summary {
-	align-items: center;
-	display: flex;
-	gap: @spacing-50;
-	justify-content: center;
-
 	&__badge {
 		align-items: center;
 		display: flex;
