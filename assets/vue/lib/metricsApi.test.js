@@ -47,7 +47,7 @@ describe( 'apiGet auth', () => {
 		} );
 
 		expect( impl.mock.calls[ 0 ][ 1 ].headers ).toEqual( {
-			Authorization: 'Bearer tok-1'
+			'X-Api-Token': 'tok-1'
 		} );
 	} );
 

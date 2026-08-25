@@ -18,6 +18,12 @@ security:
             provider: api_users
             access_token:
                 token_handler: App\Security\ApiTokenHandler
+                # X-Api-Token first (Authorization gets stripped by
+                # some CGI stacks); Bearer kept for tabs predating the
+                # header switch.
+                token_extractors:
+                    - app.access_token_extractor
+                    - header
                 failure_handler: App\Security\ApiAuthFailureResponder
             entry_point: App\Security\ApiAuthFailureResponder
         # Everything else stays anonymous: the HTML shells (which embed

@@ -21,3 +21,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Extracts the API access token from the X-Api-Token header. A
+    # custom header rather than Authorization: Bearer, which
+    # Apache/FastCGI setups strip unless specially configured
+    # (CGIPassAuth) — the exact failure we hit in production.
+    app.access_token_extractor:
+        class: Symfony\Component\Security\Http\AccessToken\HeaderAccessTokenExtractor
+        arguments:
+            $headerParameter: 'X-Api-Token'
+            $tokenType: ''

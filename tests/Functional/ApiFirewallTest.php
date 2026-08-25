@@ -30,7 +30,7 @@ class ApiFirewallTest extends WebTestCase {
 	public function testGarbageTokenRejected(): void {
 		$client = static::createClient();
 		$client->request( 'GET', '/api/metrics/siteviews', server: [
-			'HTTP_AUTHORIZATION' => 'Bearer garbage',
+			'HTTP_X_API_TOKEN' => 'garbage',
 		] );
 
 		static::assertResponseStatusCodeSame( 401 );
@@ -44,7 +44,7 @@ class ApiFirewallTest extends WebTestCase {
 		$client = static::createClient();
 		$token = static::getContainer()->get( ApiTokenIssuer::class )->mint( 'anon', -7200 );
 		$client->request( 'GET', '/api/metrics/siteviews', server: [
-			'HTTP_AUTHORIZATION' => "Bearer $token",
+			'HTTP_X_API_TOKEN' => $token,
 		] );
 
 		static::assertResponseStatusCodeSame( 401 );
@@ -60,7 +60,7 @@ class ApiFirewallTest extends WebTestCase {
 		// No query params: an authenticated request surfaces the
 		// controller's own validation 400.
 		$client->request( 'GET', '/api/metrics/siteviews', server: [
-			'HTTP_AUTHORIZATION' => "Bearer $token",
+			'HTTP_X_API_TOKEN' => $token,
 		] );
 
 		static::assertResponseStatusCodeSame( 400 );

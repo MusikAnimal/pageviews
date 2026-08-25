@@ -89,7 +89,9 @@ export async function fetchPageviews( {
 async function apiGet( path, params, signal = undefined, isRetry = false ) {
 	const response = await fetch( `${ path }?${ new URLSearchParams( params ) }`, {
 		signal,
-		headers: { Authorization: `Bearer ${ getToken() }` }
+		// A custom header, not Authorization: Bearer — Apache/FastCGI
+		// strips Authorization unless specially configured.
+		headers: { 'X-Api-Token': getToken() }
 	} );
 
 	if ( response.status === 401 && !isRetry ) {
