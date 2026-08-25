@@ -631,6 +631,25 @@ class MetricsRepositoryTest extends TestCase {
 					[ 'timestamp' => '2025-03-01 00:00:00.000Z', 'pageview-count' => 50 ],
 				],
 			],
+			'commons-analytics/category-metrics-snapshot/UNESCO/20250101/20250401' => [
+				'items' => [
+					[
+						'timestamp' => '2025-01-01 00:00:00.000Z',
+						'media-file-count' => 600, 'media-file-count-deep' => 17000,
+						'used-media-file-count' => 140, 'used-media-file-count-deep' => 1100000,
+						'leveraging-wiki-count' => 70, 'leveraging-wiki-count-deep' => 800,
+						'leveraging-page-count' => 340, 'leveraging-page-count-deep' => 4600000,
+					],
+					// The latest snapshot in range wins.
+					[
+						'timestamp' => '2025-03-01 00:00:00.000Z',
+						'media-file-count' => 675, 'media-file-count-deep' => 17243854,
+						'used-media-file-count' => 144, 'used-media-file-count-deep' => 1205684,
+						'leveraging-wiki-count' => 76, 'leveraging-wiki-count-deep' => 831,
+						'leveraging-page-count' => 352, 'leveraging-page-count-deep' => 4747221,
+					],
+				],
+			],
 		] );
 
 		$result = $repo->getCommonsCategoryViews(
@@ -649,7 +668,53 @@ class MetricsRepositoryTest extends TestCase {
 			'counts' => [ 100, 0, 50 ],
 			'total' => 150,
 			'average' => 50.0,
+			// The deep scope reads the -deep snapshot fields.
+			'stats' => [
+				'files' => 17243854,
+				'usedFiles' => 1205684,
+				'wikis' => 831,
+				'pages' => 4747221,
+			],
 		], $result );
+	}
+
+	public function testCommonsCategoryShallowStats(): void {
+		$repo = $this->makeRepo( [
+			'commons-analytics/pageviews-per-category-monthly/UNESCO/shallow/all-wikis/20250101/20250201' => [
+				'items' => [ [ 'timestamp' => '2025-01-01 00:00:00.000Z', 'pageview-count' => 100 ] ],
+			],
+			'commons-analytics/category-metrics-snapshot/UNESCO/20250101/20250201' => [
+				'items' => [ [
+					'timestamp' => '2025-01-01 00:00:00.000Z',
+					'media-file-count' => 675, 'media-file-count-deep' => 17243854,
+					'used-media-file-count' => 144, 'used-media-file-count-deep' => 1205684,
+					'leveraging-wiki-count' => 76, 'leveraging-wiki-count-deep' => 831,
+					'leveraging-page-count' => 352, 'leveraging-page-count-deep' => 4747221,
+				] ],
+			],
+		] );
+
+		$result = $repo->getCommonsCategoryViews( 'UNESCO', 'shallow', 'all-wikis', '2025-01', '2025-01' );
+
+		static::assertSame(
+			[ 'files' => 675, 'usedFiles' => 144, 'wikis' => 76, 'pages' => 352 ],
+			$result['stats']
+		);
+	}
+
+	public function testCommonsCategoryMissingSnapshot(): void {
+		// No snapshot route: it 404s. Supplementary data, so the
+		// pageviews still come through, with null stats.
+		$repo = $this->makeRepo( [
+			'commons-analytics/pageviews-per-category-monthly/UNESCO/deep/all-wikis/20250101/20250201' => [
+				'items' => [ [ 'timestamp' => '2025-01-01 00:00:00.000Z', 'pageview-count' => 100 ] ],
+			],
+		] );
+
+		$result = $repo->getCommonsCategoryViews( 'UNESCO', 'deep', 'all-wikis', '2025-01', '2025-01' );
+
+		static::assertSame( 100, $result['total'] );
+		static::assertNull( $result['stats'] );
 	}
 
 	public function testCommonsCategoryNotLoaded(): void {

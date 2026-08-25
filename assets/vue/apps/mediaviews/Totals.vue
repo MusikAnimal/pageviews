@@ -61,11 +61,28 @@ const metricLabel = computed( () => banana.i18n(
 ) );
 
 /**
- * File statistics from imageinfo, like the legacy legend: a single
- * file shows its own details (incl. upload date and type); multiple
- * files show duration and size sums.
+ * The Statistics sidebar section. Categories source: the category
+ * size/usage snapshot (file counts, usage). Files source: imageinfo
+ * details like the legacy legend — a single file shows its own
+ * details (incl. upload date and type); multiple files show duration
+ * and size sums.
  */
 const statistics = computed( () => {
+	if ( store.source === 'categories' ) {
+		// Summed across categories, like the file duration/size sums
+		// (overlapping categories can double-count, as in legacy).
+		const stats = store.series.map( ( entry ) => entry.stats ).filter( Boolean );
+		if ( !stats.length ) {
+			return [];
+		}
+		const sum = ( key ) => stats.reduce( ( total, s ) => total + s[ key ], 0 );
+		return [
+			{ label: banana.i18n( 'file-count' ), value: number( sum( 'files' ) ) },
+			{ label: banana.i18n( 'used-files' ), value: number( sum( 'usedFiles' ) ) },
+			{ label: banana.i18n( 'wikis' ), value: number( sum( 'wikis' ) ) },
+			{ label: banana.i18n( 'pages' ), value: number( sum( 'pages' ) ) }
+		];
+	}
 	const infos = store.series
 		.map( ( entry ) => store.fileInfo?.[ entry.name ] )
 		.filter( ( info ) => info && !info.missing );

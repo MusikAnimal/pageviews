@@ -125,7 +125,10 @@ describe( 'mediaviews store', () => {
 				dates: [ '2025-01', '2025-02' ],
 				counts: category === 'UNESCO' ? [ 10, 20 ] : [ 100, 0 ],
 				total: category === 'UNESCO' ? 30 : 100,
-				average: category === 'UNESCO' ? 15 : 50
+				average: category === 'UNESCO' ? 15 : 50,
+				stats: category === 'UNESCO' ?
+					{ files: 675, usedFiles: 144, wikis: 76, pages: 352 } :
+					null
 			} );
 		} );
 
@@ -136,8 +139,11 @@ describe( 'mediaviews store', () => {
 		// The unknown category gets a message and is dropped.
 		expect( ui.messages[ 0 ].text ).toContain( 'Bogus category' );
 		expect( store.series ).toEqual( [
-			{ name: 'Media from NASA', counts: [ 100, 0 ], total: 100, average: 50 },
-			{ name: 'UNESCO', counts: [ 10, 20 ], total: 30, average: 15 }
+			{ name: 'Media from NASA', counts: [ 100, 0 ], total: 100, average: 50, stats: null },
+			{
+				name: 'UNESCO', counts: [ 10, 20 ], total: 30, average: 15,
+				stats: { files: 675, usedFiles: 144, wikis: 76, pages: 352 }
+			}
 		] );
 		expect( store.totals ).toMatchObject( { counts: [ 110, 20 ], total: 130 } );
 		expect( store.status ).toBe( 'complete' );

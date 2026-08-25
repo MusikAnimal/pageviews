@@ -1024,10 +1024,21 @@ class MetricsRepository extends Repository {
 					// AQS treats the end month as exclusive.
 					( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
 				) );
+				// The category's size and usage snapshot rides along;
+				// requested up front so the two fetch concurrently.
+				$snapshotResponse = $this->aqsClient->request( 'GET', sprintf(
+					'commons-analytics/category-metrics-snapshot/%s/%s/%s',
+					rawurlencode( $category ),
+					$startDate->format( 'Ymd' ),
+					( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
+				) );
 
 				try {
 					$items = $response->toArray()['items'] ?? [];
 				} catch ( HttpClientExceptionInterface $e ) {
+					// The unread snapshot response must not throw from
+					// its destructor during the unwind.
+					$snapshotResponse->cancel();
 					if (
 						$e instanceof ClientExceptionInterface &&
 						$response->getStatusCode() === Response::HTTP_NOT_FOUND
@@ -1066,9 +1077,38 @@ class MetricsRepository extends Repository {
 					'counts' => $counts,
 					'total' => array_sum( $counts ),
 					'average' => round( array_sum( $counts ) / count( $dates ), 2 ),
+					'stats' => $this->extractCategorySnapshot( $snapshotResponse, $scope ),
 				];
 			}
 		);
+	}
+
+	/**
+	 * The latest category-metrics snapshot in range: the category's
+	 * file count and usage figures, from the -deep fields when the
+	 * scope includes subcategories. Null when unavailable — the
+	 * snapshot is supplementary, so its failure must not take the
+	 * pageviews down with it.
+	 *
+	 * @return array{files: int, usedFiles: int, wikis: int, pages: int}|null
+	 */
+	private function extractCategorySnapshot( object $response, string $scope ): ?array {
+		try {
+			$items = $response->toArray()['items'] ?? [];
+		} catch ( HttpClientExceptionInterface ) {
+			return null;
+		}
+		$latest = end( $items );
+		if ( !$latest ) {
+			return null;
+		}
+		$suffix = $scope === 'deep' ? '-deep' : '';
+		return [
+			'files' => $latest[ "media-file-count$suffix" ] ?? 0,
+			'usedFiles' => $latest[ "used-media-file-count$suffix" ] ?? 0,
+			'wikis' => $latest[ "leveraging-wiki-count$suffix" ] ?? 0,
+			'pages' => $latest[ "leveraging-page-count$suffix" ] ?? 0,
+		];
 	}
 
 	private function dateAxis( DateTime $start, DateTime $end, string $granularity ): array {

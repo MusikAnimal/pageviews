@@ -298,7 +298,9 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 				name: name.replace( /_/g, ' ' ),
 				counts: result.counts,
 				total: result.total,
-				average: result.average
+				average: result.average,
+				// Category size/usage figures (categories source only).
+				stats: result.stats ?? null
 			};
 		} );
 		dates.value = axis;

@@ -38,6 +38,18 @@
 		<template #item-date="{ item }">
 			{{ item ?? '' }}
 		</template>
+		<template #item-files="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-usedFiles="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-wikis="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
+		<template #item-pages="{ item }">
+			{{ item === null ? '?' : number( item ) }}
+		</template>
 		<template #item-mediatype="{ item }">
 			{{ item ? item.toLowerCase() : '' }}
 		</template>
@@ -51,6 +63,18 @@
 					</td>
 					<td class="app-stats__number">
 						{{ number( Math.round( store.totals.average ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( sumOf( 'files' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( sumOf( 'usedFiles' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( sumOf( 'wikis' ) ) }}
+					</td>
+					<td class="app-stats__number">
+						{{ number( sumOf( 'pages' ) ) }}
 					</td>
 				</tr>
 				<tr v-else>
@@ -111,7 +135,12 @@ const rows = computed( () => store.series.map( ( entry, index ) => {
 			} ) :
 			null,
 		timestamp: info?.timestamp ?? '',
-		mediatype: info?.mediatype ?? null
+		mediatype: info?.mediatype ?? null,
+		// Category size/usage figures; null renders as "?".
+		files: entry.stats?.files ?? null,
+		usedFiles: entry.stats?.usedFiles ?? null,
+		wikis: entry.stats?.wikis ?? null,
+		pages: entry.stats?.pages ?? null
 	};
 } ) );
 
@@ -129,7 +158,11 @@ const columns = computed( () => categoriesSource.value ?
 			label: banana.i18n( 'monthly-average' ),
 			sortable: true,
 			numeric: true
-		}
+		},
+		{ key: 'files', label: banana.i18n( 'file-count' ), sortable: true, numeric: true },
+		{ key: 'usedFiles', label: banana.i18n( 'used-files' ), sortable: true, numeric: true },
+		{ key: 'wikis', label: banana.i18n( 'wikis' ), sortable: true, numeric: true },
+		{ key: 'pages', label: banana.i18n( 'pages' ), sortable: true, numeric: true }
 	] :
 	[
 		{ key: 'color', label: '', sortable: false },

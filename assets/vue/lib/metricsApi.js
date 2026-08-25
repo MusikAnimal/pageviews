@@ -363,7 +363,9 @@ export function fetchCategoryMembers( { project, category, subcategories = '0', 
  * @param {string} params.end
  * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { category, scope, wiki, granularity,
- *   start, end, dates, counts, total, average }
+ *   start, end, dates, counts, total, average, stats } — stats is
+ *   the latest category size/usage snapshot { files, usedFiles,
+ *   wikis, pages } (scope-appropriate), or null when unavailable.
  * @throws {ApiError}
  */
 export function fetchCommonsCategory( {
