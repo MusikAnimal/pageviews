@@ -51,11 +51,11 @@
 				</div>
 				<!-- Distinct editors are not additive across days, so
 					the per-day/month average is shown. -->
-				<div class="app-totals__stat">
+				<div v-if="store.editsData.totals.editors" class="app-totals__stat">
 					<dt>{{ $i18n( 'editors' ) }} ({{ averageLabel.toLowerCase() }})</dt>
 					<dd>{{ number( Math.round( store.editsData.totals.editors.average ) ) }}</dd>
 				</div>
-				<div class="app-totals__stat">
+				<div v-if="store.editsData.totals.editedPages" class="app-totals__stat">
 					<dt>{{ $i18n( 'pages-edited' ) }}</dt>
 					<dd>{{ number( store.editsData.totals.editedPages.total ) }}</dd>
 				</div>

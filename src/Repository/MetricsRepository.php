@@ -530,6 +530,14 @@ class MetricsRepository extends Repository {
 	];
 
 	/**
+	 * Editing metrics whose AQS endpoints reject the all-projects
+	 * rollup with a 400 (the editors and edited-pages aggregates).
+	 * They are skipped for all-projects queries; their absence from
+	 * the response tells the client to hide those statistics.
+	 */
+	private const NO_ALL_PROJECTS_METRICS = [ 'editors', 'editedPages' ];
+
+	/**
 	 * Batched per-site editing statistics (edit counts and pages
 	 * created) from the AQS editing metrics, keyed under `metrics`
 	 * with the getSiteviews() sites/totals shape each, plus
@@ -603,9 +611,16 @@ class MetricsRepository extends Repository {
 		// The editing APIs' end timestamp is exclusive.
 		$endTs = ( clone $endDate )->modify( '+1 day' )->format( 'Ymd' );
 
+		$editMetrics = self::EDIT_METRICS;
+		if ( count( $sites ) === 1 && $this->normalizeProject( $sites[0] ) === 'all-projects' ) {
+			$editMetrics = array_diff_key(
+				$editMetrics, array_flip( self::NO_ALL_PROJECTS_METRICS )
+			);
+		}
+
 		$metrics = [];
 		$dataThrough = null;
-		foreach ( self::EDIT_METRICS as $metric => $unused ) {
+		foreach ( $editMetrics as $metric => $unused ) {
 			$metrics[ $metric ] = [
 				'sites' => [],
 				'totals' => array_fill( 0, count( $dates ), 0 ),
@@ -614,7 +629,7 @@ class MetricsRepository extends Repository {
 
 		// One request per site and metric, in the usual paced waves.
 		$requests = [];
-		foreach ( array_keys( self::EDIT_METRICS ) as $metric ) {
+		foreach ( array_keys( $editMetrics ) as $metric ) {
 			foreach ( $sites as $site ) {
 				$requests[] = [ $metric, $site ];
 			}

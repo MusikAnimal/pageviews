@@ -430,6 +430,32 @@ class MetricsRepositoryTest extends TestCase {
 		], $result );
 	}
 
+	public function testSiteEditsAllProjectsSkipsUnsupportedMetrics(): void {
+		$repo = $this->makeRepo( [
+			'edits/aggregate/all-projects/user/content/daily/20260701/20260704' =>
+				self::aqsEdits( [ '2026-07-01' => 100 ] ),
+			'edited-pages/new/all-projects/user/content/daily/20260701/20260704' =>
+				self::aqsResults( 'new_pages', [ '2026-07-01' => 5 ] ),
+			'bytes-difference/net/aggregate/all-projects/user/content/daily/20260701/20260704' =>
+				self::aqsResults( 'net_bytes_diff', [ '2026-07-01' => 1000 ] ),
+		] );
+
+		$result = $repo->getSiteEdits( 'all-projects', '2026-07-01', '2026-07-03' );
+
+		// AQS rejects the all-projects rollup for editors and
+		// edited-pages: neither queried nor in the response.
+		static::assertSame(
+			[ 'edits', 'newPages', 'netBytes' ],
+			array_keys( $result['metrics'] )
+		);
+		foreach ( $this->requestedUrls as $url ) {
+			static::assertStringNotContainsString( 'editors/aggregate', $url );
+			static::assertStringNotContainsString( 'edited-pages/aggregate', $url );
+		}
+		static::assertSame( 'all-projects', $result['metrics']['edits']['sites'][0]['site'] );
+		static::assertSame( 100, $result['metrics']['edits']['sites'][0]['total'] );
+	}
+
 	public function testSiteEditsMonthlyAndTypes(): void {
 		$repo = $this->makeRepo( [
 			// Monthly, non-default types; the exclusive end timestamp
