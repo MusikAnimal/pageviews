@@ -1,7 +1,9 @@
 <template>
 	<div class="app-loading-overlay">
 		<div class="app-progress-bar">
-			<div>{{ $i18n( 'loading' ) }}</div>
+			<div class="app-progress-bar__loading">
+				{{ $i18n( 'loading' ) }}
+			</div>
 			<CdxProgressBar
 				v-if="!ui.progress"
 				:aria-label="$i18n( 'loading' )"
