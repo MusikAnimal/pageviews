@@ -26,6 +26,7 @@
 							ref="targetInput"
 							v-model="target"
 							class="app-page-input-row__input"
+							:input-type="source === 'quarry' ? 'number' : 'text'"
 							:clearable="true"
 							:aria-label="targetLabel"
 							:placeholder="targetPlaceholder"
