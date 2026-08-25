@@ -20,10 +20,19 @@ class UserviewsRepositoryTest extends TestCase {
 	 * The replica query is faked with fixture rows; everything else
 	 * (validation, normalization, the response contract) runs for real.
 	 */
-	private function makeRepo( array $rows ): UserviewsRepository {
+	private function makeRepo( array $rows, ?array $assessmentsConfig = null ): UserviewsRepository {
 		$projectsRepo = $this->createStub( ProjectsRepository::class );
 		$projectsRepo->method( 'getProjects' )
 			->willReturn( [ 'en.wikipedia' => 'enwiki' ] );
+		$projectsRepo->method( 'getProjectAssessmentsConfig' )
+			->willReturn( $assessmentsConfig );
+		$projectsRepo->method( 'formatAssessment' )
+			->willReturnCallback( static fn ( string $project, ?string $class ) => $class ? [
+				'class' => $class,
+				'badge' => 'https://upload.wikimedia.org/wikipedia/commons/' .
+					( $assessmentsConfig['class'][ $class ]['badge'] ?? '' ),
+				'color' => $assessmentsConfig['class'][ $class ]['color'] ?? null,
+			] : null );
 
 		$replicasClient = $this->createStub( ReplicasClient::class );
 		return new class ( $rows, $this, $projectsRepo, $replicasClient ) extends UserviewsRepository {
@@ -41,6 +50,7 @@ class UserviewsRepositoryTest extends TestCase {
 				string $username,
 				string $namespace,
 				string $redirects,
+				bool $withAssessments = false,
 			): array {
 				$this->test->setQueryArgs( func_get_args() );
 				return $this->rows;
@@ -50,6 +60,32 @@ class UserviewsRepositoryTest extends TestCase {
 
 	public function setQueryArgs( array $args ): void {
 		$this->queryArgs = $args;
+	}
+
+	public function testAssessmentsJoinedWhereSupported(): void {
+		$repo = $this->makeRepo(
+			[
+				[
+					'title' => 'Cattle',
+					'namespace' => '0',
+					'timestamp' => '20260102030405',
+					'redirect' => '0',
+					'length' => '1234',
+					'assessment' => 'GA',
+				],
+			],
+			[ 'class' => [ 'GA' => [ 'badge' => '9/94/Symbol_support_vote.svg', 'color' => '#66FF66' ] ] ]
+		);
+
+		$result = $repo->getPagesCreated( 'en.wikipedia.org', 'Jimbo Wales' );
+
+		static::assertSame( [
+			'class' => 'GA',
+			'badge' => 'https://upload.wikimedia.org/wikipedia/commons/9/94/Symbol_support_vote.svg',
+			'color' => '#66FF66',
+		], $result['pages'][ 0 ]['assessment'] );
+		// The query was asked to piggyback the assessment.
+		static::assertTrue( $this->queryArgs[ 4 ] );
 	}
 
 	public function testContractShape(): void {
@@ -85,6 +121,7 @@ class UserviewsRepositoryTest extends TestCase {
 					'created' => '2026-01-02',
 					'redirect' => false,
 					'length' => 1234,
+					'assessment' => null,
 				],
 				[
 					'title' => 'Sandbox',
@@ -92,12 +129,14 @@ class UserviewsRepositoryTest extends TestCase {
 					'created' => '2025-06-07',
 					'redirect' => true,
 					'length' => 56,
+					'assessment' => null,
 				],
 			],
 		], $result );
 		// Underscores become spaces and the first letter is uppercased
 		// before the query, like the legacy tool.
-		static::assertSame( [ 'enwiki', 'Jimbo wales', '0', '2' ], $this->queryArgs );
+		// The last flag: no assessments query on a project without them.
+		static::assertSame( [ 'enwiki', 'Jimbo wales', '0', '2', false ], $this->queryArgs );
 	}
 
 	public function testInvalidProject(): void {

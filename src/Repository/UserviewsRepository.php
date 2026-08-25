@@ -79,7 +79,12 @@ class UserviewsRepository extends Repository {
 			$cacheKey,
 			function ( ItemInterface $item ) use ( $project, $dbName, $username, $namespace, $redirects ) {
 				$item->expiresAfter( 600 );
-				$rows = $this->queryPagesCreated( $dbName, $username, $namespace, $redirects );
+				// Fetched in the same query as the page list, where the
+				// project uses PageAssessments at all.
+				$withAssessments = (bool)$this->projectsRepo->getProjectAssessmentsConfig( $project );
+				$rows = $this->queryPagesCreated(
+					$dbName, $username, $namespace, $redirects, $withAssessments
+				);
 
 				return [
 					'project' => $project,
@@ -87,7 +92,7 @@ class UserviewsRepository extends Repository {
 					'namespace' => $namespace,
 					'redirects' => $redirects,
 					'limit' => self::MAX_PAGES,
-					'pages' => array_map( static fn ( array $row ) => [
+					'pages' => array_map( fn ( array $row ) => [
 						// Underscored and without the namespace prefix,
 						// as stored; the client localizes via siteinfo.
 						'title' => (string)$row['title'],
@@ -99,6 +104,9 @@ class UserviewsRepository extends Repository {
 						),
 						'redirect' => (bool)$row['redirect'],
 						'length' => (int)$row['length'],
+						'assessment' => $this->projectsRepo->formatAssessment(
+							$project, $row['assessment'] ?? null
+						),
 					], $rows ),
 				];
 			}
@@ -115,6 +123,7 @@ class UserviewsRepository extends Repository {
 		string $username,
 		string $namespace,
 		string $redirects,
+		bool $withAssessments = false,
 	): array {
 		$conn = $this->replicasClient->getConnection( $dbName );
 		$qb = $conn->createQueryBuilder()
@@ -148,6 +157,20 @@ class UserviewsRepository extends Repository {
 			$qb->andWhere( 'page_is_redirect = 0' );
 		} elseif ( $redirects === '1' ) {
 			$qb->andWhere( 'page_is_redirect = 1' );
+		}
+		if ( $withAssessments ) {
+			// Piggybacked on the page list rather than fetched
+			// per-page afterwards. Correlated on the grouped page_id
+			// (like PageviewsRepository::doEditDataQuery): a page can
+			// have one assessment per WikiProject; any non-empty one
+			// will do.
+			$qb->addSelect( '(' . $conn->createQueryBuilder()
+					->select( 'pa_class' )
+					->from( 'page_assessments' )
+					->where( 'pa_page_id = page_id' )
+					->andWhere( "pa_class != ''" )
+					->getSQL() . ' LIMIT 1) AS assessment'
+			);
 		}
 		return $qb->fetchAllAssociative();
 	}

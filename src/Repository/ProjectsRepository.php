@@ -118,6 +118,40 @@ class ProjectsRepository {
 	}
 
 	/**
+	 * The PageAssessments class config for a project, or null if the
+	 * project doesn't use assessments. The XTools response is keyed by
+	 * the full domain including .org, under a 'config' wrapper.
+	 *
+	 * @param string $project Without the .org suffix.
+	 * @return array|null
+	 */
+	public function getProjectAssessmentsConfig( string $project ): ?array {
+		return $this->getAssessmentsConfig()['config'][ "$project.org" ] ?? null;
+	}
+
+	/**
+	 * Expand a raw pa_class value into a display-ready structure with
+	 * the badge image URL and color from the project's config.
+	 *
+	 * @param string $project Without the .org suffix.
+	 * @param string|null $class The pa_class value.
+	 * @return array{class: string, badge: ?string, color: ?string}|null
+	 */
+	public function formatAssessment( string $project, ?string $class ): ?array {
+		if ( $class === null || $class === '' ) {
+			return null;
+		}
+		$classConfig = $this->getProjectAssessmentsConfig( $project )['class'][ $class ] ?? [];
+		return [
+			'class' => $class,
+			'badge' => isset( $classConfig['badge'] ) ?
+				'https://upload.wikimedia.org/wikipedia/commons/' . $classConfig['badge'] :
+				null,
+			'color' => $classConfig['color'] ?? null,
+		];
+	}
+
+	/**
 	 * Fetch and cache PageAssessments configuration from XTools.
 	 *
 	 * @return array

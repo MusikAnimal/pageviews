@@ -72,7 +72,10 @@ describe( 'userviews store', () => {
 		const ui = useUiStore();
 		store.user = 'Jimbo_Wales';
 		mockCreated( [
-			{ title: 'Shotgun', namespace: 0, created: '2001-03-27', redirect: false, length: 95716 },
+			{
+				title: 'Shotgun', namespace: 0, created: '2001-03-27', redirect: false,
+				length: 95716, assessment: { class: 'GA', badge: 'badge.svg', color: '#6f6' }
+			},
 			{ title: 'Ideas', namespace: 118, created: '2020-01-02', redirect: true, length: 36 }
 		] );
 		fetchPageviews.mockResolvedValue( {
@@ -96,6 +99,7 @@ describe( 'userviews store', () => {
 				created: '2001-03-27',
 				size: 95716,
 				redirect: false,
+				assessment: { class: 'GA', badge: 'badge.svg', color: '#6f6' },
 				sum: 30
 			} ),
 			expect.objectContaining( { title: 'Draft:Ideas', redirect: true, sum: 3 } )

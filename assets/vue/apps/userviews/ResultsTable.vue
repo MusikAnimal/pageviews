@@ -40,6 +40,13 @@
 						{{ number( index + 1 ) }}
 					</th>
 					<td>
+						<img
+							v-if="row.assessment?.badge"
+							class="app-stats__badge"
+							:src="row.assessment.badge"
+							:alt="row.assessment.class"
+							:title="row.assessment.class"
+						>
 						<a :href="pageUrl( row )" target="_blank">{{ row.title }}</a>
 						<span v-if="row.redirect" class="app-stats__muted">
 							({{ $i18n( 'redirect' ).toLowerCase() }})

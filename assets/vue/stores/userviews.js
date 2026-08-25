@@ -323,6 +323,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 					created: created.pages[ i ].created,
 					size: created.pages[ i ].length,
 					redirect: created.pages[ i ].redirect,
+					assessment: created.pages[ i ].assessment,
 					counts: series.counts,
 					sum: series.total,
 					average: series.average

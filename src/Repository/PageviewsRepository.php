@@ -18,7 +18,6 @@ class PageviewsRepository extends Repository {
 	use DateParserTrait;
 
 	protected ?array $projects = null;
-	protected ?array $assessmentsConfig = null;
 
 	public function __construct(
 		readonly ProjectsRepository $projectsRepo,
@@ -33,10 +32,6 @@ class PageviewsRepository extends Repository {
 	 */
 	private function getProjects(): array {
 		return $this->projects ??= $this->projectsRepo->getProjects();
-	}
-
-	private function getAssessmentsConfig(): array {
-		return $this->assessmentsConfig ??= $this->projectsRepo->getAssessmentsConfig();
 	}
 
 	public function getEditData(
@@ -105,7 +100,7 @@ class PageviewsRepository extends Repository {
 			$foundIds[] = $pageId;
 			$row = $this->doEditDataQuery( $conn, $project, $pageId, $start, $end )[0];
 			if ( array_key_exists( 'assessment', $row ) ) {
-				$row['assessment'] = $this->formatAssessment( $project, $row['assessment'] );
+				$row['assessment'] = $this->projectsRepo->formatAssessment( $project, $row['assessment'] );
 			}
 			$output['pages'][$display] = $row;
 		}
@@ -181,35 +176,6 @@ class PageviewsRepository extends Repository {
 		return $ids;
 	}
 
-	/**
-	 * The PageAssessments class config for a project, or null if the
-	 * project doesn't use assessments. The XTools response is keyed by
-	 * the full domain including .org, under a 'config' wrapper.
-	 */
-	private function getProjectAssessmentsConfig( string $project ): ?array {
-		return $this->getAssessmentsConfig()['config'][ "$project.org" ] ?? null;
-	}
-
-	/**
-	 * Expand a raw pa_class value into a display-ready structure with
-	 * the badge image URL and color from the project's config.
-	 *
-	 * @return array{class: string, badge: ?string, color: ?string}|null
-	 */
-	private function formatAssessment( string $project, ?string $class ): ?array {
-		if ( $class === null || $class === '' ) {
-			return null;
-		}
-		$classConfig = $this->getProjectAssessmentsConfig( $project )['class'][ $class ] ?? [];
-		return [
-			'class' => $class,
-			'badge' => isset( $classConfig['badge'] ) ?
-				'https://upload.wikimedia.org/wikipedia/commons/' . $classConfig['badge'] :
-				null,
-			'color' => $classConfig['color'] ?? null,
-		];
-	}
-
 	protected function doEditDataQuery(
 		Connection $conn,
 		string $project,
@@ -227,7 +193,7 @@ class PageviewsRepository extends Repository {
 			->setParameter( 'pages', $pageIds, ArrayParameterType::INTEGER )
 			->setParameter( 'start', $start )
 			->setParameter( 'end', $end );
-		if ( $this->getProjectAssessmentsConfig( $project ) ) {
+		if ( $this->projectsRepo->getProjectAssessmentsConfig( $project ) ) {
 			$qb->addSelect( '(' . $conn->createQueryBuilder()
 					->select( 'pa_class' )
 					->from( 'page_assessments')

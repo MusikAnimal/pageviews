@@ -145,7 +145,8 @@ function fetchChunk( { project, pages, signal, ...rest } ) {
  * @param {string} [params.redirects] '0' exclude, '1' only, '2' both.
  * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} { project, user, namespace, redirects,
- *   limit, pages: [ { title, namespace, created, redirect, length } ] }
+ *   limit, pages: [ { title, namespace, created, redirect, length,
+ *   assessment } ] } — assessment is { class, badge, color } or null.
  * @throws {ApiError}
  */
 export function fetchPagesCreated( { project, user, namespace = 'all', redirects = '0', signal } ) {
