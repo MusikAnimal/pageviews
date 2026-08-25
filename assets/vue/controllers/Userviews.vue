@@ -2,6 +2,7 @@
 	<LoadingOverlay
 		v-if="store.status === 'loading'"
 		abort-label-key="cancel"
+		:show-timer="true"
 		@abort="store.abort()"
 	/>
 	<div class="app-workspace">
@@ -102,6 +103,9 @@
 			>
 				{{ incompleteMessage }}
 			</CdxMessage>
+			<p v-if="store.elapsedTime !== null" class="app-elapsed-time">
+				{{ $i18n( 'elapsed-time', store.elapsedTime.toFixed( 2 ) ) }}
+			</p>
 		</figure>
 	</div>
 	<CdxToastContainer />

@@ -106,6 +106,7 @@ describe( 'userviews store', () => {
 		] );
 		expect( store.totals ).toMatchObject( { counts: [ 11, 22 ], total: 33 } );
 		expect( store.status ).toBe( 'complete' );
+		expect( store.elapsedTime ).toBeGreaterThanOrEqual( 0 );
 		expect( ui.progress ).toBeNull();
 	} );
 

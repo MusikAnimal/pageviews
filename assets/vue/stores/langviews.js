@@ -91,6 +91,14 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 	 */
 	const incompleteDate = ref( null );
 
+	/**
+	 * How long the last completed query took, in seconds (with
+	 * sub-second precision). Shown under the results, legacy-style.
+	 *
+	 * @type {import('vue').Ref<?number>}
+	 */
+	const elapsedTime = ref( null );
+
 	const settings = useSettingsStore();
 
 	// Guards against out-of-order responses from overlapping loads.
@@ -164,6 +172,8 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		// A new cycle always cancels the previous one's requests —
 		// including the reset cycle from a cleared form.
 		const signal = aborter.next();
+		const started = performance.now();
+		elapsedTime.value = null;
 
 		if ( !page.value ) {
 			status.value = 'initial';
@@ -267,6 +277,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 			dates.value = trimmed?.dates ?? axis;
 			langData.value = trimmed?.series ?? rows;
 			totals.value = trimmed?.totals ?? allTotals;
+			elapsedTime.value = ( performance.now() - started ) / 1000;
 			status.value = 'complete';
 		} catch ( error ) {
 			if ( id !== loadId ) {
@@ -315,6 +326,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		langData,
 		totals,
 		incompleteDate,
+		elapsedTime,
 		query,
 		setFromQuery,
 		load,

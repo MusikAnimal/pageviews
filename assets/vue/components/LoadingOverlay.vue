@@ -2,7 +2,7 @@
 	<div class="app-loading-overlay">
 		<div class="app-progress-bar">
 			<div class="app-progress-bar__loading">
-				{{ $i18n( 'loading' ) }}
+				{{ $i18n( 'loading' ) }}{{ timerText }}
 			</div>
 			<CdxProgressBar
 				v-if="!ui.progress"
@@ -41,6 +41,7 @@
 </template>
 
 <script setup>
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { CdxButton, CdxProgressBar } from '@wikimedia/codex';
 import { useUiStore } from '../stores/ui.js';
 
@@ -57,7 +58,7 @@ import { useUiStore } from '../stores/ui.js';
  */
 const emit = defineEmits( [ 'abort' ] );
 
-defineProps( {
+const props = defineProps( {
 	/**
 	 * Message key for the button's label. The submission apps say
 	 * "Cancel" (nothing was asked for yet beyond the form); the chart
@@ -66,8 +67,33 @@ defineProps( {
 	abortLabelKey: {
 		type: String,
 		default: 'abort'
+	},
+	/**
+	 * Append a running m:ss timer to the loading label after the
+	 * first second (the list apps' fan-outs can take a while).
+	 */
+	showTimer: {
+		type: Boolean,
+		default: false
 	}
 } );
 
 const ui = useUiStore();
+
+// The overlay only exists while a load runs (v-if in the parents),
+// so mounting marks the start and unmounting cleans up.
+const seconds = ref( 0 );
+let timer = null;
+onMounted( () => {
+	if ( props.showTimer ) {
+		timer = setInterval( () => {
+			seconds.value++;
+		}, 1000 );
+	}
+} );
+onUnmounted( () => clearInterval( timer ) );
+
+const timerText = computed( () => seconds.value ?
+	` ${ Math.floor( seconds.value / 60 ) }:${ String( seconds.value % 60 ).padStart( 2, '0' ) }` :
+	'' );
 </script>
