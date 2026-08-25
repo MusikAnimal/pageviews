@@ -23,14 +23,17 @@
 			<div v-if="ui.progress" class="app-progress-bar__counts">
 				{{ $i18n( 'processing', `${ ui.progress.done } / ${ ui.progress.total }` ) }}
 			</div>
-			<CdxButton
-				class="app-progress-bar__abort"
-				action="destructive"
-				weight="quiet"
-				@click="emit( 'abort' )"
-			>
-				{{ $i18n( abortLabelKey ) }}
-			</CdxButton>
+			<!-- Wrapper: the bidi Codex build's [dir] .cdx-button
+				sets margin at higher specificity than our class. -->
+			<div class="app-progress-bar__abort">
+				<CdxButton
+					action="destructive"
+					weight="quiet"
+					@click="emit( 'abort' )"
+				>
+					{{ $i18n( abortLabelKey ) }}
+				</CdxButton>
+			</div>
 		</div>
 	</div>
 </template>
