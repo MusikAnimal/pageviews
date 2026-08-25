@@ -553,7 +553,10 @@ a {
 
 		dd {
 			margin: 0;
-			text-align: end;
+			// Deliberately physical, like Codex's number-aligned table
+			// cells: digits are LTR, so numbers keep a common right
+			// edge in RTL too.
+			text-align: right;
 		}
 
 		// The headline pageview numbers (views, median, average).
@@ -615,7 +618,9 @@ a {
 
 	&__number {
 		font-variant-numeric: tabular-nums;
-		text-align: end;
+		// Deliberately physical, matching Codex's align-number cells:
+		// digits are LTR, so numbers keep a common right edge in RTL.
+		text-align: right;
 	}
 
 	&__color {
