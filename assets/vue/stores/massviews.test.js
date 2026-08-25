@@ -153,6 +153,24 @@ describe( 'massviews store', () => {
 		} ) );
 	} );
 
+	it( 'aborts the load cycle when the fan-out fails', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.target = 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups';
+		mockMembers( [ { title: 'Run-DMC', namespace: 0 } ] );
+		fetchPageviews.mockRejectedValue( Object.assign(
+			new Error( 'The replica database could not be reached.' ),
+			{ i18n: [ 'api-error-upstream-unreachable', 'the replica database' ], retryable: true }
+		) );
+
+		await store.load();
+
+		expect( store.status ).toBe( 'error' );
+		expect( ui.messages[ 0 ].type ).toBe( 'error' );
+		// The cycle's signal is aborted so in-flight requests cancel.
+		expect( fetchPageviews.mock.calls[ 0 ][ 0 ].signal.aborted ).toBe( true );
+	} );
+
 	it( 'returns to the form when the category has no members', async () => {
 		const store = useMassviewsStore();
 		const ui = useUiStore();

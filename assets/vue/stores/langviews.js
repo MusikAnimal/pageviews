@@ -272,6 +272,10 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 			if ( id !== loadId ) {
 				return;
 			}
+			// A fatal error acts like the Abort button: the pool has
+			// stopped queuing chunks, and this cancels the in-flight
+			// ones. (User aborts bump loadId, so they never get here.)
+			aborter.abort();
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
