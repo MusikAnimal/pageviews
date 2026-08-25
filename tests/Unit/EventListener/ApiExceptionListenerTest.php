@@ -9,6 +9,10 @@ use App\Exception\ApiException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Doctrine\DBAL\Driver\Exception as DriverExceptionInterface;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception\DriverException;
+use Symfony\Component\HttpClient\Exception\TimeoutException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -56,12 +60,60 @@ class ApiExceptionListenerTest extends TestCase {
 	}
 
 	public function testUpstreamTimeout(): void {
-		$event = $this->dispatch( '/api/metrics/pageviews/en.wikipedia', new TransportException( 'timeout' ) );
+		$event = $this->dispatch( '/api/metrics/pageviews/en.wikipedia', new TimeoutException( 'timeout' ) );
 
 		static::assertSame( 504, $event->getResponse()->getStatusCode() );
 		$error = self::decode( $event );
 		static::assertSame( 'upstream_timeout', $error['code'] );
+		static::assertSame( [ 'api-error-upstream-timeout', 'Pageviews API' ], $error['i18n'] );
 		static::assertTrue( $error['retryable'] );
+	}
+
+	public function testUpstreamUnreachable(): void {
+		$event = $this->dispatch(
+			'/api/metrics/pageviews/en.wikipedia',
+			new TransportException( 'Could not resolve host' )
+		);
+
+		static::assertSame( 502, $event->getResponse()->getStatusCode() );
+		$error = self::decode( $event );
+		static::assertSame( 'upstream_unreachable', $error['code'] );
+		static::assertSame( [ 'api-error-upstream-unreachable', 'Pageviews API' ], $error['i18n'] );
+		static::assertTrue( $error['retryable'] );
+	}
+
+	private static function driverException( string $message ): DriverExceptionInterface {
+		return new class ( $message ) extends RuntimeException implements DriverExceptionInterface {
+			public function getSQLState(): ?string {
+				return null;
+			}
+		};
+	}
+
+	public function testReplicaUnavailable(): void {
+		$event = $this->dispatch( '/api/pages/en.wikipedia/edits', new ConnectionException(
+			self::driverException( 'Connection refused' ), null
+		) );
+
+		static::assertSame( 503, $event->getResponse()->getStatusCode() );
+		$error = self::decode( $event );
+		static::assertSame( 'replica_unavailable', $error['code'] );
+		static::assertSame( [ 'api-error-upstream-unreachable', 'the replica database' ], $error['i18n'] );
+		static::assertSame( 'replicas', $error['upstream'] );
+		static::assertTrue( $error['retryable'] );
+	}
+
+	public function testReplicaQueryError(): void {
+		$event = $this->dispatch( '/api/pages/en.wikipedia/edits', new DriverException(
+			self::driverException( 'You have an error in your SQL syntax' ), null
+		) );
+
+		static::assertSame( 502, $event->getResponse()->getStatusCode() );
+		$error = self::decode( $event );
+		static::assertSame( 'replica_error', $error['code'] );
+		static::assertSame( [ 'api-error', 'the replica database' ], $error['i18n'] );
+		static::assertFalse( $error['retryable'] );
+		static::assertStringNotContainsString( 'SQL syntax', $event->getResponse()->getContent() );
 	}
 
 	public function testLegacyInvalidArgument(): void {

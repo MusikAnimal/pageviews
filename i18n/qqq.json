@@ -48,6 +48,8 @@
 	"api-error-no-data": "When the API returned no data",
 	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
 	"api-error-unknown": "Error message saying an unknown error occurred when querying an API. $1 is the name of the API.",
+	"api-error-upstream-timeout": "Error shown when a request to an upstream API took too long to respond. $1 is the name of the API, e.g. \"Pageviews API\", or \"the replica database\".",
+	"api-error-upstream-unreachable": "Error shown when an upstream API could not be reached at all (network failure). $1 is the name of the API, e.g. \"Pageviews API\", or \"the replica database\".",
 	"api-incomplete-data": "Error message saying that some data in the collection is not yet available for the given dates. $1 (***always treat as plural***) is the list of dates lacking data.",
 	"apply": "Label for button\n{{Identical|Apply}}",
 	"april": "{{doc-months|4}}\n{{Identical|April}}",

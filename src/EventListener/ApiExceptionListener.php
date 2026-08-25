@@ -6,6 +6,8 @@ namespace App\EventListener;
 
 use App\Exception\ApiException;
 use App\Exception\ErrorEnvelope;
+use Doctrine\DBAL\Exception as DbalException;
+use Doctrine\DBAL\Exception\ConnectionException;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientException;
+use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
@@ -42,13 +45,27 @@ class ApiExceptionListener {
 				$throwable->upstream,
 				$throwable->retryable,
 			) );
-		} elseif ( $throwable instanceof TransportExceptionInterface ) {
-			// Network-level failure reaching an upstream (timeout, DNS...).
+		} elseif ( $throwable instanceof TimeoutExceptionInterface ) {
+			// The upstream took too long to respond. Repositories
+			// normally rethrow via upstreamFailure() with the actual
+			// upstream named; these fallbacks cover anything that
+			// slips through, and the AQS proxy is the dominant case.
 			$event->setResponse( $this->envelope(
 				'upstream_timeout',
-				'An upstream service could not be reached.',
-				[ 'api-error', 'Pageviews API' ],
+				'An upstream service timed out.',
+				[ 'api-error-upstream-timeout', 'Pageviews API' ],
 				Response::HTTP_GATEWAY_TIMEOUT,
+				null,
+				true,
+			) );
+		} elseif ( $throwable instanceof TransportExceptionInterface ) {
+			// Network-level failure reaching an upstream (DNS,
+			// connection refused...).
+			$event->setResponse( $this->envelope(
+				'upstream_unreachable',
+				'An upstream service could not be reached.',
+				[ 'api-error-upstream-unreachable', 'Pageviews API' ],
+				Response::HTTP_BAD_GATEWAY,
 				null,
 				true,
 			) );
@@ -61,6 +78,27 @@ class ApiExceptionListener {
 				Response::HTTP_BAD_GATEWAY,
 				null,
 				true,
+			) );
+		} elseif ( $throwable instanceof ConnectionException ) {
+			// The replica database is down — or, on local dev, the SSH
+			// tunnels aren't up (see DEVELOPERS.md).
+			$event->setResponse( $this->envelope(
+				'replica_unavailable',
+				'The replica database could not be reached.',
+				[ 'api-error-upstream-unreachable', 'the replica database' ],
+				Response::HTTP_SERVICE_UNAVAILABLE,
+				'replicas',
+				true,
+			) );
+		} elseif ( $throwable instanceof DbalException ) {
+			// The connection worked but the query failed.
+			$event->setResponse( $this->envelope(
+				'replica_error',
+				'The replica database query failed.',
+				[ 'api-error', 'the replica database' ],
+				Response::HTTP_BAD_GATEWAY,
+				'replicas',
+				false,
 			) );
 		} elseif ( $throwable instanceof InvalidArgumentException ) {
 			// Repositories predating ApiException throw these for bad params.
@@ -82,8 +120,8 @@ class ApiExceptionListener {
 			) );
 		} else {
 			// Anything else: keep JSON shape, leak nothing. The i18n
-			// message needs an upstream name for its $1 — "Pageviews
-			// API" is what every /api/* consumer here is querying.
+			// message needs an upstream name for its $1; the AQS proxy
+			// is the dominant consumer.
 			$event->setResponse( $this->envelope(
 				'internal_error',
 				'An internal error occurred.',

@@ -4,13 +4,10 @@ declare( strict_types = 1 );
 
 namespace App\Repository;
 
-use App\Exception\ApiException;
 use Doctrine\DBAL\ArrayParameterType;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
@@ -68,24 +65,8 @@ class MassviewsRepository extends Repository {
 				// listener's fallbacks blame the Pageviews API.
 				try {
 					$rows = $this->fetchHashtagRows( $tag );
-				} catch ( TransportExceptionInterface ) {
-					throw new ApiException(
-						'upstream_timeout',
-						'The Hashtags API could not be reached.',
-						[ 'api-error', 'Hashtags API' ],
-						Response::HTTP_GATEWAY_TIMEOUT,
-						'hashtags',
-						true,
-					);
-				} catch ( HttpClientExceptionInterface ) {
-					throw new ApiException(
-						'upstream_error',
-						'The Hashtags API returned an error.',
-						[ 'api-error', 'Hashtags API' ],
-						Response::HTTP_BAD_GATEWAY,
-						'hashtags',
-						true,
-					);
+				} catch ( HttpClientExceptionInterface $e ) {
+					$this->upstreamFailure( $e, 'Hashtags API', 'hashtags' );
 				}
 
 				// One row per edit; several edits often hit the same

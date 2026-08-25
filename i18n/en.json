@@ -25,6 +25,8 @@
 	"api-error-no-data": "No data found.",
 	"api-error-timeout": "Due to API failure, the following could not be processed:\n$1\nPlease wait several minutes and try again.",
 	"api-error-unknown": "An unknown error occurred when querying $1",
+	"api-error-upstream-timeout": "The request to $1 timed out. Please wait a few minutes and try again.",
+	"api-error-upstream-unreachable": "Could not reach $1. Please wait a few minutes and try again.",
 	"api-incomplete-data": "Some data is not yet available for the dates: $1",
 	"apply": "Apply",
 	"april": "April",

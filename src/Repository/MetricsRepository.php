@@ -710,14 +710,7 @@ class MetricsRepository extends Repository {
 				$noData = true;
 				return array_fill( 0, count( $dates ), 0 );
 			}
-			throw new ApiException(
-				'upstream_error',
-				'The Pageviews API returned an error.',
-				[ 'api-error', 'Pageviews API' ],
-				Response::HTTP_BAD_GATEWAY,
-				'aqs',
-				true,
-			);
+			$this->upstreamFailure( $e, 'Pageviews API', 'aqs' );
 		}
 
 		$byDate = [];
@@ -809,14 +802,7 @@ class MetricsRepository extends Repository {
 				$noData = true;
 				$entries = [];
 			} else {
-				throw new ApiException(
-					'upstream_error',
-					'The Pageviews API returned an error.',
-					[ 'api-error', 'Pageviews API' ],
-					Response::HTTP_BAD_GATEWAY,
-					'aqs',
-					true,
-				);
+				$this->upstreamFailure( $e, 'Pageviews API', 'aqs' );
 			}
 		}
 
@@ -924,9 +910,7 @@ class MetricsRepository extends Repository {
 			$items = $response->toArray()['items'] ?? [];
 		} catch ( HttpClientExceptionInterface $e ) {
 			// Covers 4xx/5xx, transport failures and undecodable
-			// bodies alike, so every AQS failure surfaces to the user
-			// as "Error querying Pageviews API" rather than a generic
-			// unknown error.
+			// bodies alike; upstreamFailure() tells them apart.
 			if (
 				$e instanceof ClientExceptionInterface &&
 				$response->getStatusCode() === Response::HTTP_NOT_FOUND
@@ -934,14 +918,7 @@ class MetricsRepository extends Repository {
 				$noData = true;
 				return array_fill( 0, count( $dates ), 0 );
 			}
-			throw new ApiException(
-				'upstream_error',
-				'The Pageviews API returned an error.',
-				[ 'api-error', 'Pageviews API' ],
-				Response::HTTP_BAD_GATEWAY,
-				'aqs',
-				true,
-			);
+			$this->upstreamFailure( $e, 'Pageviews API', 'aqs' );
 		}
 
 		$byDate = [];
@@ -1050,14 +1027,7 @@ class MetricsRepository extends Repository {
 							false,
 						);
 					}
-					throw new ApiException(
-						'upstream_error',
-						'The Commons Impact Metrics API returned an error.',
-						[ 'api-error', 'Commons Impact Metrics API' ],
-						Response::HTTP_BAD_GATEWAY,
-						'aqs',
-						true,
-					);
+					$this->upstreamFailure( $e, 'Commons Impact Metrics API', 'aqs' );
 				}
 
 				$byMonth = [];

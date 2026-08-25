@@ -9,6 +9,7 @@ use App\Repository\MassviewsRepository;
 use App\Repository\ProjectsRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\HttpClient\Exception\TimeoutException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
@@ -185,14 +186,26 @@ class MassviewsRepositoryTest extends TestCase {
 	}
 
 	public function testHashtagTimeoutNamesTheUpstream(): void {
-		$repo = $this->makeHashtagRepo( [], new TransportException( 'timed out' ) );
+		$repo = $this->makeHashtagRepo( [], new TimeoutException( 'timed out' ) );
 		try {
 			$repo->getHashtagPages( 'wpwp' );
 			static::fail( 'Expected an ApiException.' );
 		} catch ( ApiException $e ) {
 			static::assertSame( 'upstream_timeout', $e->errorCode );
-			static::assertSame( [ 'api-error', 'Hashtags API' ], $e->i18n );
+			static::assertSame( [ 'api-error-upstream-timeout', 'Hashtags API' ], $e->i18n );
 			static::assertSame( 'hashtags', $e->upstream );
+			static::assertTrue( $e->retryable );
+		}
+	}
+
+	public function testHashtagUnreachableNamesTheUpstream(): void {
+		$repo = $this->makeHashtagRepo( [], new TransportException( 'Connection refused' ) );
+		try {
+			$repo->getHashtagPages( 'wpwp' );
+			static::fail( 'Expected an ApiException.' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'upstream_unreachable', $e->errorCode );
+			static::assertSame( [ 'api-error-upstream-unreachable', 'Hashtags API' ], $e->i18n );
 			static::assertTrue( $e->retryable );
 		}
 	}
