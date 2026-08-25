@@ -4,9 +4,13 @@ declare( strict_types = 1 );
 
 namespace App\Repository;
 
+use App\Exception\ApiException;
 use Doctrine\DBAL\ArrayParameterType;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
@@ -60,10 +64,34 @@ class MassviewsRepository extends Repository {
 		return $this->cacheLists->get(
 			'hashtag.' . md5( $tag ),
 			function ( ItemInterface $item ) use ( $tag ): array {
+				// Name the actual upstream in the envelope — the
+				// listener's fallbacks blame the Pageviews API.
+				try {
+					$rows = $this->fetchHashtagRows( $tag );
+				} catch ( TransportExceptionInterface ) {
+					throw new ApiException(
+						'upstream_timeout',
+						'The Hashtags API could not be reached.',
+						[ 'api-error', 'Hashtags API' ],
+						Response::HTTP_GATEWAY_TIMEOUT,
+						'hashtags',
+						true,
+					);
+				} catch ( HttpClientExceptionInterface ) {
+					throw new ApiException(
+						'upstream_error',
+						'The Hashtags API returned an error.',
+						[ 'api-error', 'Hashtags API' ],
+						Response::HTTP_BAD_GATEWAY,
+						'hashtags',
+						true,
+					);
+				}
+
 				// One row per edit; several edits often hit the same
 				// page. Dedupe per wiki + title.
 				$pages = [];
-				foreach ( $this->fetchHashtagRows( $tag ) as $row ) {
+				foreach ( $rows as $row ) {
 					$project = (string)( $row['Domain'] ?? '' );
 					$title = str_replace( ' ', '_', (string)( $row['Page_title'] ?? '' ) );
 					if ( $project === '' || $title === '' ) {

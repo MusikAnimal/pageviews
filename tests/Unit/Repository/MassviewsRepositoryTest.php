@@ -9,7 +9,9 @@ use App\Repository\MassviewsRepository;
 use App\Repository\ProjectsRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Throwable;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
 class MassviewsRepositoryTest extends TestCase {
@@ -131,17 +133,19 @@ class MassviewsRepositoryTest extends TestCase {
 
 	/**
 	 * @param array $rows Raw hashtag-tool rows.
+	 * @param ?Throwable $throws Failure fetchHashtagRows raises.
 	 */
-	private function makeHashtagRepo( array $rows ): MassviewsRepository {
+	private function makeHashtagRepo( array $rows, ?Throwable $throws = null ): MassviewsRepository {
 		$projectsRepo = $this->createStub( ProjectsRepository::class );
 		$replicasClient = $this->createStub( ReplicasClient::class );
 		$httpClient = $this->createStub( HttpClientInterface::class );
 
-		return new class ( $rows, $projectsRepo, $replicasClient, $httpClient ) extends MassviewsRepository {
+		return new class ( $rows, $throws, $projectsRepo, $replicasClient, $httpClient ) extends MassviewsRepository {
 			public int $fetches = 0;
 
 			public function __construct(
 				private readonly array $rows,
+				private readonly ?Throwable $throws,
 				ProjectsRepository $projectsRepo,
 				ReplicasClient $replicasClient,
 				HttpClientInterface $httpClient,
@@ -151,6 +155,9 @@ class MassviewsRepositoryTest extends TestCase {
 
 			protected function fetchHashtagRows( string $tag ): array {
 				$this->fetches++;
+				if ( $this->throws ) {
+					throw $this->throws;
+				}
 				return $this->rows;
 			}
 		};
@@ -175,6 +182,19 @@ class MassviewsRepositoryTest extends TestCase {
 		// A repeat request is served from the cache.
 		$repo->getHashtagPages( 'moiswikif' );
 		static::assertSame( 1, $repo->fetches );
+	}
+
+	public function testHashtagTimeoutNamesTheUpstream(): void {
+		$repo = $this->makeHashtagRepo( [], new TransportException( 'timed out' ) );
+		try {
+			$repo->getHashtagPages( 'wpwp' );
+			static::fail( 'Expected an ApiException.' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'upstream_timeout', $e->errorCode );
+			static::assertSame( [ 'api-error', 'Hashtags API' ], $e->i18n );
+			static::assertSame( 'hashtags', $e->upstream );
+			static::assertTrue( $e->retryable );
+		}
 	}
 
 	public function testHashtagRequiresATag(): void {
