@@ -28,7 +28,16 @@
 					:key="stat.label"
 					class="app-totals__stat"
 				>
-					<dt>{{ stat.label }}</dt>
+					<dt>
+						<dfn
+							v-if="stat.tooltip"
+							v-tooltip="stat.tooltip"
+							class="app-totals__term"
+						>{{ stat.label }}</dfn>
+						<template v-else>
+							{{ stat.label }}
+						</template>
+					</dt>
 					<dd>{{ stat.value }}</dd>
 				</div>
 			</dl>
@@ -38,12 +47,16 @@
 
 <script setup>
 import { computed } from 'vue';
+import { CdxTooltip } from '@wikimedia/codex';
 import { useMediaviewsStore } from '../../stores/mediaviews.js';
 import { usePreferencesStore } from '../../stores/preferences.js';
 import { useSettingsStore } from '../../stores/settings.js';
 import { formatDate, formatNumber } from '../../lib/format.js';
 import { parseDate } from '../../lib/dates.js';
 import { banana } from '../../i18n.js';
+
+// Script-setup local directive registration (v-tooltip).
+const vTooltip = CdxTooltip;
 
 const store = useMediaviewsStore();
 const settings = useSettingsStore();
@@ -77,11 +90,15 @@ const statistics = computed( () => {
 		}
 		const sum = ( key ) => stats.reduce( ( total, s ) => total + s[ key ], 0 );
 		return [
-			{ label: banana.i18n( 'file-count' ), value: number( sum( 'files' ) ) },
-			{ label: banana.i18n( 'used-files' ), value: number( sum( 'usedFiles' ) ) },
-			{ label: banana.i18n( 'wikis' ), value: number( sum( 'wikis' ) ) },
-			{ label: banana.i18n( 'pages' ), value: number( sum( 'pages' ) ) }
-		];
+			[ 'file-count', 'file-count-tooltip', 'files' ],
+			[ 'used-files', 'used-files-tooltip', 'usedFiles' ],
+			[ 'wikis', 'wikis-tooltip', 'wikis' ],
+			[ 'pages', 'pages-tooltip', 'pages' ]
+		].map( ( [ label, tooltip, field ] ) => ( {
+			label: banana.i18n( label ),
+			tooltip: banana.i18n( tooltip ),
+			value: number( sum( field ) )
+		} ) );
 	}
 	const infos = store.series
 		.map( ( entry ) => store.fileInfo?.[ entry.name ] )
@@ -118,3 +135,12 @@ const statistics = computed( () => {
 	];
 } );
 </script>
+
+<style scoped lang="less">
+// A defined term: hovering (or focusing) shows the definition in a
+// tooltip; the dotted underline marks it as such.
+.app-totals__term {
+	font-style: normal;
+	text-decoration: underline dotted;
+}
+</style>
