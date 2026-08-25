@@ -3,12 +3,22 @@
 		<template #label>
 			{{ label || $i18n( 'page-title' ) }}
 		</template>
+		<!-- The data-* attributes stop password managers (1Password,
+			LastPass, Bitwarden, Dashlane) from offering credentials
+			here — the Userviews "User" field especially reads like a
+			login form to them. Codex forwards them to the <input>.
+			(No autocomplete attribute: Lookup hard-codes "off", as
+			autofill would cover its own suggestion menu.) -->
 		<CdxLookup
 			ref="lookup"
 			v-model:selected="selected"
 			v-model:input-value="inputValue"
 			:menu-items="menuItems"
 			:clearable="true"
+			data-1p-ignore
+			data-lpignore="true"
+			data-bwignore
+			data-form-type="other"
 			:aria-label="label || $i18n( 'page-title' )"
 			:placeholder="placeholder || $i18n( 'article-placeholder' )"
 			@input="onInput"

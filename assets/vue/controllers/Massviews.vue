@@ -22,10 +22,17 @@
 							:aria-label="$i18n( 'source' )"
 							@update:selected="onSourceSelect"
 						/>
+						<!-- The data-* attributes stop password managers from
+							offering credentials here (see SinglePageInput). -->
 						<CdxTextInput
 							ref="targetInput"
 							v-model="target"
 							class="app-page-input-row__input"
+							autocomplete="on"
+							data-1p-ignore
+							data-lpignore="true"
+							data-bwignore
+							data-form-type="other"
 							:input-type="source === 'quarry' ? 'number' : 'text'"
 							:clearable="true"
 							:aria-label="targetLabel"
