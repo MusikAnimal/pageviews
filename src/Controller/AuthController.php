@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Exception\ErrorEnvelope;
 use App\Security\ApiTokenIssuer;
 use App\Security\TokenException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthController extends AbstractController {
 
 	#[Route( '/auth/token', name: 'auth_token', methods: [ 'POST' ] )]
-	public function token( Request $request, ApiTokenIssuer $issuer ): JsonResponse {
+	public function token(
+		Request $request,
+		ApiTokenIssuer $issuer,
+		LoggerInterface $logger
+	): JsonResponse {
 		$payload = json_decode( $request->getContent(), true );
 		$token = is_array( $payload ) ? ( $payload[ 'token' ] ?? null ) : null;
 		if ( !is_string( $token ) ) {
@@ -39,6 +44,13 @@ class AuthController extends AbstractController {
 		try {
 			$verified = $issuer->verify( $token, true );
 		} catch ( TokenException $e ) {
+			// Renewal rejections are what turn into the user-facing
+			// "session could not be verified" error: log the reason
+			// (too old for the renewal window, or a foreign/rotated
+			// signature).
+			$logger->warning( 'API token renewal rejected', [
+				'reason' => $e->reason,
+			] );
 			return ErrorEnvelope::json(
 				'auth_invalid',
 				'The token could not be renewed.',

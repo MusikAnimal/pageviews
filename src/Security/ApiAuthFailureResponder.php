@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 namespace App\Security;
 
 use App\Exception\ErrorEnvelope;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -23,10 +24,16 @@ class ApiAuthFailureResponder implements
 	AuthenticationFailureHandlerInterface
 {
 
+	public function __construct( private readonly LoggerInterface $logger ) {
+	}
+
 	/**
 	 * No usable credentials at all.
 	 */
 	public function start( Request $request, ?AuthenticationException $authException = null ): Response {
+		$this->logger->info( 'API auth: no token presented', [
+			'path' => $request->getPathInfo(),
+		] );
 		return $this->envelope( 'auth_required', 'An API access token is required.' );
 	}
 
@@ -36,6 +43,12 @@ class ApiAuthFailureResponder implements
 	public function onAuthenticationFailure( Request $request, AuthenticationException $exception ): Response {
 		// ApiTokenHandler sets the TokenException reason as message.
 		$expired = $exception->getMessage() === TokenException::EXPIRED;
+		// Expired tokens are routine (hourly TTL; the client renews
+		// silently); a rejected signature is worth noticing.
+		$this->logger->log( $expired ? 'info' : 'warning', 'API auth: token rejected', [
+			'reason' => $exception->getMessage(),
+			'path' => $request->getPathInfo(),
+		] );
 		return $this->envelope(
 			$expired ? 'auth_expired' : 'auth_invalid',
 			$expired ? 'The API access token has expired.' : 'The API access token is invalid.'

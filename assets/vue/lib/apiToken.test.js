@@ -57,10 +57,24 @@ describe( 'apiToken', () => {
 		expect( impl ).toHaveBeenCalledOnce();
 	} );
 
-	it( 'rejects on a failed renewal and can retry after', async () => {
+	it( 'falls back to the served shell when renewal is rejected', async () => {
+		const { getToken, refreshToken } = await freshModule();
+		const shell = '<body data-app-config=\'{"apiToken":"from-fresh-shell"}\'></body>';
+		const impl = vi.fn( ( url ) => Promise.resolve( url === '/auth/token' ?
+			{ ok: false, status: 401 } :
+			{ ok: true, text: () => Promise.resolve( shell ) }
+		) );
+		vi.stubGlobal( 'fetch', impl );
+
+		await expect( refreshToken() ).resolves.toBe( 'from-fresh-shell' );
+		expect( getToken() ).toBe( 'from-fresh-shell' );
+		expect( impl ).toHaveBeenCalledTimes( 2 );
+	} );
+
+	it( 'rejects when both renewal and the shell fail, retryable after', async () => {
 		const { refreshToken } = await freshModule();
-		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( { ok: false, status: 401 } ) ) );
-		await expect( refreshToken() ).rejects.toThrow( '401' );
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( { ok: false, status: 500 } ) ) );
+		await expect( refreshToken() ).rejects.toThrow( '500' );
 
 		// The single-flight slot is released for a later attempt.
 		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( {
