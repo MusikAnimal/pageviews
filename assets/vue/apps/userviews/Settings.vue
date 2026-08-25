@@ -44,11 +44,9 @@ import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { useUserviewsStore } from '../../stores/userviews.js';
-import { useUiStore } from '../../stores/ui.js';
 import { getSiteinfo } from '../../projects.js';
 import { banana } from '../../i18n.js';
 
-const ui = useUiStore();
 const store = useUserviewsStore();
 const { project, platform, agent, namespace, redirects } = storeToRefs( store );
 

@@ -23,8 +23,6 @@ import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { useRedirectviewsStore } from '../../stores/redirectviews.js';
-import { useUiStore } from '../../stores/ui.js';
 
-const ui = useUiStore();
 const { project, platform, agent } = storeToRefs( useRedirectviewsStore() );
 </script>

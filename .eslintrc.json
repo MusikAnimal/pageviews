@@ -21,6 +21,7 @@
 	},
 	"ignorePatterns": [
 		"config/",
+		"data/",
 		"node_modules/",
 		"public/build/",
 		"var/",

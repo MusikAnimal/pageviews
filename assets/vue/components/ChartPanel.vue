@@ -165,8 +165,7 @@ const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType
 // Auto-enabled on spiky data (the legacy Theil-index heuristic) when
 // the preference allows and the URL doesn't carry autolog=false; a
 // manual pick — kept across reloads — always wins.
-const autoLog = computed( () =>
-	preferences.autoLogDetection && !props.noAutolog &&
+const autoLog = computed( () => preferences.autoLogDetection && !props.noAutolog &&
 	shouldUseLogScale( props.series.map( ( entry ) => entry.counts ) )
 );
 const logScale = computed( {

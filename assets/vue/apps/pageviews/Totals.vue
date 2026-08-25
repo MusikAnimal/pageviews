@@ -216,4 +216,3 @@ const basicInfo = computed( () => {
 	};
 } );
 </script>
-

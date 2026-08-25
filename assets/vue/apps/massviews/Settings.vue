@@ -28,9 +28,7 @@ import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { useMassviewsStore } from '../../stores/massviews.js';
-import { useUiStore } from '../../stores/ui.js';
 
-const ui = useUiStore();
 const store = useMassviewsStore();
 const { source, project, platform, agent } = storeToRefs( store );
 </script>

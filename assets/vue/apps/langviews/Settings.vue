@@ -23,8 +23,6 @@ import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
 import { useLangviewsStore } from '../../stores/langviews.js';
-import { useUiStore } from '../../stores/ui.js';
 
-const ui = useUiStore();
 const { project, platform, agent } = storeToRefs( useLangviewsStore() );
 </script>

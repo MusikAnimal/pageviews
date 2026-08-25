@@ -92,13 +92,6 @@ a {
 		padding: @spacing-25 @spacing-35;
 		text-decoration: none;
 
-		// Navigation chrome, not content: the visited purple from the
-		// global Codex link mixin is just distracting here.
-		&:visited,
-		&:visited:hover {
-			color: @color-link;
-		}
-
 		&--active {
 			font-weight: @font-weight-bold;
 		}
@@ -106,6 +99,13 @@ a {
 		&:hover {
 			background: @background-color-interactive-subtle;
 			text-decoration: none;
+		}
+
+		// Navigation chrome, not content: the visited purple from the
+		// global Codex link mixin is just distracting here.
+		&:visited,
+		&:visited:hover {
+			color: @color-link;
 		}
 	}
 
@@ -156,8 +156,7 @@ a {
 	// from the logo side.
 	&__dropdown--apps {
 		.app-nav__menu {
-			inset-inline-end: auto;
-			inset-inline-start: 0;
+			inset-inline: 0 auto;
 		}
 
 		@media screen and ( min-width: @min-width-breakpoint-desktop ) {
