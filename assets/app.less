@@ -343,12 +343,23 @@ a {
 	}
 }
 
-// How long the query took, tucked under the results (legacy-style).
+// One line under the results: the incomplete-data notice on the
+// start side, the elapsed time on the end side, wrapping when the
+// two can't share the width.
+.app-output-footer {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: @spacing-25 @spacing-100;
+	margin-block-start: @spacing-50;
+}
+
+// How long the query took (legacy-style). The auto margin keeps it
+// at the end even when it wraps or sits alone.
 .app-elapsed-time {
 	color: @color-subtle;
 	font-size: @font-size-small;
-	margin-block-start: @spacing-50;
-	text-align: end;
+	margin-inline-start: auto;
 }
 
 .app-footer {

@@ -96,16 +96,18 @@
 				</div>
 				<ResultsTable />
 			</template>
-			<CdxMessage
-				v-if="incompleteMessage"
-				type="warning"
-				:inline="true"
-			>
-				{{ incompleteMessage }}
-			</CdxMessage>
-			<p v-if="store.elapsedTime !== null" class="app-elapsed-time">
-				{{ $i18n( 'elapsed-time', store.elapsedTime.toFixed( 2 ) ) }}
-			</p>
+			<div class="app-output-footer">
+				<CdxMessage
+					v-if="incompleteMessage"
+					type="warning"
+					:inline="true"
+				>
+					{{ incompleteMessage }}
+				</CdxMessage>
+				<span v-if="store.elapsedTime !== null" class="app-elapsed-time">
+					{{ $i18n( 'elapsed-time', store.elapsedTime.toFixed( 2 ) ) }}
+				</span>
+			</div>
 		</figure>
 	</div>
 	<CdxToastContainer />
