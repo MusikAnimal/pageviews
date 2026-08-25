@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useMassviewsStore } from './massviews.js';
 import { useUiStore } from './ui.js';
-import { fetchCategoryMembers, fetchPageviews } from '../lib/metricsApi.js';
+import { fetchCategoryMembers, fetchHashtagPages, fetchPageviews } from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
 	getSearchResults,
@@ -11,12 +11,12 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
-import { getHashtagPages } from '../lib/hashtags.js';
 import { getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	fetchCategoryMembers: vi.fn(),
+	fetchHashtagPages: vi.fn(),
 	fetchPageviews: vi.fn()
 } ) );
 vi.mock( '../projects.js', async ( importOriginal ) => ( {
@@ -34,10 +34,6 @@ vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 vi.mock( '../lib/quarry.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	getQuarryTitles: vi.fn()
-} ) );
-vi.mock( '../lib/hashtags.js', async ( importOriginal ) => ( {
-	...await importOriginal(),
-	getHashtagPages: vi.fn()
 } ) );
 
 const SITEINFO = {
@@ -296,11 +292,11 @@ describe( 'massviews store', () => {
 	it( 'resolves a hashtag and fans out per wiki', async () => {
 		const store = useMassviewsStore();
 		store.setFromQuery( { source: 'hashtag', target: '#moiswikif' } );
-		getHashtagPages.mockResolvedValue( [
+		fetchHashtagPages.mockResolvedValue( { tag: 'moiswikif', pages: [
 			{ project: 'fr.wikipedia.org', title: 'Jacques_Servin' },
 			{ project: 'fr.wikipedia.org', title: 'Henri_Yav_Mulang' },
 			{ project: 'en.wikipedia.org', title: 'Jacques_Servin' }
-		] );
+		] } );
 		fetchPageviews
 			.mockResolvedValueOnce( {
 				dates: [ '2026-07-01' ],
@@ -318,7 +314,9 @@ describe( 'massviews store', () => {
 
 		await store.load();
 
-		expect( getHashtagPages ).toHaveBeenCalledWith( 'moiswikif', expect.any( AbortSignal ) );
+		expect( fetchHashtagPages ).toHaveBeenCalledWith( expect.objectContaining( {
+			tag: 'moiswikif'
+		} ) );
 		expect( fetchPageviews ).toHaveBeenCalledTimes( 2 );
 		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
 			project: 'fr.wikipedia.org',
@@ -351,7 +349,7 @@ describe( 'massviews store', () => {
 		const store = useMassviewsStore();
 		const ui = useUiStore();
 		store.setFromQuery( { source: 'hashtag', target: 'nosuchtag' } );
-		getHashtagPages.mockResolvedValue( [] );
+		fetchHashtagPages.mockResolvedValue( { tag: 'nosuchtag', pages: [] } );
 
 		await store.load();
 

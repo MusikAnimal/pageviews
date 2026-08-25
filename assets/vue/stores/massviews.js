@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { fetchCategoryMembers, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
+import { fetchCategoryMembers, fetchHashtagPages, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
 	getSearchResults,
@@ -9,7 +9,6 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
-import { getHashtagPages } from '../lib/hashtags.js';
 import { getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
@@ -309,9 +308,10 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	async function resolveHashtag( parsed, signal ) {
 		const ui = useUiStore();
-		const pages = await getHashtagPages(
-			target.value.trim().replace( /^#/, '' ), signal
-		);
+		const { pages } = await fetchHashtagPages( {
+			tag: target.value.trim().replace( /^#/, '' ),
+			signal
+		} );
 		if ( !pages.length ) {
 			ui.notify( {
 				type: 'warning',

@@ -30,6 +30,15 @@ class MassviewsController extends AbstractController {
 		] );
 	}
 
+	#[Route( '/api/lists/hashtag', name: 'api_lists_hashtag', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function hashtagPages(
+		MassviewsRepository $massviewsRepo,
+		#[MapQueryParameter] string $query = '',
+	): JsonResponse {
+		return new JsonResponse( $massviewsRepo->getHashtagPages( $query ) );
+	}
+
 	#[Route( '/api/lists/{project}/category', name: 'api_lists_category', methods: [ 'GET' ] )]
 	#[Cache( maxage: 600, public: true )]
 	public function categoryMembers(

@@ -157,6 +157,22 @@ export function fetchPagesCreated( { project, user, namespace = 'all', redirects
 }
 
 /**
+ * The unique pages with an edit tagged with the hashtag, across all
+ * wikis (the Massviews hashtag source). Proxied server-side: the
+ * hashtag tool's API sends no CORS headers.
+ *
+ * @param {Object} params
+ * @param {string} params.tag Without the leading #.
+ * @param {AbortSignal} [params.signal]
+ * @return {Promise<Object>} { tag, pages: [ { project, title } ] } —
+ *   titles prefixed and underscored.
+ * @throws {ApiError}
+ */
+export function fetchHashtagPages( { tag, signal } ) {
+	return apiGet( '/api/lists/hashtag', { query: tag }, signal );
+}
+
+/**
  * Edit statistics (edit/editor counts, assessment class) from the
  * replica-backed endpoint.
  *

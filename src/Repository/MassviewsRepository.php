@@ -7,6 +7,7 @@ namespace App\Repository;
 use Doctrine\DBAL\ArrayParameterType;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
 /**
@@ -34,7 +35,54 @@ class MassviewsRepository extends Repository {
 		private readonly ProjectsRepository $projectsRepo,
 		private readonly ReplicasClient $replicasClient,
 		private readonly CacheInterface $cacheLists,
+		private readonly HttpClientInterface $httpClient,
 	) {
+	}
+
+	/**
+	 * The unique pages with an edit tagged with the hashtag, across
+	 * all wikis, from the Wikimedia hashtag search tool. Proxied
+	 * server-side because the tool's API sends no CORS headers.
+	 *
+	 * @param string $tag With or without the leading #.
+	 * @return array{tag: string, pages: array<array{project: string, title: string}>}
+	 */
+	public function getHashtagPages( string $tag ): array {
+		$tag = ltrim( trim( $tag ), '#' );
+		if ( $tag === '' ) {
+			$this->invalidParameter(
+				'missing_param',
+				'The query parameter is required.',
+				[ 'param-error-3', 'query' ]
+			);
+		}
+
+		return $this->cacheLists->get(
+			'hashtag.' . md5( $tag ),
+			function ( ItemInterface $item ) use ( $tag ): array {
+				// One row per edit; several edits often hit the same
+				// page. Dedupe per wiki + title.
+				$pages = [];
+				foreach ( $this->fetchHashtagRows( $tag ) as $row ) {
+					$project = (string)( $row['Domain'] ?? '' );
+					$title = str_replace( ' ', '_', (string)( $row['Page_title'] ?? '' ) );
+					if ( $project === '' || $title === '' ) {
+						continue;
+					}
+					$pages[ "$project|$title" ] = [ 'project' => $project, 'title' => $title ];
+				}
+				return [ 'tag' => $tag, 'pages' => array_values( $pages ) ];
+			}
+		);
+	}
+
+	/**
+	 * @return array Raw per-edit rows from the hashtag tool.
+	 */
+	protected function fetchHashtagRows( string $tag ): array {
+		return $this->httpClient->request( 'GET', 'https://hashtags.wmcloud.org/json/', [
+			'query' => [ 'query' => $tag ],
+		] )->toArray()['Rows'] ?? [];
 	}
 
 	/**

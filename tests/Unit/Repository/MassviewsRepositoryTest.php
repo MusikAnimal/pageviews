@@ -9,6 +9,7 @@ use App\Repository\MassviewsRepository;
 use App\Repository\ProjectsRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Wikimedia\ToolforgeBundle\Service\ReplicasClient;
 
 class MassviewsRepositoryTest extends TestCase {
@@ -31,16 +32,18 @@ class MassviewsRepositoryTest extends TestCase {
 		$projectsRepo->method( 'getProjects' )
 			->willReturn( [ 'en.wikipedia' => 'enwiki' ] );
 		$replicasClient = $this->createStub( ReplicasClient::class );
+		$httpClient = $this->createStub( HttpClientInterface::class );
 
-		return new class ( $subcatsByParent, $members, $this, $projectsRepo, $replicasClient ) extends MassviewsRepository {
+		return new class ( $subcatsByParent, $members, $this, $projectsRepo, $replicasClient, $httpClient ) extends MassviewsRepository {
 			public function __construct(
 				private readonly array $subcatsByParent,
 				private readonly array $members,
 				private readonly MassviewsRepositoryTest $test,
 				ProjectsRepository $projectsRepo,
 				ReplicasClient $replicasClient,
+				HttpClientInterface $httpClient,
 			) {
-				parent::__construct( $projectsRepo, $replicasClient, new ArrayAdapter() );
+				parent::__construct( $projectsRepo, $replicasClient, new ArrayAdapter(), $httpClient );
 			}
 
 			protected function querySubcategories( string $dbName, array $categories ): array {
@@ -124,5 +127,59 @@ class MassviewsRepositoryTest extends TestCase {
 		$repo = $this->makeRepo( [], [] );
 		$this->expectException( ApiException::class );
 		$repo->getCategoryMembers( 'en.wikipedia.org', ' _ ' );
+	}
+
+	/**
+	 * @param array $rows Raw hashtag-tool rows.
+	 */
+	private function makeHashtagRepo( array $rows ): MassviewsRepository {
+		$projectsRepo = $this->createStub( ProjectsRepository::class );
+		$replicasClient = $this->createStub( ReplicasClient::class );
+		$httpClient = $this->createStub( HttpClientInterface::class );
+
+		return new class ( $rows, $projectsRepo, $replicasClient, $httpClient ) extends MassviewsRepository {
+			public int $fetches = 0;
+
+			public function __construct(
+				private readonly array $rows,
+				ProjectsRepository $projectsRepo,
+				ReplicasClient $replicasClient,
+				HttpClientInterface $httpClient,
+			) {
+				parent::__construct( $projectsRepo, $replicasClient, new ArrayAdapter(), $httpClient );
+			}
+
+			protected function fetchHashtagRows( string $tag ): array {
+				$this->fetches++;
+				return $this->rows;
+			}
+		};
+	}
+
+	public function testHashtagPagesDedupeAndCache(): void {
+		$repo = $this->makeHashtagRepo( [
+			[ 'Domain' => 'fr.wikipedia.org', 'Page_title' => 'Jacques Servin' ],
+			[ 'Domain' => 'fr.wikipedia.org', 'Page_title' => 'Jacques Servin' ],
+			[ 'Domain' => 'en.wikipedia.org', 'Page_title' => 'Jacques Servin' ],
+			[ 'Domain' => '', 'Page_title' => 'Orphan row' ],
+		] );
+
+		$result = $repo->getHashtagPages( '#moiswikif' );
+
+		static::assertSame( 'moiswikif', $result['tag'] );
+		static::assertSame( [
+			[ 'project' => 'fr.wikipedia.org', 'title' => 'Jacques_Servin' ],
+			[ 'project' => 'en.wikipedia.org', 'title' => 'Jacques_Servin' ],
+		], $result['pages'] );
+
+		// A repeat request is served from the cache.
+		$repo->getHashtagPages( 'moiswikif' );
+		static::assertSame( 1, $repo->fetches );
+	}
+
+	public function testHashtagRequiresATag(): void {
+		$repo = $this->makeHashtagRepo( [] );
+		$this->expectException( ApiException::class );
+		$repo->getHashtagPages( '  # ' );
 	}
 }
