@@ -88,6 +88,30 @@ const entries = [
 		]
 	},
 	{
+		id: 'editor_types',
+		title: banana.i18n( 'faq-editor-types-title' ),
+		paragraphs: [
+			'<ul>' + [
+				[ 'anonymous', 'faq-editor-types-anonymous' ],
+				[ 'group-bot', 'faq-editor-types-group-bot' ],
+				[ 'name-bot', 'faq-editor-types-name-bot' ],
+				[ 'user', 'faq-editor-types-user' ]
+			].map( ( [ label, body ] ) => `<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
+			).join( '' ) + '</ul>'
+		]
+	},
+	{
+		id: 'page_types',
+		title: banana.i18n( 'faq-page-types-title' ),
+		paragraphs: [
+			'<ul>' + [
+				[ 'content', 'faq-page-types-content' ],
+				[ 'non-content', 'faq-page-types-non-content' ]
+			].map( ( [ label, body ] ) => `<li><i>${ banana.i18n( label ) }</i> ${ banana.i18n( body ) }</li>`
+			).join( '' ) + '</ul>'
+		]
+	},
+	{
 		id: 'chart_type',
 		title: banana.i18n( 'faq-chart-type-title' ),
 		paragraphs: [ banana.i18n( 'faq-chart-types-body', banana.i18n( 'change-chart' ) ) ]

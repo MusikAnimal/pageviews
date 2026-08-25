@@ -27,10 +27,18 @@
 		</CdxField>
 		<PlatformInput v-model="platform" :options="platformOptions" />
 		<AgentInput v-model="agent" :disabled="!store.isPageviews" />
+		<!-- The fields above cover pageviews; editor and page type
+			feed the editing statistics. -->
+		<hr class="app-settings__divider">
 		<CdxField class="app-settings__editor-type">
 			<template #label>
 				{{ $i18n( 'editor-type' ) }}
 			</template>
+			<FaqHelpButton
+				class="app-settings__field-help"
+				section="editor_types"
+				:aria-label="$i18n( 'faq-editor-types-title' )"
+			/>
 			<CdxSelect
 				v-model:selected="editorType"
 				:menu-items="editorTypeOptions"
@@ -41,12 +49,18 @@
 			<template #label>
 				{{ $i18n( 'page-type' ) }}
 			</template>
+			<FaqHelpButton
+				class="app-settings__field-help"
+				section="page_types"
+				:aria-label="$i18n( 'faq-page-types-title' )"
+			/>
 			<CdxSelect
 				v-model:selected="pageType"
 				:menu-items="pageTypeOptions"
 				:aria-label="$i18n( 'page-type' )"
 			/>
 		</CdxField>
+		<hr v-if="store.isPageviews" class="app-settings__divider">
 		<CdxField v-if="store.isPageviews" :is-fieldset="true">
 			<template #label>
 				{{ $i18n( 'query-for' ) }}
@@ -146,14 +160,28 @@ const allProjects = computed( {
 </script>
 
 <style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
 // Flush right, inline with the field's label.
-.app-settings__metric {
+.app-settings__metric,
+.app-settings__editor-type,
+.app-settings__page-type {
 	position: relative;
 }
 
-.app-settings__metric-help {
+.app-settings__metric-help,
+.app-settings__field-help {
 	position: absolute;
 	inset-inline-end: 0;
 	top: -5px;
+}
+
+// Separates the editing-statistics fields (and the 'Query for' mode)
+// from the pageview fields above them.
+.app-settings__divider {
+	border: 0;
+	border-top: @border-width-base solid @border-color-subtle;
+	margin: @spacing-100 0 -@spacing-25;
+	width: @size-full;
 }
 </style>
