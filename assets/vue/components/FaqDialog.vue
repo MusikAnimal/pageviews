@@ -74,6 +74,11 @@ watch( () => [ props.open, route.hash ], async ( [ open ] ) => {
 <style lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
+// Reading-heavy content: wider than the Codex default dialog.
+.app-faq {
+	max-width: @min-width-breakpoint-desktop;
+}
+
 .app-dialog-list {
 	list-style: none;
 	margin: 0;

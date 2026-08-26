@@ -55,6 +55,9 @@ const emit = defineEmits( [ 'update:open' ] );
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-url-structure {
+	// Reading-heavy content: wider than the Codex default dialog.
+	max-width: @min-width-breakpoint-desktop;
+
 	&__example {
 		background: @background-color-neutral-subtle;
 		overflow-x: auto;
