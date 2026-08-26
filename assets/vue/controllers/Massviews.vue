@@ -358,13 +358,13 @@ const sourceDescription = computed( () => {
 		case 'external-link':
 			return banana.i18n(
 				'massviews-external-link-description',
-				'<a target="_blank" href="https://www.mediawiki.org/wiki/Help:Links#External_links">' +
+				'<a target="_blank" href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Links#External_links">' +
 					`${ banana.i18n( 'external-link' ).toLowerCase() }</a>`
 			);
 		case 'search':
 			return banana.i18n(
 				'massviews-search-description',
-				'<a target="_blank" href="https://www.mediawiki.org/wiki/Help:CirrusSearch">CirrusSearch</a>'
+				'<a target="_blank" href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch">CirrusSearch</a>'
 			);
 		default:
 			return banana.i18n(

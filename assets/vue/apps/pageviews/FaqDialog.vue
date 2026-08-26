@@ -86,10 +86,17 @@ const entries = [
 	{
 		id: 'referrals',
 		title: banana.i18n( 'faq-referrals-title' ),
-		paragraphs: [ banana.i18n( 'faq-referrals-body', link(
-			'http://discovery.wmflabs.org/external/',
-			'discovery.wmflabs.org'
-		) ) ]
+		paragraphs: [ banana.i18n(
+			'faq-referrals-body',
+			link(
+				'https://meta.wikimedia.org/wiki/Research:Wikipedia_clickstream',
+				'ClickStream'
+			),
+			link(
+				'https://wikinav.toolforge.org/',
+				'wikinav.toolforge.org'
+			)
+		) ]
 	},
 	{
 		id: 'date_dot',
