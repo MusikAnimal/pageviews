@@ -23,6 +23,7 @@
 	"api-error": "Error querying $1.",
 	"api-error-auth": "Your session could not be verified. Please reload the page.",
 	"api-error-no-data": "No data found.",
+	"api-error-rate-limited": "$1 is rate limiting our requests. Try again after $2 {{PLURAL:$2|second|seconds}}.",
 	"api-error-timeout": "Due to API failure, the following could not be processed:\n$1\nPlease wait several minutes and try again.",
 	"api-error-unknown": "An unknown error occurred when querying $1",
 	"api-error-upstream-timeout": "The request to $1 timed out. Please wait a few minutes and try again.",

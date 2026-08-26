@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Exception\ApiException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TimeoutExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
@@ -85,6 +86,22 @@ abstract class Repository {
 				true,
 			);
 		}
+		if (
+			$e instanceof HttpExceptionInterface &&
+			$e->getResponse()->getStatusCode() === Response::HTTP_TOO_MANY_REQUESTS
+		) {
+			// Rate limited (e.g. the Wikimedia API WAF): tell the user
+			// when to come back rather than a generic upstream error.
+			$seconds = $this->retryAfterSeconds( $e->getResponse() );
+			throw new ApiException(
+				'upstream_rate_limited',
+				"The $name is rate limiting our requests; retry after $seconds seconds.",
+				[ 'api-error-rate-limited', $name, (string)$seconds ],
+				Response::HTTP_TOO_MANY_REQUESTS,
+				$slug,
+				true,
+			);
+		}
 		throw new ApiException(
 			'upstream_error',
 			"The $name returned an error.",
@@ -93,5 +110,21 @@ abstract class Repository {
 			$slug,
 			true,
 		);
+	}
+
+	/**
+	 * The Retry-After header as seconds — it may also be an HTTP
+	 * date. A missing or unparsable header falls back to a minute.
+	 *
+	 * @param \Symfony\Contracts\HttpClient\ResponseInterface $response
+	 * @return int
+	 */
+	private function retryAfterSeconds( $response ): int {
+		$after = $response->getHeaders( false )['retry-after'][0] ?? '';
+		if ( is_numeric( $after ) ) {
+			return max( 1, (int)$after );
+		}
+		$time = strtotime( $after );
+		return $time ? max( 1, $time - time() ) : 60;
 	}
 }

@@ -9,6 +9,9 @@ use App\Repository\MassviewsRepository;
 use App\Repository\ProjectsRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\TimeoutException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -195,6 +198,31 @@ class MassviewsRepositoryTest extends TestCase {
 			static::assertSame( [ 'api-error-upstream-timeout', 'Hashtags API' ], $e->i18n );
 			static::assertSame( 'hashtags', $e->upstream );
 			static::assertTrue( $e->retryable );
+		}
+	}
+
+	public function testHashtagRateLimitReportsRetryAfter(): void {
+		$client = new MockHttpClient( new MockResponse( 'slow down', [
+			'http_code' => 429,
+			'response_headers' => [ 'retry-after' => '65' ],
+		] ) );
+		try {
+			$client->request( 'GET', 'https://hashtags.example/json' )->getHeaders();
+			static::fail( 'Expected a ClientException.' );
+		} catch ( ClientException $upstream ) {
+			$repo = $this->makeHashtagRepo( [], $upstream );
+			try {
+				$repo->getHashtagPages( 'wpwp' );
+				static::fail( 'Expected an ApiException.' );
+			} catch ( ApiException $e ) {
+				static::assertSame( 'upstream_rate_limited', $e->errorCode );
+				static::assertSame( 429, $e->status );
+				static::assertSame(
+					[ 'api-error-rate-limited', 'Hashtags API', '65' ],
+					$e->i18n
+				);
+				static::assertTrue( $e->retryable );
+			}
 		}
 	}
 
