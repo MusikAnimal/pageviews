@@ -64,18 +64,20 @@
 					<td class="app-stats__number">
 						{{ number( Math.round( store.totals.average ) ) }}
 					</td>
-					<td class="app-stats__number">
-						{{ number( sumOf( 'files' ) ) }}
-					</td>
-					<td class="app-stats__number">
-						{{ number( sumOf( 'usedFiles' ) ) }}
-					</td>
-					<td class="app-stats__number">
-						{{ number( sumOf( 'wikis' ) ) }}
-					</td>
-					<td class="app-stats__number">
-						{{ number( sumOf( 'pages' ) ) }}
-					</td>
+					<template v-if="store.wiki === 'all-wikis'">
+						<td class="app-stats__number">
+							{{ number( sumOf( 'files' ) ) }}
+						</td>
+						<td class="app-stats__number">
+							{{ number( sumOf( 'usedFiles' ) ) }}
+						</td>
+						<td class="app-stats__number">
+							{{ number( sumOf( 'wikis' ) ) }}
+						</td>
+						<td class="app-stats__number">
+							{{ number( sumOf( 'pages' ) ) }}
+						</td>
+					</template>
 				</tr>
 				<tr v-else>
 					<td />
@@ -159,10 +161,14 @@ const columns = computed( () => categoriesSource.value ?
 			sortable: true,
 			numeric: true
 		},
-		{ key: 'files', label: banana.i18n( 'file-count' ), sortable: true, numeric: true },
-		{ key: 'usedFiles', label: banana.i18n( 'used-files' ), sortable: true, numeric: true },
-		{ key: 'wikis', label: banana.i18n( 'wikis' ), sortable: true, numeric: true },
-		{ key: 'pages', label: banana.i18n( 'pages' ), sortable: true, numeric: true }
+		// The snapshot statistics have no per-wiki granularity: they
+		// only accompany all-wikis queries.
+		...( store.wiki === 'all-wikis' ? [
+			{ key: 'files', label: banana.i18n( 'file-count' ), sortable: true, numeric: true },
+			{ key: 'usedFiles', label: banana.i18n( 'used-files' ), sortable: true, numeric: true },
+			{ key: 'wikis', label: banana.i18n( 'wikis' ), sortable: true, numeric: true },
+			{ key: 'pages', label: banana.i18n( 'pages' ), sortable: true, numeric: true }
+		] : [] )
 	] :
 	[
 		{ key: 'color', label: '', sortable: false },

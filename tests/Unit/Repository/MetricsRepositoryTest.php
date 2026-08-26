@@ -631,6 +631,38 @@ class MetricsRepositoryTest extends TestCase {
 					[ 'timestamp' => '2025-03-01 00:00:00.000Z', 'pageview-count' => 50 ],
 				],
 			],
+		] );
+
+		$result = $repo->getCommonsCategoryViews(
+			// Prefix stripped, spaces underscored, project normalized.
+			'Category:UNESCO', 'deep', 'en.wikipedia.org', '2025-01', '2025-03'
+		);
+
+		static::assertSame( [
+			'category' => 'UNESCO',
+			'scope' => 'deep',
+			'wiki' => 'en.wikipedia',
+			'granularity' => 'monthly',
+			'start' => '2025-01',
+			'end' => '2025-03',
+			'dates' => [ '2025-01', '2025-02', '2025-03' ],
+			'counts' => [ 100, 0, 50 ],
+			'total' => 150,
+			'average' => 50.0,
+			// The snapshot has no per-wiki granularity: never fetched
+			// (nor misleadingly served) for a single wiki's pageviews.
+			'stats' => null,
+		], $result );
+		foreach ( $this->requestedUrls as $url ) {
+			static::assertStringNotContainsString( 'category-metrics-snapshot', $url );
+		}
+	}
+
+	public function testCommonsCategoryDeepStats(): void {
+		$repo = $this->makeRepo( [
+			'commons-analytics/pageviews-per-category-monthly/UNESCO/deep/all-wikis/20250101/20250401' => [
+				'items' => [ [ 'timestamp' => '2025-01-01 00:00:00.000Z', 'pageview-count' => 100 ] ],
+			],
 			'commons-analytics/category-metrics-snapshot/UNESCO/20250101/20250401' => [
 				'items' => [
 					[
@@ -652,30 +684,15 @@ class MetricsRepositoryTest extends TestCase {
 			],
 		] );
 
-		$result = $repo->getCommonsCategoryViews(
-			// Prefix stripped, spaces underscored, project normalized.
-			'Category:UNESCO', 'deep', 'en.wikipedia.org', '2025-01', '2025-03'
-		);
+		$result = $repo->getCommonsCategoryViews( 'UNESCO', 'deep', 'all-wikis', '2025-01', '2025-03' );
 
+		// The deep scope reads the -deep fields of the latest snapshot.
 		static::assertSame( [
-			'category' => 'UNESCO',
-			'scope' => 'deep',
-			'wiki' => 'en.wikipedia',
-			'granularity' => 'monthly',
-			'start' => '2025-01',
-			'end' => '2025-03',
-			'dates' => [ '2025-01', '2025-02', '2025-03' ],
-			'counts' => [ 100, 0, 50 ],
-			'total' => 150,
-			'average' => 50.0,
-			// The deep scope reads the -deep snapshot fields.
-			'stats' => [
-				'files' => 17243854,
-				'usedFiles' => 1205684,
-				'wikis' => 831,
-				'pages' => 4747221,
-			],
-		], $result );
+			'files' => 17243854,
+			'usedFiles' => 1205684,
+			'wikis' => 831,
+			'pages' => 4747221,
+		], $result['stats'] );
 	}
 
 	public function testCommonsCategoryShallowStats(): void {

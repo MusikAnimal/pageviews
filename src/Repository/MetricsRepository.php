@@ -1025,20 +1025,24 @@ class MetricsRepository extends Repository {
 					( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
 				) );
 				// The category's size and usage snapshot rides along;
-				// requested up front so the two fetch concurrently.
-				$snapshotResponse = $this->aqsClient->request( 'GET', sprintf(
-					'commons-analytics/category-metrics-snapshot/%s/%s/%s',
-					rawurlencode( $category ),
-					$startDate->format( 'Ymd' ),
-					( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
-				) );
+				// requested up front so the two fetch concurrently. It
+				// has no per-wiki granularity, so it only accompanies
+				// all-wikis queries — global figures next to one
+				// wiki's pageviews would mislead.
+				$snapshotResponse = $wiki !== 'all-wikis' ? null :
+					$this->aqsClient->request( 'GET', sprintf(
+						'commons-analytics/category-metrics-snapshot/%s/%s/%s',
+						rawurlencode( $category ),
+						$startDate->format( 'Ymd' ),
+						( clone $endDate )->modify( '+1 month' )->format( 'Ymd' )
+					) );
 
 				try {
 					$items = $response->toArray()['items'] ?? [];
 				} catch ( HttpClientExceptionInterface $e ) {
 					// The unread snapshot response must not throw from
 					// its destructor during the unwind.
-					$snapshotResponse->cancel();
+					$snapshotResponse?->cancel();
 					if (
 						$e instanceof ClientExceptionInterface &&
 						$response->getStatusCode() === Response::HTTP_NOT_FOUND
@@ -1077,7 +1081,8 @@ class MetricsRepository extends Repository {
 					'counts' => $counts,
 					'total' => array_sum( $counts ),
 					'average' => round( array_sum( $counts ) / count( $dates ), 2 ),
-					'stats' => $this->extractCategorySnapshot( $snapshotResponse, $scope ),
+					'stats' => $snapshotResponse === null ? null :
+						$this->extractCategorySnapshot( $snapshotResponse, $scope ),
 				];
 			}
 		);

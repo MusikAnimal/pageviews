@@ -21,17 +21,27 @@
 			:menu-config="menuConfig"
 			:aria-label="label || $i18n( 'project' )"
 			:clearable="true"
+			:disabled="allProjectsToggle && allProjects"
 			@input="onInput"
 			@change="checkValidity"
 			@clear="onClear"
 			@update:selected="onSelect"
 		/>
+		<!-- On the lookup, not the field: a disabled field would also
+			disable this checkbox, making it impossible to uncheck. -->
+		<CdxCheckbox
+			v-if="allProjectsToggle"
+			v-model="allProjects"
+			class="app-settings__project-all"
+		>
+			{{ $i18n( 'all-projects' ) }}
+		</CdxCheckbox>
 	</CdxField>
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from 'vue';
-import { CdxField, CdxLookup } from '@wikimedia/codex';
+import { nextTick, onMounted, ref, watch } from 'vue';
+import { CdxCheckbox, CdxField, CdxLookup } from '@wikimedia/codex';
 import { banana } from '../i18n.js';
 import { getProjects } from '../projects.js';
 
@@ -49,7 +59,20 @@ defineProps( {
 	label: {
 		type: String,
 		default: ''
+	},
+	// Offer an "All projects" checkbox below the lookup (Mediaviews'
+	// categories source, where Commons Impact Metrics can count one
+	// wiki or all of them); checking it disables the lookup. Bind the
+	// state with v-model:all-projects.
+	allProjectsToggle: {
+		type: Boolean,
+		default: false
 	}
+} );
+
+const allProjects = defineModel( 'allProjects', {
+	type: Boolean,
+	default: false
 } );
 
 const lookup = ref( null );
@@ -83,6 +106,28 @@ const menuItems = ref( supportedProjects.value.map( ( projectId ) => ( {
 const currentSearchTerm = ref( project.value );
 
 const menuConfig = { visibleItemLimit: 10 };
+
+// Checking "All projects" disables the lookup: the text and
+// whatever error it had no longer apply.
+watch( allProjects, ( checked ) => {
+	if ( checked ) {
+		currentSearchTerm.value = '';
+		status.value = '';
+	}
+} );
+
+// The parent can swap the project from outside (e.g. unchecking All
+// projects restores the default wiki): sync the visible text and
+// re-validate. Empty values are ignored — the lookup also nulls the
+// selection whenever the typed text matches nothing, which must not
+// wipe the text (or its error) mid-edit.
+watch( project, ( value ) => {
+	if ( !value || value === currentSearchTerm.value ) {
+		return;
+	}
+	currentSearchTerm.value = value;
+	checkValidity();
+} );
 
 /**
  * The project is required: when cleared, keep focus here so the user
@@ -120,11 +165,18 @@ function onInput( value ) {
  */
 async function checkValidity() {
 	await nextTick();
-	const input = document.querySelector( '.app-settings__project input' );
+	const input = lookup.value?.$el?.querySelector( 'input' );
+	if ( !input ) {
+		return;
+	}
 	const valid = input.checkValidity();
 
+	// Judged on the visible text, not the selection model: typing an
+	// unknown project never produces a selection, and some parents
+	// keep the previous (valid) value in that case.
 	const unsupported = supportedProjects.value.length &&
-		!supportedProjects.value.includes( project.value );
+		currentSearchTerm.value &&
+		!supportedProjects.value.includes( currentSearchTerm.value );
 	if ( !valid ) {
 		status.value = input.validationMessage;
 	} else if ( unsupported ) {
@@ -156,10 +208,19 @@ function onSelect() {
 onMounted( async () => {
 	supportedProjects.value = Object.keys( await getProjects() )
 		.map( ( projectId ) => `${ projectId }.org` );
+	// The initial menuItems mapping ran before the list loaded (it
+	// was empty); populate it so programmatic selections resolve.
+	menuItems.value = supportedProjects.value.map( ( projectId ) => ( {
+		value: projectId,
+		label: projectId
+	} ) );
 } );
 </script>
 
 <style scoped lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
+.app-settings__project-all {
+	margin-top: @spacing-50;
+}
 </style>
