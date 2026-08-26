@@ -87,7 +87,8 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 	 */
 	const offset = ref( PAGE_SIZE );
 	/**
-	 * Client-side filter over the whole list (runtime only).
+	 * Client-side filter over the whole list. Kept in the URL so
+	 * permalinks reproduce the filtered view.
 	 *
 	 * @type {import('vue').Ref<string>}
 	 */
@@ -184,7 +185,8 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 			undefined,
 		mainspace: mainspace.value ? undefined : 'false',
 		mobileviews: showMobile.value && platform.value === 'all-access' &&
-			dateType.value !== 'yearly' ? 'true' : undefined
+			dateType.value !== 'yearly' ? 'true' : undefined,
+		search: search.value || undefined
 	} ) );
 
 	/**
@@ -240,6 +242,9 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 		}
 		if ( params.mobileviews ) {
 			showMobile.value = true;
+		}
+		if ( params.search !== undefined && params.search !== search.value ) {
+			search.value = params.search;
 		}
 	}
 
@@ -361,7 +366,6 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 		editData.value = {};
 		mobileViews.value = {};
 		offset.value = PAGE_SIZE;
-		search.value = '';
 
 		// Dev aid; see the pageviews store.
 		if (

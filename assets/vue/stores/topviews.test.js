@@ -36,6 +36,16 @@ describe( 'topviews store', () => {
 		fetchPageviews.mockResolvedValue( { dates: [], pages: [], totals: {} } );
 	} );
 
+	it( 'keeps a URL-provided search across the load', async () => {
+		const store = useTopviewsStore();
+		store.setFromQuery( { search: 'euro' } );
+		mockTop( [ { article: 'Euro_2026', views: 100, rank: 1 } ] );
+
+		await store.load();
+
+		expect( store.search ).toBe( 'euro' );
+	} );
+
 	it( 'round-trips its own query serialization', () => {
 		const store = useTopviewsStore();
 		store.setFromQuery( {
@@ -43,9 +53,11 @@ describe( 'topviews store', () => {
 			platform: 'desktop',
 			date: '2026-06',
 			excludes: 'Foo_Bar|Baz',
-			mainspace: 'false'
+			mainspace: 'false',
+			search: 'euro'
 		} );
 		expect( store.excludes ).toEqual( [ 'Foo Bar', 'Baz' ] );
+		expect( store.search ).toBe( 'euro' );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );
 		expect( store.query ).toEqual( serialized );
