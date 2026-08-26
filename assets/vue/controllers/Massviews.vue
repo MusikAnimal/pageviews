@@ -335,17 +335,17 @@ const sourceDescription = computed( () => {
 		case 'wikilinks':
 			return rawI18n(
 				'massviews-wikilinks-description',
-				'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Wikilinks'
+				help( 'Help:Wikilinks', banana.i18n( 'massviews-wikilinks-description-link' ).toLowerCase() )
 			);
 		case 'subpages':
 			return banana.i18n(
 				'massviews-subpages-description',
-				help( 'Help:Subpages', banana.i18n( 'subpages' ).toLowerCase() )
+				help( 'Help:Subpages', banana.i18n( 'massviews-subpages-description-link' ).toLowerCase() )
 			);
 		case 'transclusions':
 			return rawI18n(
 				'massviews-transclusions-description',
-				'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Transclusion'
+				help( 'Help:Transclusion', banana.i18n( 'massviews-transclusions-description-link' ).toLowerCase() )
 			);
 		case 'quarry':
 			return banana.i18n(
@@ -354,30 +354,28 @@ const sourceDescription = computed( () => {
 			);
 		case 'hashtag':
 			return banana.i18n(
+				'hashtag-credits',
+				'<a target="_blank" href="https://hashtags.wmcloud.org">' +
+					'Wikimedia hashtag search</a>'
+			) + ' ' + banana.i18n(
 				'massviews-hashtag-description',
-				banana.i18n(
-					'hashtag-credits',
-					'<a target="_blank" href="https://hashtags.wmcloud.org">' +
-						'Wikimedia hashtag search</a>'
-				),
 				'<a target="_blank" href="https://hashtags.wmcloud.org/docs/">' +
-					`${ banana.i18n( 'hashtag' ).toLowerCase() }</a>`
+					`${ banana.i18n( 'massviews-hashtag-description-link' ).toLowerCase() }</a>`
 			);
 		case 'external-link':
 			return banana.i18n(
 				'massviews-external-link-description',
-				'<a target="_blank" href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Links#External_links">' +
-					`${ banana.i18n( 'external-link' ).toLowerCase() }</a>`
+				help( 'Help:Links#External_links', banana.i18n( 'massviews-external-link-description-link' ).toLowerCase() )
 			);
 		case 'search':
 			return banana.i18n(
 				'massviews-search-description',
-				'<a target="_blank" href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch">CirrusSearch</a>'
+				help( 'Help:CirrusSearch', 'CirrusSearch' )
 			);
 		default:
 			return banana.i18n(
 				'massviews-category-description',
-				help( 'Help:Categories', banana.i18n( 'category' ).toLowerCase() )
+				help( 'Help:Categories', banana.i18n( 'massviews-category-description-link' ).toLowerCase() )
 			);
 	}
 } );

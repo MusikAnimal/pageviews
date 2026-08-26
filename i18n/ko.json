@@ -205,7 +205,6 @@
 	"mainspace-only-option": "일반 이름공간의 문서만 표시",
 	"march": "3월",
 	"massviews": "대량 조회수",
-	"massviews-category-description": "$1에 속한 문서의 페이지뷰를 가져옵니다",
 	"massviews-description": "문서 목록을 가져온 다음 페이지뷰를 비교합니다",
 	"massviews-empty-set": "$1에 페이지가 없습니다!",
 	"massviews-notice": "$1개보다 더 많은 {{PLURAL:$1|문서}}를 보려면 $2을(를) 시도하십시오.",
