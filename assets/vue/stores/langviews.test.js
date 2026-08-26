@@ -29,8 +29,7 @@ describe( 'langviews store', () => {
 			agent: 'spider',
 			sort: 'lang',
 			direction: '-1',
-			view: 'chart',
-			autolog: 'false'
+			view: 'chart'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

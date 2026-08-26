@@ -12,7 +12,6 @@ import {
 	code,
 	defaultMsg,
 	listValues,
-	muteValidationsParam,
 	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
@@ -72,7 +71,6 @@ const params = [
 	{
 		name: 'mainspace',
 		html: banana.i18n( 'url-structure-topviews-mainspace' )
-	},
-	muteValidationsParam()
+	}
 ];
 </script>

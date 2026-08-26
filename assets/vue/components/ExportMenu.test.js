@@ -150,4 +150,68 @@ describe( 'ExportMenu', () => {
 		expect( copied.searchParams.get( 'end' ) ).toBe( settings.end );
 		window.history.replaceState( {}, '', '/' );
 	} );
+
+	it( 'offers a chart-options permalink only in chart contexts', async () => {
+		const writeText = vi.fn( () => Promise.resolve() );
+		vi.stubGlobal( 'navigator', { clipboard: { writeText } } );
+		window.history.replaceState( {}, '', '/?project=en.wikipedia.org&pages=Cat' );
+
+		// List context: no variants menu.
+		const list = mount( ExportMenu, { props, global: globalConfig } );
+		expect( list.find( '.app-export__permalink-more' ).exists() ).toBe( false );
+
+		const wrapper = mount( ExportMenu, {
+			props: {
+				...props,
+				getChartOptions: () => ( {
+					charttype: 'bar',
+					showvalues: true,
+					logarithmic: false,
+					movingaverage: true,
+					linear: true
+				} )
+			},
+			global: globalConfig
+		} );
+		const more = wrapper.find( '.app-export__permalink-more' );
+		expect( more.exists() ).toBe( true );
+
+		more.findComponent( CdxMenuButton ).vm.$emit( 'update:selected', 'chart-options' );
+		await vi.waitFor( () => expect( writeText ).toHaveBeenCalled() );
+
+		const copied = new URL( writeText.mock.calls[ 0 ][ 0 ] );
+		expect( copied.searchParams.get( 'charttype' ) ).toBe( 'bar' );
+		expect( copied.searchParams.get( 'showvalues' ) ).toBe( '1' );
+		expect( copied.searchParams.get( 'logarithmic' ) ).toBe( '0' );
+		expect( copied.searchParams.get( 'movingaverage' ) ).toBe( '1' );
+		// The report params are untouched.
+		expect( copied.searchParams.get( 'pages' ) ).toBe( 'Cat' );
+	} );
+
+	it( 'omits the toggle params for non-linear chart types', async () => {
+		const writeText = vi.fn( () => Promise.resolve() );
+		vi.stubGlobal( 'navigator', { clipboard: { writeText } } );
+
+		const wrapper = mount( ExportMenu, {
+			props: {
+				...props,
+				getChartOptions: () => ( {
+					charttype: 'pie',
+					showvalues: false,
+					logarithmic: false,
+					movingaverage: false,
+					linear: false
+				} )
+			},
+			global: globalConfig
+		} );
+		wrapper.find( '.app-export__permalink-more' )
+			.findComponent( CdxMenuButton ).vm.$emit( 'update:selected', 'chart-options' );
+		await vi.waitFor( () => expect( writeText ).toHaveBeenCalled() );
+
+		const copied = new URL( writeText.mock.calls[ 0 ][ 0 ] );
+		expect( copied.searchParams.get( 'charttype' ) ).toBe( 'pie' );
+		expect( copied.searchParams.get( 'showvalues' ) ).toBeNull();
+		expect( copied.searchParams.get( 'logarithmic' ) ).toBeNull();
+	} );
 } );

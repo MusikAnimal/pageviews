@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getLangLinks } from '../lib/wikidata.js';
 import { promisePool } from '../lib/queue.js';
@@ -38,13 +39,6 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 	 * @type {import('vue').Ref<'all-agents'|'user'|'spider'|'automated'>}
 	 */
 	const agent = ref( 'user' );
-	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
 	/**
 	 * Table sort state, kept in the URL like the legacy tool.
 	 *
@@ -115,13 +109,12 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 	 */
 	const query = computed( () => ( {
 		project: project.value,
-		platform: platform.value,
-		agent: agent.value,
+		platform: omitDefault( platform.value, 'all-access' ),
+		agent: omitDefault( agent.value, 'user' ),
 		page: page.value.replace( / /g, '_' ) || undefined,
-		sort: sort.value,
-		direction: direction.value,
-		view: view.value,
-		autolog: autolog.value ? undefined : 'false'
+		sort: omitDefault( sort.value, 'views' ),
+		direction: omitDefault( direction.value, '1' ),
+		view: omitDefault( view.value, 'list' )
 	} ) );
 
 	/**
@@ -158,7 +151,6 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		if ( [ 'list', 'chart' ].includes( params.view ) ) {
 			view.value = params.view;
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	/**
@@ -317,7 +309,6 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		project,
 		platform,
 		agent,
-		autolog,
 		sort,
 		direction,
 		view,

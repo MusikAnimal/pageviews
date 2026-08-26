@@ -11,12 +11,11 @@
 import BaseUrlStructureDialog from '../../components/UrlStructureDialog.vue';
 import {
 	agentParam,
-	autologParam,
+	chartOptionParams,
 	code,
 	dateRangeParams,
 	defaultMsg,
 	listValues,
-	muteValidationsParam,
 	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
@@ -72,7 +71,6 @@ const params = [
 		name: 'redirects',
 		html: banana.i18n( 'url-structure-redirects', code( '1' ), code( '0' ) )
 	},
-	autologParam(),
-	muteValidationsParam()
+	...chartOptionParams()
 ];
 </script>

@@ -76,8 +76,7 @@ describe( 'massviews store', () => {
 			namespace: '6',
 			sort: 'title',
 			direction: '-1',
-			view: 'chart',
-			autolog: 'false'
+			view: 'chart'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

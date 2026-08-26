@@ -1,6 +1,7 @@
 import { watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useSettingsStore } from '../stores/settings.js';
+import { useChartControlsStore } from '../stores/chartControls.js';
 
 /**
  * Keep an individual app's store and shared settings in sync with the URL query string.
@@ -16,6 +17,7 @@ export function useQuerySync( store, { syncSettings = true } = {} ) {
 	const route = useRoute();
 	const router = useRouter();
 	const settings = useSettingsStore();
+	const chartControls = useChartControlsStore();
 
 	// Sync URL with the stores.
 	watch(
@@ -25,6 +27,10 @@ export function useQuerySync( store, { syncSettings = true } = {} ) {
 				settings.setFromQuery( query );
 			}
 			store.setFromQuery( query );
+			// One-shot chart-option params (from "Include all chart
+			// options" permalinks): applied here, never written back,
+			// so the writeback below drops them from the URL.
+			chartControls.setFromQuery( query );
 		},
 		{ immediate: true }
 	);

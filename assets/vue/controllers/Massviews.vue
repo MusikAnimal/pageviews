@@ -120,7 +120,6 @@
 				:series="chartSeries"
 				:monthly="settings.dateType === 'monthly'"
 				:filename="exportFilename"
-				:no-autolog="!store.autolog"
 				:no-range-select="true"
 				:aria-label="$i18n( 'massviews-title' )"
 			/>

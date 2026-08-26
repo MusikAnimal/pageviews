@@ -9,13 +9,12 @@
 <script setup>
 import BaseUrlStructureDialog from '../../components/UrlStructureDialog.vue';
 import {
-	autologParam,
+	chartOptionParams,
 	agentParam,
 	code,
 	dateRangeParams,
 	defaultMsg,
 	listValues,
-	muteValidationsParam,
 	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
@@ -68,7 +67,6 @@ const params = [
 		name: 'direction',
 		html: banana.i18n( 'url-structure-sort-direction', code( '1' ), code( '-1' ) )
 	},
-	autologParam(),
-	muteValidationsParam()
+	...chartOptionParams()
 ];
 </script>

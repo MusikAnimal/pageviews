@@ -93,7 +93,10 @@ describe( 'siteviews store', () => {
 	it( 'serializes the agent only for the pageviews source', () => {
 		const store = useSiteviewsStore();
 		store.sites = [ 'fr.wikipedia.org' ];
-		expect( store.query.agent ).toBe( 'user' );
+		// The default agent stays out of the URL like other defaults.
+		expect( store.query.agent ).toBeUndefined();
+		store.agent = 'spider';
+		expect( store.query.agent ).toBe( 'spider' );
 
 		store.source = 'unique-devices';
 		expect( store.query.agent ).toBeUndefined();
@@ -107,8 +110,7 @@ describe( 'siteviews store', () => {
 			source: 'pagecounts',
 			platform: 'desktop-site',
 			'editor-type': 'group-bot',
-			'page-type': 'all-page-types',
-			autolog: 'false'
+			'page-type': 'all-page-types'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

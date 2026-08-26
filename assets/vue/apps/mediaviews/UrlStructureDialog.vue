@@ -9,12 +9,11 @@
 <script setup>
 import BaseUrlStructureDialog from '../../components/UrlStructureDialog.vue';
 import {
-	autologParam,
+	chartOptionParams,
 	code,
 	dateRangeParams,
 	defaultMsg,
 	listValues,
-	muteValidationsParam,
 	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
@@ -97,7 +96,6 @@ const params = [
 			code( 'all-agents' )
 		] )
 	},
-	autologParam(),
-	muteValidationsParam()
+	...chartOptionParams()
 ];
 </script>

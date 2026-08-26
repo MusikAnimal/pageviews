@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchPagesCreated, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getSiteinfo } from '../projects.js';
 import { mwApiGet } from '../lib/mwApi.js';
@@ -49,13 +50,6 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	 * @type {import('vue').Ref<'0'|'1'|'2'>}
 	 */
 	const redirects = ref( '0' );
-	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
 	/**
 	 * Table sort state, kept in the URL like the legacy tool.
 	 *
@@ -135,15 +129,14 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	 */
 	const query = computed( () => ( {
 		project: project.value,
-		platform: platform.value,
-		agent: agent.value,
-		namespace: namespace.value,
-		redirects: redirects.value,
+		platform: omitDefault( platform.value, 'all-access' ),
+		agent: omitDefault( agent.value, 'user' ),
+		namespace: omitDefault( namespace.value, '0' ),
+		redirects: omitDefault( redirects.value, '0' ),
 		user: user.value.replace( / /g, '_' ) || undefined,
-		sort: sort.value,
-		direction: direction.value,
-		view: view.value,
-		autolog: autolog.value ? undefined : 'false'
+		sort: omitDefault( sort.value, 'views' ),
+		direction: omitDefault( direction.value, '1' ),
+		view: omitDefault( view.value, 'list' )
 	} ) );
 
 	/**
@@ -186,7 +179,6 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		if ( [ 'list', 'chart' ].includes( params.view ) ) {
 			view.value = params.view;
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	/**
@@ -399,7 +391,6 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		agent,
 		namespace,
 		redirects,
-		autolog,
 		sort,
 		direction,
 		view,

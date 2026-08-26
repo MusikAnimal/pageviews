@@ -28,7 +28,6 @@
 				:series="chartSeries"
 				:monthly="settings.dateType === 'monthly'"
 				:filename="exportFilename"
-				:no-autolog="!store.autolog"
 				:aria-label="$i18n( 'mediaviews-title' )"
 			/>
 			<CdxMessage

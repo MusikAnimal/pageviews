@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
@@ -31,13 +32,6 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 	 * @type {import('vue').Ref<'all-agents'|'user'|'spider'|'automated'>}
 	 */
 	const agent = ref( 'user' );
-	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
 	/**
 	 * Table sort state, kept in the URL like the legacy tool.
 	 *
@@ -110,13 +104,12 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 	 */
 	const query = computed( () => ( {
 		project: project.value,
-		platform: platform.value,
-		agent: agent.value,
+		platform: omitDefault( platform.value, 'all-access' ),
+		agent: omitDefault( agent.value, 'user' ),
 		page: page.value.replace( / /g, '_' ) || undefined,
-		sort: sort.value,
-		direction: direction.value,
-		view: view.value,
-		autolog: autolog.value ? undefined : 'false'
+		sort: omitDefault( sort.value, 'views' ),
+		direction: omitDefault( direction.value, '1' ),
+		view: omitDefault( view.value, 'list' )
 	} ) );
 
 	/**
@@ -153,7 +146,6 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 		if ( [ 'list', 'chart' ].includes( params.view ) ) {
 			view.value = params.view;
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	/**
@@ -299,7 +291,6 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 		project,
 		platform,
 		agent,
-		autolog,
 		sort,
 		direction,
 		view,

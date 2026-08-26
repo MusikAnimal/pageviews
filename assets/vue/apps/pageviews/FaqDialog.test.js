@@ -82,7 +82,7 @@ describe( 'UrlStructureDialog', () => {
 
 		expect( terms ).toEqual( [
 			'project', 'pages', 'range', 'start', 'end',
-			'platform', 'agent', 'redirects', 'autolog', 'mutevalidations'
+			'platform', 'agent', 'redirects', 'charttype', 'showvalues', 'logarithmic', 'movingaverage'
 		] );
 		// The special ranges list is rendered inside the range param.
 		expect( wrapper.text() ).toContain( 'all-time' );

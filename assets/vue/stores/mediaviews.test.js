@@ -28,8 +28,7 @@ describe( 'mediaviews store', () => {
 			files: 'Example.jpg|Example.webm',
 			project: 'en.wikipedia.org',
 			referer: 'external',
-			agent: 'spider',
-			autolog: 'false'
+			agent: 'spider'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

@@ -6,6 +6,7 @@
 			:series="exportSeries"
 			:filename="filename"
 			:get-png="() => chartRef?.getPngDataUrl()"
+			:get-chart-options="getChartOptions"
 		/>
 		<!-- Inline: block checkboxes carry a bottom margin that throws
 			off the toolbar's vertical centering. -->
@@ -93,14 +94,6 @@ const props = defineProps( {
 		type: String,
 		required: true
 	},
-	/**
-	 * Set when the app store's autolog URL param disallows automatic
-	 * log-scale detection.
-	 */
-	noAutolog: {
-		type: Boolean,
-		default: false
-	},
 	ariaLabel: {
 		type: String,
 		default: ''
@@ -166,9 +159,9 @@ const selectedChartType = computed( {
 const linearType = computed( () => [ 'line', 'bar' ].includes( selectedChartType.value ) );
 
 // Auto-enabled on spiky data (the legacy Theil-index heuristic) when
-// the preference allows and the URL doesn't carry autolog=false; a
-// manual pick — kept across reloads — always wins.
-const autoLog = computed( () => preferences.autoLogDetection && !props.noAutolog &&
+// the preference allows; a manual pick — kept across reloads (and
+// seeded by a permalink's logarithmic param) — always wins.
+const autoLog = computed( () => preferences.autoLogDetection &&
 	shouldUseLogScale( props.series.map( ( entry ) => entry.counts ) )
 );
 const logScale = computed( {
@@ -186,6 +179,22 @@ const movingAverage = computed( {
 		controls.userMovingAverage = value;
 	}
 } );
+
+/**
+ * The effective chart options (preferences and auto-detection
+ * resolved), for the "Include all chart options" permalink.
+ *
+ * @return {Object}
+ */
+function getChartOptions() {
+	return {
+		charttype: selectedChartType.value,
+		showvalues: showValues.value,
+		logarithmic: logScale.value,
+		movingaverage: movingAverage.value,
+		linear: linearType.value
+	};
+}
 
 const exportSeries = computed( () => props.series.map( ( entry ) => ( {
 	title: entry.label,

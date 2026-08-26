@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchSiteEdits, fetchSiteviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import {
 	PAGECOUNTS_MAX_DATE,
@@ -58,13 +59,6 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 * @type {import('vue').Ref<'all-agents'|'user'|'spider'|'automated'>}
 	 */
 	const agent = ref( 'user' );
-	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
 	/**
 	 * @type {import('vue').Ref<'initial'|'loading'|'complete'|'error'>}
 	 */
@@ -192,12 +186,11 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 	 */
 	const query = computed( () => ( {
 		sites: sites.value.join( '|' ) || undefined,
-		source: source.value,
-		platform: platform.value,
-		agent: isPageviews.value ? agent.value : undefined,
-		'editor-type': editorType.value,
-		'page-type': pageType.value,
-		autolog: autolog.value ? undefined : 'false'
+		source: omitDefault( source.value, 'pageviews' ),
+		platform: omitDefault( platform.value, 'all-access' ),
+		agent: isPageviews.value ? omitDefault( agent.value, 'user' ) : undefined,
+		'editor-type': omitDefault( editorType.value, 'user' ),
+		'page-type': omitDefault( pageType.value, 'content' )
 	} ) );
 
 	/**
@@ -235,7 +228,6 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 				sites.value = domains;
 			}
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	// Guards against out-of-order edits responses; independent of the
@@ -395,7 +387,6 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 		source,
 		platform,
 		agent,
-		autolog,
 		status,
 		dates,
 		series,

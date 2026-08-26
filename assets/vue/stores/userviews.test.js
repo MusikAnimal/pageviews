@@ -59,8 +59,7 @@ describe( 'userviews store', () => {
 			redirects: '2',
 			sort: 'datestamp',
 			direction: '-1',
-			view: 'chart',
-			autolog: 'false'
+			view: 'chart'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

@@ -29,8 +29,7 @@ describe( 'redirectviews store', () => {
 			agent: 'spider',
 			sort: 'section',
 			direction: '-1',
-			view: 'chart',
-			autolog: 'false'
+			view: 'chart'
 		} );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );

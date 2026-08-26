@@ -11,14 +11,29 @@
 			<CdxIcon :icon="cdxIconDownload" />
 			{{ $i18n( 'download-label' ) }}
 		</CdxMenuButton>
-		<CdxButton
-			class="app-export__permalink"
-			:aria-label="$i18n( 'permalink' )"
-			@click="copyPermalink"
-		>
-			<CdxIcon :icon="cdxIconLink" />
-			{{ $i18n( 'permalink' ) }}
-		</CdxButton>
+		<div class="app-export__permalink-group" role="group">
+			<CdxButton
+				class="app-export__permalink"
+				:aria-label="$i18n( 'permalink' )"
+				@click="copyPermalink"
+			>
+				<CdxIcon :icon="cdxIconLink" />
+				{{ $i18n( 'permalink' ) }}
+			</CdxButton>
+			<!-- Chart contexts only: a connected menu with permalink
+				variants (currently one). -->
+			<CdxMenuButton
+				v-if="getChartOptions"
+				v-model:selected="permalinkSelection"
+				class="app-export__permalink-more"
+				weight="normal"
+				:menu-items="permalinkItems"
+				:aria-label="$i18n( 'permalink-more-label' )"
+				@update:selected="onPermalinkSelect"
+			>
+				<CdxIcon :icon="cdxIconExpand" />
+			</CdxMenuButton>
+		</div>
 	</div>
 </template>
 
@@ -26,7 +41,7 @@
 import { ref } from 'vue';
 import { CdxButton, CdxIcon, CdxMenuButton } from '@wikimedia/codex';
 import { useAppToast } from '../composables/useAppToast.js';
-import { cdxIconDownload, cdxIconLink, cdxIconPrinter } from '@wikimedia/codex-icons';
+import { cdxIconDownload, cdxIconExpand, cdxIconLink, cdxIconPrinter } from '@wikimedia/codex-icons';
 import { useSettingsStore } from '../stores/settings.js';
 import { buildCsv } from '../lib/csv.js';
 import { downloadFile } from '../lib/download.js';
@@ -61,6 +76,16 @@ const props = defineProps( {
 	 * getPngDataUrl); null hides the PNG option.
 	 */
 	getPng: {
+		type: Function,
+		default: null
+	},
+	/**
+	 * Returns the chart's effective toolbar options ({ charttype,
+	 * showvalues, logarithmic, movingaverage, linear }), enabling the
+	 * "Include all chart options" permalink variant. Chart contexts
+	 * only (ChartPanel passes it); null hides the variants menu.
+	 */
+	getChartOptions: {
 		type: Function,
 		default: null
 	},
@@ -159,7 +184,13 @@ const actions = {
 	}
 };
 
-async function copyPermalink() {
+/**
+ * @param {boolean} [withChartOptions] Append the one-shot chart-option
+ *   params, so the link reproduces the chart's exact look. Strictly
+ *   compared: as a bare click handler the argument is the event.
+ */
+async function copyPermalink( withChartOptions = false ) {
+	withChartOptions = withChartOptions === true;
 	const url = new URL( location.href );
 	// Permalinks pin the exact resolved dates: a relative range like
 	// latest-30 would show different data later (legacy behavior).
@@ -168,8 +199,32 @@ async function copyPermalink() {
 		url.searchParams.set( 'start', settings.start );
 		url.searchParams.set( 'end', settings.end );
 	}
+	if ( withChartOptions && props.getChartOptions ) {
+		const options = props.getChartOptions();
+		url.searchParams.set( 'charttype', options.charttype );
+		if ( options.linear ) {
+			// The scale/label/overlay toggles only exist on the
+			// linear (line/bar) types.
+			url.searchParams.set( 'showvalues', options.showvalues ? '1' : '0' );
+			url.searchParams.set( 'logarithmic', options.logarithmic ? '1' : '0' );
+			url.searchParams.set( 'movingaverage', options.movingaverage ? '1' : '0' );
+		}
+	}
 	await navigator.clipboard.writeText( url.toString() );
 	toast.success( banana.i18n( 'permalink-copied' ), { autoDismiss: true } );
+}
+
+const permalinkSelection = ref( null );
+const permalinkItems = [
+	{ value: 'chart-options', label: banana.i18n( 'permalink-chart-options' ) }
+];
+
+function onPermalinkSelect( value ) {
+	if ( value === 'chart-options' ) {
+		copyPermalink( true );
+	}
+	// A menu of actions, not a persistent selection.
+	permalinkSelection.value = null;
 }
 
 function onSelect( value ) {
@@ -181,11 +236,32 @@ function onSelect( value ) {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
 .app-export {
 	display: flex;
 	gap: @spacing-50;
+}
+
+// The Permalink button and its variants menu read as one control:
+// flush edges, the shared border collapsed. Unscoped (BEM-prefixed)
+// because the toggle element belongs to Codex.
+.app-export__permalink-group {
+	display: flex;
+
+	.app-export__permalink {
+		border-start-end-radius: 0;
+		border-end-end-radius: 0;
+	}
+
+	.app-export__permalink-more {
+		margin-inline-start: -@border-width-base;
+
+		.cdx-button {
+			border-start-start-radius: 0;
+			border-end-start-radius: 0;
+		}
+	}
 }
 </style>

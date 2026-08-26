@@ -88,7 +88,7 @@ describe( 'pageviews store', () => {
 
 	it( 'round-trips its own query serialization', () => {
 		const store = usePageviewsStore();
-		store.setFromQuery( { pages: 'Cat|Dog', redirects: '1', autolog: 'false' } );
+		store.setFromQuery( { pages: 'Cat|Dog', redirects: '1', platform: 'desktop' } );
 		const serialized = { ...store.query };
 		store.setFromQuery( serialized );
 		expect( store.query ).toEqual( serialized );
@@ -101,14 +101,20 @@ describe( 'pageviews store', () => {
 		expect( store.query.pages ).toBe( 'New_York_City|Cat' );
 	} );
 
-	it( 'carries autolog in the URL only when disabled', () => {
+	it( 'omits default-valued params from the URL', () => {
 		const store = usePageviewsStore();
-		expect( store.autolog ).toBe( true );
-		expect( store.query.autolog ).toBeUndefined();
+		store.setFromQuery( { pages: 'Cat' } );
+		// Only the project and the content params: defaults stay out.
+		expect( store.query ).toEqual( {
+			project: 'en.wikipedia.org',
+			platform: undefined,
+			agent: undefined,
+			pages: 'Cat',
+			redirects: undefined
+		} );
 
-		store.setFromQuery( { autolog: 'false' } );
-		expect( store.autolog ).toBe( false );
-		expect( store.query.autolog ).toBe( 'false' );
+		store.setFromQuery( { platform: 'desktop' } );
+		expect( store.query.platform ).toBe( 'desktop' );
 	} );
 
 	it( 'parses the redirects param', () => {

@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchEditData, fetchPageviews, fetchTopviews } from '../lib/metricsApi.js';
 import { findNonMainspace } from '../lib/mainspace.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
@@ -179,7 +180,7 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 	 */
 	const query = computed( () => ( {
 		project: project.value || undefined,
-		platform: platform.value,
+		platform: omitDefault( platform.value, 'all-access' ),
 		date: date.value || undefined,
 		excludes: excludes.value.map( ( title ) => title.replace( / /g, '_' ) ).join( '|' ) ||
 			undefined,

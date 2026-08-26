@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchCategoryMembers, fetchHashtagPages, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
@@ -73,13 +74,6 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * @type {import('vue').Ref<'0'|'1'>}
 	 */
 	const subcategories = ref( '0' );
-	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
 	/**
 	 * Table sort state, kept in the URL like the legacy tool.
 	 *
@@ -175,18 +169,17 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * @type {import('vue').ComputedRef<Object>}
 	 */
 	const query = computed( () => ( {
-		source: source.value,
+		source: omitDefault( source.value, 'category' ),
 		target: target.value || undefined,
 		project: PROJECT_SOURCES.includes( source.value ) ? project.value : undefined,
-		platform: platform.value,
-		agent: agent.value,
-		subjectpage: subjectpage.value,
-		subcategories: subcategories.value,
-		namespace: namespace.value === 'all' ? undefined : namespace.value,
-		sort: sort.value,
-		direction: direction.value,
-		view: view.value,
-		autolog: autolog.value ? undefined : 'false'
+		platform: omitDefault( platform.value, 'all-access' ),
+		agent: omitDefault( agent.value, 'user' ),
+		subjectpage: omitDefault( subjectpage.value, '0' ),
+		subcategories: omitDefault( subcategories.value, '0' ),
+		namespace: omitDefault( namespace.value, 'all' ),
+		sort: omitDefault( sort.value, 'views' ),
+		direction: omitDefault( direction.value, '1' ),
+		view: omitDefault( view.value, 'list' )
 	} ) );
 
 	/**
@@ -232,7 +225,6 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		if ( [ 'list', 'chart' ].includes( params.view ) ) {
 			view.value = params.view;
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	/**
@@ -799,7 +791,6 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		subjectpage,
 		subcategories,
 		namespace,
-		autolog,
 		sort,
 		direction,
 		view,

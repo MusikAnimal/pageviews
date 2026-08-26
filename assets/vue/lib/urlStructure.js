@@ -92,26 +92,28 @@ export function agentParam() {
 }
 
 /**
- * @return {{name: string, html: string}} The autolog param (legacy _autolog).
+ * The one-shot chart-option params the Permalink menu's "Include all
+ * chart options" variant emits. Applied on arrival, never kept in
+ * the URL.
+ *
+ * @return {Array<{name: string, html: string}>}
  */
-export function autologParam() {
-	return {
-		name: 'autolog',
-		html: banana.i18n(
-			'url-structure-autolog',
-			code( 'false' ),
-			`"${ banana.i18n( 'logarithmic-scale' ) }"`
-		)
-	};
-}
-
-/**
- * @return {{name: string, html: string}} The mutevalidations param
- *   (legacy _mute_validations).
- */
-export function muteValidationsParam() {
-	return {
-		name: 'mutevalidations',
-		html: banana.i18n( 'url-structure-mute-validations', code( 'true' ) )
-	};
+export function chartOptionParams() {
+	const toggle = ( label ) => banana.i18n(
+		'url-structure-chart-option',
+		code( '1' ),
+		`"${ banana.i18n( label ) }"`,
+		code( '0' )
+	);
+	return [
+		{
+			name: 'charttype',
+			html: `${ banana.i18n( 'url-structure-charttype' ) } ` + listValues(
+				[ 'line', 'bar', 'pie', 'doughnut', 'polarArea', 'radar' ].map( code )
+			)
+		},
+		{ name: 'showvalues', html: toggle( 'show-values' ) },
+		{ name: 'logarithmic', html: toggle( 'logarithmic-scale' ) },
+		{ name: 'movingaverage', html: toggle( 'moving-average' ) }
+	];
 }

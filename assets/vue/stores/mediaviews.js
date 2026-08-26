@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { omitDefault } from '../lib/urlParams.js';
 import { fetchCommonsCategory, fetchMediarequests, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getFileInfo } from '../lib/mwApi.js';
 import { formatYm, lastCompleteMonthUtc } from '../lib/dates.js';
@@ -74,13 +75,6 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 	 */
 	const agent = ref( 'user' );
 	/**
-	 * Whether automatic log-scale detection is allowed (legacy URL
-	 * param, serialized only as autolog=false).
-	 *
-	 * @type {import('vue').Ref<boolean>}
-	 */
-	const autolog = ref( true );
-	/**
 	 * @type {import('vue').Ref<'initial'|'loading'|'complete'|'error'>}
 	 */
 	const status = ref( 'initial' );
@@ -135,9 +129,8 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		{
 			source: 'categories',
 			categories: categories.value.join( '|' ) || undefined,
-			scope: scope.value,
-			wiki: wiki.value,
-			autolog: autolog.value ? undefined : 'false'
+			scope: omitDefault( scope.value, 'deep' ),
+			wiki: omitDefault( wiki.value, 'all-wikis' )
 		} :
 		// The files source keeps the legacy URL structure (no source
 		// param).
@@ -145,9 +138,8 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 			files: files.value.map( ( file ) => file.replace( / /g, '_' ) ).join( '|' ) ||
 				undefined,
 			project: project.value,
-			referer: referer.value,
-			agent: agent.value,
-			autolog: autolog.value ? undefined : 'false'
+			referer: omitDefault( referer.value, 'all-referers' ),
+			agent: omitDefault( agent.value, 'user' )
 		} );
 
 	/**
@@ -197,7 +189,6 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 				files.value = names;
 			}
 		}
-		autolog.value = params.autolog !== 'false';
 	}
 
 	/**
@@ -457,7 +448,6 @@ export const useMediaviewsStore = defineStore( 'mediaviews', () => {
 		project,
 		referer,
 		agent,
-		autolog,
 		status,
 		dates,
 		series,
