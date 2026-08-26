@@ -9,13 +9,14 @@
 <script setup>
 import BaseUrlStructureDialog from '../../components/UrlStructureDialog.vue';
 import {
-	autologParam,
 	agentParam,
+	autologParam,
 	code,
 	dateRangeParams,
 	defaultMsg,
 	listValues,
 	muteValidationsParam,
+	namespaceManualLink,
 	sitematrixLink
 } from '../../lib/urlStructure.js';
 import { banana } from '../../i18n.js';
@@ -49,7 +50,11 @@ const params = [
 	},
 	{
 		name: 'namespace',
-		html: banana.i18n( 'url-structure-userviews-namespace', code( '0' ), code( 'all' ) )
+		html: banana.i18n(
+			'url-structure-userviews-namespace',
+			code( '0' ), code( 'all' ),
+			namespaceManualLink( banana.i18n( 'namespace-id' ) )
+		)
 	},
 	{
 		name: 'redirects',

@@ -19,6 +19,14 @@ export const sitematrixLink = ( label ) => '<a target="_blank" href="https://ger
 	`${ label }</a>`;
 
 /**
+ * @param {string} label Localized, lowercased by the caller if needed.
+ * @return {string} Link to the built-in namespaces manual.
+ */
+export const namespaceManualLink = ( label ) => '<a target="_blank" ' +
+	'href="https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Namespace#Built-in_namespaces">' +
+	`${ label }</a>`;
+
+/**
  * @param {string[]} values Pre-formatted (code-wrapped) values.
  * @return {string} "One of: a, b, c" via the list-values message.
  */

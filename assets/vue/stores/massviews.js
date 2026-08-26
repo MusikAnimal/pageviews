@@ -54,6 +54,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 */
 	const agent = ref( 'user' );
 	/**
+	 * Filter the results to one namespace: 'all', or a namespace ID
+	 * as a string. Matched by title prefix, per wiki.
+	 *
+	 * @type {import('vue').Ref<string>}
+	 */
+	const namespace = ref( 'all' );
+	/**
 	 * '1' converts talk pages to their subject pages (legacy
 	 * category-subject toggle).
 	 *
@@ -175,6 +182,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		agent: agent.value,
 		subjectpage: subjectpage.value,
 		subcategories: subcategories.value,
+		namespace: namespace.value === 'all' ? undefined : namespace.value,
 		sort: sort.value,
 		direction: direction.value,
 		view: view.value,
@@ -211,6 +219,9 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		}
 		if ( TOGGLES.includes( params.subcategories ) ) {
 			subcategories.value = params.subcategories;
+		}
+		if ( params.namespace !== undefined && /^(all|\d+)$/.test( params.namespace ) ) {
+			namespace.value = params.namespace;
 		}
 		if ( SORTS.includes( params.sort ) ) {
 			sort.value = params.sort;
@@ -614,9 +625,25 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			// and query each group, sequentially so the progress bar
 			// (in pages, approximated within a group's chunks) stays
 			// monotonic.
-			const pages = [ 'hashtag', 'wikilinks' ].includes( source.value ) ?
+			let pages = [ 'hashtag', 'wikilinks' ].includes( source.value ) ?
 				resolved :
 				resolved.map( ( title ) => ( { project: project.value, title } ) );
+			if ( namespace.value !== 'all' ) {
+				pages = await filterByNamespace( pages, Number( namespace.value ) );
+				if ( id !== loadId ) {
+					return;
+				}
+				if ( !pages.length ) {
+					status.value = 'initial';
+					ui.notify( {
+						type: 'warning',
+						text: banana.i18n(
+							'massviews-empty-set', targetTitle.value.replace( /_/g, ' ' )
+						)
+					} );
+					return;
+				}
+			}
 			const groups = new Map();
 			for ( const page of pages ) {
 				if ( !groups.has( page.project ) ) {
@@ -708,6 +735,51 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	}
 
 	/**
+	 * The namespace a title's prefix denotes on the given wiki, from
+	 * its localized or canonical name. No colon, or an unknown
+	 * prefix, means mainspace.
+	 *
+	 * @param {string} title
+	 * @param {Object} namespaces From siteinfo.
+	 * @return {number}
+	 */
+	function titleNamespace( title, namespaces ) {
+		const colon = title.indexOf( ':' );
+		if ( colon > 0 ) {
+			const prefix = title.slice( 0, colon ).replace( /_/g, ' ' ).toLowerCase();
+			for ( const [ id, ns ] of Object.entries( namespaces ) ) {
+				if ( [ ns[ '*' ], ns.canonical ].some(
+					( name ) => name && name.toLowerCase() === prefix
+				) ) {
+					return Number( id );
+				}
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Keep only the pages in the wanted namespace, judged by title
+	 * prefix against each page's own wiki (hashtag and wikilink
+	 * results span projects). A wiki whose siteinfo cannot be fetched
+	 * keeps its pages rather than silently dropping them.
+	 *
+	 * @param {Array<{project: string, title: string}>} pages
+	 * @param {number} wanted
+	 * @return {Promise<Array<{project: string, title: string}>>}
+	 */
+	async function filterByNamespace( pages, wanted ) {
+		const projects = [ ...new Set( pages.map( ( page ) => page.project ) ) ];
+		const infos = new Map( await Promise.all( projects.map(
+			async ( domain ) => [ domain, await getSiteinfo( domain ) ]
+		) ) );
+		return pages.filter( ( page ) => {
+			const namespaces = infos.get( page.project )?.namespaces;
+			return !namespaces || titleNamespace( page.title, namespaces ) === wanted;
+		} );
+	}
+
+	/**
 	 * Cancel the in-flight load (the overlay's Abort button): kills the
 	 * requests and returns to the pre-submission state; the bumped
 	 * loadId drops anything that already settled.
@@ -726,6 +798,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		agent,
 		subjectpage,
 		subcategories,
+		namespace,
 		autolog,
 		sort,
 		direction,

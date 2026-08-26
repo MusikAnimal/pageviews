@@ -18,6 +18,10 @@
 		/>
 		<PlatformInput v-model="platform" />
 		<AgentInput v-model="agent" />
+		<!-- Filters the results to one namespace; the IDs also apply
+			to the multi-wiki sources (hashtag, interwiki links) since
+			the core namespaces share IDs across wikis. -->
+		<NamespaceInput v-model="namespace" :project="project" />
 	</form>
 </template>
 
@@ -27,8 +31,9 @@ import DateRangeInput from '../../components/DateRangeInput.vue';
 import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
+import NamespaceInput from '../../components/NamespaceInput.vue';
 import { useMassviewsStore } from '../../stores/massviews.js';
 
 const store = useMassviewsStore();
-const { source, project, platform, agent } = storeToRefs( store );
+const { source, project, platform, agent, namespace } = storeToRefs( store );
 </script>

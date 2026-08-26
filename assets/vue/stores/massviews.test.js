@@ -73,6 +73,7 @@ describe( 'massviews store', () => {
 			agent: 'spider',
 			subjectpage: '1',
 			subcategories: '1',
+			namespace: '6',
 			sort: 'title',
 			direction: '-1',
 			view: 'chart',
@@ -135,6 +136,38 @@ describe( 'massviews store', () => {
 		expect( store.totals ).toMatchObject( { counts: [ 11, 23 ], total: 34 } );
 		expect( store.status ).toBe( 'complete' );
 		expect( ui.progress ).toBeNull();
+	} );
+
+	it( 'filters the results to the selected namespace', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.target = 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups';
+		store.namespace = '6';
+		mockMembers( [
+			{ title: 'Run-DMC', namespace: 0 },
+			{ title: 'Beastie_Boys', namespace: 1 },
+			{ title: 'Run-DMC.jpg', namespace: 6 }
+		] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [ { title: 'File:Run-DMC.jpg', counts: [ 3 ], total: 3, average: 3 } ],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			pages: [ 'File:Run-DMC.jpg' ]
+		} ) );
+		expect( store.pagesData ).toHaveLength( 1 );
+		expect( store.status ).toBe( 'complete' );
+
+		// Nothing in the namespace: back to the form with a warning.
+		store.namespace = '1';
+		mockMembers( [ { title: 'Run-DMC', namespace: 0 } ] );
+		await store.load();
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages.at( -1 ).type ).toBe( 'warning' );
 	} );
 
 	it( 'maps talk pages to subject pages when the toggle is on', async () => {
