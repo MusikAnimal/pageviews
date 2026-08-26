@@ -26,21 +26,27 @@
 					type (blanking it), so remount instead. -->
 				<CdxTextInput
 					:key="inputType"
-					v-model="start"
+					v-model="startModel"
 					:aria-label="$i18n( 'start-date' )"
 					:input-type="inputType"
 					:min="minDate"
 					:max="maxDate"
+					:placeholder="nativeInput ? undefined : minDate"
+					@change="commit( 'start', $event )"
+					@blur="commit( 'start', $event )"
 				/>
 			</CdxField>
 			<CdxField class="app-settings__dates-inputs__end">
 				<CdxTextInput
 					:key="inputType"
-					v-model="end"
+					v-model="endModel"
 					:aria-label="$i18n( 'end-date' )"
 					:input-type="inputType"
 					:min="minDate"
 					:max="maxDate"
+					:placeholder="nativeInput ? undefined : maxDate"
+					@change="commit( 'end', $event )"
+					@blur="commit( 'end', $event )"
 				/>
 			</CdxField>
 		</div>
@@ -58,7 +64,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import {
 	CdxField,
@@ -73,10 +79,14 @@ import { useSettingsStore } from '../stores/settings.js';
 import {
 	formatYm,
 	formatYmd,
+	isYm,
+	isYmd,
 	lastCompleteMonthUtc,
 	PAGEVIEWS_MIN_DATE,
+	parseDate,
 	yesterdayUtc
 } from '../lib/dates.js';
+import { supportsInputType } from '../lib/browser.js';
 
 const props = defineProps( {
 	// Sources limited to monthly data (Massviews' Commons category)
@@ -98,7 +108,7 @@ const store = useSettingsStore();
 const { start, end, dateType, specialRange } = storeToRefs( store );
 
 const monthly = computed( () => dateType.value === 'monthly' );
-const inputType = computed( () => monthly.value ? 'month' : 'date' );
+const nativeType = computed( () => monthly.value ? 'month' : 'date' );
 // Data exists from July 2015 up to yesterday (or, in monthly mode,
 // the last complete month).
 const minDate = computed(
@@ -108,6 +118,73 @@ const minDate = computed(
 const maxDate = computed(
 	() => monthly.value ? formatYm( lastCompleteMonthUtc() ) : formatYmd( yesterdayUtc() )
 );
+
+// Without a native widget for the type (desktop Firefox has none for
+// type=month) the input is a plain text field, so writing through on
+// every keystroke would stream invalid dates into the store — and
+// the reactive apps' queries. Buffer edits locally instead, and only
+// commit on change/blur; native inputs can only emit valid values
+// and keep writing straight through.
+const nativeInput = computed( () => supportsInputType( nativeType.value ) );
+// Degrade all the way to text rather than keep the unsupported type:
+// partial implementations sanitize values mid-edit, plain text does
+// not, and the placeholder can then show the expected format.
+const inputType = computed( () => nativeInput.value ? nativeType.value : 'text' );
+
+const drafts = { start: ref( null ), end: ref( null ) };
+// Ref access for commit(): the template would unwrap these to plain
+// strings if passed as arguments.
+const sources = { start, end };
+// The inputs remount on a type switch; stale buffers go with them.
+watch( inputType, () => {
+	drafts.start.value = null;
+	drafts.end.value = null;
+} );
+
+const lazyModel = ( key, source ) => computed( {
+	get: () => drafts[ key ].value ?? source.value,
+	set: ( value ) => {
+		if ( nativeInput.value ) {
+			source.value = value;
+		} else {
+			drafts[ key ].value = value;
+		}
+	}
+} );
+const startModel = lazyModel( 'start', start );
+const endModel = lazyModel( 'end', end );
+
+/**
+ * Validate a buffered edit and commit it, clamped to the allowed
+ * range. An invalid value is dropped: clearing the buffer snaps the
+ * input back to the last valid store value (or, should the store be
+ * empty, the latest allowed date).
+ *
+ * @param {'start'|'end'} key
+ * @param {Event} event The change/blur event, for the input element.
+ */
+function commit( key, event ) {
+	const draft = drafts[ key ];
+	const source = sources[ key ];
+	if ( draft.value === null ) {
+		return;
+	}
+	const value = draft.value.trim();
+	draft.value = null;
+	const wellFormed = monthly.value ? isYm( value ) : isYmd( value );
+	if ( wellFormed && parseDate( value ) ) {
+		source.value = value < minDate.value ? minDate.value :
+			( value > maxDate.value ? maxDate.value : value );
+	} else if ( !source.value ) {
+		source.value = maxDate.value;
+	}
+	// Align the visible text with what was committed (the rejected or
+	// clamped text otherwise lingers: the model reverting to its
+	// previous value does not reliably reach the DOM).
+	if ( event?.target && event.target.value !== source.value ) {
+		event.target.value = source.value;
+	}
+}
 
 const dateTypeOptions = [
 	{ value: 'daily', label: banana.i18n( 'daily' ) },

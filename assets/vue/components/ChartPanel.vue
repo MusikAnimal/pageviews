@@ -24,10 +24,13 @@
 		>
 			{{ $i18n( 'logarithmic-scale' ) }}
 		</CdxCheckbox>
+		<!-- A trailing average needs a window to trail over: with a
+			single date there is nothing to smooth. -->
 		<CdxCheckbox
 			v-if="linearType"
 			v-model="movingAverage"
 			:inline="true"
+			:disabled="dates.length < 2"
 		>
 			{{ $i18n( 'moving-average' ) }}
 		</CdxCheckbox>
