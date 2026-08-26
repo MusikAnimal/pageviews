@@ -50,6 +50,9 @@ class ProjectsRepository {
 					continue;
 				}
 				if ( $type === 'project' ) {
+					if ( !str_contains( $project, '.' ) ) {
+						$project = "www.$project";
+					}
 					$projects[] = $conn->quote( "https://$project.org" );
 				}
 			}
@@ -63,7 +66,7 @@ class ProjectsRepository {
 				->fetchAllAssociative();
 			$projectsWithDbNames = [];
 			foreach ( $dbRows as $dbRow ) {
-				$domain = preg_replace( '/^https:\/\/(.*)\.org/', '\1', $dbRow['url'] );
+				$domain = preg_replace( '/^https:\/\/((?:www\.)?.*)\.org/', '\1', $dbRow['url'] );
 				$projectsWithDbNames[ $domain ] = $dbRow['dbname'];
 			}
 
