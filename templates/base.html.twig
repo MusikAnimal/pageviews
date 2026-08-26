@@ -88,9 +88,9 @@
 			<ul class="app-nav__menu">
 				<li><a href="{{ path( current_app ~ '/faq' ) }}">{{ msg( 'faq' ) }}</a></li>
 				<li><a href="{{ path( current_app ~ '/url_structure' ) }}">{{ msg( 'url-structure' ) }}</a></li>
-				<li><a href="https://meta.wikimedia.org/wiki/Pageviews_Analysis">{{ msg( 'documentation' ) }}</a></li>
+				<li><a target="_blank"  href="https://meta.wikimedia.org/wiki/Pageviews_Analysis">{{ msg( 'documentation' ) }}</a></li>
 				<li class="app-nav__menu-divider" role="separator"></li>
-				<li><a href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a></li>
+				<li><a target="_blank" href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a></li>
 			</ul>
 		</details>
 		<details class="app-nav__dropdown">
@@ -99,7 +99,7 @@
 				{{ all_langs()[ lang() ]|default( lang() ) }}
 			</summary>
 			<ul class="app-nav__menu app-nav__menu--scroll">
-				<li><a href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">{{ msg( 'help-translate' ) }}</a></li>
+				<li><a target="_blank" href="https://translatewiki.net/w/i.php?title=Special:MessageGroupStats&group=out-pageviews">{{ msg( 'help-translate' ) }}</a></li>
 				<li class="app-nav__menu-divider" role="separator"></li>
 				{% for code, name in all_langs() %}
 					{% if code != 'qqq' %}
@@ -144,10 +144,10 @@
 				<span class='heart'>&hearts;</span>
 			{% endset %}
 			{% set host %}
-				<a href='https://wikitech.wikimedia.org/wiki/Help:Cloud_Services_introduction'>{{ msg( 'wmcs' ) }}</a>
+				<a target="_blank" href='https://wikitech.wikimedia.org/wiki/Help:Cloud_Services_introduction'>{{ msg( 'wmcs' ) }}</a>
 			{%- endset %}
 			{% set codex %}
-				<a href='https://doc.wikimedia.org/codex/latest/'>Codex</a>
+				<a target="_blank" href='https://doc.wikimedia.org/codex/latest/'>Codex</a>
 			{%- endset %}
 			{{ msg( 'hosted-codex', [ heart, host, codex ] ) }}
 		</span>
@@ -156,13 +156,13 @@
 	<div>
 		<span>
 				{% set translateWiki %}
-					<a href='https://translatewiki.net/'>translatewiki.net</a>
+					<a target="_blank" href='https://translatewiki.net/'>translatewiki.net</a>
 				{%- endset %}
 			{% set bananaI18n %}
-				<a href='https://www.npmjs.com/package/banana-i18n'>banana-i18n</a>
+				<a target="_blank" href='https://www.npmjs.com/package/banana-i18n'>banana-i18n</a>
 			{%- endset %}
 			{% set intuition %}
-				<a href='https://intuition.toolforge.org#tab-about'>Intuition</a>
+				<a target="_blank" href='https://intuition.toolforge.org#tab-about'>Intuition</a>
 			{%- endset %}
 			{{ msg( 'translation-credits', [ translateWiki, bananaI18n, intuition ] ) }}
 		</span>
@@ -175,9 +175,9 @@
 			<a href="{{ path( current_app ~ '/url_structure' ) }}">{{ msg( 'url-structure' ) }}</a>
 			&middot;
 		{% endif %}
-		<a href="https://github.com/MusikAnimal/pageviews">{{ msg( 'view-source' ) }}</a>
+		<a target="_blank" href="https://github.com/MusikAnimal/pageviews">{{ msg( 'view-source' ) }}</a>
 		&middot;
-		<a href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a>
+		<a target="_blank" href="https://meta.wikimedia.org/wiki/Talk:Pageviews_Analysis">{{ msg( 'report-issue' ) }}</a>
 	</div>
 </footer>
 </body>
