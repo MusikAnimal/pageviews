@@ -211,6 +211,7 @@
 	"langviews-description": "Pageviews of a page across all languages",
 	"langviews-title": "Langviews Analysis",
 	"last-month": "Last month",
+	"last-num-months": "Last $1 {{PLURAL:$1|month|months}}",
 	"last-week": "Last week",
 	"last-year": "Last year",
 	"latest": "Latest",

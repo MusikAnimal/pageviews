@@ -71,6 +71,27 @@ describe( 'dates', () => {
 		expect( formatYmd( resolveSpecialRange( 'latest' ).start ) ).toBe( '2026-06-21' );
 	} );
 
+	it( 'resolves last-N-months to complete months', () => {
+		// July 2026 is underway: June anchors.
+		expect( resolveSpecialRange( 'last-3-months' ) ).toEqual( {
+			start: parseDate( '2026-04-01' ),
+			end: parseDate( '2026-06-30' )
+		} );
+		expect( resolveSpecialRange( 'last-6-months' ) ).toEqual( {
+			start: parseDate( '2026-01-01' ),
+			end: parseDate( '2026-06-30' )
+		} );
+		// A maxDate on a month's last day makes that month complete.
+		expect( resolveSpecialRange( 'last-3-months', parseDate( '2026-06-30' ) ) ).toEqual( {
+			start: parseDate( '2026-04-01' ),
+			end: parseDate( '2026-06-30' )
+		} );
+		expect( resolveSpecialRange( 'last-3-months', parseDate( '2026-06-29' ) ) ).toEqual( {
+			start: parseDate( '2026-03-01' ),
+			end: parseDate( '2026-05-31' )
+		} );
+	} );
+
 	it( 'resolves calendar ranges', () => {
 		expect( resolveSpecialRange( 'last-month' ) ).toEqual( {
 			start: parseDate( '2026-06-01' ),

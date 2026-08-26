@@ -195,10 +195,17 @@ const dateTypeOptions = [
 // shorter than a month make no sense in monthly mode.
 const presetItems = computed( () => {
 	if ( monthly.value ) {
-		// With a dataset-specific minimum, "all time" would resolve to
-		// dates before the dataset begins.
-		return [ 'last-month', 'this-year', 'last-year', ...( props.min ? [] : [ 'all-time' ] ) ]
-			.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) );
+		return [
+			{ value: 'last-month', label: banana.i18n( 'last-month' ) },
+			...[ 3, 6 ].map( ( months ) => ( {
+				value: `last-${ months }-months`,
+				label: banana.i18n( 'last-num-months', String( months ) )
+			} ) ),
+			// With a dataset-specific minimum, "all time" would resolve
+			// to dates before the dataset begins.
+			...[ 'this-year', 'last-year', ...( props.min ? [] : [ 'all-time' ] ) ]
+				.map( ( range ) => ( { value: range, label: banana.i18n( range ) } ) )
+		];
 	}
 	return [
 		...[ 7, 30, 60, 90, 365 ].map( ( days ) => ( {

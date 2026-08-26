@@ -176,6 +176,19 @@ export function resolveSpecialRange( range, maxDate = yesterdayUtc() ) {
 		return { start: addDays( maxDate, -( offset - 1 ) ), end: maxDate };
 	}
 
+	// The last N complete months (the monthly-mode presets): anchored
+	// on maxDate's month if it is complete, else the month before it.
+	const lastMonths = /^last-(\d+)-months$/.exec( range );
+	if ( lastMonths ) {
+		const anchor = endOfMonth( maxDate ).getTime() === maxDate.getTime() ?
+			startOfMonth( maxDate ) :
+			startOfMonth( addMonths( maxDate, -1 ) );
+		return {
+			start: addMonths( anchor, -( Number( lastMonths[ 1 ] ) - 1 ) ),
+			end: endOfMonth( anchor )
+		};
+	}
+
 	const today = todayUtc();
 	// For "this-*" ranges the period may have started after maxDate
 	// (e.g. on the 1st of a month); the end clamps to whichever is later.

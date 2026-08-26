@@ -234,6 +234,7 @@
 	"langviews-description": "Brief description of the Langviews tool. Shown directly under the header.",
 	"langviews-title": "The title of the Langviews tool. This is shown as a header at the top of the page.",
 	"last-month": "Link to set the date range to the last month\n{{Identical|Last month}}",
+	"last-num-months": "Date range preset covering the last $1 complete months. $1 is the number of months.",
 	"last-week": "Link to set the date range to the last week\n{{Identical|Last week}}",
 	"last-year": "Link to set the date range to the last year\n{{Identical|Last year}}",
 	"latest": "Label for the 'latest' dropdown next to the date selector.\n{{Identical|Latest}}",
