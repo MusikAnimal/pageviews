@@ -41,6 +41,44 @@ describe( 'settings store', () => {
 		vi.useRealTimers();
 	} );
 
+	it( 'widens a sub-month daily range to six months', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-05-03', end: '2026-05-12' } );
+		store.dateType = 'monthly';
+		await nextTick();
+		// Nine days of data would chart a single month: same end
+		// month, start pulled back to make six.
+		expect( store.start ).toBe( '2025-12' );
+		expect( store.end ).toBe( '2026-05' );
+
+		vi.useRealTimers();
+	} );
+
+	it( 'keeps a full-month daily range as its one month', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );
+
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-05-01', end: '2026-05-31' } );
+		store.dateType = 'monthly';
+		await nextTick();
+		expect( store.start ).toBe( '2026-05' );
+		expect( store.end ).toBe( '2026-05' );
+
+		vi.useRealTimers();
+	} );
+
+	it( 'respects an explicit single month from the URL', () => {
+		const store = useSettingsStore();
+		store.setFromQuery( { start: '2026-05', end: '2026-05' } );
+		expect( store.dateType ).toBe( 'monthly' );
+		expect( store.start ).toBe( '2026-05' );
+		expect( store.end ).toBe( '2026-05' );
+	} );
+
 	it( 'defaults to the past six months when switching to monthly without dates', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime( new Date( '2026-07-21T12:00:00Z' ) );

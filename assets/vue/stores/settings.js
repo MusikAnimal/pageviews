@@ -69,6 +69,11 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	watch( dateType, ( type ) => {
 		if ( type === 'monthly' ) {
 			const max = lastCompleteMonthUtc();
+			// Whether the daily range covered less than a full month,
+			// judged before snapping.
+			const underOneMonth = isYmd( start.value ) && isYmd( end.value ) &&
+				parseDate( end.value ).getTime() <
+					addMonths( parseDate( start.value ), 1 ).getTime() - 86400000;
 			for ( const date of [ start, end ] ) {
 				if ( isYmd( date.value ) ) {
 					const parsed = parseDate( date.value );
@@ -80,6 +85,13 @@ export const useSettingsStore = defineStore( 'settings', () => {
 			if ( !isYm( start.value ) || !isYm( end.value ) ) {
 				start.value = formatYm( addMonths( max, -5 ) );
 				end.value = formatYm( max );
+			} else if ( underOneMonth ) {
+				// A sub-month daily range would chart one lonely data
+				// point: widen to six months ending at the same
+				// month. Only this daily conversion widens — a single
+				// month given explicitly (month picker or URL) arrives
+				// already in YYYY-MM form and is respected.
+				start.value = formatYm( addMonths( parseDate( end.value ), -5 ) );
 			}
 		} else {
 			if ( isYm( start.value ) ) {
