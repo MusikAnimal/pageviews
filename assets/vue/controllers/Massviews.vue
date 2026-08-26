@@ -133,6 +133,7 @@
 				</div>
 				<ResultsTable />
 			</template>
+			<SkippedMessage :pages="skippedPages" />
 			<div class="app-output-footer">
 				<CdxMessage
 					v-if="incompleteMessage"
@@ -198,6 +199,7 @@ import MassviewsSettings from '../apps/massviews/Settings.vue';
 import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
+import SkippedMessage from '../components/SkippedMessage.vue';
 import PreferencesDialog from '../components/PreferencesDialog.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import ExportMenu from '../components/ExportMenu.vue';
@@ -212,6 +214,13 @@ const router = useRouter();
 const { source, target, subjectpage, subcategories } = storeToRefs( store );
 useQuerySync( store );
 const { message: incompleteMessage } = useIncompleteDataMessage( store );
+
+// Pages whose own requests failed, linked for the shared
+// skipped-pages notice (hashtag and wikilink pages span wikis).
+const skippedPages = computed( () => store.skipped.map( ( { project: wiki, title } ) => ( {
+	label: title,
+	href: `https://${ wiki }/wiki/` + encodeURIComponent( title.replace( / /g, '_' ) )
+} ) ) );
 
 // The /massviews/faq and /massviews/url_structure routes open dialogs
 // over the app.

@@ -81,6 +81,15 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 	const incompleteDate = ref( null );
 
 	/**
+	 * Pages whose requests failed and were skipped (each chunk is its
+	 * own query; the rest of the report is still valid). Shown under
+	 * the results.
+	 *
+	 * @type {import('vue').Ref<string[]>}
+	 */
+	const skipped = ref( [] );
+
+	/**
 	 * How long the last completed query took, in seconds (with
 	 * sub-second precision). Shown under the results, legacy-style.
 	 *
@@ -159,6 +168,7 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 		// A new cycle always cancels the previous one's requests —
 		// including the reset cycle from a cleared form.
 		const signal = aborter.next();
+		skipped.value = [];
 		const started = performance.now();
 		elapsedTime.value = null;
 
@@ -219,15 +229,21 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 				return;
 			}
 
+			const skippedSet = new Set( result.skipped );
+			skipped.value = entries
+				.filter( ( entry ) => skippedSet.has( entry.title ) )
+				.map( ( entry ) => entry.title.replace( /_/g, ' ' ) );
+			const shownEntries = entries.filter( ( entry ) => !skippedSet.has( entry.title ) );
 			const axis = result.dates;
 			const combined = axis.map( () => 0 );
-			// Chunks preserve request order, so rows align by index.
+			// Chunks preserve request order, so rows align by index
+			// (with the skipped entries dropped from both sides).
 			const rows = result.pages.map( ( series, i ) => {
 				series.counts.forEach( ( count, j ) => {
 					combined[ j ] += count;
 				} );
 				return {
-					...entries[ i ],
+					...shownEntries[ i ],
 					counts: series.counts,
 					sum: series.total,
 					average: series.average
@@ -299,6 +315,7 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 		redirectData,
 		totals,
 		incompleteDate,
+		skipped,
 		elapsedTime,
 		query,
 		setFromQuery,

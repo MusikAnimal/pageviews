@@ -93,6 +93,7 @@
 				</div>
 				<ResultsTable />
 			</template>
+			<SkippedMessage :pages="skippedPages" />
 			<div class="app-output-footer">
 				<CdxMessage
 					v-if="incompleteMessage"
@@ -155,6 +156,7 @@ import FaqDialog from '../apps/redirectviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/redirectviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
+import SkippedMessage from '../components/SkippedMessage.vue';
 import PreferencesDialog from '../components/PreferencesDialog.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import ExportMenu from '../components/ExportMenu.vue';
@@ -169,6 +171,13 @@ const router = useRouter();
 const { page } = storeToRefs( store );
 useQuerySync( store );
 const { message: incompleteMessage } = useIncompleteDataMessage( store );
+
+// Pages whose own requests failed, linked for the shared
+// skipped-pages notice.
+const skippedPages = computed( () => store.skipped.map( ( title ) => ( {
+	label: title,
+	href: `https://${ store.project }/wiki/` + encodeURIComponent( title.replace( / /g, '_' ) )
+} ) ) );
 
 // The /redirectviews/faq and /redirectviews/url_structure routes open
 // dialogs over the app.

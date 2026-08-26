@@ -109,6 +109,29 @@ describe( 'userviews store', () => {
 		expect( ui.progress ).toBeNull();
 	} );
 
+	it( 'aligns metadata and reports skipped pages from failed chunks', async () => {
+		const store = useUserviewsStore();
+		store.user = 'Jimbo_Wales';
+		mockCreated( [
+			{ title: 'Shotgun', namespace: 0, created: '2001-03-27', redirect: false, length: 95716 },
+			{ title: 'Ideas', namespace: 0, created: '2020-01-02', redirect: true, length: 36 }
+		] );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [ { title: 'Ideas', counts: [ 2 ], total: 2, average: 2 } ],
+			totals: {},
+			skipped: [ 'Shotgun' ]
+		} );
+
+		await store.load();
+
+		expect( store.pagesData ).toEqual( [
+			expect.objectContaining( { title: 'Ideas', created: '2020-01-02', size: 36 } )
+		] );
+		expect( store.skipped ).toEqual( [ 'Shotgun' ] );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
 	it( 'returns to the form when the user created no pages', async () => {
 		const store = useUserviewsStore();
 		const ui = useUiStore();

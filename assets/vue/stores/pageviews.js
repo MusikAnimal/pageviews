@@ -99,6 +99,15 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 	 */
 	const incompleteDate = ref( null );
 
+	/**
+	 * Pages whose requests failed and were skipped (each chunk is its
+	 * own query; the rest of the report is still valid). Shown under
+	 * the results.
+	 *
+	 * @type {import('vue').Ref<string[]>}
+	 */
+	const skipped = ref( [] );
+
 	// Guards against out-of-order responses from overlapping loads.
 	let loadId = 0;
 	// Cancels the previous cycle's requests whenever a new one starts.
@@ -304,6 +313,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		// A new cycle always cancels the previous one's requests —
 		// including the reset cycle from a cleared form.
 		const signal = aborter.next();
+		skipped.value = [];
 
 		if ( !pages.value.length ) {
 			status.value = 'initial';
@@ -372,6 +382,8 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 
 			// Consolidation does not change the grand totals: redirect
 			// counts are moved into their targets, not duplicated.
+			skipped.value = ( result.skipped ?? [] )
+				.map( ( title ) => title.replace( /_/g, ' ' ) );
 			const consolidated = redirectMap ?
 				consolidateSeries( pages.value, redirectMap, result.pages ) :
 				result.pages;
@@ -446,6 +458,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 		pageInfo,
 		topRank,
 		incompleteDate,
+		skipped,
 		query,
 		setFromQuery,
 		load,

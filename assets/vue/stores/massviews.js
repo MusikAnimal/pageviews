@@ -147,6 +147,16 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	const incompleteDate = ref( null );
 
 	/**
+	 * Pages whose requests failed and were skipped (each chunk is its
+	 * own query; the rest of the report is still valid). Shown under
+	 * the results. Entries carry their wiki: hashtag and wikilink
+	 * results span projects.
+	 *
+	 * @type {import('vue').Ref<Array<{project: string, title: string}>>}
+	 */
+	const skipped = ref( [] );
+
+	/**
 	 * How long the last completed query took, in seconds (with
 	 * sub-second precision). Shown under the results, legacy-style.
 	 *
@@ -528,6 +538,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		const signal = aborter.next();
 		const started = performance.now();
 		elapsedTime.value = null;
+		skipped.value = [];
 
 		if ( !target.value ) {
 			status.value = 'initial';
@@ -647,6 +658,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			let axis = null;
 			let combined = null;
 			const rows = [];
+			const skippedPages = [];
 			let done = 0;
 			for ( const [ pagesProject, titles ] of groups ) {
 				const doneBefore = done;
@@ -669,13 +681,22 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				}
 				axis ??= result.dates;
 				combined ??= axis.map( () => 0 );
-				// Chunks preserve request order, so rows align by index.
+				const skippedSet = new Set( result.skipped );
+				skippedPages.push( ...titles
+					.filter( ( title ) => skippedSet.has( title ) )
+					.map( ( title ) => ( {
+						project: pagesProject,
+						title: title.replace( /_/g, ' ' )
+					} ) ) );
+				const keptTitles = titles.filter( ( title ) => !skippedSet.has( title ) );
+				// Chunks preserve request order, so rows align by index
+				// (with the skipped titles dropped from both sides).
 				for ( const [ i, series ] of result.pages.entries() ) {
 					for ( const [ j, count ] of series.counts.entries() ) {
 						combined[ j ] += count;
 					}
 					rows.push( {
-						title: titles[ i ].replace( /_/g, ' ' ),
+						title: keptTitles[ i ].replace( /_/g, ' ' ),
 						project: pagesProject,
 						counts: series.counts,
 						sum: series.total,
@@ -684,6 +705,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				}
 				done += titles.length;
 			}
+			skipped.value = skippedPages;
 			pagesData.value = rows;
 			const total = combined.reduce( ( a, b ) => a + b, 0 );
 			const allTotals = {
@@ -802,6 +824,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		pagesData,
 		totals,
 		incompleteDate,
+		skipped,
 		elapsedTime,
 		query,
 		setFromQuery,

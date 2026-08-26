@@ -93,6 +93,7 @@
 				</div>
 				<ResultsTable />
 			</template>
+			<SkippedMessage :pages="skippedPages" />
 			<div class="app-output-footer">
 				<CdxMessage
 					v-if="incompleteMessage"
@@ -155,6 +156,7 @@ import FaqDialog from '../apps/langviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/langviews/UrlStructureDialog.vue';
 import SinglePageInput from '../components/SinglePageInput.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
+import SkippedMessage from '../components/SkippedMessage.vue';
 import PreferencesDialog from '../components/PreferencesDialog.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import ExportMenu from '../components/ExportMenu.vue';
@@ -170,6 +172,14 @@ const router = useRouter();
 const { page } = storeToRefs( store );
 useQuerySync( store );
 const { message: incompleteMessage } = useIncompleteDataMessage( store );
+
+// The languages whose own queries failed, linked for the shared
+// skipped-pages notice.
+const skippedPages = computed( () => store.skipped.map( ( { lang, title } ) => ( {
+	label: `${ title } (${ lang })`,
+	href: `https://${ lang }.${ store.project.split( '.' )[ 1 ] }.org/wiki/` +
+		encodeURIComponent( title.replace( / /g, '_' ) )
+} ) ) );
 
 // The /langviews/faq and /langviews/url_structure routes open dialogs
 // over the app.

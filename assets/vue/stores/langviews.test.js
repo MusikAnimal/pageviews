@@ -68,6 +68,31 @@ describe( 'langviews store', () => {
 		expect( ui.progress ).toBeNull();
 	} );
 
+	it( 'skips a failed language and reports it', async () => {
+		const store = useLangviewsStore();
+		store.page = 'Cat';
+		getLangLinks.mockResolvedValue( [
+			{ lang: 'en', title: 'Cat', badges: [] },
+			{ lang: 'fr', title: 'Chat', badges: [] }
+		] );
+		fetchPageviews.mockImplementation( ( { project } ) => project === 'fr.wikipedia.org' ?
+			Promise.reject( Object.assign( new Error( 'rate limited' ), {
+				code: 'upstream_rate_limited', retryable: true
+			} ) ) :
+			Promise.resolve( {
+				dates: [ '2026-07-01' ],
+				pages: [ { title: 'Cat', counts: [ 5 ], total: 5, average: 5 } ],
+				totals: {}
+			} )
+		);
+
+		await store.load();
+
+		expect( store.status ).toBe( 'complete' );
+		expect( store.langData ).toHaveLength( 1 );
+		expect( store.skipped ).toEqual( [ { lang: 'fr', title: 'Chat' } ] );
+	} );
+
 	it( 'abort() cancels the load and restores the previous state', async () => {
 		const store = useLangviewsStore();
 		const ui = useUiStore();

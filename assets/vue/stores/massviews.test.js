@@ -169,6 +169,36 @@ describe( 'massviews store', () => {
 		expect( ui.messages.at( -1 ).type ).toBe( 'warning' );
 	} );
 
+	it( 'aligns rows and reports skipped pages from failed chunks', async () => {
+		const store = useMassviewsStore();
+		store.target = 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups';
+		mockMembers( [
+			{ title: 'Run-DMC', namespace: 0 },
+			{ title: 'Beastie_Boys', namespace: 0 },
+			{ title: 'Public_Enemy', namespace: 0 }
+		] );
+		// The middle page's chunk failed: only the survivors return,
+		// in input order.
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01' ],
+			pages: [
+				{ title: 'Run-DMC', counts: [ 10 ], total: 10, average: 10 },
+				{ title: 'Public_Enemy', counts: [ 2 ], total: 2, average: 2 }
+			],
+			totals: {},
+			skipped: [ 'Beastie_Boys' ]
+		} );
+
+		await store.load();
+
+		expect( store.pagesData.map( ( row ) => row.title ) )
+			.toEqual( [ 'Run-DMC', 'Public Enemy' ] );
+		expect( store.skipped ).toEqual( [
+			{ project: 'en.wikipedia.org', title: 'Beastie Boys' }
+		] );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
 	it( 'maps talk pages to subject pages when the toggle is on', async () => {
 		const store = useMassviewsStore();
 		store.target = 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups';

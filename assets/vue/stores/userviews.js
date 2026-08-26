@@ -99,6 +99,15 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 	const incompleteDate = ref( null );
 
 	/**
+	 * Pages whose requests failed and were skipped (each chunk is its
+	 * own query; the rest of the report is still valid). Shown under
+	 * the results.
+	 *
+	 * @type {import('vue').Ref<string[]>}
+	 */
+	const skipped = ref( [] );
+
+	/**
 	 * How long the last completed query took, in seconds (with
 	 * sub-second precision). Shown under the results, legacy-style.
 	 *
@@ -219,6 +228,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		// A new cycle always cancels the previous one's requests —
 		// including the reset cycle from a cleared form.
 		const signal = aborter.next();
+		skipped.value = [];
 		const started = performance.now();
 		elapsedTime.value = null;
 
@@ -313,19 +323,28 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 				return;
 			}
 
+			const skippedSet = new Set( result.skipped );
+			skipped.value = prefixed
+				.filter( ( title ) => skippedSet.has( title ) )
+				.map( ( title ) => title.replace( /_/g, ' ' ) );
+			// Chunks preserve request order, so rows align by index —
+			// after dropping the skipped titles from the input side,
+			// keeping each survivor's original index for its metadata.
+			const kept = prefixed
+				.map( ( title, index ) => ( { title, index } ) )
+				.filter( ( { title } ) => !skippedSet.has( title ) );
 			const axis = result.dates;
 			const combined = axis.map( () => 0 );
-			// Chunks preserve request order, so rows align by index.
 			const rows = result.pages.map( ( series, i ) => {
 				series.counts.forEach( ( count, j ) => {
 					combined[ j ] += count;
 				} );
 				return {
-					title: prefixed[ i ].replace( /_/g, ' ' ),
-					created: created.pages[ i ].created,
-					size: created.pages[ i ].length,
-					redirect: created.pages[ i ].redirect,
-					assessment: created.pages[ i ].assessment,
+					title: kept[ i ].title.replace( /_/g, ' ' ),
+					created: created.pages[ kept[ i ].index ].created,
+					size: created.pages[ kept[ i ].index ].length,
+					redirect: created.pages[ kept[ i ].index ].redirect,
+					assessment: created.pages[ kept[ i ].index ].assessment,
 					counts: series.counts,
 					sum: series.total,
 					average: series.average
@@ -399,6 +418,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 		pagesData,
 		totals,
 		incompleteDate,
+		skipped,
 		elapsedTime,
 		editCountWarning,
 		query,

@@ -47,7 +47,7 @@
 	"api-error-auth": "Error shown when the internal API rejects the page's access token and it could not be renewed. Reloading the page issues a fresh token.",
 	"api-error-no-data": "When the API returned no data",
 	"api-error-rate-limited": "Error shown when an upstream API rate-limits the tool. $1 is the API name (e.g. \"Pageviews API\"); $2 is the number of seconds from the Retry-After header.",
-	"api-error-timeout": "Error message saying the API timed out and the user should wait a few minutes before trying again.",
+	"api-error-timeout": "Error listing the pages that could not be processed due to API failure. $1 is the list of pages.",
 	"api-error-unknown": "Error message saying an unknown error occurred when querying an API. $1 is the name of the API.",
 	"api-error-upstream-timeout": "Error shown when a request to an upstream API took too long to respond. $1 is the name of the API, e.g. \"Pageviews API\", or \"the replica database\".",
 	"api-error-upstream-unreachable": "Error shown when an upstream API could not be reached at all (network failure). $1 is the name of the API, e.g. \"Pageviews API\", or \"the replica database\".",

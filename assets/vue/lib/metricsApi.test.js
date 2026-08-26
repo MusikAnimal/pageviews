@@ -142,6 +142,60 @@ describe( 'fetchPageviews', () => {
 		expect( result.totals.total ).toBe( 360 );
 	} );
 
+	it( 'skips a failed chunk and reports its pages', async () => {
+		const impl = vi.fn( ( url ) => {
+			const requested = new URL( url, 'http://localhost' )
+				.searchParams.get( 'pages' ).split( '|' );
+			if ( requested.includes( 'Page 10' ) ) {
+				// The second chunk is rate limited.
+				return Promise.resolve( {
+					ok: false,
+					status: 429,
+					json: () => Promise.resolve( { error: {
+						code: 'upstream_rate_limited', i18n: [], retryable: true
+					} } )
+				} );
+			}
+			return Promise.resolve( {
+				ok: true,
+				json: () => Promise.resolve( chunkResponse( requested ) )
+			} );
+		} );
+		vi.stubGlobal( 'fetch', impl );
+
+		const pages = Array.from( { length: 120 }, ( _, i ) => `Page ${ i }` );
+		const result = await fetchPageviews( {
+			project: 'en.wikipedia',
+			pages,
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} );
+
+		// 12 chunks of 10; the second one's pages are skipped, the
+		// rest of the report stands.
+		expect( result.pages ).toHaveLength( 110 );
+		expect( result.skipped ).toHaveLength( 10 );
+		expect( result.skipped ).toContain( 'Page 10' );
+		expect( result.totals.total ).toBe( 330 );
+	} );
+
+	it( 'throws when every chunk fails', async () => {
+		vi.stubGlobal( 'fetch', vi.fn( () => Promise.resolve( {
+			ok: false,
+			status: 429,
+			json: () => Promise.resolve( { error: {
+				code: 'upstream_rate_limited', i18n: [], retryable: true
+			} } )
+		} ) ) );
+
+		await expect( fetchPageviews( {
+			project: 'en.wikipedia',
+			pages: Array.from( { length: 20 }, ( _, i ) => `Page ${ i }` ),
+			start: '2026-07-01',
+			end: '2026-07-02'
+		} ) ).rejects.toMatchObject( { code: 'upstream_rate_limited' } );
+	} );
+
 	it( 'clamps the dynamic chunk size between 5 and the server cap', async () => {
 		const sizes = [];
 		const impl = vi.fn( ( url ) => {

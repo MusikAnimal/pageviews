@@ -45,7 +45,8 @@ function chunkSize( total ) {
  * @param {Function} [params.onProgress] ( done, total ) in chunks.
  * @param {AbortSignal} [params.signal]
  * @return {Promise<Object>} The batch-endpoint contract shape, merged
- *   across chunks (dates, pages, totals).
+ *   across chunks (dates, pages, totals), plus `skipped`: the input
+ *   titles of chunks whose request failed (their pages are omitted).
  * @throws {ApiError}
  */
 export async function fetchPageviews( {
@@ -65,15 +66,30 @@ export async function fetchPageviews( {
 		chunks.push( pages.slice( i, i + size ) );
 	}
 
+	// A failed chunk (e.g. rate limited after the server's retries)
+	// skips its pages rather than sinking the whole query: the report
+	// renders from the rest, and `skipped` lets the app tell the user
+	// which pages are missing. Only a fully failed query throws, with
+	// the first chunk's own error.
+	const skipped = [];
+	let firstError = null;
 	const results = await promisePool(
 		chunks,
 		( chunk ) => fetchChunk(
 			{ project, pages: chunk, start, end, platform, agent, granularity, signal }
-		),
+		).catch( ( error ) => {
+			firstError ??= error;
+			skipped.push( ...chunk );
+			return null;
+		} ),
 		{ concurrency: CONCURRENCY, onProgress }
 	);
 
-	return mergeResults( results );
+	const successes = results.filter( Boolean );
+	if ( !successes.length ) {
+		throw firstError;
+	}
+	return { ...mergeResults( successes ), skipped };
 }
 
 /**

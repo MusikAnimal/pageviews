@@ -36,6 +36,7 @@
 			>
 				{{ incompleteMessage }}
 			</CdxMessage>
+			<SkippedMessage :pages="skippedPages" />
 		</figure>
 		<Totals />
 		<!-- Full-width line below the columns (the v-if is on the
@@ -73,6 +74,7 @@ import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import FaqDialog from '../apps/pageviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/pageviews/UrlStructureDialog.vue';
 import PageInput from '../components/PageInput.vue';
+import SkippedMessage from '../components/SkippedMessage.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
 import ChartPanel from '../components/ChartPanel.vue';
 import Totals from '../apps/pageviews/Totals.vue';
@@ -85,6 +87,13 @@ const route = useRoute();
 const router = useRouter();
 useQuerySync( store );
 const { message: incompleteMessage } = useIncompleteDataMessage( store );
+
+// Pages whose own requests failed, linked for the shared
+// skipped-pages notice.
+const skippedPages = computed( () => store.skipped.map( ( title ) => ( {
+	label: title,
+	href: `https://${ store.project }/wiki/` + encodeURIComponent( title.replace( / /g, '_' ) )
+} ) ) );
 
 // The /faq and /url_structure routes open dialogs over the app.
 const activeDialog = computed( () => route.meta.dialog ?? null );

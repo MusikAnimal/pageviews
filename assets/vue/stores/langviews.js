@@ -86,6 +86,15 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 	const incompleteDate = ref( null );
 
 	/**
+	 * Languages whose per-wiki query failed (each language is its own
+	 * request; failures skip the row rather than the whole report).
+	 * Shown under the results with retryAfter.
+	 *
+	 * @type {import('vue').Ref<Array<{lang: string, title: string}>>}
+	 */
+	const skipped = ref( [] );
+
+	/**
 	 * How long the last completed query took, in seconds (with
 	 * sub-second precision). Shown under the results, legacy-style.
 	 *
@@ -166,6 +175,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		const signal = aborter.next();
 		const started = performance.now();
 		elapsedTime.value = null;
+		skipped.value = [];
 
 		if ( !page.value ) {
 			status.value = 'initial';
@@ -221,8 +231,9 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 					signal
 				} ).then(
 					( result ) => ( { link, result } ),
-					// Non-fatal: a failed language is simply omitted.
-					() => null
+					// Non-fatal: a failed language skips its row; the
+					// skipped list below tells the user.
+					( error ) => ( { link, error } )
 				),
 				{ concurrency: CONCURRENCY, onProgress: ui.setProgress }
 			);
@@ -230,10 +241,17 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 				return;
 			}
 
-			const successes = results.filter( Boolean );
+			const successes = results.filter( ( entry ) => entry?.result );
+			const failures = results.filter( ( entry ) => entry?.error );
 			if ( !successes.length ) {
-				throw new Error( banana.i18n( 'api-error', 'Pageviews API' ) );
+				// Everything failed: fatal, with the first error's own
+				// envelope (a rate limit names the wait, for example).
+				throw failures[ 0 ]?.error ?? new Error( banana.i18n( 'api-error', 'Pageviews API' ) );
 			}
+			skipped.value = failures.map( ( { link } ) => ( {
+				lang: link.lang,
+				title: link.title
+			} ) );
 
 			const axis = successes[ 0 ].result.dates;
 			const combined = axis.map( () => 0 );
@@ -317,6 +335,7 @@ export const useLangviewsStore = defineStore( 'langviews', () => {
 		langData,
 		totals,
 		incompleteDate,
+		skipped,
 		elapsedTime,
 		query,
 		setFromQuery,
