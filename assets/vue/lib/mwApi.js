@@ -135,15 +135,21 @@ export function editProtectionLevel( info ) {
  * @param {string} project
  * @param {string} title
  * @param {AbortSignal} [signal]
- * @return {Promise<?string[]>} Linked titles (prefixed), or null when
+ * @return {Promise<?Array<{project: string, title: string}>>} Linked
+ *   pages — including interwiki links, whose project differs — or
+ *   null when
  *   the page itself doesn't exist.
  */
 export async function getWikilinks( project, title, signal = undefined ) {
 	let missing = false;
 	const links = await mwApiQueryAll( project, {
 		action: 'query',
-		prop: 'links',
+		prop: 'links|iwlinks',
 		pllimit: 'max',
+		// The URL of each interwiki link, so no prefix map is needed
+		// to tell which wiki it points to.
+		iwprop: 'url',
+		iwlimit: 'max',
 		titles: title
 	}, ( response ) => {
 		const page = response.query?.pages?.[ 0 ];
@@ -151,9 +157,35 @@ export async function getWikilinks( project, title, signal = undefined ) {
 			missing = true;
 			return [];
 		}
-		return page.links || [];
+		return [
+			...( page.links || [] ).map( ( link ) => ( { project, title: link.title } ) ),
+			...( page.iwlinks || [] ).map( parseInterwikiLink ).filter( Boolean )
+		];
 	}, undefined, signal );
-	return missing ? null : links.map( ( link ) => link.title );
+	return missing ? null : links;
+}
+
+/**
+ * Derive the target wiki and title from an interwiki link's URL
+ * (iwprop=url).
+ *
+ * @param {Object} iwlink { prefix, url, title } from prop=iwlinks.
+ * @return {?{project: string, title: string}} null for bare-prefix
+ *   links and URLs that don't lead to a wiki page.
+ */
+function parseInterwikiLink( iwlink ) {
+	if ( !iwlink.url || !iwlink.title ) {
+		return null;
+	}
+	try {
+		const url = new URL( iwlink.url );
+		const title = url.pathname.startsWith( '/wiki/' ) ?
+			decodeURIComponent( url.pathname.slice( '/wiki/'.length ) ) :
+			url.searchParams.get( 'title' );
+		return title ? { project: url.hostname, title: title.replace( /_/g, ' ' ) } : null;
+	} catch {
+		return null;
+	}
 }
 
 /**

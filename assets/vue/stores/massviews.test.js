@@ -11,7 +11,7 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
-import { getSiteinfo } from '../projects.js';
+import { getProjects, getSiteinfo } from '../projects.js';
 
 vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
@@ -21,6 +21,7 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 } ) );
 vi.mock( '../projects.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
+	getProjects: vi.fn(),
 	getSiteinfo: vi.fn()
 } ) );
 vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
@@ -60,6 +61,7 @@ describe( 'massviews store', () => {
 		setActivePinia( createPinia() );
 		vi.clearAllMocks();
 		getSiteinfo.mockResolvedValue( SITEINFO );
+		getProjects.mockResolvedValue( { 'en.wikipedia': 'enwiki', 'fr.wikipedia': 'frwiki' } );
 	} );
 
 	it( 'round-trips its own query serialization', () => {
@@ -188,15 +190,30 @@ describe( 'massviews store', () => {
 		const store = useMassviewsStore();
 		store.source = 'wikilinks';
 		store.target = 'https://en.wikipedia.org/wiki/Wikipedia:Vital_articles';
-		getWikilinks.mockResolvedValue( [ 'Cat', 'Dog' ] );
-		fetchPageviews.mockResolvedValue( {
-			dates: [ '2026-07-01' ],
-			pages: [
-				{ title: 'Cat', counts: [ 5 ], total: 5, average: 5 },
-				{ title: 'Dog', counts: [ 2 ], total: 2, average: 2 }
-			],
-			totals: {}
-		} );
+		getWikilinks.mockResolvedValue( [
+			{ project: 'en.wikipedia.org', title: 'Cat' },
+			{ project: 'en.wikipedia.org', title: 'Dog' },
+			// An interwiki link, fanned out to its own wiki.
+			{ project: 'fr.wikipedia.org', title: 'Chat' },
+			// Duplicate and unsupported-wiki links are dropped.
+			{ project: 'en.wikipedia.org', title: 'Cat' },
+			{ project: 'starwars.fandom.com', title: 'Loth-cat' }
+		] );
+		fetchPageviews.mockImplementation( ( { project: wiki } ) => Promise.resolve( wiki === 'en.wikipedia.org' ?
+			{
+				dates: [ '2026-07-01' ],
+				pages: [
+					{ title: 'Cat', counts: [ 5 ], total: 5, average: 5 },
+					{ title: 'Dog', counts: [ 2 ], total: 2, average: 2 }
+				],
+				totals: {}
+			} :
+			{
+				dates: [ '2026-07-01' ],
+				pages: [ { title: 'Chat', counts: [ 1 ], total: 1, average: 1 } ],
+				totals: {}
+			}
+		) );
 
 		await store.load();
 
@@ -205,8 +222,17 @@ describe( 'massviews store', () => {
 		);
 		expect( fetchCategoryMembers ).not.toHaveBeenCalled();
 		expect( store.targetTitle ).toBe( 'Wikipedia:Vital_articles' );
-		expect( store.pagesData ).toHaveLength( 2 );
-		expect( store.totals ).toMatchObject( { total: 7 } );
+		expect( fetchPageviews ).toHaveBeenCalledTimes( 2 );
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'en.wikipedia.org',
+			pages: [ 'Cat', 'Dog' ]
+		} ) );
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'fr.wikipedia.org',
+			pages: [ 'Chat' ]
+		} ) );
+		expect( store.pagesData ).toHaveLength( 3 );
+		expect( store.totals ).toMatchObject( { total: 8 } );
 		expect( store.status ).toBe( 'complete' );
 	} );
 

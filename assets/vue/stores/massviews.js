@@ -9,7 +9,7 @@ import {
 	getWikilinks
 } from '../lib/mwApi.js';
 import { getQuarryTitles } from '../lib/quarry.js';
-import { getSiteinfo } from '../projects.js';
+import { getProjects, getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
 import { useSettingsStore } from './settings.js';
@@ -429,14 +429,30 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 *
 	 * @param {Object} parsed From parseTargetUrl().
 	 * @param {AbortSignal} signal
-	 * @return {Promise<?string[]>} Prefixed titles, or null to bail
-	 *   (a message has been shown).
+	 * @return {Promise<?Array>} Prefixed titles (transclusions), or
+	 *   { project, title } pages (wikilinks, which include interwiki
+	 *   links to other wikis); null to bail (a message has been shown).
 	 */
 	async function resolveLinks( parsed, signal ) {
 		const ui = useUiStore();
 		const display = parsed.title.replace( /_/g, ' ' );
 		const resolver = source.value === 'wikilinks' ? getWikilinks : getTranscludedIn;
-		const titles = await resolver( parsed.project, display, signal );
+		let titles = await resolver( parsed.project, display, signal );
+		if ( titles !== null && source.value === 'wikilinks' ) {
+			// Interwiki links can point anywhere (including wikis the
+			// pageviews API has no data for) and can duplicate local
+			// links: keep the supported wikis, once each.
+			const projects = await getProjects();
+			const seen = new Set();
+			titles = titles.filter( ( page ) => {
+				const key = `${ page.project }|${ page.title }`;
+				if ( seen.has( key ) || !projects[ page.project.replace( /\.org$/, '' ) ] ) {
+					return false;
+				}
+				seen.add( key );
+				return true;
+			} );
+		}
 		if ( titles === null ) {
 			// The page itself doesn't exist.
 			ui.notify( {
@@ -598,7 +614,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			// and query each group, sequentially so the progress bar
 			// (in pages, approximated within a group's chunks) stays
 			// monotonic.
-			const pages = source.value === 'hashtag' ?
+			const pages = [ 'hashtag', 'wikilinks' ].includes( source.value ) ?
 				resolved :
 				resolved.map( ( title ) => ( { project: project.value, title } ) );
 			const groups = new Map();

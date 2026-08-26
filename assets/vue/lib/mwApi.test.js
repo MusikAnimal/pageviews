@@ -4,6 +4,7 @@ import {
 	apiUrl,
 	editProtectionLevel,
 	getPageInfo,
+	getWikilinks,
 	mwApiGet,
 	mwApiQueryAll
 } from './mwApi.js';
@@ -120,5 +121,39 @@ describe( 'mwApiQueryAll', () => {
 		);
 		expect( items ).toEqual( [ 1, 2 ] );
 		expect( impl ).toHaveBeenCalledOnce();
+	} );
+} );
+
+describe( 'getWikilinks', () => {
+	it( 'combines local links and URL-parsed interwiki links', async () => {
+		const impl = stubFetch( [ { query: { pages: [ {
+			title: 'Cat',
+			links: [ { ns: 0, title: 'Dog' }, { ns: 0, title: 'Fox' } ],
+			iwlinks: [
+				// Parsed from the URL, so no prefix map is needed.
+				{ prefix: 'wikt', url: 'https://en.wiktionary.org/wiki/cat', title: 'cat' },
+				{ prefix: 'fr', url: 'https://fr.wikipedia.org/w/index.php?title=Chat', title: 'Chat' },
+				// Bare prefix links carry no page.
+				{ prefix: 'd', url: 'https://www.wikidata.org/wiki/', title: '' },
+				// Underscores and percent-encoding normalize to spaces.
+				{ prefix: 'de', url: 'https://de.wikipedia.org/wiki/Hauskatze_%28Tier%29', title: 'x' }
+			]
+		} ] } } ] );
+
+		const links = await getWikilinks( 'en.wikipedia.org', 'Cat' );
+
+		expect( links ).toEqual( [
+			{ project: 'en.wikipedia.org', title: 'Dog' },
+			{ project: 'en.wikipedia.org', title: 'Fox' },
+			{ project: 'en.wiktionary.org', title: 'cat' },
+			{ project: 'fr.wikipedia.org', title: 'Chat' },
+			{ project: 'de.wikipedia.org', title: 'Hauskatze (Tier)' }
+		] );
+		expect( impl.mock.calls[ 0 ][ 0 ] ).toContain( 'iwprop=url' );
+	} );
+
+	it( 'returns null for a missing page', async () => {
+		stubFetch( [ { query: { pages: [ { title: 'Nope', missing: true } ] } } ] );
+		expect( await getWikilinks( 'en.wikipedia.org', 'Nope' ) ).toBeNull();
 	} );
 } );
