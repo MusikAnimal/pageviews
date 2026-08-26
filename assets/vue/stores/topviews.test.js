@@ -36,6 +36,21 @@ describe( 'topviews store', () => {
 		fetchPageviews.mockResolvedValue( { dates: [], pages: [], totals: {} } );
 	} );
 
+	it( 'clears the report when the project is cleared', async () => {
+		const store = useTopviewsStore();
+		mockTop( [ { article: 'Cat', views: 100, rank: 1 } ] );
+		await store.load();
+		expect( store.articles ).toHaveLength( 1 );
+
+		store.project = null;
+		await store.load();
+
+		expect( store.articles ).toEqual( [] );
+		expect( store.status ).toBe( 'initial' );
+		// One call from the first load only: nothing was queried.
+		expect( fetchTopviews ).toHaveBeenCalledTimes( 1 );
+	} );
+
 	it( 'keeps a URL-provided search across the load', async () => {
 		const store = useTopviewsStore();
 		store.setFromQuery( { search: 'euro' } );

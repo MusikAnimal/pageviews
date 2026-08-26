@@ -178,7 +178,7 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 	 * @type {import('vue').ComputedRef<Object>}
 	 */
 	const query = computed( () => ( {
-		project: project.value,
+		project: project.value || undefined,
 		platform: platform.value,
 		date: date.value || undefined,
 		excludes: excludes.value.map( ( title ) => title.replace( / /g, '_' ) ).join( '|' ) ||
@@ -355,6 +355,21 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 		// A new cycle always cancels the previous one's requests.
 		const signal = aborter.next();
 		currentSignal = signal;
+
+		// A cleared project input (its X button) clears the report —
+		// the reload watcher fires on every project change, and
+		// querying nothing would only produce errors.
+		if ( !project.value ) {
+			articles.value = [];
+			serverExcluded.value = [];
+			nonMainspace.value = [];
+			editData.value = {};
+			mobileViews.value = {};
+			offset.value = PAGE_SIZE;
+			status.value = 'initial';
+			ui.clearMessages();
+			return;
+		}
 
 		if ( !date.value ) {
 			date.value = formatYm( lastCompleteMonthUtc() );
