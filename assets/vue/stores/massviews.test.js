@@ -2,7 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useMassviewsStore } from './massviews.js';
 import { useUiStore } from './ui.js';
-import { fetchCategoryMembers, fetchHashtagPages, fetchPageviews } from '../lib/metricsApi.js';
+import {
+	fetchCategoryMembers,
+	fetchHashtagPages,
+	fetchPageviews,
+	fetchWikiprojectPages
+} from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
 	getSearchResults,
@@ -17,7 +22,8 @@ vi.mock( '../lib/metricsApi.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	fetchCategoryMembers: vi.fn(),
 	fetchHashtagPages: vi.fn(),
-	fetchPageviews: vi.fn()
+	fetchPageviews: vi.fn(),
+	fetchWikiprojectPages: vi.fn()
 } ) );
 vi.mock( '../projects.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
@@ -522,6 +528,116 @@ describe( 'massviews store', () => {
 		expect( store.targetTitle.endsWith( '…' ) ).toBe( true );
 		expect( store.targetUrl ).toContain( 'Special:Search' );
 		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'resolves a WikiProject and keeps the assessment metadata', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( {
+			source: 'wikiproject',
+			target: 'Volcanoes',
+			project: 'en.wikipedia.org'
+		} );
+		fetchWikiprojectPages.mockResolvedValue( {
+			project: 'en.wikipedia',
+			name: 'Volcanoes',
+			limit: 20000,
+			pages: [
+				{
+					title: 'Mauna_Loa',
+					namespace: 0,
+					assessment: { class: 'FA', weight: 20 },
+					importance: { importance: 'Top', weight: 5 }
+				},
+				{ title: 'Volcano_lair', namespace: 1, assessment: null, importance: null }
+			]
+		} );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01', '2026-07-02' ],
+			pages: [
+				{ title: 'Mauna_Loa', counts: [ 10, 20 ], total: 30, average: 15 },
+				{ title: 'Talk:Volcano_lair', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( fetchWikiprojectPages ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'en.wikipedia.org',
+			name: 'Volcanoes'
+		} ) );
+		// Namespace prefixes come from siteinfo, like the category source.
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			project: 'en.wikipedia.org',
+			pages: [ 'Mauna_Loa', 'Talk:Volcano_lair' ]
+		} ) );
+		expect( store.targetTitle ).toBe( 'Volcanoes' );
+		expect( store.targetUrl ).toContain( 'Special:PageAssessments' );
+		// The metadata is keyed by display title for the results table.
+		expect( store.pageMeta[ 'Mauna Loa' ] ).toEqual( {
+			assessment: { class: 'FA', weight: 20 },
+			importance: { importance: 'Top', weight: 5 }
+		} );
+		expect( store.pageMeta[ 'Talk:Volcano lair' ] ).toEqual( {
+			assessment: null,
+			importance: null
+		} );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'returns to the form when the WikiProject has no pages', async () => {
+		const store = useMassviewsStore();
+		const ui = useUiStore();
+		store.setFromQuery( {
+			source: 'wikiproject',
+			target: 'Empty project',
+			project: 'en.wikipedia.org'
+		} );
+		fetchWikiprojectPages.mockResolvedValue( {
+			project: 'en.wikipedia',
+			name: 'Empty project',
+			limit: 20000,
+			pages: []
+		} );
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( ui.messages[ 0 ].type ).toBe( 'warning' );
+		expect( fetchPageviews ).not.toHaveBeenCalled();
+	} );
+
+	it( 'does not query a project source whose project was cleared', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( {
+			source: 'wikiproject',
+			target: 'Volcanoes',
+			project: 'en.wikipedia.org'
+		} );
+		// The project input's X button clears the model to null.
+		store.project = null;
+
+		await store.load();
+
+		expect( store.status ).toBe( 'initial' );
+		expect( fetchWikiprojectPages ).not.toHaveBeenCalled();
+		expect( fetchPageviews ).not.toHaveBeenCalled();
+	} );
+
+	it( 'round-trips the wikiproject source with its project', () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( {
+			source: 'wikiproject',
+			target: 'Volcanoes',
+			project: 'de.wikipedia.org',
+			sort: 'importance'
+		} );
+		expect( store.query ).toMatchObject( {
+			source: 'wikiproject',
+			target: 'Volcanoes',
+			project: 'de.wikipedia.org',
+			sort: 'importance'
+		} );
 	} );
 
 } );

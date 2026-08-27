@@ -173,6 +173,108 @@ class MassviewsRepository extends Repository {
 	}
 
 	/**
+	 * The pages assessed under a WikiProject (as recorded by the
+	 * PageAssessments extension), with each page's quality class and
+	 * importance formatted for display — intended to replace on-wiki
+	 * "Popular pages" reports.
+	 *
+	 * @param string $project e.g. en.wikipedia.org
+	 * @param string $name The WikiProject name as stored by
+	 *   PageAssessments (usually without a "WikiProject" prefix);
+	 *   spaces or underscores.
+	 * @return array{project: string, name: string, limit: int, pages: array}
+	 */
+	public function getWikiprojectPages( string $project, string $name ): array {
+		$project = $this->normalizeProject( $project );
+		$dbName = $this->projectsRepo->getProjects()[ $project ] ?? null;
+		if ( !$dbName ) {
+			$this->invalidParameter(
+				'invalid_project',
+				"Project $project is not a valid project or is unsupported.",
+				[ 'invalid-project', $project ]
+			);
+		}
+		if ( !$this->projectsRepo->getProjectAssessmentsConfig( $project ) ) {
+			$this->invalidParameter(
+				'unsupported_project',
+				"Project $project does not use the PageAssessments extension.",
+				[ 'massviews-wikiproject-unsupported', $project ]
+			);
+		}
+
+		// Unlike page titles, pap_project_title stores spaces.
+		$name = trim( str_replace( '_', ' ', $name ) );
+		if ( $name === '' ) {
+			$this->invalidParameter(
+				'missing_param',
+				'The name parameter is required.',
+				[ 'param-error-3', 'name' ]
+			);
+		}
+
+		return $this->cacheLists->get(
+			'wikiproject-pages.' . md5( "$dbName|$name" ),
+			function ( ItemInterface $item ) use ( $project, $dbName, $name ) {
+				$item->expiresAfter( 600 );
+
+				$pages = [];
+				foreach ( $this->queryWikiprojectPages( $dbName, $name ) as $row ) {
+					$pages[] = [
+						'title' => (string)$row['title'],
+						'namespace' => (int)$row['namespace'],
+						'assessment' => $this->projectsRepo->formatAssessment(
+							$project, $row['class']
+						),
+						'importance' => $this->projectsRepo->formatImportance(
+							$project, $row['importance']
+						),
+					];
+				}
+
+				return [
+					'project' => $project,
+					'name' => $name,
+					'limit' => self::MAX_PAGES,
+					'pages' => $pages,
+				];
+			}
+		);
+	}
+
+	/**
+	 * The pages a WikiProject has assessed, with the raw class and
+	 * importance values. PageAssessments records the subject page, so
+	 * no talk-to-subject mapping is needed. Kept as its own
+	 * (overridable) unit so tests can supply fixture rows without a
+	 * live replica connection.
+	 *
+	 * @return array Rows of title (underscored, no prefix), namespace,
+	 *   class and importance.
+	 */
+	protected function queryWikiprojectPages( string $dbName, string $name ): array {
+		$conn = $this->replicasClient->getConnection( $dbName );
+		return $conn->createQueryBuilder()
+			->select(
+				'page_title AS title',
+				'page_namespace AS namespace',
+				'pa_class AS class',
+				'pa_importance AS importance'
+			)
+			->from( 'page_assessments', 'page_assessments' )
+			->join(
+				'page_assessments',
+				'page_assessments_projects',
+				'page_assessments_projects',
+				'pa_project_id = pap_project_id'
+			)
+			->join( 'page_assessments', 'page', 'page', 'page_id = pa_page_id' )
+			->where( 'pap_project_title = :name' )
+			->setParameter( 'name', $name )
+			->setMaxResults( self::MAX_PAGES )
+			->fetchAllAssociative();
+	}
+
+	/**
 	 * The subcategory titles of the given categories. Kept as its own
 	 * (overridable) unit so tests can supply fixture rows without a
 	 * live replica connection.

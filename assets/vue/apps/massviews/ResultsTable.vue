@@ -20,6 +20,7 @@
 					<td class="app-stats__number">
 						{{ number( store.totals.total ) }}
 					</td>
+					<td v-if="isWikiproject" colspan="2" />
 					<td class="app-stats__number">
 						{{ number( Math.round( store.totals.average ) ) }}
 					</td>
@@ -40,6 +41,39 @@
 					</td>
 					<td class="app-stats__number">
 						<a :href="pageviewsUrl( row )" target="_blank">{{ number( row.sum ) }}</a>
+					</td>
+					<!-- WikiProject source only: the page's quality class
+						and importance, linked to their assessment categories
+						on the wiki (like the on-wiki Popular pages reports
+						this replaces). -->
+					<td v-if="isWikiproject">
+						<template v-if="meta( row )?.assessment">
+							<img
+								v-if="meta( row ).assessment.badge"
+								class="app-stats__badge"
+								:src="meta( row ).assessment.badge"
+								alt=""
+							><a
+								v-if="meta( row ).assessment.category"
+								:href="categoryUrl( meta( row ).assessment.category )"
+								target="_blank"
+							>{{ meta( row ).assessment.class }}</a>
+							<template v-else>
+								{{ meta( row ).assessment.class }}
+							</template>
+						</template>
+					</td>
+					<td v-if="isWikiproject">
+						<template v-if="meta( row )?.importance">
+							<a
+								v-if="meta( row ).importance.category"
+								:href="categoryUrl( meta( row ).importance.category )"
+								target="_blank"
+							>{{ meta( row ).importance.importance }}</a>
+							<template v-else>
+								{{ meta( row ).importance.importance }}
+							</template>
+						</template>
 					</td>
 					<td class="app-stats__number">
 						{{ number( Math.round( row.average ) ) }}
@@ -74,6 +108,8 @@ const maxSum = computed( () => rows.value.reduce(
 	( max, row ) => Math.max( max, row.sum ), 0
 ) );
 
+const isWikiproject = computed( () => store.source === 'wikiproject' );
+
 const columns = computed( () => [
 	{ key: 'rank', label: '', sortable: false },
 	{ key: 'title', label: banana.i18n( 'page-title' ), sortable: true },
@@ -84,8 +120,45 @@ const columns = computed( () => [
 		numeric: true,
 		sortValue: ( row ) => row.sum
 	},
+	// Quality columns for the WikiProject source, sorted by the
+	// server-provided weights (unassessed pages sort last).
+	...( isWikiproject.value ? [
+		{
+			key: 'assessment',
+			label: banana.i18n( 'assessment' ),
+			sortable: true,
+			sortValue: ( row ) => meta( row )?.assessment?.weight ?? null
+		},
+		{
+			key: 'importance',
+			label: banana.i18n( 'importance' ),
+			sortable: true,
+			sortValue: ( row ) => meta( row )?.importance?.weight ?? null
+		}
+	] : [] ),
 	{ key: 'average', label: banana.i18n( 'daily-average' ), sortable: false, numeric: true }
 ] );
+
+/**
+ * The WikiProject source's per-page assessment data, keyed by the
+ * display title in the store.
+ *
+ * @param {Object} row
+ * @return {?{assessment: ?Object, importance: ?Object}}
+ */
+function meta( row ) {
+	return store.pageMeta[ row.title ];
+}
+
+/**
+ * @param {string} category e.g. 'Category:FA-Class articles' (always
+ *   prefixed, in the wiki's own language).
+ * @return {string}
+ */
+function categoryUrl( category ) {
+	return `https://${ store.project }/wiki/` +
+		encodeURIComponent( category.replace( / /g, '_' ) );
+}
 
 /**
  * Sort state lives in the store (and thus the URL), legacy-style:

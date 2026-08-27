@@ -60,6 +60,55 @@ describe( 'ProjectInput', () => {
 		expect( wrapper.text() ).toContain( 'unsupported' );
 	} );
 
+	it( 'blanks the field on an explicit external clear', async () => {
+		const wrapper = await mountInput();
+		const input = wrapper.find( '.cdx-lookup input' );
+		expect( input.element.value ).toBe( 'en.wikipedia.org' );
+
+		// An empty string is a deliberate parent-side clear (unlike
+		// null, which Codex emits while typing).
+		await wrapper.setProps( { modelValue: '' } );
+		await nextTick();
+		await nextTick();
+
+		expect( input.element.value ).toBe( '' );
+	} );
+
+	it( 'leaves the pending state when the input is emptied', async () => {
+		const wrapper = await mountInput();
+		const input = wrapper.find( '.cdx-lookup input' );
+
+		// Typing filters the menu; clearing must not leave the lookup
+		// waiting for menu items that will never come.
+		await input.setValue( 'en.wik' );
+		await input.setValue( '' );
+		await nextTick();
+
+		expect( wrapper.find( '.cdx-lookup' ).classes() )
+			.not.toContain( 'cdx-lookup--pending' );
+	} );
+
+	it( 'validates against a restricted project list with a custom message', async () => {
+		const wrapper = await mountInput( {
+			projects: [ 'en.wikipedia.org' ],
+			invalidHtml: ( domain ) => `${ domain } lacks PageAssessments`
+		} );
+		const input = wrapper.find( '.cdx-lookup input' );
+
+		// On the allow-list but not the restricted list.
+		await input.setValue( 'fr.wikipedia.org' );
+		await input.trigger( 'change' );
+		await nextTick();
+		await nextTick();
+		expect( wrapper.text() ).toContain( 'fr.wikipedia.org lacks PageAssessments' );
+
+		// Lifting the restriction re-judges the same text.
+		await wrapper.setProps( { projects: null, invalidHtml: null } );
+		await nextTick();
+		await nextTick();
+		expect( wrapper.text() ).not.toContain( 'lacks PageAssessments' );
+	} );
+
 	it( 'clears the error when All projects is checked', async () => {
 		const wrapper = await mountInput( { allProjectsToggle: true, allProjects: false } );
 		const input = wrapper.find( '.cdx-lookup input' );

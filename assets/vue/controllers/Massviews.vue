@@ -26,6 +26,7 @@
 						<!-- The data-* attributes stop password managers from
 							offering credentials here (see SinglePageInput). -->
 						<CdxTextInput
+							v-if="source !== 'wikiproject'"
 							ref="targetInput"
 							v-model="target"
 							class="app-page-input-row__input"
@@ -40,6 +41,15 @@
 							:aria-label="targetLabel"
 							:placeholder="targetPlaceholder"
 							@keydown.enter="submit"
+							@clear="onTargetClear"
+						/>
+						<WikiprojectInput
+							v-else
+							ref="targetInput"
+							v-model="target"
+							:project="store.project"
+							:placeholder="targetPlaceholder"
+							@submit="submit"
 							@clear="onTargetClear"
 						/>
 						<!-- In the stacked (mobile) layout the help text
@@ -61,7 +71,7 @@
 						<CdxButton
 							action="progressive"
 							weight="primary"
-							:disabled="!store.target || store.status === 'loading'"
+							:disabled="!submittable"
 							@click="submit"
 						>
 							{{ $i18n( 'submit' ) }}
@@ -186,7 +196,7 @@ import {
 } from '@wikimedia/codex-icons';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import { useMassviewsStore } from '../stores/massviews.js';
+import { PROJECT_SOURCES, useMassviewsStore } from '../stores/massviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -196,6 +206,7 @@ import { formatDate } from '../lib/format.js';
 import { parseDate } from '../lib/dates.js';
 import { banana, rawI18n } from '../i18n.js';
 import MassviewsSettings from '../apps/massviews/Settings.vue';
+import WikiprojectInput from '../apps/massviews/WikiprojectInput.vue';
 import FaqDialog from '../apps/massviews/FaqDialog.vue';
 import UrlStructureDialog from '../apps/massviews/UrlStructureDialog.vue';
 import LoadingOverlay from '../components/LoadingOverlay.vue';
@@ -263,12 +274,6 @@ const includeSubcategories = computed( {
 	}
 } );
 
-function submit() {
-	if ( store.target && store.status !== 'loading' ) {
-		store.load();
-	}
-}
-
 const viewButtons = [
 	{ value: 'list', label: banana.i18n( 'list' ), icon: cdxIconListBullet },
 	{ value: 'chart', label: banana.i18n( 'chart' ), icon: cdxIconChart }
@@ -286,7 +291,11 @@ const viewModel = computed( {
 // (localized prefixes included).
 const targetDisplay = computed( () => store.targetTitle.replace( /_/g, ' ' ) );
 
-// Quarry is a proper noun.
+// Quarry is a proper noun. WikiProject is always offered even though
+// only some wikis run PageAssessments — the project input restricts
+// itself to those wikis when this source is picked (gating the menu
+// entry on the current project instead would hide the source until
+// the user happened to have a supported wiki set).
 const sourceItems = [
 	{ value: 'category', label: banana.i18n( 'category' ) },
 	{ value: 'wikilinks', label: banana.i18n( 'wikilinks' ) },
@@ -295,8 +304,21 @@ const sourceItems = [
 	{ value: 'quarry', label: 'Quarry' },
 	{ value: 'hashtag', label: banana.i18n( 'hashtag' ) },
 	{ value: 'external-link', label: banana.i18n( 'external-link' ) },
-	{ value: 'search', label: banana.i18n( 'search' ) }
+	{ value: 'search', label: banana.i18n( 'search' ) },
+	{ value: 'wikiproject', label: banana.i18n( 'wikiproject' ) }
 ];
+
+// The project-based sources can't query without a project (its input
+// clears the model to null via the X button).
+const submittable = computed( () => Boolean( store.target ) &&
+	store.status !== 'loading' &&
+	( !PROJECT_SOURCES.includes( store.source ) || Boolean( store.project ) ) );
+
+function submit() {
+	if ( submittable.value ) {
+		store.load();
+	}
+}
 
 // The target input's accessible name and example, per source (legacy
 // placeholders).
@@ -308,7 +330,8 @@ const PLACEHOLDERS = {
 	quarry: '1',
 	hashtag: '#editathon',
 	'external-link': '*.nycgo.com',
-	search: 'insource:"UNESCO Science Report"'
+	search: 'insource:"UNESCO Science Report"',
+	wikiproject: 'Volcanoes'
 };
 const targetLabel = computed( () => store.source === 'quarry' ?
 	'Quarry' :
@@ -319,7 +342,8 @@ const targetLabel = computed( () => store.source === 'quarry' ?
 		transclusions: 'template',
 		hashtag: 'hashtag',
 		'external-link': 'external-link',
-		search: 'search'
+		search: 'search',
+		wikiproject: 'wikiproject'
 	}[ store.source ] ) );
 const targetPlaceholder = computed( () => PLACEHOLDERS[ store.source ] );
 
@@ -371,6 +395,12 @@ const sourceDescription = computed( () => {
 			return banana.i18n(
 				'massviews-search-description',
 				help( 'Help:CirrusSearch', 'CirrusSearch' )
+			);
+		case 'wikiproject':
+			return banana.i18n(
+				'massviews-wikiproject-description',
+				// A proper noun, so no lowercasing like the others.
+				help( 'Extension:PageAssessments', banana.i18n( 'massviews-wikiproject-description-link' ) )
 			);
 		default:
 			return banana.i18n(

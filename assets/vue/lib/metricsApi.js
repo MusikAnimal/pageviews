@@ -367,6 +367,26 @@ export function fetchCategoryMembers( { project, category, subcategories = '0', 
 }
 
 /**
+ * The pages assessed under a WikiProject, from the replica-backed
+ * endpoint (the Massviews WikiProject source). Each page carries its
+ * formatted quality class and importance (or null when unassessed).
+ *
+ * @param {Object} params
+ * @param {string} params.project
+ * @param {string} params.name The WikiProject name as stored by
+ *   PageAssessments (no "WikiProject" prefix).
+ * @param {AbortSignal} [params.signal]
+ * @return {Promise<Object>} { project, name, limit, pages: [ { title,
+ *   namespace, assessment, importance } ] }
+ * @throws {ApiError}
+ */
+export function fetchWikiprojectPages( { project, name, signal } ) {
+	return apiGet( `/api/lists/${ encodeURIComponent( project ) }/wikiproject`, {
+		name
+	}, signal );
+}
+
+/**
  * Monthly pageviews of the pages using media from a Commons category,
  * from the Commons Impact Metrics dataset (the Massviews "Commons
  * category" source). Only allowlisted categories are loaded.

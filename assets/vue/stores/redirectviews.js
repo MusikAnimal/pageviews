@@ -4,7 +4,7 @@ import { omitDefault } from '../lib/urlParams.js';
 import { fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
 import { getRedirects } from '../lib/redirects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
-import { banana } from '../i18n.js';
+import { errorText } from '../lib/errors.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -280,7 +280,7 @@ export const useRedirectviewsStore = defineStore( 'redirectviews', () => {
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				text: errorText( error ),
 				onRetry: error.retryable === false ? undefined : load
 			} );
 		} finally {

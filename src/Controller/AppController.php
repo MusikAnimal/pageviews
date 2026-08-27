@@ -29,6 +29,12 @@ class AppController extends AbstractController {
 		return new JsonResponse( $projectsRepo->getCommonsCategories() );
 	}
 
+	#[Route('/assessments.json', name: 'api_assessment_wikis')]
+	#[Cache(maxage: 24 * 60 * 60 /* 1 day */, public: true, vary: [ 'Accept-Encoding' ])]
+	public function assessmentWikisApi( ProjectsRepository $projectsRepo ): JsonResponse {
+		return new JsonResponse( $projectsRepo->getAssessmentWikis() );
+	}
+
 	#[Route('/siteinfo/{project}', name: 'api_siteinfo')]
 	#[Cache(maxage: 7 * 24 * 60 * 60 /* 1 week */, public: true, vary: [ 'Accept-Encoding' ])]
 	public function siteInfoApi( ProjectsRepository $projectsRepo, string $project ): JsonResponse {

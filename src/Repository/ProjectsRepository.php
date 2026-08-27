@@ -134,24 +134,70 @@ class ProjectsRepository {
 
 	/**
 	 * Expand a raw pa_class value into a display-ready structure with
-	 * the badge image URL and color from the project's config.
+	 * the badge image URL, color and linked category from the
+	 * project's config, plus a sort weight (higher = better quality,
+	 * from the config's best-first ordering; null when unrecognized).
 	 *
 	 * @param string $project Without the .org suffix.
 	 * @param string|null $class The pa_class value.
-	 * @return array{class: string, badge: ?string, color: ?string}|null
+	 * @return array{class: string, badge: ?string, color: ?string,
+	 *   category: ?string, weight: ?int}|null
 	 */
 	public function formatAssessment( string $project, ?string $class ): ?array {
 		if ( $class === null || $class === '' ) {
 			return null;
 		}
-		$classConfig = $this->getProjectAssessmentsConfig( $project )['class'][ $class ] ?? [];
+		$classes = $this->getProjectAssessmentsConfig( $project )['class'] ?? [];
+		$classConfig = $classes[ $class ] ?? [];
+		$position = array_search( $class, array_keys( $classes ), true );
 		return [
 			'class' => $class,
 			'badge' => isset( $classConfig['badge'] ) ?
 				'https://upload.wikimedia.org/wikipedia/commons/' . $classConfig['badge'] :
 				null,
 			'color' => $classConfig['color'] ?? null,
+			'category' => $classConfig['category'] ?? null,
+			'weight' => $position === false ? null : count( $classes ) - $position,
 		];
+	}
+
+	/**
+	 * Expand a raw pa_importance value into a display-ready structure
+	 * with the color, linked category and sort weight (higher = more
+	 * important) from the project's config.
+	 *
+	 * @param string $project Without the .org suffix.
+	 * @param string|null $importance The pa_importance value.
+	 * @return array{importance: string, color: ?string,
+	 *   category: ?string, weight: ?int}|null
+	 */
+	public function formatImportance( string $project, ?string $importance ): ?array {
+		if ( $importance === null || $importance === '' ) {
+			return null;
+		}
+		$config = $this->getProjectAssessmentsConfig( $project )['importance'][ $importance ] ?? [];
+		return [
+			'importance' => $importance,
+			'color' => $config['color'] ?? null,
+			'category' => $config['category'] ?? null,
+			'weight' => isset( $config['weight'] ) ? (int)$config['weight'] : null,
+		];
+	}
+
+	/**
+	 * The projects running the PageAssessments extension (and thus
+	 * supporting the Massviews WikiProject source), without the .org
+	 * suffix to match the projects.json key format.
+	 *
+	 * @return string[]
+	 */
+	public function getAssessmentWikis(): array {
+		$wikis = array_map(
+			static fn ( string $domain ) => preg_replace( '/\.org$/', '', $domain ),
+			array_keys( $this->getAssessmentsConfig()['config'] ?? [] )
+		);
+		sort( $wikis );
+		return $wikis;
 	}
 
 	/**

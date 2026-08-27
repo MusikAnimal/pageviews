@@ -36,6 +36,27 @@ export function getCommonsCategories() {
 	return commonsCategoriesPromise;
 }
 
+let assessmentWikisPromise = null;
+
+/**
+ * The projects running the PageAssessments extension (without the
+ * .org suffix, like projects.json keys): the wikis the Massviews
+ * WikiProject source is offered on.
+ *
+ * @return {Promise<string[]>}
+ */
+export function getAssessmentWikis() {
+	assessmentWikisPromise ??= ( async () => {
+		try {
+			const response = await fetch( '/assessments.json' );
+			return response.ok ? await response.json() : [];
+		} catch {
+			return [];
+		}
+	} )();
+	return assessmentWikisPromise;
+}
+
 const siteinfoPromises = new Map();
 
 /**
@@ -46,6 +67,10 @@ const siteinfoPromises = new Map();
  * @return {Promise<?Object>} { general, namespaces }, or null on failure.
  */
 export function getSiteinfo( domain ) {
+	// A cleared project input passes null; there is nothing to fetch.
+	if ( !domain ) {
+		return Promise.resolve( null );
+	}
 	domain = domain.replace( /\.org$/, '' );
 	if ( !siteinfoPromises.has( domain ) ) {
 		siteinfoPromises.set( domain, ( async () => {

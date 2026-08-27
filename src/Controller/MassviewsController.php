@@ -39,6 +39,16 @@ class MassviewsController extends AbstractController {
 		return new JsonResponse( $massviewsRepo->getHashtagPages( $query ) );
 	}
 
+	#[Route( '/api/lists/{project}/wikiproject', name: 'api_lists_wikiproject', methods: [ 'GET' ] )]
+	#[Cache( maxage: 600, public: true )]
+	public function wikiprojectPages(
+		MassviewsRepository $massviewsRepo,
+		string $project,
+		#[MapQueryParameter] string $name = '',
+	): JsonResponse {
+		return new JsonResponse( $massviewsRepo->getWikiprojectPages( $project, $name ) );
+	}
+
 	#[Route( '/api/lists/{project}/category', name: 'api_lists_category', methods: [ 'GET' ] )]
 	#[Cache( maxage: 600, public: true )]
 	public function categoryMembers(

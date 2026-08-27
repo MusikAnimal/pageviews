@@ -5,6 +5,7 @@ import {
 	editProtectionLevel,
 	getPageInfo,
 	getWikilinks,
+	getWikiprojects,
 	mwApiGet,
 	mwApiQueryAll
 } from './mwApi.js';
@@ -155,5 +156,31 @@ describe( 'getWikilinks', () => {
 	it( 'returns null for a missing page', async () => {
 		stubFetch( [ { query: { pages: [ { title: 'Nope', missing: true } ] } } ] );
 		expect( await getWikilinks( 'en.wikipedia.org', 'Nope' ) ).toBeNull();
+	} );
+} );
+
+describe( 'getWikiprojects', () => {
+	it( 'fetches the list once per wiki and memoizes it', async () => {
+		const impl = stubFetch( [ { query: { projects: [ 'Volcanoes', 'Military history' ] } } ] );
+
+		const first = await getWikiprojects( 'test-memo.wikipedia.org' );
+		const second = await getWikiprojects( 'test-memo.wikipedia.org' );
+
+		expect( first ).toEqual( [ 'Volcanoes', 'Military history' ] );
+		expect( second ).toBe( first );
+		expect( impl ).toHaveBeenCalledTimes( 1 );
+		expect( String( impl.mock.calls[ 0 ][ 0 ] ) ).toContain( 'list=projects' );
+	} );
+
+	it( 'degrades to no suggestions on failure, without memoizing it', async () => {
+		// A wiki without PageAssessments rejects the list parameter.
+		stubFetch( [ { error: { code: 'badvalue', info: 'Unrecognized value' } } ] );
+
+		expect( await getWikiprojects( 'test-fail.wikipedia.org' ) ).toEqual( [] );
+
+		// A later attempt fetches again rather than reusing the failure.
+		const impl = stubFetch( [ { query: { projects: [ 'Volcanoes' ] } } ] );
+		expect( await getWikiprojects( 'test-fail.wikipedia.org' ) ).toEqual( [ 'Volcanoes' ] );
+		expect( impl ).toHaveBeenCalledTimes( 1 );
 	} );
 } );

@@ -12,6 +12,7 @@ import {
 	yesterdayUtc
 } from '../lib/dates.js';
 import { banana } from '../i18n.js';
+import { errorText } from '../lib/errors.js';
 import { useUiStore } from './ui.js';
 
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
@@ -432,7 +433,7 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 			serverExcluded.value = [];
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				text: errorText( error ),
 				onRetry: error.retryable === false ? undefined : load
 			} );
 		}

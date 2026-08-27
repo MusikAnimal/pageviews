@@ -5,6 +5,7 @@ import { fetchPagesCreated, fetchPageviews, trimIncompleteTail } from '../lib/me
 import { getSiteinfo } from '../projects.js';
 import { mwApiGet } from '../lib/mwApi.js';
 import { banana } from '../i18n.js';
+import { errorText } from '../lib/errors.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
@@ -381,7 +382,7 @@ export const useUserviewsStore = defineStore( 'userviews', () => {
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				text: errorText( error ),
 				onRetry: error.retryable === false ? undefined : load
 			} );
 		} finally {

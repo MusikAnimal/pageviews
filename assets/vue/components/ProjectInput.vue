@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { CdxCheckbox, CdxField, CdxLookup } from '@wikimedia/codex';
 import { banana } from '../i18n.js';
 import { getProjects } from '../projects.js';
@@ -53,7 +53,7 @@ const project = defineModel( {
 	required: true
 } );
 
-defineProps( {
+const props = defineProps( {
 	// Label override (defaults to "Project"), e.g. Langviews'
 	// "Source project".
 	label: {
@@ -67,6 +67,22 @@ defineProps( {
 	allProjectsToggle: {
 		type: Boolean,
 		default: false
+	},
+	// Restrict the input to these domains (with the .org suffix)
+	// instead of the full pageviews allow-list — both the suggestions
+	// and the validation (e.g. Massviews' WikiProject source only
+	// works on wikis running PageAssessments).
+	projects: {
+		type: Array,
+		default: null
+	},
+	// Builds the error HTML for a project outside the restricted
+	// list, given the typed domain. Without it, the generic
+	// invalid-project message is used — misleading when the wiki is
+	// valid but unsupported for the caller's purpose.
+	invalidHtml: {
+		type: Function,
+		default: null
 	}
 } );
 
@@ -78,11 +94,18 @@ const allProjects = defineModel( 'allProjects', {
 const lookup = ref( null );
 
 /**
- * List of supported projects for the lookup component.
+ * The full pageviews allow-list, fetched on mount.
  *
  * @type {import( 'vue' ).Ref<string[]>}
  */
-const supportedProjects = ref( [] );
+const fetchedProjects = ref( [] );
+/**
+ * What the lookup suggests and validates against: the caller's
+ * restricted list when given, the full allow-list otherwise.
+ *
+ * @type {import( 'vue' ).ComputedRef<string[]>}
+ */
+const supportedProjects = computed( () => props.projects ?? fetchedProjects.value );
 /**
  * Validation status for the project input field.
  *
@@ -116,12 +139,30 @@ watch( allProjects, ( checked ) => {
 	}
 } );
 
+// The list can change underneath (the fetch landing, or the caller
+// swapping in a restricted list, e.g. when the Massviews source
+// changes): refresh the menu and re-judge the current text.
+watch( supportedProjects, ( list ) => {
+	menuItems.value = list.map( ( projectId ) => ( {
+		value: projectId,
+		label: projectId
+	} ) );
+	checkValidity();
+} );
+
 // The parent can swap the project from outside (e.g. unchecking All
 // projects restores the default wiki): sync the visible text and
-// re-validate. Empty values are ignored — the lookup also nulls the
-// selection whenever the typed text matches nothing, which must not
-// wipe the text (or its error) mid-edit.
+// re-validate. An empty string is an explicit clear (e.g. Massviews
+// blanking a wiki the WikiProject source can't use) and empties the
+// field, leaving the required-input error; null is ignored — the
+// lookup also nulls the selection whenever the typed text matches
+// nothing, which must not wipe the text (or its error) mid-edit.
 watch( project, ( value ) => {
+	if ( value === '' && currentSearchTerm.value ) {
+		currentSearchTerm.value = '';
+		checkValidity();
+		return;
+	}
 	if ( !value || value === currentSearchTerm.value ) {
 		return;
 	}
@@ -157,6 +198,11 @@ function onInput( value ) {
 				value: projectId,
 				label: projectId
 			} ) );
+	} else {
+		// An emptied input (the X button, select-all + delete) puts
+		// the lookup in its pending state until the menu items change:
+		// hand it a fresh list so it doesn't stay loading forever.
+		menuItems.value = [];
 	}
 }
 
@@ -180,18 +226,31 @@ async function checkValidity() {
 	if ( !valid ) {
 		status.value = input.validationMessage;
 	} else if ( unsupported ) {
-		const projectLink = document.createElement( 'a' );
-		projectLink.href = `https://${ currentSearchTerm.value }`;
-		projectLink.target = '_blank';
-		projectLink.innerText = currentSearchTerm.value;
-		const allowListLink = document.createElement( 'a' );
-		allowListLink.href = 'https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv';
-		allowListLink.target = '_blank';
-		allowListLink.innerText = banana.i18n( 'invalid-project-link' );
-		status.value = banana.i18n( 'invalid-project', projectLink.outerHTML, allowListLink.outerHTML );
+		status.value = props.invalidHtml ?
+			props.invalidHtml( currentSearchTerm.value ) :
+			defaultInvalidHtml( currentSearchTerm.value );
 	} else {
 		status.value = '';
 	}
+}
+
+/**
+ * The generic not-on-the-allow-list error, linking the project and
+ * the allow-list.
+ *
+ * @param {string} domain
+ * @return {string}
+ */
+function defaultInvalidHtml( domain ) {
+	const projectLink = document.createElement( 'a' );
+	projectLink.href = `https://${ domain }`;
+	projectLink.target = '_blank';
+	projectLink.innerText = domain;
+	const allowListLink = document.createElement( 'a' );
+	allowListLink.href = 'https://gerrit.wikimedia.org/r/plugins/gitiles/analytics/refinery/+/refs/heads/master/static_data/pageview/allowlist/allowlist.tsv';
+	allowListLink.target = '_blank';
+	allowListLink.innerText = banana.i18n( 'invalid-project-link' );
+	return banana.i18n( 'invalid-project', projectLink.outerHTML, allowListLink.outerHTML );
 }
 
 /**
@@ -206,14 +265,11 @@ function onSelect() {
 }
 
 onMounted( async () => {
-	supportedProjects.value = Object.keys( await getProjects() )
+	// The supportedProjects watcher populates the menu (the initial
+	// mapping ran before the list loaded) so programmatic selections
+	// resolve.
+	fetchedProjects.value = Object.keys( await getProjects() )
 		.map( ( projectId ) => `${ projectId }.org` );
-	// The initial menuItems mapping ran before the list loaded (it
-	// was empty); populate it so programmatic selections resolve.
-	menuItems.value = supportedProjects.value.map( ( projectId ) => ( {
-		value: projectId,
-		label: projectId
-	} ) );
 } );
 </script>
 

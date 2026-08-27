@@ -28,9 +28,11 @@ const namespace = defineModel( {
 } );
 
 const props = defineProps( {
-	// The wiki whose namespaces to offer.
+	// The wiki whose namespaces to offer. Null while the project
+	// input is cleared; the previous wiki's options linger until a
+	// new project is picked.
 	project: {
-		type: String,
+		type: [ String, null ],
 		required: true
 	},
 	// What the selection returns to when the project changes (the
@@ -54,6 +56,9 @@ watch( () => props.project, ( domain ) => {
 loadNamespaces( props.project );
 
 async function loadNamespaces( domain ) {
+	if ( !domain ) {
+		return;
+	}
 	const siteinfo = await getSiteinfo( domain );
 	// The project may have changed while the siteinfo loaded.
 	if ( domain !== props.project || !siteinfo?.namespaces ) {

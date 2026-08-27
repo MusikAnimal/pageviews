@@ -1,7 +1,13 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { omitDefault } from '../lib/urlParams.js';
-import { fetchCategoryMembers, fetchHashtagPages, fetchPageviews, trimIncompleteTail } from '../lib/metricsApi.js';
+import {
+	fetchCategoryMembers,
+	fetchHashtagPages,
+	fetchPageviews,
+	fetchWikiprojectPages,
+	trimIncompleteTail
+} from '../lib/metricsApi.js';
 import {
 	getExternalLinkUsage,
 	getSearchResults,
@@ -13,21 +19,23 @@ import { getQuarryTitles } from '../lib/quarry.js';
 import { getProjects, getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
+import { errorText } from '../lib/errors.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
 const SOURCES = [
 	'category', 'wikilinks', 'subpages', 'transclusions',
-	'quarry', 'hashtag', 'external-link', 'search'
+	'quarry', 'hashtag', 'external-link', 'search', 'wikiproject'
 ];
 // Sources whose target is a full page URL (the project comes from it)…
 const URL_SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
 // …versus sources needing an explicit project alongside the target.
 // (Hashtag is neither: its results carry their own wiki per page.)
-const PROJECT_SOURCES = [ 'quarry', 'external-link', 'search' ];
+export const PROJECT_SOURCES = [ 'quarry', 'external-link', 'search', 'wikiproject' ];
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
-const SORTS = [ 'title', 'views' ];
+// The assessment sorts only apply to the WikiProject source.
+const SORTS = [ 'title', 'views', 'assessment', 'importance' ];
 const TOGGLES = [ '0', '1' ];
 // Matches the legacy apiLimit and the server-side caps.
 const MAX_PAGES = 20000;
@@ -157,6 +165,16 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	const skipped = ref( [] );
 
 	/**
+	 * WikiProject-source page metadata, keyed by the prefixed display
+	 * title (spaces): { assessment, importance } as formatted by the
+	 * server, for the results table's quality columns. The pageviews
+	 * fan-out only carries titles, hence the side table.
+	 *
+	 * @type {import('vue').Ref<Object<string, Object>>}
+	 */
+	const pageMeta = ref( {} );
+
+	/**
 	 * How long the last completed query took, in seconds (with
 	 * sub-second precision). Shown under the results, legacy-style.
 	 *
@@ -181,7 +199,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	const query = computed( () => ( {
 		source: omitDefault( source.value, 'category' ),
 		target: target.value || undefined,
-		project: PROJECT_SOURCES.includes( source.value ) ? project.value : undefined,
+		project: PROJECT_SOURCES.includes( source.value ) ? project.value || undefined : undefined,
 		platform: omitDefault( platform.value, 'all-access' ),
 		agent: omitDefault( agent.value, 'user' ),
 		subjectpage: omitDefault( subjectpage.value, '0' ),
@@ -386,6 +404,59 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	}
 
 	/**
+	 * Resolve the WikiProject name to the pages it has assessed, with
+	 * their namespace prefixes localized via siteinfo (the replicas
+	 * store bare titles). Each page's quality class and importance is
+	 * kept aside in pageMeta for the results table.
+	 *
+	 * @param {Object} parsed Unused (no URL to parse).
+	 * @param {AbortSignal} signal
+	 * @return {Promise<?string[]>} Prefixed titles, or null to bail
+	 *   (a message has been shown).
+	 */
+	async function resolveWikiproject( parsed, signal ) {
+		const ui = useUiStore();
+		const display = target.value.trim();
+		const result = await fetchWikiprojectPages( {
+			project: project.value,
+			name: display,
+			signal
+		} );
+		if ( !result.pages.length ) {
+			ui.notify( {
+				type: 'warning',
+				text: `${ display }: ${ banana.i18n( 'api-error-no-data' ) }`
+			} );
+			return null;
+		}
+		if ( result.pages.length >= result.limit ) {
+			ui.notify( {
+				type: 'warning',
+				text: banana.i18n( 'massviews-oversized-set-unknown', display, result.limit )
+			} );
+		}
+
+		const siteinfo = await getSiteinfo( project.value );
+		if ( !siteinfo?.namespaces ) {
+			throw new Error( banana.i18n( 'api-error', 'siteinfo API' ) );
+		}
+		const meta = {};
+		const titles = result.pages.map( ( page ) => {
+			const nsName = siteinfo.namespaces[ page.namespace ]?.[ '*' ] ?? '';
+			const title = nsName ?
+				`${ nsName.replace( / /g, '_' ) }:${ page.title }` :
+				page.title;
+			meta[ title.replace( /_/g, ' ' ) ] = {
+				assessment: page.assessment,
+				importance: page.importance
+			};
+			return title;
+		} );
+		pageMeta.value = meta;
+		return titles;
+	}
+
+	/**
 	 * Resolve the target to the category's member titles: the replicas
 	 * list them without namespace prefixes, which siteinfo localizes
 	 * (with the subject-page toggle applied).
@@ -539,6 +610,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		const started = performance.now();
 		elapsedTime.value = null;
 		skipped.value = [];
+		pageMeta.value = {};
 
 		if ( !target.value ) {
 			status.value = 'initial';
@@ -568,6 +640,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			targetTitle.value = parsed.title;
 			targetUrl.value = target.value;
 		} else {
+			// The project input's X clears the model to null; there is
+			// nothing to query against. (The form disables Submit too —
+			// this covers a queued Enter and future callers.)
+			if ( !project.value ) {
+				status.value = 'initial';
+				return;
+			}
 			const raw = target.value.trim();
 			if ( source.value === 'quarry' ) {
 				targetTitle.value = `Quarry ${ raw }`;
@@ -576,6 +655,12 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				const tag = raw.replace( /^#/, '' );
 				targetTitle.value = `#${ tag }`;
 				targetUrl.value = `https://hashtags.wmcloud.org/?query=${ encodeURIComponent( tag ) }`;
+			} else if ( source.value === 'wikiproject' ) {
+				targetTitle.value = raw;
+				// The special page ships with PageAssessments, so it
+				// exists exactly where this source is offered.
+				targetUrl.value = `https://${ project.value }/wiki/Special:PageAssessments` +
+					`?project=${ encodeURIComponent( raw ) }`;
 			} else if ( source.value === 'external-link' ) {
 				targetTitle.value = raw;
 				targetUrl.value = `https://${ project.value }/w/index.php?title=Special:LinkSearch` +
@@ -611,7 +696,8 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				quarry: resolveQuarry,
 				hashtag: resolveHashtag,
 				'external-link': resolveProjectQuery,
-				search: resolveProjectQuery
+				search: resolveProjectQuery,
+				wikiproject: resolveWikiproject
 			};
 			const resolved = await resolvers[ source.value ]( parsed, signal );
 			if ( id !== loadId ) {
@@ -738,7 +824,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				text: errorText( error ),
 				onRetry: error.retryable === false ? undefined : load
 			} );
 		} finally {
@@ -825,6 +911,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		totals,
 		incompleteDate,
 		skipped,
+		pageMeta,
 		elapsedTime,
 		query,
 		setFromQuery,

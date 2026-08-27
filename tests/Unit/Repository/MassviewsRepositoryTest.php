@@ -24,6 +24,8 @@ class MassviewsRepositoryTest extends TestCase {
 	private array $subcatQueries = [];
 	/** @var string[]|null Categories the members query was given. */
 	private ?array $memberQuery = null;
+	/** @var string|null Name the wikiproject query was given. */
+	private ?string $wikiprojectQuery = null;
 
 	/**
 	 * The replica queries are faked with fixture rows; everything else
@@ -73,6 +75,10 @@ class MassviewsRepositoryTest extends TestCase {
 
 	public function recordMemberQuery( array $categories ): void {
 		$this->memberQuery = $categories;
+	}
+
+	public function recordWikiprojectQuery( string $name ): void {
+		$this->wikiprojectQuery = $name;
 	}
 
 	public function testContractShape(): void {
@@ -242,5 +248,105 @@ class MassviewsRepositoryTest extends TestCase {
 		$repo = $this->makeHashtagRepo( [] );
 		$this->expectException( ApiException::class );
 		$repo->getHashtagPages( '  # ' );
+	}
+
+	/**
+	 * The replica query is faked with fixture rows and the formatting
+	 * with passthrough stubs; validation, caching and the response
+	 * contract run for real.
+	 *
+	 * @param array $rows Raw wikiproject query rows.
+	 * @param bool $supported Whether the project runs PageAssessments.
+	 */
+	private function makeWikiprojectRepo( array $rows, bool $supported = true ): MassviewsRepository {
+		$projectsRepo = $this->createStub( ProjectsRepository::class );
+		$projectsRepo->method( 'getProjects' )
+			->willReturn( [ 'en.wikipedia' => 'enwiki' ] );
+		$projectsRepo->method( 'getProjectAssessmentsConfig' )
+			->willReturn( $supported ? [ 'class' => [], 'importance' => [] ] : null );
+		$projectsRepo->method( 'formatAssessment' )
+			->willReturnCallback( static fn ( string $project, ?string $class ) =>
+				$class ? [ 'class' => $class ] : null );
+		$projectsRepo->method( 'formatImportance' )
+			->willReturnCallback( static fn ( string $project, ?string $importance ) =>
+				$importance ? [ 'importance' => $importance ] : null );
+		$replicasClient = $this->createStub( ReplicasClient::class );
+		$httpClient = $this->createStub( HttpClientInterface::class );
+
+		return new class ( $rows, $this, $projectsRepo, $replicasClient, $httpClient ) extends MassviewsRepository {
+			public function __construct(
+				private readonly array $rows,
+				private readonly MassviewsRepositoryTest $test,
+				ProjectsRepository $projectsRepo,
+				ReplicasClient $replicasClient,
+				HttpClientInterface $httpClient,
+			) {
+				parent::__construct( $projectsRepo, $replicasClient, new ArrayAdapter(), $httpClient );
+			}
+
+			protected function queryWikiprojectPages( string $dbName, string $name ): array {
+				$this->test->recordWikiprojectQuery( $name );
+				return $this->rows;
+			}
+		};
+	}
+
+	public function testWikiprojectContractShape(): void {
+		$repo = $this->makeWikiprojectRepo( [
+			[ 'title' => 'Mauna_Loa', 'namespace' => '0', 'class' => 'FA', 'importance' => 'Top' ],
+			// An assessed-but-unrated page (both values can be empty).
+			[ 'title' => 'Lava_dome', 'namespace' => '0', 'class' => '', 'importance' => null ],
+		] );
+
+		$result = $repo->getWikiprojectPages( 'en.wikipedia.org', 'Volcanoes' );
+
+		static::assertSame( [
+			'project' => 'en.wikipedia',
+			'name' => 'Volcanoes',
+			'limit' => 20000,
+			'pages' => [
+				[
+					'title' => 'Mauna_Loa',
+					'namespace' => 0,
+					'assessment' => [ 'class' => 'FA' ],
+					'importance' => [ 'importance' => 'Top' ],
+				],
+				[
+					'title' => 'Lava_dome',
+					'namespace' => 0,
+					'assessment' => null,
+					'importance' => null,
+				],
+			],
+		], $result );
+	}
+
+	public function testWikiprojectNameNormalization(): void {
+		$repo = $this->makeWikiprojectRepo( [] );
+
+		$repo->getWikiprojectPages( 'en.wikipedia', 'Military_history' );
+
+		// pap_project_title stores spaces, not underscores.
+		static::assertSame( 'Military history', $this->wikiprojectQuery );
+	}
+
+	public function testWikiprojectUnsupportedProject(): void {
+		$repo = $this->makeWikiprojectRepo( [], false );
+		try {
+			$repo->getWikiprojectPages( 'en.wikipedia.org', 'Volcanoes' );
+			static::fail( 'Expected an ApiException.' );
+		} catch ( ApiException $e ) {
+			static::assertSame( 'unsupported_project', $e->errorCode );
+			static::assertSame(
+				[ 'massviews-wikiproject-unsupported', 'en.wikipedia' ],
+				$e->i18n
+			);
+		}
+	}
+
+	public function testWikiprojectRequiresAName(): void {
+		$repo = $this->makeWikiprojectRepo( [] );
+		$this->expectException( ApiException::class );
+		$repo->getWikiprojectPages( 'en.wikipedia.org', ' _ ' );
 	}
 }

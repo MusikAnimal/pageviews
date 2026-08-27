@@ -301,6 +301,32 @@ export async function getSearchResults( project, query, signal = undefined ) {
 	return [ ...new Set( pages.map( ( page ) => page.title ) ) ];
 }
 
+const wikiprojectsPromises = new Map();
+
+/**
+ * All WikiProject names a wiki's PageAssessments extension knows, for
+ * the Massviews WikiProject autocomplete. The list is big (~1,500 on
+ * enwiki) but static per session, so it's fetched once per wiki.
+ *
+ * @param {string} project
+ * @return {Promise<string[]>}
+ */
+export function getWikiprojects( project ) {
+	if ( !wikiprojectsPromises.has( project ) ) {
+		wikiprojectsPromises.set( project, mwApiQueryAll( project, {
+			action: 'query',
+			list: 'projects'
+		}, ( response ) => response.query?.projects || [] ).catch( () => {
+			// Autocomplete is a convenience; a failed fetch (or a
+			// wiki without the extension) just means no suggestions —
+			// and no memoized failure.
+			wikiprojectsPromises.delete( project );
+			return [];
+		} ) );
+	}
+	return wikiprojectsPromises.get( project );
+}
+
 /**
  * A GET request following API continuation until exhausted — the
  * equivalent of the legacy massApi() helper.

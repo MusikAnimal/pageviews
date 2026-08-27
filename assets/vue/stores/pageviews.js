@@ -7,6 +7,7 @@ import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { findNonMainspace } from '../lib/mainspace.js';
 import { formatYm, lastCompleteMonthUtc, parseDate, startOfMonth } from '../lib/dates.js';
 import { banana } from '../i18n.js';
+import { errorText } from '../lib/errors.js';
 import { usePreferencesStore } from './preferences.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { useSettingsStore } from './settings.js';
@@ -419,7 +420,7 @@ export const usePageviewsStore = defineStore( 'pageviews', () => {
 			status.value = 'error';
 			ui.notify( {
 				type: 'error',
-				text: error.i18n?.length ? banana.i18n( ...error.i18n ) : error.message,
+				text: errorText( error ),
 				// Offer "try again" unless the envelope says retrying is
 				// pointless (e.g. invalid params). Errors without the
 				// flag (network failures) count as retryable.

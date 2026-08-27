@@ -40,7 +40,8 @@ const params = [
 			code( 'quarry' ),
 			code( 'hashtag' ),
 			code( 'external-link' ),
-			code( 'search' )
+			code( 'search' ),
+			code( 'wikiproject' )
 		] )
 	},
 	{
@@ -86,7 +87,7 @@ const params = [
 	{
 		name: 'sort',
 		html: `${ banana.i18n( 'url-structure-sort' ) } ` + listValues( [
-			code( 'title' ), code( 'views' )
+			code( 'title' ), code( 'views' ), code( 'assessment' ), code( 'importance' )
 		] )
 	},
 	{
