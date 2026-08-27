@@ -707,6 +707,32 @@ a {
 	}
 }
 
+// The chip inputs (Pageviews pages, Siteviews sites, Mediaviews files
+// and categories) place their clear button at the inline start inside
+// the field, pinned to the first chip row — like the legacy Select2
+// clear control. Unscoped: the padding targets the Codex-rendered
+// chip container, out of reach of the components' scoped styles.
+.app-pages {
+	// Anchors the clear button inside the chip container.
+	&__controls {
+		position: relative;
+	}
+
+	// Indent every chip row past the clear button (only rendered
+	// while there are chips, hence the sibling test) so nothing
+	// slides under it.
+	&__lookup:not( :last-child ) .cdx-chip-input__chips {
+		padding-inline-start: @min-size-interactive-pointer;
+	}
+
+	// Logical properties keep it mirrored in RTL.
+	&__clear {
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		position: absolute;
+	}
+}
+
 // The list apps' main input with the Submit button inline to its
 // right (and, in Massviews, the Source select to its left), bottoms
 // aligned (a field's label sits above its input).
