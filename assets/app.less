@@ -21,7 +21,16 @@ html[ data-theme='dark' ] {
 }
 
 html {
+	// Automatic mode: native UI must follow the OS preference too —
+	// form controls, scrollbars, and the UA's buttontext color, which
+	// the sortable table headers (real <button>s) render in. The
+	// forced-theme blocks above out-rank this by specificity.
+	color-scheme: light;
 	height: 100%;
+
+	@media ( prefers-color-scheme: dark ) {
+		color-scheme: dark;
+	}
 }
 
 // Wikimedia theme styles.

@@ -62,7 +62,13 @@ defineProps( {
 // Each chip is tinted with its series color, making the chips double as
 // the chart legend (the ECharts legend is disabled).
 const paletteVars = Object.fromEntries(
-	PALETTE.map( ( rgb, i ) => [ `--pv-series-${ i }`, seriesTint( i ) ] )
+	PALETTE.flatMap( ( rgb, i ) => [
+		[ `--pv-series-${ i }`, seriesTint( i ) ],
+		// Hover feedback: the same tint, a little stronger — Codex's
+		// own chip hover background is illegible under the pinned
+		// dark text in dark mode.
+		[ `--pv-series-${ i }-hover`, seriesTint( i, 0.65 ) ]
+	] )
 );
 
 const store = useSiteviewsStore();
@@ -171,6 +177,13 @@ each( range( 10 ), {
 
 	:deep( .cdx-input-chip:nth-child( @{value} ) ) {
 		background-color: ~'var( --pv-series-@{series} )';
+
+		// Out-specifies the Codex chip hover rule (whose dark-mode
+		// background would sit illegibly under the pinned dark text)
+		// by mirroring its :not() chain.
+		&:not( .cdx-input-chip--disabled ):not( .cdx-input-chip--readonly ):hover {
+			background-color: ~'var( --pv-series-@{series}-hover )';
+		}
 		// The palette backgrounds are fixed light pastels; keep dark
 		// text in both color modes.
 		color: #202122;
@@ -180,6 +193,14 @@ each( range( 10 ), {
 			// near-white in dark mode, invisible on these fixed light
 			// pastels. Pin it to the chip text color.
 			fill: #202122;
+		}
+
+		// The quiet-button hover blend is screen in dark mode, which
+		// lightens the X into illegibility on the pastel; a plain
+		// translucent darken works on the tints in both modes.
+		.cdx-input-chip__button:enabled:hover {
+			background-color: rgba( 0, 0, 0, 0.08 );
+			mix-blend-mode: normal;
 		}
 	}
 } );
