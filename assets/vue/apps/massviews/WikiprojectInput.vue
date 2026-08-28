@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { CdxLookup } from '@wikimedia/codex';
 import { getWikiprojects } from '../../lib/mwApi.js';
 
@@ -104,16 +104,19 @@ function onInput( value ) {
 }
 
 /**
- * Enter submits the query. Codex's own keydown handler ran first on
- * the same keystroke and may have picked a highlighted suggestion —
- * sync the model now rather than waiting for the watcher flush, so
- * the submission uses it. Dropping focus closes the menu (it
- * teleports to the body, so left open — or re-opened by Codex on the
- * same keystroke — it would float over the loading overlay and the
- * results).
+ * Enter submits the query. This handler runs BEFORE Codex's own on
+ * the same keystroke (Vue calls the fallthrough listener first), so
+ * wait out the event dispatch: a highlighted suggestion then sits in
+ * the selection model (set synchronously during dispatch), while its
+ * echo into the input text lags a further watcher flush — hence the
+ * selection, when there is one, is the value to submit (typing that
+ * no longer matches it nulls it right away). Dropping focus closes
+ * the menu (it teleports to the body, so left open it would float
+ * over the loading overlay and the results).
  */
-function onEnter() {
-	target.value = inputValue.value;
+async function onEnter() {
+	await nextTick();
+	target.value = selected.value ?? inputValue.value;
 	lookup.value?.$el?.querySelector( 'input' )?.blur();
 	emit( 'submit' );
 }
