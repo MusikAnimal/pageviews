@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { DEFAULT_SITES, useSiteviewsStore } from './siteviews.js';
+import { useSiteviewsStore } from './siteviews.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 import { fetchSiteEdits, fetchSiteviews } from '../lib/metricsApi.js';
@@ -165,10 +165,11 @@ describe( 'siteviews store', () => {
 		store.setFromQuery( { sites: 'all-projects' } );
 		expect( store.isAllProjects ).toBe( true );
 
-		// Switching away from pageviews falls back to the defaults.
+		// Switching away from pageviews empties the list — there are
+		// no default sites.
 		store.source = 'unique-devices';
 		expect( store.isAllProjects ).toBe( false );
-		expect( store.sites ).toEqual( DEFAULT_SITES );
+		expect( store.sites ).toEqual( [] );
 	} );
 
 	describe( 'load', () => {

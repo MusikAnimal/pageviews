@@ -37,7 +37,9 @@
 				{{ incompleteMessage }}
 			</CdxMessage>
 		</figure>
-		<Totals />
+		<!-- Hidden until the first result: with nothing loaded the
+			sidebar is just its heading. -->
+		<Totals v-if="chartReady" />
 		<!-- Full-width line below the columns (the v-if is on the
 			section so an empty one doesn't add a flex line for
 			align-content to stretch). -->
@@ -57,12 +59,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed, watch } from 'vue';
 import {
 	CdxMessage,
 	CdxToastContainer
 } from '@wikimedia/codex';
-import { DEFAULT_SITES, useSiteviewsStore } from '../stores/siteviews.js';
+import { useSiteviewsStore } from '../stores/siteviews.js';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
@@ -100,13 +102,6 @@ function onDialogToggle( open ) {
 		router.replace( { path: '/siteviews', query: route.query } );
 	}
 }
-
-// Like the legacy tool, a bare visit compares two sizable Wikipedias.
-onMounted( () => {
-	if ( !store.sites.length ) {
-		store.sites = [ ...DEFAULT_SITES ];
-	}
-} );
 
 function retry( message ) {
 	ui.dismiss( message.id );

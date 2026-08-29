@@ -38,7 +38,9 @@
 			</CdxMessage>
 			<SkippedMessage :pages="skippedPages" />
 		</figure>
-		<Totals />
+		<!-- Hidden until the first result: with nothing loaded the
+			sidebar is just its heading. -->
+		<Totals v-if="chartReady" />
 		<!-- Full-width line below the columns (the v-if is on the
 			section so an empty one doesn't add a flex line for
 			align-content to stretch). -->
@@ -58,7 +60,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed, watch } from 'vue';
 import {
 	CdxMessage,
 	CdxToastContainer
@@ -68,7 +70,6 @@ import { useSettingsStore } from '../stores/settings.js';
 import { useUiStore } from '../stores/ui.js';
 import { useQuerySync } from '../composables/useQuerySync.js';
 import { useIncompleteDataMessage } from '../composables/useIncompleteDataMessage.js';
-import { getDefaultPages } from '../lib/defaultPages.js';
 import { useRoute, useRouter } from 'vue-router';
 import PageviewsSettings from '../apps/pageviews/Settings.vue';
 import FaqDialog from '../apps/pageviews/FaqDialog.vue';
@@ -97,21 +98,6 @@ const skippedPages = computed( () => store.skipped.map( ( title ) => ( {
 
 // The /faq and /url_structure routes open dialogs over the app.
 const activeDialog = computed( () => route.meta.dialog ?? null );
-
-// A bare visit to / or /pageviews shows Cat|Dog (localized via
-// Wikidata) rather than an empty app, like the legacy tool. Dialog
-// routes are excluded.
-onMounted( applyDefaultPages );
-async function applyDefaultPages() {
-	if ( store.pages.length || activeDialog.value ) {
-		return;
-	}
-	const defaults = await getDefaultPages( store.project );
-	// The user may have picked pages while the lookups ran.
-	if ( !store.pages.length && defaults.length ) {
-		store.pages = defaults;
-	}
-}
 
 function onDialogToggle( open ) {
 	if ( !open ) {

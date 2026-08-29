@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { CdxButton, CdxField, CdxIcon, CdxMultiselectLookup } from '@wikimedia/codex';
 import { cdxIconClear } from '@wikimedia/codex-icons';
@@ -65,6 +65,15 @@ const chips = ref( files.value.map( ( name ) => ( { value: displayName( name ) }
 const selected = ref( files.value.map( displayName ) );
 const menuItems = ref( [] );
 const lookup = ref( null );
+
+// A bare app starts here: focus the empty input so typing can begin
+// right away (URL-provided entries leave focus alone — and Codex
+// exposes no focus API, hence the DOM reach-in).
+onMounted( () => {
+	if ( !chips.value.length ) {
+		lookup.value?.$el?.querySelector( 'input' )?.focus();
+	}
+} );
 
 let debounceTimer = null;
 // Aborts the previous autocomplete request when a new one fires.

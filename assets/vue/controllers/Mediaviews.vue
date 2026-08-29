@@ -38,7 +38,9 @@
 				{{ incompleteMessage }}
 			</CdxMessage>
 		</figure>
-		<Totals />
+		<!-- Hidden until the first result: with nothing loaded the
+			sidebar is just its heading. -->
+		<Totals v-if="chartReady" />
 		<!-- Full-width line below the columns (the v-if is on the
 			section so an empty one doesn't add a flex line for
 			align-content to stretch). -->
@@ -96,20 +98,6 @@ function onDialogToggle( open ) {
 		router.replace( { path: '/mediaviews', query: route.query } );
 	}
 }
-
-// A bare visit — or switching sources with nothing picked — shows a
-// couple of well-known examples rather than an empty app (the
-// default dates come from ensureDefaultDates).
-watch( () => store.source, ( source ) => {
-	if ( source === 'files' && !store.files.length ) {
-		store.files = [ 'Example.jpg', 'Example.ogg' ];
-	} else if ( source === 'categories' && !store.categories.length ) {
-		store.categories = [
-			'Content_produced_by_UNESCO',
-			'Content_produced_by_Food_and_Agriculture_Organization_of_the_United_Nations'
-		];
-	}
-}, { immediate: true } );
 
 function retry( message ) {
 	ui.dismiss( message.id );

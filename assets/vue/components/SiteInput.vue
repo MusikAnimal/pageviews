@@ -81,6 +81,15 @@ const chips = ref( visibleSites().map( ( site ) => ( { value: site } ) ) );
 const selected = ref( visibleSites() );
 const menuItems = ref( [] );
 const lookup = ref( null );
+
+// A bare app starts here: focus the empty input so typing can begin
+// right away (URL-provided entries leave focus alone — and Codex
+// exposes no focus API, hence the DOM reach-in).
+onMounted( () => {
+	if ( !chips.value.length ) {
+		lookup.value?.$el?.querySelector( 'input' )?.focus();
+	}
+} );
 // All valid site domains, filtered locally (no API round-trips).
 const domains = ref( [] );
 

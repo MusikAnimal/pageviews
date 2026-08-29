@@ -68,6 +68,15 @@ const chips = ref( categories.value.map( ( name ) => ( { value: displayName( nam
 const selected = ref( categories.value.map( displayName ) );
 const menuItems = ref( [] );
 const lookup = ref( null );
+
+// A bare app starts here: focus the empty input so typing can begin
+// right away (URL-provided entries leave focus alone — and Codex
+// exposes no focus API, hence the DOM reach-in).
+onMounted( () => {
+	if ( !chips.value.length ) {
+		lookup.value?.$el?.querySelector( 'input' )?.focus();
+	}
+} );
 /** @type {string[]} Display-form allow-list entries. */
 let allowList = [];
 

@@ -34,7 +34,6 @@ const PLATFORM_EQUIVALENTS = {
 	'mobile-site': 'mobile-web'
 };
 
-export const DEFAULT_SITES = [ 'fr.wikipedia.org', 'de.wikipedia.org' ];
 export const MAX_SITES = 10;
 
 export const useSiteviewsStore = defineStore( 'siteviews', () => {
@@ -174,7 +173,8 @@ export const useSiteviewsStore = defineStore( 'siteviews', () => {
 			platform.value = PLATFORM_EQUIVALENTS[ platform.value ] ?? PLATFORMS[ newSource ][ 0 ];
 		}
 		if ( newSource !== 'pageviews' && sites.value[ 0 ] === 'all-projects' ) {
-			sites.value = [ ...DEFAULT_SITES ];
+			// No default sites: the user picks what to compare.
+			sites.value = [];
 		}
 	}, { flush: 'sync' } );
 

@@ -105,6 +105,10 @@ describe( 'PageInput', () => {
 	} );
 
 	it( 'clears without stealing focus when the project is cleared', async () => {
+		// Pages set before mount (the URL-provided case), so the
+		// empty-input mount focus does not fire.
+		const store = usePageviewsStore();
+		store.setFromQuery( { pages: 'Cat' } );
 		const wrapper = mount( PageInput, {
 			attachTo: document.body,
 			global: {
@@ -113,9 +117,6 @@ describe( 'PageInput', () => {
 				}
 			}
 		} );
-		const store = usePageviewsStore();
-
-		store.setFromQuery( { pages: 'Cat' } );
 		await nextTick();
 		document.body.focus();
 
