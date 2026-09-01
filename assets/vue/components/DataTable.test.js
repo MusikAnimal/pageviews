@@ -40,10 +40,11 @@ describe( 'DataTable pagination', () => {
 		setActivePinia( createPinia() );
 	} );
 
-	it( 'renders no pager when the rows fit one window', () => {
+	it( 'renders no pager or filter when the rows fit one window', () => {
 		const wrapper = mountTable( { rows: rows( 3 ) } );
 
 		expect( wrapper.find( '.app-stats-pager' ).exists() ).toBe( false );
+		expect( wrapper.find( '.app-stats-toolbar__search' ).exists() ).toBe( false );
 		expect( wrapper.findAll( 'tbody tr' ) ).toHaveLength( 3 );
 	} );
 
@@ -57,8 +58,9 @@ describe( 'DataTable pagination', () => {
 		expect( wrapper.find( '.app-stats-pager__status' ).text() )
 			.toContain( '1' );
 
+		// A pager renders above and below the table; drive the bottom one.
 		const [ first, previous, next, last ] =
-			wrapper.findAll( '.app-stats-pager button' );
+			wrapper.findAll( '.app-stats-footer .app-stats-pager button' );
 		expect( first.attributes( 'disabled' ) ).toBeDefined();
 		expect( previous.attributes( 'disabled' ) ).toBeDefined();
 
@@ -106,7 +108,7 @@ describe( 'DataTable pagination', () => {
 		expect( wrapper.findAll( 'tbody tr' ) ).toHaveLength( 3 );
 		expect( wrapper.find( 'tbody td' ).text() ).toBe( '1: Page 000' );
 
-		const [ , , next ] = wrapper.findAll( '.app-stats-pager button' );
+		const [ , , next ] = wrapper.findAll( '.app-stats-footer .app-stats-pager button' );
 		await next.trigger( 'click' );
 
 		// Global rank numbers continue across windows.
@@ -115,7 +117,7 @@ describe( 'DataTable pagination', () => {
 
 	it( 'returns to the first window when the sort changes', async () => {
 		const wrapper = mountTable();
-		const [ , , next ] = wrapper.findAll( '.app-stats-pager button' );
+		const [ , , next ] = wrapper.findAll( '.app-stats-footer .app-stats-pager button' );
 		await next.trigger( 'click' );
 		expect( wrapper.find( 'tbody td' ).text() ).toBe( 'Page 003' );
 
@@ -126,9 +128,47 @@ describe( 'DataTable pagination', () => {
 		expect( wrapper.find( 'tbody td' ).text() ).toBe( 'Page 000' );
 	} );
 
+	it( 'renders a pager above the table too', () => {
+		const wrapper = mountTable();
+
+		expect( wrapper.find( '.app-stats-toolbar .app-stats-pager' ).exists() )
+			.toBe( true );
+		expect( wrapper.find( '.app-stats-footer .app-stats-pager' ).exists() )
+			.toBe( true );
+	} );
+
+	it( 'filters the rows across all windows', async () => {
+		const wrapper = mountTable();
+
+		const search = wrapper.find( '.app-stats-toolbar__search input' );
+		await search.setValue( 'page 005' );
+
+		// One match: the pager disappears (the filtered set fits one
+		// window) but the filter stays.
+		expect( wrapper.findAll( 'tbody tr' ) ).toHaveLength( 1 );
+		expect( wrapper.find( 'tbody td' ).text() ).toBe( 'Page 005' );
+		expect( wrapper.find( '.app-stats-pager' ).exists() ).toBe( false );
+		expect( wrapper.find( '.app-stats-toolbar__search' ).exists() ).toBe( true );
+
+		await search.setValue( '' );
+		expect( wrapper.findAll( 'tbody tr' ) ).toHaveLength( 3 );
+		expect( wrapper.find( '.app-stats-pager' ).exists() ).toBe( true );
+	} );
+
+	it( 'returns to the first window when a filter is applied', async () => {
+		const wrapper = mountTable();
+		const [ , , next ] = wrapper.findAll( '.app-stats-footer .app-stats-pager button' );
+		await next.trigger( 'click' );
+		expect( wrapper.find( 'tbody td' ).text() ).toBe( 'Page 003' );
+
+		await wrapper.find( '.app-stats-toolbar__search input' ).setValue( 'page' );
+
+		expect( wrapper.find( 'tbody td' ).text() ).toBe( 'Page 000' );
+	} );
+
 	it( 'returns to the first window when the rows are replaced', async () => {
 		const wrapper = mountTable();
-		const [ , , next ] = wrapper.findAll( '.app-stats-pager button' );
+		const [ , , next ] = wrapper.findAll( '.app-stats-footer .app-stats-pager button' );
 		await next.trigger( 'click' );
 
 		await wrapper.setProps( { rows: rows( 5 ) } );

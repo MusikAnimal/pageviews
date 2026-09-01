@@ -1,5 +1,26 @@
 <template>
 	<div ref="root">
+		<!-- The framing rows: the top one holds the filter, the app's
+			toolbar (export buttons) and a pager; the bottom one holds
+			the app's inline messages and the pager again. -->
+		<div v-if="searchable || $slots.toolbar" class="app-stats-toolbar">
+			<CdxSearchInput
+				v-if="searchable"
+				v-model="searchQuery"
+				class="app-stats-toolbar__search"
+				:clearable="true"
+				:aria-label="$i18n( 'search' )"
+				:placeholder="$i18n( 'search' )"
+			/>
+			<slot name="toolbar" />
+			<TablePager
+				v-if="pageCount > 1"
+				:page="currentPage"
+				:page-count="pageCount"
+				:status="pagerStatus"
+				@go="goTo"
+			/>
+		</div>
 		<CdxTable
 			class="app-stats-table"
 			:caption="caption"
@@ -14,7 +35,7 @@
 				sorted rows plus its rank offset, for custom tbody
 				rendering (global rank numbers, pinned totals). -->
 			<template
-				v-for="name in Object.keys( $slots )"
+				v-for="name in tableSlots"
 				#[name]="slotProps"
 			>
 				<slot
@@ -23,65 +44,32 @@
 				/>
 			</template>
 		</CdxTable>
-		<!-- Huge result sets (Massviews reaches 20K rows) stall the DOM,
-			so only one window of rows renders at a time. Pagination is
-			presentational: the full set stays in memory for sorting and
-			exports, and the state is runtime-only (resets per query). -->
-		<div v-if="pageCount > 1" class="app-stats-pager">
-			<span class="app-stats-pager__status">{{ pagerStatus }}</span>
-			<CdxButton
-				weight="quiet"
-				:disabled="currentPage === 0"
-				:aria-label="$i18n( 'pager-first' )"
-				@click="goTo( 0 )"
-			>
-				<CdxIcon :icon="cdxIconMoveFirst" />
-			</CdxButton>
-			<CdxButton
-				weight="quiet"
-				:disabled="currentPage === 0"
-				:aria-label="$i18n( 'pager-previous' )"
-				@click="goTo( currentPage - 1 )"
-			>
-				<CdxIcon :icon="cdxIconPrevious" />
-			</CdxButton>
-			<CdxButton
-				weight="quiet"
-				:disabled="currentPage === pageCount - 1"
-				:aria-label="$i18n( 'pager-next' )"
-				@click="goTo( currentPage + 1 )"
-			>
-				<CdxIcon :icon="cdxIconNext" />
-			</CdxButton>
-			<CdxButton
-				weight="quiet"
-				:disabled="currentPage === pageCount - 1"
-				:aria-label="$i18n( 'pager-last' )"
-				@click="goTo( pageCount - 1 )"
-			>
-				<CdxIcon :icon="cdxIconMoveLast" />
-			</CdxButton>
+		<div v-if="pageCount > 1 || $slots.footer" class="app-stats-footer">
+			<slot name="footer" />
+			<TablePager
+				v-if="pageCount > 1"
+				:page="currentPage"
+				:page-count="pageCount"
+				:status="pagerStatus"
+				@go="goTo"
+			/>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
-import { CdxButton, CdxIcon, CdxTable } from '@wikimedia/codex';
-import {
-	cdxIconMoveFirst,
-	cdxIconMoveLast,
-	cdxIconNext,
-	cdxIconPrevious
-} from '@wikimedia/codex-icons';
+import { computed, ref, useSlots, watch } from 'vue';
+import { CdxSearchInput, CdxTable } from '@wikimedia/codex';
 import { usePreferencesStore } from '../stores/preferences.js';
 import { formatNumber } from '../lib/format.js';
 import { banana } from '../i18n.js';
+import TablePager from './TablePager.vue';
 
 /**
  * The sortable stats table the chart apps share: a CdxTable wrapper
  * owning the sort state and comparator, so each app only declares its
- * columns, rows and cell templates.
+ * columns, rows and cell templates. Large sets (the list apps) gain a
+ * filter and a bounded window with pagers.
  */
 const props = defineProps( {
 	/**
@@ -139,6 +127,12 @@ const props = defineProps( {
 const emit = defineEmits( [ 'update:sort' ] );
 
 const root = ref( null );
+const slots = useSlots();
+
+// The framing-row slots are ours; everything else forwards into
+// CdxTable (cell templates, the custom tbody).
+const tableSlots = computed( () => Object.keys( slots )
+	.filter( ( name ) => ![ 'toolbar', 'footer' ].includes( name ) ) );
 
 const internalSort = ref( { [ props.defaultSort ]: 'desc' } );
 
@@ -157,17 +151,37 @@ const cdxColumns = computed( () => props.columns.map( ( column ) => ( {
 	...( column.numeric ? { textAlign: 'number' } : {} )
 } ) ) );
 
+/**
+ * The filter appears with the pagination threshold — a set that fits
+ * one window is scannable (and Ctrl+F-able) as is. Judged on the
+ * unfiltered rows so it doesn't vanish while narrowing.
+ */
+const searchQuery = ref( '' );
+const searchable = computed( () => props.rows.length > props.pageSize );
+const filteredRows = computed( () => {
+	const needle = searchQuery.value.trim().toLowerCase();
+	if ( !searchable.value || !needle ) {
+		return props.rows;
+	}
+	// Case-insensitive substring match over the string-valued cells
+	// (titles, languages, user names — never the counts).
+	return props.rows.filter( ( row ) => props.columns.some( ( column ) => {
+		const value = row[ column.key ];
+		return typeof value === 'string' && value.toLowerCase().includes( needle );
+	} ) );
+} );
+
 // CdxTable only renders the sort UI; ordering the rows is ours.
 const sortedRows = computed( () => {
 	const [ key ] = Object.keys( sortModel.value );
 	const order = sortModel.value[ key ];
 	if ( !key || order === 'none' ) {
-		return props.rows;
+		return filteredRows.value;
 	}
 	const column = props.columns.find( ( entry ) => entry.key === key );
 	const accessor = column?.sortValue ?? ( ( row ) => row[ key ] );
 	const direction = order === 'desc' ? -1 : 1;
-	return [ ...props.rows ].sort( ( a, b ) => {
+	return [ ...filteredRows.value ].sort( ( a, b ) => {
 		const [ x, y ] = [ accessor( a ), accessor( b ) ];
 		if ( typeof x === 'string' || typeof y === 'string' ) {
 			return direction * String( x ?? '' ).localeCompare( String( y ?? '' ) );
@@ -189,8 +203,9 @@ const pagedRows = computed( () => sortedRows.value.slice(
 	rankOffset.value, rankOffset.value + props.pageSize
 ) );
 
-// A new query or a re-sort starts back at the first window.
-watch( [ () => props.rows, sortModel ], () => {
+// A new query, a re-sort or a new filter starts back at the first
+// window.
+watch( [ () => props.rows, sortModel, searchQuery ], () => {
 	page.value = 0;
 } );
 
@@ -208,13 +223,13 @@ const pagerStatus = computed( () => {
 } );
 
 /**
- * Show another window, with the table's top edge back in view — the
+ * Show another window, with the top of the list back in view — the
  * user was likely at the bottom when they clicked.
  *
  * @param {number} target
  */
 function goTo( target ) {
 	page.value = target;
-	root.value?.scrollIntoView?.( { block: 'nearest' } );
+	root.value?.scrollIntoView?.( { block: 'start' } );
 }
 </script>

@@ -84,19 +84,27 @@
 				:aria-label="$i18n( 'langviews-title' )"
 			/>
 			<template v-else>
-				<div class="app-chart__toolbar">
-					<ExportMenu
-						:filename="exportFilename"
-						:get-csv-rows="listCsvRows"
-						:get-json="() => store.langData"
-					/>
-				</div>
-				<ResultsTable />
+				<ResultsTable>
+					<template #toolbar>
+						<ExportMenu
+							:filename="exportFilename"
+							:get-csv-rows="listCsvRows"
+							:get-json="() => store.langData"
+						/>
+					</template>
+					<!-- Inline with the bottom pager, rather than in the
+						page footer as in the chart view. -->
+					<template v-if="incompleteMessage" #footer>
+						<CdxMessage type="warning" :inline="true">
+							{{ incompleteMessage }}
+						</CdxMessage>
+					</template>
+				</ResultsTable>
 			</template>
 			<SkippedMessage :pages="skippedPages" />
 			<div class="app-output-footer">
 				<CdxMessage
-					v-if="incompleteMessage"
+					v-if="incompleteMessage && store.view === 'chart'"
 					type="warning"
 					:inline="true"
 				>

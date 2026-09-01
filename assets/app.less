@@ -707,20 +707,49 @@ a {
 	}
 }
 
-// The stats tables' pager (components/DataTable.vue): one bounded
-// window of rows renders at a time, so huge result sets don't stall
-// the DOM.
+// The stats tables' window pager (components/TablePager.vue): one
+// bounded window of rows renders at a time, so huge result sets don't
+// stall the DOM. Declared before the framing rows for specificity
+// order (they nest it to pin it at the inline end).
 .app-stats-pager {
 	align-items: center;
 	display: flex;
 	gap: @spacing-25;
-	justify-content: flex-end;
-	margin-top: @spacing-50;
 
 	&__status {
 		color: @color-subtle;
 		margin-inline-end: @spacing-50;
 	}
+}
+
+// The stats tables' framing rows (components/DataTable.vue): the top
+// one holds the filter, the app's export buttons and a pager; the
+// bottom one holds inline messages and the pager again.
+.app-stats-toolbar,
+.app-stats-footer {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: @spacing-50;
+
+	// The pager sits at the inline end of either row.
+	.app-stats-pager {
+		margin-inline-start: auto;
+	}
+}
+
+.app-stats-toolbar {
+	margin: @spacing-50 0 0;
+
+	&__search {
+		flex: 1;
+		// Keeps the filter usable when the row wraps on small screens.
+		min-width: @size-1600;
+	}
+}
+
+.app-stats-footer {
+	margin-top: @spacing-50;
 }
 
 // The chip inputs (Pageviews pages, Siteviews sites, Mediaviews files

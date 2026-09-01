@@ -10,6 +10,11 @@
 	>
 		<!-- Custom body: CdxTable's generated one can't pin the totals
 			row at the top or number the rows by display position. -->
+		<!-- The controllers place their export menu and inline
+			messages in the framing rows around the table. -->
+		<template v-for="name in Object.keys( $slots )" #[name]>
+			<slot :name="name" />
+		</template>
 		<template #tbody="slotProps">
 			<tbody>
 				<tr v-if="store.totals" class="app-stats__totals">
