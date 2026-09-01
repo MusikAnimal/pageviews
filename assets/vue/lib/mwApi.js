@@ -315,7 +315,8 @@ export function getWikiprojects( project ) {
 	if ( !wikiprojectsPromises.has( project ) ) {
 		wikiprojectsPromises.set( project, mwApiQueryAll( project, {
 			action: 'query',
-			list: 'projects'
+			list: 'projects',
+			pjsubprojects: 1
 		}, ( response ) => response.query?.projects || [] ).catch( () => {
 			// Autocomplete is a convenience; a failed fetch (or a
 			// wiki without the extension) just means no suggestions —
