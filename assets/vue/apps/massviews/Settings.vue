@@ -25,13 +25,29 @@
 			to the multi-wiki sources (hashtag, interwiki links) since
 			the core namespaces share IDs across wikis. -->
 		<NamespaceInput v-model="namespace" :project="project" />
+		<CdxField class="app-settings__redirects">
+			<!-- The help button is a sibling of the checkbox, not inside
+				its label, so clicking it can't toggle the checkbox (and
+				its 32px hit area doesn't inflate the label line). -->
+			<div class="app-settings__redirects-row">
+				<CdxCheckbox v-model="redirects">
+					{{ $i18n( 'include-redirects' ) }}
+				</CdxCheckbox>
+				<FaqHelpButton
+					section="redirects"
+					:aria-label="$i18n( 'faq-redirects-title' )"
+				/>
+			</div>
+		</CdxField>
 	</form>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
+import { CdxCheckbox, CdxField } from '@wikimedia/codex';
 import DateRangeInput from '../../components/DateRangeInput.vue';
+import FaqHelpButton from '../../components/FaqHelpButton.vue';
 import ProjectInput from '../../components/ProjectInput.vue';
 import PlatformInput from '../../components/PlatformInput.vue';
 import AgentInput from '../../components/AgentInput.vue';
@@ -41,7 +57,7 @@ import { getAssessmentWikis } from '../../projects.js';
 import { banana } from '../../i18n.js';
 
 const store = useMassviewsStore();
-const { source, project, platform, agent, namespace } = storeToRefs( store );
+const { source, project, platform, agent, namespace, redirects } = storeToRefs( store );
 
 // The wikis running PageAssessments — the only projects the
 // WikiProject source can query, so the project input restricts its
@@ -99,3 +115,20 @@ function wikiprojectInvalidHtml( domain ) {
 	);
 }
 </script>
+
+<style scoped lang="less">
+@import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
+
+.app-settings__redirects-row {
+	align-items: center;
+	display: flex;
+	gap: @spacing-25;
+
+	// Mirrors Codex's own margin selector so this outranks it on
+	// specificity, not on stylesheet load order (which differs
+	// between the dev server and the build).
+	.cdx-checkbox:not( .cdx-checkbox--inline ) {
+		margin-bottom: 0;
+	}
+}
+</style>

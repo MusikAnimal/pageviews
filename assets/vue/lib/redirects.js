@@ -1,4 +1,5 @@
 import { mwApiQueryAll } from './mwApi.js';
+import { promisePool } from './queue.js';
 
 /**
  * Redirect handling for the "include redirects" option: fetch the
@@ -7,32 +8,42 @@ import { mwApiQueryAll } from './mwApi.js';
  * summed into their targets.
  */
 
+// The Action API accepts at most this many titles per request; the
+// big Massviews sets go out as concurrent chunks.
+const CHUNK_SIZE = 50;
+
 /**
  * Fetch all redirects to the given pages.
  *
  * @param {string} project
- * @param {string[]} titles Target page titles.
+ * @param {string[]} titles Target page titles, in display form
+ *   (spaces) — the API echoes normalized titles, which the result map
+ *   is keyed by.
  * @param {AbortSignal} [signal]
  * @return {Promise<Object>} Map of target title => array of
  *   { title, fragment } redirect entries.
  */
 export async function getRedirects( project, titles, signal = undefined ) {
-	const pages = await mwApiQueryAll(
+	const chunks = [];
+	for ( let i = 0; i < titles.length; i += CHUNK_SIZE ) {
+		chunks.push( titles.slice( i, i + CHUNK_SIZE ) );
+	}
+	const responses = await promisePool( chunks, ( chunk ) => mwApiQueryAll(
 		project,
 		{
 			action: 'query',
 			prop: 'redirects',
 			rdprop: 'title|fragment',
 			rdlimit: 'max',
-			titles
+			titles: chunk
 		},
 		( response ) => response.query?.pages || [],
 		20000,
 		signal
-	);
+	) );
 
 	const map = Object.fromEntries( titles.map( ( title ) => [ title, [] ] ) );
-	for ( const page of pages ) {
+	for ( const page of responses.flat() ) {
 		if ( page.redirects && map[ page.title ] ) {
 			map[ page.title ].push( ...page.redirects.map( ( { title, fragment } ) => ( {
 				title,

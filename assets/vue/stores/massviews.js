@@ -15,11 +15,13 @@ import {
 	getTranscludedIn,
 	getWikilinks
 } from '../lib/mwApi.js';
+import { consolidateSeries, getRedirects } from '../lib/redirects.js';
 import { getQuarryTitles } from '../lib/quarry.js';
 import { getProjects, getSiteinfo } from '../projects.js';
 import { createLoadAborter } from '../lib/loadAborter.js';
 import { banana } from '../i18n.js';
 import { errorText } from '../lib/errors.js';
+import { usePreferencesStore } from './preferences.js';
 import { useSettingsStore } from './settings.js';
 import { useUiStore } from './ui.js';
 
@@ -82,6 +84,13 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 	 * @type {import('vue').Ref<'0'|'1'>}
 	 */
 	const subcategories = ref( '0' );
+	/**
+	 * Whether pageviews of redirects to the resolved pages should be
+	 * folded into them (the Pageviews option; off by default).
+	 *
+	 * @type {import('vue').Ref<boolean>}
+	 */
+	const redirects = ref( false );
 	/**
 	 * Table sort state, kept in the URL like the legacy tool.
 	 *
@@ -204,6 +213,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		agent: omitDefault( agent.value, 'user' ),
 		subjectpage: omitDefault( subjectpage.value, '0' ),
 		subcategories: omitDefault( subcategories.value, '0' ),
+		redirects: redirects.value ? '1' : undefined,
 		namespace: omitDefault( namespace.value, 'all' ),
 		sort: omitDefault( sort.value, 'views' ),
 		direction: omitDefault( direction.value, '1' ),
@@ -241,6 +251,11 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		if ( TOGGLES.includes( params.subcategories ) ) {
 			subcategories.value = params.subcategories;
 		}
+		// When the URL doesn't say, the always-redirects preference
+		// provides the default (as in Pageviews).
+		redirects.value = params.redirects !== undefined ?
+			params.redirects === '1' :
+			usePreferencesStore().alwaysRedirects;
 		if ( params.namespace !== undefined && /^(all|\d+)$/.test( params.namespace ) ) {
 			namespace.value = params.namespace;
 		}
@@ -746,18 +761,36 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 			const rows = [];
 			const skippedPages = [];
 			let done = 0;
-			for ( const [ pagesProject, titles ] of groups ) {
+			for ( const [ pagesProject, groupTitles ] of groups ) {
 				const doneBefore = done;
+				// Redirect titles come back from the Action API in
+				// display form, so the targets normalize to match
+				// (the metrics endpoint accepts either form).
+				const targets = redirects.value ?
+					groupTitles.map( ( title ) => title.replace( /_/g, ' ' ) ) :
+					groupTitles;
+				let redirectMap = null;
+				let queryTitles = targets;
+				if ( redirects.value ) {
+					redirectMap = await getRedirects( pagesProject, targets, signal );
+					if ( id !== loadId ) {
+						return;
+					}
+					queryTitles = [ ...new Set( [
+						...targets,
+						...Object.values( redirectMap ).flat().map( ( r ) => r.title )
+					] ) ];
+				}
 				const result = await fetchPageviews( {
 					project: pagesProject,
-					pages: titles,
+					pages: queryTitles,
 					start: settings.start,
 					end: settings.end,
 					platform: platform.value,
 					agent: agent.value,
 					granularity: settings.dateType,
 					onProgress: ( chunksDone, chunksTotal ) => ui.setProgress(
-						doneBefore + Math.round( ( titles.length * chunksDone ) / chunksTotal ),
+						doneBefore + Math.round( ( targets.length * chunksDone ) / chunksTotal ),
 						pages.length
 					),
 					signal
@@ -768,28 +801,49 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 				axis ??= result.dates;
 				combined ??= axis.map( () => 0 );
 				const skippedSet = new Set( result.skipped );
-				skippedPages.push( ...titles
+				skippedPages.push( ...targets
 					.filter( ( title ) => skippedSet.has( title ) )
 					.map( ( title ) => ( {
 						project: pagesProject,
 						title: title.replace( /_/g, ' ' )
 					} ) ) );
-				const keptTitles = titles.filter( ( title ) => !skippedSet.has( title ) );
-				// Chunks preserve request order, so rows align by index
-				// (with the skipped titles dropped from both sides).
-				for ( const [ i, series ] of result.pages.entries() ) {
-					for ( const [ j, count ] of series.counts.entries() ) {
-						combined[ j ] += count;
+				const keptTargets = targets.filter( ( title ) => !skippedSet.has( title ) );
+				if ( redirectMap ) {
+					// Fold each redirect's series into its target —
+					// counts are moved, not duplicated, so the grand
+					// totals are unchanged.
+					for ( const entry of consolidateSeries(
+						keptTargets, redirectMap, result.pages
+					) ) {
+						for ( const [ j, count ] of entry.counts.entries() ) {
+							combined[ j ] += count;
+						}
+						rows.push( {
+							title: entry.title.replace( /_/g, ' ' ),
+							project: pagesProject,
+							counts: entry.counts,
+							sum: entry.total,
+							average: entry.average
+						} );
 					}
-					rows.push( {
-						title: keptTitles[ i ].replace( /_/g, ' ' ),
-						project: pagesProject,
-						counts: series.counts,
-						sum: series.total,
-						average: series.average
-					} );
+				} else {
+					// Chunks preserve request order, so rows align by
+					// index (with the skipped titles dropped from both
+					// sides).
+					for ( const [ i, series ] of result.pages.entries() ) {
+						for ( const [ j, count ] of series.counts.entries() ) {
+							combined[ j ] += count;
+						}
+						rows.push( {
+							title: keptTargets[ i ].replace( /_/g, ' ' ),
+							project: pagesProject,
+							counts: series.counts,
+							sum: series.total,
+							average: series.average
+						} );
+					}
 				}
-				done += titles.length;
+				done += targets.length;
 			}
 			skipped.value = skippedPages;
 			pagesData.value = rows;
@@ -898,6 +952,7 @@ export const useMassviewsStore = defineStore( 'massviews', () => {
 		agent,
 		subjectpage,
 		subcategories,
+		redirects,
 		namespace,
 		sort,
 		direction,

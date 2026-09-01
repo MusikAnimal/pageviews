@@ -33,6 +33,23 @@ describe( 'getRedirects', () => {
 			Dog: []
 		} );
 	} );
+
+	it( 'chunks large title sets at the Action API limit', async () => {
+		const impl = vi.fn( () => Promise.resolve( {
+			ok: true,
+			json: () => Promise.resolve( { query: { pages: [] } } )
+		} ) );
+		vi.stubGlobal( 'fetch', impl );
+		const titles = Array.from( { length: 120 }, ( _, i ) => `Page ${ i }` );
+
+		const map = await getRedirects( 'en.wikipedia.org', titles );
+
+		expect( impl ).toHaveBeenCalledTimes( 3 );
+		expect( Object.keys( map ) ).toHaveLength( 120 );
+		// Each request carries at most 50 titles.
+		const url = new URL( String( impl.mock.calls[ 0 ][ 0 ] ) );
+		expect( url.searchParams.get( 'titles' ).split( '|' ) ).toHaveLength( 50 );
+	} );
 } );
 
 describe( 'consolidateSeries', () => {

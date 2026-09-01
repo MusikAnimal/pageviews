@@ -65,6 +65,10 @@ const params = [
 		html: `${ banana.i18n( 'include-subcategories' ) } ` +
 			listValues( [ `${ code( '0' ) } ${ defaultMsg() }`, code( '1' ) ] )
 	},
+	{
+		name: 'redirects',
+		html: banana.i18n( 'url-structure-redirects', code( '1' ), code( '0' ) )
+	},
 	...dateRangeParams(),
 	{
 		name: 'platform',

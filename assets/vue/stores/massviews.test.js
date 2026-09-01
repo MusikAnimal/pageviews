@@ -15,6 +15,7 @@ import {
 	getTranscludedIn,
 	getWikilinks
 } from '../lib/mwApi.js';
+import { getRedirects } from '../lib/redirects.js';
 import { getQuarryTitles } from '../lib/quarry.js';
 import { getProjects, getSiteinfo } from '../projects.js';
 
@@ -41,6 +42,11 @@ vi.mock( '../lib/mwApi.js', async ( importOriginal ) => ( {
 vi.mock( '../lib/quarry.js', async ( importOriginal ) => ( {
 	...await importOriginal(),
 	getQuarryTitles: vi.fn()
+} ) );
+// consolidateSeries stays real: the folding is part of what's tested.
+vi.mock( '../lib/redirects.js', async ( importOriginal ) => ( {
+	...await importOriginal(),
+	getRedirects: vi.fn()
 } ) );
 
 const SITEINFO = {
@@ -605,6 +611,57 @@ describe( 'massviews store', () => {
 		expect( store.status ).toBe( 'initial' );
 		expect( ui.messages[ 0 ].type ).toBe( 'warning' );
 		expect( fetchPageviews ).not.toHaveBeenCalled();
+	} );
+
+	it( 'folds redirect pageviews into their targets when enabled', async () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( {
+			source: 'category',
+			target: 'https://en.wikipedia.org/wiki/Category:Hip-hop_groups',
+			redirects: '1'
+		} );
+		mockMembers( [ { title: 'Beastie_Boys', namespace: 0 } ] );
+		// Targets go out in display form, matching the Action API.
+		getRedirects.mockResolvedValue( {
+			'Beastie Boys': [ { title: 'The Beastie Boys', fragment: null } ]
+		} );
+		fetchPageviews.mockResolvedValue( {
+			dates: [ '2026-07-01', '2026-07-02' ],
+			pages: [
+				{ title: 'Beastie Boys', counts: [ 10, 20 ], total: 30, average: 15 },
+				{ title: 'The Beastie Boys', counts: [ 1, 2 ], total: 3, average: 1.5 }
+			],
+			totals: {}
+		} );
+
+		await store.load();
+
+		expect( getRedirects ).toHaveBeenCalledWith(
+			'en.wikipedia.org', [ 'Beastie Boys' ], expect.any( AbortSignal )
+		);
+		expect( fetchPageviews ).toHaveBeenCalledWith( expect.objectContaining( {
+			pages: [ 'Beastie Boys', 'The Beastie Boys' ]
+		} ) );
+		// One row per target, with the redirect folded in — the grand
+		// totals are moved, not duplicated.
+		expect( store.pagesData ).toEqual( [
+			expect.objectContaining( { title: 'Beastie Boys', counts: [ 11, 22 ], sum: 33 } )
+		] );
+		expect( store.totals ).toMatchObject( { counts: [ 11, 22 ], total: 33 } );
+		expect( store.status ).toBe( 'complete' );
+	} );
+
+	it( 'defaults redirects to the always-redirects preference', async () => {
+		const { usePreferencesStore } = await import( './preferences.js' );
+		usePreferencesStore().alwaysRedirects = true;
+		const store = useMassviewsStore();
+
+		store.setFromQuery( { source: 'category' } );
+		expect( store.redirects ).toBe( true );
+
+		// An explicit URL param wins over the preference.
+		store.setFromQuery( { redirects: '0' } );
+		expect( store.redirects ).toBe( false );
 	} );
 
 	it( 'does not query a project source whose project was cleared', async () => {

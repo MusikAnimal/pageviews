@@ -21,6 +21,8 @@ const emit = defineEmits( [ 'update:open' ] );
 
 const link = ( href, text ) => `<a target="_blank" href="${ href }">${ text }</a>`;
 
+const redirectviewsLink = `<a href="/redirectviews">${ banana.i18n( 'redirectviews' ) }</a>`;
+
 // A subset of the legacy Massviews FAQ that applies to the sources
 // ported so far; grows with the sources.
 const entries = [
@@ -42,6 +44,16 @@ const entries = [
 			'https://meta.wikimedia.org/wiki/Research:Page_view',
 			'meta:Research:Page view'
 		) ) ]
+	},
+	{
+		id: 'redirects',
+		title: banana.i18n( 'faq-redirects-title' ),
+		paragraphs: [
+			banana.i18n(
+				'faq-redirects-body', redirectviewsLink, banana.i18n( 'include-redirects' )
+			),
+			banana.i18n( 'faq-redirects-body2', banana.i18n( 'include-redirects' ) )
+		]
 	},
 	{
 		id: 'feedback',
