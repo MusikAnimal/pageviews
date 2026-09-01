@@ -707,6 +707,22 @@ a {
 	}
 }
 
+// The stats tables' pager (components/DataTable.vue): one bounded
+// window of rows renders at a time, so huge result sets don't stall
+// the DOM.
+.app-stats-pager {
+	align-items: center;
+	display: flex;
+	gap: @spacing-25;
+	justify-content: flex-end;
+	margin-top: @spacing-50;
+
+	&__status {
+		color: @color-subtle;
+		margin-inline-end: @spacing-50;
+	}
+}
+
 // The chip inputs (Pageviews pages, Siteviews sites, Mediaviews files
 // and categories) place their clear button at the inline start inside
 // the field, pinned to the first chip row — like the legacy Select2

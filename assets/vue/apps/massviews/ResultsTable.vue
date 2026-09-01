@@ -34,7 +34,7 @@
 					:style="rowBarStyle( row.sum, maxSum )"
 				>
 					<th scope="row">
-						{{ number( index + 1 ) }}
+						{{ number( slotProps.rankOffset + index + 1 ) }}
 					</th>
 					<td>
 						<a :href="pageUrl( row )" target="_blank">{{ row.title }}</a>

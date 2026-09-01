@@ -47,7 +47,7 @@
 					:style="rowBarStyle( row.sum, maxSum )"
 				>
 					<th scope="row">
-						{{ number( index + 1 ) }}
+						{{ number( slotProps.rankOffset + index + 1 ) }}
 					</th>
 					<td>{{ row.lang }}</td>
 					<td>

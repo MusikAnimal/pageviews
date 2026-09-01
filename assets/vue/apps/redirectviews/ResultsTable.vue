@@ -29,7 +29,7 @@
 				</tr>
 				<tr v-for="( row, index ) in slotProps.rows" :key="row.title">
 					<th scope="row">
-						{{ number( index + 1 ) }}
+						{{ number( slotProps.rankOffset + index + 1 ) }}
 					</th>
 					<td>
 						<a :href="pageUrl( row.title )" target="_blank">{{ row.title }}</a>
