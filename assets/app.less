@@ -741,10 +741,14 @@ a {
 .app-stats-toolbar {
 	margin: @spacing-50 0 0;
 
+	// Sized like the Topviews search: full-width when the row wraps
+	// on small screens, capped on larger ones.
 	&__search {
 		flex: 1;
-		// Keeps the filter usable when the row wraps on small screens.
-		min-width: @size-1600;
+
+		@media screen and ( min-width: @min-width-breakpoint-tablet ) {
+			max-width: @size-2400;
+		}
 	}
 }
 
