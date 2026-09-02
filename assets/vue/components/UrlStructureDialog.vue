@@ -54,10 +54,15 @@ const emit = defineEmits( [ 'update:open' ] );
 <style lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
-.app-url-structure {
-	// Reading-heavy content: wider than the Codex default dialog.
+// Reading-heavy content: wider than the Codex default dialog. The
+// extra .cdx-dialog outranks Codex's own max-width on specificity,
+// not on stylesheet load order (which differs between the dev server
+// and the build).
+.cdx-dialog.app-url-structure {
 	max-width: @min-width-breakpoint-desktop;
+}
 
+.app-url-structure {
 	&__example {
 		background: @background-color-neutral-subtle;
 		overflow-x: auto;

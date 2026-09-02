@@ -74,8 +74,11 @@ watch( () => [ props.open, route.hash ], async ( [ open ] ) => {
 <style lang="less">
 @import ( reference ) '@wikimedia/codex-design-tokens/theme-wikimedia-ui.less';
 
-// Reading-heavy content: wider than the Codex default dialog.
-.app-faq {
+// Reading-heavy content: wider than the Codex default dialog. The
+// extra .cdx-dialog outranks Codex's own max-width on specificity,
+// not on stylesheet load order (which differs between the dev server
+// and the build).
+.cdx-dialog.app-faq {
 	max-width: @min-width-breakpoint-desktop;
 }
 
