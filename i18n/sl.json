@@ -300,7 +300,6 @@
 	"url-structure-excludes": "Izvzeta imena strani, ki jih želite izključiti iz pogleda, ločena z znaki <code>|</code>, kot so lažno pozitivne uvrstitve ali nerelevantne strani. Na primer <code>Glavna_stran|Posebno:Iskanje</code>.",
 	"url-structure-files": "Izvzeta imena datotek brez predpone imenskega prostora »Datoteka«, ločena z znaki <code>|</code>. Zgled: $1.",
 	"url-structure-massviews-project": "Veljaven $1 za strani z zadetki Quarry.",
-	"url-structure-massviews-target": "ID »Page Pile« ali celotni URL kategorije. Če je v URL-ju vprašaj <code>?/code>, <strong>mora biti kodiran</strong>.",
 	"url-structure-onwiki-link": "Za povezavo na trenutno stran v vikiju uporabite $1",
 	"url-structure-page": "Izvzeto ime strani.",
 	"url-structure-pages": "Pobegla imena strani, ločena z znaki <code>|</code>, na primer <code>Cat|Dog</code> (privzeto)",

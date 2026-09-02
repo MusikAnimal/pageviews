@@ -306,7 +306,6 @@
 	"url-structure-excludes": "오진 또는 부적절한 페이지 등에 대해 <code>|</code> 문자로 구분되는, 뷰에서 제외할 이스케이프처리된 문서 이름입니다. 예: <code>대문|특수:검색</code>",
 	"url-structure-files": "File: 이름공간 접두사 없이 이스케이프된 파일 이름으로, <code>|</code> 문자로 구분됩니다. 예: $1",
 	"url-structure-massviews-project": "Quarry 결과 문서에 사용할 수 있는 유효한 $1.",
-	"url-structure-massviews-target": "Page Pile ID 또는 분류의 전체 URL입니다. URL에 물음표 <code>?</code>가 있으면 <strong>반드시 인코딩되어야 합니다</strong>.",
 	"url-structure-onwiki-link": "위키의 현재 페이지에 연결하려면 $1을 사용하십시오",
 	"url-structure-page": "이스케이프된 문서 이름입니다.",
 	"url-structure-pages": "이스케이프 처리된 이름은 <code>고양이|개</code>처럼 <code>|</code> 문자로 구분합니다 (기본값)",

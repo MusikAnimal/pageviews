@@ -270,7 +270,6 @@
 	"url-structure-example": "Per ottenere i dati più recenti su una determinata pagina sul tuo wiki, con le opzioni predefinite, usa:\n$1\nsostituendo $2 con un $3 valido. $4 risolverà la pagina su cui il collegamento è posto",
 	"url-structure-example-siteviews": "Per ottenere i dati più recenti sulle visualizzazioni totali di tutte le pagine sul tuo wiki, con le opzioni predefinite, usa:\n$1",
 	"url-structure-massviews-project": "Un $1 valido per le pagine dei risultati Quarry.",
-	"url-structure-massviews-target": "L'ID Page Pile, o l'URL completo di una categoria. Se nell'URL è presente un punto interrogativo <code>?</code>, quest'ultimo <strong>deve essere codificato</strong>.",
 	"url-structure-onwiki-link": "Per collegare la pagina attuale sul wiki, usa $1",
 	"url-structure-parameters": "Parametri",
 	"url-structure-parameters-order": "Possono essere utilizzati in qualsiasi ordine",

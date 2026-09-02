@@ -286,7 +286,6 @@
 	"url-structure-excludes": "Ainmneacha leathanaigh éalaithe le heisiamh ón radharc scartha le carachtair <code>|</code>, amhail leathanaigh dhearfacha bréagacha nó leathanaigh neamhthábhachtacha. Mar shampla <code>Main_page|Special:Cuardaigh</code>",
 	"url-structure-files": "Ainmneacha comhad éalaithe gan an réimír ainmspáis File:, scartha le carachtair <code>|</code>. Sampla: $1",
 	"url-structure-massviews-project": "$1 bailí do leathanaigh thorthaí Quarry.",
-	"url-structure-massviews-target": "ID an Phíle Leathanaigh, nó URL iomlán na catagóire. Má tá comhartha ceiste <code>?</code> san URL, <strong>caithfidh sé a bheith ionchódaithe</strong>.",
 	"url-structure-onwiki-link": "Chun nasc a dhéanamh leis an leathanach reatha ar an vicí, bain úsáid as $1",
 	"url-structure-page": "Ainm leathanaigh éalaithe.",
 	"url-structure-pages": "Ainmneacha leathanaigh éalaithe scartha le carachtair <code>|</code> amhail <code>Cat|Madra</code> (réamhshocraithe)",

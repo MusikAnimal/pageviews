@@ -296,7 +296,6 @@
 	"url-structure-excludes": "Maskerte sidenavn som skal ekskluderes fra visningen atskilt av <code>|</code>-tegn, som falske positiver eller irrelevante sider. For eksempel <code>Main_page|Special:Search</code>",
 	"url-structure-files": "Maskerte filnavn uten navneromsprefikset File:, atskilt av <code>|</code>-tegn. Eksempel: $1",
 	"url-structure-massviews-project": "En gyldig $1 for sidene i Quarry-resultater.",
-	"url-structure-massviews-target": "PagePile-ID-en, eller hele URL-en til en kategori. Hvis et spørsmålstegn finnes i URL-en <strong>må den kodes om</code>.",
 	"url-structure-onwiki-link": "For å lenke til denne siden på wiki, bruk $1",
 	"url-structure-page": "Maskert sidenavn.",
 	"url-structure-pages": "Maskerte sidenavn adskilt av <code>|</code>-tegn, som <code>Cat|Dog</code> (standard)",

@@ -168,4 +168,11 @@ describe( 'topviews store', () => {
 		store.date = '2025';
 		expect( store.periodDates() ).toEqual( [ '2025-01-01', '2025-12-31' ] );
 	} );
+
+	it( 'maps pre-revamp start/end permalinks to the start month', () => {
+		const store = useTopviewsStore();
+		store.setFromQuery( { start: '2019-03-05', end: '2019-04-01' } );
+
+		expect( store.date ).toBe( '2019-03' );
+	} );
 } );

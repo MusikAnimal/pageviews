@@ -92,7 +92,6 @@
 	"url-structure-excludes": "要在圖表畫面上去除‎已呈現的頁面名稱請以<code>|</code>字符做區隔，如錯誤或不相關的頁面。像是：<code>Main_page|Special:Search</code>",
 	"url-structure-files": "以豎線 <code>|</code> 字元區分，名稱空間字首不帶有「File:」的跳脫檔案名稱。\n範例：$1",
 	"url-structure-massviews-project": "一個適用於查詢結果頁面的有效$1。",
-	"url-structure-massviews-target": "頁面堆疊 ID，或轉向一個分類的完整 URL。如果問號「<code>?</code>」包含在 URL 裡，此<strong>必須要被編碼</strong>。",
 	"url-structure-onwiki-link": "為 wiki 上目前頁面的連結，請使用 $1",
 	"url-structure-page": "所呈現的頁面名稱。",
 	"url-structure-pages": "逸出多筆的頁面名稱是以<code>|</code>字符來作區隔，如<code>Cat|Dog</code> (預設)",

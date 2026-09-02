@@ -300,7 +300,6 @@
 	"url-structure-excludes": "Numele paginilor care se doresc a fi excluse de la afișare, separate de caracterul „<code>|</code>” (bară verticală), cum ar fi falsele-pozitive sau paginile irelevante. De exemplu <code>Pagina_principală|Special:Căutare</code>",
 	"url-structure-files": "Nume de fișiere „[[:en:w:Escape character|scăpate]]”, fără prefixul „Fișier:” al spațiului de nume, separate prin caracterul <code>|</code>. Exemplu: $1",
 	"url-structure-massviews-project": "Un $1 valid pentru paginile rezultatelor Quarry.",
-	"url-structure-massviews-target": "ID-ul Page Pile sau adresa URL completă a unei categorii. Dacă există un semn de întrebare <code>?</code> în adresa URL, acesta <strong>trebuie codat</strong>.",
 	"url-structure-onwiki-link": "Pentru a trimite la pagina curentă de pe wiki, folosiți $1",
 	"url-structure-page": "Numele paginii dorite.",
 	"url-structure-pages": "Numele paginilor dorite separate cu caracterul „<code>|</code>”, de exemplu <code>Pisică|Câine</code> (implicit)",

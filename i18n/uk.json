@@ -305,7 +305,6 @@
 	"url-structure-excludes": "Упущені назви сторінок, що треба виключити з перегляду, розділені символами <code>|</code>, наприклад, хибні результати чи нерелевантні сторінки. Наприклад, <code>Main_page|Special:Search</code>",
 	"url-structure-files": "Упущені імена файлів без префіксу простору імен «Файл:», що розділені символами <code>|</code>. Приклад: $1",
 	"url-structure-massviews-project": "Дійсний $1 для сторінок з результатів Quarry.",
-	"url-structure-massviews-target": "Page Pile ID, або повна URL-адреса категорії. Якщо знак питання <code>?</code> є в цій адресі, його <strong>треба подати у кодовому форматі</strong>.",
 	"url-structure-onwiki-link": "Аби послатися на поточну сторінку у вікі, використовуйте $1",
 	"url-structure-page": "Упущена назва сторінки.",
 	"url-structure-pages": "Упущені назви сторінок. розділені символами <code>|</code>, наприклад, <code>Cat|Dog</code> (стандартно)",

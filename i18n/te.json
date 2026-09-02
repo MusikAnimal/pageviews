@@ -293,7 +293,6 @@
 	"url-structure-excludes": "ఫాల్స్ పాజిటివులు, సంబంధం లేని పేజీల వంటి వ్యూ లోంచి తీసెయ్యాల్సిన పేజీల పేర్లను <code>|</code> కారెక్టర్లతో వేరు చేసి ఇవ్వాలి. ఉదాహరణకు, <code>Main_page|Special:Search</code>",
 	"url-structure-files": "ఉండకూడని దస్త్రాల పేర్లను దస్త్రం: పేరుబరి ఆదిపదం లేకుండా, <code>|</code> కారెక్టర్లతో వేరుచేసి ఇవ్వాలి. ఉదాహరణ: $1",
 	"url-structure-massviews-project": "క్వారీ ఫలితాల్లోని పేజీల కోసం ఒక సరైన $1.",
-	"url-structure-massviews-target": "పేజీ పైల్ ఐడీ గానీ, లేదా వర్గపు పూర్తి URL గానీ. URL లో ప్రశ్న గుర్తు <code>?</code> ఉంటే దాన్ని  <strong>ఎన్‌కోడు చెయ్యాలి</strong>.",
 	"url-structure-onwiki-link": "వికీలోని వర్తమాన పేజీకి లింకు వెయ్యాలంటే, $1 వాడండి",
 	"url-structure-page": "పేజీ పేరు.",
 	"url-structure-pages": "పేజీపేర్లను <code>|</code> కారెక్టర్లతో విడదీయాలి. ఉదా: <code>కుక్క|పిల్లి</code> (డిఫాల్టు)",

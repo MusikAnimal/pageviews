@@ -225,7 +225,6 @@
 	"url-structure-example-siteviews": "Mehemea kei te pīrangi koe ki te whakamahitia ngā kōwhiringa noa hei tuku mai i te kaute o ngā titiro katoa nō ngā whārangi katoa i tētahi \"wiki\", whakamahitia:\n$1",
 	"url-structure-excludes": "Ko ētahi ingoa whārangi e unuhia ana, e rikorikotia ana, e wehe ana ki ngā tohu kōrere (<code>|</code>).  Ko ēnei whārangi ngā whārangi whakapōrearea, ngā whārangi manakore ki a koe.  (Ko tētahi whakatauira: <code>Main_page|Special:Search</code>)",
 	"url-structure-massviews-project": "Ko tētahi $1 whaimana he kimi i ngā whārangi o te kahui raraunga Maina.",
-	"url-structure-massviews-target": "Ko te Nama Page Pile rānei, ko te katoa o te URL e hono ana ki tētahi momo whārangi.  Mehemea tētahi tohu pātai (<code>?</code>) i roto i te URL, <strong>me rokirokitia te tohu pātai</strong>.",
 	"url-structure-onwiki-link": "E whakamahitia ana $1 ki te hono tētahi whārangi i tētahi wiki ki konei.",
 	"url-structure-page": "Te ingoa whakaruruhau o kotahi whārangi",
 	"url-structure-pages": "Ko ngā ingoa whārangi e rikorikotia ana, e wehea ana ki ngā tohu kōrere (<code>|</code>).  (ko tētahi whakatauri: <code>Ngeru|Kurī</code>)",

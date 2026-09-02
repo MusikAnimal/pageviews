@@ -291,7 +291,6 @@
 	"url-structure-excludes": "Golar halaman say ti''escape'' untuk mak tikarungko dilom tampilan dipisahko bak karakter <code>|</code>, juk positif palsu atawa halaman say mak relevan. Misalna, <code>Garang|Usus:Panyopo'an</code>",
 	"url-structure-files": "Golar bondol say ti''escape'' mak buruwang golar Bondol: dipisahko bak karakter <code>|</code>. Misalna: $1",
 	"url-structure-massviews-project": "Samungkal $1 say sah untuk hasil halaman Quarry.",
-	"url-structure-massviews-target": "ID PagePile, atawa URL longkap guk osay kaban. Tanda tanya <code>?</code> say uwat di URL sina, man uwat, <strong>porlu tienkodeko</strong>.",
 	"url-structure-onwiki-link": "Untuk ngguway kahikan guk halaman ganta sa di wiki, pakay $1",
 	"url-structure-page": "Golar halaman say ti''escape''",
 	"url-structure-pages": "Golar halaman say ti''escape'' dipisahko bak karakter <code>|</code>. Misalna <code>Asu|Kucing</code> (baku)",

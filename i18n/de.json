@@ -306,7 +306,6 @@
 	"url-structure-excludes": "Ausgegebene Seitennamen, die von der Ansicht ausgeschlossen werden sollen, getrennt durch <code>|</code>, wie falsche Positive oder irrelevante Seiten. Zum Beispiel <code>Hauptseite|Spezial:Suche</code>",
 	"url-structure-files": "Ausgegebene Dateinamen ohne das Namensraumpräfix „Datei:“, getrennt durch senkrechte Striche (<code>|</code>). Beispiel: $1",
 	"url-structure-massviews-project": "Eine gültige $1 für die Seiten der Quarry-Ergebnisse.",
-	"url-structure-massviews-target": "Die „Page Pile“-Kennung oder vollständige URL zu einer Kategorie. Falls die URL ein Fragezeichen <code>?</code> enthält, <strong>muss es kodiert werden</strong>.",
 	"url-structure-onwiki-link": "Zur Verlinkung der aktuellen Seite auf einem Wiki, verwende $1",
 	"url-structure-page": "Ausgegebener Seitenname.",
 	"url-structure-pages": "Ausgegebene Seitennamen, getrennt durch <code>|</code>, wie <code>Cat|Dog</code> (Standard)",

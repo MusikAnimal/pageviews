@@ -294,7 +294,6 @@
 	"url-structure-excludes": "Nomines de paginas a excluder, con \"escappamento\" de characteres special, separate per <code>|</code>, como false positivos o paginas irrelevante. Per exemplo, <code>Pagina_principal|Special:Recerca</code>",
 	"url-structure-files": "Nomines de file escappate, sin le prefixo de spatio de nomines File:, separate per characteres <code>|</code>. Exemplo: $1",
 	"url-structure-massviews-project": "Un $1 valide pro le paginas de resultatos Quarry.",
-	"url-structure-massviews-target": "Le identificator de pila de paginas, o le URL complete de un categoria. Si un puncto de interrogation <code>?</code> es presente in le URL, illo <strong>debe esser codificate</strong>.",
 	"url-structure-onwiki-link": "Pro ligar al pagina actual sur wiki, usa $1",
 	"url-structure-page": "Nomine de pagina con \"escappamento\" de characteres special.",
 	"url-structure-pages": "Nomines de pagina con \"escappamento\" de characteres special, separate per <code>|</code>, p.ex. <code>Catto|Can</code> (predefinition)",

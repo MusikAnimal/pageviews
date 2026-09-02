@@ -299,7 +299,6 @@
 	"url-structure-excludes": "Nomes das páxinas escapados para excluír das visita, separados por caracteres <code>|</code>, como falsos positivos ou páxinas irrelevantes. Por exemplo, <code>Páxina_principal|Especial:Procurar</code>",
 	"url-structure-files": "Nomes de ficheiro escapados sen o prefixo de espazo de nomes Ficheiro:, separados por caracteres <code>|</code>. Por exemplo: $1",
 	"url-structure-massviews-project": "Un $1 válido para as páxinas de resultados de Quarry.",
-	"url-structure-massviews-target": "O identificador de pila da páxinas ou o enderezo URL completo dunha categoría. Se hai un signo de interrogación (<code>?</code>) no enderezo URL, o URL <strong>debe estar codificado</strong>.",
 	"url-structure-onwiki-link": "Para ligar cara á páxina actual no wiki, usa $1",
 	"url-structure-page": "Nome de páxina escapado.",
 	"url-structure-pages": "Nomes das páxinas escapados, separados por caracteres <code>|</code>; por exemplo, <code>Gato|Can</code> (predeterminado)",

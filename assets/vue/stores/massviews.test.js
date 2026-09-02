@@ -681,6 +681,12 @@ describe( 'massviews store', () => {
 		expect( fetchPageviews ).not.toHaveBeenCalled();
 	} );
 
+	it( 'accepts the legacy sort=original', () => {
+		const store = useMassviewsStore();
+		store.setFromQuery( { sort: 'original' } );
+		expect( store.sort ).toBe( 'original' );
+	} );
+
 	it( 'round-trips the wikiproject source with its project', () => {
 		const store = useMassviewsStore();
 		store.setFromQuery( {

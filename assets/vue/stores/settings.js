@@ -8,6 +8,7 @@ import {
 	isYm,
 	isYmd,
 	lastCompleteMonthUtc,
+	PAGEVIEWS_MIN_DATE,
 	parseDate,
 	resolveSpecialRange,
 	yesterdayUtc
@@ -161,16 +162,25 @@ export const useSettingsStore = defineStore( 'settings', () => {
 	 * @param {Object} params Parsed query string (from vue-router route.query).
 	 */
 	function setFromQuery( params ) {
-		if ( params.range ) {
-			// e.g. ?range=latest-20, kept in permalinks (like the
-			// legacy tool) and resolved to concrete dates on load.
-			setSpecialRange( params.range );
-		}
-		if ( params.start && DATE_PATTERN.test( params.start ) ) {
-			start.value = params.start;
-		}
-		if ( params.end && DATE_PATTERN.test( params.end ) ) {
-			end.value = params.end;
+		// e.g. ?range=latest-20, kept in permalinks (like the legacy
+		// tool) and resolved to concrete dates on load. A recognized
+		// range wins outright over start/end, as it did in the legacy
+		// tool.
+		const ranged = params.range ? setSpecialRange( params.range ) : false;
+		if ( !ranged ) {
+			// The legacy tool also accepted these named bounds.
+			const aliases = {
+				earliest: PAGEVIEWS_MIN_DATE,
+				latest: formatYmd( yesterdayUtc() )
+			};
+			const startValue = aliases[ params.start ] ?? params.start;
+			const endValue = aliases[ params.end ] ?? params.end;
+			if ( startValue && DATE_PATTERN.test( startValue ) ) {
+				start.value = startValue;
+			}
+			if ( endValue && DATE_PATTERN.test( endValue ) ) {
+				end.value = endValue;
+			}
 		}
 		if ( start.value ) {
 			// Monthly ranges are expressed as YYYY-MM dates.

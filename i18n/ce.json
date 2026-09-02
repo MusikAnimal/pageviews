@@ -296,7 +296,6 @@
 	"url-structure-excludes": "Экран тӀейаьхна агӀонаш гаран йукъара йаьхна, сийлаллаш <code>|</code> йекъна. Масала, <code>Коьрта_агӀо|Белхан:Лахар</code>",
 	"url-structure-files": "Экран тӀе йаьхна префиксаш йоцу файлийн цӀераш: йекъна сийлаллаш <code>|</code>. Масала: $1",
 	"url-structure-massviews-project": "Боккъал йолу $1 агӀонашна Карьеран жамӀашна",
-	"url-structure-massviews-target": "Page Pile ID йа категорин дуьззина URL-адрес. Нагахь хаттаран хьаьрк <code>?</code> URL-адресехь лаьтта, и <strong>код хӀоттийна хила деза</strong>.",
 	"url-structure-onwiki-link": "Карара агӀонна уьйранна, лелайе $1",
 	"url-structure-page": "Экран тӀе йаьккхина агӀонан цӀе",
 	"url-structure-pages": "Экран тӀейаьхна агӀонийн цӀераш, йекъна сийлаллаш <code>|</code>, масала, <code>Цициг|ЖӀаьла</code> (сецна)",

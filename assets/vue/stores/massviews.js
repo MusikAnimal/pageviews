@@ -36,8 +36,10 @@ const URL_SOURCES = [ 'category', 'wikilinks', 'subpages', 'transclusions' ];
 export const PROJECT_SOURCES = [ 'quarry', 'external-link', 'search', 'wikiproject' ];
 const PLATFORMS = [ 'all-access', 'desktop', 'mobile-app', 'mobile-web' ];
 const AGENTS = [ 'all-agents', 'user', 'spider', 'automated' ];
+// 'original' (legacy: the resolved order) matches no column, so
+// every comparison ties and the stable sort keeps the input order.
 // The assessment sorts only apply to the WikiProject source.
-const SORTS = [ 'title', 'views', 'assessment', 'importance' ];
+const SORTS = [ 'title', 'views', 'assessment', 'importance', 'original' ];
 const TOGGLES = [ '0', '1' ];
 // Matches the legacy apiLimit and the server-side caps.
 const MAX_PAGES = 20000;

@@ -291,7 +291,6 @@
 	"url-structure-excludes": "Nom de pagine con carater de escheip de tegnì foeura vista spartid de carater <code>|</code>, per esempi fals positiv o pagine senza importanza. Per esempi <code>Pagina_principala|Special:Ricerca</code>",
 	"url-structure-files": "Nom de fail con escheip senza 'l prefisso Archivi: in del spazzi di nom, spartid de <code>|</code> carater. Esempi: $1",
 	"url-structure-massviews-project": "On $1 bon per i pagine di risultad Quarry.",
-	"url-structure-massviews-target": "L'ID Page Pile, o tut l'URL d'una categoria. Se in de l'URL è a gh'è on pont d'interrogazzion <code>?</code>, quest chì <strong>el gh'ha de vesser codificad</strong>.",
 	"url-structure-onwiki-link": "Per conligà la pagina correnta in sul wiki, droeuva $1",
 	"url-structure-page": "Nom de la pgina con escheip.",
 	"url-structure-pages": "Nom di pagine con escheip sparti di carater <code>|</code> compagn de <code>Cat|Dog</code> (impostazzion predefenida)",

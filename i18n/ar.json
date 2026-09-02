@@ -316,7 +316,6 @@
 	"url-structure-excludes": "أسماء الصفحات الهاربة لاستبعاد من معاينة مفصولة ب <code>|</code> مثل الإيجابيات الخاطئة أو صفحة غير متصلة، مثلًا <code>Main_page|Special:Search</code>",
 	"url-structure-files": "أسماء الملفات الهاربة بدون بادئة نطاق الملف: مفصولة بأحرف <code>|</code>، مثال: $1",
 	"url-structure-massviews-project": "$1 صالح لصفحات نتائج الاستعلامات.",
-	"url-structure-massviews-target": "معرف بايل صفحة، أو مسار كامل لتصنيف. إذا كانت علامة استفهام <code>؟</code> في مسار، <strong>يجب ترميزها</strong>.",
 	"url-structure-onwiki-link": "لربط الصفحة الحالية على الويكي; استخدم $1",
 	"url-structure-page": "اسم الصفحة المهيأ.",
 	"url-structure-pages": "أسماء الصفحات الهاربة مفصولة بحروف <code>|</code> مثل  <code>قطة|كلب</code> (الافتراضي)",

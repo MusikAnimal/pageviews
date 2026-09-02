@@ -301,7 +301,6 @@
 	"url-structure-excludes": "Vylúčené stránky (ako napríklad falošne pozitívne alebo irelevantné stránky) sú oddelené znakom<code>|</code>. Napríklad <code>Main_page|Special:Search</code>",
 	"url-structure-files": "Escaped file names without the File: namespace prefix, separated by <code>|</code> characters. Example: $1",
 	"url-structure-massviews-project": "Platné $1 pre stránky z výsledkov dopytov.",
-	"url-structure-massviews-target": "ID Page Pile, alebo celá adresa URL do kategórie. AK je v adrese URL otáznik <code>?</code>, musí byť <strong>zakódovaný</strong>.",
 	"url-structure-onwiki-link": "Pre pridanie odkazu pre aktuálnu stránku použite $1",
 	"url-structure-page": "Uniknuté názvy stránok.",
 	"url-structure-pages": "Uniknuté názvy stránok oddelené znakmi <code>|</code>",

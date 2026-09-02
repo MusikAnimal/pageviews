@@ -405,7 +405,7 @@
 	"url-structure-excludes": "Documentation for the 'excludes' parameter. These pages will be hidden from view, such as false-positives or irrelevant pages.",
 	"url-structure-files": "Documentation for the 'files' parameter. $1 is an example value.",
 	"url-structure-massviews-project": "Similar to the 'url-structure-project' message except indicates this parameter only applies to Quarry results. $1 is the message for 'project' that is a link to the sitematrix (list of valid projects).",
-	"url-structure-massviews-target": "Explains what the 'target' parameter is, and that if a question mark is in the URL than the URL must be encoded.\n\n'''FIXME:''' This message still does not explicit how to encode the question mark: with URL-encoding as <code>%3F</code>, with a double encoding as <code>%%3F</code>, with HTML/XML character entity such as <code>&amp;#x3F;</code>, or something else?",
+	"url-structure-massviews-target": "Explains the 'target' URL parameter in the Massviews URL Structure dialog: what to supply for each kind of source.",
 	"url-structure-mediaviews-categories": "Description of the categories URL parameter for the categories source on the Mediaviews URL structure page. $1 is an example value.",
 	"url-structure-mediaviews-scope": "Description of the scope URL parameter on the Massviews URL structure page. $1 is <code>deep</code>, $2 is <code>shallow</code>.",
 	"url-structure-onwiki-link": "Text explaining to use {{FULLPAGENAMEE}} ($1) as the 'project' on wiki.",

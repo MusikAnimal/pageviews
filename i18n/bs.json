@@ -288,7 +288,6 @@
 	"url-structure-example-siteviews": "Da biste dobili najnovije podatke o ukupnoj posjećenosti svih stranica na Vašem wikiju, i to s predodređenim opcijama, koristite:\n$1",
 	"url-structure-excludes": "Izlazni nazivi stranica koje treba izuzeti sa spiska razdvojeni uspravnom crtom <code>|</code>, poput pogrešnih pogodaka ili nevažnih stranica. Naprimjer <code>Main_page|Special:Search</code>",
 	"url-structure-massviews-project": "Ispravan $1 za rezultate Quarryja.",
-	"url-structure-massviews-target": "Page Pile ID ili cijeli URL ka kategoriji. Ako URL sadrži upitnik <code>?</code>, <strong>morate ga šifrirati</strong>.",
 	"url-structure-onwiki-link": "Da biste povezali trenutnu stranicu na wikiju, koristite $1",
 	"url-structure-page": "Izlazni naziv stranice.",
 	"url-structure-pages": "Izlazni nazivi stranica razdvojeni uspravnom crtom <code>|</code> poput <code>Cat|Dog</code> (predodređeno)",

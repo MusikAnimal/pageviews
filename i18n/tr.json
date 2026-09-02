@@ -310,7 +310,6 @@
 	"url-structure-excludes": "Gözükmeyen sayfa isimlerini ayırarak gösterilmemesi için <code>|</code> karakteri kullanın. Böylece ilgisiz sayfaların hatalı sonuçlarını almayacaksanız. Örneğin <code>Anasayfa|Özel:Ara</code> gibi",
 	"url-structure-files": "Dosya: ad alanı öneki olmayan, kaçış dosya adları, <code>|</code> karakterleriyle ayrılmış. Örnek: $1",
 	"url-structure-massviews-project": "Sorgo sonuçlarında, sayfalar için $1 geçerlidir.",
-	"url-structure-massviews-target": "Sayfa Kütüğü Kimliği ya da kategorinin tam URL adresi. Eğer URL adresinde bir <code>?</code> işareti varsa, bu <strong>kodlanmış olmalıdır.</strong>",
 	"url-structure-onwiki-link": "Geçerli viki sayfalarına bağlantı için $1 kullanın",
 	"url-structure-page": "Gözükmeyen sayfa adı",
 	"url-structure-pages": "Gözükmeyen sayfa isimlerini (varsayılan olarak gelen <code>Cat|Dog</code> isimlerinde olduğu gibi) <code>|</code> karakteri ile ayırın.",

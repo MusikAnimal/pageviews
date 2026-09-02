@@ -303,7 +303,6 @@
 	"url-structure-excludes": "Maskerade namn på sidor att exkludera från vyn separeras med <code>|</code>, t.ex. falsk-positiva eller irrelevanta sidor. T.ex. <code>Huvudsidan|Special:Sök</code>",
 	"url-structure-files": "Maskerade filnamn utan namnrymdsprefixet File:, separerade med <code>|</code>. Exempel: $1",
 	"url-structure-massviews-project": "En giltig $1 för sidorna i Quarry-resultaten.",
-	"url-structure-massviews-target": "Sidhögs-ID eller full webbadress till en kategori. Om ett frågetecken <code>?</code> finns i webbadressen <strong>måste den vara kodad</strong>.",
 	"url-structure-onwiki-link": "Använd $1 för att länka till den aktuella sidan på wikin",
 	"url-structure-page": "Maskerade sidnamn.",
 	"url-structure-pages": "Maskerade namn på sidor separeras med tecknet <code>|</code>, t.ex. <code>Katt|Hund</code> (standard)",

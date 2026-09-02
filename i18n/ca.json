@@ -298,7 +298,6 @@
 	"url-structure-excludes": "Noms de les pàgines que es vol excloure de la vista, separats per <code>|</code> caracters. Per exemple <code>Pàgina_principal| Especial: Cerca </code>",
 	"url-structure-files": "Noms de fitxers escapats sense el prefix File: namespace, separats per caràcters <code>|</code>. Exemple: $1",
 	"url-structure-massviews-project": "Un $1 vàlid per a les pàgines de resultats de Quarry.",
-	"url-structure-massviews-target": "L'identificador de pila de pàgines o URL complet d'una categoria. Si hi ha un signe d'interrogació <code>? </code> a l'URL, <strong> s'ha de codificar </strong>.",
 	"url-structure-onwiki-link": "Per enllaçar a la pàgina actual del wiki, utilitzeu $1",
 	"url-structure-page": "Nom de pàgina fugida.",
 	"url-structure-pages": "Noms de pàgines escapades amb caràcters <code>|</code> com <code>Gat|Gos</code> (per defecte)",

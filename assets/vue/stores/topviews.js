@@ -230,6 +230,11 @@ export const useTopviewsStore = defineStore( 'topviews', () => {
 			if ( resolved && resolved !== date.value ) {
 				date.value = resolved;
 			}
+		} else if ( params.start && /^\d{4}-\d{2}/.test( params.start ) ) {
+			// Pre-revamp legacy permalinks carried start/end (or
+			// range, which defaults like the legacy tool did): show
+			// the month of the start date.
+			date.value = params.start.slice( 0, 7 );
 		}
 		if ( params.excludes !== undefined ) {
 			const titles = params.excludes.split( '|' )

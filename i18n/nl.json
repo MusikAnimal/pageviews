@@ -304,7 +304,6 @@
 	"url-structure-excludes": "Geëscapete paginanamen om uit te sluiten gescheiden door het teken <code>|</code>, zoals foutpositieven of irrelevante pagina's. Bijvoorbeeld <code>Main_page|Special:Search</code>",
 	"url-structure-files": "Uitgesloten bestandsnamen zonder het naamruimtevoorvoegsel Bestand:, gescheiden door <code>|</code> tekens. Voorbeeld: $1",
 	"url-structure-massviews-project": "Een geldige $1 voor de pagina's met resultaten van de quarry.",
-	"url-structure-massviews-target": "De ID van een paginaverzameling of de volledige URL van een categorie. Als een vraagteken <code>?</code> in de URL staat, moet dit <strong>gecodeerd zijn</strong>.",
 	"url-structure-onwiki-link": "Gebruik $1 voor het koppelen naar de huidige wikipagina",
 	"url-structure-page": "Geëscapete paginanaam.",
 	"url-structure-pages": "Geëscapete paginanamen gescheiden door het teken <code>|</code>, zoals <code>kat|hond</code> (standaard)",

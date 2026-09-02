@@ -382,7 +382,7 @@
 	"url-structure-excludes": "Escaped page names to exclude from the view separated by <code>|</code> characters, such as false-positives or irrelevant pages. For example <code>Main_page|Special:Search</code>",
 	"url-structure-files": "Escaped file names without the File: namespace prefix, separated by <code>|</code> characters. Example: $1",
 	"url-structure-massviews-project": "A valid $1 for the pages of Quarry results.",
-	"url-structure-massviews-target": "The Page Pile ID, or full URL to a category. If a question mark <code>?</code> is in the URL, it <strong>must be encoded</strong>.",
+	"url-structure-massviews-target": "The source's input: the full URL to the page or category for the URL-based sources, or the query, ID or name for the others. If a question mark <code>?</code> is in the URL, it <strong>must be encoded</strong>.",
 	"url-structure-mediaviews-categories": "The names of the Commons categories, pipe-separated and without the namespace prefix, e.g. $1.",
 	"url-structure-mediaviews-scope": "$1 to include all subcategories, or $2 to count only the category itself.",
 	"url-structure-onwiki-link": "For linking to the current page on wiki, use $1",

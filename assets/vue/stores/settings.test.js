@@ -195,4 +195,38 @@ describe( 'settings store', () => {
 		store.setFromQuery( serialized );
 		expect( store.query ).toEqual( serialized );
 	} );
+
+	it( 'resolves the legacy earliest/latest date bounds', () => {
+		const store = useSettingsStore();
+		store.setFromQuery( { start: 'earliest', end: 'latest' } );
+
+		expect( store.start ).toBe( '2015-07-01' );
+		// "latest" is yesterday (UTC).
+		expect( store.end > store.start ).toBe( true );
+		expect( /^\d{4}-\d{2}-\d{2}$/.test( store.end ) ).toBe( true );
+	} );
+
+	it( 'lets a recognized range win over start/end, like the legacy tool', () => {
+		const store = useSettingsStore();
+		store.setFromQuery( {
+			range: 'last-month',
+			start: '2020-01-01',
+			end: '2020-01-31'
+		} );
+
+		expect( store.specialRange ).toBe( 'last-month' );
+		expect( store.start ).not.toBe( '2020-01-01' );
+	} );
+
+	it( 'falls back to start/end when the range is unrecognized', () => {
+		const store = useSettingsStore();
+		store.setFromQuery( {
+			range: 'bogus',
+			start: '2020-01-01',
+			end: '2020-01-31'
+		} );
+
+		expect( store.start ).toBe( '2020-01-01' );
+		expect( store.end ).toBe( '2020-01-31' );
+	} );
 } );

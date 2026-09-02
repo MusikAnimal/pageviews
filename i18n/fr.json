@@ -320,7 +320,6 @@
 	"url-structure-excludes": "Noms de page échappés à exclure de l’affichage, séparés par le caractère <code>|</code>, tels que des faux positifs ou des pages non pertinentes. Par exemple, <code>Main_page|Special:Search</code>.",
 	"url-structure-files": "Noms de fichiers échappés, sans le préfixe d’espace de nom <code>File:</code> ou <code>Fichier:</code>, séparés par des caractères <code>|</code>. Par exemple, $1.",
 	"url-structure-massviews-project": "Un $1 valide pour les pages de résultats de Quarry.",
-	"url-structure-massviews-target": "L’ID de pile de pages, ou l’URL complète d’une catégorie. Si un point d’interrogation <code>?</code> est présent dans l’URL, il <strong>doit être encodé</strong>.",
 	"url-structure-onwiki-link": "Pour être redirigé vers la page actuelle sur le wiki, utilisez $1",
 	"url-structure-page": "Nom de page échappé.",
 	"url-structure-pages": "Noms de page échappés séparés par un caractère <code>|</code>, par exemple <code>Chat|Chien</code> (par défaut)",

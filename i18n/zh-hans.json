@@ -314,7 +314,6 @@
 	"url-structure-excludes": "要在试图中排除的出现页面名称，以<code>|</code>字符分隔，例如误报或不相关页面。示例：<code>Main_page|Special:Search</code>",
 	"url-structure-files": "出现的文件名（无File:命名空间前缀），以<code>|</code>字符分隔。例如：$1",
 	"url-structure-massviews-project": "用于Quarry结果的有效$1。",
-	"url-structure-massviews-target": "页面堆ID，或链至分类的完整URL。如果URL中有问号<code>?</code>，它<strong>必须被编码</strong>。",
 	"url-structure-onwiki-link": "要在wiki上链接到当前页面，使用$1",
 	"url-structure-page": "出现的页面名称。",
 	"url-structure-pages": "出现的页面名称，以<code>|</code>字符分隔，例如<code>Cat|Dog</code>（默认）",

@@ -302,7 +302,6 @@
 	"url-structure-excludes": "Nama halaman yang di''escape'' untuk tidak disertakan dalam tampilan dipisahkan oleh karakter <code>|</code>, seperti positif palsu atau halaman yang tidak relevan. Misalnya, <code>Halaman_Utama|Istimewa:Pencarian</code>",
 	"url-structure-files": "Nama berkas yang di''escape'' tanpa ruang nama Berkas: dipisahkan oleh karakter <code>|</code>. Misalnya: $1",
 	"url-structure-massviews-project": "Sebuah $1 yang sah untuk hasil halaman Quarry.",
-	"url-structure-massviews-target": "ID PagePile, atau URL lengkap ke suatu kategori. Tanda tanya <code>?</code> yang terdapat pada URL tersebut, jika ada, <strong>harus dienkodekan</strong>.",
 	"url-structure-onwiki-link": "Untuk membuat pranala ke halaman saat ini di wiki, gunakan $1",
 	"url-structure-page": "Nama halaman yang di''escape''",
 	"url-structure-pages": "Nama halaman yang di''escape'' dipisahkan oleh karakter <code>|</code>. Misalnya <code>Anjing|Kucing</code> (baku)",

@@ -298,7 +298,6 @@
 	"url-structure-excludes": "דמו שפים מחולפים שלא ייכללו בתצוגה, מופרדים בתווי <code>|</code>, כגון תוצאת חיוביות שגויות או דפים שאינם שייכים. למשל, <code>Main_page|Special:Search</code>",
 	"url-structure-files": "שמות קבצים מחולפים ללא תחילית קובץ: (File:‎), מופרדים בתווי <code>|</code>. דוגמה: $1",
 	"url-structure-massviews-project": "$1 תקין בשביל דפים של תוצאות מ־Quarry.",
-	"url-structure-massviews-target": "מזהה ערמת הדפים או URL שלם לקטגוריה. אם ב־URL יש סימן השאלה <code>?</code>, הוא <strong>חייב להיות מקודד</strong>.",
 	"url-structure-onwiki-link": "כדי לקשר לדף הנוכחי באתר ויקי, יש להשתמש בפרמטר $1",
 	"url-structure-page": "שם הדף המחולף.",
 	"url-structure-pages": "שמות דפים מחולפים מופרדים בתו <code>|</code>, למשל, <code>Cat|Dog</code> (הערך ההתחלתי)",

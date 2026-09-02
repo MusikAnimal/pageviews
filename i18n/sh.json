@@ -287,7 +287,6 @@
 	"url-structure-excludes": "Izlazni nazivi stranica što želite izuzeti sa spiska, razdvojeni uspravnom crtom <code>|</code>. Ovo mogu biti pogrešne pogotke ili nevažne stranice. Naprimjer <code>Glavna_stranica|Posebno:Traži</code>",
 	"url-structure-files": "Imena izlaznih datoteka bez prefiksa Datoteka: ili File:, odvojena znakovima <code>|</code>. Primjer: $1",
 	"url-structure-massviews-project": "Ispravan $1 za stranice ishoda Quarryja.",
-	"url-structure-massviews-target": "Naznaka straničnoga kupa, ili pak cijeli URL kategorijati. Ako u URL-u ima upitnik <code>?</code>, tada <strong>mora se šifrirati</strong>.",
 	"url-structure-onwiki-link": "Da biste stavili link trenutnoj stranici, poslužite se uz $1",
 	"url-structure-page": "Izlazni naziv stranice.",
 	"url-structure-pages": "Izlazni nazivi stranica razdvojeni uspravnom crtom <code>|</code> poput <code>Cat|Dog</code> (predodređeno)",
