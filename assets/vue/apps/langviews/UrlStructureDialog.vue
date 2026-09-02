@@ -67,6 +67,11 @@ const params = [
 		name: 'direction',
 		html: banana.i18n( 'url-structure-sort-direction', code( '1' ), code( '-1' ) )
 	},
+	{
+		name: 'view',
+		html: `${ banana.i18n( 'url-structure-view', code( 'list' ), code( 'chart' ) ) } ` +
+			listValues( [ `${ code( 'list' ) } ${ defaultMsg() }`, code( 'chart' ) ] )
+	},
 	...chartOptionParams()
 ];
 </script>
