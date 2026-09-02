@@ -969,3 +969,39 @@ figure {
 .cdx-field__help-text:empty {
 	display: none;
 }
+
+// Printing (Ctrl+P): a clean report — the app chrome goes away and
+// colors force light, since paper is white regardless of the
+// on-screen theme. (The chart's own Print menu item goes through a
+// hidden iframe instead; this covers printing the page itself.)
+@media print {
+	html,
+	html[ data-theme='dark' ] {
+		.cdx-mode-light();
+		color-scheme: light;
+	}
+
+	// Chrome and controls: navigation, the settings sidebar, chart
+	// and table toolbars (exports, filter, pagers), the view toggle,
+	// the back-to-form link, overlays and toasts. The report itself —
+	// heading, chart or table, Totals — prints.
+	.app-nav,
+	.app-footer,
+	.app-settings,
+	.app-chart__toolbar,
+	.app-stats-toolbar,
+	.app-stats-footer,
+	.app-output-header__another-query,
+	.app-output-header .cdx-toggle-button-group,
+	.app-loading-overlay,
+	.cdx-toast-container {
+		display: none;
+	}
+
+	// The chart canvas is sized to the viewport; scale it down to the
+	// paper width rather than clipping.
+	.app-chart canvas {
+		height: auto;
+		max-width: 100%;
+	}
+}
