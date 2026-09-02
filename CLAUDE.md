@@ -2,14 +2,16 @@
 
 Rewrite of [pageviews](https://github.com/MusikAnimal/pageviews) — a suite of 8
 Wikimedia pageview analysis apps (Pageviews, Topviews, Langviews, Siteviews,
-Massviews, Redirect Views, Mediaviews, Userviews). Goal: feature parity with the
-legacy tool, fundamentally reorganized for maintainability.
+Massviews, Redirect Views, Mediaviews, Userviews) into Symfony + Vue, at feature
+parity with the legacy tool and fundamentally reorganized for maintainability.
+All eight apps are ported; the work now is polish and maintenance. README.md is
+the project overview; this file is the working guidance.
 
 **Stack**: Symfony 7.4 (PHP 8.4) — a Symfony 8.1 upgrade is wanted but currently
 blocked: wikimedia/toolforge-bundle (1.7.2) caps at Symfony ^7. Revisit when
 upstream allows ^8 · Symfony UX Vue + Stimulus via vite-plugin-symfony ·
 Vue 3 + Pinia + vue-router · Wikimedia Codex + design tokens · LESS · banana-i18n ·
-Apache ECharts 6 · Vitest · PHPUnit 12 (+ Panther) · eslint/stylelint-config-wikimedia
+Apache ECharts 6 · Vitest · PHPUnit 12 · eslint/stylelint-config-wikimedia
 
 A clone of the legacy tool lives at `var/pageviews-legacy/` (gitignored) for
 reference. Canonical legacy files: `javascripts/shared/{pv,pv_config,chart_helpers,list_helpers}.js`.
@@ -98,16 +100,18 @@ toolforge-bundle (`ReplicasClient`).
   format, synced with translatewiki — never invent keys without adding them to
   `en.json` + `qqq.json`).
 - Charts: ECharts via tree-shaken `echarts/core` behind a single import point
-  (`assets/vue/charts/`, once created); components consume option-builder
-  functions, never echarts directly.
+  (`assets/vue/charts/`); components consume option-builder functions, never
+  echarts directly.
 - CSS: BEM class names (`pv-block__element--modifier` style), Codex design
   tokens via `@import ( reference )`, mobile-first, light/dark via
   `prefers-color-scheme`.
 
-## Per-app porting playbook
+## Per-app porting playbook (historical)
 
-For each app (order: Pageviews → Siteviews/Mediaviews → Langviews →
-Redirectviews/Userviews → Massviews → Topviews):
+All eight apps are ported; this is kept as reference for how each app is
+structured and how a new one (or a parity fix) should be approached. The order
+the apps were ported: Pageviews → Siteviews/Mediaviews → Langviews →
+Redirectviews/Userviews → Massviews → Topviews.
 
 1. Read the legacy app (`var/pageviews-legacy/javascripts/<app>/` +
    `views/<app>/index.haml`) and write a parity checklist first.
@@ -121,6 +125,6 @@ Redirectviews/Userviews → Massviews → Topviews):
    params must parse identically; compare numbers for one known query.
 7. Check in with the user for review before starting the next app.
 
-The full plan (milestones M0–M7, API contracts, legacy findings) lives in the
-plan file from the planning session; ask the user if you need it and can't
-find it.
+The full plan (milestones M0–M7, all complete except the M7 polish tail; API
+contracts; legacy findings) lives in the plan file from the planning session;
+ask the user if you need it and can't find it.
