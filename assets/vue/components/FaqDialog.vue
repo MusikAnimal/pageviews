@@ -13,8 +13,8 @@
 				:key="entry.id">
 				<!-- Trusted content: our own i18n messages and link markup. -->
 				<!-- eslint-disable vue/no-v-html -->
-				<p class="app-dialog-heading">
-					<strong v-html="entry.title" />
+				<h3 class="app-dialog-heading">
+					<span v-html="entry.title" />
 					<CdxButton
 						weight="quiet"
 						class="app-heading-link"
@@ -23,7 +23,7 @@
 					>
 						<CdxIcon :icon="cdxIconLink" size="small" />
 					</CdxButton>
-				</p>
+				</h3>
 				<p
 					v-for="( paragraph, index ) in entry.paragraphs"
 					:key="index"

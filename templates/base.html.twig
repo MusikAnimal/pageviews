@@ -113,9 +113,9 @@
 
 {% block header %}
 	<header class="app-header">
-		<h3>
+		<h1>
 			{{ msg( current_app == 'pageviews' ? 'title' : current_app ~ '-title' ) }}
-		</h3>
+		</h1>
 		<small class="app-description">
 			{% block subtitle %}
 				{{ msg( current_app ~ '-description' ) }}

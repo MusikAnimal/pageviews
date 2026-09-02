@@ -237,8 +237,11 @@ a {
 	padding: @spacing-50;
 	text-align: center;
 
-	h3 {
-		margin-bottom: 0;
+	// An h1 for the document outline (the results heading is an h2,
+	// the sidebar headings h3s), kept at the previous h3 size.
+	h1 {
+		font-size: 1.17em;
+		margin: 1em 0 0;
 	}
 }
 
@@ -314,6 +317,9 @@ a {
 // Centered (both axes) within .app-loading-overlay (which spans the
 // .app-container).
 .app-progress-bar {
+	// Deliberately physical: symmetric centering (with the -50%
+	// translate below) works in both directions, while a logical
+	// inset would double-shift in RTL.
 	left: @size-half;
 	position: absolute;
 	text-align: center;
@@ -413,8 +419,27 @@ a {
 	}
 }
 
+// The FAQ entry titles are real headings for screen-reader structure,
+// styled like the bold paragraph they replaced.
+h3.app-dialog-heading {
+	font-size: @font-size-medium;
+	margin: 1em 0;
+}
+
 .app-flash {
 	animation: app-flash 4s ease-out;
+}
+
+// Vestibular safety: growth/movement effects go instant when the user
+// prefers reduced motion. The app-flash color fade is motionless and
+// stays; the dialogs' smooth scrolling checks the same preference in
+// JS (an explicit scrollIntoView behavior ignores CSS).
+@media ( prefers-reduced-motion: reduce ) {
+	.app-row-bar,
+	.app-progress-bar__fill,
+	.app-heading-link {
+		transition: none;
+	}
 }
 
 // The app workspace layout and the shared per-app blocks (Totals

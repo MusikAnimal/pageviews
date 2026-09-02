@@ -33,6 +33,7 @@
 							v-if="stat.tooltip"
 							v-tooltip="stat.tooltip"
 							class="app-totals__term"
+							tabindex="0"
 						>{{ stat.label }}</dfn>
 						<template v-else>
 							{{ stat.label }}

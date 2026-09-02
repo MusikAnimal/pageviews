@@ -51,7 +51,14 @@ export function useDialogSectionLinks( isOpen ) {
 				// order itself.
 				target.setAttribute( 'tabindex', '-1' );
 				target.focus( { preventScroll: true } );
-				target.scrollIntoView( { block: 'start', behavior: 'smooth' } );
+				target.scrollIntoView( {
+					block: 'start',
+					// Instant under reduced motion — an explicit
+					// smooth behavior ignores the CSS preference.
+					behavior: window.matchMedia?.( '( prefers-reduced-motion: reduce )' ).matches ?
+						'auto' :
+						'smooth'
+				} );
 				target.classList.add( 'app-flash' );
 				setTimeout( () => target.classList.remove( 'app-flash' ), 4000 );
 			}
