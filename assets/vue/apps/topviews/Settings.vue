@@ -57,19 +57,21 @@
 				:aria-label="$i18n( 'excluded-pages' )"
 			/>
 		</CdxField>
-		<CdxCheckbox
-			v-model="mainspace"
-			:disabled="store.dateType === 'yearly'"
-		>
-			{{ $i18n( 'mainspace-only-option' ) }}
-		</CdxCheckbox>
-		<CdxCheckbox
-			v-if="platform === 'all-access' || store.dateType === 'yearly'"
-			v-model="showMobileModel"
-			:disabled="store.dateType === 'yearly'"
-		>
-			{{ $i18n( 'show-mobile-percentages' ) }}
-		</CdxCheckbox>
+		<CdxField>
+			<CdxCheckbox
+				v-model="mainspace"
+				:disabled="store.dateType === 'yearly'"
+			>
+				{{ $i18n( 'mainspace-only-option' ) }}
+			</CdxCheckbox>
+			<CdxCheckbox
+				v-if="platform === 'all-access' || store.dateType === 'yearly'"
+				v-model="showMobileModel"
+				:disabled="store.dateType === 'yearly'"
+			>
+				{{ $i18n( 'show-mobile-percentages' ) }}
+			</CdxCheckbox>
+		</CdxField>
 	</form>
 	<PreferencesDialog
 		v-model:open="ui.preferencesOpen"
