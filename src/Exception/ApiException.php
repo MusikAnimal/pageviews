@@ -18,7 +18,7 @@ class ApiException extends RuntimeException {
 	 * @param string $errorCode e.g. 'invalid_param', 'unknown_project'.
 	 * @param string $message English description (for logs and curl).
 	 * @param string[] $i18n Message key followed by its params, e.g.
-	 *   [ 'api-error-invalid-date', 'start' ]. Empty if untranslated.
+	 *   [ 'param-error-3', 'date' ]. Empty if untranslated.
 	 * @param int $status HTTP status code.
 	 * @param string|null $upstream Which upstream failed ('aqs', ...),
 	 *   for 5xx envelopes.

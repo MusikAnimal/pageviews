@@ -32,7 +32,7 @@ function* walk( dir ) {
 		const path = join( dir, name );
 		if ( statSync( path ).isDirectory() ) {
 			yield* walk( path );
-		} else if ( /\.(vue|js|mjs|twig)$/.test( name ) && !/\.test\.js$/.test( name ) ) {
+		} else if ( /\.(vue|js|mjs|twig|php)$/.test( name ) && !/\.test\.js$/.test( name ) ) {
 			yield path;
 		}
 	}
