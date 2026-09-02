@@ -62,7 +62,8 @@ describe( 'FaqDialog', () => {
 		const section = wrapper.find( '#agents' );
 		expect( section.classes() ).toContain( 'app-flash' );
 
-		await vi.advanceTimersByTimeAsync( 2100 );
+		// 600ms scroll delay + the 4s flash removal, plus a buffer.
+		await vi.advanceTimersByTimeAsync( 4700 );
 		expect( section.classes() ).not.toContain( 'app-flash' );
 
 		wrapper.unmount();
