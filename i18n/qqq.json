@@ -151,6 +151,7 @@
 	"faq-massviews-sources-subpages": "FAQ - explanation of what the 'Subpages' source in the Massviews tool is. The message 'massviews-subpages-description' is shown before this message. $1 is a link to an example page.",
 	"faq-massviews-sources-template": "FAQ - explanation of what the 'Template' source in the Massviews tool is. The message 'massviews-transclusions-description' is shown before this message. $1 is a link to an example template.",
 	"faq-massviews-sources-title": "FAQ - title of the section explaining what the sources are in the Massviews tool.",
+	"faq-massviews-sources-wikiproject": "Description of the 'WikiProject' source shown in the Massviews FAQ, after {{msg-wm|massviews-wikiproject-description}}. $1 is a link to the PageAssessments extension's documentation, $2 is a linked example WikiProject name.",
 	"faq-massviews-sources-wikilinks": "FAQ - explanation of what the 'Wikilinks' source in the Massviews tool is. The message 'massviews-wikilinks-description' is shown before this message. $1 is a link to an example page.",
 	"faq-massviews-subject-page-body": "FAQ - explanation of what the 'use subject page' option is",
 	"faq-massviews-subject-page-title": "FAQ - title of the section explaining what the 'use subject page' option is. $1 is the i18n message 'category-subject-toggle'.",

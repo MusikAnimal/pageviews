@@ -9,6 +9,7 @@
 <script setup>
 import BaseFaqDialog from '../../components/FaqDialog.vue';
 import { banana, rawI18n } from '../../i18n.js';
+import { describeSource, getSourceItems } from './sources.js';
 
 defineProps( {
 	open: {
@@ -23,9 +24,76 @@ const link = ( href, text ) => `<a target="_blank" href="${ href }">${ text }</a
 
 const redirectviewsLink = `<a href="/redirectviews">${ banana.i18n( 'redirectviews' ) }</a>`;
 
-// A subset of the legacy Massviews FAQ that applies to the sources
-// ported so far; grows with the sources.
+// Per-source example/details messages ($1… as the legacy FAQ passed
+// them), appended after each source's description line.
+const SOURCE_EXAMPLES = {
+	category: () => banana.i18n( 'faq-massviews-sources-category', link(
+		'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York',
+		'https://en.wikipedia.org/wiki/Category:Folk_musicians_from_New_York'
+	) ),
+	wikilinks: () => banana.i18n( 'faq-massviews-sources-wikilinks', link(
+		'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List',
+		'https://en.wikipedia.org/wiki/Wikipedia:Articles_for_improvement/Articles/List'
+	) ),
+	subpages: () => banana.i18n( 'faq-massviews-sources-subpages', link(
+		'https://en.wikipedia.org/wiki/User:Example',
+		'https://en.wikipedia.org/wiki/User:Example'
+	) ),
+	transclusions: () => banana.i18n( 'faq-massviews-sources-template', link(
+		'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games',
+		'https://en.wikipedia.org/wiki/Template:Infobox_Olympic_games'
+	) ),
+	quarry: () => banana.i18n( 'faq-massviews-sources-quarry', 'Quarry', 'page_title' ),
+	hashtag: () => banana.i18n(
+		'faq-massviews-sources-hashtag',
+		'<code>#</code>',
+		link( 'https://hashtags.wmcloud.org/?query=100wikidays', '#100wikidays' ),
+		link( 'https://hashtags.wmcloud.org/docs/', banana.i18n( 'documentation' ) )
+	),
+	'external-link': () => banana.i18n(
+		'faq-massviews-sources-external-link',
+		link( 'https://en.wikipedia.org/wiki/Special:LinkSearch/*.nycgo.com', '*.nycgo.com' ),
+		link(
+			'https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Linksearch',
+			banana.i18n( 'documentation' )
+		)
+	),
+	search: () => banana.i18n( 'faq-massviews-sources-search', link(
+		'https://en.wikipedia.org/w/index.php?search=insource%3A%22UNESCO+Science+Report%22&title=Special:Search',
+		'insource:"UNESCO Science Report"'
+	) ),
+	wikiproject: () => banana.i18n(
+		'faq-massviews-sources-wikiproject',
+		link(
+			'https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:PageAssessments',
+			'PageAssessments'
+		),
+		link( 'https://en.wikipedia.org/wiki/Special:PageAssessments?project=Volcanoes&namespace=0', 'Volcanoes' )
+	)
+};
+
+function sourceItem( { value, label } ) {
+	return `<li><i>${ label }</i> — ${ describeSource( value ) }. ${ SOURCE_EXAMPLES[ value ]() }</li>`;
+}
+
 const entries = [
+	{
+		id: 'sources',
+		title: banana.i18n( 'faq-massviews-sources-title' ),
+		// One item per source: its label, the description shown under
+		// the input, then the example/details.
+		paragraphs: [
+			'<ul>' + getSourceItems().map( sourceItem ).join( '' ) + '</ul>'
+		]
+	},
+	{
+		id: 'subject_page',
+		title: banana.i18n(
+			'faq-massviews-subject-page-title', banana.i18n( 'category-subject-toggle' )
+		),
+		// rawI18n: the message embeds an anchor.
+		paragraphs: [ rawI18n( 'faq-massviews-subject-page-body' ) ]
+	},
 	{
 		id: 'anomaly',
 		title: banana.i18n( 'faq-anomaly-title' ),

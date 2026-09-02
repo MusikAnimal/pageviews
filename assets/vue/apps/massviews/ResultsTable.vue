@@ -21,7 +21,7 @@
 					<th scope="row">
 						{{ $i18n( 'totals' ) }}
 					</th>
-					<td>{{ $i18n( 'num-pages', number( rows.length ), rows.length ) }}</td>
+					<td>{{ $i18n( countKey, number( rows.length ), rows.length ) }}</td>
 					<td class="app-stats__number">
 						{{ number( store.totals.total ) }}
 					</td>
@@ -106,6 +106,13 @@ const settings = useSettingsStore();
 const number = ( value ) => formatNumber( value, banana.locale, preferences.numericalFormatting );
 
 const rows = computed( () => store.pagesData );
+
+// The totals row names what was counted, per source.
+const countKey = computed( () => ( {
+	subpages: 'num-subpages',
+	transclusions: 'num-transclusions',
+	wikilinks: 'num-wikilinks'
+}[ store.source ] ?? 'num-pages' ) );
 
 // The rows double as a bar chart, shaded relative to the table's
 // largest total (see the shared .app-row-bar).

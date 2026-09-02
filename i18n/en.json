@@ -128,6 +128,7 @@
 	"faq-massviews-sources-subpages": "Enter the full URL of any page, for example $1.",
 	"faq-massviews-sources-template": "Enter the full URL of a template page, for example $1.",
 	"faq-massviews-sources-title": "What are the \"Sources\"?",
+	"faq-massviews-sources-wikiproject": "Enter the name of a WikiProject as stored by the $1 extension, for example $2. This source is only available on wikis that use the extension.",
 	"faq-massviews-sources-wikilinks": "Enter the full URL of any page, for example $1.",
 	"faq-massviews-subject-page-body": "This option is for when you are using a category as the source. In some cases the category may contain talk pages when you actually want the subject pages. For instance <a href='https://en.wikipedia.org/wiki/Category:FA-Class_New_York_City_articles'>FA-Class New York City articles</a>, which lists the talk pages of FA-quality articles within WikiProject New York City.",
 	"faq-massviews-subject-page-title": "What is the \"$1\" option?",
