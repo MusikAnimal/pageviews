@@ -13,7 +13,17 @@
 				:key="entry.id">
 				<!-- Trusted content: our own i18n messages and link markup. -->
 				<!-- eslint-disable vue/no-v-html -->
-				<p><strong v-html="entry.title" /></p>
+				<p class="app-dialog-heading">
+					<strong v-html="entry.title" />
+					<CdxButton
+						weight="quiet"
+						class="app-heading-link"
+						:aria-label="$i18n( 'copy-link' )"
+						@click="copySectionLink( entry.id )"
+					>
+						<CdxIcon :icon="cdxIconLink" size="small" />
+					</CdxButton>
+				</p>
 				<p
 					v-for="( paragraph, index ) in entry.paragraphs"
 					:key="index"
@@ -26,10 +36,10 @@
 </template>
 
 <script setup>
-import { nextTick, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { CdxDialog } from '@wikimedia/codex';
+import { CdxButton, CdxDialog, CdxIcon } from '@wikimedia/codex';
+import { cdxIconLink } from '@wikimedia/codex-icons';
 import { banana } from '../i18n.js';
+import { useDialogSectionLinks } from '../composables/useDialogSectionLinks.js';
 
 /**
  * The FAQ dialog shell: each app supplies its own entries
@@ -48,27 +58,7 @@ const props = defineProps( {
 
 const emit = defineEmits( [ 'update:open' ] );
 
-const route = useRoute();
-
-// Deep links like /faq#agents scroll to that section and flash it.
-watch( () => [ props.open, route.hash ], async ( [ open ] ) => {
-	if ( !open || !route.hash ) {
-		return;
-	}
-	await nextTick();
-	// Codex's focus trap schedules its own scrollIntoView of the
-	// focused element 500ms after opening (block: 'nearest', a no-op
-	// while that element is still in view). Scrolling before that
-	// fires means getting yanked back up — so wait it out.
-	setTimeout( () => {
-		const target = document.getElementById( route.hash.slice( 1 ) );
-		if ( target ) {
-			target.scrollIntoView( { block: 'start', behavior: 'smooth' } );
-			target.classList.add( 'app-flash' );
-			setTimeout( () => target.classList.remove( 'app-flash' ), 2000 );
-		}
-	}, 600 );
-}, { immediate: true } );
+const { copySectionLink } = useDialogSectionLinks( () => props.open );
 </script>
 
 <style lang="less">

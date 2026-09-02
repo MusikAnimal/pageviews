@@ -16,7 +16,17 @@
 		</h3>
 		<dl class="app-url-structure__params">
 			<template v-for="param in params" :key="param.name">
-				<dt>{{ param.name }}</dt>
+				<dt :id="param.name" class="app-dialog-heading">
+					{{ param.name }}
+					<CdxButton
+						weight="quiet"
+						class="app-heading-link"
+						:aria-label="$i18n( 'copy-link' )"
+						@click="copySectionLink( param.name )"
+					>
+						<CdxIcon :icon="cdxIconLink" size="small" />
+					</CdxButton>
+				</dt>
 				<dd v-html="param.html" />
 			</template>
 		</dl>
@@ -25,15 +35,17 @@
 </template>
 
 <script setup>
-import { CdxDialog } from '@wikimedia/codex';
+import { CdxButton, CdxDialog, CdxIcon } from '@wikimedia/codex';
+import { cdxIconLink } from '@wikimedia/codex-icons';
 import { banana } from '../i18n.js';
+import { useDialogSectionLinks } from '../composables/useDialogSectionLinks.js';
 
 /**
  * The URL-structure dialog shell: each app supplies its intro html
  * and param list ({ name, html }); shared fragments live in
  * lib/urlStructure.js.
  */
-defineProps( {
+const props = defineProps( {
 	open: {
 		type: Boolean,
 		default: false
@@ -49,6 +61,8 @@ defineProps( {
 } );
 
 const emit = defineEmits( [ 'update:open' ] );
+
+const { copySectionLink } = useDialogSectionLinks( () => props.open );
 </script>
 
 <style lang="less">

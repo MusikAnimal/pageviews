@@ -391,8 +391,30 @@ a {
 	}
 }
 
+// The dialogs' copy-a-section-link buttons: revealed by hovering the
+// heading, and by keyboard focus (opacity keeps them focusable).
+.app-heading-link {
+	opacity: 0;
+	transition-duration: @transition-duration-base;
+	transition-property: opacity;
+
+	&:focus {
+		opacity: 1;
+	}
+}
+
+.app-dialog-heading {
+	align-items: center;
+	display: flex;
+	gap: @spacing-25;
+
+	&:hover .app-heading-link {
+		opacity: 1;
+	}
+}
+
 .app-flash {
-	animation: app-flash 2s ease-out;
+	animation: app-flash 4s ease-out;
 }
 
 // The app workspace layout and the shared per-app blocks (Totals
